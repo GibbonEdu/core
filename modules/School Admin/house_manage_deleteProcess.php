@@ -17,79 +17,61 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonHouseID=$_GET["gibbonHouseID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/house_manage_delete.php&gibbonHouseID=" . $gibbonHouseID ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/house_manage.php" ;
+$gibbonHouseID = $_GET['gibbonHouseID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/house_manage_delete.php&gibbonHouseID='.$gibbonHouseID;
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/house_manage.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/house_manage_delete.php")==FALSE) {
-	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_delete.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if school year specified
+    if ($gibbonHouseID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonHouseID' => $gibbonHouseID);
+            $sql = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Write to database
+            try {
+                $data = array('gibbonHouseID' => $gibbonHouseID);
+                $sql = 'DELETE FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            $URLDelete = $URLDelete.'&return=success0';
+            header("Location: {$URLDelete}");
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if school year specified
-	if ($gibbonHouseID=="") {
-		//Fail1
-		$URL.="&deleteReturn=fail1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonHouseID"=>$gibbonHouseID); 
-			$sql="SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Write to database
-			try {
-				$data=array("gibbonHouseID"=>$gibbonHouseID); 
-				$sql="DELETE FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&deleteReturn=fail2" ;
-				header("Location: {$URL}");
-				break ;
-			}
-			
-			//Success 0
-			$URLDelete=$URLDelete . "&deleteReturn=success0" ;
-			header("Location: {$URLDelete}");
-		}
-	}
-}
-?>

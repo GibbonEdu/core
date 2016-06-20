@@ -17,156 +17,113 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Roles') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
-	$duplicateReturnMessage="" ;
-	$class="error" ;
-	if (!($duplicateReturn=="")) {
-		if ($duplicateReturn=="fail0") {
-			$duplicateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($duplicateReturn=="fail2") {
-			$duplicateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($duplicateReturn=="fail3") {
-			$duplicateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($duplicateReturn=="fail6") {
-			$duplicateReturnMessage="Your request was successful, but some data was not properly saved." ;	
-			$class="success" ;
-		}
-		else if ($duplicateReturn=="success0") {
-			$duplicateReturnMessage=_("Your request was successful.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $duplicateReturnMessage;
-		print "</div>" ;
-	} 
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Roles').'</div>';
+    echo '</div>';
 
-	try {
-		$data=array(); 
-		$sql="SELECT * FROM gibbonRole ORDER BY type, name" ; 
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	
-	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-	print "</div>" ;
-	
-	if ($result->rowCount()<1) {
-		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
-		print "</div>" ;
-	}
-	else {
-		print "<table cellspacing='0' style='width: 100%'>" ;
-			print "<tr class='head'>" ;
-				print "<th>" ;
-					print _("Category") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Name") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Short Name") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Description") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Type") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Login Years") ;
-				print "</th>" ;
-				print "<th style='width:110px'>" ;
-					print _("Action") ;
-				print "</th>" ;
-			print "</tr>" ;
-			
-			$count=0;
-			$rowNum="odd" ;
-			while ($row=$result->fetch()) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print _($row["category"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						print _($row["name"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						print _($row["nameShort"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						print _($row["description"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						print _($row["type"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						if ($row["futureYearsLogin"]=="Y" AND $row["pastYearsLogin"]=="Y") {
-							print _("All years") ;
-						}
-						else if ($row["futureYearsLogin"]=="N" AND $row["pastYearsLogin"]=="N") {
-							print _("Current year only") ;
-						}
-						else if ($row["futureYearsLogin"]=="N") {
-							print _("Current/past years only") ;
-						}
-						else if ($row["pastYearsLogin"]=="N") {
-							print _("Current/future years only") ;
-						}
-					print "</td>" ;
-					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_edit.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						if ($row["type"]=="Additional") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_delete.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-						}
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_duplicate.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a> " ;
-					print "</td>" ;
-				print "</tr>" ;
-			}
-		print "</table>" ;
-	}
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    try {
+        $data = array();
+        $sql = 'SELECT * FROM gibbonRole ORDER BY type, name';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/role_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo '</div>';
+
+    if ($result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+        echo "<table cellspacing='0' style='width: 100%'>";
+        echo "<tr class='head'>";
+        echo '<th>';
+        echo __($guid, 'Category');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Name');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Short Name');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Description');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Type');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Login Years');
+        echo '</th>';
+        echo "<th style='width:110px'>";
+        echo __($guid, 'Action');
+        echo '</th>';
+        echo '</tr>';
+
+        $count = 0;
+        $rowNum = 'odd';
+        while ($row = $result->fetch()) {
+            if ($count % 2 == 0) {
+                $rowNum = 'even';
+            } else {
+                $rowNum = 'odd';
+            }
+            ++$count;
+
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
+            echo '<td>';
+            echo __($guid, $row['category']);
+            echo '</td>';
+            echo '<td>';
+            echo __($guid, $row['name']);
+            echo '</td>';
+            echo '<td>';
+            echo __($guid, $row['nameShort']);
+            echo '</td>';
+            echo '<td>';
+            echo __($guid, $row['description']);
+            echo '</td>';
+            echo '<td>';
+            echo __($guid, $row['type']);
+            echo '</td>';
+            echo '<td>';
+            if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
+                echo __($guid, 'All years');
+            } elseif ($row['futureYearsLogin'] == 'N' and $row['pastYearsLogin'] == 'N') {
+                echo __($guid, 'Current year only');
+            } elseif ($row['futureYearsLogin'] == 'N') {
+                echo __($guid, 'Current/past years only');
+            } elseif ($row['pastYearsLogin'] == 'N') {
+                echo __($guid, 'Current/future years only');
+            }
+            echo '</td>';
+            echo '<td>';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_edit.php&gibbonRoleID='.$row['gibbonRoleID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            if ($row['type'] == 'Additional') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_delete.php&gibbonRoleID='.$row['gibbonRoleID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            }
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_duplicate.php&gibbonRoleID='.$row['gibbonRoleID']."'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+    }
 }
-?>

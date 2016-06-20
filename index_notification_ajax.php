@@ -17,92 +17,76 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Gibbon system-wide includes
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
+
+$output = '';
+
+$themeName = 'Default';
+if (isset($_SESSION[$guid]['gibbonThemeName'])) {
+    $themeName = $_SESSION[$guid]['gibbonThemeName'];
 }
 
-$output="" ;
-
-if (isset($_SESSION[$guid])==FALSE OR isset($_SESSION[$guid]["gibbonPersonID"])==FALSE) {
-	$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
-}
-else {
-	//CHECK FOR SYSTEM ALARM
-	if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
-		if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
-			$alarm=getSettingByScope($connection2, "System", "alarm") ;
-			if ($alarm=="General" OR $alarm=="Lockdown" OR $alarm=="Custom") {
-				$type="general" ;
-				if ($alarm=="Lockdown") {
-					$type="lockdown" ;
-				}
-				else if ($alarm=="Custom") {
-					$type=="custom" ;
-				}
-				$output.="<script>
+if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
+    $output .= ' . 0 x '."<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/".$themeName."/img/notifications_off.png'>";
+} else {
+    //CHECK FOR SYSTEM ALARM
+    if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
+        if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+            $alarm = getSettingByScope($connection2, 'System', 'alarm');
+            if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
+                $type = 'general';
+                if ($alarm == 'Lockdown') {
+                    $type = 'lockdown';
+                } elseif ($alarm == 'Custom') {
+                    $type == 'custom';
+                }
+                $output .= "<script>
 					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
 						$(\"#TB_window\").remove();
 						$(\"body\").append(\"<div id='TB_window'></div>\");
 					}
 					if ($('div#TB_window').is(':visible')===false) {
-						var url = '" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarm.php?type=" . $type . "&KeepThis=true&TB_iframe=true&width=1000&height=500';
+						var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
 						tb_show('', url);
 						$('div#TB_window').addClass('alarm') ;
 					}
-				</script>" ;
-			
-			}
-			else {
-				$output.="<script>
+				</script>";
+            } else {
+                $output .= "<script>
 					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')=='alarm') {
 						tb_remove();
 					}
-				</script>" ;
-			}
-		}
-	}
+				</script>";
+            }
+        }
+    }
 
-	//GET & SHOW NOTIFICATIONS
-	try {
-		$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
-		$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
+    //GET & SHOW NOTIFICATIONS
+    try {
+        $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+        $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
 		UNION
 		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
-		ORDER BY timestamp DESC, source, text" ;
-		$resultNotifications=$connection2->prepare($sqlNotifications);
-		$resultNotifications->execute($dataNotifications); 
-	}
-	catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+		ORDER BY timestamp DESC, source, text";
+        $resultNotifications = $connection2->prepare($sqlNotifications);
+        $resultNotifications->execute($dataNotifications);
+    } catch (PDOException $e) {
+        $return .= "<div class='error'>".$e->getMessage().'</div>';
+    }
 
-	if ($resultNotifications->rowCount()>0) {
-		if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png")) {
-			$output.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-		}
-		else {
-			$output.=" . <a title='" . _('Notifications') . "' href='./index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='./themes/Default/img/notifications_on.png'></a>" ;
-		}
-	}
-	else {
-		if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png")) {
-			$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
-		}
-		else {
-			$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
-		}
-	}
+    if ($resultNotifications->rowCount() > 0) {
+        $output .= " . <a title='".__($guid, 'Notifications')."' href='./index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img style='margin-left: 2px; vertical-align: -75%' src='./themes/".$themeName."/img/notifications_on.png'></a>";
+    } else {
+        $output .= ' . 0 x '."<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/".$themeName."/img/notifications_off.png'>";
+    }
 }
 
-print $output ;
-?>
+echo $output;

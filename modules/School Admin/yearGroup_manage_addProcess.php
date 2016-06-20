@@ -17,82 +17,67 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/yearGroup_manage_add.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/yearGroup_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_manage_add.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Validate Inputs
+    $name = $_POST['name'];
+    $nameShort = $_POST['nameShort'];
+    $sequenceNumber = $_POST['sequenceNumber'];
+
+    if ($name == '' or $nameShort == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        //Check unique inputs for uniquness
+        try {
+            $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber);
+            $sql = 'SELECT * FROM gibbonYearGroup WHERE name=:name OR nameShort=:nameShort OR sequenceNumber=:sequenceNumber';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() > 0) {
+            $URL .= '&return=error3';
+            header("Location: {$URL}");
+        } else {
+            //Write to database
+            try {
+                $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber);
+                $sql = 'INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            //Last insert ID
+            $AI = str_pad($connection2->lastInsertID(), 3, '0', STR_PAD_LEFT);
+
+            $URL .= "&return=success0&editID=$AI";
+            header("Location: {$URL}");
+        }
+    }
 }
-else {
-	//Proceed!
-	//Validate Inputs
-	$name=$_POST["name"] ;
-	$nameShort=$_POST["nameShort"] ;
-	$sequenceNumber=$_POST["sequenceNumber"] ;
-	
-	if ($name=="" OR $nameShort=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE) {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Check unique inputs for uniquness
-		try {
-			$data=array("name"=>$name, "nameShort"=>$nameShort, "sequenceNumber"=>$sequenceNumber); 
-			$sql="SELECT * FROM gibbonYearGroup WHERE name=:name OR nameShort=:nameShort OR sequenceNumber=:sequenceNumber" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
-			header("Location: {$URL}");
-		}
-		else {	
-			//Write to database
-			try {
-				$data=array("name"=>$name, "nameShort"=>$nameShort, "sequenceNumber"=>$sequenceNumber); 
-				$sql="INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				break ;
-			}
-			
-			//Success 0
-			$URL.="&addReturn=success0" ;
-			header("Location: {$URL}");
-		}
-	}
-}
-?>

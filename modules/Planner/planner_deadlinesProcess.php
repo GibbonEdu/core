@@ -17,168 +17,144 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$viewBy=$_GET["viewBy"] ;
-$subView=$_GET["subView"] ;
-if ($viewBy!="date" AND $viewBy!="class") {
-	$viewBy="date" ;
+$viewBy = $_GET['viewBy'];
+$subView = $_GET['subView'];
+if ($viewBy != 'date' and $viewBy != 'class') {
+    $viewBy = 'date';
 }
-$gibbonCourseClassID=NULL ;
-if (isset($_POST["gibbonCourseClassID"])) {
-	$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
+$gibbonCourseClassID = null;
+if (isset($_POST['gibbonCourseClassID'])) {
+    $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
 }
-$date=NULL ;
-if (isset($_POST["date"])) {
-	$date=dateConvert($guid, $_POST["date"]) ;
+$date = null;
+if (isset($_POST['date'])) {
+    $date = dateConvert($guid, $_POST['date']);
 }
-$gibbonCourseClassIDFilter=NULL ;
-if (isset($_GET["gibbonCourseClassIDFilter"])) {
-	$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
+$gibbonCourseClassIDFilter = null;
+if (isset($_GET['gibbonCourseClassIDFilter'])) {
+    $gibbonCourseClassIDFilter = $_GET['gibbonCourseClassIDFilter'];
 }
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassIDFilter" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassIDFilter";
 
 //Params to pass back (viewBy + date or classID)
-if ($viewBy=="date") {
-	$params="&viewBy=$viewBy&date=$date" ;
-}
-else {
-	$params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
+if ($viewBy == 'date') {
+    $params = "&viewBy=$viewBy&date=$date";
+} else {
+    $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 }
 
-if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_deadlines.php")==FALSE) {
-	//Fail 0
-	print "gere" ;
-	$URL.="&updateReturn=fail0$params" ;
-	header("Location: {$URL}");
-}
-else {
-	$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
-	if ($category!="Student") {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Check for existing completion
-		$completionArray=array() ;
-		try {
-			$dataCompletion=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"] ); 
-			$sqlCompletion="
+if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) { echo 'gere';
+    $URL .= "&return=error0$params";
+    header("Location: {$URL}");
+} else {
+    $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    if ($category != 'Student') {
+        $URL .= "&return=error0$params";
+        header("Location: {$URL}");
+    } else {
+        //Check for existing completion
+        $completionArray = array();
+        try {
+            $dataCompletion = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+            $sqlCompletion = "
 			(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryStudentTracker.gibbonPlannerEntryID FROM gibbonPlannerEntryStudentTracker JOIN gibbonPlannerEntry ON (gibbonPlannerEntryStudentTracker.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y')
 			UNION
 			(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID FROM gibbonPlannerEntryStudentHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2 AND homeworkComplete='Y')
 			ORDER BY gibbonPlannerEntryID, type
-			" ;
-			$resultCompletion=$connection2->prepare($sqlCompletion);
-			$resultCompletion->execute($dataCompletion);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2$params" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		while ($rowCompletion=$resultCompletion->fetch()) {
-			if (isset($rowCompletion["gibbonPlannerEntryID"])) {
-				$completionArray[$rowCompletion["gibbonPlannerEntryID"]]="Y" ;
-			}
-		}
-		
-		$partialFail=false ;
-		
-		//Insert new records
-		foreach ($_POST["count"] as $count) {
-			if (isset($_POST["complete-$count"])) {
-				if ($_POST["complete-$count"]=="on") {
-					if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])==FALSE) {
-						if (@$_POST["completeType-$count"]=="teacherRecorded") { //Teacher recorded
-							try {
-								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sql="INSERT INTO gibbonPlannerEntryStudentTracker SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkComplete='Y'" ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								$partialFail=TRUE ;
-							}
-						}
-						else { //Student recorded
-							try {
-								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sql="UPDATE gibbonPlannerEntryStudentHomework SET homeworkComplete='Y' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								$partialFail=TRUE ;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		//Turn unchecked records off
-		foreach ($_POST["count"] as $count) {
-			if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])) {
-				if ($completionArray[$_POST["gibbonPlannerEntryID-$count"]]=="Y") {
-					if (isset($_POST["complete-$count"])==FALSE) {
-						if (@$_POST["completeType-$count"]=="teacherRecorded") { //Teacher recorded
-							try {
-								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sql="UPDATE gibbonPlannerEntryStudentTracker SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								$partialFail=TRUE ;
-							}
-						}
-						else { //Student recorded
-							try {
-								$data=array("gibbonPlannerEntryID"=>$_POST["gibbonPlannerEntryID-$count"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sql="UPDATE gibbonPlannerEntryStudentHomework SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								$partialFail=TRUE ;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		if ($partialFail==TRUE) {
-			//Fail 5
-			$URL.="&updateReturn=fail5$params" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Success 0
-			$URL.="&updateReturn=success0$params" ;
-			header("Location: {$URL}");
-		}
-	}
+			";
+            $resultCompletion = $connection2->prepare($sqlCompletion);
+            $resultCompletion->execute($dataCompletion);
+        } catch (PDOException $e) {
+            $URL .= "&return=error2$params";
+            header("Location: {$URL}");
+            exit();
+        }
+
+        while ($rowCompletion = $resultCompletion->fetch()) {
+            if (isset($rowCompletion['gibbonPlannerEntryID'])) {
+                $completionArray[$rowCompletion['gibbonPlannerEntryID']] = 'Y';
+            }
+        }
+
+        $partialFail = false;
+
+        //Insert new records
+        foreach ($_POST['count'] as $count) {
+            if (isset($_POST["complete-$count"])) {
+                if ($_POST["complete-$count"] == 'on') {
+                    if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]]) == false) {
+                        if (@$_POST["completeType-$count"] == 'teacherRecorded') { //Teacher recorded
+                            try {
+                                $data = array('gibbonPlannerEntryID' => $_POST["gibbonPlannerEntryID-$count"], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "INSERT INTO gibbonPlannerEntryStudentTracker SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkComplete='Y'";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        } else { //Student recorded
+                            try {
+                                $data = array('gibbonPlannerEntryID' => $_POST["gibbonPlannerEntryID-$count"], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "UPDATE gibbonPlannerEntryStudentHomework SET homeworkComplete='Y' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Turn unchecked records off
+        foreach ($_POST['count'] as $count) {
+            if (isset($completionArray[$_POST["gibbonPlannerEntryID-$count"]])) {
+                if ($completionArray[$_POST["gibbonPlannerEntryID-$count"]] == 'Y') {
+                    if (isset($_POST["complete-$count"]) == false) {
+                        if (@$_POST["completeType-$count"] == 'teacherRecorded') { //Teacher recorded
+                            try {
+                                $data = array('gibbonPlannerEntryID' => $_POST["gibbonPlannerEntryID-$count"], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "UPDATE gibbonPlannerEntryStudentTracker SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        } else { //Student recorded
+                            try {
+                                $data = array('gibbonPlannerEntryID' => $_POST["gibbonPlannerEntryID-$count"], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "UPDATE gibbonPlannerEntryStudentHomework SET homeworkComplete='N' WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($partialFail == true) {
+            $URL .= "&return=warning1$params";
+            header("Location: {$URL}");
+        } else {
+            $URL .= "&return=success0$params";
+            header("Location: {$URL}");
+        }
+    }
 }
-?>

@@ -17,69 +17,67 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Planner/curriculumMapping_outcomesByCourse.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Outcomes By Course') . "</div>" ;
-	print "</div>" ;
-	print "<p>" ;
-	print _("This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.") ;
-	print "</p>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_outcomesByCourse.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Outcomes By Course').'</div>';
+    echo '</div>';
+    echo '<p>';
+    echo __($guid, 'This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.');
+    echo '</p>';
+
+    echo '<h2>';
+    echo __($guid, 'Choose Course');
+    echo '</h2>';
+
+    $gibbonCourseID = null;
+    if (isset($_GET['gibbonCourseID'])) {
+        $gibbonCourseID = $_GET['gibbonCourseID'];
+    }
+    ?>
 	
-	print "<h2>" ;
-	print _("Choose Course") ;
-	print "</h2>" ;
-	
-	$gibbonCourseID=NULL ;
-	if (isset($_GET["gibbonCourseID"])) {
-		$gibbonCourseID=$_GET["gibbonCourseID"] ;
-	}
-	?>
-	
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Course') ?> *</b><br/>
+					<b><?php echo __($guid, 'Course') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonCourseID">
+					<select class="standardWidth" name="gibbonCourseID">
 						<?php
-						print "<option value=''></option>" ;
-						$currentDepartment="" ;
-						$lastDepartment="" ;
-						
+                        echo "<option value=''></option>";
+						$currentDepartment = '';
+						$lastDepartment = '';
+
 						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-							$sqlSelect="SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, nameShort" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, nameShort";
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							$currentDepartment=$rowSelect["department"] ;
-							if (($currentDepartment!=$lastDepartment) AND $currentDepartment!="") {
-								print "<optgroup label='--" . $currentDepartment . "--'>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							$currentDepartment = $rowSelect['department'];
+							if (($currentDepartment != $lastDepartment) and $currentDepartment != '') {
+								echo "<optgroup label='--".$currentDepartment."--'>";
 							}
-							
-							if ($gibbonCourseID==$rowSelect["gibbonCourseID"]) {
-								print "<option selected value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+
+							if ($gibbonCourseID == $rowSelect['gibbonCourseID']) {
+								echo "<option selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
-							else {
-								print "<option value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-							}
-							$lastDepartment=$rowSelect["department"] ;
+							$lastDepartment = $rowSelect['department'];
 						}
 						?>				
 					</select>
@@ -87,281 +85,265 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/curriculumMapping_outcomesByCourse.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/curriculumMapping_outcomesByCourse.php">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
-	
-	if ($gibbonCourseID!="") {
-		print "<h2>" ;
-		print _("Outcomes") ;
-		print "</h2>" ;
-		
-		//Check course exists
-		try {
-			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonCourseID"=>$gibbonCourseID); 
-			$sql="SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID ORDER BY department, nameShort" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			//Get classes in this course
-			try {
-				$dataClasses=array("gibbonCourseID"=>$gibbonCourseID); 
-				$sqlClasses="SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name" ;
-				$resultClasses=$connection2->prepare($sqlClasses);
-				$resultClasses->execute($dataClasses);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			
-			if ($resultClasses->rowCount()<1) {
-				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
-				print "</div>" ;
-			}
-			else {
-				$classCount=$resultClasses->rowCount() ;
-				$classes=$resultClasses->fetchAll() ;
-				
-				//GET ALL OUTCOMES MET IN THIS COURSE, AND STORE IN AN ARRAY FOR DB-EFFICIENT USE IN TABLE
-				try {
-					$dataOutcomes=array("gibbonCourseID1"=>$gibbonCourseID, "gibbonCourseID2"=>$gibbonCourseID); 
-					$sqlOutcomes="(SELECT 'Unit' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonUnit ON (gibbonUnitOutcome.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID1 AND gibbonOutcome.active='Y' AND running='Y')
+
+    if ($gibbonCourseID != '') {
+        echo '<h2>';
+        echo __($guid, 'Outcomes');
+        echo '</h2>';
+
+        //Check course exists
+        try {
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseID' => $gibbonCourseID);
+            $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID ORDER BY department, nameShort";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+            //Get classes in this course
+            try {
+                $dataClasses = array('gibbonCourseID' => $gibbonCourseID);
+                $sqlClasses = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name';
+                $resultClasses = $connection2->prepare($sqlClasses);
+                $resultClasses->execute($dataClasses);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($resultClasses->rowCount() < 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo '</div>';
+            } else {
+                $classCount = $resultClasses->rowCount();
+                $classes = $resultClasses->fetchAll();
+
+                //GET ALL OUTCOMES MET IN THIS COURSE, AND STORE IN AN ARRAY FOR DB-EFFICIENT USE IN TABLE
+                try {
+                    $dataOutcomes = array('gibbonCourseID1' => $gibbonCourseID, 'gibbonCourseID2' => $gibbonCourseID);
+                    $sqlOutcomes = "(SELECT 'Unit' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonUnit ON (gibbonUnitOutcome.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID1 AND gibbonOutcome.active='Y' AND running='Y')
 					UNION ALL
 					(SELECT 'Working Block' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonOutcomeIDList LIKE concat('%', gibbonOutcome.gibbonOutcomeID, '%')) JOIN gibbonUnitClass ON (gibbonUnitClassBlock.gibbonUnitClassID=gibbonUnitClass.gibbonUnitClassID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID2 AND gibbonOutcome.active='Y' AND running='Y')
 					UNION ALL
-					(SELECT 'Planner Entry' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonPlannerEntryOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryOutcome.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID2 AND gibbonOutcome.active='Y')" ;
-					$resultOutcomes=$connection2->prepare($sqlOutcomes);
-					$resultOutcomes->execute($dataOutcomes);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$allOutcomes=$resultOutcomes->fetchAll() ;
-				
-				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
-					print "<tr class='head'>" ;
-						print "<th>" ;
-							print _("Category") ;
-						print "</th>" ;
-						print "<th>" ;
-							print _("Outcome") ;
-						print "</th>" ;
-						foreach ($classes AS $class) {
-							print "<th colspan=2>" ;
-								print $row["nameShort"] . "." . _($class["nameShort"]) ;
-							print "</th>" ;
-						}
-					print "</tr>" ;
-					print "<tr class='head'>" ;
-						print "<th>" ;
-							
-						print "</th>" ;
-						print "<th>" ;
-							
-						print "</th>" ;
-						foreach ($classes AS $class) {
-							print "<th>" ;
-								print "<span style='font-style: italic; font-size: 85%'>" . _('Unit') . "</span>" ;
-							print "</th>" ;
-							print "<th>" ;
-								print "<span style='font-style: italic; font-size: 85%'>" . _('Lesson') . "</span>" ;
-							print "</th>" ;
-						}
-					print "</tr>" ;
-					
-					//Prep where for year group matching of outcomes to course
-					$where="" ;
-					$yearGroups=explode(",", $row["gibbonYearGroupIDList"]) ;
-					foreach ($yearGroups AS $yearGroup) {
-						$where.=" AND gibbonYearGroupIDList LIKE concat('%', $yearGroup, '%')" ; 
+					(SELECT 'Planner Entry' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonPlannerEntryOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryOutcome.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID2 AND gibbonOutcome.active='Y')";
+                    $resultOutcomes = $connection2->prepare($sqlOutcomes);
+                    $resultOutcomes->execute($dataOutcomes);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $allOutcomes = $resultOutcomes->fetchAll();
+
+                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Category');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Outcome');
+                echo '</th>';
+                foreach ($classes as $class) {
+                    echo '<th colspan=2>';
+                    echo $row['nameShort'].'.'.__($guid, $class['nameShort']);
+                    echo '</th>';
+                }
+                echo '</tr>';
+                echo "<tr class='head'>";
+                echo '<th>';
+
+                echo '</th>';
+                echo '<th>';
+
+                echo '</th>';
+                foreach ($classes as $class) {
+                    echo '<th>';
+                    echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Unit').'</span>';
+                    echo '</th>';
+                    echo '<th>';
+                    echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Lesson').'</span>';
+                    echo '</th>';
+                }
+                echo '</tr>';
+
+                    //Prep where for year group matching of outcomes to course
+					$where = '';
+					$yearGroups = explode(',', $row['gibbonYearGroupIDList']);
+					foreach ($yearGroups as $yearGroup) {
+						$where .= " AND gibbonYearGroupIDList LIKE concat('%', $yearGroup, '%')";
 					}
-					
-					//SCHOOL OUTCOMES
-					print "<tr class='break'>" ;
-						print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-							print "<h4>" . _('School Outcomes') . "</h4>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					try {
-						$dataOutcomes=array(); 
-						$sqlOutcomes="SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $where ORDER BY category, name" ;
-						$resultOutcomes=$connection2->prepare($sqlOutcomes);
-						$resultOutcomes->execute($dataOutcomes);
-					}
-					catch(PDOException $e) { 
-						print "<tr>" ;
-							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							print "</td>" ;
-						print "</tr>" ;
-					}
-					
-					if ($resultOutcomes->rowCount()<1) {
-						print "<tr>" ;
-							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . _("There are no records to display.") . "</div>" ; 
-							print "</td>" ;
-						print "</tr>" ;
-					}
-					else {
-						$count=0;
-						$rowNum="odd" ;
-						while ($rowOutcomes=$resultOutcomes->fetch()) {
-							if ($count%2==0) {
-								$rowNum="even" ;
-							}
-							else {
-								$rowNum="odd" ;
-							}
-							$count++ ;
-				
-							//COLOR ROW BY STATUS!
-							print "<tr class=$rowNum>" ;
-								print "<td>" ;
-									print $rowOutcomes["category"] ;
-								print "</td>" ;
-								print "<td>" ;
-									print $rowOutcomes["name"] ;
-								print "</td>" ;
-								
-								//Deal with outcomes
-								foreach ($classes AS $class) {
-									print "<td>" ;
-										$outcomeCount=0 ;
-										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]=="Unit" AND $anOutcome["scope"]=="School" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
-												$outcomeCount++ ;
-											}
-										}
-										if ($outcomeCount<1) {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
-										}
-										else {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> x " . $outcomeCount ;
-										}
-									print "</td>" ;
-									print "<td>" ;
-										$outcomeCount=0 ;
-										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]!="Unit" AND $anOutcome["scope"]=="School" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
-												$outcomeCount++ ;
-											}
-										}
-										if ($outcomeCount<1) {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
-										}
-										else {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> x " . $outcomeCount ;
-										}
-									print "</td>" ;
+
+				//SCHOOL OUTCOMES
+				echo "<tr class='break'>";
+                echo '<td colspan='.(($classCount * 2) + 2).'>';
+                echo '<h4>'.__($guid, 'School Outcomes').'</h4>';
+                echo '</td>';
+                echo '</tr>';
+                try {
+                    $dataOutcomes = array();
+                    $sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $where ORDER BY category, name";
+                    $resultOutcomes = $connection2->prepare($sqlOutcomes);
+                    $resultOutcomes->execute($dataOutcomes);
+                } catch (PDOException $e) {
+                    echo '<tr>';
+                    echo '<td colspan='.(($classCount * 2) + 2).'>';
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+
+                if ($resultOutcomes->rowCount() < 1) {
+                    echo '<tr>';
+                    echo '<td colspan='.(($classCount * 2) + 2).'>';
+                    echo "<div class='error'>".__($guid, 'There are no records to display.').'</div>';
+                    echo '</td>';
+                    echo '</tr>';
+                } else {
+                    $count = 0;
+                    $rowNum = 'odd';
+                    while ($rowOutcomes = $resultOutcomes->fetch()) {
+                        if ($count % 2 == 0) {
+                            $rowNum = 'even';
+                        } else {
+                            $rowNum = 'odd';
+                        }
+                        ++$count;
+
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
+                        echo '<td>';
+                        echo $rowOutcomes['category'];
+                        echo '</td>';
+                        echo '<td>';
+                        echo $rowOutcomes['name'];
+                        echo '</td>';
+
+						//Deal with outcomes
+						foreach ($classes as $class) {
+							echo '<td>';
+							$outcomeCount = 0;
+							foreach ($allOutcomes as $anOutcome) {
+								if ($anOutcome['type'] == 'Unit' and $anOutcome['scope'] == 'School' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+									++$outcomeCount;
 								}
-					
-							print "</tr>" ;
-						}
-					}
-					
-					//LEARNING AREA OUTCOMES
-					print "<tr class='break'>" ;
-						print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-							print "<h4>" . sprintf(_('%1$s Outcomes'), $row["department"]) . "</h4>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					try {
-						$dataOutcomes=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
-						$sqlOutcomes="SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $where ORDER BY category, name" ;
-						$resultOutcomes=$connection2->prepare($sqlOutcomes);
-						$resultOutcomes->execute($dataOutcomes);
-					}
-					catch(PDOException $e) { 
-						print "<tr>" ;
-							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							print "</td>" ;
-						print "</tr>" ;
-					}
-					
-					if ($resultOutcomes->rowCount()<1) {
-						print "<tr>" ;
-							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . _("There are no records to display.") . "</div>" ; 
-							print "</td>" ;
-						print "</tr>" ;
-					}
-					else {
-						$count=0;
-						$rowNum="odd" ;
-						while ($rowOutcomes=$resultOutcomes->fetch()) {
-							if ($count%2==0) {
-								$rowNum="even" ;
 							}
-							else {
-								$rowNum="odd" ;
+							if ($outcomeCount < 1) {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+							} else {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
 							}
-							$count++ ;
-				
-							//COLOR ROW BY STATUS!
-							print "<tr class=$rowNum>" ;
-								print "<td>" ;
-									print $rowOutcomes["category"] ;
-								print "</td>" ;
-								print "<td>" ;
-									print $rowOutcomes["name"] ;
-								print "</td>" ;
-								
-								//Deal with outcomes
-								foreach ($classes AS $class) {
-									print "<td>" ;
-										$outcomeCount=0 ;
-										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]=="Unit" AND $anOutcome["scope"]=="Learning Area" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
-												$outcomeCount++ ;
-											}
-										}
-										if ($outcomeCount<1) {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
-										}
-										else {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> x " . $outcomeCount ;
-										}
-									print "</td>" ;
-									print "<td>" ;
-										$outcomeCount=0 ;
-										foreach ($allOutcomes AS $anOutcome) {
-											if ($anOutcome["type"]!="Unit" AND $anOutcome["scope"]=="Learning Area" AND $anOutcome["gibbonOutcomeID"]==$rowOutcomes["gibbonOutcomeID"] AND $class["gibbonCourseClassID"]==$anOutcome["gibbonCourseClassID"]) {
-												$outcomeCount++ ;
-											}
-										}
-										if ($outcomeCount<1) {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
-										}
-										else {
-											print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> x " . $outcomeCount ;
-										}
-									print "</td>" ;
+							echo '</td>';
+							echo '<td>';
+							$outcomeCount = 0;
+							foreach ($allOutcomes as $anOutcome) {
+								if ($anOutcome['type'] != 'Unit' and $anOutcome['scope'] == 'School' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+									++$outcomeCount;
 								}
-					
-							print "</tr>" ;
+							}
+							if ($outcomeCount < 1) {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+							} else {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+							}
+							echo '</td>';
 						}
+                        echo '</tr>';
+                    }
+                }
+
+                    //LEARNING AREA OUTCOMES
+                    echo "<tr class='break'>";
+					echo '<td colspan='.(($classCount * 2) + 2).'>';
+					echo '<h4>'.sprintf(__($guid, '%1$s Outcomes'), $row['department']).'</h4>';
+					echo '</td>';
+					echo '</tr>';
+					try {
+						$dataOutcomes = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
+						$sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $where ORDER BY category, name";
+						$resultOutcomes = $connection2->prepare($sqlOutcomes);
+						$resultOutcomes->execute($dataOutcomes);
+					} catch (PDOException $e) {
+						echo '<tr>';
+						echo '<td colspan='.(($classCount * 2) + 2).'>';
+						echo "<div class='error'>".$e->getMessage().'</div>';
+						echo '</td>';
+						echo '</tr>';
 					}
-				print "</table>" ;
-			}
-		}
-	}
+
+					if ($resultOutcomes->rowCount() < 1) {
+						echo '<tr>';
+						echo '<td colspan='.(($classCount * 2) + 2).'>';
+						echo "<div class='error'>".__($guid, 'There are no records to display.').'</div>';
+						echo '</td>';
+						echo '</tr>';
+					} else {
+						$count = 0;
+						$rowNum = 'odd';
+						while ($rowOutcomes = $resultOutcomes->fetch()) {
+							if ($count % 2 == 0) {
+								$rowNum = 'even';
+							} else {
+								$rowNum = 'odd';
+							}
+							++$count;
+
+							//COLOR ROW BY STATUS!
+							echo "<tr class=$rowNum>";
+							echo '<td>';
+							echo $rowOutcomes['category'];
+							echo '</td>';
+							echo '<td>';
+							echo $rowOutcomes['name'];
+							echo '</td>';
+
+							//Deal with outcomes
+							foreach ($classes as $class) {
+								echo '<td>';
+								$outcomeCount = 0;
+								foreach ($allOutcomes as $anOutcome) {
+									if ($anOutcome['type'] == 'Unit' and $anOutcome['scope'] == 'Learning Area' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+										++$outcomeCount;
+									}
+								}
+								if ($outcomeCount < 1) {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+								} else {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+								}
+								echo '</td>';
+								echo '<td>';
+								$outcomeCount = 0;
+								foreach ($allOutcomes as $anOutcome) {
+									if ($anOutcome['type'] != 'Unit' and $anOutcome['scope'] == 'Learning Area' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+										++$outcomeCount;
+									}
+								}
+								if ($outcomeCount < 1) {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+								} else {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+								}
+								echo '</td>';
+							}
+
+                        echo '</tr>';
+                    }
+                }
+                echo '</table>';
+            }
+        }
+    }
 }
 ?>

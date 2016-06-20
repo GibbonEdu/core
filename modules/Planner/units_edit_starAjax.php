@@ -17,57 +17,47 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPersonID=$_POST["gibbonPersonID"] ; 
-$action=$_POST["action"] ; 
-$gibbonUnitBlockID=$_POST["gibbonUnitBlockID"] ; 
-$i=$_POST["i"] ; 
-	
-if ($gibbonPersonID=="" OR $action=="" OR $gibbonUnitBlockID=="" OR $i=="") {
-	print _("Error") ;
+$gibbonPersonID = $_POST['gibbonPersonID'];
+$action = $_POST['action'];
+$gibbonUnitBlockID = $_POST['gibbonUnitBlockID'];
+$i = $_POST['i'];
+
+if ($gibbonPersonID == '' or $action == '' or $gibbonUnitBlockID == '' or $i == '') { echo __($guid, 'Error');
+} else {
+    if ($action == 'star') {
+        //Write to database
+        try {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonUnitBlockID' => $gibbonUnitBlockID);
+            $sql = 'INSERT INTO gibbonUnitBlockStar SET gibbonPersonID=:gibbonPersonID, gibbonUnitBlockID=:gibbonUnitBlockID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+        }
+        echo "<img id='unstar$i' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'>";
+    } else {
+        //Delete FROM to database
+        try {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonUnitBlockID' => $gibbonUnitBlockID);
+            $sql = 'DELETE FROM gibbonUnitBlockStar WHERE gibbonPersonID=:gibbonPersonID AND gibbonUnitBlockID=:gibbonUnitBlockID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+        }
+
+        echo "<img id='star$i' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'>";
+    }
 }
-else {
-	if ($action=="star") {
-		//Write to database
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonUnitBlockID"=>$gibbonUnitBlockID) ;
-			$sql="INSERT INTO gibbonUnitBlockStar SET gibbonPersonID=:gibbonPersonID, gibbonUnitBlockID=:gibbonUnitBlockID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { }
-		print "<img id='unstar$i' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'>" ;
-	}
-	else {
-		//Delete FROM to database
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonUnitBlockID"=>$gibbonUnitBlockID) ;
-			$sql="DELETE FROM gibbonUnitBlockStar WHERE gibbonPersonID=:gibbonPersonID AND gibbonUnitBlockID=:gibbonUnitBlockID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { }
-		
-		print "<img id='star$i' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'>" ;
-	}
-}
-?>

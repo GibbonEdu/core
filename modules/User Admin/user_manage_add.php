@@ -17,93 +17,67 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('Add User') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed because your passwords did not match.") ;	
-		}
-		else if ($addReturn=="fail6") {
-			$addReturnMessage=_("Your request failed due to an attachment error.") ;	
-		}
-		else if ($addReturn=="fail7") {
-			$addReturnMessage=_("Your request failed because your password to not meet the minimum requirements for strength.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		else if ($addReturn=="success1") {
-			$addReturnMessage=_("Your request was completed successfully, but one or more images were the wrong size and so were not saved. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if ($_GET["search"]!="") {
-		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
-		print "</div>" ;
-	}
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage.php'>".__($guid, 'Manage Users')."</a> > </div><div class='trailEnd'>".__($guid, 'Add User').'</div>';
+    echo '</div>';
+
+    $returns = array();
+    $returns['error5'] = __($guid, 'Your request failed because your passwords did not match.');
+    $returns['error6'] = __($guid, 'Your request failed due to an attachment error.');
+    $returns['error7'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['warning1'] = __($guid, 'Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$_GET['editID'].'&search='.$_GET['search'];
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, $returns);
+    }
+
+    if ($_GET['search'] != '') {
+        echo "<div class='linkTop'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+        echo '</div>';
+    }
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$_GET['search'] ?>" enctype="multipart/form-data">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Basic Information') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
-					<b><?php print _('Title') ?></b><br/>
+				<td style='width: 275px'>
+					<b><?php echo __($guid, 'Title') ?></b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="title">
+					<select class="standardWidth" name="title">
 						<option value=""></option>
-						<option value="Ms."><?php print _('Ms.') ?></option>
-						<option value="Miss"><?php print _('Miss') ?></option>
-						<option value="Mr."><?php print _('Mr.') ?></option>
-						<option value="Mrs."><?php print _('Mrs.') ?></option>
-						<option value="Dr."><?php print _('Dr.') ?></option>
+						<option value="Ms."><?php echo __($guid, 'Ms.') ?></option>
+						<option value="Miss"><?php echo __($guid, 'Miss') ?></option>
+						<option value="Mr."><?php echo __($guid, 'Mr.') ?></option>
+						<option value="Mrs."><?php echo __($guid, 'Mrs.') ?></option>
+						<option value="Dr."><?php echo __($guid, 'Dr.') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Surname') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Surname') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
@@ -111,12 +85,12 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('First Name') ?>*</b><br/>
-					<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'First Name') ?>*</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
@@ -124,12 +98,12 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Preferred Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Preferred Name') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 				</td>
 				<td class="right">
-					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
@@ -137,12 +111,12 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Official Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Official Name') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
+					<input name="officialName" id="officialName" maxlength=150 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
@@ -150,42 +124,52 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Name In Characters') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Name In Characters') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
 				</td>
 				<td class="right">
-					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Gender') ?> *</b><br/>
+				<td>
+					<b><?php echo __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="gender" id="gender" style="width: 302px">
-						<option value="Please select..."><?php print _('Please select...') ?></option>
-						<option value="F"><?php print _('Female') ?></option>
-						<option value="M"><?php print _('Male') ?></option>
-						<option value="F"><?php print _('Other') ?></option>
-						<option value="M"><?php print _('Unspecified') ?></option>
+					<select name="gender" id="gender" class="standardWidth">
+						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
+						<option value="F"><?php echo __($guid, 'Female') ?></option>
+						<option value="M"><?php echo __($guid, 'Male') ?></option>
+						<option value="Other"><?php echo __($guid, 'Other') ?></option>
+						<option value="Unspecified"><?php echo __($guid, 'Unspecified') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
-						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Date of Birth') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Date of Birth') ?></b><br/>
+					<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
 				<td class="right">
-					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dob" id="dob" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
-						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -195,9 +179,9 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('User Photo') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Displayed at 240px by 320px.') . "<br/>" . _('Accepts images up to 360px by 480px.') . "<br/>" . _('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'User Photo') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Displayed at 240px by 320px.').'<br/>'.__($guid, 'Accepts images up to 360px by 480px.').'<br/>'.__($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file1" id="file1"><br/><br/>
@@ -207,63 +191,63 @@ else {
 					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('System Access') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'System Access') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Primary Role') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Controls what a user can do and see.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Primary Role') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Controls what a user can do and see.') ?></span>
 				</td>
 				<td class="right">
-					<select name="gibbonRoleIDPrimary" id="gibbonRoleIDPrimary" style="width: 302px">
+					<select name="gibbonRoleIDPrimary" id="gibbonRoleIDPrimary" class="standardWidth">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
 						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT * FROM gibbonRole ORDER BY name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array();
+							$sqlSelect = 'SELECT * FROM gibbonRole ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonRoleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
-						gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Username') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique. System login name. Cannot be changed.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Username') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique. System login name. Cannot be changed.') ?></span>
 				</td>
 				<td class="right">
-					<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
 					<?php
-					$idList="" ;
+                    $idList = '';
 					try {
-						$dataSelect=array(); 
-						$sqlSelect="SELECT username FROM gibbonPerson ORDER BY username" ;
-						$resultSelect=$connection2->prepare($sqlSelect);
+						$dataSelect = array();
+						$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
+						$resultSelect = $connection2->prepare($sqlSelect);
 						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
 					}
-					catch(PDOException $e) { }
-					while ($rowSelect=$resultSelect->fetch()) {
-						$idList.="'" . $rowSelect["username"]  . "'," ;
+					while ($rowSelect = $resultSelect->fetch()) {
+						$idList .= "'".addslashes($rowSelect['username'])."',";
 					}
-					?>
+					$idList = substr($idList, 0, -1); ?>
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print _('Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
+						username.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					</script>
 				</td>
@@ -271,109 +255,128 @@ else {
 			<tr>
 				<td colspan=2>
 					<?php
-					$policy=getPasswordPolicy($connection2) ;
-					if ($policy!=FALSE) {
-						print "<div class='warning'>" ;
-							print $policy ;
-						print "</div>" ;
+                    $policy = getPasswordPolicy($guid, $connection2);
+					if ($policy != false) {
+						echo "<div class='warning'>";
+						echo $policy;
+						echo '</div>';
 					}
 					?>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Password') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td>
+					<b><?php echo __($guid, 'Password') ?> *</b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
+					<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
+					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
+
 					<script type="text/javascript">
-						var password=new LiveValidation('password');
-						password.add(Validate.Presence);
+						var passwordNew=new LiveValidation('passwordNew');
+						passwordNew.add(Validate.Presence);
 						<?php
-						$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
-						if ($alpha=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
+                        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+						$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+						$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+						$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+						if ($alpha == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
 						}
-						$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
-						if ($numeric=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
+						if ($numeric == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
 						}
-						$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
-						if ($punctuation=="Y") {
-							print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
+						if ($punctuation == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
 						}
-						$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
 						if (is_numeric($minLength)) {
-							print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
 						}
 						?>
+
+						$(".generatePassword").click(function(){
+							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+							var text = '';
+							for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
+								for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
+									if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+									else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+									else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+									else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+									else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+								}
+							}
+							$('input[name="passwordNew"]').val(text);
+							$('input[name="passwordConfirm"]').val(text);
+							alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
+						});
 					</script>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Confirm Password') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td>
+					<b><?php echo __($guid, 'Confirm Password') ?> *</b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+					<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
 					<script type="text/javascript">
 						var passwordConfirm=new LiveValidation('passwordConfirm');
 						passwordConfirm.add(Validate.Presence);
-						passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
+						passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
 					</script>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Status') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('This determines visibility within the system.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Status') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'This determines visibility within the system.') ?></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="status">
-						<option value="Full"><?php print _('Full') ?></option>
-						<option value="Expected"><?php print _('Expected') ?></option>
-						<option value="Left"><?php print _('Left') ?></option>
+					<select class="standardWidth" name="status">
+						<option value="Full"><?php echo __($guid, 'Full') ?></option>
+						<option value="Expected"><?php echo __($guid, 'Expected') ?></option>
+						<option value="Left"><?php echo __($guid, 'Left') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Can Login?') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td>
+					<b><?php echo __($guid, 'Can Login?') ?> *</b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="canLogin">
-						<option value="Y"><?php print _('Yes') ?></option>
-						<option value="N"><?php print _('No') ?></option>
+					<select class="standardWidth" name="canLogin">
+						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Force Reset Password?') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('User will be prompted on next login.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Force Reset Password?') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'User will be prompted on next login.') ?></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="passwordForceReset">
-						<option value="Y"><?php print _('Yes') ?></option>
-						<option value="N"><?php print _('No') ?></option>
+					<select class="standardWidth" name="passwordForceReset">
+						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Contact Information') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Contact Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Email') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Email') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
@@ -381,12 +384,12 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Alternate Email') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td>
+					<b><?php echo __($guid, 'Alternate Email') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="emailAlternate" id="emailAlternate" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="emailAlternate" id="emailAlternate" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var emailAlternate=new LiveValidation('emailAlternate');
 						emailAlternate.add(Validate.Email);
@@ -394,42 +397,42 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<div class='warning'>
-						<?php print _('Address information for an individual only needs to be set under the following conditions:') ?>
+						<?php echo __($guid, 'Address information for an individual only needs to be set under the following conditions:') ?>
 						<ol>
-							<li><?php print _('If the user is not in a family.') ?></li>
-							<li><?php print _('If the user\'s family does not have a home address set.') ?></li>
-							<li><?php print _('If the user needs an address in addition to their family\'s home address.') ?></li>
+							<li><?php echo __($guid, 'If the user is not in a family.') ?></li>
+							<li><?php echo __($guid, 'If the user\'s family does not have a home address set.') ?></li>
+							<li><?php echo __($guid, 'If the user needs an address in addition to their family\'s home address.') ?></li>
 						</ol>
 					</div>
 				</td>
 			</tr>
 			<?php
-			//Controls to hide address fields unless they are present, or box is checked
-			?>
+            //Controls to hide address fields unless they are present, or box is checked
+            ?>
 			<tr>
-				<td> 
-					<b><?php print _('Enter Personal Address?') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Enter Personal Address?') ?></b><br/>
 				</td>
-				<td class='right' colspan=2> 
+				<td class='right' colspan=2>
 					<script type="text/javascript">
 						/* Advanced Options Control */
 						$(document).ready(function(){
 							$(".address").slideUp("fast");
 							$("#showAddresses").click(function(){
 								if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
-									$(".address").slideDown("fast", $(".address").css("display","table-row")); 
-								} 
+									$(".address").slideDown("fast", $(".address").css("display","table-row"));
+								}
 								else {
-									$(".address").slideUp("fast"); 
-									$("#address1").val(""); 
-									$("#address1District").val(""); 
-									$("#address1Country").val(""); 
-									$("#address2").val(""); 
-									$("#address2District").val(""); 
-									$("#address2Country").val(""); 
-										
+									$(".address").slideUp("fast");
+									$("#address1").val("");
+									$("#address1District").val("");
+									$("#address1Country").val("");
+									$("#address2").val("");
+									$("#address2District").val("");
+									$("#address2Country").val("");
+
 								}
 							 });
 						});
@@ -438,35 +441,35 @@ else {
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
-					<b><?php print _('Address 1') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Address 1') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 				</td>
 				<td class="right">
-					<input name="address1" id="address1" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="address1" id="address1" maxlength=255 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
-					<b><?php print _('Address 1 District') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Address 1 District') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 				</td>
 				<td class="right">
-					<input name="address1District" id="address1District" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="address1District" id="address1District" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 				<script type="text/javascript">
 					$(function() {
 						var availableTags=[
 							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["name"] . "\", " ;
+                            try {
+                                $dataAuto = array();
+                                $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
+                                $resultAuto = $connection2->prepare($sqlAuto);
+                                $resultAuto->execute($dataAuto);
+                            } catch (PDOException $e) {
+                            }
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['name'].'", ';
 							}
 							?>
 						];
@@ -475,57 +478,57 @@ else {
 				</script>
 			</tr>
 			<tr class='address'>
-				<td> 
-					<b><?php print _('Address 1 Country') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Address 1 Country') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="address1Country" id="address1Country" style="width: 302px">
+					<select name="address1Country" id="address1Country" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
-					<b><?php print _('Address 2') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Address 2') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 				</td>
 				<td class="right">
-					<input name="address2" id="address2" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="address2" id="address2" maxlength=255 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
-					<b><?php print _('Address 2 District') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Address 2 District') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 				</td>
 				<td class="right">
-					<input name="address2District" id="address2District" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="address2District" id="address2District" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 				<script type="text/javascript">
 					$(function() {
 						var availableTags=[
 							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["name"] . "\", " ;
+                            try {
+                                $dataAuto = array();
+                                $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
+                                $resultAuto = $connection2->prepare($sqlAuto);
+                                $resultAuto->execute($dataAuto);
+                            } catch (PDOException $e) {
+                            }
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['name'].'", ';
 							}
 							?>
 						];
@@ -534,131 +537,133 @@ else {
 				</script>
 			</tr>
 			<tr class='address'>
-				<td> 
-					<b><?php print _('Address 2 Country') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Address 2 Country') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="address2Country" id="address2Country" style="width: 302px">
+					<select name="address2Country" id="address2Country" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<?php
-			for ($i=1; $i<5; $i++) {
-				?>
+            for ($i = 1; $i < 5; ++$i) {
+                ?>
 				<tr>
-					<td> 
-						<b><?php print _('Phone') ?> <?php print $i ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
+					<td>
+						<b><?php echo __($guid, 'Phone') ?> <?php echo $i ?></b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
 					</td>
 					<td class="right">
-						<input name="phone<?php print $i ?>" id="phone<?php print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
-						<select name="phone<?php print $i ?>CountryCode" id="phone<?php print $i ?>CountryCode" style="width: 60px">
+						<input name="phone<?php echo $i ?>" id="phone<?php echo $i ?>" maxlength=20 value="" type="text" style="width: 160px">
+						<select name="phone<?php echo $i ?>CountryCode" id="phone<?php echo $i ?>CountryCode" style="width: 60px">
 							<?php
-							print "<option value=''></option>" ;
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT * FROM gibbonCountry ORDER BY printable_name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
-							}
-							?>				
+                            echo "<option value=''></option>";
+                try {
+                    $dataSelect = array();
+                    $sqlSelect = 'SELECT * FROM gibbonCountry ORDER BY printable_name';
+                    $resultSelect = $connection2->prepare($sqlSelect);
+                    $resultSelect->execute($dataSelect);
+                } catch (PDOException $e) {
+                }
+                while ($rowSelect = $resultSelect->fetch()) {
+                    echo "<option value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+                }
+                ?>
 						</select>
-						<select style="width: 70px" name="phone<?php print $i ?>Type">
+						<select style="width: 70px" name="phone<?php echo $i ?>Type">
 							<option value=""></option>
-							<option value="Mobile"><?php print _('Mobile') ?></option>
-							<option value="Home"><?php print _('Home') ?></option>
-							<option value="Work"><?php print _('Work') ?></option>
-							<option value="Fax"><?php print _('Fax') ?></option>
-							<option value="Pager"><?php print _('Pager') ?></option>
-							<option value="Other"><?php print _('Other') ?></option>
+							<option value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
+							<option value="Home"><?php echo __($guid, 'Home') ?></option>
+							<option value="Work"><?php echo __($guid, 'Work') ?></option>
+							<option value="Fax"><?php echo __($guid, 'Fax') ?></option>
+							<option value="Pager"><?php echo __($guid, 'Pager') ?></option>
+							<option value="Other"><?php echo __($guid, 'Other') ?></option>
 						</select>
-						
+
 					</td>
 				</tr>
 				<?php
-			}
-			?>
+
+            }
+   		 	?>
 			<tr>
-				<td> 
-					<b><?php print _('Website') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Include http://') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Website') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Include http://') ?></span>
 				</td>
 				<td class="right">
-					<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="website" id="website" maxlength=255 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
-						var text=new LiveValidation('text');
-						text.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script>	
+						var website=new LiveValidation('website');
+						website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('School Information') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'School Information') ?></h3>
 				</td>
 			</tr>
 			<?php
-				$dayTypeOptions=getSettingByScope($connection2, 'User Admin', 'dayTypeOptions') ;
-				if ($dayTypeOptions!="") {
+                $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+				if ($dayTypeOptions != '') {
 					?>
 					<tr>
-						<td> 
-							<b><?php print _('Day Type') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
+						<td>
+							<b><?php echo __($guid, 'Day Type') ?></b><br/>
+							<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText'); ?></span>
 						</td>
 						<td class="right">
-							<select name="dayType" id="dayType" style="width: 302px">
+							<select name="dayType" id="dayType" class="standardWidth">
 								<option value=''></option>
 								<?php
-								$dayTypes=explode(",", $dayTypeOptions) ;
+                                $dayTypes = explode(',', $dayTypeOptions);
 								foreach ($dayTypes as $dayType) {
-									print "<option value='" . trim($dayType) . "'>" . trim($dayType) . "</option>" ;
+									echo "<option value='".trim($dayType)."'>".trim($dayType).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<?php
-				}	
+
+				}
 				?>
 			<tr>
-				<td> 
-					<b><?php print _('Last School') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Last School') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="lastSchool" id="lastSchool" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="lastSchool" id="lastSchool" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 				<script type="text/javascript">
 					$(function() {
 						var availableTags=[
 							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["lastSchool"] . "\", " ;
+                            try {
+                                $dataAuto = array();
+                                $sqlAuto = 'SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool';
+                                $resultAuto = $connection2->prepare($sqlAuto);
+                                $resultAuto->execute($dataAuto);
+                            } catch (PDOException $e) {
+                            }
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['lastSchool'].'", ';
 							}
 							?>
 						];
@@ -667,15 +672,31 @@ else {
 				</script>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Start Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Users\'s first day at school.') ?><br/> Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Start Date') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Users\'s first day at school.') ?><br/> <?php echo __($guid, 'Format:').' ';
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
-					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
-						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -685,201 +706,198 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Class Of') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('When is the student expected to graduate?') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Class Of') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'When is the student expected to graduate?') ?></span>
 				</td>
 				<td class="right">
-					<select name="gibbonSchoolYearIDClassOf" id="gibbonSchoolYearIDClassOf" style="width: 302px">
+					<select name="gibbonSchoolYearIDClassOf" id="gibbonSchoolYearIDClassOf" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array();
+							$sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
 						}
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Background Information') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Background Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('First Language') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'First Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="languageFirst" id="languageFirst" style="width: 302px">
+					<select name="languageFirst" id="languageFirst" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Second Language') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="languageSecond" id="languageSecond" style="width: 302px">
-						<?php
-						print "<option value=''></option>" ;
-						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Third Language') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="languageThird" id="languageThird" style="width: 302px">
-						<?php
-						print "<option value=''></option>" ;
-						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Country of Birth') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
-						<?php
-						print "<option value=''></option>" ;
-						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Ethnicity') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="ethnicity" id="ethnicity" style="width: 302px">
-						<option value=""></option>
-						<?php
-						$ethnicities=explode(",", getSettingByScope($connection2, "User Admin", "ethnicity")) ;
-						foreach ($ethnicities as $ethnicity) {
-							print "<option value='" . trim($ethnicity) . "'>" . trim($ethnicity) . "</option>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
 						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Religion') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Second Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="religion" id="religion" style="width: 302px">
-						<option value=""></option>
-						<option value="Nonreligious/Agnostic/Atheist"><?php print _('Nonreligious/Agnostic/Atheist') ?></option>
-						<option value="Buddhism"><?php print _('Buddhism') ?></option>
-						<option value="Christianity"><?php print _('Christianity') ?></option>
-						<option value="Hinduism"><?php print _('Hinduism') ?></option>
-						<option value="Islam"><?php print _('Islam') ?></option>
-						<option value="Judaism"><?php print _('Judaism') ?></option>
-						<option value="Other"><?php print _('Other') ?></option>	
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Citizenship 1') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="citizenship1" id="countryOfBirth" style="width: 302px">
+					<select name="languageSecond" id="languageSecond" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
-						$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
-						if ($nationalityList=="") {
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
-							}
+                        echo "<option value=''></option>";
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						else {
-							$nationalities=explode(",", $nationalityList) ;
-							foreach ($nationalities as $nationality) {
-								print "<option value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
-							}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Citizenship 1 Passport Number') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Third Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageThird" id="languageThird" class="standardWidth">
+						<?php
+                        echo "<option value=''></option>";
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>
+					</select>
 				</td>
 			</tr>
-			
 			<tr>
-				<td> 
-					<b><?php print _('Citizenship 1 Passport Scan') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Less than 1440px by 900px') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Country of Birth') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="countryOfBirth" id="countryOfBirth" class="standardWidth">
+						<?php
+                        echo "<option value=''></option>";
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+						}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Ethnicity') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="ethnicity" id="ethnicity" class="standardWidth">
+						<option value=""></option>
+						<?php
+                        $ethnicities = explode(',', getSettingByScope($connection2, 'User Admin', 'ethnicity'));
+						foreach ($ethnicities as $ethnicity) {
+							echo "<option value='".trim($ethnicity)."'>".trim($ethnicity).'</option>';
+						}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Religion') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="religion" id="religion" class="standardWidth">
+						<option value=""></option>
+						<?php
+                        $religions = explode(',', getSettingByScope($connection2, 'User Admin', 'religions'));
+						foreach ($religions as $religion) {
+							echo "<option value='".trim($religion)."'>".trim($religion).'</option>';
+						}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Citizenship 1') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="citizenship1" id="countryOfBirth" class="standardWidth">
+						<?php
+                        echo "<option value=''></option>";
+						$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+						if ($nationalityList == '') {
+							try {
+								$dataSelect = array();
+								$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+							}
+						} else {
+							$nationalities = explode(',', $nationalityList);
+							foreach ($nationalities as $nationality) {
+								echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
+							}
+						}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Citizenship 1 Passport Number') ?></b><br/>
+				</td>
+				<td class="right">
+					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" class="standardWidth">
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Citizenship 1 Passport Scan') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
 				</td>
 				<td class="right">
 					<input type="file" name="citizenship1PassportScan" id="citizenship1PassportScan"><br/><br/>
@@ -890,70 +908,67 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Citizenship 2') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Citizenship 2') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="citizenship2" id="countryOfBirth" style="width: 302px">
+					<select name="citizenship2" id="countryOfBirth" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
-						$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
-						if ($nationalityList=="") {
+                        echo "<option value=''></option>";
+						$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+						if ($nationalityList == '') {
 							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
+								$dataSelect = array();
+								$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+								$resultSelect = $connection2->prepare($sqlSelect);
 								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
 							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 							}
-						}
-						else {
-							$nationalities=explode(",", $nationalityList) ;
+						} else {
+							$nationalities = explode(',', $nationalityList);
 							foreach ($nationalities as $nationality) {
-								print "<option $selected value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
+								echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 							}
 						}
-						?>					
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Citizenship 2 Passport Number') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Citizenship 2 Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
-					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('National ID Card Number') . "</b><br/>" ;
-					}
-					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Number') . "</b><br/>" ;
-					}
-					?>
+                    if ($_SESSION[$guid]['country'] == '') {
+                        echo '<b>'.__($guid, 'National ID Card Number').'</b><br/>';
+                    } else {
+                        echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
+                    }
+   				 	?>
 				</td>
 				<td class="right">
-					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
-					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('National ID Card Scan') . "</b><br/>" ;
-					}
-					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('ID Card Scan') . "</b><br/>" ;
-					}
-					?>
-					<span style="font-size: 90%"><i><?php print _('Less than 1440px by 900px') ?></i></span>
+                    if ($_SESSION[$guid]['country'] == '') {
+                        echo '<b>'.__($guid, 'National ID Card Scan').'</b><br/>';
+                    } else {
+                        echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Scan').'</b><br/>';
+                    }
+   				 	?>
+					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
 				</td>
 				<td class="right">
 					<input type="file" name="nationalIDCardScan" id="nationalIDCardScan"><br/><br/>
@@ -964,51 +979,63 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
-					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
-					}
-					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('Residency/Visa Type') . "</b><br/>" ;
-					}
-					?>
+                    if ($_SESSION[$guid]['country'] == '') {
+                        echo '<b>'.__($guid, 'Residency/Visa Type').'</b><br/>';
+                    } else {
+                        echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
+                    }
+   				 	?>
 				</td>
 				<td class="right">
 					<?php
-					$residencyStatusList=getSettingByScope($connection2, "User Admin", "residencyStatus") ;
-					if ($residencyStatusList=="") {
-						print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>" ;
-					}
-					else {
-						print "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>" ;
-							print "<option value=''></option>" ;
-							$residencyStatuses=explode(",", $residencyStatusList) ;
-							foreach ($residencyStatuses as $residencyStatus) {
-								print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
-							}
-						print "</select>" ;
+                    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+					if ($residencyStatusList == '') {
+						echo "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>";
+					} else {
+						echo "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>";
+						echo "<option value=''></option>";
+						$residencyStatuses = explode(',', $residencyStatusList);
+						foreach ($residencyStatuses as $residencyStatus) {
+							echo "<option value='".trim($residencyStatus)."'>".trim($residencyStatus).'</option>';
+						}
+						echo '</select>';
 					}
 					?>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
-					if ($_SESSION[$guid]["country"]=="") {
-						print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
+                    if ($_SESSION[$guid]['country'] == '') {
+                        echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
+                    } else {
+                        echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').'</b><br/>';
+                    }
+					echo "<span style='font-size: 90%'><i>Format ";
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
 					}
-					else {
-						print "<b>" . $_SESSION[$guid]["country"] . " " . _('Visa Expiry Date') . "</b><br/>" ;
-					}
-					print "<span style='font-size: 90%'><i>Format " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . _('If relevant.') . "</i></span>" ;
-					?>
+					echo '. '.__($guid, 'If relevant.').'</span>';?>
 				</td>
 				<td class="right">
-					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
-						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -1017,188 +1044,188 @@ else {
 					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Employment') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Employment') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Profession') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Profession') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="profession" id="profession" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="profession" id="profession" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Employer') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Employer') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="employer" id="employer" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="employer" id="employer" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Job Title') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Job Title') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="jobTitle" id="jobTitle" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="jobTitle" id="jobTitle" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Emergency Contacts') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Emergency Contacts') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
-					<?php print _('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?> 
+				<td colspan=2>
+					<?php echo __($guid, 'These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 1 Name') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 1 Name') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Name" id="emergency1Name" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="emergency1Name" id="emergency1Name" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 1 Relationship') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 1 Relationship') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="emergency1Relationship" id="emergency1Relationship" style="width: 302px">
+					<select name="emergency1Relationship" id="emergency1Relationship" class="standardWidth">
 						<option></option>
-						<option value="Parent"><?php print _('Parent') ?></option>
-						<option value="Spouse"><?php print _('Spouse') ?></option>
-						<option value="Offspring"><?php print _('Offspring') ?></option>
-						<option value="Friend"><?php print _('Friend') ?></option>
-						<option value="Doctor"><?php print _('Doctor') ?></option>
-						<option value="Other"><?php print _('Other') ?></option>
+						<option value="Parent"><?php echo __($guid, 'Parent') ?></option>
+						<option value="Spouse"><?php echo __($guid, 'Spouse') ?></option>
+						<option value="Offspring"><?php echo __($guid, 'Offspring') ?></option>
+						<option value="Friend"><?php echo __($guid, 'Friend') ?></option>
+						<option value="Doctor"><?php echo __($guid, 'Doctor') ?></option>
+						<option value="Other"><?php echo __($guid, 'Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 1 Number 1') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 1 Number 1') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 1 Number 2') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 1 Number 2') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 2 Name') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 2 Name') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Name" id="emergency2Name" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="emergency2Name" id="emergency2Name" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 2 Relationship') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 2 Relationship') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="emergency2Relationship" id="emergency2Relationship" style="width: 302px">
+					<select name="emergency2Relationship" id="emergency2Relationship" class="standardWidth">
 						<option></option>
-						<option value="Parent"><?php print _('Parent') ?></option>
-						<option value="Spouse"><?php print _('Spouse') ?></option>
-						<option value="Offspring"><?php print _('Offspring') ?></option>
-						<option value="Friend"><?php print _('Friend') ?></option>
-						<option value="Doctor"><?php print _('Doctor') ?></option>
-						<option value="Other"><?php print _('Other') ?></option>
-					</select>	
+						<option value="Parent"><?php echo __($guid, 'Parent') ?></option>
+						<option value="Spouse"><?php echo __($guid, 'Spouse') ?></option>
+						<option value="Offspring"><?php echo __($guid, 'Offspring') ?></option>
+						<option value="Friend"><?php echo __($guid, 'Friend') ?></option>
+						<option value="Doctor"><?php echo __($guid, 'Doctor') ?></option>
+						<option value="Other"><?php echo __($guid, 'Other') ?></option>
+					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 2 Number 1') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 2 Number 1') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Contact 2 Number 2') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Contact 2 Number 2') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Miscellaneous') ?></h3>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('House') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'House') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="gibbonHouseID" id="gibbonHouseID" style="width: 302px">
+					<select name="gibbonHouseID" id="gibbonHouseID" class="standardWidth">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT gibbonHouseID, name FROM gibbonHouse ORDER BY name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array();
+							$sqlSelect = 'SELECT gibbonHouseID, name FROM gibbonHouse ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonHouseID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonHouseID']."'>".htmlPrep($rowSelect['name']).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Student ID') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique if set.') ?></i></span>
+				<td>
+					<b><?php echo __($guid, 'Student ID') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique if set.') ?></span>
 				</td>
 				<td class="right">
-					<input name="studentID" id="studentID" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="studentID" id="studentID" maxlength=10 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Transport') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td>
+					<b><?php echo __($guid, 'Transport') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="transport" id="transport" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="transport" id="transport" maxlength=255 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<script type="text/javascript">
 				$(function() {
 					var availableTags=[
 						<?php
-						try {
-							$dataAuto=array(); 
-							$sqlAuto="SELECT DISTINCT transport FROM gibbonPerson ORDER BY transport" ;
-							$resultAuto=$connection2->prepare($sqlAuto);
-							$resultAuto->execute($dataAuto);
-						}
-						catch(PDOException $e) { }
-						while ($rowAuto=$resultAuto->fetch()) {
-							print "\"" . $rowAuto["transport"] . "\", " ;
+                        try {
+                            $dataAuto = array();
+                            $sqlAuto = 'SELECT DISTINCT transport FROM gibbonPerson ORDER BY transport';
+                            $resultAuto = $connection2->prepare($sqlAuto);
+                            $resultAuto->execute($dataAuto);
+                        } catch (PDOException $e) {
+                        }
+						while ($rowAuto = $resultAuto->fetch()) {
+							echo '"'.$rowAuto['transport'].'", ';
 						}
 						?>
 					];
@@ -1206,98 +1233,99 @@ else {
 				});
 			</script>
 			<tr>
-				<td> 
-					<b><?php print _('Transport Notes') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+				<td>
+					<b><?php echo __($guid, 'Transport Notes') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<textarea name="transportNotes" id="transportNotes" rows=4 value="" style="width: 300px"></textarea>
+					<textarea name="transportNotes" id="transportNotes" rows=4 value="" class="standardWidth"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Locker Number') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Locker Number') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>
 				<td class="right">
-					<input name="lockerNumber" id="lockerNumber" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="lockerNumber" id="lockerNumber" maxlength=20 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print _('Vehicle Registration') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Vehicle Registration') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>
 				<td class="right">
-					<input name="vehicleRegistration" id="vehicleRegistration" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="vehicleRegistration" id="vehicleRegistration" maxlength=20 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<?php
-			$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
-			$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
-			$privacyOptions=getSettingByScope( $connection2, "User Admin", "privacyOptions" ) ;
-			if ($privacySetting=="Y" AND $privacyBlurb!="" AND $privacyOptions!="") {
+            $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+			$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+			$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+			if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
 				?>
 				<tr>
-					<td> 
-						<b><?php print _('Privacy') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
-						</i></span>
+					<td>
+						<b><?php echo __($guid, 'Privacy') ?> *</b><br/>
+						<span class="emphasis small"><?php echo htmlPrep($privacyBlurb) ?><br/>
+						</span>
 					</td>
 					<td class="right">
 						<?php
-						$options=explode(",",$privacyOptions) ;
-						foreach ($options AS $option) {
-							print $option . " <input type='checkbox' name='privacyOptions[]' value='" . htmlPrep(trim($option)) . "'/><br/>" ;
+                        $options = explode(',', $privacyOptions);
+						foreach ($options as $option) {
+							echo $option." <input type='checkbox' name='privacyOptions[]' value='".htmlPrep(trim($option))."'/><br/>";
 						}
 						?>
-						
+
 					</td>
 				</tr>
 				<?php
-			}
-			else {
-				print "<input type=\"hidden\" name=\"privacy\" value=\"\">" ;
-			}
-			
-			$studentAgreementOptions=getSettingByScope($connection2, "School Admin", "studentAgreementOptions") ;
-			if ($studentAgreementOptions!="") {
-				?>
+
+    } else {
+        echo '<input type="hidden" name="privacy" value="">';
+    }
+
+    $studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
+    if ($studentAgreementOptions != '') {
+        ?>
 				<tr>
-					<td> 
-						<b><?php print _('Student Agreements') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Check to indicate that student has signed the relevant agreement.') ?><br/>
-						</i></span>
+					<td>
+						<b><?php echo __($guid, 'Student Agreements') ?></b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Check to indicate that student has signed the relevant agreement.') ?><br/>
+						</span>
 					</td>
 					<td class="right">
 						<?php
-						$agreements=explode(",",$studentAgreementOptions) ;
-						foreach ($agreements AS $agreement) {
-							print $agreement . " <input type='checkbox' name='studentAgreements[]' value='" . htmlPrep(trim($agreement)) . "'/><br/>" ;
+                        $agreements = explode(',', $studentAgreementOptions);
+						foreach ($agreements as $agreement) {
+							echo $agreement." <input type='checkbox' name='studentAgreements[]' value='".htmlPrep(trim($agreement))."'/><br/>";
 						}
 						?>
-		
+
 					</td>
 				</tr>
 				<?php
+
 			}
 			?>
-			
+
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i><br/>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></i><br/>
 					<?php
-					print getMaxUpload(TRUE) ;				
-					?>
+                    echo getMaxUpload($guid, true); ?>
 					</span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

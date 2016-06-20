@@ -17,142 +17,129 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_family.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Family Data Updates').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    //Set pagination variable
+    $page = 1;
+    if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+    }
+    if ((!is_numeric($page)) or $page < 1) {
+        $page = 1;
+    }
+
+    try {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = 'SELECT gibbonFamilyUpdateID, gibbonFamily.name, timestamp, gibbonPersonIDUpdater, gibbonFamilyUpdate.status FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyUpdate.gibbonFamilyID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
+        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    if ($result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+        }
+
+        echo "<table cellspacing='0' style='width: 100%'>";
+        echo "<tr class='head'>";
+        echo '<th>';
+        echo __($guid, 'Target Family');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Requesting User');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Date & Time');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Status');
+        echo '</th>';
+        echo "<th style='width: 80px'>";
+        echo __($guid, 'Actions');
+        echo '</th>';
+        echo '</tr>';
+
+        $count = 0;
+        $rowNum = 'odd';
+        try {
+            $resultPage = $connection2->prepare($sqlPage);
+            $resultPage->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+        while ($row = $resultPage->fetch()) {
+            if ($count % 2 == 0) {
+                $rowNum = 'even';
+            } else {
+                $rowNum = 'odd';
+            }
+
+            if ($row['status'] == 'Complete') {
+                $rowNum = 'current';
+            }
+
+            ++$count;
+
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
+            echo '<td>';
+            echo $row['name'];
+            echo '</td>';
+            echo '<td>';
+            try {
+                $dataUpdater = array('gibbonPersonIDUpdater' => $row['gibbonPersonIDUpdater']);
+                $sqlUpdater = 'SELECT gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDUpdater';
+                $resultUpdater = $connection2->prepare($sqlUpdater);
+                $resultUpdater->execute($dataUpdater);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($resultUpdater->rowCount() == 1) {
+                $rowUpdater = $resultUpdater->fetch();
+                echo formatName($rowUpdater['title'], $rowUpdater['preferredName'], $rowUpdater['surname'], 'Parent', false);
+            }
+            echo '</td>';
+            echo '<td>';
+            echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).' at '.substr($row['timestamp'], 11, 5);
+            echo '</td>';
+            echo '<td>';
+            echo $row['status'];
+            echo '</td>';
+            echo '<td>';
+            if ($row['status'] == 'Pending') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_edit.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_delete.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+
+        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+        }
+    }
 }
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Family Data Updates') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	//Set pagination variable
-	$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
-	if ((!is_numeric($page)) OR $page<1) {
-		$page=1 ;
-	}
-	
-	try {
-		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-		$sql="SELECT gibbonFamilyUpdateID, gibbonFamily.name, timestamp, gibbonPersonIDUpdater, gibbonFamilyUpdate.status FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyUpdate.gibbonFamilyID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp" ; 
-		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	
-	if ($result->rowCount()<1) {
-		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
-		print "</div>" ;
-	}
-	else {
-		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
-		}
-	
-		print "<table cellspacing='0' style='width: 100%'>" ;
-			print "<tr class='head'>" ;
-				print "<th>" ;
-					print _("Target Family") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Requesting User") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Date & Time") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Status") ;
-				print "</th>" ;
-				print "<th style='width: 80px'>" ;
-					print _("Actions") ;
-				print "</th>" ;
-			print "</tr>" ;
-			
-			$count=0;
-			$rowNum="odd" ;
-			try {
-				$resultPage=$connection2->prepare($sqlPage);
-				$resultPage->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			while ($row=$resultPage->fetch()) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				
-				if ($row["status"]=="Complete") {
-					$rowNum="current" ;
-				}
-				
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print $row["name"] ;
-					print "</td>" ;
-					print "<td>" ;
-						try {
-							$dataUpdater=array("gibbonPersonIDUpdater"=>$row["gibbonPersonIDUpdater"]); 
-							$sqlUpdater="SELECT gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDUpdater" ; 
-							$resultUpdater=$connection2->prepare($sqlUpdater);
-							$resultUpdater->execute($dataUpdater);
-						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-						}
-						
-						if ($resultUpdater->rowCount()==1) {
-							$rowUpdater=$resultUpdater->fetch() ;
-							print formatName($rowUpdater["title"], $rowUpdater["preferredName"], $rowUpdater["surname"], "Parent", false) ; 
-						}
-					print "</td>" ;
-					print "<td>" ;
-						print dateConvertBack($guid, substr($row["timestamp"],0,10)) . " at " . substr($row["timestamp"],11,5) ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["status"] ;
-					print "</td>" ;
-					print "<td>" ;
-						if ($row["status"]=="Pending") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/data_family_edit.php&gibbonFamilyUpdateID=" . $row["gibbonFamilyUpdateID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/data_family_delete.php&gibbonFamilyUpdateID=" . $row["gibbonFamilyUpdateID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-						}
-					print "</td>" ;
-				print "</tr>" ;
-			}
-		print "</table>" ;
-		
-		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
-		}
-	}
-}
-?>

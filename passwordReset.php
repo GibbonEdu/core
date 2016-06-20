@@ -17,41 +17,26 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . _("Password Reset") . "</div>" ;
-print "</div>" ;
+echo "<div class='trail'>";
+echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Password Reset').'</div>';
+echo '</div>';
 ?>
 <p>
-	<?php print sprintf(_('Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
+	<?php echo sprintf(__($guid, 'Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]['systemName']); ?>
 </p>
 <?php
-if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
-$editReturnMessage="" ;
-$class="error" ;
-if (!($editReturn=="")) {
-	if ($editReturn=="fail0") {
-		$editReturnMessage="Email address not set." ;	
-	}
-	else if ($editReturn=="fail1") {
-		$editReturnMessage=_("Your request failed due to a database error.") ;	
-	}
-	else if ($editReturn=="fail2") {
-		$editReturnMessage="Your request failed due to incorrect or non-unique email address." ;	
-	}
-	else if ($editReturn=="fail3") {
-		$editReturnMessage="Failed to send update email." ;	
-	}
-	else if ($editReturn=="success0") {
-		$editReturnMessage="Password changed successfully, please check your email." ;	
-		$class="success" ;
-	}
-	print "<div class='$class'>" ;
-		print $editReturnMessage;
-	print "</div>" ;
-} 
+$returns = array();
+$returns['error0'] = __($guid, 'Email address not set.');
+$returns['error4'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
+$returns['error3'] = __($guid, 'Failed to send update email.');
+$returns['success0'] = __($guid, 'Password changed successfully, please check your email.');
+if (isset($_GET['return'])) {
+    returnProcess($guid, $_GET['return'], null, $returns);
+}
+
 ?>
 
-<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/passwordResetProcess.php">
+<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/passwordResetProcess.php">
 	<table cellspacing='0' style="width: 100%">	
 		<tr>
 			<td class="right">
@@ -60,8 +45,8 @@ if (!($editReturn=="")) {
 		</tr>
 		<tr>
 			<td class="right">
-				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<?php print _("Submit") ; ?>">
+				<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+				<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 			</td>
 		</tr>
 	</table>

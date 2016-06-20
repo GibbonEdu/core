@@ -17,80 +17,58 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_manage_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Roll Groups') . "</a> > </div><div class='trailEnd'>" . _('Add Roll Group') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"]; 
-	if ($gibbonSchoolYearID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			?>
-	
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_addProcess.php" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/rollGroup_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Roll Groups')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Roll Group').'</div>';
+    echo '</div>';
+
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/rollGroup_manage_edit.php&gibbonRollGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, null);
+    }
+
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    if ($gibbonSchoolYearID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record does not exist.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch(); ?>
+
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rollGroup_manage_addProcess.php' ?>">
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
-							<b><?php print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+						<td style='width: 275px'>
+							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var schoolYearName=new LiveValidation('schoolYearName');
 								schoolYearname2.add(Validate.Presence);
@@ -98,12 +76,12 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
+						<td>
+							<b><?php echo __($guid, 'Name') ?> *</b><br/>
+							<span class="emphasis small">Needs to be unique in school year.</span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -111,12 +89,12 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
-							<b><?php print _('Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
+						<td>
+							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
+							<span class="emphasis small">Needs to be unique in school year.</span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -124,152 +102,152 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td rowspan=3> 
-							<b><?php print _('Tutors') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
+						<td rowspan=3>
+							<b><?php echo __($guid, 'Tutors') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor">
+							<select class="standardWidth" name="gibbonPersonIDTutor">
 								<?php
-								print "<option value=''></option>" ;
+                                echo "<option value=''></option>";
 								try {
-									$data=array(); 
-									$sql="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-									$result=$connection2->prepare($sql);
+									$data = array();
+									$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$result = $connection2->prepare($sql);
 									$result->execute($data);
+								} catch (PDOException $e) {
 								}
-								catch(PDOException $e) { }
-								while ($row=$result->fetch()) {
-									print "<option value='" . $row["gibbonPersonID"] . "'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", true, true) . "</option>" ;
+								while ($row = $result->fetch()) {
+									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor2">
+							<select class="standardWidth" name="gibbonPersonIDTutor2">
 								<?php
-								print "<option value=''></option>" ;
+                                echo "<option value=''></option>";
 								try {
-									$data=array(); 
-									$sql="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-									$result=$connection2->prepare($sql);
+									$data = array();
+									$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$result = $connection2->prepare($sql);
 									$result->execute($data);
+								} catch (PDOException $e) {
 								}
-								catch(PDOException $e) { }
-								while ($row=$result->fetch()) {
-									print "<option value='" . $row["gibbonPersonID"] . "'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", true, true) . "</option>" ;
+								while ($row = $result->fetch()) {
+									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor3">
+							<select class="standardWidth" name="gibbonPersonIDTutor3">
 								<?php
-								print "<option value=''></option>" ;
+                                echo "<option value=''></option>";
 								try {
-									$data=array(); 
-									$sql="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-									$result=$connection2->prepare($sql);
+									$data = array();
+									$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$result = $connection2->prepare($sql);
 									$result->execute($data);
+								} catch (PDOException $e) {
 								}
-								catch(PDOException $e) { }
-								while ($row=$result->fetch()) {
-									print "<option value='" . $row["gibbonPersonID"] . "'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", true, true) . "</option>" ;
+								while ($row = $result->fetch()) {
+									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								?>				
+								?>
 							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Location') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
-								<?php
-								print "<option value=''></option>" ;
-								try {
-									$dataSelect=array(); 
-									$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ;
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { }
-								while ($rowSelect=$resultSelect->fetch()) {
-									$selected="" ;
-									if ($row["gibbonSpaceID"]==$rowSelect["gibbonSpaceID"]) {
-										$selected="selected" ;
-									}
-									print "<option $selected value='" . $rowSelect["gibbonSpaceID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-								}
-								?>				
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Next Roll Group') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Sets student progression on rollover.') ?></i></span>
-						</td>
-						<td class="right">
-							<?php
-							 $nextYear=getNextSchoolYearID($gibbonSchoolYearID, $connection2) ;
-							 
-							 if ($nextYear=="") {
-								print "<div class='warning'>" ;
-									print "The next school year cannot be determined, so this value cannot be set." ;
-								print "</div>" ;
-							 }
-							 else {
-								print "<select style='width: 302px' name='gibbonRollGroupIDNext'>" ;
-									print "<option value=''></option>" ;
-									try {
-										$dataSelect=array("gibbonSchoolYearID"=>$nextYear); 
-										$sqlSelect="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
-										$resultSelect=$connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									}
-									catch(PDOException $e) { }
-									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-									}			
-								print "</select>" ;
-							 }
-							?>		
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Website') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Include http://') ?></i></span>
-						</td>
-						<td class="right">
-							<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var website=new LiveValidation('website');
-								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-							</script>	
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<b><?php echo __($guid, 'Location') ?></b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
+								<?php
+                                echo "<option value=''></option>";
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b><?php echo __($guid, 'Next Roll Group') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Sets student progression on rollover.') ?></span>
+						</td>
+						<td class="right">
+							<?php
+                            $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+
+							if ($nextYear == '') {
+								echo "<div class='warning'>";
+								echo 'The next school year cannot be determined, so this value cannot be set.';
+								echo '</div>';
+							} else {
+								echo "<select style='width: 302px' name='gibbonRollGroupIDNext'>";
+								echo "<option value=''></option>";
+								try {
+									$dataSelect = array('gibbonSchoolYearID' => $nextYear);
+									$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								echo '</select>';
+							}
+							?>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b><?php echo __($guid, 'Website') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Include http://') ?></span>
+						</td>
+						<td class="right">
+							<input name="website" id="website" maxlength=255 value="" type="text" class="standardWidth">
+							<script type="text/javascript">
+								var website=new LiveValidation('website');
+								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+						</td>
+						<td class="right">
+							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
+							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 			<?php
-		}
-	}
+
+        }
+    }
 }
 ?>

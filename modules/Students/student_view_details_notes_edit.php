@@ -17,127 +17,95 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_edit.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	$allStudents="" ;
-	if (isset($_GET["allStudents"])) {
-		$allStudents=$_GET["allStudents"] ;
-	}
-	
-	$enableStudentNotes=getSettingByScope($connection2, "Students", "enableStudentNotes") ;
-	if ($enableStudentNotes!="Y") {
-		print "<div class='error'>" ;
-			print _("You do not have access to this action.") ;
-		print "</div>" ;
-	}
-	else {
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
-		$subpage=$_GET["subpage"] ;
-		if ($gibbonPersonID=="" OR $subpage=="") {
-			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
-			print "</div>" ;
-		}
-		else {
-			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID); 
-				$sql="SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			if ($result->rowCount()!=1) {
-				print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
-				print "</div>" ;
-			}
-			else {
-				$row=$result->fetch() ;
-			
-				//Proceed!
-				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view.php'>" . _('View Student Profiles') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</a> > </div><div class='trailEnd'>" . _('Edit Student Note') . "</div>" ;
-				print "</div>" ;
-	
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=_("Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail4") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="success0") {
-						$updateReturnMessage=_("Your request was completed successfully.") ;	
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				} 
-			
-				//Check if school year specified
-				$gibbonStudentNoteID=$_GET["gibbonStudentNoteID"] ;
-				if ($gibbonStudentNoteID=="") {
-					print "<div class='error'>" ;
-						print _("You have not specified one or more required parameters.") ;
-					print "</div>" ;
-				}
-				else {
-					try {
-						$data=array("gibbonStudentNoteID"=>$gibbonStudentNoteID); 
-						$sql="SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-				
-					if ($result->rowCount()!=1) {
-						print "<div class='error'>" ;
-							print _("The specified record cannot be found.") ;
-						print "</div>" ;
-					}
-					else {
-						//Let's go!
-						$row=$result->fetch() ;
-					
-						if ($_GET["search"]!="") {
-							print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] . "&allStudents=$allStudents'>" . _('Back to Search Results') . "</a>" ;
-							print "</div>" ;
-						}
-						?>
-						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=" . $_GET["category"] . "&allStudents=$allStudents" ?>">
-							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_edit.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    $allStudents = '';
+    if (isset($_GET['allStudents'])) {
+        $allStudents = $_GET['allStudents'];
+    }
+
+    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+    if ($enableStudentNotes != 'Y') {
+        echo "<div class='error'>";
+        echo __($guid, 'You do not have access to this action.');
+        echo '</div>';
+    } else {
+        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $subpage = $_GET['subpage'];
+        if ($gibbonPersonID == '' or $subpage == '') {
+            echo "<div class='error'>";
+            echo __($guid, 'You have not specified one or more required parameters.');
+            echo '</div>';
+        } else {
+            try {
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            if ($result->rowCount() != 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo '</div>';
+            } else {
+                $row = $result->fetch();
+
+                //Proceed!
+                echo "<div class='trail'>";
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__($guid, 'View Student Profiles')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>".formatName('', $row['preferredName'], $row['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Student Note').'</div>';
+                echo '</div>';
+
+                if (isset($_GET['return'])) {
+                    returnProcess($guid, $_GET['return'], null, null);
+                }
+
+                //Check if school year specified
+                $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
+                if ($gibbonStudentNoteID == '') {
+                    echo "<div class='error'>";
+                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo '</div>';
+                } else {
+                    try {
+                        $data = array('gibbonStudentNoteID' => $gibbonStudentNoteID);
+                        $sql = 'SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+
+                    if ($result->rowCount() != 1) {
+                        echo "<div class='error'>";
+                        echo __($guid, 'The specified record cannot be found.');
+                        echo '</div>';
+                    } else {
+                        //Let's go!
+                        $row = $result->fetch();
+
+                        if ($_GET['search'] != '') {
+                            echo "<div class='linkTop'>";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__($guid, 'Back to Search Results').'</a>';
+                            echo '</div>';
+                        }
+                        ?>
+						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents" ?>">
+							<table class='smallIntBorder fullWidth' cellspacing='0'>	
 								<tr>
 									<td style='width: 275px'> 
-										<b><?php print _('Title') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<b><?php echo __($guid, 'Title') ?> *</b><br/>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<input name="title" id="title" maxlength=100 value="<?php print htmlprep($row["title"]) ?>" type="text" style="width: 300px">
+										<input name="title" id="title" maxlength=100 value="<?php echo htmlprep($row['title']) ?>" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var title=new LiveValidation('title');
 											title.add(Validate.Presence);
@@ -145,64 +113,66 @@ else {
 									</td>
 								</tr>
 								<?php
-								try {
-									$dataCategories=array(); 
-									$sqlCategories="SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name" ;
-									$resultCategories=$connection2->prepare($sqlCategories);
-									$resultCategories->execute($dataCategories);
-								}
-								catch(PDOException $e) { }
-								if ($resultCategories->rowCount()>0) {
+                                try {
+                                    $dataCategories = array();
+                                    $sqlCategories = "SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
+                                    $resultCategories = $connection2->prepare($sqlCategories);
+                                    $resultCategories->execute($dataCategories);
+                                } catch (PDOException $e) {
+                                }
+								if ($resultCategories->rowCount() > 0) {
 									?>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Category') ?> *</b><br/>
-											<span style="font-size: 90%"><i></i></span>
+											<b><?php echo __($guid, 'Category') ?> *</b><br/>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
-											<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
-												<option value="Please select..."><?php print _('Please select...') ?></option>
+											<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" class="standardWidth">
+												<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 												<?php
-												while ($rowCategories=$resultCategories->fetch()) {
-													$selected="" ;
-													if ($rowCategories["gibbonStudentNoteCategoryID"]==$row["gibbonStudentNoteCategoryID"]) {
-														$selected="selected" ;
-													}
-													print "<option $selected value='" . $rowCategories["gibbonStudentNoteCategoryID"] . "'>" . $rowCategories["name"] . "</option>" ;
-												}
-												?>
+                                                while ($rowCategories = $resultCategories->fetch()) {
+                                                    $selected = '';
+                                                    if ($rowCategories['gibbonStudentNoteCategoryID'] == $row['gibbonStudentNoteCategoryID']) {
+                                                        $selected = 'selected';
+                                                    }
+                                                    echo "<option $selected value='".$rowCategories['gibbonStudentNoteCategoryID']."'>".$rowCategories['name'].'</option>';
+                                                }
+                            					?>
 											</select>
 											<script type="text/javascript">
 												var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
-												gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+												gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 											</script>
 										</td>
 									</tr>
 									<?php
+
 								}
 								?>
 								<tr>
 									<td colspan=2 style='padding-top: 15px;'> 
-										<b><?php print _('Note') ?> *</b><br/>
-										<?php print getEditor($guid,  TRUE, "note", $row["note"], 25, true, true, false) ?>
+										<b><?php echo __($guid, 'Note') ?> *</b><br/>
+										<?php echo getEditor($guid,  true, 'note', $row['note'], 25, true, true, false) ?>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 									</td>
 									<td class="right">
-										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="<?php print _("Submit") ; ?>">
+										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 							</table>
 						</form>
 						<?php
-					}
-				}
-			}
-		}
-	}
+
+                    }
+                }
+            }
+        }
+    }
 }
 ?>

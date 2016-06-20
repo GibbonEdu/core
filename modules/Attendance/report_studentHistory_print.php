@@ -17,39 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory_print.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory_print.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    $gibbonPersonID = $_GET['gibbonPersonID'];
+
+    try {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = 'SELECT surname, preferredName, dateStart, dateEnd FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    $row = $result->fetch();
+
+    if ($gibbonPersonID != '') {
+        $output = '';
+        echo '<h2>';
+        echo __($guid, 'Attendance History for').' '.formatName('', $row['preferredName'], $row['surname'], 'Student');
+        echo '</h2>';
+
+        report_studentHistory($guid, $gibbonPersonID, false, $_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
+    }
 }
-else {
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	
-	try {
-		$data=array("gibbonPersonID"=>$gibbonPersonID); 
-		$sql="SELECT surname, preferredName, dateStart, dateEnd FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	
-	$row=$result->fetch() ;
-	
-	if ($gibbonPersonID!="") {
-		$output="" ;
-		print "<h2>" ;
-			print _("Attendance History for") . " " . formatName("", $row["preferredName"], $row["surname"], "Student") ;
-		print "</h2>" ;
-		
-		report_studentHistory($guid, $gibbonPersonID, FALSE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row["dateStart"], $row["dateEnd"]) ;
-	}
-}
-?>

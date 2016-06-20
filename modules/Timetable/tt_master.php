@@ -17,67 +17,69 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_master.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Master Timetable') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Master Timetable').'</div>';
+    echo '</div>';
+
+    echo '<h2>';
+    echo __($guid, 'Choose Timetable');
+    echo '</h2>';
+
+    $gibbonTTID = null;
+    if (isset($_GET['gibbonTTID'])) {
+        $gibbonTTID = $_GET['gibbonTTID'];
+    }
+    if ($gibbonTTID == null) { //If TT not set, get the first timetable in the current year, and display that
+        try {
+            $dataSelect = array();
+            $sqlSelect = "SELECT gibbonTTID FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' ORDER BY gibbonTT.name LIMIT 0, 1";
+            $resultSelect = $connection2->prepare($sqlSelect);
+            $resultSelect->execute($dataSelect);
+        } catch (PDOException $e) {
+        }
+        if ($resultSelect->rowCount() == 1) {
+            $rowSelect = $resultSelect->fetch();
+            $gibbonTTID = $rowSelect['gibbonTTID'];
+        }
+    }
+    ?>
 	
-	print "<h2>" ;
-	print _("Choose Timetable") ;
-	print "</h2>" ;
-	
-	$gibbonTTID=NULL ;
-	if (isset($_GET["gibbonTTID"])) {
-		$gibbonTTID=$_GET["gibbonTTID"] ;
-	}
-	if ($gibbonTTID==NULL) { //If TT not set, get the first timetable in the current year, and display that
-		try {
-			$dataSelect=array(); 
-			$sqlSelect="SELECT gibbonTTID FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' ORDER BY gibbonTT.name LIMIT 0, 1" ;
-			$resultSelect=$connection2->prepare($sqlSelect);
-			$resultSelect->execute($dataSelect);
-		}
-		catch(PDOException $e) { }
-		if ($resultSelect->rowCount()==1) {
-			$rowSelect=$resultSelect->fetch() ;
-			$gibbonTTID=$rowSelect["gibbonTTID"] ;
-		}
-	}
-	?>
-	
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Timetable') ?> *</b><br/>
+					<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonTTID">
+					<select class="standardWidth" name="gibbonTTID">
 						<?php
-						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT gibbonTTID, gibbonTT.name AS TT, gibbonSchoolYear.name AS year FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							$selected="" ;
-							if ($gibbonTTID==$rowSelect["gibbonTTID"]) {
-								$selected="selected" ;
+                        try {
+                            $dataSelect = array();
+                            $sqlSelect = 'SELECT gibbonTTID, gibbonTT.name AS TT, gibbonSchoolYear.name AS year FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name';
+                            $resultSelect = $connection2->prepare($sqlSelect);
+                            $resultSelect->execute($dataSelect);
+                        } catch (PDOException $e) {
+                        }
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($resultSelect->rowCount() == 1) {
+								$gibbonTTID = $rowSelect['gibbonTTID'];
 							}
-							print "<option $selected value='" . $rowSelect["gibbonTTID"] . "'>" . htmlPrep($rowSelect["TT"]) . "</option>" ;
+							$selected = '';
+							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".htmlPrep($rowSelect['TT']).'</option>';
 						}
 						?>				
 					</select>
@@ -85,164 +87,154 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/tt_master.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/tt_master.php">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
-	
-	if ($gibbonTTID!="") {
-		//CHECK FOR TT
-		try {
-			$data=array("gibbonTTID"=>$gibbonTTID); 
-			$sql="SELECT gibbonTTID, gibbonTT.name AS TT, gibbonSchoolYear.name AS year FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTTID=:gibbonTTID ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" ;
-				print $e->getMessage();
-			print "</div>" ;
-		}
-	
-		if ($result->rowCount()<1) {
-			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
-			print "</div>" ;
-		}
-		else {
-			//GET TT DAYS
-			try {
-				$dataDays=array("gibbonTTID"=>$gibbonTTID); 
-				$sqlDays="SELECT gibbonTTDay.name AS name, gibbonTTColumn.gibbonTTColumnID, gibbonTTDayID FROM gibbonTTDay JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTID=:gibbonTTID ORDER BY gibbonTTID" ;
-				$resultDays=$connection2->prepare($sqlDays);
-				$resultDays->execute($dataDays);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" ;
-					print $e->getMessage();
-				print "</div>" ;
-			}
-		
-			if ($resultDays->rowCount()<1) {
-				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
-				print "</div>" ;
-			}
-			else {
-				//Output days
-				while ($rowDays=$resultDays->fetch()) {
-					print "<h2 style='margin-top: 40px'>" ;
-						print _($rowDays["name"]) ;
-					print "</h2>" ;
-				
-					//GET PERIODS/ROWS
-					try {
-						$dataPeriods=array("gibbonTTColumnID"=>$rowDays["gibbonTTColumnID"]); 
-						$sqlPeriods="SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart, name" ; 
-						$resultPeriods=$connection2->prepare($sqlPeriods);
-						$resultPeriods->execute($dataPeriods);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" ;
-							print $e->getMessage();
-						print "</div>" ;
-					}
-	
-					if ($resultPeriods->rowCount()<1) {
-						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
-						print "</div>" ;
-					}
-					else {
-						//Output periods/rows
-						while ($rowPeriods=$resultPeriods->fetch()) {
-							print "<h5 style='margin-top: 25px'>" ;
-								print _($rowPeriods["name"]) ;
-							print "</h5>" ;
-						
-							//GET CLASSES
-							try {
-								$dataClasses=array("gibbonTTColumnRowID"=>$rowPeriods["gibbonTTColumnRowID"], "gibbonTTDayID"=>$rowDays["gibbonTTDayID"]); 
-								$sqlClasses="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonTTDayRowClassID, gibbonSpace.name AS space FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayID=:gibbonTTDayID ORDER BY course, class" ;
-								$resultClasses=$connection2->prepare($sqlClasses);
-								$resultClasses->execute($dataClasses);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-			
-							if ($resultClasses->rowCount()<1) {
-								print "<div class='error'>" ;
-									print _("Their are no classes associated with this period on this day.") ;
-								print "</div>" ;
-							}
-							else {
-								//Let's go!
-								print "<table cellspacing='0' style='width: 100%'>" ;
-									print "<tr class='head'>" ;
-										print "<th style='width: 34%'>" ;
-											print _("Class") ;
-										print "</th>" ;
-										print "<th style='width: 33%'>" ;
-											print _("Location") ;
-										print "</th>" ;
-										print "<th style='width: 33%'>" ;
-											print _("Teachers") ;
-										print "</th>" ;
-									print "</tr>" ;
-					
-									$count=0;
-									$rowNum="odd" ;
-									while ($rowClasses=$resultClasses->fetch()) {
-										if ($count%2==0) {
-											$rowNum="even" ;
-										}
-										else {
-											$rowNum="odd" ;
-										}
-						
-										//COLOR ROW BY STATUS!
-										print "<tr class=$rowNum>" ;
-											print "<td style='padding-top: 3px; padding-bottom: 4px'>" ;
-												print $rowClasses["course"] . "." . $rowClasses["class"] ;
-											print "</td>" ;
-											print "<td style='padding-top: 3px; padding-bottom: 4px'>" ;
-												if ($rowClasses["space"]!="") { 
-													print $rowClasses["space"] ;
-												}
-											print "</td>" ;
-											print "<td style='padding-top: 3px; padding-bottom: 4px'>" ;
-												//Get teachers (accounting for exemptions)
-												try {
-													$dataTeachers=array("gibbonCourseClassID"=>$rowClasses["gibbonCourseClassID"], "gibbonTTDayRowClassID"=>$rowClasses["gibbonTTDayRowClassID"]); 
-													$sqlTeachers="SELECT DISTINCT surname, preferredName, gibbonTTDayRowClassException.gibbonPersonID AS exception FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID ORDER BY surname, preferredName" ;
-													$resultTeachers=$connection2->prepare($sqlTeachers);
-													$resultTeachers->execute($dataTeachers);
-												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												}
-												while ($rowTeachers=$resultTeachers->fetch()) {
-													if ($rowTeachers["exception"]==NULL) {
-														print formatName("", $rowTeachers["preferredName"], $rowTeachers["surname"], "Staff", false, true) ;
-														print "<br/>" ;
-													}
-												}
-											print "</td>" ;
-										print "</tr>" ;
-						
-										$count++ ;
-									}
-								print "</table>" ;
-							}
-						}
-					}
-				}
-			}
-		}		
-	}
+
+    if ($gibbonTTID != '') {
+        //CHECK FOR TT
+        try {
+            $data = array('gibbonTTID' => $gibbonTTID);
+            $sql = 'SELECT gibbonTTID, gibbonTT.name AS TT, gibbonSchoolYear.name AS year FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTTID=:gibbonTTID ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>";
+            echo $e->getMessage();
+            echo '</div>';
+        }
+
+        if ($result->rowCount() < 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'There are no records to display.');
+            echo '</div>';
+        } else {
+            //GET TT DAYS
+            try {
+                $dataDays = array('gibbonTTID' => $gibbonTTID);
+                $sqlDays = 'SELECT gibbonTTDay.name AS name, gibbonTTColumn.gibbonTTColumnID, gibbonTTDayID FROM gibbonTTDay JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTID=:gibbonTTID ORDER BY gibbonTTID';
+                $resultDays = $connection2->prepare($sqlDays);
+                $resultDays->execute($dataDays);
+            } catch (PDOException $e) {
+                echo "<div class='error'>";
+                echo $e->getMessage();
+                echo '</div>';
+            }
+
+            if ($resultDays->rowCount() < 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            } else {
+                //Output days
+                while ($rowDays = $resultDays->fetch()) {
+                    echo "<h2 style='margin-top: 40px'>";
+                    echo __($guid, $rowDays['name']);
+                    echo '</h2>';
+
+                    //GET PERIODS/ROWS
+                    try {
+                        $dataPeriods = array('gibbonTTColumnID' => $rowDays['gibbonTTColumnID']);
+                        $sqlPeriods = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart, name';
+                        $resultPeriods = $connection2->prepare($sqlPeriods);
+                        $resultPeriods->execute($dataPeriods);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>";
+                        echo $e->getMessage();
+                        echo '</div>';
+                    }
+
+                    if ($resultPeriods->rowCount() < 1) {
+                        echo "<div class='error'>";
+                        echo __($guid, 'There are no records to display.');
+                        echo '</div>';
+                    } else {
+                        //Output periods/rows
+                        while ($rowPeriods = $resultPeriods->fetch()) {
+                            echo "<h5 style='margin-top: 25px'>";
+                            echo __($guid, $rowPeriods['name']);
+                            echo '</h5>';
+
+                            //GET CLASSES
+                            try {
+                                $dataClasses = array('gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonTTDayID' => $rowDays['gibbonTTDayID']);
+                                $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonTTDayRowClassID, gibbonSpace.name AS space FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayID=:gibbonTTDayID ORDER BY course, class';
+                                $resultClasses = $connection2->prepare($sqlClasses);
+                                $resultClasses->execute($dataClasses);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+
+                            if ($resultClasses->rowCount() < 1) {
+                                echo "<div class='error'>";
+                                echo __($guid, 'Their are no classes associated with this period on this day.');
+                                echo '</div>';
+                            } else {
+                                //Let's go!
+                                echo "<table cellspacing='0' style='width: 100%'>";
+                                echo "<tr class='head'>";
+                                echo "<th style='width: 34%'>";
+                                echo __($guid, 'Class');
+                                echo '</th>';
+                                echo "<th style='width: 33%'>";
+                                echo __($guid, 'Location');
+                                echo '</th>';
+                                echo "<th style='width: 33%'>";
+                                echo __($guid, 'Teachers');
+                                echo '</th>';
+                                echo '</tr>';
+
+                                $count = 0;
+                                $rowNum = 'odd';
+                                while ($rowClasses = $resultClasses->fetch()) {
+                                    if ($count % 2 == 0) {
+                                        $rowNum = 'even';
+                                    } else {
+                                        $rowNum = 'odd';
+                                    }
+
+									//COLOR ROW BY STATUS!
+									echo "<tr class=$rowNum>";
+                                    echo "<td style='padding-top: 3px; padding-bottom: 4px'>";
+                                    echo $rowClasses['course'].'.'.$rowClasses['class'];
+                                    echo '</td>';
+                                    echo "<td style='padding-top: 3px; padding-bottom: 4px'>";
+                                    if ($rowClasses['space'] != '') {
+                                        echo $rowClasses['space'];
+                                    }
+                                    echo '</td>';
+                                    echo "<td style='padding-top: 3px; padding-bottom: 4px'>";
+                                                //Get teachers (accounting for exemptions)
+                                                try {
+                                                    $dataTeachers = array('gibbonCourseClassID' => $rowClasses['gibbonCourseClassID'], 'gibbonTTDayRowClassID' => $rowClasses['gibbonTTDayRowClassID']);
+                                                    $sqlTeachers = "SELECT DISTINCT surname, preferredName, gibbonTTDayRowClassException.gibbonPersonID AS exception FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID ORDER BY surname, preferredName";
+                                                    $resultTeachers = $connection2->prepare($sqlTeachers);
+                                                    $resultTeachers->execute($dataTeachers);
+                                                } catch (PDOException $e) {
+                                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                                }
+                                    while ($rowTeachers = $resultTeachers->fetch()) {
+                                        if ($rowTeachers['exception'] == null) {
+                                            echo formatName('', $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, true);
+                                            echo '<br/>';
+                                        }
+                                    }
+                                    echo '</td>';
+                                    echo '</tr>';
+
+                                    ++$count;
+                                }
+                                echo '</table>';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 ?>

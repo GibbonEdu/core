@@ -17,113 +17,93 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/budgetCycles_manage_add.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgetCycles_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Finance/budgetCycles_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_add.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Validate Inputs
+    $name = $_POST['name'];
+    $status = $_POST['status'];
+    $sequenceNumber = $_POST['sequenceNumber'];
+    $dateStart = dateConvert($guid, $_POST['dateStart']);
+    $dateEnd = dateConvert($guid, $_POST['dateEnd']);
+
+    if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $dateStart == '' or $dateEnd == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        //Check unique inputs for uniquness
+        try {
+            $data = array('name' => $name, 'sequenceNumber' => $sequenceNumber);
+            $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE name=:name OR sequenceNumber=:sequenceNumber';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() > 0) {
+            $URL .= '&return=error3';
+            header("Location: {$URL}");
+        } else {
+            //Write to database
+            try {
+                $data = array('name' => $name, 'status' => $status, 'sequenceNumber' => $sequenceNumber, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = "INSERT INTO gibbonFinanceBudgetCycle SET name=:name, status=:status, sequenceNumber=:sequenceNumber, dateStart=:dateStart, dateEnd=:dateEnd, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='".date('Y-m-d H:i:s')."'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                exit();
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+            }
+
+            $gibbonFinanceBudgetCycleID = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
+
+            //UPDATE CYCLE ALLOCATION VALUES
+            $partialFail = false;
+            if (isset($_POST['values'])) {
+                $values = $_POST['values'];
+                $gibbonFinanceBudgetIDs = $_POST['gibbonFinanceBudgetIDs'];
+                $count = 0;
+                foreach ($values as $value) {
+                    try {
+                        $data = array('value' => $value, 'gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $gibbonFinanceBudgetIDs[$count]);
+                        $sql = 'INSERT INTO gibbonFinanceBudgetCycleAllocation SET value=:value, gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
+                    ++$count;
+                }
+            }
+
+            if ($partialFail == true) {
+                $URL .= '&return=warning1';
+                header("Location: {$URL}");
+            } else {
+                $URL .= "&return=success0&editID=$gibbonFinanceBudgetCycleID";
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	//Validate Inputs
-	$name=$_POST["name"] ;
-	$status=$_POST["status"] ;
-	$sequenceNumber=$_POST["sequenceNumber"] ;
-	$dateStart=dateConvert($guid, $_POST["dateStart"]) ;
-	$dateEnd=dateConvert($guid, $_POST["dateEnd"]) ;
-	
-	if ($name=="" OR $status=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $dateStart=="" OR $dateEnd=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Check unique inputs for uniquness
-		try {
-			$data=array("name"=>$name, "sequenceNumber"=>$sequenceNumber); 
-			$sql="SELECT * FROM gibbonFinanceBudgetCycle WHERE name=:name OR sequenceNumber=:sequenceNumber" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
-			header("Location: {$URL}");
-		}
-		else {	
-			//Write to database
-			try {
-				$data=array("name"=>$name, "status"=>$status, "sequenceNumber"=>$sequenceNumber, "dateStart"=>$dateStart, "dateEnd"=>$dateEnd, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="INSERT INTO gibbonFinanceBudgetCycle SET name=:name, status=:status, sequenceNumber=:sequenceNumber, dateStart=:dateStart, dateEnd=:dateEnd, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail 2
-				print $e->getMessage() ; exit() ;
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-			}
-			
-			$gibbonFinanceBudgetCycleID=$connection2->lastInsertID() ;
-			
-			//UPDATE CYCLE ALLOCATION VALUES
-			$partialFail=FALSE ;
-			if (isset($_POST["values"])) {
-				$values=$_POST["values"] ;
-				$gibbonFinanceBudgetIDs=$_POST["gibbonFinanceBudgetIDs"] ;
-				$count=0 ;
-				foreach ($values AS $value) {
-					try {
-						$data=array("value"=>$value, "gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetIDs[$count]); 
-						$sql="INSERT INTO gibbonFinanceBudgetCycleAllocation SET value=:value, gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) {
-						$partialFail=TRUE ;
-					}
-					$count++ ;
-				}
-			}
-			
-			if ($partialFail==TRUE) {
-				//Fail 5
-				$URL.="&addReturn=fail5" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Success 0
-				$URL.="&addReturn=success0" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
-}
-?>

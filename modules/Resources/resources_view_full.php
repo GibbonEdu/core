@@ -17,52 +17,48 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view_full.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view_full.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    //Get class variable
+    $gibbonResourceID = $_GET['gibbonResourceID'];
+    if ($gibbonResourceID == '') {
+        echo "<div class='warning'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    }
+    //Check existence of and access to this class.
+    else {
+        try {
+            $data = array('gibbonResourceID' => $gibbonResourceID);
+            $sql = 'SELECT * FROM gibbonResource WHERE gibbonResourceID=:gibbonResourceID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='warning'>";
+            echo __($guid, 'The specified record does not exist.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+
+            echo '<h1>';
+            echo $row['name'];
+            echo '</h1>';
+
+            echo $row['content'];
+        }
+    }
 }
-else {	
-	//Proceed!
-	//Get class variable
-	$gibbonResourceID=$_GET["gibbonResourceID"] ;
-	if ($gibbonResourceID=="") {
-		print "<div class='warning'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	//Check existence of and access to this class.
-	else {
-		try {
-			$data=array("gibbonResourceID"=>$gibbonResourceID); 
-			$sql="SELECT * FROM gibbonResource WHERE gibbonResourceID=:gibbonResourceID" ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='warning'>" ;
-				print _("The specified record does not exist.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			
-			print "<h1>" ;
-			print $row["name"] ;
-			print "</h1>" ;
-			
-			print $row["content"] ; 
-		}
-	}
-}		
-?>

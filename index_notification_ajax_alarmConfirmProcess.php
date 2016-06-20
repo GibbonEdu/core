@@ -18,68 +18,59 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonAlarmID=$_GET["gibbonAlarmID"] ;
-$gibbonPersonID=$_GET["gibbonPersonID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
+$gibbonAlarmID = $_GET['gibbonAlarmID'];
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
 
 //Proceed!
-if ($gibbonAlarmID=="" OR $gibbonPersonID=="") {
-	//Fail1
-	header("Location: {$URL}");
-}
-else {
-	//Check alarm
-	try {
-		$data=array("gibbonAlarmID"=>$gibbonAlarmID); 
-		$sql="SELECT * FROM gibbonAlarm WHERE gibbonAlarmID=:gibbonAlarmID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
+if ($gibbonAlarmID == '' or $gibbonPersonID == '') {
+    header("Location: {$URL}");
+} else {
+    //Check alarm
+    try {
+        $data = array('gibbonAlarmID' => $gibbonAlarmID);
+        $sql = 'SELECT * FROM gibbonAlarm WHERE gibbonAlarmID=:gibbonAlarmID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+    }
 
-	if ($result->rowCount()==1) {
-		$row=$result->fetch() ;
-		
-		//Check confirmation of alarm
-		try {
-			$dataConfirm=array("gibbonAlarmID"=>$gibbonAlarmID, "gibbonPersonID"=>$gibbonPersonID); 
-			$sqlConfirm="SELECT * FROM gibbonAlarmConfirm WHERE gibbonAlarmID=:gibbonAlarmID AND gibbonPersonID=:gibbonPersonID" ;
-			$resultConfirm=$connection2->prepare($sqlConfirm);
-			$resultConfirm->execute($dataConfirm);
-		}
-		catch(PDOException $e) { }
-		
-		if ($resultConfirm->rowCount()==0) {
-			//Insert confirmation
-			try {
-				$dataConfirm=array("gibbonAlarmID"=>$gibbonAlarmID, "gibbonPersonID"=>$gibbonPersonID, "timestamp"=>date("Y-m-d H:i:s")); 
-				$sqlConfirm="INSERT INTO gibbonAlarmConfirm SET gibbonAlarmID=:gibbonAlarmID, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp" ;
-				$resultConfirm=$connection2->prepare($sqlConfirm);
-				$resultConfirm->execute($dataConfirm);
-			}
-			catch(PDOException $e) { }
-		}
-	}
-	
-	//Success 0
-	header("Location: {$URL}");
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+
+        //Check confirmation of alarm
+        try {
+            $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID);
+            $sqlConfirm = 'SELECT * FROM gibbonAlarmConfirm WHERE gibbonAlarmID=:gibbonAlarmID AND gibbonPersonID=:gibbonPersonID';
+            $resultConfirm = $connection2->prepare($sqlConfirm);
+            $resultConfirm->execute($dataConfirm);
+        } catch (PDOException $e) {
+        }
+
+        if ($resultConfirm->rowCount() == 0) {
+            //Insert confirmation
+            try {
+                $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID, 'timestamp' => date('Y-m-d H:i:s'));
+                $sqlConfirm = 'INSERT INTO gibbonAlarmConfirm SET gibbonAlarmID=:gibbonAlarmID, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
+                $resultConfirm = $connection2->prepare($sqlConfirm);
+                $resultConfirm->execute($dataConfirm);
+            } catch (PDOException $e) {
+            }
+        }
+    }
+
+    //Success 0
+    header("Location: {$URL}");
 }
-?>

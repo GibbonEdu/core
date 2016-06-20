@@ -17,86 +17,75 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/userFields_add.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userFields_add.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/userFields_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    $name = $_POST['name'];
+    $active = $_POST['active'];
+    $description = $_POST['description'];
+    $type = $_POST['type'];
+    $options = '';
+    if (isset($_POST['options'])) {
+        $options = $_POST['options'];
+    }
+    $required = $_POST['required'];
+    $activePersonStudent = '';
+    if (isset($_POST['activePersonStudent'])) {
+        $activePersonStudent = $_POST['activePersonStudent'];
+    }
+    $activePersonStaff = '';
+    if (isset($_POST['activePersonStaff'])) {
+        $activePersonStaff = $_POST['activePersonStaff'];
+    }
+    $activePersonParent = '';
+    if (isset($_POST['activePersonParent'])) {
+        $activePersonParent = $_POST['activePersonParent'];
+    }
+    $activePersonOther = '';
+    if (isset($_POST['activePersonOther'])) {
+        $activePersonOther = $_POST['activePersonOther'];
+    }
+    $activeDataUpdater = $_POST['activeDataUpdater'];
+    $activeApplicationForm = $_POST['activeApplicationForm'];
+
+    //Validate Inputs
+    if ($name == '' or $active == '' or $description == '' or $type == '' or $required == '' or $activeDataUpdater == '' or $activeApplicationForm == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        //Write to database
+        try {
+            $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm);
+            $sql = 'INSERT INTO gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        //Last insert ID
+        $AI = str_pad($connection2->lastInsertID(), 3, '0', STR_PAD_LEFT);
+
+        //Success 0
+        $URL .= "&return=success0&editID=$AI";
+        header("Location: {$URL}");
+    }
 }
-else {
-	//Proceed!
-	$name=$_POST["name"] ; 
-	$active=$_POST["active"] ; 
-	$description=$_POST["description"] ; 
-	$type=$_POST["type"] ; 
-	$options="" ;
-	if (isset($_POST["options"])) {
-		$options=$_POST["options"] ; 
-	}
-	$required=$_POST["required"] ; 
-	$activePersonStudent="" ;
-	if (isset($_POST["activePersonStudent"])) {
-		$activePersonStudent=$_POST["activePersonStudent"] ; 
-	}
-	$activePersonStaff="" ;
-	if (isset($_POST["activePersonStaff"])) {
-		$activePersonStaff=$_POST["activePersonStaff"] ; 
-	}
-	$activePersonParent="" ;
-	if (isset($_POST["activePersonParent"])) {
-		$activePersonParent=$_POST["activePersonParent"] ; 
-	}
-	$activePersonOther="" ;
-	if (isset($_POST["activePersonOther"])) {
-		$activePersonOther=$_POST["activePersonOther"] ; 
-	}
-	$activeDataUpdater=$_POST["activeDataUpdater"] ; 
-	$activeApplicationForm=$_POST["activeApplicationForm"] ; 
-	
-	
-	//Validate Inputs
-	if ($name=="" OR $active=="" OR $description=="" OR $type=="" OR $required=="" OR $activeDataUpdater=="" OR $activeApplicationForm=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Write to database
-		try {
-			$data=array("name"=>$name, "active"=>$active, "description"=>$description, "type"=>$type, "options"=>$options, "required"=>$required, "activePersonStudent"=>$activePersonStudent, "activePersonStaff"=>$activePersonStaff, "activePersonParent"=>$activePersonParent, "activePersonOther"=>$activePersonOther, "activeDataUpdater"=>$activeDataUpdater, "activeApplicationForm"=>$activeApplicationForm); 
-			$sql="INSERT INTO gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		//Success 0
-		$URL.="&addReturn=success0" ;
-		header("Location: {$URL}");
-	}
-}
-?>

@@ -17,101 +17,73 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byPerson.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Take Attendance by Person') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Take Attendance by Person').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
+    }
+
+    $gibbonPersonID = null;
+    if (isset($_GET['gibbonPersonID'])) {
+        $gibbonPersonID = $_GET['gibbonPersonID'];
+    }
+
+    if (!(isset($_GET['currentDate']))) {
+        $currentDate = date('Y-m-d');
+    } else {
+        $currentDate = dateConvert($guid, $_GET['currentDate']);
+    }
+
+    $today = date('Y-m-d');
+
+    ?>
 	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	$gibbonPersonID=NULL ;
-	if (isset($_GET["gibbonPersonID"])) {
-		$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	}
-	
-	if (!(isset($_GET["currentDate"]))) {
-	 	$currentDate=date("Y-m-d");
-	}
-	else {
-		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
-	}
-	
-	$today=date("Y-m-d");
-	
-	?>
-	
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-						<?php print _('Choose Student') ?>
+						<?php echo __($guid, 'Choose Student') ?>
 					</h3>
 				</td
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Student') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php echo __($guid, 'Student') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonPersonID">
+					<select class="standardWidth" name="gibbonPersonID">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-						}
-						
-						while ($rowSelect=$resultSelect->fetch()) {
-							if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-								print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
-							}
-							else {
-								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
+
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 							}
 						}
 						?>				
@@ -120,15 +92,31 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php echo __($guid, 'Date') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-						date.add(Validate.Presence);
+						var currentDate=new LiveValidation('currentDate');
+						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+							?>." } ); 
+						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -139,195 +127,241 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/attendance_take_byPerson.php">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/attendance_take_byPerson.php">
 					<input type="submit" value="Search">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
-	
-	if ($gibbonPersonID!="") {
-		if ($currentDate>$today) {
-			print "<div class='error'>" ;
-				print _("The specified date is in the future: it must be today or earlier.");
-			print "</div>" ;
-		}
-		else {
-			if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
-				print "<div class='error'>" ;
-					print "School is closed on the specified date, and so attendance information cannot be recorded.";
-				print "</div>" ;
-			}
-			else {
-				//Get last 5 school days from currentDate within the last 100
-				$timestamp=dateConvertToTimestamp($currentDate) ;
-				$count=0 ;
-				$spin=1 ;
-				$last5SchoolDays=array() ;
-				while ($count<5 AND $spin<=100) {
-					$date=date("Y-m-d", ($timestamp-($spin*86400))) ;
-					if (isSchoolOpen($guid, $date,$connection2)) {
-						$last5SchoolDays[$count]=$date ;
-						$count++ ;
-					}
-					$spin++ ;
-				}
-				$last5SchoolDaysCount=$count ;
-				
-				$lastType="" ;
-				$lastReason="" ;
-				$lastComment="" ;
-					
-				//Show attendance log for the current day
-				try {
-					$dataLog=array("gibbonPersonID"=>$gibbonPersonID, "date"=>"$currentDate%"); 
-					$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID" ;
-					$resultLog=$connection2->prepare($sqlLog);
-					$resultLog->execute($dataLog);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				if ($resultLog->rowCount()<1) {
-					print "<div class='error'>" ;
-						print _("There is currently no attendance data today for the selected student.") ;
-					print "</div>" ;
-				}
-				else {
-					print "<div class='success'>" ;
-						print _("The following attendance log has been recorded for the selected student today:") ;
-						print "<ul>" ;
-						while ($rowLog=$resultLog->fetch()) {
-							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | " . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
-							$lastType=$rowLog["type"] ;
-							$lastReason=$rowLog["reason"] ;
-							$lastComment=$rowLog["comment"] ;
+
+    if ($gibbonPersonID != '') {
+        if ($currentDate > $today) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified date is in the future: it must be today or earlier.');
+            echo '</div>';
+        } else {
+            if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
+                echo "<div class='error'>";
+                echo 'School is closed on the specified date, and so attendance information cannot be recorded.';
+                echo '</div>';
+            } else {
+                //Get last 5 school days from currentDate within the last 100
+                $timestamp = dateConvertToTimestamp($currentDate);
+                $count = 0;
+                $spin = 1;
+                $last5SchoolDays = array();
+                while ($count < 5 and $spin <= 100) {
+                    $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
+                    if (isSchoolOpen($guid, $date, $connection2)) {
+                        $last5SchoolDays[$count] = $date;
+                        ++$count;
+                    }
+                    ++$spin;
+                }
+                $last5SchoolDaysCount = $count;
+
+                $lastType = '';
+                $lastReason = '';
+                $lastComment = '';
+
+                //Show attendance log for the current day
+                try {
+                    $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$currentDate%");
+                    $sqlLog = 'SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID';
+                    $resultLog = $connection2->prepare($sqlLog);
+                    $resultLog->execute($dataLog);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                if ($resultLog->rowCount() < 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'There is currently no attendance data today for the selected student.');
+                    echo '</div>';
+                } else {
+                    echo "<div class='success'>";
+                    echo __($guid, 'The following attendance log has been recorded for the selected student today:');
+                    echo '<ul>';
+                    while ($rowLog = $resultLog->fetch()) {
+                        echo '<li><b>'.$rowLog['direction'].'</b> ('.$rowLog['type'].') | '.sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
+                        $lastType = $rowLog['type'];
+                        $lastReason = $rowLog['reason'];
+                        $lastComment = $rowLog['comment'];
+                    }
+                    echo '</ul>';
+                    echo '</div>';
+                }
+
+                //Show student form
+                echo "<script type='text/javascript'>
+					function dateCheck() {
+						var date = new Date();
+						if ('".$currentDate."'<getDate()) {
+							return confirm(\"".__($guid, 'The selected date for attendance is in the past. Are you sure you want to continue?').'")
 						}
-						print "</ul>" ;
-					print "</div>" ;
-				}
+					}
+				</script>'; ?>
 				
-				//Show student form
-				?>
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<form onsubmit="return dateCheck()" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2>
 								<h3>
-									<?php print _('Take Attendance') ?>
+									<?php echo __($guid, 'Take Attendance') ?>
 								</h3>
 							</td
 						</tr>
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Recent Attendance Summary') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php echo __($guid, 'Recent Attendance Summary') ?></b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
-								print "<table cellspacing='0' style='float: right; width:134px; margin: 0px 0px 0px 8px; height: 35px' >" ;
-									print "<tr>" ;
-										for ($i=4; $i>=0; $i--) {
-											$link="" ;
-											if ($i>($last5SchoolDaysCount-1)) {
-												$extraStyle="background-color: #eee;" ;
-												
-												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-												print "<i>" . _('NA') . "</i>" ;
-												print "</td>" ;
-											}
-											else {
-												try {
-													$dataLast5SchoolDays=array("gibbonPersonID"=>$gibbonPersonID, "date"=>date("Y-m-d", dateConvertToTimestamp($last5SchoolDays[$i])) . "%"); 
-													$sqlLast5SchoolDays="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
-													$resultLast5SchoolDays=$connection2->prepare($sqlLast5SchoolDays);
-													$resultLast5SchoolDays->execute($dataLast5SchoolDays);
-												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												}
+                                echo "<table cellspacing='0' style='float: right; width:134px; margin: 0px 0px 0px 8px; height: 35px' >";
+								echo '<tr>';
+								for ($i = 4; $i >= 0; --$i) {
+									$link = '';
+									if ($i > ($last5SchoolDaysCount - 1)) {
+										$extraStyle = 'background-color: #eee;';
 
-												if ($resultLast5SchoolDays->rowCount()==0) {
-													$extraStyle="color: #555; background-color: #eee; " ;
-												}
-												else {
-													$link="./index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPerson.php&gibbonPersonID=" . $gibbonPersonID . "&currentDate=" . date("d/m/Y", dateConvertToTimestamp($last5SchoolDays[$i])) ;
-													$rowLast5SchoolDays=$resultLast5SchoolDays->fetch() ;
-													if ($rowLast5SchoolDays["type"]=="Absent") {
-														$color="#c00" ;
-														$extraStyle="color: #c00; background-color: #F6CECB; " ;
-													}
-													else {
-														$color="#390" ;
-														$extraStyle="color: #390; background-color: #D4F6DC; " ;
-													}
-												}
-												
-												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-													if ($link!="") {
-														print "<a style='text-decoration: none; color: $color' href='$link'>" ;
-														print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
-														print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
-														print "</a>" ;
-													}
-													else {
-														print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
-														print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
-													}
-												print "</td>" ;
+										echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
+										echo '<i>'.__($guid, 'NA').'</i>';
+										echo '</td>';
+									} else {
+										try {
+											$dataLast5SchoolDays = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', dateConvertToTimestamp($last5SchoolDays[$i])).'%');
+											$sqlLast5SchoolDays = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
+											$resultLast5SchoolDays = $connection2->prepare($sqlLast5SchoolDays);
+											$resultLast5SchoolDays->execute($dataLast5SchoolDays);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
+
+										if ($resultLast5SchoolDays->rowCount() == 0) {
+											$extraStyle = 'color: #555; background-color: #eee; ';
+										} else {
+											$link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
+											$rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
+											if ($rowLast5SchoolDays['type'] == 'Absent') {
+												$color = '#c00';
+												$extraStyle = 'color: #c00; background-color: #F6CECB; ';
+											} else {
+												$color = '#390';
+												$extraStyle = 'color: #390; background-color: #D4F6DC; ';
 											}
 										}
-									print "</tr>" ;
-								print "</table>" ;
+
+										echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
+										if ($link != '') {
+											echo "<a style='text-decoration: none; color: $color' href='$link'>";
+											echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
+											echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
+											echo '</a>';
+										} else {
+											echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
+											echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
+										}
+										echo '</td>';
+									}
+								}
+								echo '</tr>';
+								echo '</table>';
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php echo __($guid, 'Type') ?> *</b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
-								print "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>" ;
-									print "<option " ; if ($lastType=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
-									print "<option " ; if ($lastType=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
-									print "<option " ; if ($lastType=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
-									print "<option " ; if ($lastType=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
-									print "<option " ; if ($lastType=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
-									print "<option " ; if ($lastType=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
-								print "</select>" ;
+                                echo "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>";
+								echo '<option ';
+								if ($lastType == 'Present') {
+									echo 'selected ';
+								};
+								echo "value='Present'>".__($guid, 'Present').'</option>';
+								echo '<option ';
+								if ($lastType == 'Present - Late') {
+									echo 'selected ';
+								};
+								echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
+								echo '<option ';
+								if ($lastType == 'Present - Offsite') {
+									echo 'selected ';
+								};
+								echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
+								echo '<option ';
+								if ($lastType == 'Absent') {
+									echo 'selected ';
+								};
+								echo "value='Absent'>".__($guid, 'Absent').'</option>';
+								echo '<option ';
+								if ($lastType == 'Left') {
+									echo 'selected ';
+								};
+								echo "value='Left'>".__($guid, 'Left').'</option>';
+								echo '<option ';
+								if ($lastType == 'Left - Early') {
+									echo 'selected ';
+								};
+								echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
+								echo '</select>';
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Reason') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php echo __($guid, 'Reason') ?></b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
-								print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
-									print "<option " ; if ($lastReason=="") { print "selected " ; } ; print "value=''></option>" ;
-									print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
-									print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
-									print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
-									print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
-									print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
-								print "</select>" ;
+                                echo "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>";
+								echo '<option ';
+								if ($lastReason == '') {
+									echo 'selected ';
+								};
+								echo "value=''></option>";
+								echo '<option ';
+								if ($lastReason == 'Pending') {
+									echo 'selected ';
+								};
+								echo "value='Pending'>".__($guid, 'Pending').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Education') {
+									echo 'selected ';
+								};
+								echo "value='Education'>".__($guid, 'Education').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Family') {
+									echo 'selected ';
+								};
+								echo "value='Family'>".__($guid, 'Family').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Medical') {
+									echo 'selected ';
+								};
+								echo "value='Medical'>".__($guid, 'Medical').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Other') {
+									echo 'selected ';
+								};
+								echo "value='Other'>".__($guid, 'Other').'</option>';
+								echo '</select>';
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Comment') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('255 character limit') ?></i></span>
+								<b><?php echo __($guid, 'Comment') ?></b><br/>
+								<span class="emphasis small"><?php echo __($guid, '255 character limit') ?></span>
 							</td>
 							<td class="right">
 								<?php
-								print "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>" ;
-								?>
+                                echo "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>"; ?>
 								<script type="text/javascript">
 									var comment=new LiveValidation('comment');
 									comment.add( Validate.Length, { maximum: 255 } );
@@ -336,19 +370,20 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
-								<?php print "<input type='hidden' name='currentDate' value='$currentDate'>" ; ?>
-								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<?php echo "<input type='hidden' name='currentDate' value='$currentDate'>"; ?>
+								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
 				<?php
-			}
-		}
-	}
+
+            }
+        }
+    }
 }
 ?>

@@ -17,151 +17,136 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceBooking_manage.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction == false) {
+        echo "<div class='error'>";
+        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo '</div>';
+    } else {
+        //Proceed!
+        echo "<div class='trail'>";
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Facility Bookings').'</div>';
+        echo '</div>';
+
+        if ($highestAction == 'Manage Facility Bookings_allBookings') {
+            echo '<p>'.__($guid, 'This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';
+        } else {
+            echo '<p>'.__($guid, 'This page allows you to create and manage facility and library bookings. Only current and future changes are shown: past bookings are hidden.').'</p>';
+        }
+
+        if (isset($_GET['return'])) {
+            returnProcess($guid, $_GET['return'], null, null);
+        }
+
+        //Set pagination variable
+        $page = 1;
+        if (isset($_GET['page'])) {
+            $page = $_GET['page'];
+        }
+        if ((!is_numeric($page)) or $page < 1) {
+            $page = 1;
+        }
+
+        try {
+            if ($highestAction == 'Manage Facility Bookings_allBookings') {
+                $data = array('date' => date('Y-m-d'));
+                $sql = "(SELECT gibbonTTSpaceBooking.*, gibbonSpace.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND date>=:date) UNION (SELECT gibbonTTSpaceBooking.*, gibbonLibraryItem.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND date>=:date) ORDER BY date, name";
+            } else {
+                $data = array('date' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = "(SELECT gibbonTTSpaceBooking.*, gibbonSpace.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND date>=:date AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID) UNION (SELECT gibbonTTSpaceBooking.*, gibbonLibraryItem.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND date>=:date AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID) ORDER BY date, name";
+            }
+            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        echo "<div class='linkTop'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/spaceBooking_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo '</div>';
+
+        if ($result->rowCount() < 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'There are no records to display.');
+            echo '</div>';
+        } else {
+            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            }
+
+            echo "<table cellspacing='0' style='width: 100%'>";
+            echo "<tr class='head'>";
+            echo '<th>';
+            echo __($guid, 'Date');
+            echo '</th>';
+            echo '<th>';
+            echo __($guid, 'Facility');
+            echo '</th>';
+            if ($highestAction == 'Manage Facility Bookings_allBookings') {
+                echo '<th>';
+                echo __($guid, 'Person');
+                echo '</th>';
+            }
+            echo '<th>';
+            echo __($guid, 'Time');
+            echo '</th>';
+            echo '<th>';
+            echo __($guid, 'Actions');
+            echo '</th>';
+            echo '</tr>';
+
+            $count = 0;
+            $rowNum = 'odd';
+            try {
+                $resultPage = $connection2->prepare($sqlPage);
+                $resultPage->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            while ($row = $resultPage->fetch()) {
+                if ($count % 2 == 0) {
+                    $rowNum = 'even';
+                } else {
+                    $rowNum = 'odd';
+                }
+                ++$count;
+
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
+                echo '<td>';
+                echo dateConvertBack($guid, $row['date']);
+                echo '</td>';
+                echo '<td>';
+                echo $row['name'];
+                echo '</td>';
+                if ($highestAction == 'Manage Facility Bookings_allBookings') {
+                    echo '<td>';
+                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                    echo '</td>';
+                }
+                echo '<td>';
+                echo substr($row['timeStart'], 0, 5).' - '.substr($row['timeEnd'], 0, 5);
+                echo '</td>';
+                echo '<td>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_delete.php&gibbonTTSpaceBookingID='.$row['gibbonTTSpaceBookingID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+
+            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+            }
+        }
+    }
 }
-else {
-	//Get action with highest precendence
-	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
-	if ($highestAction==FALSE) {
-		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
-		print "</div>" ;
-	}
-	else {
-		//Proceed!
-		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Space Bookings') . "</div>" ;
-		print "</div>" ;
-		
-		if ($highestAction=="Manage Space Bookings_allBookings") {
-			print "<p>" . _("This page allows you to create room and location bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.") . "</p>" ;
-		}
-		else {
-			print "<p>" . _("This page allows you to create and manage room and location bookings. Only current and future changes are shown: past bookings are hidden.") . "</p>" ;
-		}
-	
-		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage="" ;
-		$class="error" ;
-		if (!($deleteReturn=="")) {
-			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=_("Your request was completed successfully.") ;		
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $deleteReturnMessage;
-			print "</div>" ;
-		} 
-	
-		//Set pagination variable
-		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
-		if ((!is_numeric($page)) OR $page<1) {
-			$page=1 ;
-		}
-	
-		try {
-			if ($highestAction=="Manage Space Bookings_allBookings") {
-				$data=array("date"=>date("Y-m-d")); 
-				$sql="SELECT gibbonTTSpaceBooking.*, gibbonSpace.name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE date>=:date ORDER BY date, gibbonSpace.name" ; 
-			}
-			else {
-				$data=array("date"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="SELECT gibbonTTSpaceBooking.*, gibbonSpace.name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE date>=:date AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID ORDER BY date, gibbonSpace.name" ; 
-			}
-			$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-	
-		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-		print "</div>" ;
-	
-		if ($result->rowCount()<1) {
-			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
-			print "</div>" ;
-		}
-		else {
-			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
-			}
-	
-			print "<table cellspacing='0' style='width: 100%'>" ;
-				print "<tr class='head'>" ;
-					print "<th>" ;
-						print _("Date") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Space") ;
-					print "</th>" ;
-					if ($highestAction=="Manage Space Bookings_allBookings") {
-						print "<th>" ;
-							print _("Person") ;
-						print "</th>" ;
-					}
-					print "<th>" ;
-						print _("Time") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Actions") ;
-					print "</th>" ;
-				print "</tr>" ;
-			
-				$count=0;
-				$rowNum="odd" ;
-				try {
-					$resultPage=$connection2->prepare($sqlPage);
-					$resultPage->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				while ($row=$resultPage->fetch()) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-				
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print dateConvertBack($guid, $row["date"]) ;
-						print "</td>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						if ($highestAction=="Manage Space Bookings_allBookings") {
-							print "<td>" ;
-								print formatName("", $row["preferredName"], $row["surname"], "Student", false) ;
-							print "</td>" ;
-						}
-						print "<td>" ;
-							print substr($row["timeStart"],0,5) . " - " . substr($row["timeEnd"],0,5) ;
-						print "</td>" ;
-						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_delete.php&gibbonTTSpaceBookingID=" . $row["gibbonTTSpaceBookingID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
-			print "</table>" ;
-		
-			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
-			}
-		}
-	}
-}
-?>

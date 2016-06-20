@@ -17,47 +17,46 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_new")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('New Students') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'New Students').'</div>';
+    echo '</div>';
+
+    echo '<h2>';
+    echo __($guid, 'Choose Options');
+    echo '</h2>';
+
+    $type = null;
+    if (isset($_GET['type'])) {
+        $type = $_GET['type'];
+    }
+    $ignoreEnrolment = null;
+    if (isset($_GET['ignoreEnrolment'])) {
+        $ignoreEnrolment = $_GET['ignoreEnrolment'];
+    }
+    $startDateFrom = null;
+    if (isset($_GET['startDateFrom'])) {
+        $startDateFrom = $_GET['startDateFrom'];
+    }
+    $startDateTo = null;
+    if (isset($_GET['startDateTo'])) {
+        $startDateTo = $_GET['startDateTo'];
+    }
+    ?>
 	
-	print "<h2>" ;
-	print _("Choose Options") ;
-	print "</h2>" ;
-	
-	$type=NULL ;
-	if (isset($_GET["type"])) {
-		$type=$_GET["type"] ;
-	}
-	$ignoreEnrolment=NULL ;
-	if (isset($_GET["ignoreEnrolment"])) {
-		$ignoreEnrolment=$_GET["ignoreEnrolment"] ;
-	}
-	$startDateFrom=NULL ;
-	if (isset($_GET["startDateFrom"])) {
-		$startDateFrom=$_GET["startDateFrom"] ;
-	}
-	$startDateTo=NULL ;
-	if (isset($_GET["startDateTo"])) {
-		$startDateTo=$_GET["startDateTo"] ;
-	}
-	?>
-	
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -74,27 +73,48 @@ else {
 			</script>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Type') ?> *</b><br/>
+					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="type" id="type" class="type">
+					<select class="standardWidth" name="type" id="type" class="type">
 						<?php
-						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>" . _('Current School Year') . "</option>" ;
-						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>" . _('Date Range') . "</option>" ;
-						?>
+                        echo '<option';
+    if ($type == 'Current School Year') {
+        echo ' selected';
+    }
+    echo " value='Current School Year'>".__($guid, 'Current School Year').'</option>';
+    echo '<option';
+    if ($type == 'Date Range') {
+        echo ' selected';
+    }
+    echo " value='Date Range'>".__($guid, 'Date Range').'</option>';?>
 					</select>
 				</td>
 			</tr>
-			<tr id='startDateFromRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
+			<tr id='startDateFromRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td> 
-					<b><?php print _('From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Earliest student start date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php echo __($guid, 'From Date') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Earliest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
 				</td>
 				<td class="right">
-					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php print $startDateFrom ?>" type="text" style="width: 300px">
+					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php echo $startDateFrom ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var startDateFrom=new LiveValidation('startDateFrom');
-						startDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						startDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -103,16 +123,30 @@ else {
 					</script>
 				</td>
 			</tr>
-			<tr id='startDateToRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
+			<tr id='startDateToRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td> 
-					<b><?php print _('To Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Latest student start date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php echo __($guid, 'To Date') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Latest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
 				</td>
 				<td class="right">
-					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php print $startDateTo ?>" type="text" style="width: 300px">
+					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php echo $startDateTo ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var startDateTo=new LiveValidation('startDateTo');
-						startDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						startDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -123,300 +157,293 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Ignore Enrolment') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
+					<b><?php echo __($guid, 'Ignore Enrolment') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
 				</td>
 				<td class="right">
-					<input <?php if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
+					<input <?php if ($ignoreEnrolment == 'on') { echo 'checked'; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_students_new.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_students_new.php">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
-	
-	if ($type!="") {
-		print "<h2>" ;
-		print _("Report Data") ;
-		print "</h2>" ;
-		
-		$proceed=TRUE ;
-		if ($type=="Date Range") {
-			print "<p>" ;
-				print _("This report shows all students whose Start Date is on or between the indicated dates.") ;
-			print "</p>" ;
-			
-			if ($startDateFrom=="" OR $startDateTo=="") {
-				$proceed=FALSE ;
-			}
-		}
-		else if ($type=="Current School Year") {
-			print "<p>" ;
-				print _("This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).") ;
-			print "</p>" ;
-		}
-	
-		
-		if ($proceed==FALSE) {
-			print "<div class='error'>" ;
-				print _("Your request failed because your inputs were invalid.") ;
-			print "</div>" ;
-		}
-		else {
-			try {
-				if ($type=="Date Range") {
-					if ($ignoreEnrolment!="on") {
-						$data=array("startDateFrom"=>dateConvert($guid, $startDateFrom), "startDateTo"=>dateConvert($guid, $startDateTo)); 
-						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
-					}
-					else {
-						$data=array("startDateFrom"=>dateConvert($guid, $startDateFrom), "startDateTo"=>dateConvert($guid, $startDateTo)); 
-						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool FROM gibbonPerson WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
-					}
-				}
-				else if ($type=="Current School Year") {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-					$sql="SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, username, dateStart, lastSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY rollGroup, surname, preferredName" ;
-				}
-				$result=$connection2->prepare($sql);
-				$result->execute($data); 
-			}
-			catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-			if ($result->rowCount()>0) {
-				if ($type=="Current School Year") {
-					print "<table cellspacing='0' style='width: 100%'>" ;
-						print "<tr class='head'>" ;
-							print "<th>" ;
-								print _("Count") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Name") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Roll Group") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Username") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Start Date") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Last School") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Parents") ;
-							print "</th>" ;
-						print "</tr>" ;
-	
-						$count=0;
-						$rowNum="odd" ;
-						while ($row=$result->fetch()) {
-							if ($count%2==0) {
-								$rowNum="even" ;
-							}
-							else {
-								$rowNum="odd" ;
-							}
-							try {
-								$data2=array("gibbonSchoolYearID"=>getPreviousSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2), "gibbonPersonID"=>$row["gibbonPersonID"]); 
-								$sql2="SELECT surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, username FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY rollGroup, surname, preferredName" ;
-								$result2=$connection2->prepare($sql2);
-								$result2->execute($data2); 
-							}
-							catch(PDOException $e) { print "<div class='error'>" . $e->getMessage() . "</div>" ; }
-							if ($result2->rowCount()==0) {
-								$count++ ;
-								print "<tr class=$rowNum>" ;
-									print "<td>" ;
-										print $count ;
-									print "</td>" ;
-									print "<td>" ;
-										print formatName("", $row["preferredName"], $row["surname"], "Student", TRUE) ;
-									print "</td>" ;
-									print "<td>" ;
-										print $row["rollGroup"] ;
-									print "</td>" ;
-									print "<td>" ;
-										print $row["username"] ;
-									print "</td>" ;
-									print "<td>" ;
-										print dateConvertBack($guid, $row["dateStart"]) ;
-									print "</td>" ;
-									print "<td>" ;
-										print $row["lastSchool"] ;
-									print "</td>" ;
-									print "<td>" ;
-										try {
-											$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-											$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
-											$resultFamily=$connection2->prepare($sqlFamily);
-											$resultFamily->execute($dataFamily);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										while ($rowFamily=$resultFamily->fetch()) {
-											try {
-												$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
-												$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
-												$resultFamily2=$connection2->prepare($sqlFamily2);
-												$resultFamily2->execute($dataFamily2);
-											}
-											catch(PDOException $e) { 
-												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-											}
-											while ($rowFamily2=$resultFamily2->fetch()) {
-												print "<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u><br/>" ;
-												$numbers=0 ;
-												for ($i=1; $i<5; $i++) {
-													if ($rowFamily2["phone" . $i]!="") {
-														if ($rowFamily2["phone" . $i . "Type"]!="") {
-															print "<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
-														}
-														if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
-															print "+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
-														}
-														print $rowFamily2["phone" . $i] . "<br/>" ;
-														$numbers++ ;
-													}
-												}
-												if ($rowFamily2["citizenship1"]!="" OR $rowFamily2["citizenship1Passport"]!="") {
-													print "<i>Passport</i>: " . $rowFamily2["citizenship1"] . " " . $rowFamily2["citizenship1Passport"] . "<br/>" ;
-												}
-												if ($rowFamily2["nationalIDCardNumber"]!="") {
-													if ($_SESSION[$guid]["country"]=="") {
-														print "<i>National ID Card</i>: " ;
-													}
-													else {
-														print "<i>" . $_SESSION[$guid]["country"] . " ID Card</i>: " ;
-													}
-													print $rowFamily2["nationalIDCardNumber"] . "<br/>" ;
-												}
-											}
-										}
-									print "</td>" ;
-								print "</tr>" ;
-							}
-						}
-					print "</table>" ; 			
-				}
-				else if ($type=="Date Range") {
-					print "<table cellspacing='0' style='width: 100%'>" ;
-						print "<tr class='head'>" ;
-							print "<th>" ;
-								print "Count" ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Name") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Username") ;
-							print "</th>" ;
-							print "<th>" ;
-								print "Start Date" ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Last School") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Parents") ;
-							print "</th>" ;
-						print "</tr>" ;
 
-						$count=0;
-						$rowNum="odd" ;
-						while ($row=$result->fetch()) {
-							if ($count%2==0) {
-								$rowNum="even" ;
-							}
-							else {
-								$rowNum="odd" ;
-							}
-					
-							$count++ ;
-							print "<tr class=$rowNum>" ;
-								print "<td>" ;
-									print $count ;
-								print "</td>" ;
-								print "<td>" ;
-									print formatName("", $row["preferredName"], $row["surname"], "Student", TRUE) ;
-								print "</td>" ;
-								print "<td>" ;
-									print $row["username"] ;
-								print "</td>" ;
-								print "<td>" ;
-									print dateConvertBack($guid, $row["dateStart"]) ;
-								print "</td>" ;
-								print "<td>" ;
-									print $row["lastSchool"] ;
-								print "</td>" ;
-								print "<td>" ;
-									try {
-										$dataFamily=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-										$sqlFamily="SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID" ;
-										$resultFamily=$connection2->prepare($sqlFamily);
-										$resultFamily->execute($dataFamily);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									while ($rowFamily=$resultFamily->fetch()) {
-										try {
-											$dataFamily2=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
-											$sqlFamily2="SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
-											$resultFamily2=$connection2->prepare($sqlFamily2);
-											$resultFamily2->execute($dataFamily2);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										while ($rowFamily2=$resultFamily2->fetch()) {
-											print "<u>" . formatName($rowFamily2["title"], $rowFamily2["preferredName"], $rowFamily2["surname"], "Parent") . "</u><br/>" ;
-											$numbers=0 ;
-											for ($i=1; $i<5; $i++) {
-												if ($rowFamily2["phone" . $i]!="") {
-													if ($rowFamily2["phone" . $i . "Type"]!="") {
-														print "<i>" . $rowFamily2["phone" . $i . "Type"] . ":</i> " ;
-													}
-													if ($rowFamily2["phone" . $i . "CountryCode"]!="") {
-														print "+" . $rowFamily2["phone" . $i . "CountryCode"] . " " ;
-													}
-													print $rowFamily2["phone" . $i] . "<br/>" ;
-													$numbers++ ;
-												}
-											}
-											if ($rowFamily2["citizenship1"]!="" OR $rowFamily2["citizenship1Passport"]!="") {
-												print "<i>Passport</i>: " . $rowFamily2["citizenship1"] . " " . $rowFamily2["citizenship1Passport"] . "<br/>" ;
-											}
-											if ($rowFamily2["nationalIDCardNumber"]!="") {
-												if ($_SESSION[$guid]["country"]=="") {
-													print "<i>National ID Card</i>: " ;
-												}
-												else {
-													print "<i>" . $_SESSION[$guid]["country"] . " ID Card</i>: " ;
-												}
-												print $rowFamily2["nationalIDCardNumber"] . "<br/>" ;
-											}
-										}
-									}
-								print "</td>" ;
-							print "</tr>" ;
-						}
-					print "</table>" ; 		
-				}
-			}
-			else {
-				print "<div class='warning'>" ;
-					print _("There are no records to display.") ;
-				print "</div>" ;
-			}
-		}
-	}
+    if ($type != '') {
+        echo '<h2>';
+        echo __($guid, 'Report Data');
+        echo '</h2>';
+
+        $proceed = true;
+        if ($type == 'Date Range') {
+            echo '<p>';
+            echo __($guid, 'This report shows all students whose Start Date is on or between the indicated dates.');
+            echo '</p>';
+
+            if ($startDateFrom == '' or $startDateTo == '') {
+                $proceed = false;
+            }
+        } elseif ($type == 'Current School Year') {
+            echo '<p>';
+            echo __($guid, 'This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).');
+            echo '</p>';
+        }
+
+        if ($proceed == false) {
+            echo "<div class='error'>";
+            echo __($guid, 'Your request failed because your inputs were invalid.');
+            echo '</div>';
+        } else {
+            try {
+                if ($type == 'Date Range') {
+                    if ($ignoreEnrolment != 'on') {
+                        $data = array('startDateFrom' => dateConvert($guid, $startDateFrom), 'startDateTo' => dateConvert($guid, $startDateTo));
+                        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool, (SELECT nameShort FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber LIMIT 0, 1) AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName";
+                    } else {
+                        $data = array('startDateFrom' => dateConvert($guid, $startDateFrom), 'startDateTo' => dateConvert($guid, $startDateTo));
+                        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool, (SELECT nameShort FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber LIMIT 0, 1) AS rollGroup FROM gibbonPerson WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName";
+                    }
+                } elseif ($type == 'Current School Year') {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, username, dateStart, lastSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY rollGroup, surname, preferredName";
+                }
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            if ($result->rowCount() > 0) {
+                if ($type == 'Current School Year') {
+                    echo "<table cellspacing='0' style='width: 100%'>";
+                    echo "<tr class='head'>";
+                    echo '<th>';
+                    echo __($guid, 'Count');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Name');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Roll Group');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Username');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Start Date');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Last School');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Parents');
+                    echo '</th>';
+                    echo '</tr>';
+
+                    $count = 0;
+                    $rowNum = 'odd';
+                    while ($row = $result->fetch()) {
+                        if ($count % 2 == 0) {
+                            $rowNum = 'even';
+                        } else {
+                            $rowNum = 'odd';
+                        }
+                        try {
+                            $data2 = array('gibbonSchoolYearID' => getPreviousSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2), 'gibbonPersonID' => $row['gibbonPersonID']);
+                            $sql2 = "SELECT surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, username FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY rollGroup, surname, preferredName";
+                            $result2 = $connection2->prepare($sql2);
+                            $result2->execute($data2);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($result2->rowCount() == 0) {
+                            ++$count;
+                            echo "<tr class=$rowNum>";
+                            echo '<td>';
+                            echo $count;
+                            echo '</td>';
+                            echo '<td>';
+                            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['rollGroup'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['username'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo dateConvertBack($guid, $row['dateStart']);
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['lastSchool'];
+                            echo '</td>';
+                            echo '<td>';
+                            try {
+                                $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
+                                $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
+                                $resultFamily = $connection2->prepare($sqlFamily);
+                                $resultFamily->execute($dataFamily);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            while ($rowFamily = $resultFamily->fetch()) {
+                                try {
+                                    $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
+                                    $sqlFamily2 = 'SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+                                    $resultFamily2 = $connection2->prepare($sqlFamily2);
+                                    $resultFamily2->execute($dataFamily2);
+                                } catch (PDOException $e) {
+                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                }
+                                while ($rowFamily2 = $resultFamily2->fetch()) {
+                                    echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                                    $numbers = 0;
+                                    for ($i = 1; $i < 5; ++$i) {
+                                        if ($rowFamily2['phone'.$i] != '') {
+                                            if ($rowFamily2['phone'.$i.'Type'] != '') {
+                                                echo '<i>'.$rowFamily2['phone'.$i.'Type'].':</i> ';
+                                            }
+                                            if ($rowFamily2['phone'.$i.'CountryCode'] != '') {
+                                                echo '+'.$rowFamily2['phone'.$i.'CountryCode'].' ';
+                                            }
+                                            echo $rowFamily2['phone'.$i].'<br/>';
+                                            ++$numbers;
+                                        }
+                                    }
+                                    if ($rowFamily2['citizenship1'] != '' or $rowFamily2['citizenship1Passport'] != '') {
+                                        echo '<i>Passport</i>: '.$rowFamily2['citizenship1'].' '.$rowFamily2['citizenship1Passport'].'<br/>';
+                                    }
+                                    if ($rowFamily2['nationalIDCardNumber'] != '') {
+                                        if ($_SESSION[$guid]['country'] == '') {
+                                            echo '<i>National ID Card</i>: ';
+                                        } else {
+                                            echo '<i>'.$_SESSION[$guid]['country'].' ID Card</i>: ';
+                                        }
+                                        echo $rowFamily2['nationalIDCardNumber'].'<br/>';
+                                    }
+                                }
+                            }
+                            echo '</td>';
+                            echo '</tr>';
+                        }
+                    }
+                    echo '</table>';
+                } elseif ($type == 'Date Range') {
+                    echo "<table cellspacing='0' style='width: 100%'>";
+                    echo "<tr class='head'>";
+                    echo '<th>';
+                    echo 'Count';
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Name');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Roll Group');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Username');
+                    echo '</th>';
+                    echo '<th>';
+                    echo 'Start Date';
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Last School');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Parents');
+                    echo '</th>';
+                    echo '</tr>';
+
+                    $count = 0;
+                    $rowNum = 'odd';
+                    while ($row = $result->fetch()) {
+                        if ($count % 2 == 0) {
+                            $rowNum = 'even';
+                        } else {
+                            $rowNum = 'odd';
+                        }
+
+                        ++$count;
+                        echo "<tr class=$rowNum>";
+                        echo '<td>';
+                        echo $count;
+                        echo '</td>';
+                        echo '<td>';
+                        echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                        echo '</td>';
+                        echo '<td>';
+                        echo $row['rollGroup'];
+                        echo '</td>';
+                        echo '<td>';
+                        echo $row['username'];
+                        echo '</td>';
+                        echo '<td>';
+                        echo dateConvertBack($guid, $row['dateStart']);
+                        echo '</td>';
+                        echo '<td>';
+                        echo $row['lastSchool'];
+                        echo '</td>';
+                        echo '<td>';
+                        try {
+                            $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
+                            $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
+                            $resultFamily = $connection2->prepare($sqlFamily);
+                            $resultFamily->execute($dataFamily);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        while ($rowFamily = $resultFamily->fetch()) {
+                            try {
+                                $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
+                                $sqlFamily2 = 'SELECT gibbonPerson.* FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+                                $resultFamily2 = $connection2->prepare($sqlFamily2);
+                                $resultFamily2->execute($dataFamily2);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            while ($rowFamily2 = $resultFamily2->fetch()) {
+                                echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                                $numbers = 0;
+                                for ($i = 1; $i < 5; ++$i) {
+                                    if ($rowFamily2['phone'.$i] != '') {
+                                        if ($rowFamily2['phone'.$i.'Type'] != '') {
+                                            echo '<i>'.$rowFamily2['phone'.$i.'Type'].':</i> ';
+                                        }
+                                        if ($rowFamily2['phone'.$i.'CountryCode'] != '') {
+                                            echo '+'.$rowFamily2['phone'.$i.'CountryCode'].' ';
+                                        }
+                                        echo $rowFamily2['phone'.$i].'<br/>';
+                                        ++$numbers;
+                                    }
+                                }
+                                if ($rowFamily2['citizenship1'] != '' or $rowFamily2['citizenship1Passport'] != '') {
+                                    echo '<i>Passport</i>: '.$rowFamily2['citizenship1'].' '.$rowFamily2['citizenship1Passport'].'<br/>';
+                                }
+                                if ($rowFamily2['nationalIDCardNumber'] != '') {
+                                    if ($_SESSION[$guid]['country'] == '') {
+                                        echo '<i>National ID Card</i>: ';
+                                    } else {
+                                        echo '<i>'.$_SESSION[$guid]['country'].' ID Card</i>: ';
+                                    }
+                                    echo $rowFamily2['nationalIDCardNumber'].'<br/>';
+                                }
+                            }
+                        }
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                    echo '</table>';
+                }
+            } else {
+                echo "<div class='warning'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            }
+        }
+    }
 }
 ?>

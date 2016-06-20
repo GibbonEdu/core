@@ -17,99 +17,89 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Start session
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 //Check to see if academic year id variables are set, if not set them 
-if (isset($_SESSION[$guid]["gibbonAcademicYearID"])==FALSE OR isset($_SESSION[$guid]["gibbonSchoolYearName"])==FALSE) {
-	setCurrentSchoolYear($guid, $connection2) ;
+if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
+    setCurrentSchoolYear($guid, $connection2);
 }
 
-$calendarFeedPersonal=$_POST["calendarFeedPersonal"] ;
-$personalBackground="" ;
-if (isset($_POST["personalBackground"])) {
-	$personalBackground=$_POST["personalBackground"] ;
+$calendarFeedPersonal = $_POST['calendarFeedPersonal'];
+$personalBackground = '';
+if (isset($_POST['personalBackground'])) {
+    $personalBackground = $_POST['personalBackground'];
 }
-$gibbonThemeIDPersonal=$_POST["gibbonThemeIDPersonal"] ;
-if ($gibbonThemeIDPersonal=="") {
-	$gibbonThemeIDPersonal=NULL ;
+$gibbonThemeIDPersonal = $_POST['gibbonThemeIDPersonal'];
+if ($gibbonThemeIDPersonal == '') {
+    $gibbonThemeIDPersonal = null;
 }
-$gibboni18nIDPersonal=$_POST["gibboni18nIDPersonal"] ;
-if ($gibboni18nIDPersonal=="") {
-	$gibboni18nIDPersonal=NULL ;
+$gibboni18nIDPersonal = $_POST['gibboni18nIDPersonal'];
+if ($gibboni18nIDPersonal == '') {
+    $gibboni18nIDPersonal = null;
 }
-$receiveNotificationEmails=$_POST["receiveNotificationEmails"] ;
-if ($receiveNotificationEmails=="") {
-	$receiveNotificationEmails=NULL ;
+$receiveNotificationEmails = $_POST['receiveNotificationEmails'];
+if ($receiveNotificationEmails == '') {
+    $receiveNotificationEmails = null;
 }
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
 
 try {
-	$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "gibboni18nIDPersonal"=>$gibboni18nIDPersonal, "receiveNotificationEmails"=>$receiveNotificationEmails, "username"=>$_SESSION[$guid]["username"]); 
-	$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails WHERE (username=:username)" ;
-	$result=$connection2->prepare($sql);
-	$result->execute($data);
-}
-catch(PDOException $e) { 
-	$URL.="&editReturn=fail1" ;
-	header("Location: {$URL}");
-	break ;
+    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $_SESSION[$guid]['username']);
+    $sql = 'UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails WHERE (username=:username)';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+} catch (PDOException $e) {
+    $URL .= '&return=error2';
+    header("Location: {$URL}");
+    exit();
 }
 
 //Update personal preferences in session
-$_SESSION[$guid]["calendarFeedPersonal"]=$calendarFeedPersonal ;
-$_SESSION[$guid]["personalBackground"]=$personalBackground ;
-$_SESSION[$guid]["gibbonThemeIDPersonal"]=$gibbonThemeIDPersonal ;
-$_SESSION[$guid]["gibboni18nIDPersonal"]=$gibboni18nIDPersonal ;
-$_SESSION[$guid]["receiveNotificationEmails"]=$receiveNotificationEmails ;
+$_SESSION[$guid]['calendarFeedPersonal'] = $calendarFeedPersonal;
+$_SESSION[$guid]['personalBackground'] = $personalBackground;
+$_SESSION[$guid]['gibbonThemeIDPersonal'] = $gibbonThemeIDPersonal;
+$_SESSION[$guid]['gibboni18nIDPersonal'] = $gibboni18nIDPersonal;
+$_SESSION[$guid]['receiveNotificationEmails'] = $receiveNotificationEmails;
 
 //Update language settings in session (to personal preference if set, or system default if not)
 if (!is_null($gibboni18nIDPersonal)) {
-	try {
-		$data=array("gibboni18nID"=>$gibboni18nIDPersonal); 
-		$sql="SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID" ; 
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 	}
-	if ($result->rowCount()==1) {
-		$row=$result->fetch() ;
-		setLanguageSession($guid, $row) ;
-	}
-}
-else {
-	try {
-		$data=array(); 
-		$sql="SELECT * FROM gibboni18n WHERE systemDefault='Y'" ; 
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
-	if ($result->rowCount()==1) {
-		$row=$result->fetch() ;
-		setLanguageSession($guid, $row) ;
-	}
+    try {
+        $data = array('gibboni18nID' => $gibboni18nIDPersonal);
+        $sql = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+    }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        setLanguageSession($guid, $row);
+    }
+} else {
+    try {
+        $data = array();
+        $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+    }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        setLanguageSession($guid, $row);
+    }
 }
 
-
-$_SESSION[$guid]["pageLoads"]=NULL ;
-$URL.="&editReturn=success0" ;
+$_SESSION[$guid]['pageLoads'] = null;
+$URL .= '&return=success0';
 header("Location: {$URL}");
-?>

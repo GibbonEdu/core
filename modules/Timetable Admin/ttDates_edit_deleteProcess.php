@@ -17,87 +17,66 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-$dateStamp=$_GET["dateStamp"] ;
-$gibbonTTDayID=$_GET["gibbonTTDayID"] ;
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+$dateStamp = $_GET['dateStamp'];
+$gibbonTTDayID = $_GET['gibbonTTDayID'];
 
-if ($gibbonSchoolYearID=="" OR $dateStamp=="") {
-	print "Fatal error loading this page!" ;
+if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading this page!';
+} else {
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp";
+
+    if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php') == false) {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+    } else {
+        //Proceed!
+        //Check if school year specified
+        if ($gibbonTTDayID == '') {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+        } else {
+            try {
+                $data = array('date' => date('Y-m-d', $dateStamp), 'gibbonTTDayID' => $gibbonTTDayID);
+                $sql = 'SELECT * FROM gibbonTTDayDate WHERE gibbonTTDayID=:gibbonTTDayID AND date=:date';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            if ($result->rowCount() < 1) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+            } else {
+                //Write to database
+                try {
+                    $data = array('date' => date('Y-m-d', $dateStamp), 'gibbonTTDayID' => $gibbonTTDayID);
+                    $sql = 'DELETE FROM gibbonTTDayDate WHERE gibbonTTDayID=:gibbonTTDayID AND date=:date';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                $URL .= '&return=success0';
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-else {
-
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp" ;
-	
-	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates_edit_delete.php")==FALSE) {
-		//Fail 0
-		$URL.="&deleteReturn=fail0" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Proceed!
-		//Check if school year specified
-		if ($gibbonTTDayID=="") {
-			//Fail1
-			$URL.="&deleteReturn=fail1" ;
-			header("Location: {$URL}");
-		}
-		else {
-			try {
-				$data=array("date"=>date("Y-m-d",$dateStamp), "gibbonTTDayID"=>$gibbonTTDayID); 
-				$sql="SELECT * FROM gibbonTTDayDate WHERE gibbonTTDayID=:gibbonTTDayID AND date=:date" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&deleteReturn=fail2" ;
-				header("Location: {$URL}");
-				break ;
-			}
-			
-			if ($result->rowCount()<1) {
-				//Fail 2
-				$URL.="&deleteReturn=fail2" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Write to database
-				try {
-					$data=array("date"=>date("Y-m-d",$dateStamp), "gibbonTTDayID"=>$gibbonTTDayID); 
-					$sql="DELETE FROM gibbonTTDayDate WHERE gibbonTTDayID=:gibbonTTDayID AND date=:date" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&deleteReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-			
-				//Success 0
-				$URL.="&deleteReturn=success0" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
-}
-?>

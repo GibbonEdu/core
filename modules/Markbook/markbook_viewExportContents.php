@@ -17,141 +17,130 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../config.php" ;
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Get alternative header names
-$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
-$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
-$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
-$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
+$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
+$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
-@session_start() ;
+@session_start();
 
-$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-$gibbonMarkbookColumnID=$_SESSION[$guid]["exportToExcelParams"] ;
-if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	$alert=getAlert($connection2, 002) ;
-	
-	//Proceed!
-	print "<table cellspacing='0'>" ;
-		print "<tr>" ;
-			print "<td colspan=4>" ;
-				print "<h1 style='margin-bottom: 20px'>" ;
-				print "Markbook Data" ;
-				print "</h1>" ;
-			print "</td>" ;
-		print "</tr>" ;
-	
-		try {
-			$dataStudents=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-			$sqlStudents="SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
-			$resultStudents=$connection2->prepare($sqlStudents);
-			$resultStudents->execute($dataStudents);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		if ($resultStudents->rowCount()<1) {
-			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
-			print "</div>" ;
-		}
-		else {
-			print "<tr>" ;
-				print "<td>" ;
-					print "<b>Student</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>" ; if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; } print "</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>" ; if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; } print "</b>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>Comment</b>" ;
-				print "</td>" ;
-			print "</tr>" ;
-		
-		
-			while ($rowStudents=$resultStudents->fetch()) {
-				//COLOR ROW BY STATUS!
-				print "<tr>" ;
-					print "<td>" ;
-						print formatName("", $rowStudents["preferredName"], $rowStudents["surname"], "Student", true) ;
-					print "</td>" ;
-					
-					try {
-						$dataEntry=array("gibbonMarkbookColumnID"=>$gibbonMarkbookColumnID, "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
-						$sqlEntry="SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
-						$resultEntry=$connection2->prepare($sqlEntry);
-						$resultEntry->execute($dataEntry);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-					if ($resultEntry->rowCount()==1) {
-						$rowEntry=$resultEntry->fetch() ;
-						$styleAttainment="" ;
-						if ($rowEntry["attainmentConcern"]=="Y") {
-							$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
-						}
-						print "<td style='text-align: center'>" ;
-						$attainment=$rowEntry["attainmentValue"] ;
-						if ($rowEntry["attainmentValue"]=="Complete") {
-							$attainment="CO" ;
-						}
-						else if ($rowEntry["attainmentValue"]=="Incomplete") {
-							$attainment="IC" ;
-						}
-						print "<span $styleAttainment title='" . htmlPrep($rowEntry["attainmentDescriptor"]) . "'>$attainment</span>" ;
-						print "</td>" ;
-						$styleEffort="" ;
-						if ($rowEntry["effortConcern"]=="Y") {
-							$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
-						}
-						$effort=$rowEntry["effortValue"] ;
-						if ($rowEntry["effortValue"]=="Complete") {
-							$effort="CO" ;
-						}
-						else if ($rowEntry["effortValue"]=="Incomplete") {
-							$effort="IC" ;
-						}
-						print "<td style='text-align: center;'>" ;
-						print "<span $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort</span>" ;
-						print "</td>" ;
-						print "<td style='text-align: center;'>" ;
-						$style="" ;
-						if ($rowEntry["comment"]!="") {
-							print "<span $style title='" . htmlPrep($rowEntry["comment"]) . "'>" . substr($rowEntry["comment"], 0, 10) . "...</span>" ;
-						}
-						print "</td>" ;
-					}
-					else {
-						print "<td colspan=3>" ;
-							print "No data." ;
-						print "</td>" ;
-					}
-				print "</tr>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    $alert = getAlert($guid, $connection2, 002);
+
+    //Proceed!
+	$dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
+	$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart
+		FROM gibbonCourseClassPerson
+			JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+		WHERE role='Student'
+			AND gibbonCourseClassID=:gibbonCourseClassID
+			AND status='Full'
+			AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."')
+			AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
+		ORDER BY surname, preferredName";
+	$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents, '_');
+    if ($resultStudents->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+
+		$excel = new Gibbon\Excel('markbookColumn.xlsx');
+		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+			return Gibbon\csv::generate($pdo, 'markbookColumn');
+		$excel->setActiveSheetIndex(0);
+		$excel->getProperties()->setTitle('Markbook Data');
+		$excel->getProperties()->setSubject('Markbook Data');
+		$excel->getProperties()->setDescription('Markbook Data');
+
+        //Create border and fill style
+        $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
+        $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+
+        //Auto set column widths
+        for($col = 'A'; $col !== 'E'; $col++)
+            $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Student'));
+        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
+
+        if ($attainmentAlternativeNameAbrev != '') {
+            $x = $attainmentAlternativeNameAbrev;
+        } else {
+            $x = __($guid, 'Att');
+        }
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, $x);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
+        if ($effortAlternativeNameAbrev != '') {
+            $x = $effortAlternativeNameAbrev;
+        } else {
+            $x = __($guid, 'Eff');
+        }
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, $x);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Com'));
+        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
+
+		$r = 1;
+        while ($rowStudents = $resultStudents->fetch()) {
+            //COLOR ROW BY STATUS!
+			$r++;
+			//Column A
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
+            $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
+
+            //Column B
+			$x = '';
+			$dataEntry = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
+			$sqlEntry = 'SELECT *
+				FROM gibbonMarkbookEntry
+				WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID
+					AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
+			if (is_null($resultEntry = $pdo->executeQuery($dataEntry, $sqlEntry))) {
+				$x .= $pdo->getError();
 			}
-		}
-	print "</table>" ;
+            if ($resultEntry->rowCount() == 1) {
+                $rowEntry = $resultEntry->fetch();
+                $attainment = $rowEntry['attainmentValue'];
+                if ($rowEntry['attainmentValue'] == 'Complete') {
+                    $attainment = 'CO';
+                } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
+                    $attainment = 'IC';
+                }
+                $x .= htmlPrep($rowEntry['attainmentValue']);
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $x);
+                $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
+                $effort = $rowEntry['effortValue'];
+                if ($rowEntry['effortValue'] == 'Complete') {
+                    $effort = 'CO';
+                } elseif ($rowEntry['effortValue'] == 'Incomplete') {
+                    $effort = 'IC';
+                }
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, htmlPrep($rowEntry['effortValue']));
+                $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
+                $excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, htmlPrep($rowEntry['comment']));
+                $excel->getActiveSheet()->getStyleByColumnAndRow(3, $r)->applyFromArray($style_border);
+            } else {
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, 'No data.');
+                $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
+            }
+        }
+    }
+	$excel->exportWorksheet();
 }
-
-$_SESSION[$guid]["exportToExcelParams"]="" ;
-?>

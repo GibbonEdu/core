@@ -17,100 +17,58 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_edit.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessments_manage.php'>" . _('Manage External Assessments') . "</a> > </div><div class='trailEnd'>" . _('Edit External Assessment') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	//Check if school year specified
-	$gibbonExternalAssessmentID=$_GET["gibbonExternalAssessmentID"] ;
-	if ($gibbonExternalAssessmentID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
-			$sql="SELECT * FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
-			print "</div>" ;
-		}
-		else {
-			//Let's go!
-			$row=$result->fetch() ;
-			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_editProcess.php?gibbonExternalAssessmentID=$gibbonExternalAssessmentID" ?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage.php'>".__($guid, 'Manage External Assessments')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit External Assessment').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    //Check if school year specified
+    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+    if ($gibbonExternalAssessmentID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
+            $sql = 'SELECT * FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record cannot be found.');
+            echo '</div>';
+        } else {
+            //Let's go!
+            $row = $result->fetch(); ?>
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_editProcess.php?gibbonExternalAssessmentID=$gibbonExternalAssessmentID" ?>">
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+						<b><?php echo __($guid, 'Name') ?> *</b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=50 value="<?php if (isset($row["name"])) { print htmlPrep(_($row["name"])) ; } ?>" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=50 value="<?php if (isset($row['name'])) { echo htmlPrep(__($guid, $row['name'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -119,11 +77,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Short Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=10 value="<?php if (isset($row["nameShort"])) { print htmlPrep(_($row["nameShort"])) ; } ?>" type="text" style="width: 300px">
+						<input name="nameShort" id="nameShort" maxlength=10 value="<?php if (isset($row['nameShort'])) { echo htmlPrep(__($guid, $row['nameShort'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
@@ -132,11 +90,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Description') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Brief description of how scale is used.') ?></i></span>
+						<b><?php echo __($guid, 'Description') ?> *</b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Brief description of how scale is used.') ?></span>
 					</td>
 					<td class="right">
-						<input name="description" id="description" maxlength=50 value="<?php if (isset($row["description"])) { print _($row["description"]) ; } ?>" type="text" style="width: 300px">
+						<input name="description" id="description" maxlength=50 value="<?php if (isset($row['description'])) { echo __($guid, $row['description']); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var description=new LiveValidation('description');
 							description.add(Validate.Presence);
@@ -145,114 +103,110 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Active') ?> *</b><br/>
+						<b><?php echo __($guid, 'Active') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select name="active" id="active" style="width: 302px">
-							<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-							<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+						<select name="active" id="active" class="standardWidth">
+							<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+							<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Allow File Upload') ; ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Should the student record include the option of a file upload?') ; ?> </i></span>
+						<b><?php echo __($guid, 'Allow File Upload'); ?> *</b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Should the student record include the option of a file upload?'); ?> </span>
 					</td>
 					<td class="right">
-						<select name="allowFileUpload" id="allowFileUpload" style="width: 302px">
-							<option <?php if ($row["allowFileUpload"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
-							<option <?php if ($row["allowFileUpload"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+						<select name="allowFileUpload" id="allowFileUpload" class="standardWidth">
+							<option <?php if ($row['allowFileUpload'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+							<option <?php if ($row['allowFileUpload'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
-						<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<?php print $_GET["gibbonExternalAssessmentID"] ?>" type="hidden">
-						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<?php echo $_GET['gibbonExternalAssessmentID'] ?>" type="hidden">
+						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
 			</form>
 			<?php
-			
-			print "<h2>" ;
-			print _("Edit Fields") ;
-			print "</h2>" ;
-			
-			try {
-				$data=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID); 
-				$sql="SELECT * FROM gibbonExternalAssessmentField WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, `order`" ; 
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
 
-			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit_field_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-			print "</div>" ;
-			
-			if ($result->rowCount()<1) {
-				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
-				print "</div>" ;
-			}
-			else {
-				print "<table cellspacing='0' style='width: 100%'>" ;
-					print "<tr class='head'>" ;
-						print "<th>" ;
-							print _("Name") ;
-						print "</th>" ;
-						print "<th>" ;
-							print _("Category") ;
-						print "</th>" ;
-						print "<th>" ;
-							print _("Order") ;
-						print "</th>" ;
-						print "<th>" ;
-							print _("Actions") ;
-						print "</th>" ;
-					print "</tr>" ;
-					
-					$count=0;
-					$rowNum="odd" ;
-					while ($row=$result->fetch()) {
-						if ($count%2==0) {
-							$rowNum="even" ;
-						}
-						else {
-							$rowNum="odd" ;
-						}
-						
-						//COLOR ROW BY STATUS!
-						print "<tr class=$rowNum>" ;
-							print "<td>" ;
-								print _($row["name"]) ;
-							print "</td>" ;
-							print "<td>" ;
-								print $row["category"] ;
-							print "</td>" ;
-							print "<td>" ;
-								print $row["order"] ;
-							print "</td>" ;
-							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID=" . $row["gibbonExternalAssessmentFieldID"] . "&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_edit_field_delete.php&gibbonExternalAssessmentFieldID=" . $row["gibbonExternalAssessmentFieldID"] . "&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-							print "</td>" ;
-						print "</tr>" ;
-						
-						$count++ ;
-					}
-				print "</table>" ;
-				
-			}
-		}
-	}
+            echo '<h2>';
+            echo __($guid, 'Edit Fields');
+            echo '</h2>';
+
+            try {
+                $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
+                $sql = 'SELECT * FROM gibbonExternalAssessmentField WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, `order`';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            echo "<div class='linkTop'>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_edit_field_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+            echo '</div>';
+
+            if ($result->rowCount() < 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            } else {
+                echo "<table cellspacing='0' style='width: 100%'>";
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Name');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Category');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Order');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Actions');
+                echo '</th>';
+                echo '</tr>';
+
+                $count = 0;
+                $rowNum = 'odd';
+                while ($row = $result->fetch()) {
+                    if ($count % 2 == 0) {
+                        $rowNum = 'even';
+                    } else {
+                        $rowNum = 'odd';
+                    }
+
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
+                    echo '<td>';
+                    echo __($guid, $row['name']);
+                    echo '</td>';
+                    echo '<td>';
+                    echo $row['category'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $row['order'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID='.$row['gibbonExternalAssessmentFieldID']."&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_delete.php&gibbonExternalAssessmentFieldID='.$row['gibbonExternalAssessmentFieldID']."&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo '</td>';
+                    echo '</tr>';
+
+                    ++$count;
+                }
+                echo '</table>';
+            }
+        }
+    }
 }
 ?>

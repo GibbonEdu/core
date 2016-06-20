@@ -17,118 +17,107 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Start session
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-//Check to see if academic year id variables are set, if not set them 
-if (isset($_SESSION[$guid]["gibbonAcademicYearID"])==FALSE OR isset($_SESSION[$guid]["gibbonSchoolYearName"])==FALSE) {
-	setCurrentSchoolYear($guid, $connection2) ;
+//Check to see if academic year id variables are set, if not set them
+if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
+    setCurrentSchoolYear($guid, $connection2);
 }
 
 //Check password address is not blank
-$password=$_POST["password"] ;
-$passwordNew=$_POST["passwordNew"] ;
-$passwordConfirm=$_POST["passwordConfirm"] ;
-$forceReset=NULL ;
-if (isset($_POST["forceReset"])) {
-	$forceReset=$_POST["forceReset"] ;
+$password = $_POST['password'];
+$passwordNew = $_POST['passwordNew'];
+$passwordConfirm = $_POST['passwordConfirm'];
+$forceReset = null;
+if (isset($_POST['forceReset'])) {
+    $forceReset = $_POST['forceReset'];
 }
-if ($forceReset!="Y") {
-	$forceReset="N" ;
+if ($forceReset != 'Y') {
+    $forceReset = 'N';
 }
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php&forceReset=$forceReset" ;
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php&forceReset=$forceReset";
 
 //Check passwords are not blank
-if ($password=="" OR $passwordNew=="" or $passwordConfirm=="") {
-	$URL.="&editReturn=fail0" ;
-	header("Location: {$URL}");
+if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+} else {
+    //Check that new password is not same as old password
+    if ($password == $passwordNew) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+    } else {
+        //Check strength of password
+        $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
+
+        if ($passwordMatch == false) {
+            $URL .= '&return=error6';
+            header("Location: {$URL}");
+        } else {
+            //Check new passwords match
+            if ($passwordNew != $passwordConfirm) {
+                $URL .= '&return=error4';
+                header("Location: {$URL}");
+            } else {
+                //Check current password
+                if (hash('sha256', $_SESSION[$guid]['passwordStrongSalt'].$password) != $_SESSION[$guid]['passwordStrong']) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //If answer insert fails...
+                    $salt = getSalt();
+                    $passwordStrong = hash('sha256', $salt.$passwordNew);
+                    try {
+                        $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $_SESSION[$guid]['username']);
+                        $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    //Check for forceReset and take action
+                    if ($forceReset == 'Y') {
+                        //Update passwordForceReset field
+                        try {
+                            $data = array('username' => $_SESSION[$guid]['username']);
+                            $sql = "UPDATE gibbonPerson SET passwordForceReset='N' WHERE username=:username";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $URL .= '&return=errora';
+                            header("Location: {$URL}");
+                            exit();
+                        }
+                        $_SESSION[$guid]['passwordForceReset'] = 'N';
+                        $_SESSION[$guid]['passwordStrongSalt'] = $salt;
+                        $_SESSION[$guid]['passwordStrong'] = $passwordStrong;
+                        $_SESSION[$guid]['pageLoads'] = null;
+                        $URL .= '&return=successa';
+                        header("Location: {$URL}");
+                        exit() ;
+                    }
+
+                    $_SESSION[$guid]['passwordStrongSalt'] = $salt;
+                    $_SESSION[$guid]['passwordStrong'] = $passwordStrong;
+                    $_SESSION[$guid]['pageLoads'] = null;
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+            }
+        }
+    }
 }
-else {
-	//Check that new password is not same as old password
-	if ($password==$passwordNew) {
-		$URL.="&editReturn=fail7" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Check strength of password
-		$passwordMatch=doesPasswordMatchPolicy($connection2, $passwordNew) ;
-		
-		if ($passwordMatch==FALSE) {
-			//Fail 6
-			$URL.="&editReturn=fail6" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Check new passwords match
-			if ($passwordNew!=$passwordConfirm) {
-				$URL.="&editReturn=fail2" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Check current password
-				if (hash("sha256", $_SESSION[$guid]["passwordStrongSalt"].$password)!=$_SESSION[$guid]["passwordStrong"]) {
-					$URL.="&editReturn=fail3" ;
-					header("Location: {$URL}");
-				}
-				else {
-					//If answer insert fails...
-					$salt=getSalt() ;
-					$passwordStrong=hash("sha256", $salt.$passwordNew) ;
-					try {
-						$data=array("passwordStrong"=>$passwordStrong, "salt"=>$salt, "username"=>$_SESSION[$guid]["username"]); 
-						$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						$URL.="&editReturn=fail1" ;
-						header("Location: {$URL}");
-						break ;
-					}
-					
-					//Check for forceReset and take action
-					if ($forceReset=="Y") {
-						//Update passwordForceReset field
-						try {
-							$data=array("username"=>$_SESSION[$guid]["username"]); 
-							$sql="UPDATE gibbonPerson SET passwordForceReset='N' WHERE username=:username";
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
-						}
-						catch(PDOException $e) { 
-							$URL.="&forceResetReturn=fail0" ;
-							header("Location: {$URL}");
-							break ;
-						}
-						$_SESSION[$guid]["passwordForceReset"]="N" ;
-						$URL.="&forceResetReturn=success0" ;
-					}
-					
-					
-					$_SESSION[$guid]["passwordStrongSalt"]=$salt ;
-					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
-					$_SESSION[$guid]["pageLoads"]=NULL ;
-					$URL.="&editReturn=success0" ;
-					header("Location: {$URL}");	
-				}
-			}
-		}
-	}
-}
-?>
