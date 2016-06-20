@@ -1790,7 +1790,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
                                     };
                                     $_SESSION[$guid]['sidebarExtra'] .= "value='Absent'>".__($guid, 'Absent').'</option>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<option ';
+                                     $_SESSION[$guid]['sidebarExtra'] .= '<option ';
                                     if ($status == 'Left') {
                                         $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
                                     };

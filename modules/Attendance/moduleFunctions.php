@@ -407,3 +407,79 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
     echo $output;
 }
+
+function renderAttendanceTypeSelect( $guid, $lastType = '', $name='type', $width='302px' ) {
+
+    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name'>";
+    echo '<option ';
+    if ($lastType == 'Present') {
+        echo 'selected ';
+    };
+    echo "value='Present'>".__($guid, 'Present').'</option>';
+    echo '<option ';
+    if ($lastType == 'Present - Late') {
+        echo 'selected ';
+    };
+    echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
+    echo '<option ';
+    if ($lastType == 'Present - Offsite') {
+        echo 'selected ';
+    };
+    echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
+    echo '<option ';
+    if ($lastType == 'Absent') {
+        echo 'selected ';
+    };
+    echo "value='Absent'>".__($guid, 'Absent').'</option>';
+    echo '<option ';
+    if ($lastType == 'Left') {
+        echo 'selected ';
+    };
+    echo "value='Left'>".__($guid, 'Left').'</option>';
+    echo '<option ';
+    if ($lastType == 'Left - Early') {
+        echo 'selected ';
+    };
+    echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
+    echo '</select>';
+}
+
+function renderAttendanceReasonSelect( $guid, $lastReason = '', $name='reason', $width='302px' ) {
+    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name'>";
+    echo '<option ';
+    if ($lastReason == '') {
+        echo 'selected ';
+    };
+    echo "value=''></option>";
+    echo '<option ';
+    if ($lastReason == 'Pending') {
+        echo 'selected ';
+    };
+    echo "value='Pending'>".__($guid, 'Pending').'</option>';
+    echo '<option ';
+    if ($lastReason == 'Unexcused') {
+        echo 'selected ';
+    };
+    echo "value='Unexcused'>".__($guid, 'Unexcused').'</option>';
+    echo '<option ';
+    if ($lastReason == 'Education') {
+        echo 'selected ';
+    };
+    echo "value='Education'>".__($guid, 'Education').'</option>';
+    echo '<option ';
+    if ($lastReason == 'Family') {
+        echo 'selected ';
+    };
+    echo "value='Family'>".__($guid, 'Family').'</option>';
+    echo '<option ';
+    if ($lastReason == 'Medical') {
+        echo 'selected ';
+    };
+    echo "value='Medical'>".__($guid, 'Medical').'</option>';
+    echo '<option ';
+    if ($lastReason == 'Other') {
+        echo 'selected ';
+    };
+    echo "value='Other'>".__($guid, 'Other').'</option>';
+    echo '</select>';
+}

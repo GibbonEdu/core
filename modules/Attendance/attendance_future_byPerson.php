@@ -198,16 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<?php
-                        echo "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>";
-						echo "<option value=''></option>";
-						echo "<option value='Pending'>".__($guid, 'Pending').'</option>';
-						echo "<option value='Education'>".__($guid, 'Education').'</option>';
-						echo "<option value='Family'>".__($guid, 'Family').'</option>';
-						echo "<option value='Medical'>".__($guid, 'Medical').'</option>';
-						echo "<option value='Other'>".__($guid, 'Other').'</option>';
-						echo '</select>';
-						?>
+						<?php renderAttendanceReasonSelect($guid); ?>
 					</td>
 				</tr>
 				<tr>
