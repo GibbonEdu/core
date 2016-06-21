@@ -324,7 +324,7 @@
             $info .= '<li>'.__($guid, 'Type').' - '.$markbook->getTypeDescription( $columnType ) .'</li>';
 
             $weightInfo = '';
-            $includeMarks = !empty($column->getData('completeDate'));
+            $includeMarks = ($column->getData('completeDate') != false);
 
             if (isset($unit[0])) {
                 $info .= '<li>'.__($guid, 'Unit').' - '. $unit[0] .'</li>';
@@ -354,7 +354,7 @@
             if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {
                 $info .= '<li>'. __($guid, 'Type Weighting').' '.floatval( $markbook->getWeightingByType($columnType) ).'</li>';
 
-                if ( empty($markbook->getWeightingByType($columnType))) {
+                if ( $markbook->getWeightingByType($columnType) == false ) {
                     $weightInfo .= __($guid, 'Type Weighting').' '.floatval( $markbook->getWeightingByType($columnType) ).'<br/>';
                     $includeMarks = false;
                 }
