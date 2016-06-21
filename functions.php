@@ -3407,11 +3407,20 @@ function getRoleCategory($gibbonRoleID, $connection2)
     return $output;
 }
 
-//Converts a specified date (YYYY-MM-DD) into a UNIX timestamp
+//Converts a specified date (YYYY-MM-DD) into a UNIX timestamp, factoring in timezones
 function dateConvertToTimestamp($date)
 {
     list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
     $timestamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
+
+    return $timestamp;
+}
+
+//Converts a specified date (YYYY-MM-DD) into a UNIX timestamp, at GMT
+function dateConvertToTimestampGM($date)
+{
+    list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
+    $timestamp = gmmktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
 
     return $timestamp;
 }
