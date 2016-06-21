@@ -279,7 +279,7 @@ class markbookView
                 $this->columns[ $i ] = $column;
 
                 //WORK OUT IF THERE IS SUBMISSION
-                if ( !empty($column->getData('gibbonPlannerEntryID'))) {
+                if ( $column->getData('gibbonPlannerEntryID') != false ) {
                     try {
                         $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') ); 
                         $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y' LIMIT 1" ;
