@@ -39,7 +39,13 @@ function setStringReplacementList($connection2, $guid)
 {
     //$caller = debug_backtrace();
     //error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
-    $trans = new Gibbon\trans();
+    //$trans = new Gibbon\trans();
+    
+    global $trans;
+    if ($trans == null) {
+        $trans = new Gibbon\trans();
+    }
+    
     $trans->setStringReplacementList();
 }
 
@@ -49,7 +55,12 @@ function __($guid, $text)
 
     //$caller = debug_backtrace();
     //error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
-    $trans = new Gibbon\trans();
+    //$trans = new Gibbon\trans();
+    global $trans;
+    if ($trans == null) {
+        $trans = new Gibbon\trans();
+    }
+
     $x = true;
     if (empty($guid)) {
         $x = false;

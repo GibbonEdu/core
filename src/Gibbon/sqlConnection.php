@@ -79,11 +79,6 @@ class sqlConnection
 		else
 			return NULL;
 
-		global $countPDO;
-		//$countPDO++;
-		//echo "New PDO (".$countPDO.") ";
-
-
 		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message);
 	}
 
@@ -128,7 +123,6 @@ class sqlConnection
 				$this->error = $e->getMessage();
 			}
 			$globalPDO = $this->pdo;
-			//echo "New Connection";
 		}
 
 		return $this;
