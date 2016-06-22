@@ -22,7 +22,7 @@ namespace Gibbon;
 /**
  * Translation Class
  *
- * @version	22nd June 2016
+ * @version	16th April 2016
  * @since	16th April 2016
  * @author	Craig Rayner
  */
@@ -41,12 +41,13 @@ class trans
 	/**
 	 * Construct
 	 *
-	 * @version 22nd June 2016
+	 * @version 16th April 2016
 	 * @since	16th April 2016
 	 * @return	void
 	 */
 	public function __construct()
 	{
+		$this->pdo = new sqlConnection();
 		$this->session = new session();
 	}
 
@@ -54,13 +55,12 @@ class trans
 	 * Get and store custom string replacements in session
 	 *
 	 * (Moved from Functions)
-	 * @version 22nd June 2016
+	 * @version 19th April 2016
 	 * @since	Old
 	 * @return	void
 	 */
 	public function setStringReplacementList()
 	{
-		$this->pdo = new sqlConnection();
 		$this->session->set('stringReplacement', array()) ;
 		$sql="SELECT * FROM gibbonString ORDER BY priority DESC, original" ;
 		$result = $this->pdo->executeQuery(array(), $sql);
