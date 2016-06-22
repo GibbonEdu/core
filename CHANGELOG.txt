@@ -16,6 +16,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v13.0.00
+--------
+	Headlines
+		...
+
+	Changes With Important Notices
+		...
+
+	Significant Changes
+		...
+
+	Security
+		...
+
+	Tweaks & Bug Fixes
+		System: fixed sql loading issue in trans class
+		School Admin: fixed timezone issue in managing special days
+		User Admin: fixed PHP Notice issue in user import
+
+
 v12.0.00
 --------
 	Headlines

@@ -430,3 +430,11 @@ ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonCourseClassID` int(8) unsigne
 CREATE TABLE `gibbonAttendanceLogCourseClass` (`gibbonAttendanceLogCourseClassID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,`gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,`gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,`date` date DEFAULT NULL,`timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonAttendanceLogCourseClassID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;end
 ALTER TABLE `gibbonAttendanceLogPerson` CHANGE `reason` `reason` ENUM('','Pending','Education','Family','Medical','Other','Unexcused') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';end
 ";
+
+
+//v13.0.00
+++$count;
+$sql[$count][0] = '13.0.00';
+$sql[$count][1] = "
+
+";
