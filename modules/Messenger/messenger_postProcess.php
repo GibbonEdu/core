@@ -1656,7 +1656,7 @@ else {
                     if ($choices!="") {
                         foreach ($choices as $t) {
       						try {
-      							$data=array("AI"=>$AI, "t"=>$t, "students"=>$students, "parents"=>$parents);
+      							$data=array("AI"=>$AI, "t"=>$t." ".$selectedDate, "students"=>$students, "parents"=>$parents);
       							$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Attendance', id=:t, students=:students, parents=:parents" ;
       							$result=$connection2->prepare($sql);
       							$result->execute($data);
