@@ -431,7 +431,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($parent and $children != false) {
         try {
           $dataAttendance=array( "gibbonPersonID" => $_SESSION[$guid]['gibbonPersonID'], "selectedDate"=>$date, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d") );
-          $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, galp.date FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND ".preg_replace('/gibbonPersonID/', 'galp.gibbonPersonID', $children)." ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
+          $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, gp.firstName FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND ".preg_replace('/gibbonPersonID/', 'galp.gibbonPersonID', $children)." ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
           $resultAttendance=$connection2->prepare($sqlAttendance);
           $resultAttendance->execute($dataAttendance);
         }
@@ -443,7 +443,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             $dataPosts['date58'] = $date;
             $dataPosts['date59'] = $date;
             $dataPosts['attendanceType2'] = $studentAttendance['type'];
-            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id, ' on ', messageWall_date1) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType2 AND (messageWall_date1=:date57 OR messageWall_date2=:date58 OR messageWall_date3=:date59) )";
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."', ' on ', messageWall_date1) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType2 AND (messageWall_date1=:date57 OR messageWall_date2=:date58 OR messageWall_date3=:date59) )";
 
         }
     }
