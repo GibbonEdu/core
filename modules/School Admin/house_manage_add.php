@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=10 value="" type="text" class="standardWidth">
+					<input name="name" id="name" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
+					<input name="nameShort" id="nameShort" maxlength=6 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
