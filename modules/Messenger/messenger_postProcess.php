@@ -1688,16 +1688,19 @@ else {
                             }
                             $lastStudent=$currentStudent ;
                           }
-                          if (count($students)<1) {
+
+                          if (count($selectedStudents)<1) {
                           //If we have no students
                           }
                           else {
                             if ($parents=="Y" AND ($email=="Y" OR ($sms=="Y" AND $countryCode!=""))) {
                               try { //Get the familyIDs for each student logged
-                                $dataFamily=array("gibbonPersonIDs"=>join(",",$selectedStudents));
-                                $sqlFamily="SELECT DISTINCT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID IN (:gibbonPersonIDs)" ;
+                                $dataFamily=array();
+                                $sqlFamily="SELECT DISTINCT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID IN (".implode(",",$selectedStudents).")" ;
                                 $resultFamily=$connection2->prepare($sqlFamily);
                                 $resultFamily->execute($dataFamily);
+
+                                $resultFamilies = $resultFamily->fetchAll();
                               }
                               catch(PDOException $e) { }
                             }
@@ -1705,7 +1708,7 @@ else {
                             //Get emails
                             if ($email=="Y") {
                               if ($parents=="Y") {
-                                while ($rowFamily=$resultFamily->fetch()) { //Get the emails for each familyID
+                                foreach ($resultFamilies as $rowFamily) { //Get the emails for each familyID
                                   try {
                                     $dataEmail=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
                                     $sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
@@ -1732,10 +1735,12 @@ else {
                               }
                             } //end get emails
 
+                            
+
                             //Get SMS
                             if ($sms=="Y" AND $countryCode!="") {
                               if ($parents=="Y") {
-                                while ($rowFamily=$resultFamily->fetch()) { //Get the people for each familyID
+                                foreach ($resultFamilies as $rowFamily) { //Get the people for each familyID
                                   try {
                                     $dataPerson=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
                                     $sqlPerson="SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y'" ;
