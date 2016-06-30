@@ -1889,7 +1889,7 @@ else {
 				$mail->AltBody=$bodyPlain ;
 
 				if(!$mail->Send()) {
-				 	$partialFail=TRUE ;
+					$partialFail=TRUE ;
 				}
 
 				//Get message count
