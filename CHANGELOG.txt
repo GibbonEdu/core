@@ -32,6 +32,8 @@ v13.0.00
 
 	Tweaks & Bug Fixes
 		System: fixed sql loading issue in trans class
+		System: enabled Smart Workflow Help for newly added staff
+		System: turned on Smart Workflow help for admin user created during install
 		Markbook: added settings to enable/disable Effort and Rubrics
 		School Admin: fixed timezone issue in managing special days
 		Students: fixed PHP Notice bug in Student Enrolment Add screen

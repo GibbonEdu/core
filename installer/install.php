@@ -1186,7 +1186,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                             try {
                                                 $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
-                                                $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
+                                                $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching', smartWorkflowHelp='Y'";
                                                 $resultStaff = $connection2->prepare($sqlStaff);
                                                 $resultStaff->execute($dataStaff);
                                             } catch (PDOException $e) {
