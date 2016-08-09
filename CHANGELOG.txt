@@ -32,6 +32,7 @@ v13.0.00
 
 	Tweaks & Bug Fixes
 		System: fixed sql loading issue in trans class
+		Markbook: added settings to enable/disable Effort and Rubrics
 		School Admin: fixed timezone issue in managing special days
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		User Admin: fixed PHP Notice issue in user import

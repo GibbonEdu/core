@@ -22,7 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-//Get alternative header names
+//Get settings
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
@@ -39,7 +41,7 @@ echo "<script type='text/javascript'>";
     $(document).ready(function(){
         autosize($('textarea'));
     });
-    
+
     // Map [Enter] key to work like the [Tab] key
     // Daniel P. Clark 2014
     // Modified for Gibbon Markbook Edit Data
@@ -235,11 +237,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $attainmentID[$i] = $row2['gibbonScaleIDAttainment'];
                         $effortID[$i] = $row2['gibbonScaleIDEffort'];
                         $gibbonRubricIDAttainment[$i] = null;
-                        if (isset($row['gibbonRubricIDAttainment'])) {
+                        if (isset($row['gibbonRubricIDAttainment']) AND $enableRubrics =='Y') {
                             $gibbonRubricIDAttainment[$i] = $row['gibbonRubricIDAttainment'];
                         }
                         $gibbonRubricIDEffort[$i] = null;
-                        if (isset($row['gibbonRubricIDEffort'])) {
+                        if (isset($row['gibbonRubricIDEffort']) AND $enableRubrics =='Y') {
                             $gibbonRubricIDEffort[$i] = $row['gibbonRubricIDEffort'];
                         }
 
@@ -326,7 +328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         if ($row2['attainment'] == 'Y') {
 
                             if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
-                                
+
                                 echo "<th style='text-align: center; width: 60px'>";
                                     echo "<span title='".__($guid, 'Raw Attainment Mark')."'>".__($guid, 'Mark').'</span>';
                                 echo '</th>';
@@ -366,35 +368,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             }
                             echo '</th>';
                         }
-                        if ($row2['effort'] == 'Y') {
-                            echo "<th style='text-align: center; width: 30px'>";
-                            $scale = '';
-                            if ($effortID[$i] != '') {
-                                try {
-                                    $dataScale = array('gibbonScaleID' => $effortID[$i]);
-                                    $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                    $resultScale = $connection2->prepare($sqlScale);
-                                    $resultScale->execute($dataScale);
-                                } catch (PDOException $e) {
-                                }
+                        if ($enableEffort == 'Y') {
+                            if ($row2['effort'] == 'Y') {
+                                echo "<th style='text-align: center; width: 30px'>";
                                 $scale = '';
-                                if ($resultScale->rowCount() == 1) {
-                                    $rowScale = $resultScale->fetch();
-                                    $scale = ' - '.$rowScale['name'];
-                                    if ($rowScale['usage'] != '') {
-                                        $scale = $scale.': '.$rowScale['usage'];
+                                if ($effortID[$i] != '') {
+                                    try {
+                                        $dataScale = array('gibbonScaleID' => $effortID[$i]);
+                                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                                        $resultScale = $connection2->prepare($sqlScale);
+                                        $resultScale->execute($dataScale);
+                                    } catch (PDOException $e) {
                                     }
+                                    $scale = '';
+                                    if ($resultScale->rowCount() == 1) {
+                                        $rowScale = $resultScale->fetch();
+                                        $scale = ' - '.$rowScale['name'];
+                                        if ($rowScale['usage'] != '') {
+                                            $scale = $scale.': '.$rowScale['usage'];
+                                        }
+                                    }
+                                    $gibbonScaleIDEffort = $rowScale['gibbonScaleID'];
+                                    echo "<input name='scaleEffort' id='scaleEffort' value='".$effortID[$i]."' type='hidden'>";
+                                    echo "<input name='lowestAcceptableEffort' id='lowestAcceptableEffort' value='".$rowScale['lowestAcceptable']."' type='hidden'>";
                                 }
-                                $gibbonScaleIDEffort = $rowScale['gibbonScaleID'];
-                                echo "<input name='scaleEffort' id='scaleEffort' value='".$effortID[$i]."' type='hidden'>";
-                                echo "<input name='lowestAcceptableEffort' id='lowestAcceptableEffort' value='".$rowScale['lowestAcceptable']."' type='hidden'>";
+                                if ($effortAlternativeName != '' and $effortAlternativeNameAbrev != '') {
+                                    echo "<span title='".$effortAlternativeName.htmlPrep($scale)."'>".$effortAlternativeNameAbrev.'</span>';
+                                } else {
+                                    echo "<span title='".__($guid, 'Effort').htmlPrep($scale)."'>".__($guid, 'Eff').'</span>';
+                                }
+                                echo '</th>';
                             }
-                            if ($effortAlternativeName != '' and $effortAlternativeNameAbrev != '') {
-                                echo "<span title='".$effortAlternativeName.htmlPrep($scale)."'>".$effortAlternativeNameAbrev.'</span>';
-                            } else {
-                                echo "<span title='".__($guid, 'Effort').htmlPrep($scale)."'>".__($guid, 'Eff').'</span>';
-                            }
-                            echo '</th>';
                         }
                         if ($row2['comment'] == 'Y' or $row2['uploadedResponse'] == 'Y') {
                             echo "<th style='text-align: center; width: 80'>";
@@ -581,24 +585,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                             if ($row2['gibbonScaleIDAttainment'] != '') {
                                                 echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", 'value', true, '58', 'value', $rowEntry['attainmentValue']);
                                             }
-                                    
-                                    if ($row2['gibbonRubricIDAttainment'] != '') {
-                                        echo "  <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+
+                                    if ($row2['gibbonRubricIDAttainment'] != '' AND $enableRubrics =='Y') {
+                                        echo " <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                     }
-                                   
+
                                     echo '</td>';
                                 }
-                                if ($row2['effort'] == 'Y') {
-                                    echo "<td style='text-align: center; white-space: nowrap;'>";
-                                    if ($row2['gibbonScaleIDEffort'] != '') {
-                                        echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDEffort, "$count-effortValue", 'value', true, '58', 'value', $rowEntry['effortValue']);
+                                if ($enableEffort == 'Y') {
+                                    if ($row2['effort'] == 'Y') {
+                                        echo "<td style='text-align: center; white-space: nowrap;'>";
+                                        if ($row2['gibbonScaleIDEffort'] != '') {
+                                            echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDEffort, "$count-effortValue", 'value', true, '58', 'value', $rowEntry['effortValue']);
+                                        }
+
+                                        if ($row2['gibbonRubricIDEffort'] != '' AND $enableRubrics =='Y') {
+                                            echo "  <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDEffort']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                        }
+
+                                        echo '</td>';
                                     }
-                                    
-                                    if ($row2['gibbonRubricIDEffort'] != '') {
-                                        echo "  <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDEffort']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
-                                    }
-                                    
-                                    echo '</td>';
                                 }
                                 if ($row2['comment'] == 'Y' or $row2['uploadedResponse'] == 'Y') {
                                     echo "<td style='text-align: right'>";
@@ -655,7 +661,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 									echo $_SESSION[$guid]['i18n']['dateFormatRegEx']; }?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								} ?>." } ); 
+								} ?>." } );
 									</script>
 									<script type="text/javascript">
 										$(function() {

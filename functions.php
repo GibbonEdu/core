@@ -1166,7 +1166,9 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Recent Grades')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__($guid, 'View Markbook').'</a></span></div>';
     $grades = false;
 
-    //Get alternative header names
+    //Get settings
+    $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+    $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
     $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
     $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
     $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
@@ -1196,11 +1198,13 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $gradesOutput .= __($guid, 'Attainment');
         }
         $gradesOutput .= '</th>';
-        $gradesOutput .= "<th style='width: 75px'>";
-        if ($effortAlternativeName != '') {
-            $gradesOutput .= $effortAlternativeName;
-        } else {
-            $gradesOutput .= __($guid, 'Effort');
+        if ($enableEffort == 'Y') {
+            $gradesOutput .= "<th style='width: 75px'>";
+            if ($effortAlternativeName != '') {
+                $gradesOutput .= $effortAlternativeName;
+            } else {
+                $gradesOutput .= __($guid, 'Effort');
+            }
         }
         $gradesOutput .= '</th>';
         $gradesOutput .= '<th>';
@@ -1254,7 +1258,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                     $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
                 }
                 $gradesOutput .= "<div $styleAttainment>".$rowEntry['attainmentValue'];
-                if ($rowEntry['gibbonRubricIDAttainment'] != '') {
+                if ($rowEntry['gibbonRubricIDAttainment'] != '' AND $enableRubrics =='Y') {
                     $gradesOutput .= "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID'].'&gibbonPersonID='.$gibbonPersonID."&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                 }
                 $gradesOutput .= '</div>';
@@ -1263,37 +1267,39 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 $gradesOutput .= '</td>';
             }
-            if ($rowEntry['effort'] == 'N' or ($rowEntry['gibbonScaleIDEffort'] == '' and $rowEntry['gibbonRubricIDEffort'] == '')) {
-                $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
-                $gradesOutput .= __($guid, 'N/A');
-                $gradesOutput .= '</td>';
-            } else {
-                $gradesOutput .= "<td style='text-align: center'>";
-                $effortExtra = '';
-                try {
-                    $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
-                    $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                    $resultEffort = $connection2->prepare($sqlEffort);
-                    $resultEffort->execute($dataEffort);
-                } catch (PDOException $e) {
+            if ($enableEffort == 'Y') {
+                if ($rowEntry['effort'] == 'N' or ($rowEntry['gibbonScaleIDEffort'] == '' and $rowEntry['gibbonRubricIDEffort'] == '')) {
+                    $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
+                    $gradesOutput .= __($guid, 'N/A');
+                    $gradesOutput .= '</td>';
+                } else {
+                    $gradesOutput .= "<td style='text-align: center'>";
+                    $effortExtra = '';
+                    try {
+                        $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
+                        $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                        $resultEffort = $connection2->prepare($sqlEffort);
+                        $resultEffort->execute($dataEffort);
+                    } catch (PDOException $e) {
+                    }
+                    if ($resultEffort->rowCount() == 1) {
+                        $rowEffort = $resultEffort->fetch();
+                        $effortExtra = '<br/>'.__($guid, $rowEffort['usage']);
+                    }
+                    $styleEffort = "style='font-weight: bold'";
+                    if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
+                        $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
+                    }
+                    $gradesOutput .= "<div $styleEffort>".$rowEntry['effortValue'];
+                    if ($rowEntry['gibbonRubricIDEffort'] != '' AND $enableRubrics =='Y') {
+                        $gradesOutput .= "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID'].'&gibbonPersonID='.$gibbonPersonID."&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                    }
+                    $gradesOutput .= '</div>';
+                    if ($rowEntry['effortValue'] != '') {
+                        $gradesOutput .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['effortDescriptor'])).'</b>'.__($guid, $effortExtra).'</div>';
+                    }
+                    $gradesOutput .= '</td>';
                 }
-                if ($resultEffort->rowCount() == 1) {
-                    $rowEffort = $resultEffort->fetch();
-                    $effortExtra = '<br/>'.__($guid, $rowEffort['usage']);
-                }
-                $styleEffort = "style='font-weight: bold'";
-                if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
-                    $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
-                }
-                $gradesOutput .= "<div $styleEffort>".$rowEntry['effortValue'];
-                if ($rowEntry['gibbonRubricIDEffort'] != '') {
-                    $gradesOutput .= "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID'].'&gibbonPersonID='.$gibbonPersonID."&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
-                }
-                $gradesOutput .= '</div>';
-                if ($rowEntry['effortValue'] != '') {
-                    $gradesOutput .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['effortDescriptor'])).'</b>'.__($guid, $effortExtra).'</div>';
-                }
-                $gradesOutput .= '</td>';
             }
             if ($rowEntry['commentOn'] == 'N' and $rowEntry['uploadedResponseOn'] == 'N') {
                 $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: left'>";
