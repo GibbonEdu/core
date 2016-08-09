@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 require_once dirname(__FILE__).'/gibbon.php';
 
-
 //Convert an HTML email body into a plain text email body
 function emailBodyConvert($body)
 {
@@ -722,29 +721,16 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= __($guid, 'There are no records to display.');
         $return .= '</div>';
     } else {
-        $defaultTab = 0;
-        if (isset($_GET['tab'])) {
-            $defaultTab = $_GET['tab'];
-        }
-        $return .= "<script type='text/javascript'>";
-        $return .= '$(function() {';
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '});';
-        $return .= '</script>';
+        $staffDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab');
+        $staffDashboardDefaultTabCount = null;
 
         $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
         $return .= '<ul>';
         $tabCount = 1;
         if ($planner != false or $timetable != false) {
             $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, 'Planner').'</a></li>';
+            if ($staffDashboardDefaultTab == 'Planner')
+                $staffDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
         }
         if (count($rollGroups) > 0) {
@@ -760,6 +746,8 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
 
         foreach ($hooks as $hook) {
             $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, $hook['name']).'</a></li>';
+            if ($staffDashboardDefaultTab == $hook['name'])
+                $staffDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
         }
         $return .= '</ul>';
@@ -802,6 +790,28 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         }
         $return .= '</div>';
     }
+
+    $defaultTab = 0;
+    if (isset($_GET['tab'])) {
+        $defaultTab = $_GET['tab'];
+    }
+    else if (!is_null($staffDashboardDefaultTabCount)) {
+        $defaultTab = $staffDashboardDefaultTabCount-1;
+    }
+
+    $return .= "<script type='text/javascript'>";
+    $return .= '$(function() {';
+    $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
+    $return .= 'active: '.$defaultTab.',';
+    $return .= 'ajaxOptions: {';
+    $return .= 'error: function( xhr, status, index, anchor ) {';
+    $return .= '$( anchor.hash ).html(';
+    $return .= "\"Couldn't load this tab.\" );";
+    $return .= '}';
+    $return .= '}';
+    $return .= '});';
+    $return .= '});';
+    $return .= '</script>';
 
     return $return;
 }
@@ -869,13 +879,13 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                     }
                     ++$count;
 
-                        //Highlight class in progress
-                        if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                            $rowNum = 'current';
-                        }
+                    //Highlight class in progress
+                    if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+                        $rowNum = 'current';
+                    }
 
-                        //COLOR ROW BY STATUS!
-                        $planner .= "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    $planner .= "<tr class=$rowNum>";
                     $planner .= '<td>';
                     $planner .= $row['course'].'.'.$row['class'].'<br/>';
                     $planner .= "<span style='font-style: italic; font-size: 75%'>".substr($row['timeStart'], 0, 5).'-'.substr($row['timeEnd'], 0, 5).'</span>';
@@ -988,33 +998,22 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= __($guid, 'There are no records to display.');
         $return .= '</div>';
     } else {
-        $defaultTab = 0;
-        if (isset($_GET['tab'])) {
-            $defaultTab = $_GET['tab'];
-        }
-        $return .= "<script type='text/javascript'>";
-        $return .= '$(function() {';
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '});';
-        $return .= '</script>';
+        $studentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab');
+        $studentDashboardDefaultTabCount = null;
 
         $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
         $return .= '<ul>';
         $tabCount = 1;
         if ($planner != false or $timetable != false) {
             $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, 'Planner').'</a></li>';
+            if ($studentDashboardDefaultTab == 'Planner')
+                $studentDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
         }
         foreach ($hooks as $hook) {
             $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, $hook['name']).'</a></li>';
+            if ($studentDashboardDefaultTab == $hook['name'])
+                $studentDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
         }
         $return .= '</ul>';
@@ -1042,6 +1041,27 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
         }
         $return .= '</div>';
     }
+
+    $defaultTab = 0;
+    if (isset($_GET['tab'])) {
+        $defaultTab = $_GET['tab'];
+    }
+    else if (!is_null($studentDashboardDefaultTabCount)) {
+        $defaultTab = $studentDashboardDefaultTabCount-1;
+    }
+    $return .= "<script type='text/javascript'>";
+    $return .= '$(function() {';
+    $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
+    $return .= 'active: '.$defaultTab.',';
+    $return .= 'ajaxOptions: {';
+    $return .= 'error: function( xhr, status, index, anchor ) {';
+    $return .= '$( anchor.hash ).html(';
+    $return .= "\"Couldn't load this tab.\" );";
+    $return .= '}';
+    $return .= '}';
+    $return .= '});';
+    $return .= '});';
+    $return .= '</script>';
 
     return $return;
 }
@@ -1650,61 +1670,62 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= __($guid, 'There are no records to display.');
         $return .= '</div>';
     } else {
-        $defaultTab = 0;
-        if (isset($_GET['tab'])) {
-            $defaultTab = $_GET['tab'];
-        }
-        $return .= "<script type='text/javascript'>";
-        $return .= '$(function() {';
-        $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
-        $return .= 'active: '.$defaultTab.',';
-        $return .= 'ajaxOptions: {';
-        $return .= 'error: function( xhr, status, index, anchor ) {';
-        $return .= '$( anchor.hash ).html(';
-        $return .= "\"Couldn't load this tab.\" );";
-        $return .= '}';
-        $return .= '}';
-        $return .= '});';
-        $return .= '});';
-        $return .= '</script>';
+        $parentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab');
+        $parentDashboardDefaultTabCount = null;
 
         $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";
         $return .= '<ul>';
+        $tabCountExtraReset = 0;
         if ($classes != false or $grades != false or $deadlines != false) {
-            $return .= "<li><a href='#tabs1'>".__($guid, 'Learning Overview').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Learning Overview').'</a></li>';
+            $tabCountExtraReset++;
+            if ($parentDashboardDefaultTab == 'Planner')
+                $parentDashboardDefaultTabCount = $tabCountExtraReset;
         }
         if ($timetable != false) {
-            $return .= "<li><a href='#tabs2'>".__($guid, 'Timetable').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Timetable').'</a></li>';
+            $tabCountExtraReset++;
+            if ($parentDashboardDefaultTab == 'Timetable')
+                $parentDashboardDefaultTabCount = $tabCountExtraReset;
         }
         if ($activities != false) {
-            $return .= "<li><a href='#tabs3'>".__($guid, 'Activities').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Activities').'</a></li>';
+            $tabCountExtraReset++;
+            if ($parentDashboardDefaultTab == 'Activities')
+                $parentDashboardDefaultTabCount = $tabCountExtraReset;
         }
-        $tabCountExtra = 3;
+        $tabCountExtra = $tabCountExtraReset;
         foreach ($hooks as $hook) {
             ++$tabCountExtra;
             $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($guid, $hook['name']).'</a></li>';
         }
         $return .= '</ul>';
 
+        $tabCountExtraReset = 0;
         if ($classes != false or $grades != false or $deadlines != false) {
-            $return .= "<div id='tabs1'>";
+            $return .= "<div id='tabs".$tabCountExtraReset."'>";
             $return .= $plannerOutput;
             $return .= $gradesOutput;
             $return .= $deadlinesOutput;
             $return .= '</div>';
+            $tabCountExtraReset++;
         }
         if ($timetable != false) {
-            $return .= "<div id='tabs2'>";
+            $return .= "<div id='tabs".$tabCountExtraReset."'>";
             $return .= $timetableOutput;
             $return .= '</div>';
+            $tabCountExtraReset++;
         }
         if ($activities != false) {
-            $return .= "<div id='tabs3'>";
+            $return .= "<div id='tabs".$tabCountExtraReset."'>";
             $return .= $activitiesOutput;
             $return .= '</div>';
+            $tabCountExtraReset++;
         }
-        $tabCountExtra = 3;
+        $tabCountExtra = $tabCountExtraReset;
         foreach ($hooks as $hook) {
+            if ($parentDashboardDefaultTab == $hook['name'])
+                $parentDashboardDefaultTabCount = $tabCountExtra+1;
             ++$tabCountExtra;
             $return .= "<div style='min-height: 100px' id='tabs".$tabCountExtra."'>";
             $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
@@ -1719,6 +1740,28 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         }
         $return .= '</div>';
     }
+
+
+    $defaultTab = 0;
+    if (isset($_GET['tab'])) {
+        $defaultTab = $_GET['tab'];
+    }
+    else if (!is_null($parentDashboardDefaultTabCount)) {
+        $defaultTab = $parentDashboardDefaultTabCount-1;
+    }
+    $return .= "<script type='text/javascript'>";
+    $return .= '$(function() {';
+    $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
+    $return .= 'active: '.$defaultTab.',';
+    $return .= 'ajaxOptions: {';
+    $return .= 'error: function( xhr, status, index, anchor ) {';
+    $return .= '$( anchor.hash ).html(';
+    $return .= "\"Couldn't load this tab.\" );";
+    $return .= '}';
+    $return .= '}';
+    $return .= '});';
+    $return .= '});';
+    $return .= '</script>';
 
     return $return;
 }

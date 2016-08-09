@@ -36,6 +36,7 @@ v13.0.00
 		System: turned on Smart Workflow help for admin user created during install
 		Markbook: added settings to enable/disable Effort and Rubrics
 		School Admin: fixed timezone issue in managing special days
+		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		User Admin: fixed PHP Notice issue in user import
 
