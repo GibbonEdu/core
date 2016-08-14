@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $analytics = $_POST['analytics'];
     $emailLink = $_POST['emailLink'];
     $webLink = $_POST['webLink'];
-    $primaryAssessmentScale = $_POST['primaryAssessmentScale'];
+    $defaultAssessmentScale = $_POST['defaultAssessmentScale'];
     $installType = $_POST['installType'];
     $statsCollection = $_POST['statsCollection'];
     $passwordPolicyMinLength = $_POST['passwordPolicyMinLength'];
@@ -347,8 +347,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
 
         try {
-            $data = array('primaryAssessmentScale' => $primaryAssessmentScale);
-            $sql = "UPDATE gibbonSetting SET value=:primaryAssessmentScale WHERE scope='System' AND name='primaryAssessmentScale'";
+            $data = array('defaultAssessmentScale' => $defaultAssessmentScale);
+            $sql = "UPDATE gibbonSetting SET value=:defaultAssessmentScale WHERE scope='System' AND name='defaultAssessmentScale'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

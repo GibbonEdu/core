@@ -1031,7 +1031,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -1040,13 +1040,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
                 $row = $result->fetch();
                 ?>
 				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
-                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                        echo "<option value=''></option>";
 						try {
 							$dataSelect = array();
 							$sqlSelect = "SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name";

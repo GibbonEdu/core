@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 							echo '</td>';
 							echo '</tr>';
 						} else {
-							$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
+							$PAS = getSettingByScope($connection2, 'System', 'defaultAssessmentScale');
 
 							while ($rowStudents = $resultStudents->fetch()) {
 								if ($count % 2 == 0) {

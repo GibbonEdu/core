@@ -118,20 +118,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $gibbonScaleGradeID = $_POST[$i.'-gibbonScaleGradeID'];
                 }
             }
-            if (isset($_POST[$i.'-gibbonScaleGradeIDPAS']) == false) {
-                $gibbonScaleGradeIDPAS = null;
-            } else {
-                if ($_POST[$i.'-gibbonScaleGradeIDPAS'] == '') {
-                    $gibbonScaleGradeIDPAS = null;
-                } else {
-                    $gibbonScaleGradeIDPAS = $_POST[$i.'-gibbonScaleGradeIDPAS'];
-                }
-            }
 
             if ($gibbonExternalAssessmentFieldID != '') {
                 try {
-                    $data = array('AI' => $AI, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID, 'gibbonScaleGradeID' => $gibbonScaleGradeID, 'gibbonScaleGradeIDPAS' => $gibbonScaleGradeIDPAS);
-                    $sql = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonExternalAssessmentStudentID=:AI, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID, gibbonScaleGradeID=:gibbonScaleGradeID, gibbonScaleGradeIDPrimaryAssessmentScale=:gibbonScaleGradeIDPAS';
+                    $data = array('AI' => $AI, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID, 'gibbonScaleGradeID' => $gibbonScaleGradeID);
+                    $sql = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonExternalAssessmentStudentID=:AI, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID, gibbonScaleGradeID=:gibbonScaleGradeID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

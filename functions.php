@@ -79,17 +79,17 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     while ($rowSelect = $resultSelect->fetch()) {
         $selected = '';
         if ($honourDefault and is_null($selectedValue)) { //Select entry based on scale default
-                if ($rowSelect['isDefault'] == 'Y') {
-                    $selected = 'selected';
-                }
+            if ($rowSelect['isDefault'] == 'Y') {
+                $selected = 'selected';
+            }
         } elseif ($selectedMode == 'value') { //Select entry based on value passed
-                if ($rowSelect['value'] == $selectedValue) {
-                    $selected = 'selected';
-                }
+            if ($rowSelect['value'] == $selectedValue) {
+                $selected = 'selected';
+            }
         } elseif ($selectedMode == 'id') { //Select entry based on id passed
-                if ($rowSelect['gibbonScaleGradeID'] == $selectedValue) {
-                    $selected = 'selected';
-                }
+            if ($rowSelect['gibbonScaleGradeID'] == $selectedValue) {
+                $selected = 'selected';
+            }
         }
         if ($valueMode == 'value') {
             $return .= "<option $selected value='".htmlPrep($rowSelect['value'])."'>".htmlPrep(__($guid, $rowSelect['value'])).'</option>';

@@ -479,7 +479,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 									echo "<option value=''></option>";
 									while ($rowSelect = $resultSelect->fetch()) {
 										$selected = '';
-										if ($rowSelect['gibbonScaleID'] == $_SESSION[$guid]['primaryAssessmentScale']) {
+										if ($rowSelect['gibbonScaleID'] == $_SESSION[$guid]['defaultAssessmentScale']) {
 											$selected = 'selected';
 										}
 										echo "<option $selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
@@ -658,7 +658,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     									echo "<option value=''></option>";
     									while ($rowSelect = $resultSelect->fetch()) {
     										$selected = '';
-    										if ($rowSelect['gibbonScaleID'] == $_SESSION[$guid]['primaryAssessmentScale']) {
+    										if ($rowSelect['gibbonScaleID'] == $_SESSION[$guid]['defaultAssessmentScale']) {
     											$selected = 'selected';
     										}
     										echo "<option $selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';

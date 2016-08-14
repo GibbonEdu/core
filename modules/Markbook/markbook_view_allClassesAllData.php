@@ -272,17 +272,15 @@
 	        echo '</th>';
 
         //Show Baseline data header
+		$markbook->hasExternalAssessments();
+		$externalAssessmentFields=$markbook->getExternalAssessments();
         if ($markbook->hasExternalAssessments() == true) {
-            echo "<th data-header='assessment' class='dataColumn notdraggable dragtable-drag-boundary'>";
-            $title = __($guid, $externalAssessmentFields[2]).' | ';
+			echo "<th data-header='assessment' class='dataColumn notdraggable dragtable-drag-boundary'>";
+
+			$title = __($guid, $externalAssessmentFields[2]).' ';
             $title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
             $title .= __($guid, $externalAssessmentFields[1]);
-
-            //Get PAS
-            $PAS = $markbook->getPrimaryAssessmentScale();
-            if (!empty($PAS)) {
-                $title .= ' | '.$PAS['name'].' '.__($guid, 'Scale').' ';
-            }
+			$title .= ' | '.$externalAssessmentFields[4].' '.__($guid, 'Scale').' ';
 
             echo "<div class='verticalText' title='$title'>";
             echo __($guid, 'Baseline').'<br/>';
@@ -295,10 +293,10 @@
             echo "<th class='dataColumn studentTarget notdraggable dragtable-drag-boundary' data-header='target'>";
             $title = __($guid, 'Personalised attainment target grade');
 
-            //Get PAS
-            $PAS = $markbook->getPrimaryAssessmentScale();
-            if (!empty($PAS)) {
-                $title .= ' | '.$PAS['name'].' '.__($guid, 'Scale').' ';
+            //Get DAS
+            $DAS = $markbook->getDefaultAssessmentScale();
+			if (!empty($DAS)) {
+                $title .= ' | '.$DAS['name'].' '.__($guid, 'Scale').' ';
             }
 
             echo "<div class='verticalText' title='$title'>";
@@ -617,7 +615,14 @@
                     echo '<td class="dataColumn">';
                     try {
                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
-                        $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND NOT gibbonScaleGradeIDPrimaryAssessmentScale='' ORDER BY date DESC";
+                        $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
+							FROM gibbonExternalAssessmentStudentEntry
+								JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID)
+								JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
+							WHERE gibbonPersonID=:gibbonPersonID
+								AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID
+								AND NOT gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=''
+							ORDER BY date DESC";
                         $resultEntry = $connection2->prepare($sqlEntry);
                         $resultEntry->execute($dataEntry);
                     } catch (PDOException $e) {

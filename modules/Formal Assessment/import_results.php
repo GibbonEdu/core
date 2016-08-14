@@ -120,7 +120,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 					<li><b><?php echo __($guid, 'Field Name') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonExternalAssessmentField.name in database.') ?></li>
 					<li><b><?php echo __($guid, 'Field Name Category') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix.') ?></li>
 					<li><b><?php echo __($guid, 'Result') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonScaleGrade.value in database.') ?></li>
-					<li><b><?php echo __($guid, 'PAS Result') ?></b> - <?php echo __($guid, 'The Primary Assessment Scale equivalent grade.').' '.__($guid, 'Must match value of gibbonScaleGrade.value in database.') ?></li>
 				</ol>
 			</li>
 			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
@@ -212,10 +211,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                             $results[$resultSuccessCount]['result'] = '';
                             if (isset($data[5])) {
                                 $results[$resultSuccessCount]['result'] = $data[5];
-                            }
-                            $results[$resultSuccessCount]['resultPAS'] = '';
-                            if (isset($data[5])) {
-                                $results[$resultSuccessCount]['resultPAS'] = $data[6];
                             }
                             ++$resultSuccessCount;
                         } else {
@@ -375,13 +370,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                                 $sqlAssessmentStudentFieldUpdate = 'UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeID=(SELECT gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScaleGrade.value=:result AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentStudentEntryID=:gibbonExternalAssessmentStudentEntryID';
                                                 $resultAssessmentStudentFieldUpdate = $connection2->prepare($sqlAssessmentStudentFieldUpdate);
                                                 $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
-                                                //Grade PAS
-                                                if ($_SESSION[$guid]['primaryAssessmentScale'] != '') {
-                                                    $dataAssessmentStudentFieldUpdate = array('gibbonExternalAssessmentStudentEntryID' => $rowAssessmentStudentField['gibbonExternalAssessmentStudentEntryID'], 'result' => $result['resultPAS'], 'gibbonScaleID' => $_SESSION[$guid]['primaryAssessmentScale']);
-                                                    $sqlAssessmentStudentFieldUpdate = 'UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeIDPrimaryAssessmentScale=(SELECT gibbonScaleGradeID FROM gibbonScale JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScaleGrade.value=:result AND gibbonScale.gibbonScaleID=:gibbonScaleID) WHERE gibbonExternalAssessmentStudentEntryID=:gibbonExternalAssessmentStudentEntryID';
-                                                    $resultAssessmentStudentFieldUpdate = $connection2->prepare($sqlAssessmentStudentFieldUpdate);
-                                                    $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
-                                                }
                                             } catch (PDOException $e) {
                                                 echo "<div class='error'>";
                                                 echo __($guid, 'Your request failed due to a database error.');
@@ -401,14 +389,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                                 $sqlAssessmentStudentFieldUpdate = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeID=(SELECT gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScaleGrade.value=:result AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID1), gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID2';
                                                 $resultAssessmentStudentFieldUpdate = $connection2->prepare($sqlAssessmentStudentFieldUpdate);
                                                 $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
-                                                //Grade PAS
-                                                $gibbonExternalAssessmentStudentEntryID = $connection2->lastInsertID();
-                                                if ($_SESSION[$guid]['primaryAssessmentScale'] != '' and $gibbonExternalAssessmentStudentEntryID != '') {
-                                                    $dataAssessmentStudentFieldUpdate = array('gibbonExternalAssessmentStudentEntryID' => $gibbonExternalAssessmentStudentEntryID, 'result' => $result['resultPAS'], 'gibbonScaleID' => $_SESSION[$guid]['primaryAssessmentScale']);
-                                                    $sqlAssessmentStudentFieldUpdate = 'UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeIDPrimaryAssessmentScale=(SELECT gibbonScaleGradeID FROM gibbonScale JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScaleGrade.value=:result AND gibbonScale.gibbonScaleID=:gibbonScaleID) WHERE gibbonExternalAssessmentStudentEntryID=:gibbonExternalAssessmentStudentEntryID';
-                                                    $resultAssessmentStudentFieldUpdate = $connection2->prepare($sqlAssessmentStudentFieldUpdate);
-                                                    $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
-                                                }
                                             } catch (PDOException $e) {
                                                 echo "<div class='error'>";
                                                 echo __($guid, 'Your request failed due to a database error.');
@@ -450,14 +430,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                                     $sqlAssessmentStudentFieldUpdate = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeID=(SELECT gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScaleGrade.value=:result AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID1), gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID2';
                                                     $resultAssessmentStudentFieldUpdate = $connection2->prepare($sqlAssessmentStudentFieldUpdate);
                                                     $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
-                                                    //Grade PAS
-                                                    $gibbonExternalAssessmentStudentEntryID = $connection2->lastInsertID();
-                                                    if ($_SESSION[$guid]['primaryAssessmentScale'] != '' and $gibbonExternalAssessmentStudentEntryID != '') {
-                                                        $dataAssessmentStudentFieldUpdate = array('gibbonExternalAssessmentStudentEntryID' => $gibbonExternalAssessmentStudentEntryID, 'result' => $result['resultPAS'], 'gibbonScaleID' => $_SESSION[$guid]['primaryAssessmentScale']);
-                                                        $sqlAssessmentStudentFieldUpdate = 'UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeIDPrimaryAssessmentScale=(SELECT gibbonScaleGradeID FROM gibbonScale JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScaleGrade.value=:result AND gibbonScale.gibbonScaleID=:gibbonScaleID) WHERE gibbonExternalAssessmentStudentEntryID=:gibbonExternalAssessmentStudentEntryID';
-                                                        $resultAssessmentStudentFieldUpdate = $connection2->prepare($sqlAssessmentStudentFieldUpdate);
-                                                        $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
-                                                    }
                                                 } catch (PDOException $e) {
                                                     echo "<div class='error'>";
                                                     echo __($guid, 'Your request failed due to a database error.');

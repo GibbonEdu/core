@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $title = __($guid, 'Personalised target grade');
 
 					//Get PAS
-					$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
+					$PAS = getSettingByScope($connection2, 'System', 'defaultAssessmentScale');
                     try {
                         $dataPAS = array('gibbonScaleID' => $PAS);
                         $sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';

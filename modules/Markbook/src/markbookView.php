@@ -64,7 +64,7 @@ class markbookView
 	/**
 	 * Cache markbook values to reduce queries
 	 */
-	protected $primaryAssessmentScale;
+	protected $defaultAssessmentScale;
 	protected $externalAssessmentFields;
 	protected $personalizedTargets;
 
@@ -324,24 +324,24 @@ class markbookView
      * @since   7th May 2016
      * @return  array
      */
-    public function getPrimaryAssessmentScale() {
+    public function getDefaultAssessmentScale() {
 
-        if (!empty($this->primaryAssessmentScale)) return $this->primaryAssessmentScale;
+        if (!empty($this->defaultAssessmentScale)) return $this->defaultAssessmentScale;
 
-        $PAS = getSettingByScope($this->pdo->getConnection(), 'System', 'primaryAssessmentScale');
+        $DAS = getSettingByScope($this->pdo->getConnection(), 'System', 'defaultAssessmentScale');
         try {
-            $data = array('gibbonScaleID' => $PAS);
+            $data = array('gibbonScaleID' => $DAS);
             $sql = 'SELECT name, nameShort FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
             $result = $this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
         if ($result->rowCount() == 1) {
-            $PAS = $result->fetch();
-            $this->primaryAssessmentScale = $PAS;
-            $this->primaryAssessmentScale['percent'] = ( stripos($PAS['name'], 'percent') !== false || $PAS['nameShort'] == '%')? '%' : '';
+            $DAS = $result->fetch();
+            $this->defaultAssessmentScale = $DAS;
+            $this->defaultAssessmentScale['percent'] = ( stripos($DAS['name'], 'percent') !== false || $DAS['nameShort'] == '%')? '%' : '';
         }
 
-        return $this->primaryAssessmentScale;
+        return $this->defaultAssessmentScale;
     }
 
     /**
@@ -400,8 +400,8 @@ class markbookView
     public function getFormattedAverage( $average ) {
         if ($average === '') return $average;
 
-        $PAS = $this->getPrimaryAssessmentScale();
-        return "<span title='".round($average, 2)."'>". round($average, 0) . $PAS['percent'] ."</span>";
+        $DAS = $this->getDefaultAssessmentScale();
+        return "<span title='".round($average, 2)."'>". round($average, 0) . $DAS['percent'] ."</span>";
     }
 
     /**
@@ -640,7 +640,7 @@ class markbookView
 
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-            $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
+            $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
             $result=$this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
@@ -747,7 +747,7 @@ class markbookView
     /**
      * Has External Assessments
      *
-     * @version 7th May 2016
+     * @version 14th August 2016
      * @since   7th May 2016
      * @return  bool
      */
@@ -755,10 +755,21 @@ class markbookView
     	return (isset($this->externalAssessmentFields))? (count($this->externalAssessmentFields) > 0) : false;
     }
 
+	/**
+     * Get External Assessments
+     *
+     * @version 14th August 2016
+     * @since   14th August 2016
+     * @return  bool
+     */
+    public function getExternalAssessments() {
+    	return (isset($this->externalAssessmentFields))? $this->externalAssessmentFields : false;
+    }
+
     /**
      * Cache External Assessments
      *
-     * @version 7th May 2016
+     * @version 14th August 2016
      * @since   7th May 2016
      * @param   string $courseName
      * @param   string $gibbonYearGroupIDList
@@ -791,7 +802,14 @@ class markbookView
 
 		            $courseWhere = ($whereCount < 1)? '' : substr($courseWhere, 0, -4).')';
 
-		            $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name LIMIT 1";
+		            $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category, gibbonScale.name AS scale
+						FROM gibbonExternalAssessmentField
+							JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
+							JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID)
+						WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID
+							AND category=:category $courseWhere
+						ORDER BY name
+						LIMIT 1";
 		            $resultExternalAssessment = $this->pdo->executeQuery($dataExternalAssessment, $sqlExternalAssessment);
 		        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
@@ -802,6 +820,7 @@ class markbookView
 		            $this->externalAssessmentFields[1] = $rowExternalAssessment['name'];
 		            $this->externalAssessmentFields[2] = $rowExternalAssessment['assessment'];
 		            $this->externalAssessmentFields[3] = $rowExternalAssessment['category'];
+		            $this->externalAssessmentFields[4] = $rowExternalAssessment['scale'];
 		        }
 		    }
 		}
