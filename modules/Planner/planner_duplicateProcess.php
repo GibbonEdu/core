@@ -65,13 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             header("Location: {$URL}");
         } else {
             try {
-                if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID_org);
-                    $sql = 'SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID';
-                } else {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID_org, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
-                }
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID_org);
+                $sql = 'SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID';    
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
