@@ -35,6 +35,7 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		Departments: added course long name to header of Class page
+		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Planner: adjusted permissions to allow teachers to duplicate lessons belonging to other people (to reuse them)
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class

@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $subpage = $_GET['subpage'];
             }
             if ($subpage == '' or isset($_SESSION[$guid]['username']) == false) {
-                $subpage = __($guid, 'Home');
+                $subpage = 'Home';
             }
 
             echo '<h2>';
