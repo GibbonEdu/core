@@ -35,6 +35,7 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev as currency
+		System: updated TinyMCE library to latest release
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Markbook: added settings to enable/disable Effort and Rubrics
