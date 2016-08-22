@@ -202,6 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $username = str_replace('[surname]', strtolower($row['surname']), $username);
                                 $username = str_replace(' ', '', $username);
                                 $username = str_replace("'", '', $username);
+                                $username = str_replace("-", '', $username);
                                 $username = substr($username, 0, 12);
                             }
                             $usernameBase = $username;

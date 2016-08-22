@@ -215,6 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $username = str_replace('[surname]', strtolower($row['surname']), $username);
                             $username = str_replace(' ', '', $username);
                             $username = str_replace("'", '', $username);
+                            $username = str_replace("-", '', $username);
                             $username = substr($username, 0, 12);
                         }
                         $usernameBase = $username;
@@ -884,6 +885,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $username = str_replace('[surname]', strtolower($row['parent1surname']), $username);
                                             $username = str_replace(' ', '', $username);
                                             $username = str_replace("'", '', $username);
+                                            $username = str_replace("-", '', $username);
                                             $username = substr($username, 0, 12);
                                         }
                                         $usernameBase = $username;
