@@ -1821,12 +1821,12 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $included = false;
         $includes = get_included_files();
         foreach ($includes as $include) {
-            if (strpos(str_replace('\\', '/', $include), '/lib/PHPMailer/class.phpmailer.php') !== false) {
+            if (strpos(str_replace('\\', '/', $include), '/lib/PHPMailer/PHPMailerAutoload.php') !== false) {
                 $included = true;
             }
         }
         if ($included == false) {
-            require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+            require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
         }
 
         //Attempt email send
@@ -1843,6 +1843,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $bodyPlain = emailBodyConvert($body);
 
         $mail = new PHPMailer();
+        $mail->IsSMTP();
         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
         $mail->AddAddress($rowSelect['email']);
         $mail->CharSet = 'UTF-8';

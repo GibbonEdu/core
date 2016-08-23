@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
-require getcwd().'/../lib/PHPMailer/class.phpmailer.php';
+require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -331,8 +331,9 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     //Prep message
                                     $body .= '<br/><br/><i>'.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
                                     $bodyPlain = emailBodyConvert($body);
-                                    
+
                                     $mail = new PHPMailer();
+                                    $mail->IsSMTP();
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {
                                         $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);

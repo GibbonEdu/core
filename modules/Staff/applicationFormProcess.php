@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../functions.php';
 include '../../config.php';
-require '../../lib/PHPMailer/class.phpmailer.php';
+require '../../lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -304,6 +304,7 @@ if ($proceed == false) {
                             $bodyPlain = emailBodyConvert($body);
 
                             $mail = new PHPMailer();
+                            $mail->IsSMTP();
                             $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
                             if ($referenceEmail1 != '') {
                                 $mail->AddBCC($referenceEmail1);

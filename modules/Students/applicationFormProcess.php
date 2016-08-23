@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../functions.php';
 include '../../config.php';
-require '../../lib/PHPMailer/class.phpmailer.php';
+require '../../lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -711,6 +711,7 @@ if ($proceed == false) {
                     $bodyPlain = emailBodyConvert($body);
 
                     $mail = new PHPMailer();
+                    $mail->IsSMTP();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($referenceEmail);
                     $mail->CharSet = 'UTF-8';
@@ -776,6 +777,7 @@ if ($proceed == false) {
             $bodyPlain = emailBodyConvert($body);
 
             $mail = new PHPMailer();
+            $mail->IsSMTP();
             $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
             $mail->AddAddress($to);
             $mail->CharSet = 'UTF-8';
@@ -829,6 +831,7 @@ if ($proceed == false) {
                     $bodyPlain = emailBodyConvert($body);
 
                     $mail = new PHPMailer();
+                    $mail->IsSMTP();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
@@ -873,6 +876,7 @@ if ($proceed == false) {
                     $bodyPlain = emailBodyConvert($body);
 
                     $mail = new PHPMailer();
+                    $mail->IsSMTP();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';

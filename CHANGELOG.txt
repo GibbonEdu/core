@@ -22,7 +22,7 @@ v13.0.00
 		...
 
 	Changes With Important Notices
-		...
+		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay)
 
 	Significant Changes
 		Changed Primary Assessment Scale to Default Assessment Scale

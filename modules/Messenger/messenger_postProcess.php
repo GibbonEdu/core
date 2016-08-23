@@ -1735,7 +1735,7 @@ else {
                               }
                             } //end get emails
 
-                            
+
 
                             //Get SMS
                             if ($sms=="Y" AND $countryCode!="") {
@@ -1853,7 +1853,7 @@ else {
 			}
 
 			if ($email=="Y") {
-				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
+				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
 
 				//Prep email array
 				$emails.="$from," ; //Add sender as recipient
@@ -1869,6 +1869,7 @@ else {
 				$bodyPlain = emailBodyConvert($body);
 
 				$mail=new PHPMailer;
+				$mail->IsSMTP();
 				if ($emailReplyTo!="") {
 					$mail->AddReplyTo($emailReplyTo, '');
 				}
