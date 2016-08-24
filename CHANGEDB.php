@@ -438,4 +438,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'School Admin', 'parentDashboardDefaultTab', 'Parent Dashboard Default Tab', 'The default landing tab for the parent dashboard.', '');end
 UPDATE gibbonSetting SET name='defaultAssessmentScale', nameDisplay='Default Assessment Scale', description='This is the scale used as a default where assessment scales need to be selected.' WHERE name='primaryAssessmentScale' AND scope='System';end
 ALTER TABLE `gibbonExternalAssessmentStudentEntry` DROP `gibbonScaleGradeIDPrimaryAssessmentScale`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('bg_BG', 'български език', 'N', 'N', 'Dimitar Hubenov', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
+
 ";
