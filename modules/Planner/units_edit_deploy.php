@@ -46,8 +46,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         }
 
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__($guid, 'Unit Planner')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."'>".__($guid, 'Edit Unit')."</a> > </div><div class='trailEnd'>".__($guid, 'Deploy Working Copy').'</div>';
+        echo '<div class=\'trail\'>';
+        echo '<div class=\'trailHead\' style=\'min-width: 221px\'>';
+            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'\'>'.__($guid, 'Home').'</a> > ';
+            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid).'\'>'.__($guid, getModuleName($_GET['q'])).'</a> > ';
+            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'\'>'.__($guid, 'Unit Planner').'</a> > ';
+            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID'].'\'>'.__($guid, 'Edit Unit').'</a> > ';
+        echo '</div>';
+        echo '<div class=\'trailEnd\'>';
+            echo __($guid, 'Deploy Working Copy');
+        echo '</div>';
         echo '</div>';
 
         if (isset($_GET['updateReturn'])) {
@@ -551,13 +559,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                             //Create drag and drop environment for blocks
                             echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_deployProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."&gibbonUnitClassID=$gibbonUnitClassID'>";
-                                //LESSONS (SORTABLES)
-                                echo "<div style='width: 100%; height: auto'>";
+                            //LESSONS (SORTABLES)
+                            echo "<div style='width: 100%; height: auto'>";
                             echo '<b>Lessons</b><br/>';
                             $lessonCount = $_POST['count'];
                             if ($lessonCount < 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There are no records to display.');
+                                echo __($guid, 'There are no records to displayhere.');
                                 echo '</div>';
                             } else {
                                 $lessons = array();
@@ -577,7 +585,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $cells = count($lessons);
                                 if ($cells < 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There are no records to display.');
+                                    echo __($guid, 'There are no records to displaynair.');
                                     echo '</div>';
                                 } else {
                                     $deployCount = 0;
