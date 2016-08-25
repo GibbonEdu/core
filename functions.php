@@ -3249,8 +3249,8 @@ function sidebar($connection2, $guid)
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo "<td style='word-wrap: break-word'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."'>".$row['course'].'.'.$row['class'].'</a>';
                 echo '</td>';
@@ -3265,7 +3265,7 @@ function sidebar($connection2, $guid)
                     echo '</td>';
                 }
                 echo "<td style='text-align: center'>";
-                echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."&subpage=Participants'><img title='".__($guid, 'Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants'><img title='".__($guid, 'Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
                 echo '</td>';
                 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                     echo "<td style='text-align: center'>";
