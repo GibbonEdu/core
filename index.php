@@ -295,7 +295,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 				width: '738px',
 				menubar : false,
 				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap, fullscreen, media',
+				plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen, media',
 			 	statusbar: false,
 			 	valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
 			 	apply_source_formatting : true,
