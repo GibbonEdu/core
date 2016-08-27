@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
         //Proceed!
         echo '<div class=\'trail\'>';
-        echo '<div class=\'trailHead\' style=\'min-width: 221px\'>';
+        echo '<div class=\'trailHead\'>';
             echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'\'>'.__($guid, 'Home').'</a> > ';
             echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid).'\'>'.__($guid, getModuleName($_GET['q'])).'</a> > ';
             echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'\'>'.__($guid, 'Unit Planner').'</a> > ';

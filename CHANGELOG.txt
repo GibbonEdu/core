@@ -38,6 +38,7 @@ v13.0.00
 		System: added Bulgarian Lev and Namibian Dollar as currency
 		System: added Bulgarian as development language
 		System: removed image button from TinyMCE
+		System: fixed out of place > in Chrome in certain breadcrumbs
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
@@ -46,7 +47,6 @@ v13.0.00
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Planner: adjusted permissions to allow teachers to duplicate lessons belonging to other people (to reuse them)
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class
-		Planner: fixed out of place > in Chrome in unit deploy
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
