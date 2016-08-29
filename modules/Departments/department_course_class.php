@@ -111,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             echo '<h2>';
             echo $row['course'].'.'.$row['class'].' '.__($guid, $subpage);
+            echo '<br/><small><em>'.__($guid, 'Course').': '.$row['courseLong'].'</em></small>';
             echo '</h2>';
 
             if ($subpage == 'Home') {
