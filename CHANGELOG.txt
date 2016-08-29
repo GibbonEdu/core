@@ -39,6 +39,7 @@ v13.0.00
 		System: added Bulgarian as development language
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
+		System: directed Google OAuth to give offline access, ensure presence of refreshToken
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
