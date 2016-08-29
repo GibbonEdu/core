@@ -53,6 +53,7 @@ v13.0.00
 		Staff: tweaked student accept to remove - from names
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		Students: tweaked student accept to remove - from names
+		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
