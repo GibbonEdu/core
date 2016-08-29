@@ -1572,6 +1572,9 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                     }
                     $activitiesOutput .= '</th>';
                     $activitiesOutput .= '<th>';
+                    $activitiesOutput .= __($guid, 'Slots');
+                    $activitiesOutput .= '</th>';
+                    $activitiesOutput .= '<th>';
                     $activitiesOutput .= __($guid, 'Status');
                     $activitiesOutput .= '</th>';
                     $activitiesOutput .= '</tr>';
@@ -1586,8 +1589,8 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         }
                         ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            $activitiesOutput .= "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        $activitiesOutput .= "<tr class=$rowNum>";
                         $activitiesOutput .= '<td>';
                         $activitiesOutput .= $row['name'];
                         $activitiesOutput .= '</td>';
@@ -1617,6 +1620,30 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                                 $activitiesOutput .= date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' -<br/>'.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
                             }
                         }
+                        $activitiesOutput .= '</td>';
+                        $activitiesOutput .= '<td>';
+                            try {
+                                $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
+                                $sqlSlots = 'SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
+                                $resultSlots = $connection2->prepare($sqlSlots);
+                                $resultSlots->execute($dataSlots);
+                            } catch (PDOException $e) {
+                                $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            $count = 0;
+                            while ($rowSlots = $resultSlots->fetch()) {
+                                $activitiesOutput .= '<b>'.__($guid, $rowSlots['name']).'</b><br/>';
+                                $activitiesOutput .= '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
+                                if ($rowSlots['gibbonSpaceID'] != '') {
+                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['name'];
+                                } else {
+                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['locationExternal'];
+                                }
+                                ++$count;
+                            }
+                            if ($count == 0) {
+                                echo '<i>'.__($guid, 'None').'</i>';
+                            }
                         $activitiesOutput .= '</td>';
                         $activitiesOutput .= '<td>';
                         if ($row['status'] != '') {
