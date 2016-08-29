@@ -34,49 +34,49 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 			html>body .sortable li { min-height: 58px; line-height: 1.2em; }
 			.sortable .ui-state-highlight { margin-bottom: 5px; min-height: 72px; line-height: 1.2em; width: 100%; }
 		</style>
-											
+
 		<script type='text/javascript'>
 			$(function() {
 				$( ".sortable" ).sortable({
 					placeholder: "ui-state-highlight"
 				});
-			
-				$( ".sortable" ).bind( "sortstart", function(event, ui) { 
+
+				$( ".sortable" ).bind( "sortstart", function(event, ui) {
 					$("#blockInner<?php echo $i ?>").css("display","none") ;
 					$("#block<?php echo $i ?>").css("height","72px") ;
-					$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)"); 
+					$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 					tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 					tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
 					$(".sortable").sortable( "refresh" ) ;
 					$(".sortable").sortable( "refreshPositions" ) ;
 				});
 			});
-			
+
 		</script>
-		<script type='text/javascript'>	
+		<script type='text/javascript'>
 			$(document).ready(function(){
 				$("#blockInner<?php echo $i ?>").css("display","none");
 				$("#block<?php echo $i ?>").css("height","72px")
-			
+
 				//Block contents control
 				$('#show<?php echo $i ?>').unbind('click').click(function() {
 					if ($("#blockInner<?php echo $i ?>").is(":visible")) {
 						$("#blockInner<?php echo $i ?>").css("display","none");
 						$("#block<?php echo $i ?>").css("height","72px")
-						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)"); 
+						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
 					} else {
-						$("#blockInner<?php echo $i ?>").slideDown("fast", $("#blockInner<?php echo $i ?>").css("display","table-row")); 
+						$("#blockInner<?php echo $i ?>").slideDown("fast", $("#blockInner<?php echo $i ?>").css("display","table-row"));
 						$("#block<?php echo $i ?>").css("height","auto")
-						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)"); 
-						tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;	
+						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)");
+						tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceAddEditor', false, 'contents<?php echo $i ?>') ;
-						tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;	
+						tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceAddEditor', false, 'teachersNotes<?php echo $i ?>') ;
 					}
 				});
-			
+
 				<?php if ($mode == 'masterAdd') { ?>
 					var titleClick<?php echo $i ?>=false ;
 					$('#title<?php echo $i ?>').focus(function() {
@@ -86,7 +86,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 							titleClick<?php echo $i ?>=true ;
 						}
 					});
-				
+
 					var typeClick<?php echo $i ?>=false ;
 					$('#type<?php echo $i ?>').focus(function() {
 						if (typeClick<?php echo $i ?>==false) {
@@ -95,7 +95,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 							typeClick<?php echo $i ?>=true ;
 						}
 					});
-				
+
 					var lengthClick<?php echo $i ?>=false ;
 					$('#length<?php echo $i ?>').focus(function() {
 						if (lengthClick<?php echo $i ?>==false) {
@@ -104,20 +104,20 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 							lengthClick<?php echo $i ?>=true ;
 						}
 					});
-				<?php 
+				<?php
 }
         ?>
-			
+
 				$('#delete<?php echo $i ?>').unbind('click').click(function() {
 					if (confirm("<?php echo __($guid, 'Are you sure you want to delete this record?') ?>")) {
 						$('#block<?php echo $i ?>').fadeOut(600, function(){ $('#block<?php echo $i ?>').remove(); });
 					}
 				});
-				
+
 				$('#star<?php echo $i ?>').unbind('click').click(function() {
 					$("#starBox<?php echo $i ?>").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php echo $_SESSION[$guid]['gibbonPersonID'] ?>", "gibbonUnitBlockID": "<?php echo $gibbonUnitBlockID ?>", "action": "star", "i": "<?php echo $i ?>" }) ;
 				});
-				
+
 				$('#unstar<?php echo $i ?>').unbind('click').click(function() {
 					$("#starBox<?php echo $i ?>").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php echo $_SESSION[$guid]['gibbonPersonID'] ?>", "gibbonUnitBlockID": "<?php echo $gibbonUnitBlockID ?>", "action": "unstar", "i": "<?php echo $i ?>" }) ;
 				});
@@ -216,7 +216,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 			</tr>
 			<tr id="blockInner<?php echo $i ?>">
 				<td colspan=2 style='vertical-align: top'>
-					<?php 
+					<?php
                     if ($mode == 'masterAdd') {
                         $contents = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate');
                     }
@@ -728,15 +728,15 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 				$( "#<?php echo $type ?>" ).sortable({
 					placeholder: "<?php echo $type ?>-ui-state-highlight"
 				});
-				
-				$( "#<?php echo $type ?>" ).bind( "sortstart", function(event, ui) { 
+
+				$( "#<?php echo $type ?>" ).bind( "sortstart", function(event, ui) {
 					$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
 					$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
-					$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");  
+					$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 					tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					$("#<?php echo $type ?>").sortable( "refreshPositions" ) ;
 				});
-				
+
 				$( "#<?php echo $type ?>" ).bind( "sortstop", function(event, ui) {
 					//This line has been removed to improve performance with long lists
 					//tinyMCE.execCommand('mceAddEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
@@ -748,23 +748,23 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 			$(document).ready(function(){
 				$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
 				$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
-				
+
 				//Block contents control
 				$('#<?php echo $type ?>show<?php echo $i ?>').unbind('click').click(function() {
 					if ($("#<?php echo $type ?>BlockInner<?php echo $i ?>").is(":visible")) {
 						$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
 						$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
-						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");  
+						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					} else {
-						$("#<?php echo $type ?>BlockInner<?php echo $i ?>").slideDown("fast", $("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","table-row")); 
+						$("#<?php echo $type ?>BlockInner<?php echo $i ?>").slideDown("fast", $("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","table-row"));
 						$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","auto")
-						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)");  
-						tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;	
+						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)");
+						tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceAddEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					}
 				});
-				
+
 				$('#<?php echo $type ?>delete<?php echo $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
 						$('#<?php echo $type ?>blockOuter<?php echo $i ?>').fadeOut(600, function(){ $('#<?php echo $type ?><?php echo $i ?>'); });
@@ -772,7 +772,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 						<?php echo $type ?>Used[<?php echo $type ?>Used.indexOf("<?php echo $gibbonOutcomeID ?>")]="x" ;
 					}
 				});
-				
+
 			});
 		</script>
 		<div class='hiddenReveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php echo $type ?>Block<?php echo $i ?>" style='padding: 0px'>
@@ -800,7 +800,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 				</tr>
 				<tr id="<?php echo $type ?>BlockInner<?php echo $i ?>">
 					<td colspan=2 style='vertical-align: top'>
-						<?php 
+						<?php
                             if ($allowOutcomeEditing == 'Y') {
                                 echo getEditor($guid, false, $type.'contents'.$i, $contents, 20, false, false, false, true);
                             } else {
