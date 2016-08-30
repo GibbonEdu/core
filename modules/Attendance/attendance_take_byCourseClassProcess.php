@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 	//Fail 0
 	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
+	die();
 }
 else {
 	//Proceed!
@@ -56,6 +57,7 @@ else {
 		//Fail1
 		$URL.="&updateReturn=fail1" ;
 		header("Location: {$URL}");
+		die();
 	}
 	else {
 		try {
@@ -68,13 +70,14 @@ else {
 			//Fail2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			die();
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
+			die();
 		}
 		else {	
 			//Check that date is not in the future
@@ -82,6 +85,7 @@ else {
 				//Fail 4
 				$URL.="&updateReturn=fail4" ;
 				header("Location: {$URL}");
+				die();
 			}
 			else {
 				//Check that date is a school day
@@ -89,6 +93,7 @@ else {
 					//Fail 5
 					$URL.="&updateReturn=fail5" ;
 					header("Location: {$URL}");
+					die();
 				}
 				else {
 					//Write to database
@@ -103,7 +108,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						die();
 					}
 
 					if ($resultLog->rowCount()<1) {
@@ -124,7 +129,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						die();
 					}
 
 					$count=$_POST["count"] ;
@@ -151,7 +156,7 @@ else {
 							//Fail 2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ; 
+							die();
 						}
 						
 						if ($result->rowCount()<1) {
@@ -184,6 +189,7 @@ else {
 						//Fail 3
 						$URL.="&updateReturn=fail3" ;
 						header("Location: {$URL}");
+						die();
 					}
 					else {
 						//Success 0
