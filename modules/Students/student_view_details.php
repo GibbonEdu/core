@@ -1303,8 +1303,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 //Get siblings
                                 try {
-                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID'], 'gibbonPersonID' => $gibbonPersonID);
-                                    $sqlMember = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                    $sqlMember = 'SELECT gibbonPerson.gibbonPersonID, image_240, preferredName, surname, status, gibbonStudentEnrolmentID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
                                     $resultMember->execute($dataMember);
                                 } catch (PDOException $e) {
@@ -1325,11 +1325,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo '<tr>';
                                         }
                                         echo "<td style='width:30%; text-align: left; vertical-align: top'>";
-                                                //User photo
-                                                echo getUserPhoto($guid, $rowMember['image_240'], 75);
+                                        //User photo
+                                        echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
+                                        $allStudents = '';
+                                        if ($rowMember['gibbonStudentEnrolmentID'] == null)
+                                            $allStudents = '&allStudents=on';
                                         if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
                                         } else {
                                             echo formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
                                         }

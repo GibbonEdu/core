@@ -56,6 +56,7 @@ v13.0.00
 		Staff: tweaked student accept to remove - from names
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		Students: tweaked student accept to remove - from names
+		Students: fixed broken link from Family in student profile to sibling, when sibling is not enroled in the year
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
