@@ -62,6 +62,7 @@ v13.0.00
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
+		User Admin: fixed mime-type issue in user image import function
 
 v12.0.00
 --------
