@@ -3807,6 +3807,45 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: right; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__($guid, 'P').'</div>';
         }
 
+        //Boarding Status
+        try {
+            $dataPersonField = array('gibbonPersonID' => $gibbonPersonID);
+            $sqlPersonField = 'SELECT fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID LIMIT 1';
+            $resultPersonField = $connection2->prepare($sqlPersonField);
+            $resultPersonField->execute($dataPersonField);
+        } catch (PDOException $e) {
+        }
+        if ($resultPersonField->rowCount() > 0) {
+
+            $rowPersonField = $resultPersonField->fetch();
+            $userFields = unserialize( $rowPersonField['fields'] );
+
+            if (!empty($userFields)) {
+                try {
+                    $dataFields = array('name' => 'Boarding Status');
+                    $sqlFields = 'SELECT gibbonPersonFieldID FROM gibbonPersonField WHERE name=:name LIMIT 1';
+                    $resultFields = $connection2->prepare($sqlFields);
+                    $resultFields->execute($dataFields);
+                } catch (PDOException $e) {
+                }
+
+                if ($resultFields->rowCount() > 0) {
+                    $fields = $resultFields->fetch();
+                    $userField = (isset($userFields[ $fields['gibbonPersonFieldID'] ]))? $userFields[ $fields['gibbonPersonFieldID'] ] : '';
+                    if ( $userField == 'Current' || $userField == 'Potential' || $userField == 'Confirmed' ) {
+                        $color = "3B73AF";    //"390";  green
+                        $colorBG = "b3ceeb";  //"D4F6DC";  green
+
+                        $title = __($guid, "Boarding Student").': '.$userField;
+
+                        $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$color."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$color.'; margin-right: 2px; background-color: #'.$colorBG."'>".__($guid, 'B').'</div></a>';
+                    }
+                }
+            }
+
+            
+        }
+
         if ($div == true) {
             $output .= '</div>';
         }
