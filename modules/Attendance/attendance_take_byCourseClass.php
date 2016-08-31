@@ -343,6 +343,10 @@ else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 								}
 								
+									//Alerts, if permission allows
+        							echo getAlertBar($guid, $connection2, $rowCourseClass['gibbonPersonID'], $rowCourseClass['privacy']);
+
+        							//User photo
 									print getUserPhoto($guid, $rowCourseClass["image_240"], 75) ;
 								
 									print "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowCourseClass["gibbonPersonID"] . "&subpage=School Attendance'>" . formatName("", htmlPrep($rowCourseClass["preferredName"]), htmlPrep($rowCourseClass["surname"]), "Student", false) . "</a></b></div>" ;

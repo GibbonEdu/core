@@ -278,6 +278,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     echo "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
                                 }
 
+                                //Alerts, if permission allows
+                                echo getAlertBar($guid, $connection2, $rowRollGroup['gibbonPersonID'], $rowRollGroup['privacy']);
+
+                                //User photo
                                 echo getUserPhoto($guid, $rowRollGroup['image_240'], 75);
 
                                 echo "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup['gibbonPersonID']."&subpage=School Attendance'>".formatName('', htmlPrep($rowRollGroup['preferredName']), htmlPrep($rowRollGroup['surname']), 'Student', true).'</a></b></div>';
