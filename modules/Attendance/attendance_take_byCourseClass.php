@@ -324,8 +324,8 @@ else {
 								}
 								//Get student log data
 								try {
-									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%"); 
-									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%", 'gibbonCourseClassID' => $gibbonCourseClassID); 
+									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=0 OR gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
 									$resultLog=$connection2->prepare($sqlLog);
 									$resultLog->execute($dataLog);
 								}
@@ -336,8 +336,13 @@ else {
 								$rowLog=$resultLog->fetch() ;
 							
 							
-								if ($rowLog["type"]=="Absent") {
-									print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
+								if (isset($rowLog["type"]) && $rowLog["type"]=="Absent" ) {
+									// Orange/warning background for partial absense
+									if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID) {
+										print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
+									} else {
+										print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
+									}
 								}
 								else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
@@ -356,6 +361,11 @@ else {
 											if ($absenceCount!==FALSE) {
 												print sprintf(_('%1$s Days Absent'), $absenceCount) ;
 											}
+
+											// List partial absences
+		                                    if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID && $rowLog['type'] == 'Absent') {
+		                                        printf( '<br/>'.__($guid, 'Recorded absence for this class'), $resultLog->rowCount() );
+		                                    }
 										}
 									print "</div><br/>" ;
 									print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowCourseClass["gibbonPersonID"] . "'>" ;

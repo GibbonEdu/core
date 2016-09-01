@@ -270,10 +270,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
+                                
                                 $rowLog = $resultLog->fetch();
 
-                                if ($rowLog['type'] == 'Absent') {
-                                    echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                if (isset($rowLog["type"]) && $rowLog['type'] == 'Absent') {
+                                    // Orange/warning background for partial absense
+                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0) {
+                                        print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
+                                    } else {
+                                        echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                    }
                                 } else {
                                     echo "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
                                 }
@@ -290,6 +296,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     $absenceCount = getAbsenceCount($guid, $rowRollGroup['gibbonPersonID'], $connection2, $firstDay, $lastDay);
                                     if ($absenceCount !== false) {
                                         echo sprintf(__($guid, '%1$s Days Absent'), $absenceCount);
+                                    }
+
+                                    // List partial absences
+                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0 && $rowLog['type'] == 'Absent') {
+                                        printf( '<br/>'.__($guid, '%s Class Absence(s)'), $resultLog->rowCount() );
                                     }
                                 }
                                 echo '</div><br/>';
