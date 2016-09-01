@@ -6,3 +6,4 @@ missing.yml
 Thumbs.db
 themes/*
 !themes/Default
+.DS_Store
