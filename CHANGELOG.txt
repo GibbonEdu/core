@@ -60,6 +60,7 @@ v13.0.00
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
+		Timetable Admin: removed Left users from exception add screen
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
