@@ -42,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     } else {
         $currentDate = dateConvert($guid, $_GET['currentDate']);
     }
+
+    $allStudents = !empty($_GET["allStudents"])? 1 : 0;
     ?>
 	
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
@@ -81,6 +83,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 					</script>
 				</td>
 			</tr>
+            <tr>
+                <td>
+                    <b><?php print _('All Students') ?></b><br/>
+                    <span style="font-size: 90%"><i><?php print _('Include all students, even those where attendance has not yet been recorded.') ?></i></span>
+                </td>
+                <td class="right">
+                    <?php
+                        print "<input ".( ($allStudents)? "checked" : ""  )." name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">" ;
+                    ?>
+                </td>
+            </tr>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_studentsNotPresent_byDate.php">
@@ -137,12 +150,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 echo '</div>';
             } else {
                 echo "<div class='linkTop'>";
-                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&allStudents=" . $allStudents . "'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                 echo '</div>';
 
                 $lastPerson = '';
 
-                echo "<table cellspacing='0' style='width: 100%'>";
+                echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
                 echo "<tr class='head'>";
                 echo '<th>';
                 echo __($guid, 'Roll Group');
@@ -161,19 +174,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 echo '</th>';
                 echo '</tr>';
 
-                $count = 0;
-                $rowNum = 'odd';
+
                 while ($row = $result->fetch()) {
                     if (isset($log[$row['gibbonPersonID']]) == false) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                        try {
+                            $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
+                            $sqlAttendance = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
+                            $resultAttendance = $connection2->prepare($sqlAttendance);
+                            $resultAttendance->execute($dataAttendance);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+
+                        // Skip rows with no record if we're not displaying all students
+                        if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
+                            continue;
+                        }
+
+                        // ROW
+                        echo "<tr>";
                         echo '<td>';
                         try {
                             $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
@@ -196,14 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         echo '</td>';
                         echo '<td>';
                         $rowRollAttendance = null;
-                        try {
-                            $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlAttendance = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
-                            $resultAttendance = $connection2->prepare($sqlAttendance);
-                            $resultAttendance->execute($dataAttendance);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+                        
                         if ($resultAttendance->rowCount() < 1) {
                             echo '<i>Not registered</i>';
                         } else {
@@ -222,8 +235,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         $lastPerson = $row['gibbonPersonID'];
                     }
                 }
-                if ($count == 0) {
-                    echo "<tr class=$rowNum>";
+                if ($result->rowCount() == 0) {
+                    echo "<tr>";
                     echo '<td colspan=5>';
                     echo __($guid, 'All students are present.');
                     echo '</td>';

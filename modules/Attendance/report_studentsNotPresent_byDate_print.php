@@ -34,6 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $currentDate = dateConvert($guid, $_GET['currentDate']);
     }
 
+    $allStudents = !empty($_GET["allStudents"])? 1 : 0;
+
     //Proceed!
     echo '<h2>';
     echo __($guid, 'Students Not Present').', '.dateConvertBack($guid, $currentDate);
@@ -115,6 +117,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     }
                     ++$count;
 
+                    try {
+                        $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
+                        $sqlAttendance = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
+                        $resultAttendance = $connection2->prepare($sqlAttendance);
+                        $resultAttendance->execute($dataAttendance);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    
+                    // Skip rows with no record if we're not displaying all students
+                    if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
+                        continue;
+                    }
+
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
@@ -139,14 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     echo '</td>';
                     echo '<td>';
                     $rowRollAttendance = null;
-                    try {
-                        $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
-                        $sqlAttendance = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
-                        $resultAttendance = $connection2->prepare($sqlAttendance);
-                        $resultAttendance->execute($dataAttendance);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+                    
                     if ($resultAttendance->rowCount() < 1) {
                         echo '<i>Not registered</i>';
                     } else {
