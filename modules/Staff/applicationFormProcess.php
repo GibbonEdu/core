@@ -303,7 +303,7 @@ if ($proceed == false) {
                             $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                             $bodyPlain = emailBodyConvert($body);
 
-                            $mail = getGibbonMailer();
+                            $mail = getGibbonMailer($guid);
                             $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
                             if ($referenceEmail1 != '') {
                                 $mail->AddBCC($referenceEmail1);

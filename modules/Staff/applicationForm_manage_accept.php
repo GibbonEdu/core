@@ -268,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."<br/>";
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = getGibbonMailer();
+                                $mail = getGibbonMailer($guid);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -382,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     }
                                     $bodyPlain = emailBodyConvert($body);
 
-                                    $mail = getGibbonMailer();
+                                    $mail = getGibbonMailer($guid);
                                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     $mail->AddAddress($to);
                                     $mail->CharSet = 'UTF-8';

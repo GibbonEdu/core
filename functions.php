@@ -1804,7 +1804,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= '</p>';
         $bodyPlain = emailBodyConvert($body);
 
-        $mail = getGibbonMailer();
+        $mail = getGibbonMailer($guid);
         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
         $mail->AddAddress($rowSelect['email']);
         $mail->CharSet = 'UTF-8';
@@ -4784,23 +4784,23 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
  * @since   1st September 2016
  * @author  Sandra Kuipers
  */
-function getGibbonMailer() {
+function getGibbonMailer($guid) {
     $mail = new PHPMailer();
 
-    $smtpEnabled = getSettingByScope($connection2, 'System', 'enableMailerSMTP');
+    $smtpEnabled = $_SESSION[$guid]['enableMailerSMTP']; //getSettingByScope($connection2, 'System', 'enableMailerSMTP');
 
     if ($smtpEnabled == 'Y') {
 
         $mail->IsSMTP();
         $mail->CharSet = 'UTF-8';
 
-        $host = getSettingByScope($connection2, 'System', 'mailerSMTPHost');
-        $port = getSettingByScope($connection2, 'System', 'mailerSMTPPort');
+        $host = $_SESSION[$guid]['mailerSMTPHost']; //getSettingByScope($connection2, 'System', 'mailerSMTPHost');
+        $port = $_SESSION[$guid]['mailerSMTPPort']; //getSettingByScope($connection2, 'System', 'mailerSMTPPort');
         
         if ( !empty($host) && !empty($port) ) {
 
-            $username = getSettingByScope($connection2, 'System', 'mailerSMTPUsername');
-            $password = getSettingByScope($connection2, 'System', 'mailerSMTPPassword');
+            $username = $_SESSION[$guid]['mailerSMTPUsername']; //getSettingByScope($connection2, 'System', 'mailerSMTPUsername');
+            $password = $_SESSION[$guid]['mailerSMTPPassword']; //getSettingByScope($connection2, 'System', 'mailerSMTPPassword');
             $auth = ( !empty($username) && !empty($password) );
 
             $mail->Host       = $host;      // SMTP server example

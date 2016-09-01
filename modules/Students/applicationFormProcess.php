@@ -710,7 +710,7 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = getGibbonMailer();
+                    $mail = getGibbonMailer($guid);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($referenceEmail);
                     $mail->CharSet = 'UTF-8';
@@ -775,7 +775,7 @@ if ($proceed == false) {
             $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
             $bodyPlain = emailBodyConvert($body);
 
-            $mail = getGibbonMailer();
+            $mail = getGibbonMailer($guid);
             $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
             $mail->AddAddress($to);
             $mail->CharSet = 'UTF-8';
@@ -828,7 +828,7 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = getGibbonMailer();
+                    $mail = getGibbonMailer($guid);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
@@ -872,7 +872,7 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = getGibbonMailer();
+                    $mail = getGibbonMailer($guid);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';

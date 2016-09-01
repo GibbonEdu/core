@@ -210,7 +210,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                             $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
-                            $mail = getGibbonMailer();
+                            $mail = getGibbonMailer($guid);
                             $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
                             foreach ($emails as $address) {
                                 $mail->AddBCC($address);
