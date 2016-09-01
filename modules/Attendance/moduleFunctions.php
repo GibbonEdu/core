@@ -25,7 +25,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-        $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd ORDER BY date, timestampTaken';
+        $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=0 AND date>=:dateStart AND date<=:dateEnd ORDER BY date, timestampTaken';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
