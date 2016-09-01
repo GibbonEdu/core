@@ -53,6 +53,7 @@ v13.0.00
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
+		School Admin: fixed PHP notice issue when adding special days
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
