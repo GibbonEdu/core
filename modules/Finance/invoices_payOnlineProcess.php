@@ -296,7 +296,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                 $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                 $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions.';
 
-                $mail = new PHPMailer();
+                $mail = getGibbonMailer();
                 $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'));
                 foreach ($emails as $address) {
                     $mail->AddBCC($address);

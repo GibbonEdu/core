@@ -52,6 +52,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $smsURL = $_POST['smsURL'];
     $smsURLCredit = $_POST['smsURLCredit'];
 
+    // SMTP Mail Settings
+    $enableMailerSMTP = $_POST['enableMailerSMTP'];
+    $mailerSMTPHost = $_POST['mailerSMTPHost'];
+    $mailerSMTPPort = $_POST['mailerSMTPPort'];
+    $mailerSMTPUsername = $_POST['mailerSMTPUsername'];
+    $mailerSMTPPassword = $_POST['mailerSMTPPassword'];
+
     //Validate Inputs
     if ($enablePayments == '' or $googleOAuth == '') {
         $URL .= '&return=error3';
@@ -194,6 +201,53 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         } catch (PDOException $e) {
             $fail = true;
         }
+
+        // SMTP Mailer
+        try {
+            $data = array('value' => $enableMailerSMTP);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='enableMailerSMTP'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $mailerSMTPHost);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPHost'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $mailerSMTPPort);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPort'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $mailerSMTPUsername);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPUsername'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $mailerSMTPPassword);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPassword'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
 
         if ($fail == true) {
             $URL .= '&return=error2';

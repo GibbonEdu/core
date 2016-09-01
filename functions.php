@@ -1804,7 +1804,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= '</p>';
         $bodyPlain = emailBodyConvert($body);
 
-        $mail = new PHPMailer();
+        $mail = getGibbonMailer();
         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
         $mail->AddAddress($rowSelect['email']);
         $mail->CharSet = 'UTF-8';
@@ -4775,4 +4775,44 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
         echo '</div>';
     }
 }
+
+/**
+ * getGibbonMailer
+ * Wrapper for new PHPMailer() object, to allow for SMTP settings (and any future settings)
+ *
+ * @version 1st September 2016
+ * @since   1st September 2016
+ * @author  Sandra Kuipers
+ */
+function getGibbonMailer() {
+    $mail = new PHPMailer();
+
+    $smtpEnabled = getSettingByScope($connection2, 'System', 'enableMailerSMTP');
+
+    if ($smtpEnabled == 'Y') {
+
+        $mail->IsSMTP();
+        $mail->CharSet = 'UTF-8';
+
+        $host = getSettingByScope($connection2, 'System', 'mailerSMTPHost');
+        $port = getSettingByScope($connection2, 'System', 'mailerSMTPPort');
+        
+        if ( !empty($host) && !empty($port) ) {
+
+            $username = getSettingByScope($connection2, 'System', 'mailerSMTPUsername');
+            $password = getSettingByScope($connection2, 'System', 'mailerSMTPPassword');
+            $auth = ( !empty($username) && !empty($password) );
+
+            $mail->Host       = $host;      // SMTP server example
+            $mail->SMTPDebug  = 0;          // enables SMTP debug information (for testing)
+            $mail->SMTPAuth   = $auth;      // enable SMTP authentication
+            $mail->Port       = $port;      // set the SMTP port for the GMAIL server
+            $mail->Username   = $username;  // SMTP account username example
+            $mail->Password   = $password;  // SMTP account password example
+        }
+    }
+
+    return $mail;
+}
+
 ?>
