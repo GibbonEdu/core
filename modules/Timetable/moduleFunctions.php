@@ -297,6 +297,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
         }
     }
 
+    if ($proceed && $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
+        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person') || isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
+            $proceed = true;
+        } else {
+            $proceed = false;
+        }
+    }
+
     if ($proceed == false) {
         $output .= "<div class='error'>".__($guid, 'You do not have permission to access this timetable at this time.').'</div>';
     } else {
@@ -1156,6 +1164,21 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60).'px';
                         $top = (ceil((strtotime($effectiveStart) - strtotime($dayTimeStart)) / 60 + ($startPad / 60))).'px';
                         $title = "title='";
+
+                        try {
+                            $dataTeacher = array('gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'] );
+                            $sqlTeacher = 'SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title FROM gibbonPerson, gibbonCourseClassPerson WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.role="Teacher" ORDER BY gibbonCourseClassPerson.gibbonCourseClassPersonID LIMIT 1';
+                            $resultTeacher = $connection2->prepare($sqlTeacher);
+                            $resultTeacher->execute($dataTeacher);
+                        } catch (PDOException $e) {}
+
+                        if ($resultTeacher->rowCount() > 0) {
+                            $teacher = $resultTeacher->fetch();
+                            if (!empty($teacher['surname'])) {
+                                $title .= __($guid,"Teacher:").' '.formatName( $teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false).' | ';
+                            }
+                        }
+
                         if ($height < 45) {
                             $title .= __($guid, 'Time:').' '.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).' | ';
                             $title .= __($guid, 'Timeslot:').' '.$rowPeriods['name'].' | ';
@@ -1176,9 +1199,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 }
                             }
                         }
+
                         $title = substr($title, 0, -3);
                         $title .= "'";
                         $class2 = 'ttPeriod';
+                        
 
                         if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $date == date('Y-m-d')) {
                             $class2 = 'ttPeriodCurrent';
