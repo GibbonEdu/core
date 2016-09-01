@@ -300,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                                     // List partial absences
                                     if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0 && $rowLog['type'] == 'Absent') {
-                                        printf( '<br/>'.__($guid, '%s Class Absence(s)'), $resultLog->rowCount() );
+                                        printf( '<br/>'.__($guid, '%s Classes Absent'), $resultLog->rowCount() );
                                     }
                                 }
                                 echo '</div><br/>';
