@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $today = date('Y-m-d');
 
             //Check to see if date is in the future and is a school day.
-            if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart) or ($absenceType == 'full' and $dateStart <= $today) or ($absenceType == 'partial' and $dateStart < $today) ) {
+            if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart) or $dateStart < $today ) {
                 $URL .= '&return=error8';
                 header("Location: {$URL}");
             } else {
