@@ -1869,7 +1869,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= '</p>';
         $bodyPlain = emailBodyConvert($body);
 
-        $mail = new PHPMailer();
+        $mail = getGibbonMailer($guid);
         $mail->IsSMTP();
         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
         $mail->AddAddress($rowSelect['email']);
@@ -4734,6 +4734,45 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
     return $return;
 }
 
+/**
+ * getGibbonMailer
+ * Wrapper for PHPMailer() object, to allow for SMTP settings (and any future settings)
+ *
+ * @version 1st September 2016
+ * @since   1st September 2016
+ * @author  Sandra Kuipers
+ */
+function getGibbonMailer($guid) {
+    $mail = new PHPMailer();
+
+    $smtpEnabled = $_SESSION[$guid]['enableMailerSMTP']; 
+
+    if ($smtpEnabled == 'Y') {
+
+        $mail->IsSMTP();
+        $mail->CharSet = 'UTF-8';
+
+        $host = $_SESSION[$guid]['mailerSMTPHost']; 
+        $port = $_SESSION[$guid]['mailerSMTPPort']; 
+        
+        if ( !empty($host) && !empty($port) ) {
+
+            $username = $_SESSION[$guid]['mailerSMTPUsername'];
+            $password = $_SESSION[$guid]['mailerSMTPPassword'];
+            $auth = ( !empty($username) && !empty($password) );
+
+            $mail->Host       = $host;      // SMTP server example
+            $mail->SMTPDebug  = 0;          // enables SMTP debug information (for testing)
+            $mail->SMTPAuth   = $auth;      // enable SMTP authentication
+            $mail->Port       = $port;      // set the SMTP port for the GMAIL server
+            $mail->Username   = $username;  // SMTP account username example
+            $mail->Password   = $password;  // SMTP account password example
+        }
+    }
+
+    return $mail;
+}
+
 /*
 Easy Return Display Processing.
 Arguments:
@@ -4802,4 +4841,6 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
         echo '</div>';
     }
 }
+
+
 ?>

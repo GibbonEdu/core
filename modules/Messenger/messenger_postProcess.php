@@ -1868,7 +1868,7 @@ else {
 				$body.="<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 				$bodyPlain = emailBodyConvert($body);
 
-				$mail=new PHPMailer;
+				$mail=getGibbonMailer($guid);
 				$mail->IsSMTP();
 				if ($emailReplyTo!="") {
 					$mail->AddReplyTo($emailReplyTo, '');
