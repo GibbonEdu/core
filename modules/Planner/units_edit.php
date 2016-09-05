@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 											</script>
 										</td>
 									</tr>
-        							<tr>
+                                    <tr>
         								<td>
         									<b><?php echo __($guid, 'Active') ?> *</b><br/>
         									<span class="emphasis small"></span>
@@ -189,6 +189,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 											</script>
 										</td>
 									</tr>
+                                    <tr>
+            							<td class='long' colspan=2>
+            								<b><?php echo __($guid, 'Tags') ?> *</b><br/>
+            								<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span><br/>
+            								<?php
+                                            $tags = getTagList($connection2);
+                                            sort($tags, SORT_STRING) ;
+                                            $list = '';
+                                            foreach ($tags AS $tag) {
+                                                $list = $list.'{id: "'.$tag.'", name: "'.$tag.'"},';
+                                            }
+                    						?>
+            								<style>
+            									td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
+            									td.long div.token-input-dropdown-facebook { width: 120px }
+            								</style>
+            								<input type="text" id="tags" name="tags" class='standardWidth' />
+            								<?php
+                                                $prepopulate = '';
+                                                $tags = array();
+            									$tagsInner = explode(',', $row['tags']);
+                                                foreach ($tagsInner AS $tagInner) {
+                                                    array_push ($tags, trim($tagInner));
+                                                }
+                                                sort($tags, SORT_STRING) ;
+            									foreach ($tags as $tag) {
+            										$prepopulate .= '{id: \''.$tag.'\', name: \''.$tag.'\'}, ';
+            									}
+            									$prepopulate = substr($prepopulate, 0, -2);
+            									?>
+                                                <script type="text/javascript">
+            									$(document).ready(function() {
+            										 $("#tags").tokenInput([
+            												<?php echo substr($list, 0, -1) ?>
+            											],
+            											{theme: "facebook",
+            											hintText: "Start typing a tag...",
+            											allowCreation: true,
+            											<?php
+                                                        if ($prepopulate != '{id: , name: }') {
+                                                            echo "prePopulate: [ $prepopulate ],";
+                                                        }
+                            						?>
+            											preventDuplicates: true});
+            									});
+            								</script>
+            								<script type="text/javascript">
+            									var tags=new LiveValidation('tags');
+            									tags.add(Validate.Presence);
+            								</script>
+            							</td>
+            						</tr>
 									<tr class='break'>
 										<td colspan=2>
 											<h3><?php echo __($guid, 'Classes') ?></h3>

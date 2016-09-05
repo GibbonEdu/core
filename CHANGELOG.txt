@@ -22,7 +22,7 @@ v13.0.00
 		...
 
 	Changes With Important Notices
-		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay)
+		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
 		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
 
 	Significant Changes
@@ -51,6 +51,7 @@ v13.0.00
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Planner: adjusted permissions to allow teachers to duplicate lessons belonging to other people (to reuse them)
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class
+		Planner: added ability to tag units, in order to help build curriculum maps
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days

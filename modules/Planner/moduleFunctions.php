@@ -817,4 +817,28 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
         echo '</div>';
     }
 }
+
+function getTagList($connection2) {
+    $tags = array();
+
+    //Get tag list
+    try {
+        $dataList = array();
+        $sqlList = 'SELECT tags FROM gibbonUnit';
+        $resultList = $connection2->prepare($sqlList);
+        $resultList->execute($dataList);
+    } catch (PDOException $e) {}
+    $list = '';
+    while ($rowList = $resultList->fetch()) {
+        $tagsInner = explode(',', $rowList['tags']);
+        foreach ($tagsInner AS $tagInner) {
+            array_push ($tags, trim($tagInner));
+        }
+    }
+    $tags = array_unique($tags);
+    sort($tags, SORT_STRING) ;
+
+    return $tags;
+}
+
 ?>

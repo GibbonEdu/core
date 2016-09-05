@@ -59,9 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         }
         ?>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/resources_manage_addProcess.php?search=$search" ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Resource Contents') ?></h3>
 					</td>
 				</tr>
@@ -70,26 +70,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						$("#resourceFile").css("display","none");
 						$("#resourceHTML").css("display","none");
 						$("#resourceLink").css("display","none");
-								
+
 						$("#type").change(function(){
 							if ($('select.type option:selected').val()=="Link" ) {
 								$("#resourceFile").css("display","none");
 								$("#resourceHTML").css("display","none");
-								$("#resourceLink").slideDown("fast", $("#resourceLink").css("display","table-row")); 
+								$("#resourceLink").slideDown("fast", $("#resourceLink").css("display","table-row"));
 								link.enable();
 								file.disable();
 								html.disable();
 							} else if ($('select.type option:selected').val()=="File" ) {
 								$("#resourceLink").css("display","none");
 								$("#resourceHTML").css("display","none");
-								$("#resourceFile").slideDown("fast", $("#resourceFile").css("display","table-row")); 
+								$("#resourceFile").slideDown("fast", $("#resourceFile").css("display","table-row"));
 								file.enable();
 								link.disable();
 								html.disable();
 							} else if ($('select.type option:selected').val()=="HTML" ) {
 								$("#resourceLink").css("display","none");
 								$("#resourceFile").css("display","none");
-								$("#resourceHTML").slideDown("fast", $("#resourceHTML").css("display","table-row")); 
+								$("#resourceHTML").slideDown("fast", $("#resourceHTML").css("display","table-row"));
 								html.enable();
 								file.disable();
 								link.disable();
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 					});
 				</script>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'Type') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 					</td>
 				</tr>
 				<tr id="resourceFile">
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'File') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -148,20 +148,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							file.add(Validate.Presence);
 							file.disable();
-						</script>	
+						</script>
 						<?php
                         echo getMaxUpload($guid);
         			?>
 					</td>
 				</tr>
 				<tr id="resourceHTML">
-					<td colspan=2> 
+					<td colspan=2>
 						<b><?php echo __($guid, 'HTML') ?> *</b>
 						<?php echo getEditor($guid,  true, 'html', '', 20, false, false, false, false) ?>
 					</td>
 				</tr>
 				<tr id="resourceLink">
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Link') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -171,18 +171,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							link.add(Validate.Presence);
 							link.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 							link.disable();
-						</script>	
+						</script>
 					</td>
 				</tr>
-				
-				
+
+
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Resource Details') ?></h3>
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						$options = explode(',', $options);
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Category') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						$options = explode(',', $options);
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Purpose') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -283,9 +283,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
 						}
 					}
-					?>
+				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Tags') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span>
 					</td>
@@ -306,15 +306,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						}
 						?>
 						<style>
-							td.right ul.token-input-list-facebook { width: 302px; float: right } 
-							td.right div.token-input-dropdown-facebook { width: 120px } 
+							td.right ul.token-input-list-facebook { width: 302px; float: right }
+							td.right div.token-input-dropdown-facebook { width: 120px }
 						</style>
 						<input type="text" id="tags" name="tags" />
 						<script type="text/javascript">
 							$(document).ready(function() {
 								 $("#tags").tokenInput([
 									<?php echo substr($list, 0, -1) ?>
-								], 
+								],
 									{theme: "facebook",
 									hintText: "Start typing a tag...",
 									allowCreation: true,
@@ -328,12 +328,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 						<span class="emphasis small">Students year groups which may participate<br/></span>
 					</td>
 					<td class="right">
-						<?php 
+						<?php
                         echo "<fieldset style='border: none'>";
        	 				?>
 						<script type="text/javascript">
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Description') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -368,7 +368,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						<textarea name="description" id="description" rows=8 class="standardWidth"></textarea>
 					</td>
 				</tr>
-				
+
 				<tr>
 					<td>
 						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -380,7 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 				</tr>
 			</table>
 		</form>
-		
+
 		<?php
 
     }
