@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 $tags = array();
             									$tagsInner = explode(',', $row['tags']);
                                                 foreach ($tagsInner AS $tagInner) {
-                                                    array_push ($tags, trim($tagInner));
+                                                    array_push($tags, strtolower(trim($tagInner)));
                                                 }
                                                 sort($tags, SORT_STRING) ;
             									foreach ($tags as $tag) {

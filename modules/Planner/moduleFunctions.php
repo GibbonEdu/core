@@ -832,7 +832,7 @@ function getTagList($connection2) {
     while ($rowList = $resultList->fetch()) {
         $tagsInner = explode(',', $rowList['tags']);
         foreach ($tagsInner AS $tagInner) {
-            array_push ($tags, trim($tagInner));
+            array_push($tags, strtolower(trim($tagInner)));
         }
     }
     $tags = array_unique($tags);
