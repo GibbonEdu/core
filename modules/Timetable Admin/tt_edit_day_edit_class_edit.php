@@ -157,10 +157,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 											$resultUnique->execute($dataUnique);
 										} catch (PDOException $e) {
 										}
-										if ($resultUnique->rowCount() < 1) {
-											echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										} elseif ($rowSelect['gibbonSpaceID'] == $gibbonSpaceID) {
+
+										if ($rowSelect['gibbonSpaceID'] == $gibbonSpaceID) {
 											echo "<option selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+										} else {
+											if ($resultUnique->rowCount() >= 1) {
+												$rowSelect['name'] .= ' ('.__($guid, 'Occupied').')';
+											}
+											echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
 										}
 									}
 									?>				
