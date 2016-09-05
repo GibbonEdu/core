@@ -215,7 +215,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 }
                                                 sort($tags, SORT_STRING) ;
             									foreach ($tags as $tag) {
-            										$prepopulate .= '{id: \''.$tag.'\', name: \''.$tag.'\'}, ';
+                                                    if ($tag != '')
+                                                        $prepopulate .= '{id: \''.$tag.'\', name: \''.$tag.'\'}, ';
             									}
             									$prepopulate = substr($prepopulate, 0, -2);
             									?>
