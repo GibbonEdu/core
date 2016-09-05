@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                 <tr>
                                     <td class='long' colspan=2>
                                         <b><?php echo __($guid, 'Tags') ?> *</b><br/>
-                                        <span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span><br/>
+                                        <span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
                 						<?php
                                         $tags = getTagList($connection2);
                                         sort($tags, SORT_STRING) ;
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 						?>
                 						<style>
                 							td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
-                							td.right div.token-input-dropdown-facebook { width: 120px }
+                							td.long div.token-input-dropdown-facebook { width: 120px }
                 						</style>
                 						<input type="text" id="tags" name="tags" />
                 						<script type="text/javascript">

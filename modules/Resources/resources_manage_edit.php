@@ -277,12 +277,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							}
 						?>
 						<tr>
-							<td>
+							<td class='long' colspan=2>
 								<b><?php echo __($guid, 'Tags') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span>
-							</td>
-							<td class="right">
-								<?php
+								<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span><br/>
+                                <?php
                                 //Get tag list
                                 try {
                                     $dataList = array();
@@ -299,8 +297,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								}
 								?>
 								<style>
-									td.right ul.token-input-list-facebook { width: 302px; float: right }
-									td.right div.token-input-dropdown-facebook { width: 120px }
+                                    td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
+                                    td.long div.token-input-dropdown-facebook { width: 120px }
 								</style>
 								<input type="text" id="tags" name="tags" class='standardWidth' />
 								<?php
