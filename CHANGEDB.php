@@ -440,5 +440,5 @@ UPDATE gibbonSetting SET name='defaultAssessmentScale', nameDisplay='Default Ass
 ALTER TABLE `gibbonExternalAssessmentStudentEntry` DROP `gibbonScaleGradeIDPrimaryAssessmentScale`;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('bg_BG', 'български език', 'N', 'N', 'Dimitar Hubenov', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ko_KP', '한국어 - 대한민국', 'N', 'N', '조대훈', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
-
+UPDATE gibbonAction SET URLList='student_view.php,student_view_details.php,student_view_details_notes_add.php,student_view_details_notes_edit.php' WHERE name='View Student Profile_full' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 ";

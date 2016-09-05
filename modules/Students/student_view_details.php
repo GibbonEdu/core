@@ -1784,7 +1784,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo '<td>';
                                         if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']) {
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details_notes_edit.php&search='.$search.'&gibbonStudentNoteID='.$row['gibbonStudentNoteID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details_notes_delete.php&search='.$search.'&gibbonStudentNoteID='.$row['gibbonStudentNoteID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                                         }
                                         echo "<script type='text/javascript'>";
                                         echo '$(document).ready(function(){';
