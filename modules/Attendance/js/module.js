@@ -34,3 +34,32 @@ function getDate() {
 	
 	return datestring ;
 }
+
+jQuery(function($){
+
+	// Update reasons on Attendance type selected
+	$('select[name$="-type"]').change( function() {
+		var reason = $(this).next('select[name$="-reason"]');
+
+		// Auto-select Unexcused for Absent attendance
+		if ( $(this).val() == 'Absent' && reason.val() == ''  ) {
+			reason.val("Unexcused");
+		}
+
+		// Auto-clear reasons for Present attendance
+		else if ( $(this).val() == 'Present' ) {
+			reason.val("");
+		}
+		
+	});
+
+	// Disallow blank reasons for Absent attendance
+	$('select[name$="-reason"]').change( function() {
+		if ( $(this).val() == ''  ) {
+			if ( $(this).prev('select[name$="-type"]').val() == 'Absent' ) {
+				alert('If the reason for an absence is unknown please select Unexcused.\n\nThe attendence may be updated later once the absence has been excused.');
+				$(this).val("Unexcused");
+			}
+		}
+	});
+});
