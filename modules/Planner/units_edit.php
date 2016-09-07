@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									</tr>
                                     <tr>
             							<td class='long' colspan=2>
-            								<b><?php echo __($guid, 'Tags') ?> *</b><br/>
+            								<b><?php echo __($guid, 'Keywords & Concepts') ?></b><br/>
             								<span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
             								<?php
                                             $tags = getTagList($connection2);
@@ -235,10 +235,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             						?>
             											preventDuplicates: true});
             									});
-            								</script>
-            								<script type="text/javascript">
-            									var tags=new LiveValidation('tags');
-            									tags.add(Validate.Presence);
             								</script>
             							</td>
             						</tr>
