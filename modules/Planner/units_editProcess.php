@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             }
             $embeddable = $_POST['embeddable'];
 
-            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $name == '' or $description == '' or $tags == '' or $active == '' or $ordering == '' or $embeddable == '') {
+            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $name == '' or $description == '' or $active == '' or $ordering == '' or $embeddable == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {

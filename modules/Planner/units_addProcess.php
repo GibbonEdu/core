@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 $sharedPublic = $_POST['sharedPublic'];
             }
 
-            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $name == '' or $description == '' or $tags == '' or $active == '' or $ordering == '') {
+            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $name == '' or $description == '' or $active == '' or $ordering == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
