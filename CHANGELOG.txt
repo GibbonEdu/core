@@ -41,6 +41,7 @@ v13.0.00
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken
 		System: updated .gitignore to include .DS_store files
+		System: updated PayPal integration to set localecode based on current Gibbon language
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Departments: added course long name to header of Class page
