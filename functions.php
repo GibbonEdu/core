@@ -1183,7 +1183,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     }
 
     //PREPARE RECENT GRADES
-    $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Recent Grades')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__($guid, 'View Markbook').'</a></span></div>';
+    $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__($guid, 'View Markbook').'</a></span></div>';
     $grades = false;
 
     //Get settings
