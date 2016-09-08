@@ -449,20 +449,20 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                     }
                     ++$count;
 
-                        //Highlight class in progress
-                        if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                            $rowNum = 'current';
-                        }
+                    //Highlight class in progress
+                    if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+                        $rowNum = 'current';
+                    }
 
-                        //COLOR ROW BY STATUS!
-                        $planner .= "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    $planner .= "<tr class=$rowNum>";
                     $planner .= '<td>';
                     $planner .= $row['course'].'.'.$row['class'].'<br/>';
                     $planner .= "<span style='font-style: italic; font-size: 75%'>".substr($row['timeStart'], 0, 5).'-'.substr($row['timeEnd'], 0, 5).'</span>';
                     $planner .= '</td>';
                     $planner .= '<td>';
                     $planner .= '<b>'.$row['name'].'</b><br/>';
-                    $planner .= "<span style='font-size: 85%; font-style: italic'>";
+                    $planner .= "<div style='font-size: 85%; font-style: italic'>";
                     $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
                     if (isset($unit[0])) {
                         $planner .= $unit[0];
@@ -470,7 +470,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                             $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
                         }
                     }
-                    $planner .= '</span>';
+                    $planner .= '</div>';
                     $planner .= '</td>';
                     $planner .= '<td>';
                     if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
@@ -892,7 +892,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                     $planner .= '</td>';
                     $planner .= '<td>';
                     $planner .= '<b>'.$row['name'].'</b><br/>';
-                    $planner .= "<span style='font-size: 85%; font-style: italic'>";
+                    $planner .= "<div style='font-size: 85%; font-style: italic'>";
                     $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
                     if (isset($unit[0])) {
                         $planner .= $unit[0];
@@ -900,7 +900,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                             $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
                         }
                     }
-                    $planner .= '</span>';
+                    $planner .= '</div>';
                     $planner .= '</td>';
                     $planner .= '<td>';
                     if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
@@ -1138,9 +1138,9 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $plannerOutput .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i><br/>';
                     }
                 }
-                $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>";
+                $plannerOutput .= "<div style='font-size: 85%; font-weight: normal; font-style: italic'>";
                 $plannerOutput .= $row['summary'];
-                $plannerOutput .= '</span>';
+                $plannerOutput .= '</div>';
                 $plannerOutput .= '</td>';
                 $plannerOutput .= '<td>';
                 if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
@@ -1642,7 +1642,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                                 ++$count;
                             }
                             if ($count == 0) {
-                                echo '<i>'.__($guid, 'None').'</i>';
+                                $activitiesOutput .= '<i>'.__($guid, 'None').'</i>';
                             }
                         $activitiesOutput .= '</td>';
                         $activitiesOutput .= '<td>';
@@ -4745,16 +4745,16 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
 function getGibbonMailer($guid) {
     $mail = new PHPMailer();
 
-    $smtpEnabled = $_SESSION[$guid]['enableMailerSMTP']; 
+    $smtpEnabled = $_SESSION[$guid]['enableMailerSMTP'];
 
     if ($smtpEnabled == 'Y') {
 
         $mail->IsSMTP();
         $mail->CharSet = 'UTF-8';
 
-        $host = $_SESSION[$guid]['mailerSMTPHost']; 
-        $port = $_SESSION[$guid]['mailerSMTPPort']; 
-        
+        $host = $_SESSION[$guid]['mailerSMTPHost'];
+        $port = $_SESSION[$guid]['mailerSMTPPort'];
+
         if ( !empty($host) && !empty($port) ) {
 
             $username = $_SESSION[$guid]['mailerSMTPUsername'];
