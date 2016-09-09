@@ -7,3 +7,5 @@ missing.yml
 Thumbs.db
 themes/*
 !themes/Default
+config/local/*
+_notes
