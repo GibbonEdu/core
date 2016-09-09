@@ -41,6 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         $markbookType .= trim($type).',';
     }
     $markbookType = substr($markbookType, 0, -1);
+    $enableEffort = $_POST['enableEffort'];
+    $enableRubrics = $_POST['enableRubrics'];
     $enableColumnWeighting = $_POST['enableColumnWeighting'];
     $enableRawAttainment = $_POST['enableRawAttainment'];
     $enableGroupByTerm = $_POST['enableGroupByTerm'];
@@ -56,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $personalisedWarnings = $_POST['personalisedWarnings'];
 
     //Validate Inputs
-    if ($markbookType == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableGroupByTerm == '') {
+    if ($markbookType == '' or $enableRubrics == '' or $enableRubrics == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableGroupByTerm == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
@@ -66,6 +68,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         try {
             $data = array('value' => $markbookType);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='markbookType'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $enableEffort);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableEffort'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $enableRubrics);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableRubrics'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

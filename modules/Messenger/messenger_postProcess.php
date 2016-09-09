@@ -1735,7 +1735,7 @@ else {
                               }
                             } //end get emails
 
-                            
+
 
                             //Get SMS
                             if ($sms=="Y" AND $countryCode!="") {
@@ -1853,7 +1853,7 @@ else {
 			}
 
 			if ($email=="Y") {
-				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
+				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
 
 				//Prep email array
 				$emails.="$from," ; //Add sender as recipient
@@ -1865,11 +1865,11 @@ else {
 				natcasesort($emails) ;
 
 				//Prep message
-				$body.="<p class='emphasis'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+				$body.="<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 				$bodyPlain = emailBodyConvert($body);
 
-				$mail = getGibbonMailer($guid);
-
+				$mail=getGibbonMailer($guid);
+				$mail->IsSMTP();
 				if ($emailReplyTo!="") {
 					$mail->AddReplyTo($emailReplyTo, '');
 				}

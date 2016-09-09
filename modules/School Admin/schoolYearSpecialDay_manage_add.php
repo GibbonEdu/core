@@ -61,9 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         } else {
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?> <?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -77,17 +77,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
 								}
-											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 									echo 'dd/mm/yyyy';
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Type') ?> *</b>
 						</td>
 						<td class="right">
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Description') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'School Opens') ?></b>
 						</td>
 						<td class="right">
@@ -137,14 +137,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolOpen'], 3, 2) == $i and $row['schoolOpen'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<select style="width:100px" name="schoolOpenH" id="schoolOpenH">
 								<?php
@@ -154,19 +149,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolOpen'], 0, 2) == $i and $row['schoolOpen'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'School Starts') ?></b>
 						</td>
 						<td class="right">
@@ -178,14 +168,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolStart'], 3, 2) == $i and $row['schoolStart'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<select style="width:100px" name="schoolStartH" id="schoolStartH">
 								<?php
@@ -195,19 +180,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolStart'], 0, 2) == $i and $row['schoolStart'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'School Ends') ?></b>
 						</td>
 						<td class="right">
@@ -219,14 +199,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolEnd'], 3, 2) == $i and $row['schoolEnd'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<select style="width:100px" name="schoolEndH" id="schoolEndH">
 								<?php
@@ -236,19 +211,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolEnd'], 0, 2) == $i and $row['schoolEnd'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'School Closes') ?></b>
 						</td>
 						<td class="right">
@@ -260,14 +230,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolClose'], 3, 2) == $i and $row['schoolClose'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<select style="width:100px" name="schoolCloseH" id="schoolCloseH">
 								<?php
@@ -277,14 +242,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 									if (strlen($i) == 1) {
 										$iPrint = '0'.$i;
 									}
-
-									if (substr($row['schoolClose'], 0, 2) == $i and $row['schoolClose'] != null) {
-										echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-									} else {
-										echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-									}
+                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>

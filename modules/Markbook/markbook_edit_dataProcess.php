@@ -29,6 +29,9 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
@@ -70,8 +73,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 $partialFail = false;
                 $attainment = $row['attainment'];
                 $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'];
-                $effort = $row['effort'];
-                $gibbonScaleIDEffort = $row['gibbonScaleIDEffort'];
+                if ($enableEffort != 'Y') {
+                    $effort = 'N';
+                    $gibbonScaleIDEffort = null;
+                }
+                else {
+                    $effort = $row['effort'];
+                    $gibbonScaleIDEffort = $row['gibbonScaleIDEffort'];
+                }
                 $comment = $row['comment'];
                 $uploadedResponse = $row['uploadedResponse'];
 
@@ -153,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 $target = $rowTarget['sequenceNumber'];
                                 $attainmentSequence = $rowScale['sequenceNumber'];
 
-                                //Test against target grade and set values accordingly	
+                                //Test against target grade and set values accordingly
                                 //Below target
                                 if ($attainmentSequence > $target) {
                                     $attainmentConcern = 'Y';

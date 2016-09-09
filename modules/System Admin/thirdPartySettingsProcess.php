@@ -248,7 +248,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $fail = true;
         }
 
-
         if ($fail == true) {
             $URL .= '&return=error2';
             header("Location: {$URL}");

@@ -87,21 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         } else {
             try {
                 if ($viewBy == 'date') {
-                    if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                        $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    } else {
-                        $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
-                    }
+                    $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                 } else {
-                    if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    } else {
-                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
-                    }
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -154,9 +144,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 					<?php echo __($guid, 'This process will duplicate all aspects of the selected lesson. If a lesson is copied into another course, Smart Block content will be added into the lesson body, so it does not get left out.') ?>
 					</p>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2" ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Target Year') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -178,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 											}
 											echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
@@ -187,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Target Class') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -210,12 +200,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 										while ($rowSelect = $resultSelect->fetch()) {
 											echo "<option class='".$rowSelect['gibbonSchoolYearID']."' value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
 										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script> 
+									</script>
 									<script type="text/javascript">
 										$("#gibbonCourseClassID").chainedTo("#gibbonSchoolYearID");
 									</script>
@@ -235,14 +225,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 							if ($resultMarkbook->rowCount() >= 1) {
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Duplicate Markbook Columns?') ?></b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Will duplicate any columns linked to this lesson.') ?><br/></span>
 									</td>
 									<td class="right">
 										<select name="duplicate" id="duplicate" class="standardWidth">
-											<option value='N'>N</option>	
-											<option value='Y'>Y</option>	
+											<option value='N'>N</option>
+											<option value='Y'>Y</option>
 										</select>
 									</td>
 								</tr>
@@ -250,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
 							}
 							?>
-							
+
 							<tr>
 								<td>
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -282,9 +272,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                     } else {
                         ?>
 						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_duplicateProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr>
-									<td style='width: 275px'> 
+									<td style='width: 275px'>
 										<b><?php echo __($guid, 'Class') ?> *</b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 									</td>
@@ -310,10 +300,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 											<?php
 
 										}
-										?>		
+										?>
 									</td>
 								</tr>
-								
+
 								<?php
                                 if ($row['gibbonUnitID'] != '' and $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
                                     //KEEP IN UNIT
@@ -331,13 +321,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                                         echo '<input name="gibbonUnitClassID" id="gibbonUnitClassID" value="'.$rowMarkbook['gibbonUnitClassID'].'" type="hidden">';
                                         ?>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Keep lesson in original unit?') ?></b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Only available if source and target classes are in the same course.') ?><br/></span>
 											</td>
 											<td class="right">
 												<select name="keepUnit" id="keepUnit" class="standardWidth">
-													<option value='Y'><?php echo __($guid, 'Yes') ?></option>	
+													<option value='Y'><?php echo __($guid, 'Yes') ?></option>
 													<option value='N'><?php echo __($guid, 'No') ?></option>
 												</select>
 											</td>
@@ -347,9 +337,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                                     }
                                 }
                         		?>
-								
+
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Name') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -360,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 										</script>
 									</td>
 								</tr>
-								
+
 								<?php
                                 //Try and find the next unplanned slot for this class.
                                 try {
@@ -390,7 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								}
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Date') ?> *</b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 										} else {
@@ -413,7 +403,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-                       	 			?>." } );  
+                       	 			?>." } );
 										</script>
 										 <script type="text/javascript">
 											$(function() {
@@ -423,7 +413,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Start Time') ?> *</b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 									</td>
@@ -432,7 +422,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 										<script type="text/javascript">
 											var timeStart=new LiveValidation('timeStart');
 											timeStart.add(Validate.Presence);
-											timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+											timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
 										</script>
 										<script type="text/javascript">
 											$(function() {
@@ -456,7 +446,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'End Time') ?> *</b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 									</td>
@@ -465,7 +455,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 										<script type="text/javascript">
 											var timeEnd=new LiveValidation('timeEnd');
 											timeEnd.add(Validate.Presence);
-											timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+											timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
 										</script>
 										<script type="text/javascript">
 											$(function() {

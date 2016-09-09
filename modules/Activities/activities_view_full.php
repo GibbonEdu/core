@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo "<h3 style='padding-top: 0px; margin-top: 5px'>".__($guid, 'Time Slots').'</h3>';
                     try {
                         $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
-                        $sqlSlots = 'SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
+                        $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
                         $resultSlots = $connection2->prepare($sqlSlots);
                         $resultSlots->execute($dataSlots);
                     } catch (PDOException $e) {
@@ -201,23 +201,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     $count = 0;
                     while ($rowSlots = $resultSlots->fetch()) {
-                        echo '<h4>'.__($guid, $rowSlots['name']).'</h4>';
+                        echo '<h4>'.__($guid, $rowSlots['day']).'</h4>';
                         echo '<p>';
                         echo '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                         if ($rowSlots['gibbonSpaceID'] != '') {
-                            try {
-                                $dataSpace = array('gibbonSpaceID' => $rowSlots['gibbonSpaceID']);
-                                $sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-                                $resultSpace = $connection2->prepare($sqlSpace);
-                                $resultSpace->execute($dataSpace);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-
-                            if ($resultSpace->rowCount() > 0) {
-                                $rowSpace = $resultSpace->fetch();
-                                echo '<i>'.__($guid, 'Location').'</i>: '.$rowSpace['name'];
-                            }
+                            echo '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['space'];
                         } else {
                             echo '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['locationExternal'];
                         }

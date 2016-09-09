@@ -166,6 +166,7 @@ div.trailEnd {
 }
 div.trailHead {
 	float: left;
+	white-space: nowrap;
 }
 div.trailHead a {
 	text-decoration: underline;

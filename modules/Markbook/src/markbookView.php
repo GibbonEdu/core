@@ -37,12 +37,12 @@ class markbookView
 	 * Gibbon\sqlConnection
 	 */
 	protected $pdo ;
-	
+
 	/**
 	 * Gibbon\session
 	 */
 	protected $session ;
-	
+
 	/**
 	 * Gibbon\config
 	 */
@@ -64,7 +64,7 @@ class markbookView
 	/**
 	 * Cache markbook values to reduce queries
 	 */
-	protected $primaryAssessmentScale;
+	protected $defaultAssessmentScale;
 	protected $externalAssessmentFields;
 	protected $personalizedTargets;
 
@@ -89,7 +89,7 @@ class markbookView
 
     /**
      * Array of markbookColumn objects for each gibbonMarkbookColumn
-     * @var array 
+     * @var array
      */
     protected $columns = array();
 
@@ -146,11 +146,16 @@ class markbookView
         $this->settings['enableGroupByTerm'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
         $this->settings['enableTypeWeighting'] = 'N';
 
-		// Get alternative header names
+		// Get settings
+		$enableEffort = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableEffort');
+		$enableRubrics = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRubrics');
 		$attainmentAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeName');
 		$attainmentAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeNameAbrev');
 		$effortAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeName');
 		$effortAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeNameAbrev');
+
+		$this->settings['enableEffort'] = (!empty($enableEffort))? $enableEffort : 'N';
+		$this->settings['enableRubrics'] = (!empty($enableRubrics))? $enableRubrics : 'N';
 
 		$this->settings['attainmentName'] = (!empty($attainmentAltName))? $attainmentAltName : __($this->config->get('guid'), 'Attainment');
 		$this->settings['attainmentAbrev'] = (!empty($attainmentAltNameAbrev))? $attainmentAltNameAbrev : __($this->config->get('guid'), 'Att');
@@ -161,7 +166,7 @@ class markbookView
 
     /**
      * Get Setting
-     * 
+     *
      * @version 11th May 2016
      * @since   11th May 2016
      * @param   string  $key
@@ -173,10 +178,10 @@ class markbookView
 
     /**
      * Get Minimum Sequence Number
-     * 
+     *
      * @version  7th May 2016
      * @since    7th May 2016
-     * @return   int  
+     * @return   int
      */
     public function getMinimumSequenceNumber() {
     	return $this->minSequenceNumber;
@@ -184,7 +189,7 @@ class markbookView
 
     /**
      * Get Columns Per Page
-     * 
+     *
      * @version  9th May 2016
      * @since    9th May 2016
      * @return   int
@@ -205,7 +210,7 @@ class markbookView
 
     /**
      * Get Column Count Total
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @return  int
@@ -232,7 +237,7 @@ class markbookView
 
     /**
      * Load Columns
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   int    $pageNum
@@ -273,7 +278,7 @@ class markbookView
         // Build a markbookColumn object for each row
         for ($i = 0; $i < $this->columnsThisPage; ++$i) {
 
-            $column = new markbookColumn( $result->fetch() );
+            $column = new markbookColumn( $result->fetch(), $this->settings['enableEffort'], $this->settings['enableRubrics'] );
 
             if ($column != NULL) {
                 $this->columns[ $i ] = $column;
@@ -281,7 +286,7 @@ class markbookView
                 //WORK OUT IF THERE IS SUBMISSION
                 if ( !empty($column->getData('gibbonPlannerEntryID'))) {
                     try {
-                        $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') ); 
+                        $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') );
                         $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y' LIMIT 1" ;
                         $resultSub=$this->pdo->executeQuery($data, $sql);
                     } catch (PDOException $e) { $this->error( $e->getMessage() ); }
@@ -302,7 +307,7 @@ class markbookView
 
     /**
      * Get a single markbookColumn object
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   int     $i Column Index
@@ -314,34 +319,34 @@ class markbookView
 
     /**
      * Get the Primary Assessment Scale info only once & hang onto it
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @return  array
      */
-    public function getPrimaryAssessmentScale() {
+    public function getDefaultAssessmentScale() {
 
-        if (!empty($this->primaryAssessmentScale)) return $this->primaryAssessmentScale; 
+        if (!empty($this->defaultAssessmentScale)) return $this->defaultAssessmentScale;
 
-        $PAS = getSettingByScope($this->pdo->getConnection(), 'System', 'primaryAssessmentScale');
+        $DAS = getSettingByScope($this->pdo->getConnection(), 'System', 'defaultAssessmentScale');
         try {
-            $data = array('gibbonScaleID' => $PAS);
+            $data = array('gibbonScaleID' => $DAS);
             $sql = 'SELECT name, nameShort FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
             $result = $this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
         if ($result->rowCount() == 1) {
-            $PAS = $result->fetch();
-            $this->primaryAssessmentScale = $PAS;
-            $this->primaryAssessmentScale['percent'] = ( stripos($PAS['name'], 'percent') !== false || $PAS['nameShort'] == '%')? '%' : '';
+            $DAS = $result->fetch();
+            $this->defaultAssessmentScale = $DAS;
+            $this->defaultAssessmentScale['percent'] = ( stripos($DAS['name'], 'percent') !== false || $DAS['nameShort'] == '%')? '%' : '';
         }
 
-        return $this->primaryAssessmentScale;
+        return $this->defaultAssessmentScale;
     }
 
     /**
      * Get Personalized Target from cached values
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $gibbonPersonID
@@ -363,7 +368,7 @@ class markbookView
 
     /**
      * Cache Personalized Targets
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      */
@@ -376,7 +381,7 @@ class markbookView
             $sql = 'SELECT gibbonPersonIDStudent, value FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
             $result=$this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
-        
+
         if ($result->rowCount() > 0) {
 	        while ($row = $result->fetch() ) {
 	        	$this->personalizedTargets[ $row['gibbonPersonIDStudent'] ] = $row['value'];
@@ -386,7 +391,7 @@ class markbookView
 
     /**
      * Get a Formatted Average with titles and maybe a percent sign
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string|int $average
@@ -395,13 +400,13 @@ class markbookView
     public function getFormattedAverage( $average ) {
         if ($average === '') return $average;
 
-        $PAS = $this->getPrimaryAssessmentScale();
-        return "<span title='".round($average, 2)."'>". round($average, 0) . $PAS['percent'] ."</span>";
+        $DAS = $this->getDefaultAssessmentScale();
+        return "<span title='".round($average, 2)."'>". round($average, 0) . $DAS['percent'] ."</span>";
     }
 
     /**
      * Get the average grade for a given Markbook Type (from pre-calculated values)
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $gibbonPersonID
@@ -493,7 +498,7 @@ class markbookView
     /**
      * Get a grouped set of column types, for different weighting calculations (currently 'term' or 'year')
      * Types will only be grouped into 'term' if enableGroupByTerm is on
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $calculate
@@ -501,22 +506,22 @@ class markbookView
      */
     public function getGroupedMarkbookTypes( $calculate = 'year' ) {
         return (isset($this->types[$calculate]))? $this->types[$calculate] : array();
-    } 
+    }
 
     /**
      * Get a subset of terms used by the current markbook columns
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @return  array
      */
     public function getCurrentTerms() {
         return (isset($this->terms))? $this->terms : array();
-    } 
+    }
 
     /**
      * Calculate and cache all the weighted averages for this Markbook
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @see cacheWeightings
@@ -531,7 +536,7 @@ class markbookView
             if (count($averages) == 0) continue;
 
             $weightedAverages = array();
-            
+
             $overallTotal = 0;
             $overallCumulative = 0;
 
@@ -544,7 +549,7 @@ class markbookView
                 foreach ($term as $type => $weighted) {
 
                     if ($weighted['total'] <= 0) continue;
-                        
+
                     $typeWeight = $this->getWeightingByType( $type );
                     $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
 
@@ -572,7 +577,7 @@ class markbookView
                 foreach ($averages['final'] as $type => $weighted) {
 
                     if ($weighted['total'] <= 0) continue;
-                            
+
                     $typeWeight = $this->getWeightingByType( $type );
                     $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
 
@@ -603,7 +608,7 @@ class markbookView
 
     /**
      * Retrieve all weighting info and weighted markbookEntry rows and collect them in a useful array
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      */
@@ -635,7 +640,7 @@ class markbookView
 
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-            $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
+            $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
             $result=$this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
@@ -693,7 +698,7 @@ class markbookView
                         'cumulative' => ($value * $weight),
                     );
                 }
-                
+
             }
         }
 
@@ -710,7 +715,7 @@ class markbookView
                     $this->types['year'][] = $type;
                 }
             }
-            
+
         }
 
         // Get the proper term order and info for the terms used
@@ -741,8 +746,8 @@ class markbookView
 
     /**
      * Has External Assessments
-     * 
-     * @version 7th May 2016
+     *
+     * @version 14th August 2016
      * @since   7th May 2016
      * @return  bool
      */
@@ -750,13 +755,24 @@ class markbookView
     	return (isset($this->externalAssessmentFields))? (count($this->externalAssessmentFields) > 0) : false;
     }
 
+	/**
+     * Get External Assessments
+     *
+     * @version 14th August 2016
+     * @since   14th August 2016
+     * @return  bool
+     */
+    public function getExternalAssessments() {
+    	return (isset($this->externalAssessmentFields))? $this->externalAssessmentFields : false;
+    }
+
     /**
      * Cache External Assessments
-     * 
-     * @version 7th May 2016
+     *
+     * @version 14th August 2016
      * @since   7th May 2016
-     * @param   string $courseName            
-     * @param   string $gibbonYearGroupIDList                        
+     * @param   string $courseName
+     * @param   string $gibbonYearGroupIDList
      */
     public function cacheExternalAssessments( $courseName, $gibbonYearGroupIDList ) {
 
@@ -785,8 +801,15 @@ class markbookView
 		            }
 
 		            $courseWhere = ($whereCount < 1)? '' : substr($courseWhere, 0, -4).')';
-		            
-		            $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name LIMIT 1";
+
+		            $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category, gibbonScale.name AS scale
+						FROM gibbonExternalAssessmentField
+							JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
+							JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID)
+						WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID
+							AND category=:category $courseWhere
+						ORDER BY name
+						LIMIT 1";
 		            $resultExternalAssessment = $this->pdo->executeQuery($dataExternalAssessment, $sqlExternalAssessment);
 		        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
@@ -797,6 +820,7 @@ class markbookView
 		            $this->externalAssessmentFields[1] = $rowExternalAssessment['name'];
 		            $this->externalAssessmentFields[2] = $rowExternalAssessment['assessment'];
 		            $this->externalAssessmentFields[3] = $rowExternalAssessment['category'];
+		            $this->externalAssessmentFields[4] = $rowExternalAssessment['scale'];
 		        }
 		    }
 		}
@@ -805,7 +829,7 @@ class markbookView
 
     /**
      * Creates a date range SQL filter, also checks validity of dates provided
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $startDate  YYYY-MM-DD Format
@@ -824,7 +848,7 @@ class markbookView
         if (!checkdate($checkStart[1], $checkStart[2], $checkStart[0]) || !checkdate($checkEnd[1], $checkEnd[2], $checkEnd[0])) {
             return false;
         }
-        
+
         // Use a key in the array to limit to one date filter at a time
         $this->columnFilters['daterange'] = "(date IS NOT NULL AND date BETWEEN '".$startDate."' AND '".$endDate."' )";
         return true;
@@ -832,7 +856,7 @@ class markbookView
 
     /**
      * Filter By Term
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   int|string $gibbonSchoolYearTermID
@@ -858,7 +882,7 @@ class markbookView
 
     /**
      * Creates simple SQL statements for options from the Class Selector
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $filter
@@ -877,7 +901,7 @@ class markbookView
 
     /**
      * Add a raw SQL statement to the filters
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $query
@@ -892,7 +916,7 @@ class markbookView
 
     /**
      * Get a SQL frieldly string of query modifiers
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @return  string
@@ -909,7 +933,7 @@ class markbookView
 
     /**
      * Handle error display. Maybe do something fancier here, eventually.
-     * 
+     *
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $message

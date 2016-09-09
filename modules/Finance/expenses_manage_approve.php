@@ -446,7 +446,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                         ?>
 										<tr>
 											<td colspan=2> 
-												<div class='error'><?php echo __($guid, 'Your approval is not currently required: it is possible somone beat you to it, or you have already approved it.') ?></div>
+												<div class='error'><?php echo __($guid, 'Your approval is not currently required: it is possible someone beat you to it, or you have already approved it.') ?></div>
 											</td>
 										</tr>
 										<?php

@@ -909,15 +909,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 						<optgroup label='--<?php echo __($guid, 'OTHERS') ?>--'/>
 							<option <?php if ($row['value'] == 'BDT ó') {echo 'selected';}?> value='BDT ó'>Bangladeshi Taka (ó)</option>
 							<option <?php if ($row['value'] == 'BTC') {echo 'selected';}?> value='BTC'>Bitcoin</option>
+                            <option <?php if ($row['value'] == 'BGN лв.') {echo 'selected';}?> value='BGN лв.'>Bulgarian Lev (лв.)</option>
 							<option <?php if ($row['value'] == 'XAF FCFA') {echo 'selected';}?> value='XAF FCFA'>Central African Francs (FCFA)</option>
           					<option <?php if ($row['value'] == 'EGP £') { echo 'selected' ; } ?> value='EGP £'>Egyptian Pound (£)</option>
 						  	<option <?php if ($row['value'] == 'GHS GH₵') { echo 'selected'; } ?> value='GHS GH₵'>Ghanaian Cedi (GH₵)</option>
-						  	<option <?php if ($row['value'] == 'INR ₹') {echo 'selected';}?> value='INR ₹'>Indian Rupee (₹)</option>
+						  	<option <?php if ($row['value'] == 'INR ₹') {echo 'selected';}?> value='INR ₹'>Indian Rupee₹ (₹)</option>
 							<option <?php if ($row['value'] == 'IDR Rp') {echo 'selected';}?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 							<option <?php if ($row['value'] == 'JMD $') {echo 'selected';}?> value='JMD $'>Jamaican Dollar ($)</option>
 							<option <?php if ($row['value'] == 'KES KSh') {echo 'selected';}?> value='KES KSh'>Kenyan Shilling (KSh)</option>
 							<option <?php if ($row['value'] == 'MOP MOP$') {echo 'selected';}?> value='MOP MOP$'>Macanese Pataca (MOP$)</option>
 							<option <?php if ($row['value'] == 'MMK K') {echo 'selected';}?> value='MMK K'>Myanmar Kyat (K)</option>
+                            <option <?php if ($row['value'] == 'NAD N$') {echo 'selected';}?> value='NAD N$'>Namibian Dollar (N$)</option>
 							<option <?php if ($row['value'] == 'NPR ₨') {echo 'selected';}?> value='NPR ₨'>Nepalese Rupee (₨)</option>
 							<option <?php if ($row['value'] == 'NGN ₦') {echo 'selected';}?> value='NGN ₦'>Nigerian Naira (₦)</option>
 							<option <?php if ($row['value'] == 'PKR ₨') {echo 'selected';}?> value='PKR ₨'>Pakistani Rupee (₨)</option>
@@ -1031,7 +1033,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -1040,13 +1042,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
                 $row = $result->fetch();
                 ?>
 				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
-                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                        echo "<option value=''></option>";
 						try {
 							$dataSelect = array();
 							$sqlSelect = "SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name";
