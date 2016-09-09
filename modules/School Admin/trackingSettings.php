@@ -76,6 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 				echo '</tr>';
 			} else {
 				$externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
+				$externalAssessmentDataPoints = is_array($externalAssessmentDataPoints) ? $externalAssessmentDataPoints : array() ;
 				while ($row = $result->fetch()) {
 					?>
 						<tr>
