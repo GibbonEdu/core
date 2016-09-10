@@ -33,12 +33,12 @@ if (!defined('GIBBON_ROOT')) {
 
 require_once GIBBON_ROOT.'src/Autoloader.php';
 
-$loader = new Autoloader();
+//$loader = new Autoloader();
 
-$loader->addNameSpace('Gibbon\\', 'src/Gibbon');
-$loader->addNameSpace('Library\\', 'src/Library');
+//$loader->addNameSpace('Gibbon\\', 'src/Gibbon');
+//$loader->addNameSpace('Library\\', 'src/Library');
 
-$loader->register();
+//$loader->register();
 
 if (file_exists(GIBBON_ROOT.'config.php')) {
     include GIBBON_ROOT.'config.php';
