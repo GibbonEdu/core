@@ -41,6 +41,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $_SESSION[$guid]['attendanceTypes'] = NULL;
     $_SESSION[$guid]['attendanceReasons'] = NULL;
 
+
+    $attendanceEnableByClass = (isset($_POST['attendanceEnableByClass'])) ? $_POST['attendanceEnableByClass'] : NULL;
+    try {
+        $data = array('value' => $attendanceEnableByClass);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceEnableByClass'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
     $attendancePresentDescriptors = (isset($_POST['attendancePresentDescriptors'])) ? $_POST['attendancePresentDescriptors'] : NULL;
     try {
         $data = array('value' => $attendancePresentDescriptors);
@@ -95,6 +106,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     try {
         $data = array('value' => $attendanceMedicalReasons);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceMedicalReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceEnableMedicalTracking = (isset($_POST['attendanceEnableMedicalTracking'])) ? $_POST['attendanceEnableMedicalTracking'] : NULL;
+    try {
+        $data = array('value' => $attendanceEnableMedicalTracking);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceEnableMedicalTracking'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    // Move this to a Medical Settings page, eventually
+    $medicalIllnessSymptoms = (isset($_POST['medicalIllnessSymptoms'])) ? $_POST['medicalIllnessSymptoms'] : NULL;
+    try {
+        $data = array('value' => $medicalIllnessSymptoms);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='medicalIllnessSymptoms'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

@@ -191,40 +191,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 				</td>
 			</tr>
 
-
-<!-- 		<?php
-            $yearGroups = getYearGroups($connection2);
-			if ($yearGroups == '') {
-				echo "<tr class='break'>";
-				echo '<td colspan=2>';
-				echo "<div class='error'>";
-				echo __($guid, 'There are no records to display.');
-				echo '</div>';
-				echo '</td>';
-				echo '</tr>';
-			} else {
-        	?>
-        	<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Attendance').' - '.__($guid, 'Year Groups') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Enabled by Year Group'); ?></b><br/>
-				</td>
-				<td class="right">
-					<?php
-					for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-						$checked = '';
-						echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupID_'".($i) / 2 ."' value='".$yearGroups[$i]."'><br/>";
-					}
-					?>
-				</td>
-			</tr> -->
-
-
-			<?php } ?>
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Medical'); ?></h3>
@@ -252,6 +218,64 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 					</script> 
 				</td>
 			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceEnableMedicalTracking'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                $enableSymptoms = $row['value'];
+                ?>
+				<td> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+					</select>
+				</td>
+			</tr>
+			<script type="text/javascript">
+				$(document).ready(function(){
+					 $("#attendanceEnableMedicalTracking").click(function(){
+						if ($('#attendanceEnableMedicalTracking option:selected').val()=="Y" ) {
+							$("#symptomsRow").slideDown("fast", $("#symptomsRow").css("display","table-row"));  
+
+						} else {
+							$("#symptomsRow").css("display","none");
+						}
+					 });
+				});
+			</script>
+			<tr id='symptomsRow' <?php if ($enableSymptoms == 'N') { echo " style='display: none'"; } ?>>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='medicalIllnessSymptoms'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script> 
+				</td>
+			</tr>
+			
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
