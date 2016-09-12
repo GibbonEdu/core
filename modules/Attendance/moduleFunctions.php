@@ -408,78 +408,56 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo $output;
 }
 
-function renderAttendanceTypeSelect( $guid, $lastType = '', $name='type', $width='302px' ) {
+function renderAttendanceTypeSelect( $guid, $connection2, $lastType = '', $name='type', $width='302px' ) {
 
-    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name'>";
-    echo '<option ';
-    if ($lastType == 'Present') {
-        echo 'selected ';
-    };
-    echo "value='Present'>".__($guid, 'Present').'</option>';
-    echo '<option ';
-    if ($lastType == 'Present - Late') {
-        echo 'selected ';
-    };
-    echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
-    echo '<option ';
-    if ($lastType == 'Present - Offsite') {
-        echo 'selected ';
-    };
-    echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
-    echo '<option ';
-    if ($lastType == 'Absent') {
-        echo 'selected ';
-    };
-    echo "value='Absent'>".__($guid, 'Absent').'</option>';
-    echo '<option ';
-    if ($lastType == 'Left') {
-        echo 'selected ';
-    };
-    echo "value='Left'>".__($guid, 'Left').'</option>';
-    echo '<option ';
-    if ($lastType == 'Left - Early') {
-        echo 'selected ';
-    };
-    echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
+    // Save in the session to prevent a ton of unessesary queries
+    if ( empty($_SESSION[$guid]['attendanceTypes']) || !is_array($_SESSION[$guid]['attendanceTypes']) ) {
+        
+        $presentDescriptors = explode(',', getSettingByScope($connection2, 'Attendance', 'attendancePresentDescriptors') );
+        $lateDescriptors = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceLateDescriptors') );
+        $absentDescriptors = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceAbsentDescriptors') );
+
+        $attendanceTypes = array_merge($presentDescriptors, $lateDescriptors, $absentDescriptors);
+
+        if (!empty($attendanceTypes)) {
+            $_SESSION[$guid]['attendanceTypes'] = $attendanceTypes;
+        }
+    }
+
+    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
+
+    if (!empty($_SESSION[$guid]['attendanceTypes']) && is_array($_SESSION[$guid]['attendanceTypes'])) {
+        foreach ($_SESSION[$guid]['attendanceTypes'] as $attendanceType) {
+            printf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceType, (($lastType == $attendanceType)? 'selected' : '' ) );
+        }
+    }
+
     echo '</select>';
 }
 
-function renderAttendanceReasonSelect( $guid, $lastReason = '', $name='reason', $width='302px' ) {
-    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name'>";
-    echo '<option ';
-    if ($lastReason == '') {
-        echo 'selected ';
-    };
-    echo "value=''></option>";
-    echo '<option ';
-    if ($lastReason == 'Pending') {
-        echo 'selected ';
-    };
-    echo "value='Pending'>".__($guid, 'Pending').'</option>';
-    echo '<option ';
-    if ($lastReason == 'Unexcused') {
-        echo 'selected ';
-    };
-    echo "value='Unexcused'>".__($guid, 'Unexcused').'</option>';
-    echo '<option ';
-    if ($lastReason == 'Education') {
-        echo 'selected ';
-    };
-    echo "value='Education'>".__($guid, 'Education').'</option>';
-    echo '<option ';
-    if ($lastReason == 'Family') {
-        echo 'selected ';
-    };
-    echo "value='Family'>".__($guid, 'Family').'</option>';
-    echo '<option ';
-    if ($lastReason == 'Medical') {
-        echo 'selected ';
-    };
-    echo "value='Medical'>".__($guid, 'Medical').'</option>';
-    echo '<option ';
-    if ($lastReason == 'Other') {
-        echo 'selected ';
-    };
-    echo "value='Other'>".__($guid, 'Other').'</option>';
+function renderAttendanceReasonSelect( $guid, $connection2, $lastReason = '', $name='reason', $width='302px' ) {
+
+     // Save in the session to prevent a ton of unessesary queries
+    if ( empty($_SESSION[$guid]['attendanceReasons']) || !is_array($_SESSION[$guid]['attendanceReasons']) ) {
+        
+        $unexcusedReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceUnexcusedReasons') );
+        $excusedReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceExcusedReasons') );
+        $medicalReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceMedicalReasons') );
+
+        $attendanceReasons = array_merge( array(' '), $unexcusedReasons, $medicalReasons, $excusedReasons);
+
+        if (!empty($attendanceReasons)) {
+            $_SESSION[$guid]['attendanceReasons'] = $attendanceReasons;
+        }
+    }
+
+    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
+
+    if (!empty($_SESSION[$guid]['attendanceReasons']) && is_array($_SESSION[$guid]['attendanceReasons'])) {
+        foreach ($_SESSION[$guid]['attendanceReasons'] as $attendanceReason) {
+            printf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceReason, (($lastReason == $attendanceReason)? 'selected' : '' ) );
+        }
+    }
+
     echo '</select>';
 }

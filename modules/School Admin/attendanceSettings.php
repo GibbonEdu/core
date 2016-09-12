@@ -37,7 +37,162 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<?php
+			
+        	<tr class='break'>
+                <td colspan=2>
+                    <h3><?php echo __($guid, 'Features') ?></h3>
+                </td>
+            </tr>
+            <tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceEnableByClass'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                $enableSymptoms = $row['value'];
+                ?>
+				<td> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+					</select>
+				</td>
+			</tr>
+
+        	<tr class='break'>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Attendance Codes'); ?></h3>
+					<?php echo __($guid, 'These settings should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.') ?>
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendancePresentDescriptors'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script> 
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceLateDescriptors'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script> 
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceAbsentDescriptors'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script> 
+				</td>
+			</tr>
+
+			<tr class='break'>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Reasons'); ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceExcusedReasons'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script> 
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceUnexcusedReasons'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script> 
+				</td>
+			</tr>
+
+
+<!-- 		<?php
             $yearGroups = getYearGroups($connection2);
 			if ($yearGroups == '') {
 				echo "<tr class='break'>";
@@ -49,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 				echo '</tr>';
 			} else {
         	?>
-			<tr class='break'>
+        	<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Attendance').' - '.__($guid, 'Year Groups') ?></h3>
 				</td>
@@ -66,7 +221,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 					}
 					?>
 				</td>
-			</tr>
+			</tr> -->
+
+
 			<?php } ?>
 			<tr class='break'>
 				<td colspan=2>
@@ -74,11 +231,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 				</td>
 			</tr>
 			<tr>
-				<td>
-					<b><?php echo __($guid, 'Predefined Symptoms'); ?></b><br/>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceMedicalReasons'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'> 
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);

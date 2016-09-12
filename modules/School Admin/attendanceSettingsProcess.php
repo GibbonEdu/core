@@ -37,66 +37,70 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 } else {
     $fail = false;
 
-   //DEAL WITH EXTERNAL ASSESSMENT DATA POINTS
-   $externalAssessmentDataPoints = array();
-    $assessmentCount = $_POST['external_gibbonExternalAssessmentID_count'];
-    $yearCount = $_POST['external_year_count'];
-    $count = 0;
-    for ($i = 0; $i < $assessmentCount; ++$i) {
-        $externalAssessmentDataPoints[$count]['gibbonExternalAssessmentID'] = $_POST['external_gibbonExternalAssessmentID_'.$i];
-        $externalAssessmentDataPoints[$count]['category'] = $_POST['external_category_'.$i];
-        $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = '';
-        for ($j = 0; $j < $yearCount; ++$j) {
-            if (isset($_POST['external_gibbonExternalAssessmentID_'.$i.'_gibbonYearGroupID_'.$j])) {
-                $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] .= $_POST['external_gibbonExternalAssessmentID_'.$i.'_gibbonYearGroupID_'.$j].',';
-            }
-        }
-        if ($externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] != '') {
-            $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = substr($externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'], 0, -1);
-        }
-        ++$count;
+    // Unset the session variables so they re-generate the next time they're called
+    $_SESSION[$guid]['attendanceTypes'] = NULL;
+    $_SESSION[$guid]['attendanceReasons'] = NULL;
+
+    $attendancePresentDescriptors = (isset($_POST['attendancePresentDescriptors'])) ? $_POST['attendancePresentDescriptors'] : NULL;
+    try {
+        $data = array('value' => $attendancePresentDescriptors);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendancePresentDescriptors'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
     }
 
-   //Write setting to database
-   try {
-       $data = array('value' => serialize($externalAssessmentDataPoints));
-       $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Tracking' AND name='externalAssessmentDataPoints'";
-       $result = $connection2->prepare($sql);
-       $result->execute($data);
-   } catch (PDOException $e) {
-       $fail = true;
-   }
-
-   //DEAL WITH INTERNAL ASSESSMENT DATA POINTS
-   $internalAssessmentDataPoints = array();
-    $assessmentCount = $_POST['internal_type_count'];
-    $yearCount = $_POST['internal_year_count'];
-    $count = 0;
-    for ($i = 0; $i < $assessmentCount; ++$i) {
-        $internalAssessmentDataPoints[$count]['type'] = null;
-        if (isset($_POST['internal_type_'.$i])) {
-            $internalAssessmentDataPoints[$count]['type'] = $_POST['internal_type_'.$i];
-        }
-        $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = '';
-        for ($j = 0; $j < $yearCount; ++$j) {
-            if (isset($_POST['internal_type_'.$i.'_gibbonYearGroupID_'.$j])) {
-                $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] .= $_POST['internal_type_'.$i.'_gibbonYearGroupID_'.$j].',';
-            }
-        }
-        if ($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] != '') {
-            $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = substr($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'], 0, -1);
-        }
-        ++$count;
+    $attendanceLateDescriptors = (isset($_POST['attendanceLateDescriptors'])) ? $_POST['attendanceLateDescriptors'] : NULL;
+    try {
+        $data = array('value' => $attendanceLateDescriptors);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceLateDescriptors'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
     }
-   //Write setting to database
-   try {
-       $data = array('value' => serialize($internalAssessmentDataPoints));
-       $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Tracking' AND name='internalAssessmentDataPoints'";
-       $result = $connection2->prepare($sql);
-       $result->execute($data);
-   } catch (PDOException $e) {
-       $fail = true;
-   }
+
+    $attendanceAbsentDescriptors = (isset($_POST['attendanceAbsentDescriptors'])) ? $_POST['attendanceAbsentDescriptors'] : NULL;
+    try {
+        $data = array('value' => $attendanceAbsentDescriptors);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceAbsentDescriptors'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceExcusedReasons = (isset($_POST['attendanceExcusedReasons'])) ? $_POST['attendanceExcusedReasons'] : NULL;
+    try {
+        $data = array('value' => $attendanceExcusedReasons);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceExcusedReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceUnexcusedReasons = (isset($_POST['attendanceUnexcusedReasons'])) ? $_POST['attendanceUnexcusedReasons'] : NULL;
+    try {
+        $data = array('value' => $attendanceUnexcusedReasons);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceUnexcusedReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceMedicalReasons = (isset($_POST['attendanceMedicalReasons'])) ? $_POST['attendanceMedicalReasons'] : NULL;
+    try {
+        $data = array('value' => $attendanceMedicalReasons);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceMedicalReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
 
    //RETURN RESULTS
    if ($fail == true) {

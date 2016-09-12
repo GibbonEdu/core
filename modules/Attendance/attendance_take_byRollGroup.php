@@ -306,8 +306,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 echo '</div><br/>';
                                 echo "<input type='hidden' name='$count-gibbonPersonID' value='".$rowRollGroup['gibbonPersonID']."'>";
 
-                                renderAttendanceTypeSelect($guid, $rowLog['type'], "$count-type", '130px');
-                                renderAttendanceReasonSelect($guid, $rowLog['reason'], "$count-reason", '130px');
+                                renderAttendanceTypeSelect($guid, $connection2, $rowLog['type'], "$count-type", '130px');
+                                renderAttendanceReasonSelect($guid, $connection2, $rowLog['reason'], "$count-reason", '130px');
 
                                 echo "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
 

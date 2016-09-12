@@ -330,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<?php renderAttendanceReasonSelect($guid); ?>
+						<?php renderAttendanceReasonSelect($guid, $connection2); ?>
 					</td>
 				</tr>
 				<tr>

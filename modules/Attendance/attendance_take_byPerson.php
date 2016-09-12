@@ -276,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php renderAttendanceTypeSelect($guid); ?>
+								<?php renderAttendanceTypeSelect($guid, $connection2); ?>
 							</td>
 						</tr>
 						<tr>
@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php renderAttendanceReasonSelect($guid); ?>
+								<?php renderAttendanceReasonSelect($guid, $connection2); ?>
 							</td>
 						</tr>
 						<tr>
