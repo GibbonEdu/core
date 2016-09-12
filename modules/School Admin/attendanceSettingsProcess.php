@@ -37,11 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 } else {
     $fail = false;
 
-    // Unset the session variables so they re-generate the next time they're called
-    $_SESSION[$guid]['attendanceTypes'] = NULL;
-    $_SESSION[$guid]['attendanceReasons'] = NULL;
-
-
     $attendanceEnableByClass = (isset($_POST['attendanceEnableByClass'])) ? $_POST['attendanceEnableByClass'] : NULL;
     try {
         $data = array('value' => $attendanceEnableByClass);

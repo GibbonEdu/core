@@ -408,26 +408,27 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo $output;
 }
 
+$attendanceTypes = array();
+$attendanceReasons = array();
+
 function renderAttendanceTypeSelect( $guid, $connection2, $lastType = '', $name='type', $width='302px' ) {
 
+    global $attendanceTypes;
+
     // Save in the session to prevent a ton of unessesary queries
-    if ( empty($_SESSION[$guid]['attendanceTypes']) || !is_array($_SESSION[$guid]['attendanceTypes']) ) {
+    if ( empty($attendanceTypes) || !is_array($attendanceTypes) ) {
         
         $presentDescriptors = explode(',', getSettingByScope($connection2, 'Attendance', 'attendancePresentDescriptors') );
         $lateDescriptors = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceLateDescriptors') );
         $absentDescriptors = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceAbsentDescriptors') );
 
         $attendanceTypes = array_merge($presentDescriptors, $lateDescriptors, $absentDescriptors);
-
-        if (!empty($attendanceTypes)) {
-            $_SESSION[$guid]['attendanceTypes'] = $attendanceTypes;
-        }
     }
 
     echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
 
-    if (!empty($_SESSION[$guid]['attendanceTypes']) && is_array($_SESSION[$guid]['attendanceTypes'])) {
-        foreach ($_SESSION[$guid]['attendanceTypes'] as $attendanceType) {
+    if (!empty($attendanceTypes) && is_array($attendanceTypes)) {
+        foreach ($attendanceTypes as $attendanceType) {
             printf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceType, (($lastType == $attendanceType)? 'selected' : '' ) );
         }
     }
@@ -437,24 +438,22 @@ function renderAttendanceTypeSelect( $guid, $connection2, $lastType = '', $name=
 
 function renderAttendanceReasonSelect( $guid, $connection2, $lastReason = '', $name='reason', $width='302px' ) {
 
-     // Save in the session to prevent a ton of unessesary queries
-    if ( empty($_SESSION[$guid]['attendanceReasons']) || !is_array($_SESSION[$guid]['attendanceReasons']) ) {
+    global $attendanceReasons;
+
+    // Save in the session to prevent a ton of unessesary queries
+    if ( empty($attendanceReasons) || !is_array($attendanceReasons) ) {
         
         $unexcusedReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceUnexcusedReasons') );
         $excusedReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceExcusedReasons') );
         $medicalReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceMedicalReasons') );
 
         $attendanceReasons = array_merge( array(' '), $unexcusedReasons, $medicalReasons, $excusedReasons);
-
-        if (!empty($attendanceReasons)) {
-            $_SESSION[$guid]['attendanceReasons'] = $attendanceReasons;
-        }
     }
 
     echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
 
-    if (!empty($_SESSION[$guid]['attendanceReasons']) && is_array($_SESSION[$guid]['attendanceReasons'])) {
-        foreach ($_SESSION[$guid]['attendanceReasons'] as $attendanceReason) {
+    if (!empty($attendanceReasons) && is_array($attendanceReasons)) {
+        foreach ($attendanceReasons as $attendanceReason) {
             printf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceReason, (($lastReason == $attendanceReason)? 'selected' : '' ) );
         }
     }
