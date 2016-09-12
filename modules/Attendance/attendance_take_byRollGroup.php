@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         echo "<option value=''></option>";
 						try {
 							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name';
 							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						} catch (PDOException $e) {
