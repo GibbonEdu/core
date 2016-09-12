@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="surname" id="surname" maxlength=60 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="firstName" id="firstName" maxlength=60 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 				</td>
 				<td class="right">
-					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="preferredName" id="preferredName" maxlength=60 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
@@ -1056,7 +1056,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<b><?php echo __($guid, 'Profession') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="profession" id="profession" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="profession" id="profession" maxlength=150 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -1064,7 +1064,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<b><?php echo __($guid, 'Employer') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="employer" id="employer" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="employer" id="employer" maxlength=150 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -1072,7 +1072,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<b><?php echo __($guid, 'Job Title') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="jobTitle" id="jobTitle" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="jobTitle" id="jobTitle" maxlength=150 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 
@@ -1092,7 +1092,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<b><?php echo __($guid, 'Contact 1 Name') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency1Name" id="emergency1Name" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="emergency1Name" id="emergency1Name" maxlength=90 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -1132,7 +1132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<b><?php echo __($guid, 'Contact 2 Name') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="emergency2Name" id="emergency2Name" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="emergency2Name" id="emergency2Name" maxlength=90 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
