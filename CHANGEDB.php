@@ -447,4 +447,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'mailerSMTPUsername', 'SMTP Username', 'Username to use for SMTP authentication. Leave blank for no authentication.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'mailerSMTPPassword', 'SMTP Password', 'Password to use for SMTP authentication. Leave blank for no authentication.', '');end
 ALTER TABLE `gibbonUnit` ADD `tags` TEXT NOT NULL AFTER `description`;end
+UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php' WHERE (name='Edit Markbook_singleClass' OR name='Edit Markbook_multipleClassesInDepartment' OR name='Edit Markbook_multipleClassesAcrossSchool' OR name='Edit Markbook_everything') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+UPDATE gibbonAction SET precedence=0 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook') AND name='Manage Weightings_singleClass';end
+
 ";
