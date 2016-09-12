@@ -415,6 +415,7 @@ function renderAttendanceTypeSelect( $guid, $connection2, $lastType = '', $name=
 
     global $attendanceTypes;
 
+    $output = '';
     // Save in the session to prevent a ton of unessesary queries
     if ( empty($attendanceTypes) || !is_array($attendanceTypes) ) {
         
@@ -425,21 +426,24 @@ function renderAttendanceTypeSelect( $guid, $connection2, $lastType = '', $name=
         $attendanceTypes = array_merge($presentDescriptors, $lateDescriptors, $absentDescriptors);
     }
 
-    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
+    $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
 
     if (!empty($attendanceTypes) && is_array($attendanceTypes)) {
         foreach ($attendanceTypes as $attendanceType) {
-            printf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceType, (($lastType == $attendanceType)? 'selected' : '' ) );
+            $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceType, (($lastType == $attendanceType)? 'selected' : '' ) );
         }
     }
 
-    echo '</select>';
+    $output .= '</select>';
+
+    return $output;
 }
 
 function renderAttendanceReasonSelect( $guid, $connection2, $lastReason = '', $name='reason', $width='302px' ) {
 
     global $attendanceReasons;
 
+    $output = '';
     // Save in the session to prevent a ton of unessesary queries
     if ( empty($attendanceReasons) || !is_array($attendanceReasons) ) {
         
@@ -450,13 +454,15 @@ function renderAttendanceReasonSelect( $guid, $connection2, $lastReason = '', $n
         $attendanceReasons = array_merge( array(' '), $unexcusedReasons, $medicalReasons, $excusedReasons);
     }
 
-    echo "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
+    $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
 
     if (!empty($attendanceReasons) && is_array($attendanceReasons)) {
         foreach ($attendanceReasons as $attendanceReason) {
-            printf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceReason, (($lastReason == $attendanceReason)? 'selected' : '' ) );
+            $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceReason, (($lastReason == $attendanceReason)? 'selected' : '' ) );
         }
     }
 
-    echo '</select>';
+    $output .= '</select>';
+
+    return $output;
 }

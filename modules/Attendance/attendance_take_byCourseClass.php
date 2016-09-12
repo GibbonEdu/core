@@ -350,8 +350,8 @@ else {
 									print "</div><br/>" ;
 									print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowCourseClass["gibbonPersonID"] . "'>" ;
 
-									renderAttendanceTypeSelect($guid, $connection2, $rowLog['type'], "$count-type", '130px');
-                                	renderAttendanceReasonSelect($guid, $connection2, $rowLog['reason'], "$count-reason", '130px');
+									echo renderAttendanceTypeSelect($guid, $connection2, $rowLog['type'], "$count-type", '130px');
+                                	echo renderAttendanceReasonSelect($guid, $connection2, $rowLog['reason'], "$count-reason", '130px');
 
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
 								
