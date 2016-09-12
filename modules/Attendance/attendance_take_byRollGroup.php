@@ -290,70 +290,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 }
                                 echo '</div><br/>';
                                 echo "<input type='hidden' name='$count-gibbonPersonID' value='".$rowRollGroup['gibbonPersonID']."'>";
-                                echo "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-type'>";
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Present') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Present'>".__($guid, 'Present').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Present - Late') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Present - Offsite') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Absent') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Absent'>".__($guid, 'Absent').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Left') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Left'>".__($guid, 'Left').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Left - Early') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
-                                echo '</select>';
-                                echo "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-reason'>";
-                                echo '<option ';
-                                if ($rowLog['reason'] == '') {
-                                    echo 'selected ';
-                                };
-                                echo "value=''></option>";
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Pending') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Pending'>".__($guid, 'Pending').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Education') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Education'>".__($guid, 'Education').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Family') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Family'>".__($guid, 'Family').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Medical') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Medical'>".__($guid, 'Medical').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Other') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Other'>".__($guid, 'Other').'</option>';
-                                echo '</select>';
+
+                                renderAttendanceTypeSelect($guid, $rowLog['type'], "$count-type", '130px');
+                                renderAttendanceReasonSelect($guid, $rowLog['reason'], "$count-reason", '130px');
+
                                 echo "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
 
                                 if ($rowLog['type'] == 'Present' or $rowLog['type'] == 'Present - Late') {
@@ -384,7 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         } else {
                                             $link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$rowRollGroup['gibbonPersonID'].'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
                                             $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-                                            if ($rowLast5SchoolDays['type'] == 'Absent') {
+                                            if ($rowLast5SchoolDays['type'] == 'Absent' || $rowLast5SchoolDays['type'] == 'Absent - Excused') {
                                                 $color = '#c00';
                                                 $extraStyle = 'color: #c00; background-color: #F6CECB; ';
                                             } else {
