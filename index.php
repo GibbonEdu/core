@@ -17,9 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Prevent breakage of back button on POST pages
-ini_set('session.cache_limiter', 'private');
-session_cache_limiter(false);
+include rtrim(__DIR__, '/').'/src/controller/default.php';
 
 //Gibbon system-wide includes
 if (file_exists('./config.php')) {
@@ -35,7 +33,7 @@ include './version.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start();
+//@session_start();
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -693,4 +691,3 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 	<?php
 
 }
-?>

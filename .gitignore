@@ -1,5 +1,7 @@
 uploads/*
 /config.php
+config/local/*
+!config/local/index.php
 modules/IB PYP
 modules/Query Builder
 missing.yml
