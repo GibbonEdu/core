@@ -26,7 +26,8 @@ v13.0.00
 		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
 
 	Significant Changes
-		Changed Primary Assessment Scale to Default Assessment Scale
+		System: Changed Primary Assessment Scale to Default Assessment Scale
+		Markbook: added ability to copy columns to other classes
 
 	Security
 		...
