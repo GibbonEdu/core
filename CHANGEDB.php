@@ -469,5 +469,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Attendance', 'attendanceEnableMedicalTracking', 'Enable Symptom Tracking', 'Attach a symptom report to attendance logs with a medical reason.', 'N');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Students', 'medicalIllnessSymptoms', 'Predefined Illness Symptoms', 'Comma-separated list of illness symptoms.', 'Fever,Cough,Cold,Vomiting,Diarrhea');end
 CREATE TABLE `gibbonPersonMedicalSymptoms` ( `gibbonPersonMedicalSymptomsID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `gibbonPersonID` INT(10) NOT NULL , `symptoms` TEXT NOT NULL , `date` DATE NOT NULL , `timestampTaken` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `gibbonPersonIDTaker` INT NOT NULL, PRIMARY KEY (`gibbonPersonMedicalSymptomsID`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;end
+ALTER TABLE `gibbonCourseClass` ADD `attendance` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `reportable`;end
 
 ";

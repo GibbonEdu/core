@@ -94,6 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</select>
 				</td>
 			</tr>
+			<?php if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'Absence Type') ?></b><br/>
@@ -106,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</select>
 				</td>
 			</tr>
+			<?php endif; ?>
 			
 			<tr id="absencePartialDateRow" <?php if ($absenceType == 'full') { echo "style='display: none'"; } ?>>
 				<td> 

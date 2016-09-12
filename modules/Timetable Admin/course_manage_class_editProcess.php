@@ -66,6 +66,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 $name = $_POST['name'];
                 $nameShort = $_POST['nameShort'];
                 $reportable = $_POST['reportable'];
+                $attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
 
                 if ($name == '' or $nameShort == '') {
                     $URL .= '&return=error3';
@@ -89,8 +90,8 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                     } else {
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = 'UPDATE gibbonCourseClass SET name=:name, nameShort=:nameShort, reportable=:reportable WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                            $data = array('name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sql = 'UPDATE gibbonCourseClass SET name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance WHERE gibbonCourseClassID=:gibbonCourseClassID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

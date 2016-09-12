@@ -211,127 +211,130 @@ else {
 				print "</table><br/>" ;
 			}
 
+			if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') {
 
-			//Show My Classes
-			try {
-				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=> $_SESSION[$guid]["gibbonPersonID"]);
-				
-				$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID 
-				FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson 
-				WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID 
-				AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID 
-				AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' 
-				ORDER BY course, class" ;
-				
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
+				//Show My Classes
+				try {
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=> $_SESSION[$guid]["gibbonPersonID"]);
+					
+					$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID 
+					FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson 
+					WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID 
+					AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID 
+					AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' 
+					AND gibbonCourseClass.attendance = 'Y' 
+					ORDER BY course, class" ;
+					
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
 
-			if ($result->rowCount()>0) {
-				print "<h2 style='margin-bottom: 10px'  class='sidebar'>" ;
-				print _("My Classes") ;
-				print "</h2>" ;
+				if ($result->rowCount()>0) {
+					print "<h2 style='margin-bottom: 10px'  class='sidebar'>" ;
+					print _("My Classes") ;
+					print "</h2>" ;
 
-				print "<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed;'>" ;
-					print "<tr class='head'>" ;
-							print "<th style='width: 36%; font-size: 85%; text-transform: uppercase'>" ;
-							print _("Class") ;
-						print "</th>" ;
-
-						print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Present") ;
-						print "</th>" ;
-
-						print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Absent") ;
-						print "</th>" ;
-
-						if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-							print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Taken") ;
+					print "<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed;'>" ;
+						print "<tr class='head'>" ;
+								print "<th style='width: 36%; font-size: 85%; text-transform: uppercase'>" ;
+								print _("Class") ;
 							print "</th>" ;
 
 							print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Attendance") ;
+								print _("Present") ;
 							print "</th>" ;
-						}
 
-					print "</tr>" ;
+							print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+								print _("Absent") ;
+							print "</th>" ;
 
-					$count=0;
-					$rowNum="odd" ;
-					while ($row=$result->fetch()) {
-						if ($count%2==0) {
-							$rowNum="even" ;
-						}
-						else {
-							$rowNum="odd" ;
-						}
-						$count++ ;
-
-
-						//Grab attendance log for the class & current day
-						try {
-							$dataLog=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "date"=>$currentDate . "%"); 
-							
-							$sqlLog="SELECT gibbonAttendanceLogCourseClass.timestampTaken as timestamp, 
-							COUNT(gibbonAttendanceLogPerson.gibbonPersonID) AS total, SUM(gibbonAttendanceLogPerson.direction = 'Out') AS absent 
-							FROM gibbonAttendanceLogCourseClass 
-							JOIN gibbonAttendanceLogPerson ON gibbonAttendanceLogPerson.gibbonCourseClassID = gibbonAttendanceLogCourseClass.gibbonCourseClassID
-							WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
-							AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date 
-							GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID  
-							ORDER BY gibbonAttendanceLogCourseClass.timestampTaken" ;
- 
-							$resultLog=$connection2->prepare($sqlLog);
-							$resultLog->execute($dataLog);
-						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-						}
-
-						$log=$resultLog->fetch();
-						
-						print "<tr class=$rowNum>" ;
-
-							print "<td style='word-wrap: break-word'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'>" . $row["course"] . "." . $row["class"] . "</a>" ;
-							print "</td>" ;
-
-
-							print "<td style='text-align: center'>" ;
-								print ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
-							print "</td>" ;
-
-							print "<td style='text-align: center'>" ;
-								print $log["absent"];
-							print "</td>" ;
-
-							
 							if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+								print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+									print _("Taken") ;
+								print "</th>" ;
 
-								
-								print "<td style='text-align: center'>" ;
-								// Attendance not taken
-								if ($resultLog->rowCount()<1) {
-									print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a>" ;
-								} else {
-									print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . $log["timestamp"] . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
-								}
-								print "</td>" ;
-
-
-								print "<td style='text-align: center'>" ;
-									print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
-								print "</td>" ;
-
+								print "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
+									print _("Attendance") ;
+								print "</th>" ;
 							}
-							
 
 						print "</tr>" ;
-					}
-				print "</table>" ;
+
+						$count=0;
+						$rowNum="odd" ;
+						while ($row=$result->fetch()) {
+							if ($count%2==0) {
+								$rowNum="even" ;
+							}
+							else {
+								$rowNum="odd" ;
+							}
+							$count++ ;
+
+
+							//Grab attendance log for the class & current day
+							try {
+								$dataLog=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "date"=>$currentDate . "%"); 
+								
+								$sqlLog="SELECT gibbonAttendanceLogCourseClass.timestampTaken as timestamp, 
+								COUNT(gibbonAttendanceLogPerson.gibbonPersonID) AS total, SUM(gibbonAttendanceLogPerson.direction = 'Out') AS absent 
+								FROM gibbonAttendanceLogCourseClass 
+								JOIN gibbonAttendanceLogPerson ON gibbonAttendanceLogPerson.gibbonCourseClassID = gibbonAttendanceLogCourseClass.gibbonCourseClassID
+								WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
+								AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date 
+								GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID  
+								ORDER BY gibbonAttendanceLogCourseClass.timestampTaken" ;
+	 
+								$resultLog=$connection2->prepare($sqlLog);
+								$resultLog->execute($dataLog);
+							}
+							catch(PDOException $e) { 
+								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+
+							$log=$resultLog->fetch();
+							
+							print "<tr class=$rowNum>" ;
+
+								print "<td style='word-wrap: break-word'>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'>" . $row["course"] . "." . $row["class"] . "</a>" ;
+								print "</td>" ;
+
+
+								print "<td style='text-align: center'>" ;
+									print ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+								print "</td>" ;
+
+								print "<td style='text-align: center'>" ;
+									print $log["absent"];
+								print "</td>" ;
+
+								
+								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+
+									
+									print "<td style='text-align: center'>" ;
+									// Attendance not taken
+									if ($resultLog->rowCount()<1) {
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a>" ;
+									} else {
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . $log["timestamp"] . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
+									}
+									print "</td>" ;
+
+
+									print "<td style='text-align: center'>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+									print "</td>" ;
+
+								}
+								
+
+							print "</tr>" ;
+						}
+					print "</table>" ;
+				}
 			}
 		}
 	}

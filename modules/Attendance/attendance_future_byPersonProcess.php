@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $type = 'Absent';
             $reason = $_POST['reason'];
             $comment = $_POST['comment'];
-            $absenceType = $_POST['absenceType'];
+            $absenceType = (isset($_POST['absenceType']))? $_POST['absenceType'] : 'full';
             $dateStart = '';
             if ($_POST['dateStart'] != '') {
                 $dateStart = dateConvert($guid, $_POST['dateStart']);
