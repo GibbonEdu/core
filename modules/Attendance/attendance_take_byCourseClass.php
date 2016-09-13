@@ -316,7 +316,7 @@ else {
 								$rowLog=$resultLog->fetch() ;
 							
 							
-								if (isset($rowLog["type"]) && $rowLog["type"]=="Absent" ) {
+								if ( isAttendanceTypeAbsent($rowLog["type"]) ) {
 									// Orange/warning background for partial absense
 									if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID) {
 										print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
