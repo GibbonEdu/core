@@ -167,6 +167,7 @@
     echo'</table>';
     echo '</form>';
 
+
     //Get class list
     try {
         $dataList['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
@@ -296,8 +297,13 @@
                             echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID'].'&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                         }
                         echo '</div>';
-                        if ($rowEntry['attainmentValue'] != '') {
+                        if ($rowEntry['attainmentValue'] != '' && strstr($rowEntry['attainmentValue'], '%') === false) {
                             echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['attainmentDescriptor'])).'</b>'.__($guid, $attainmentExtra).'</div>';
+                        }
+                        else {
+                            if ($rowEntry['attainmentRaw'] == 'Y' and !empty($rowEntry['attainmentValueRaw'])) {
+                                echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><br/>".$rowEntry['attainmentValueRaw'].' / '.$rowEntry['attainmentRawMax'].'</div>';
+                            }
                         }
                         echo '</td>';
                     }
@@ -453,6 +459,9 @@
                         echo '</tr>';
                     }
                 }
+                
+                renderStudentCourseMarks( $pdo, $guid, $_SESSION[$guid]['gibbonPersonID'], $rowList['gibbonCourseClassID'] );
+
                 echo '</table>';
             }
         }

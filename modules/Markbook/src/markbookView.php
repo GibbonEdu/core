@@ -612,7 +612,7 @@ class markbookView
      * @version 7th May 2016
      * @since   7th May 2016
      */
-    public function cacheWeightings( ) {
+    public function cacheWeightings( $gibbonPersonIDStudent = NULL ) {
 
         $this->markbookWeights = array();
 
@@ -638,11 +638,22 @@ class markbookView
         $typesUsed = array();
         $termsUsed = array();
 
-        try {
-            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-            $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
-            $result=$this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        // Lookup a single student
+        if ( !empty($gibbonPersonIDStudent) ) {
+            try {
+                $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
+                $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' AND gibbonPersonIDStudent=:gibbonPersonIDStudent ORDER BY gibbonPersonIDStudent, completeDate";
+                $result=$this->pdo->executeQuery($data, $sql);
+            } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        } else {
+            try {
+                $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+                $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
+                $result=$this->pdo->executeQuery($data, $sql);
+            } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        }
+
+        
 
         if ($result->rowCount() > 0) {
             while ($entry = $result->fetch()) {

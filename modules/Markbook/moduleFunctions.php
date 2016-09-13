@@ -254,3 +254,48 @@ function getAlertStyle( $alert, $concern ) {
         return '';
     }
 }
+
+function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
+    require_once './modules/Markbook/src/markbookView.php';
+
+    // Build the markbook object for this class & student
+    $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
+    $markbook->cacheWeightings( $gibbonPersonIDStudent );
+
+    $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
+    $examMark = round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
+    $finalMark = round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
+
+    // Only display if there are marks
+    if (!empty($courseMark) || !empty($examMark) || !empty($finalMark) ) {
+        echo '<tr>';
+        
+        echo '<td colspan=7 style="padding:0;">';
+        echo '<table class="mini fullWidth" style="margin: 0; border: 0;" cellspacing="0">';
+        echo '<tr class="head">';
+        echo '<td width="70%" style="border: 0;">&nbsp;</td>';
+        echo '<th width="10%" class="columnLabel" style="border: 0; padding: 10px !important;text-align: center;">'.__($guid, 'Course').'</td>';
+        echo '<th width="10%" class="columnLabel" style="border: 0; padding: 10px !important;text-align: center;">'.__($guid, 'Exam').'</td>';
+        echo '<th width="10%" class="columnLabel" style="border: 0; padding: 10px !important;text-align: center;">'.__($guid, 'Final').'</td>';
+        echo '</tr>';
+
+        echo '<tr>';
+        echo '<td style="border: 0;">&nbsp;</td>';
+
+        // Display the cumulative average
+        echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
+        echo ( !empty($courseMark)? round( $courseMark ).'%' : '' ) .'</td>';
+        
+        // Display final exam mark
+        echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
+        echo ( !empty($examMark)? round( $examMark ).'%' : '' ) .'</td>';
+
+        // Don't display a final mark unless there's an exam mark too
+        echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
+        echo ( (!empty($examMark) && !empty($finalMark))? round( $finalMark ).'%' : '' ) .'</td>';
+
+        echo '</tr></table>';
+        echo '</td>';
+        echo '</tr>';
+    }
+}

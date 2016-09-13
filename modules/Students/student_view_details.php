@@ -2156,8 +2156,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                                     }
                                                     echo '</div>';
-                                                    if ($rowEntry['attainmentValue'] != '') {
+                                                    if ($rowEntry['attainmentValue'] != '' && strstr($rowEntry['attainmentValue'], '%') === false) {
                                                         echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['attainmentDescriptor'])).'</b>'.__($guid, $attainmentExtra).'</div>';
+                                                    }
+                                                    else {
+                                                        if ($rowEntry['attainmentRaw'] == 'Y' and !empty($rowEntry['attainmentValueRaw'])) {
+                                                            echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><br/>".$rowEntry['attainmentValueRaw'].' / '.$rowEntry['attainmentRawMax'].'</div>';
+                                                        }
                                                     }
                                                     echo '</td>';
                                                 }
@@ -2308,7 +2313,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     echo '</tr>';
                                                 }
                                             }
+                                            
+
+                                            require_once './modules/Markbook/moduleFunctions.php';
+                                            renderStudentCourseMarks( $pdo, $guid, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'] );
+
+
                                             echo '</table>';
+
                                         }
                                     }
                                 }

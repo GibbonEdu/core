@@ -566,6 +566,10 @@
                                     echo '</tr>';
                                 }
                             }
+
+                            renderStudentCourseMarks( $pdo, $guid, $gibbonPersonID, $rowList['gibbonCourseClassID'] );
+
+
                             echo '</table>';
 
                             try {
