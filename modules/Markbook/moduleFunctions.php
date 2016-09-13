@@ -256,6 +256,10 @@ function getAlertStyle( $alert, $concern ) {
 }
 
 function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
+
+    $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
+    if ($enableColumnWeighting != 'Y') return;
+
     require_once './modules/Markbook/src/markbookView.php';
 
     // Build the markbook object for this class & student
