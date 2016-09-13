@@ -135,7 +135,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
         if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
             if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Student') {
                 $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-                if ($highestAction == 'View Student Profile_brief') {
+                if ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_my') {
                     $name = "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."'>".$name.'</a>';
                 }
             }

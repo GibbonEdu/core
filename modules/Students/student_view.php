@@ -123,6 +123,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 }
             }
         }
+        // View profile - self only
+        if ($highestAction == 'View Student Profile_my') {
+            echo "<div class='trail'>";
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Profiles').'</div>';
+            echo '</div>';
+
+
+            $count = 0;
+            $options = '';
+            $students = array();
+
+            try {
+                $dataSelf = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'] );
+                $sqlSelf = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM   gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].' ORDER BY surname, preferredName ';
+                $resultSelf = $connection2->prepare($sqlSelf);
+                $resultSelf->execute($dataSelf);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            while ($rowSelf = $resultSelf->fetch()) {
+                $students[$count][0] = $rowSelf['surname'];
+                $students[$count][1] = $rowSelf['preferredName'];
+                $students[$count][2] = $rowSelf['yearGroup'];
+                $students[$count][3] = $rowSelf['rollGroup'];
+                $students[$count][4] = $rowSelf['gibbonPersonID'];
+                ++$count;
+            }
+        
+            if ($count == 0) {
+                echo "<div class='error'>";
+                echo __($guid, 'Access denied.');
+                echo '</div>';
+            } else {
+                echo "<table cellspacing='0' style='width: 100%'>";
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Name');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Year Group');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Roll Group');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Actions');
+                echo '</th>';
+                echo '</tr>';
+
+                for ($i = 0;$i < $count;++$i) {
+                    if ($i % 2 == 0) {
+                        $rowNum = 'even';
+                    } else {
+                        $rowNum = 'odd';
+                    }
+
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
+                    echo '<td>';
+                    echo formatName('', $students[$i][1], $students[$i][0], 'Student', true);
+                    echo '</td>';
+                    echo '<td>';
+                    echo __($guid, $students[$i][2]);
+                    echo '</td>';
+                    echo '<td>';
+                    echo $students[$i][3];
+                    echo '</td>';
+                    echo '<td>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php&gibbonPersonID='.$students[$i][4]."'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                    echo '</td>';
+                    echo '</tr>';
+                }
+
+                echo '</table>';
+                
+            }
+        }
         if ($highestAction == 'View Student Profile_brief') {
             //Proceed!
             echo "<div class='trail'>";
