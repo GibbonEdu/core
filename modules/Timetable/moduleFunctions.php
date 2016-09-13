@@ -307,8 +307,23 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
     if ($proceed && $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person') || isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
             $proceed = true;
-        } else {
-            $proceed = false;
+        }
+        else if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_myChildren') ) {
+
+            try {
+                $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
+                $sql = "SELECT gibbonPersonID2 FROM gibbonFamilyRelationship JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonFamilyRelationship.gibbonPersonID1) WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND childDataAccess='Y'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($result->rowCount() > 0) {
+                $proceed = true;
+            } else {
+                $proceed = false;
+            }
         }
     }
 

@@ -468,5 +468,8 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='School Admin' AND gibbonAction.name='Manage Attendance Settings'));end
 ALTER TABLE `gibbonCourseClass` ADD `attendance` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `reportable`;end
 UPDATE gibbonAction SET precedence=0 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook') AND name='Manage Weightings_singleClass';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'View Timetable by Person_myChildren', 0, 'View Timetables', 'Allows parents to view their students timetable', 'tt.php, tt_view.php', 'tt.php', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '4', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable' AND gibbonAction.name='View Timetable by Person_myChildren'));end
+
 
 ";
