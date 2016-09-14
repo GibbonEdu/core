@@ -416,6 +416,7 @@ class markbookView
      */
     public function getTypeAverage( $gibbonPersonID, $gibbonSchoolYearTermID, $type ) {
         if ($gibbonSchoolYearTermID == '0') $gibbonSchoolYearTermID = 'all';
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type]))? $this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type] : '';
     }
 
@@ -429,6 +430,7 @@ class markbookView
      */
     public function getTermAverage( $gibbonPersonID, $gibbonSchoolYearTermID ) {
         if ($gibbonSchoolYearTermID == '0') $gibbonSchoolYearTermID = 'all';
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID]))? $this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID] : '';
     }
 
@@ -440,6 +442,7 @@ class markbookView
      * @return  int|string
      */
     public function getCumulativeAverage( $gibbonPersonID ) {
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['cumulative']))? $this->weightedAverages[$gibbonPersonID]['cumulative'] : '';
     }
 
@@ -451,6 +454,7 @@ class markbookView
      * @return  int|string
      */
     public function getFinalGradeAverage( $gibbonPersonID ) {
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['finalGrade']))? $this->weightedAverages[$gibbonPersonID]['finalGrade'] : '';
     }
 
@@ -640,6 +644,9 @@ class markbookView
 
         // Lookup a single student
         if ( !empty($gibbonPersonIDStudent) ) {
+
+            $gibbonPersonIDStudent = str_pad($gibbonPersonIDStudent, 10, '0', STR_PAD_LEFT);
+
             try {
                 $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
                 $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' AND gibbonPersonIDStudent=:gibbonPersonIDStudent ORDER BY gibbonPersonIDStudent, completeDate";
