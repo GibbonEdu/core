@@ -18,15 +18,15 @@ use Gibbon\core\trans ;
                 $seperator=TRUE ;
                 $thirdLine=TRUE ;
             }
-            if ($this->session->get("gibbonThemeName") != "Default" AND $this->session->notEmpty("gibbonThemeAuthor")) {
+            if ($this->session->get("theme.Name") != "Default" AND $this->session->notEmpty("theme.Author.name")) {
                 if ($seperator) {
                     print " | " ;
                 }
-                if ($this->session->notEmpty("gibbonThemeURL")) {
-                    print trans::__('%1$s Theme by %2$s', array($this->session->get("gibbonThemeName"), "<a target='_blank' href='" . $this->session->get("gibbonThemeURL") . "'>" . $this->session->get("gibbonThemeAuthor") . "</a>")) ;
+                if ($this->session->notEmpty("theme.Author.URL")) {
+                    print trans::__('%1$s Theme by %2$s', array($this->session->get("theme.Name"), "<a target='_blank' href='" . $this->session->get("theme.Author.URL") . "'>" . $this->session->get("theme.Author.name") . "</a>")) ;
                 }
                 else {
-                    print trans::__('%1$s Theme by %2$s', array($this->session->get("gibbonThemeName"), $this->session->get("gibbonThemeAuthor"))) ;
+                    print trans::__('%1$s Theme by %2$s', array($this->session->get("theme.Name"), $this->session->get("theme.Author.name"))) ;
                 }
                 $thirdLine=TRUE ;
             }

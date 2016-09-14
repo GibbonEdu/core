@@ -188,7 +188,11 @@ class session
 			$existing[$steps[0]] = $value; 
 		}
 		else
+		{
+			if (empty($existing)) $existing = array();
+			if (empty($existing[$steps[0]])) $existing[$steps[0]] = array();
 			$existing[$steps[0]] = $this->setSub($steps, $existing[$steps[0]], $value);
+		}
 		return $existing;	
 	}
 	

@@ -14,8 +14,9 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Module\\User_Admin\\' => 18,
             'Module\\System_Admin\\' => 20,
-            'Module\\Messenger\\' => 17,
+            'Module\\' => 7,
         ),
         'L' => 
         array (
@@ -41,13 +42,17 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Module\\User_Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules/User Admin',
+        ),
         'Module\\System_Admin\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/modules/System Admin',
         ),
-        'Module\\Messenger\\' => 
+        'Module\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/modules/Messenger',
+            0 => __DIR__ . '/../..' . '/src/modules',
         ),
         'Library\\' => 
         array (

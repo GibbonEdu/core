@@ -139,7 +139,7 @@ class view
 		}
 
 		// first test in the module with the current Theme.
-		$this->address = GIBBON_ROOT . 'src/modules/' . $this->session->get('module') . '/views/' . $this->session->get('gibbonThemeName');
+		$this->address = GIBBON_ROOT . 'src/modules/' . $this->session->get('module') . '/views/' . $this->session->get('theme.Name');
 		foreach($name as $w)
 			$this->address .= '/' . trim($w) ;
 		$this->address .= '.php';
@@ -161,7 +161,7 @@ class view
 		if (is_dir(GIBBON_ROOT . 'src/modules/' . $moduleName))
 		{
 			//Module with current theme
-			$this->address = GIBBON_ROOT . 'src/modules/' . $moduleName . '/views/' . $this->session->get('gibbonThemeName');
+			$this->address = GIBBON_ROOT . 'src/modules/' . $moduleName . '/views/' . $this->session->get('theme.Name');
 			foreach($name as $w)
 				$this->address .= '/' . trim($w) ;
 			$this->address .= '.php';
@@ -181,7 +181,7 @@ class view
 		array_unshift ($name, $moduleName) ;
 		
 		// file in the Theme but not in module
-		$this->address = GIBBON_ROOT . 'src/themes/' . $this->session->get('gibbonThemeName'). '/views';
+		$this->address = GIBBON_ROOT . 'src/themes/' . $this->session->get('theme.Name'). '/views';
 		foreach($name as $w)
 			$this->address .= '/' . trim($w) ;
 		$this->address .= '.php';
@@ -964,7 +964,7 @@ class view
 		if (is_null($module) && $this->session->isEmpty('module')) return ;
 		
 		$module = is_null($module) ? $this->session->get('module') : $module;
-		$theme = $this->session->get('gibbonThemeName', 'Bootstrap');
+		$theme = $this->session->get('theme.Name', 'Bootstrap');
 		$cssURL = '';
 		
 		// Look in the Template Directory of the Module CSS

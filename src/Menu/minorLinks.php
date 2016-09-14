@@ -118,7 +118,7 @@ class minorLinks extends menu
 				<script type="text/javascript">
 					$(document).ready(function(){
 						setInterval(function() {
-							$("#notifications").load("index.php", {
+							$("#notifications").load("index.php?q=/modules/Notifications/index_notifications_ajax.php", {
 									"action": "'. $tObj->generateAction($action) . '", 
 									"divert": "true", 
 									"_token": "' . $tObj->generateToken($action) . '"

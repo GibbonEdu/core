@@ -22,6 +22,7 @@ namespace Gibbon\controller ;
 use Gibbon\core\view ;
 use Gibbon\core\trans ;
 use Gibbon\Record\theme ;
+use stdClass ;
 
 if (class_exists('gibbon'))
 {

@@ -29,6 +29,8 @@ $output = '';
 
 $themeName = $this->session->notEmpty('theme.Name') ? $this->session->get('theme.Name') : 'Default';
 
+$this->session->set('module', 'Notifications');
+
 if ($this->session->isEmpty('gibbonPersonID')) {
     $output .= ' . 0 x ' . $this->renderReturn('default.minorLinks.notification_off') ;
 } else {
@@ -39,9 +41,9 @@ if ($this->session->isEmpty('gibbonPersonID')) {
             if ($alarm == 'General' || $alarm == 'Lockdown' || $alarm == 'Custom') {
                 $el = new \stdClass();
 				$el->type = mb_strtolower($alarm);
-				$output .= $this->renderReturn('alarm.on', $el);
+				$output .= $this->renderReturn('Notifications.alarm.on', $el);
             } else {
-				$output .= $this->renderReturn('alarm.off');
+				$output .= $this->renderReturn('Notifications.alarm.off');
             }
         }
     }

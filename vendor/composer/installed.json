@@ -348,5 +348,109 @@
             "tinymce",
             "wysiwyg"
         ]
+    },
+    {
+        "name": "twbs/bootstrap",
+        "version": "v3.3.7",
+        "version_normalized": "3.3.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/twbs/bootstrap.git",
+            "reference": "0b9c4a4007c44201dce9a6cc1a38407005c26c86"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/twbs/bootstrap/zipball/0b9c4a4007c44201dce9a6cc1a38407005c26c86",
+            "reference": "0b9c4a4007c44201dce9a6cc1a38407005c26c86",
+            "shasum": ""
+        },
+        "replace": {
+            "twitter/bootstrap": "self.version"
+        },
+        "time": "2016-07-25 15:51:55",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.3.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jacob Thornton",
+                "email": "jacobthornton@gmail.com"
+            },
+            {
+                "name": "Mark Otto",
+                "email": "markdotto@gmail.com"
+            }
+        ],
+        "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+        "homepage": "http://getbootstrap.com",
+        "keywords": [
+            "JS",
+            "css",
+            "framework",
+            "front-end",
+            "less",
+            "mobile-first",
+            "responsive",
+            "web"
+        ]
+    },
+    {
+        "name": "nostalgiaz/bootstrap-switch",
+        "version": "3.3.2",
+        "version_normalized": "3.3.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nostalgiaz/bootstrap-switch.git",
+            "reference": "ec69b5dd914dacb19cf1fa8e1be7eea6bcc7b083"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nostalgiaz/bootstrap-switch/zipball/ec69b5dd914dacb19cf1fa8e1be7eea6bcc7b083",
+            "reference": "ec69b5dd914dacb19cf1fa8e1be7eea6bcc7b083",
+            "shasum": ""
+        },
+        "time": "2015-01-25 13:46:30",
+        "type": "component",
+        "extra": {
+            "component": {
+                "name": "bootstrap-switch",
+                "files": [
+                    "dist/**"
+                ],
+                "scripts": [
+                    "dist/js/bootstrap-switch.js"
+                ],
+                "shim": {
+                    "exports": "BootstrapSwitch"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache License Version 2.0"
+        ],
+        "authors": [
+            {
+                "name": "Mattia Larentis",
+                "homepage": "http://www.larentis.eu"
+            }
+        ],
+        "description": "Turn checkboxes and radio buttons in toggle switches.",
+        "homepage": "http://www.bootstrap-switch.org",
+        "keywords": [
+            "JS",
+            "bootstrap",
+            "javascript",
+            "switch"
+        ]
     }
 ]

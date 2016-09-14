@@ -79,7 +79,7 @@ if ($this->session->get('sidebar') !== 'false')
 										//Image
 										$style="style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'" ;
 										if ($message["photo"]=="" OR file_exists($this->session->get("absolutePath") . "/" . $message["photo"])==FALSE) {
-											$postSideBar .= "<img $style  src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("gibbonThemeName") . "/img/anonymous_75.jpg'/>" ;
+											$postSideBar .= "<img $style  src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/anonymous_75.jpg'/>" ;
 										}
 										else {
 											$postSideBar .= "<img $style src='" . $this->session->get("absoluteURL") . "/" . $message["photo"] . "'/>" ;

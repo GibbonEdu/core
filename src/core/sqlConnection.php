@@ -28,6 +28,7 @@ namespace Gibbon\core ;
 
 use Gibbon\core\logger ;
 use PDO ;
+use PDOException ;
 /**
  * sql Connection
  *

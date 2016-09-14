@@ -291,7 +291,7 @@ class person extends record
 			$sizeStyle="style='width: 240px; height: 320px'" ;
 		}
 		if ($path=="" OR ! file_exists($this->session->get("absolutePath") . "/" . $path)) {
-			$output="<img $sizeStyle class='user' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("gibbonThemeName") . "/img/anonymous_" . $size . ".jpg'/><br/>" ;
+			$output="<img $sizeStyle class='user' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/anonymous_" . $size . ".jpg'/><br/>" ;
 		}
 		else {
 			$output="<img $sizeStyle class='user' src='" . $this->session->get("absoluteURL") . "/$path'/><br/>" ;

@@ -237,8 +237,8 @@ class form
 	public function themeDefaults()
 	{
 		$this->theme = array();
-		if ($this->session->isEmpty('gibbonThemeName'))
-			$this->session->set('gibbonThemeName', 'Default');
+		if ($this->session->isEmpty('theme.Name'))
+			$this->session->set('theme.Name', 'Default');
 		if ($this->session->notEmpty("theme.settings"))
 			$this->theme = $this->session->get("theme.settings");
 		else

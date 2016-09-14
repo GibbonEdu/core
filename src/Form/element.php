@@ -344,10 +344,10 @@ class element
 		if (! isset($this->validation))
 		{
 			$session = new session();
-			if ($session->isEmpty('gibbonThemeName'))
-				$session->set('gibbonThemeName', 'Bootstrap');
-			if (file_exists(GIBBON_ROOT . 'src/themes/' . $session->get('gibbonThemeName') . '/settings.yml'))
-				$theme = Yaml::parse(file_get_contents(GIBBON_ROOT . 'src/themes/' . $session->get('gibbonThemeName') . '/settings.yml'));
+			if ($session->isEmpty('theme.Name'))
+				$session->set('theme.Name', 'Bootstrap');
+			if (file_exists(GIBBON_ROOT . 'src/themes/' . $session->get('theme.Name') . '/settings.yml'))
+				$theme = Yaml::parse(file_get_contents(GIBBON_ROOT . 'src/themes/' . $session->get('theme.Name') . '/settings.yml'));
 			elseif (file_exists(GIBBON_ROOT . 'src/themes/Bootstrap/settings.yml'))
 				$theme = Yaml::parse(file_get_contents(GIBBON_ROOT . 'src/themes/Bootstrap/settings.yml'));
 			else

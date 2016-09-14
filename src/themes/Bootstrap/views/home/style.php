@@ -5,7 +5,7 @@ if ($this->session->notEmpty('theme.settings') && $this->session->notEmpty('them
 	foreach($this->session->get('theme.settings.css') as $css)
 	{
 		?>
-		<link rel="stylesheet" href="<?php echo GIBBON_URL . str_replace(array('{{themeName}}'), array($this->session->get("gibbonThemeName")), $css); ?>" type="text/css" media="screen" />
+		<link rel="stylesheet" href="<?php echo rtrim(GIBBON_URL, '/') . str_replace(array('{{themeName}}'), array($this->session->get("theme.Name")), $css); ?>" type="text/css" media="screen" />
 		<?php
 	}
 }
@@ -14,12 +14,12 @@ if ($this->session->notEmpty('theme.settings') && $this->session->notEmpty('them
 if ($this->session->notEmpty('module')) {
 	$moduleCSS = '';
 	$moduleJS = '';
-	if (file_exists(GIBBON_ROOT . 'src/modules/'.$this->session->get('module').'/css/' . $this->session->get("gibbonThemeName") . '/module.css'))
-		$moduleCSS = "<link rel='stylesheet' type='text/css' href='".GIBBON_URL."src/modules/".$this->session->get('module').'/css/' . $this->session->get("gibbonThemeName") . "/module.css' />\n" ;
+	if (file_exists(GIBBON_ROOT . 'src/modules/'.$this->session->get('module').'/css/' . $this->session->get("theme.Name") . '/module.css'))
+		$moduleCSS = "<link rel='stylesheet' type='text/css' href='".GIBBON_URL."src/modules/".$this->session->get('module').'/css/' . $this->session->get("theme.Name") . "/module.css' />\n" ;
 	elseif (file_exists(GIBBON_ROOT . 'src/modules/'.$this->session->get('module').'/css/module.css'))
 		$moduleCSS = "<link rel='stylesheet' type='text/css' href='".GIBBON_URL."src/modules/".$this->session->get('module')."/css/module.css' />\n" ;
-	if (file_exists(GIBBON_ROOT . 'src/modules/'.$this->session->get('module').'/js/' . $this->session->get("gibbonThemeName") . '/common.js'))
-		$moduleJS = "<link rel='stylesheet' type='text/css' href='".GIBBON_URL."src/modules/'.$this->session->get('module').'/js/" . $this->session->get("gibbonThemeName") . "/common.js' />\n" ;
+	if (file_exists(GIBBON_ROOT . 'src/modules/'.$this->session->get('module').'/js/' . $this->session->get("theme.Name") . '/common.js'))
+		$moduleJS = "<link rel='stylesheet' type='text/css' href='".GIBBON_URL."src/modules/'.$this->session->get('module').'/js/" . $this->session->get("theme.Name") . "/common.js' />\n" ;
 	elseif (file_exists(GIBBON_ROOT . 'src/modules/'.$this->session->get('module').'/js/common.js'))
 		$moduleJS = "<link rel='stylesheet' type='text/css' href='".GIBBON_URL."src/modules/".$this->session->get('module')."/js/common.js' />\n" ;
 	echo $moduleCSS  ;

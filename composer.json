@@ -27,8 +27,9 @@
 			"Gibbon\\Record\\": "src/Record/",
 			"Gibbon\\Menu\\": "src/Menu/",
 			"Gibbon\\Form\\": "src/Form/",
-			"Module\\Messenger\\": "src/modules/Messenger/",
-			"Module\\System_Admin\\": "src/modules/System Admin/"
+			"Module\\": "src/modules/",
+			"Module\\System_Admin\\": "src/modules/System Admin/",
+			"Module\\User_Admin\\": "src/modules/User Admin/"
         }
     },
 	"config": {
@@ -40,7 +41,9 @@
 		"monolog/monolog": "1.19.*",
 		"tinymce/tinymce": "4.3.*",
 		"components/jquery": ">=1.9.1 <3.0",
-		"components/jqueryui": "1.11.*"
+		"components/jqueryui": "1.11.*",
+		"twbs/bootstrap": "3.3.*",
+		"nostalgiaz/bootstrap-switch": "3.3.*"
 	},
     "require-dev": {
     }

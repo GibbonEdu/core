@@ -35,7 +35,7 @@ $version = $this->config->get('version'); ?>
 if ($cuttingEdgeCode == "N") { ?>
         <div id='status' class='warning'>
             <div style='width: 100%; text-align: center'>
-                <img style='margin: 10px 0 5px 0' src='<?php echo $this->session->get('absoluteURL'); ?>/themes/<?php echo $this->session->get('gibbonThemeName'); ?>/img/loading.gif' alt='Loading'/><br/>
+                <img style='margin: 10px 0 5px 0' src='<?php echo $this->session->get('absoluteURL'); ?>/themes/<?php echo $this->session->get('theme.Name'); ?>/img/loading.gif' alt='Loading'/><br/>
             	<?php echo trans::__("Checking for Gibbon updates.") ; ?>
             </div>
         </div>

@@ -883,7 +883,7 @@ class helper
 		$sizeStyle = $size == 240 ? "style='width: 240px;'" : "style='width: 75px;'" ;
 
 		if (empty($path) || ! file_exists(GIBBON_ROOT . $path)) 
-			$output = "<img $sizeStyle class='user' src='" . GIBBON_URL . "themes/" . self::getSession()->get("gibbonThemeName") . "/img/anonymous_" . $size . ".jpg'/><br/>" ;
+			$output = "<img $sizeStyle class='user' src='" . GIBBON_URL . "themes/" . self::getSession()->get("theme.Name") . "/img/anonymous_" . $size . ".jpg'/><br/>" ;
 		else 
 			$output = "<img $sizeStyle class='user' src='" . GIBBON_URL . $path . "'/><br/>" ;
 

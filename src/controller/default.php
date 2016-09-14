@@ -6,6 +6,9 @@ $q = isset($_GET['q']) ? $_GET['q'] : '' ;
 $v13 = array
 	(
 		'/modules/System Admin/systemSettings',
+		'/modules/Security/',
+		'/modules/Notifications/',
+		'/modules/User Admin/preferences',
 	);
 
 /*if ($q === '')   //  This will render the home page..

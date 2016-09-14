@@ -463,10 +463,10 @@ class functions extends mFBase
 											$return.="});" ;
 										$return.="</script>" ;
 										if ($likesGiven!=1) {
-											$return.="<a id='starAdd" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("gibbonThemeName") . "/img/like_off.png'></a>" ;
+											$return.="<a id='starAdd" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/like_off.png'></a>" ;
 										}
 										else {
-											$return.="<a id='starRemove" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("gibbonThemeName") . "/img/like_on.png'></a>" ;
+											$return.="<a id='starRemove" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/like_on.png'></a>" ;
 										}
 									$return.="</div>" ;
 								}

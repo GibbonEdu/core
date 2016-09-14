@@ -375,7 +375,7 @@ css:
     5: /src/themes/Bootstrap/css/glyphicons.css
     6: /src/themes/Bootstrap/css/glyphicons-halflings.css
     7: /src/themes/Bootstrap/css/formValidation.min.css
-    8: /lib/jquery-tokeninput/styles/token-input-gibbon.css
+    8: /src/themes/Bootstrap/css/token-input-gibbon.css
     9: /src/themes/Bootstrap/css/main.css
     a: /vendor/nostalgiaz/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css
 
