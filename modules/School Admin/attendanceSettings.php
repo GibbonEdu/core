@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             echo $row['name'];
             echo '</td>';
             echo '<td>';
-            echo ($row['direction'] == 'In')? __($guid, 'In class') : __($guid, 'Out of class');
+            echo ($row['direction'] == 'In')? __($guid, 'In Class') : __($guid, 'Out of Class');
             echo '</td>';
             echo '<td>';
             echo $row['scope'];
@@ -103,7 +103,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            if ($row['type'] != 'Core') {
+            	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+        	}
             echo '</td>';
             echo '</tr>';
         }
