@@ -33,6 +33,86 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
+
+    echo '<h3>';
+    echo __($guid, 'Attendance Codes');
+    echo '</h3>';
+    echo '<p>';
+    echo __($guid, 'These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.');
+    echo '</p>';
+
+
+    try {
+        $data = array();
+        $sql = 'SELECT * FROM gibbonAttendanceCode ORDER BY sequenceNumber ASC, name';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/attendanceSettings_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo '</div>';
+
+    if ($result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+        echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
+        echo "<tr class='head'>";
+        echo '<th style="width:30px;">';
+        echo __($guid, 'Code');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Name');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Direction');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Scope');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Active');
+        echo '</th>';
+        echo '<th style="width:80px;">';
+        echo __($guid, 'Actions');
+        echo '</th>';
+        echo '</tr>';
+
+        $count = 0;
+
+        while ($row = $result->fetch()) {
+            echo "<tr>";
+            echo '<td>';
+            echo $row['nameShort'];
+            echo '</td>';
+            echo '<td>';
+            echo $row['name'];
+            echo '</td>';
+            echo '<td>';
+            echo ($row['direction'] == 'In')? __($guid, 'In class') : __($guid, 'Out of class');
+            echo '</td>';
+            echo '<td>';
+            echo $row['scope'];
+            echo '</td>';
+            echo '<td>';
+            echo ynExpander($guid, $row['active']);
+            echo '</td>';
+            echo '<td>';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+    }
+
+    echo '<h3>';
+    echo __($guid, 'Miscellaneous');
+    echo '</h3>';
     ?>
 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' ?>">
@@ -65,79 +145,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
-				</td>
-			</tr>
-
-        	<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Attendance Codes'); ?></h3>
-					<?php echo __($guid, 'These settings should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.') ?>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendancePresentDescriptors'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceLateDescriptors'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceAbsentDescriptors'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
 				</td>
 			</tr>
 

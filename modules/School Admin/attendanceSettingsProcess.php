@@ -47,36 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
-    $attendancePresentDescriptors = (isset($_POST['attendancePresentDescriptors'])) ? $_POST['attendancePresentDescriptors'] : NULL;
-    try {
-        $data = array('value' => $attendancePresentDescriptors);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendancePresentDescriptors'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    $attendanceLateDescriptors = (isset($_POST['attendanceLateDescriptors'])) ? $_POST['attendanceLateDescriptors'] : NULL;
-    try {
-        $data = array('value' => $attendanceLateDescriptors);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceLateDescriptors'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    $attendanceAbsentDescriptors = (isset($_POST['attendanceAbsentDescriptors'])) ? $_POST['attendanceAbsentDescriptors'] : NULL;
-    try {
-        $data = array('value' => $attendanceAbsentDescriptors);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceAbsentDescriptors'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
     $attendanceExcusedReasons = (isset($_POST['attendanceExcusedReasons'])) ? $_POST['attendanceExcusedReasons'] : NULL;
     try {
         $data = array('value' => $attendanceExcusedReasons);
