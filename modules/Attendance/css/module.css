@@ -16,3 +16,68 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+
+.historyCalendar td,
+.historyCalendar td:first-child {
+	text-align: center;
+	font-size: 10px;
+}
+
+.historyCalendarMini {
+	width: 134px;
+	height: 35px;
+	margin: 0 auto 3px auto;
+}
+
+.historyCalendarMini td {
+	height: 25px;
+	width: 20%;
+	text-align: center !important;
+}
+
+.historyCalendarMini td a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.historyCalendarMini span {
+	font-size: 65%;
+}
+
+.dayClosed {
+	border: 1px solid #aaaaaa;
+	color: #aaaaaa;
+	background: #cccccc !important;
+}
+
+.highlightPresent,
+.dayPresent
+ {
+	color: #390;
+	background: #D4F6DC !important;
+}
+
+.dayPresent {
+	border: 1px solid #390;
+}
+
+.highlightAbsent,
+.dayAbsent {
+	color: #c00;
+	background: #F6CECB !important;
+}
+
+.dayAbsent {
+	border: 1px solid #c00;
+}
+
+.highlightNoData,
+.dayNoData {
+	color: #555;
+	background: #eeeeee !important;
+}
+
+.dayNoData {
+	border: 1px solid #555;
+}

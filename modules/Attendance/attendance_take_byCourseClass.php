@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
+require_once './modules/Attendance/src/attendanceView.php';
+
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -43,6 +45,8 @@ else {
 	if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array( 'error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
     }
+
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
 	
 	$gibbonCourseClassID="" ;
 	if (isset($_GET["gibbonCourseClassID"])==FALSE) {
@@ -316,7 +320,7 @@ else {
 								$rowLog=$resultLog->fetch() ;
 							
 							
-								if ( isAttendanceTypeAbsent($rowLog["type"]) ) {
+								if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
 									// Orange/warning background for partial absense
 									if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID) {
 										print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
@@ -350,8 +354,8 @@ else {
 									print "</div><br/>" ;
 									print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowCourseClass["gibbonPersonID"] . "'>" ;
 
-									echo renderAttendanceTypeSelect($guid, $connection2, $rowLog['type'], "$count-type", '130px');
-                                	echo renderAttendanceReasonSelect($guid, $connection2, $rowLog['reason'], "$count-reason", '130px');
+									echo $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$count-type", '130px');
+                                	echo $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$count-reason", '130px');
 
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
 								
@@ -359,59 +363,8 @@ else {
 										$countPresent++ ;
 									}	
 								
-									print "<table cellspacing='0' style='width:134px; margin: 0 auto 3px auto; height: 35px' >" ;
-										print "<tr>" ;
-											for ($i=4; $i>=0; $i--) {
-												$link="" ;
-												if ($i>($last5SchoolDaysCount-1)) {
-													$extraStyle="color: #555; background-color: #eee;" ;
-												
-													print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-													print "<i>" . _('NA') . "</i>" ;
-													print "</td>" ;
-												}
-												else {
-													try {
-														$dataLast5SchoolDays=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>date("Y-m-d", dateConvertToTimestamp($last5SchoolDays[$i])) . "%"); 
-														$sqlLast5SchoolDays="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
-														$resultLast5SchoolDays=$connection2->prepare($sqlLast5SchoolDays);
-														$resultLast5SchoolDays->execute($dataLast5SchoolDays);
-													}
-													catch(PDOException $e) { 
-														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													}
-													if ($resultLast5SchoolDays->rowCount()==0) {
-														$extraStyle="color: #555; background-color: #eee; " ;
-													}
-													else {
-														$link="./index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPerson.php&gibbonPersonID=" . $rowCourseClass["gibbonPersonID"] . "&currentDate=" . date("d/m/Y", dateConvertToTimestamp($last5SchoolDays[$i])) ;
-														$rowLast5SchoolDays=$resultLast5SchoolDays->fetch() ;
-														if ($rowLast5SchoolDays["type"]=="Absent") {
-															$color="#c00" ;
-															$extraStyle="color: #c00; background-color: #F6CECB; " ;
-														}
-														else {
-															$color="#390" ;
-															$extraStyle="color: #390; background-color: #D4F6DC; " ;
-														}
-													}
-												
-													print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-														if ($link!="") {
-															print "<a style='text-decoration: none; color: $color' href='$link'>" ;
-															print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
-															print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
-															print "</a>" ;
-														}
-														else {
-															print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
-															print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
-														}
-													print "</td>" ;
-												}
-											}
-										print "</tr>" ;
-									print "</table>" ;
+									$attendance->renderMiniHistory( $rowCourseClass['gibbonPersonID'] );
+									
 								print "</td>" ;
 							
 								if ($count%$columns==($columns-1)) {

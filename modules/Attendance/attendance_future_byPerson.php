@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
+require_once './modules/Attendance/src/attendanceView.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -39,6 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         		   'error8' => __($guid, 'Your request failed because the selected date is not in the future.'), )
         );
     }
+
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
 
     $gibbonPersonID = null;
     if (isset($_GET['gibbonPersonID'])) {
@@ -224,16 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						</h3>
 					</td>
 				</tr>
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php echo __($guid, 'Type') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-					</td>
-					<td class="right">
-						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" class="standardWidth">
-					</td>
-				</tr>
-
+				
 				<?php 
 				// Full-day Absenses
 				if ($absenceType=="full") : ?>
@@ -327,12 +322,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 				</tr>
 				<?php endif; ?>
 				<tr>
+					<td style='width: 275px'> 
+						<b><?php echo __($guid, 'Type') ?> *</b><br/>
+						<span class="emphasis small"></span>
+					</td>
+					<td class="right">
+						<?php echo $attendance->renderAttendanceTypeSelect('Absent', 'type', '302px', true); ?>
+					</td>
+				</tr>
+				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Reason') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<?php echo renderAttendanceReasonSelect($guid, $connection2); ?>
+						<?php echo $attendance->renderAttendanceReasonSelect(); ?>
 					</td>
 				</tr>
 				<tr>

@@ -52,9 +52,6 @@ class attendanceView
 	 * @var array
 	 */
 	protected $attendanceTypes = array();
-	protected $presentDescriptors = array();
-	protected $lateDescriptors = array();
-	protected $absentDescriptors = array();
 
 	/**
 	 * Attendance Reasons
@@ -64,6 +61,11 @@ class attendanceView
 	protected $unexcusedReasons = array();
 	protected $excusedReasons = array();
 	protected $medicalReasons = array();
+
+	protected $currentDate;
+	protected $last5SchoolDays = array();
+
+	protected $guid;
 
 	/**
      * Constructor
@@ -92,31 +94,68 @@ class attendanceView
         else
             $this->pdo = $pdo ;
 
-    	$this->presentDescriptors = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendancePresentDescriptors') );
-        $this->lateDescriptors = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceLateDescriptors') );
-        $this->absentDescriptors = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceAbsentDescriptors') );
+        $this->guid = $this->config->get('guid');
 
-        $this->attendanceTypes = array_merge($this->presentDescriptors, $this->lateDescriptors, $this->absentDescriptors);
+        // Get attendance codes
+        try {
+	        $data = array();
+	        $sql = 'SELECT * FROM gibbonAttendanceCode ORDER BY sequenceNumber ASC, name';
+	        $result = $this->pdo->executeQuery($data, $sql);
+	    } catch (PDOException $e) {
+	        echo "<div class='error'>".$e->getMessage().'</div>';
+	    }
+	    if ($result->rowCount() > 0) {
+	    	while ($attendanceCode = $result->fetch()) {
+        		$this->attendanceTypes[ $attendanceCode['name'] ] = $attendanceCode;
+        	}
+    	}
+
+    	// Get the current date
+		$currentDate = (isset($_GET['currentDate']))? dateConvert($this->guid, $_GET['currentDate']) : date('Y-m-d');
 
 
+    	// Get attendance reasons
         $this->unexcusedReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceUnexcusedReasons') );
         $this->excusedReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceExcusedReasons') );
         $this->medicalReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceMedicalReasons') );
 
         $this->attendanceReasons = array_merge( array(' '), $this->unexcusedReasons, $this->medicalReasons, $this->excusedReasons);
+
+        //Get last 5 school days from currentDate within the last 100
+        $timestamp = dateConvertToTimestamp($currentDate);
+        $count = 0;
+        $spin = 1;
+        $this->last5SchoolDays = array();
+        while ($count < 5 and $spin <= 100) {
+            $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
+            if (isSchoolOpen($this->guid, $date, $this->pdo->getConnection() )) {
+                $this->last5SchoolDays[$count] = $date;
+                ++$count;
+            }
+            ++$spin;
+        }
+
+    }
+
+    public function getAttendanceCodeByType( $type ) {
+    	if ( isset($this->attendanceTypes[$type]) == false ) return '';
+    	return $this->attendanceTypes[$type]['nameShort'];
     }
 
 
 	public function isTypePresent( $type ) {
-	    return in_array( $type, $this->presentDescriptors, true );
+		if ( isset($this->attendanceTypes[$type]) == false ) return false;
+	    return ($this->attendanceTypes[$type]['direction'] == 'In');
 	}
 
 	public function isTypeLate( $type ) {
-	    return in_array( $type, $this->lateDescriptors, true );
+	    if ( isset($this->attendanceTypes[$type]) == false ) return false;
+	    return ($this->attendanceTypes[$type]['scope'] == 'Onsite - Late');
 	}
 
 	public function isTypeAbsent( $type ) {
-	    return in_array( $type, $this->absentDescriptors );
+	    if ( isset($this->attendanceTypes[$type]) == false ) return false;
+	    return ($this->attendanceTypes[$type]['direction'] == 'Out');
 	}
 
 	public function isReasonExcused( $type ) {
@@ -127,18 +166,66 @@ class attendanceView
 	    return in_array( $type, $this->unexcusedReasons, true );
 	}
 
-	public function renderAttendanceTypeSelect( $lastType = '', $name='type', $width='302px' ) {
+	public function renderMiniHistory( $gibbonPersonID, $width = '134px' ) {
+
+		echo "<table cellspacing='0' class='historyCalendarMini' style='width:$width;' >";
+        echo '<tr>';
+        for ($i = 4; $i >= 0; --$i) {
+            $link = '';
+            if ($i > ( count($this->last5SchoolDays) - 1)) {
+                echo "<td class='highlightNoData'>";
+                echo '<i>'.__($this->guid, 'NA').'</i>';
+                echo '</td>';
+            } else {
+            	$currentDayTimestamp = dateConvertToTimestamp($this->last5SchoolDays[$i]);
+                try {
+                    $dataLast5SchoolDays = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', $currentDayTimestamp).'%');
+                    $sqlLast5SchoolDays = 'SELECT type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonCourseClassID DESC, gibbonAttendanceLogPersonID DESC LIMIT 1';
+                    $resultLast5SchoolDays = $this->pdo->executeQuery($dataLast5SchoolDays, $sqlLast5SchoolDays);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                if ($resultLast5SchoolDays->rowCount() == 0) {
+                    $class = 'highlightNoData';
+                } else {
+                    $link = './index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', $currentDayTimestamp);
+                    $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
+                    if ($this->isTypeAbsent($rowLast5SchoolDays['type'])) {
+                        $class = 'highlightAbsent';
+                    } else {
+                    	$class = 'highlightPresent';
+                    }
+                }
+
+                echo "<td class='$class'>";
+                if ($link != '') {
+                	$title = (!empty($rowLast5SchoolDays['reason']))? $rowLast5SchoolDays['type'].': '.$rowLast5SchoolDays['reason'] : $rowLast5SchoolDays['type'];
+                    echo "<a href='$link' title='".$title."'>";
+                    echo date('d', $currentDayTimestamp).'<br/>';
+                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                    echo '</a>';
+                } else {
+                    echo date('d', $currentDayTimestamp).'<br/>';
+                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                }
+                echo '</td>';
+            }
+        }
+        echo '</tr>';
+        echo '</table>';
+	}
+
+	public function renderAttendanceTypeSelect( $lastType = '', $name='type', $width='302px', $future = false ) {
 
 	    $output = '';
 
 	    $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
-
-	    if (!empty($this->attendanceTypes) && is_array($this->attendanceTypes)) {
-	        foreach ($this->attendanceTypes as $attendanceType) {
-	            $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceType, (($lastType == $attendanceType)? 'selected' : '' ) );
+	    if ( !empty($this->attendanceTypes) ) {
+	        foreach ($this->attendanceTypes as $name => $attendanceType) {
+	        	if ($future && $attendanceType['future'] == 'N') continue;
+	            $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $name, (($lastType == $name)? 'selected' : '' ) );
 	        }
 	    }
-
 	    $output .= '</select>';
 
 	    return $output;

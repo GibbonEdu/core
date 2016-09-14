@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
+require_once './modules/Attendance/src/attendanceView.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -36,6 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('warning1' => 'Your request was successful, but some data was not properly saved.', 'error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
     }
+
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
 
     $gibbonRollGroupID = '';
     if (isset($_GET['gibbonRollGroupID']) == false) {
@@ -178,20 +182,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 if ($rollGroupFail) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 } else {
-                    //Get last 5 school days from currentDate within the last 100
-                    $timestamp = dateConvertToTimestamp($currentDate);
-                    $count = 0;
-                    $spin = 1;
-                    $last5SchoolDays = array();
-                    while ($count < 5 and $spin <= 100) {
-                        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
-                        if (isSchoolOpen($guid, $date, $connection2)) {
-                            $last5SchoolDays[$count] = $date;
-                            ++$count;
-                        }
-                        ++$spin;
-                    }
-                    $last5SchoolDaysCount = $count;
 
                     //Show attendance log for the current day
                     try {
@@ -273,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 
                                 $rowLog = $resultLog->fetch();
 
-                                if ( isAttendanceTypeAbsent($rowLog["type"]) ) {
+                                if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
                                     // Orange/warning background for partial absense
                                     if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0) {
                                         print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
@@ -306,8 +296,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 echo '</div><br/>';
                                 echo "<input type='hidden' name='$count-gibbonPersonID' value='".$rowRollGroup['gibbonPersonID']."'>";
 
-                                echo renderAttendanceTypeSelect($guid, $connection2, $rowLog['type'], "$count-type", '130px');
-                                echo renderAttendanceReasonSelect($guid, $connection2, $rowLog['reason'], "$count-reason", '130px');
+                                echo $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$count-type", '130px');
+                                echo $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$count-reason", '130px');
 
                                 echo "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
 
@@ -315,54 +305,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     ++$countPresent;
                                 }
 
-                                echo "<table cellspacing='0' style='width:134px; margin: 0 auto 3px auto; height: 35px' >";
-                                echo '<tr>';
-                                for ($i = 4; $i >= 0; --$i) {
-                                    $link = '';
-                                    if ($i > ($last5SchoolDaysCount - 1)) {
-                                        $extraStyle = 'color: #555; background-color: #eee;';
-
-                                        echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
-                                        echo '<i>'.__($guid, 'NA').'</i>';
-                                        echo '</td>';
-                                    } else {
-                                        try {
-                                            $dataLast5SchoolDays = array('gibbonPersonID' => $rowRollGroup['gibbonPersonID'], 'date' => date('Y-m-d', dateConvertToTimestamp($last5SchoolDays[$i])).'%');
-                                            $sqlLast5SchoolDays = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
-                                            $resultLast5SchoolDays = $connection2->prepare($sqlLast5SchoolDays);
-                                            $resultLast5SchoolDays->execute($dataLast5SchoolDays);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
-                                        if ($resultLast5SchoolDays->rowCount() == 0) {
-                                            $extraStyle = 'color: #555; background-color: #eee; ';
-                                        } else {
-                                            $link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$rowRollGroup['gibbonPersonID'].'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
-                                            $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-                                            if ($rowLast5SchoolDays['type'] == 'Absent') {
-                                                $color = '#c00';
-                                                $extraStyle = 'color: #c00; background-color: #F6CECB; ';
-                                            } else {
-                                                $color = '#390';
-                                                $extraStyle = 'color: #390; background-color: #D4F6DC; ';
-                                            }
-                                        }
-
-                                        echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
-                                        if ($link != '') {
-                                            echo "<a style='text-decoration: none; color: $color' href='$link'>";
-                                            echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
-                                            echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
-                                            echo '</a>';
-                                        } else {
-                                            echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
-                                            echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
-                                        }
-                                        echo '</td>';
-                                    }
-                                }
-                                echo '</tr>';
-                                echo '</table>';
+                                $attendance->renderMiniHistory( $rowRollGroup['gibbonPersonID'] );
+                                
                                 echo '</td>';
 
                                 if ($count % $columns == ($columns - 1)) {
