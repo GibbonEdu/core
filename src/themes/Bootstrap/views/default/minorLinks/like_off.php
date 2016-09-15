@@ -1,0 +1,1 @@
+<span class="glyphicon glyphicon-thumbs-up"></span>

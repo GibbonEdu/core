@@ -1,9 +1,16 @@
-uploads/*
+/uploads/*
 /config.php
-/vendor/
+/config/local/*
+!/config/local/index.php
 modules/IB PYP
 modules/Query Builder
 missing.yml
 Thumbs.db
 themes/*
 !themes/Default
+!themes/Bootstrap
+src/themes/*
+!src/trhemes/Default
+!src/trhemes/Bootstrap
+.DS_Store
+_notes

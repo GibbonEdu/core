@@ -1656,7 +1656,7 @@ else {
                     if ($choices!="") {
                         foreach ($choices as $t) {
       						try {
-      							$data=array("AI"=>$AI, "t"=>$t, "students"=>$students, "parents"=>$parents);
+      							$data=array("AI"=>$AI, "t"=>$t." ".$selectedDate, "students"=>$students, "parents"=>$parents);
       							$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Attendance', id=:t, students=:students, parents=:parents" ;
       							$result=$connection2->prepare($sql);
       							$result->execute($data);
@@ -1688,16 +1688,19 @@ else {
                             }
                             $lastStudent=$currentStudent ;
                           }
-                          if (count($students)<1) {
+
+                          if (count($selectedStudents)<1) {
                           //If we have no students
                           }
                           else {
                             if ($parents=="Y" AND ($email=="Y" OR ($sms=="Y" AND $countryCode!=""))) {
                               try { //Get the familyIDs for each student logged
-                                $dataFamily=array("gibbonPersonIDs"=>join(",",$selectedStudents));
-                                $sqlFamily="SELECT DISTINCT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID IN (:gibbonPersonIDs)" ;
+                                $dataFamily=array();
+                                $sqlFamily="SELECT DISTINCT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID IN (".implode(",",$selectedStudents).")" ;
                                 $resultFamily=$connection2->prepare($sqlFamily);
                                 $resultFamily->execute($dataFamily);
+
+                                $resultFamilies = $resultFamily->fetchAll();
                               }
                               catch(PDOException $e) { }
                             }
@@ -1705,7 +1708,7 @@ else {
                             //Get emails
                             if ($email=="Y") {
                               if ($parents=="Y") {
-                                while ($rowFamily=$resultFamily->fetch()) { //Get the emails for each familyID
+                                foreach ($resultFamilies as $rowFamily) { //Get the emails for each familyID
                                   try {
                                     $dataEmail=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
                                     $sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
@@ -1732,10 +1735,12 @@ else {
                               }
                             } //end get emails
 
+
+
                             //Get SMS
                             if ($sms=="Y" AND $countryCode!="") {
                               if ($parents=="Y") {
-                                while ($rowFamily=$resultFamily->fetch()) { //Get the people for each familyID
+                                foreach ($resultFamilies as $rowFamily) { //Get the people for each familyID
                                   try {
                                     $dataPerson=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
                                     $sqlPerson="SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y'" ;
@@ -1848,7 +1853,7 @@ else {
 			}
 
 			if ($email=="Y") {
-				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
+				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
 
 				//Prep email array
 				$emails.="$from," ; //Add sender as recipient
@@ -1860,10 +1865,11 @@ else {
 				natcasesort($emails) ;
 
 				//Prep message
-				$body.="<p class='emphasis'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+				$body.="<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 				$bodyPlain = emailBodyConvert($body);
 
-				$mail=new PHPMailer;
+				$mail=getGibbonMailer($guid);
+				$mail->IsSMTP();
 				if ($emailReplyTo!="") {
 					$mail->AddReplyTo($emailReplyTo, '');
 				}
@@ -1884,7 +1890,7 @@ else {
 				$mail->AltBody=$bodyPlain ;
 
 				if(!$mail->Send()) {
-				 	$partialFail=TRUE ;
+					$partialFail=TRUE ;
 				}
 
 				//Get message count

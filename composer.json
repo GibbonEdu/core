@@ -1,0 +1,50 @@
+{
+    "name": "gibbon/core",
+    "description": "Gibbon is a flexible, open source school management platform designed to make like better for teachers, students, parents and schools.",
+    "type": "project",
+    "license": "GNU General Public License V.3",
+	"homepage": "https://gibbonedu.org/",
+    "authors": [
+        {
+            "name": "Ross Parker",
+            "email": "ross@rossparker.org",
+			"homepage": "http://www.rossparker.org",
+			"role": "Founder & Maintainer"
+        },
+        {
+            "name": "Craig Rayner",
+            "email": "craig@craigrayner.com",
+			"homepage": "http://www.craigrayner.com",
+			"role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gibbon\\": "src/Gibbon/",
+			"Library\\": "src/Library/",
+			"Gibbon\\controller\\": "src/controller/",
+			"Gibbon\\core\\": "src/core/",
+			"Gibbon\\Record\\": "src/Record/",
+			"Gibbon\\Menu\\": "src/Menu/",
+			"Gibbon\\Form\\": "src/Form/",
+			"Module\\": "src/modules/",
+			"Module\\System_Admin\\": "src/modules/System Admin/",
+			"Module\\User_Admin\\": "src/modules/User Admin/"
+        }
+    },
+	"config": {
+    	"vendor-dir": "vendor"
+	},
+    "require": {
+		"php": "^5.6.0 || ^7.0",
+		"symfony/yaml": "3.1.*",
+		"monolog/monolog": "1.19.*",
+		"tinymce/tinymce": "4.3.*",
+		"components/jquery": ">=1.9.1 <3.0",
+		"components/jqueryui": "1.11.*",
+		"twbs/bootstrap": "3.3.*",
+		"nostalgiaz/bootstrap-switch": "3.3.*"
+	},
+    "require-dev": {
+    }
+}

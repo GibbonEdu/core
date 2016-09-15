@@ -139,6 +139,7 @@ class menuMain
 		
 		//$this->session->set('mainMenu', $menu) ;
 		$_SESSION[$this->config->get('guid')]["mainMenu"]=$menu ;
+		if (isset($_SESSION[$this->config->get('guid')]["lastMainMenu"])) unset($_SESSION[$this->config->get('guid')]["lastMainMenu"]);
 	}
 }
 ?>

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../functions.php';
 include '../../config.php';
-require '../../lib/PHPMailer/class.phpmailer.php';
+require '../../lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -303,7 +303,8 @@ if ($proceed == false) {
                             $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                             $bodyPlain = emailBodyConvert($body);
 
-                            $mail = new PHPMailer();
+                            $mail = getGibbonMailer($guid);
+                            $mail->IsSMTP();
                             $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
                             if ($referenceEmail1 != '') {
                                 $mail->AddBCC($referenceEmail1);

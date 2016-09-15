@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -226,7 +226,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                                 $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions.';
 
-                                $mail = new PHPMailer();
+                                $mail = getGibbonMailer($guid);
+                                $mail->IsSMTP();
                                 $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);
@@ -299,7 +300,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                     }
                                 }
 
-                                $mail = new PHPMailer();
+                                $mail = getGibbonMailer($guid);
+                                $mail->IsSMTP();
                                 $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);

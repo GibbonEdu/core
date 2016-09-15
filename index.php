@@ -17,9 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Prevent breakage of back button on POST pages
-ini_set('session.cache_limiter', 'private');
-session_cache_limiter(false);
+include rtrim(__DIR__, '/').'/src/controller/default.php';
 
 //Gibbon system-wide includes
 if (file_exists('./config.php')) {
@@ -35,7 +33,7 @@ include './version.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start();
+//@session_start();
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -295,7 +293,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 				width: '738px',
 				menubar : false,
 				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-				plugins: 'table, template, paste, visualchars, image, link, template, textcolor, hr, charmap, fullscreen, media',
+				plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen, media',
 			 	statusbar: false,
 			 	valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
 			 	apply_source_formatting : true,
@@ -377,7 +375,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						<div id="header-menu">
 							<?php
                                 //Get main menu
-                                if ($cacheLoad) {
+                                if ($cacheLoad || (isset($_SESSION[$guid]['lastMainMenu']) && $_SESSION[$guid]['lastMainMenu'])) {
                                     $mainMenu = new Gibbon\menuMain();
                                     $mainMenu->setMenu();
                                 }
@@ -693,4 +691,3 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 	<?php
 
 }
-?>

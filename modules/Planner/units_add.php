@@ -170,6 +170,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 										</script>
 									</td>
 								</tr>
+                                <tr>
+                                    <td class='long' colspan=2>
+                                        <b><?php echo __($guid, 'Keywords & Concepts') ?></b><br/>
+                                        <span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
+                						<?php
+                                        $tags = getTagList($connection2);
+                                        sort($tags, SORT_STRING) ;
+                                        $list = '';
+                                        foreach ($tags AS $tag) {
+                                            $list = $list.'{id: "'.$tag.'", name: "'.$tag.'"},';
+                                        }
+                						?>
+                						<style>
+                							td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
+                							td.long div.token-input-dropdown-facebook { width: 120px }
+                						</style>
+                						<input type="text" id="tags" name="tags" />
+                						<script type="text/javascript">
+                							$(document).ready(function() {
+                								 $("#tags").tokenInput([
+                									<?php echo substr($list, 0, -1) ?>
+                								],
+                									{theme: "facebook",
+                									hintText: "Start typing a tag...",
+                									allowCreation: true,
+                									preventDuplicates: true});
+                							});
+                						</script>
+                					</td>
+                				</tr>
 
                                 <tr class='break' id="datesHeaderRow">
     								<td colspan=2>

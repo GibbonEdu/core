@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo __($guid, 'Access denied.');
                 echo '</div>';
             } else {
-                //Get child list
+            //Get child list
             $count = 0;
                 $options = '';
                 $students = array();
@@ -389,24 +389,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 if ($allStudents != 'on') {
                     $data += array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.status, gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup 
-						FROM gibbonPerson 
-							JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-							JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
-							JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
+                    $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.status, gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup
+						FROM gibbonPerson
+							JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+							JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+							JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
 							LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
 							LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
 							LEFT JOIN gibbonFamilyAdult AS parent1Fam ON (parent1Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent1Fam.contactPriority=1)
 							LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full')
 							LEFT JOIN gibbonFamilyAdult AS parent2Fam ON (parent2Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent2Fam.contactPriority=2)
 							LEFT JOIN gibbonPerson AS parent2 ON (parent2Fam.gibbonPersonID=parent2.gibbonPersonID AND parent2.status='Full')
-						WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
-							AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<='".date('Y-m-d')."') 
-							AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>='".date('Y-m-d')."') 
+						WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+							AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<='".date('Y-m-d')."')
+							AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>='".date('Y-m-d')."')
 							AND gibbonPerson.status='Full'";
                 } else {
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status, NULL AS gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, NULL AS yearGroup, NULL AS rollGroup 
-						FROM gibbonPerson 
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status, NULL AS gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, NULL AS yearGroup, NULL AS rollGroup
+						FROM gibbonPerson
 							JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE concat('%', gibbonRole.gibbonRoleID , '%'))
 							LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
 							LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)

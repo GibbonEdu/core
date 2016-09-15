@@ -214,7 +214,9 @@ else {
                     $_SESSION[$guid]['googleAPIAccessToken'] = null; //Set only when user logs in with Google
                     $_SESSION[$guid]['receiveNotificationEmails'] = $row['receiveNotificationEmails'];
                     $_SESSION[$guid]['gibbonHouseID'] = $row['gibbonHouseID'];
-
+					$_SESSION[$guid]['security']['lastPageTime'] = strtotime('now');
+					$_SESSION[$guid]['security']['sessionDeuration'] = 1200;
+  
                     //Allow for non-system default language to be specified from login form
                     if (@$_POST['gibboni18nID'] != $_SESSION[$guid]['i18n']['gibboni18nID']) {
                         try {

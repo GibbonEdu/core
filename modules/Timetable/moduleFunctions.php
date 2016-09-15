@@ -197,8 +197,15 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
             $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
             $client->setDeveloperKey($googleDeveloperKey); // Developer key
             $client->setAccessType('offline');
-            $client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
-            $_SESSION[$guid]['googleAPIAccessToken'] = $client->getAccessToken();
+            if ($_SESSION[$guid]['googleAPIRefreshToken'] == '') {
+                echo "<div class='error'>";
+                echo __($guid, 'Your request failed due to a database error.');
+                echo '</div>';
+            }
+            else {
+                $client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
+                $_SESSION[$guid]['googleAPIAccessToken'] = $client->getAccessToken();
+            }
         }
 
         $getFail = false;
@@ -1308,7 +1315,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							$title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                             $height = ceil(($event[3] - $event[2]) / 60).'px';
                             $charCut = 20;
-                            if (height < 20) {
+                            if ($height < 20) {
                                 $charCut = 12;
                             }
                             if (strlen($label) > $charCut) {
@@ -1350,7 +1357,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							$title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                             $height = ceil(($event[3] - $event[2]) / 60).'px';
                             $charCut = 20;
-                            if (height < 20) {
+                            if ($height < 20) {
                                 $charCut = 12;
                             }
                             if (strlen($label) > $charCut) {
