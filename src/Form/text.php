@@ -28,8 +28,10 @@ use Gibbon\core\helper ;
  * @version	2nd July 2016
  * @since	20th April 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class text extends element
 {
 	/**

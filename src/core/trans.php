@@ -32,6 +32,7 @@ use Gibbon\Record\stringReplacement ;
  * @since	16th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class trans
 {

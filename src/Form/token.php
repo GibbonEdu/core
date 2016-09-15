@@ -29,8 +29,10 @@ use Gibbon\core\view ;
  * @version	6th September 2016
  * @since	21st April 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class token extends hidden
 {
 	/**

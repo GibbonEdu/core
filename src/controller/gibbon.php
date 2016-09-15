@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @package	Gibbon
  * @subpackage	Controller
  */
- 
+  
 if ( ! defined( 'GIBBON_ROOT' ) )
 {
 	$path = pathinfo($_SERVER['PHP_SELF']);
@@ -43,7 +43,7 @@ if ( ! defined( 'GIBBON_ROOT' ) )
 	define('GIBBON_URL', $pageURL);
 }
 
-define('GIBBON_NEW', true);
+if (defined('GIBBON_NEW')) define('GIBBON_NEW', true);
 
 require GIBBON_ROOT . 'vendor/autoload.php';
 
@@ -108,62 +108,4 @@ include __DIR__.'/start.php';
 
 class gibbon
 {
-}
-
-
-/**
- * Print an Object Alias (Dump)
- *
- * @version	16th February 2015
- * @since	OLD
- * @param	mixed 		$object		The object to be printed
- * @param	boolean 	$stop		Stop execution after printing object.
- * @param	boolean 	$full		Full print the Call Trace Stack
- * @return	void
- */
-function dump($object, $stop = false, $full = false) 
-{
-	$caller = debug_backtrace(false);
-	echo "<pre>\n";
-	echo $caller[0]['line'].': '.$caller[0]['file'];
-	echo "\n</pre>\n";
-	echo "<pre>\n";
-	print_r($object);
-	if ($full) 
-		print_r($caller);
-	echo "\n</pre>\n";
-	if ($stop) 
-		die();
-	flush();
-	return ;
-}
-
-/**
- * File an Object
- *
- * @version 10th November 2014
- * @since OLD
- * @param mixed The object to be printed
- * @param string Name of File
- * @return void
- */
-function fileAnObject($object, $name = null)
-{
-	
-	$logpath = GIBBON_CONFIG;
-	if ($name === null)
-		$fn = substr(md5(print_r($object, true)), 0, 12).'.log';
-	else
-		$fn = $name . '.log';
-	$caller = debug_backtrace( false );
-	$data = $caller[0]['line'].': '.$caller[0]['file']."\n";
-	$data .= print_r($object, true);
-	$x = '';
-	foreach ($caller as $w) {
-		$x =  $w['line'].': '.$w['file'].' '.$w['function']."\n". $x;
-	}
-	$data .= "\n".$x;
-	file_put_contents($logpath . $fn, $data);
-//	die(__FILE__.': '.__LINE__);
-	return ;
 }

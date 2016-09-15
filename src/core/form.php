@@ -31,7 +31,7 @@ use Gibbon\Record\theme ;
  * @since	14th June 2016
  * @author	Craig Rayner
  * @package	Gibbon
- * @subpackage	Form
+ * @subpackage	Core
  */
 class form
 {

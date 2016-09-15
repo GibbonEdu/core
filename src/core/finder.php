@@ -25,7 +25,8 @@ namespace Gibbon\core;
  *
  * @version	29th May 2016
  * @since	29th May 2016
- * @package Gibbon
+ * @package	Gibbon
+ * @subpackage	Core
  * @author	Craig Rayner
  */
 class finder

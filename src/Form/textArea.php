@@ -26,8 +26,10 @@ namespace Gibbon\Form;
  * @version	16th June 2016
  * @since	20th April 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class textArea extends element
 {
 	/**

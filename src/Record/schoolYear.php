@@ -32,7 +32,7 @@ use Gibbon\core\trans ;
  * @since	4th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
- * @subpackage                     Record
+ * @subpackage	Record
  */
 class schoolYear extends record
 {

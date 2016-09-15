@@ -29,6 +29,7 @@ use Gibbon\core\view ;
  * @since	15th May 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class module extends helper
 {

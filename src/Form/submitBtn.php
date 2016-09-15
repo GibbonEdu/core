@@ -28,8 +28,10 @@ use Gibbon\core\view ;
  * @version	29th June 2016
  * @since	21st April 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class submitBtn extends element
 {
 	/**

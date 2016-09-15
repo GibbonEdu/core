@@ -18,40 +18,35 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 /**
  */
-namespace Gibbon\Menu;
-
-use Gibbon\core\view;
+namespace Gibbon\Form;
 
 /**
- * Menu Interface
+ * Email Element
  *
- * @version	4th May 2016
- * @since	24th April 2016
+ * @version	1st July 2016
+ * @since	23rd May 2016
  * @author	Craig Rayner
  * @package	Gibbon
- * @subpackage	Menu
  */
-interface menuInterface
+class email extends element
 {
 	/**
-	 * Construct
+	 * Constructor
 	 *
-	 * @version 4th May 2016
-	 * @since	24th April 2016
-	 * @param	Gibbon\view	$view
-	 * @return	void
+	 * @version	1st July 2016
+	 * @since	23rd May 2016
+	 * @param	string		$name	Name
+	 * @param	mixed		$value	Value
+	 * @return 	void
 	 */
-	public function __construct( view $view );
-
-
-	/**
-	 * Construct and store menu in session
-	 *
-	 * @version 19th April 2016
-	 * @since	Old
-	 * @return	void
-	 */
-	public function setMenu();
-	
+	public function __construct($name = NULL, $value = NULL)
+	{
+		$this->createDefaults();
+		if ($name !== NULL)
+			$this->name = $name;
+		if ($value !== NULL)
+			$this->value = $value;
+		$this->element->name = 'text';
+		$this->setEmail();  // or false
+	}
 }
-?>

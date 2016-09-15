@@ -28,6 +28,7 @@ namespace Gibbon\core ;
  * @since	20th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class moduleFunctions implements moduleFunctionsInterface
 {

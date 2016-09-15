@@ -29,6 +29,7 @@ use Gibbon\core\view;
  * @since	24th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Menu
  */
 abstract class menu implements menuInterface
 {

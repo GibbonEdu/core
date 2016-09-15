@@ -25,6 +25,9 @@ namespace Gibbon;
  * @version	22nd April 2016
  * @since	22nd April 2016
  * @author	Ross Parker
+ * @package	Gibbon
+ * @subpackage	Old
+ * @deprecated
  */
 class menuMain
 {

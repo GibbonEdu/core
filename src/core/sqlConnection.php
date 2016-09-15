@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @author	Craig Rayner
  * @package	Gibbon
- * @subpackage	core
+ * @subpackage	Core
 */
 /**
  * Namespace Gibbon
@@ -29,6 +29,8 @@ namespace Gibbon\core ;
 use Gibbon\core\logger ;
 use PDO ;
 use PDOException ;
+use Gibbon\core\helper ;
+
 /**
  * sql Connection
  *
@@ -140,7 +142,7 @@ class sqlConnection
 				$message = $e->getMessage();
 			$this->success = false;
 			$this->error = $message;
-			fileAnObject(array('Failed to generate Connection', 'Error', 'PDO', array('error' => $message, 'raw-error'=>$e->getMessage())), 'SQL Failure');
+			helper::fileAnObject(array('Failed to generate Connection', 'Error', 'PDO', array('error' => $message, 'raw-error'=>$e->getMessage())), 'SQL Failure');
 		}
 		$this->result = NULL;
 		$this->query = NULL;

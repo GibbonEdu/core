@@ -36,6 +36,7 @@ use Gibbon\core\listElement ;
  * @since	6th July 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Menu
  */
 class moduleMenu extends menu
 {

@@ -32,6 +32,7 @@ use stdClass ;
  * @since	22nd April 2016
  * @author	Ross Parker
  * @package	Gibbon
+ * @subpackage	Menu
  */
 class main extends menu
 {

@@ -29,7 +29,7 @@ use Gibbon\core\fileManager ;
 /**
  * Person Record
  *
- * @version	8th September 2016
+ * @version	15th September 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -648,5 +648,27 @@ class person extends record
 		$pfObj = new personField($this->view);
 		$resultFields = $pfObj->getCustomFields($student, $staff, $parent, $other, $applicationForm, $dataUpdater);
 		return $resultFields;
+	}
+
+	/**
+	 * get Total People
+	 *
+	 * @version	15th September 2016
+	 * @since	15th September 2016
+	 * @param	string		$status  Assumes Full Status.
+	 * @return	integer
+	 */
+	public function getTotalPeople($status = 'Full')
+	{
+		$data =array('status' => $status); 
+		$sql = "SELECT COUNT(`gibbonPersonID`) 
+			FROM `gibbonPerson` 
+			WHERE `status` LIKE :status" ;
+		$v = clone $this ;
+		$result = $v->executeQuery($data, $sql);
+		$total = $result->fetchColumn() ;
+		if (! $v->getSuccess())
+			$total = 0;
+		return $total;
 	}
 }

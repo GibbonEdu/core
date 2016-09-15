@@ -21,7 +21,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @author	Craig Rayner
  * @package		Gibbon
- * @subpackage                     Record
+ * @subpackage	Record
  */
 /**
  * Namespace
@@ -36,8 +36,6 @@ use Gibbon\core\view ;
  * @version	24th August 2016
  * @since	30th April 2016
  * @author	Craig Rayner
- * @package		Gibbon
- * @subpackage                     Record
  */
 interface recordInterface
 {

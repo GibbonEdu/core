@@ -34,6 +34,7 @@ use Gibbon\core\view ;
  * @since	22nd April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class logger
 {

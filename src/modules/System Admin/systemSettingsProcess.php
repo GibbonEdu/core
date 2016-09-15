@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Module\System_Admin ;
+
 use Gibbon\core\module ;
 use Gibbon\core\post ;
+use Gibbon\Record\person ;
 
 if (! $this instanceof post) die();
-
 
 $mf = new Functions\functions($this);
 
@@ -33,54 +34,7 @@ if (! $this->getSecurity()->isActionAccessible("/modules/System Admin/systemSett
 }
 else {
 	//Proceed!
-	$args = array("absoluteURL" => FILTER_SANITIZE_URL,
-		"absolutePath" => FILTER_DEFAULT,
-		"systemName" => FILTER_DEFAULT,
-		"indexText" => FILTER_DEFAULT,
-		"organisationName" => FILTER_DEFAULT,
-		"organisationNameShort" => FILTER_DEFAULT,
-		"organisationEmail" => FILTER_SANITIZE_EMAIL,
-		"organisationLogo" => FILTER_DEFAULT,
-		"organisationAdministrator" => FILTER_SANITIZE_NUMBER_INT,
-		"organisationDBA" => FILTER_SANITIZE_NUMBER_INT,
-		"organisationHR" => array('filter' => FILTER_SANITIZE_NUMBER_INT,
-										'options'=>array('default'=>1)),
-		"organisationAdmissions" => FILTER_SANITIZE_NUMBER_INT,
-		"pagination" => FILTER_SANITIZE_NUMBER_INT,
-		"timezone" => FILTER_DEFAULT,
-		"country" => FILTER_DEFAULT,
-		"firstDayOfTheWeek" => FILTER_DEFAULT,
-		"analytics" => FILTER_DEFAULT,
-		"emailLink" => FILTER_SANITIZE_URL,
-		"webLink" => FILTER_SANITIZE_URL,
-		"primaryAssessmentScale" => FILTER_SANITIZE_NUMBER_INT,
-		"installType" => FILTER_DEFAULT,
-		"statsCollection" => FILTER_DEFAULT,
-		"passwordPolicyMinLength" => array('filter' => FILTER_SANITIZE_NUMBER_INT,
-										'options'=>array('default'=>8, 'min_range'=>4, 'max_range'=>16)),
-		"passwordPolicyAlpha" => FILTER_DEFAULT,
-		"passwordPolicyNumeric" => FILTER_DEFAULT,
-		"passwordPolicyNonAlphaNumeric" => FILTER_DEFAULT,
-		"sessionDuration" => array('filter' => FILTER_SANITIZE_NUMBER_INT,
-										'options'=>array('default'=>1200, 'min_range'=>1200)),
-		"allowableHTML" => FILTER_DEFAULT,
-		"currency" => FILTER_DEFAULT,
-		"gibboneduComOrganisationName" => FILTER_DEFAULT,
-		"gibboneduComOrganisationKey" => FILTER_DEFAULT
-	);
-	
-	foreach($args as $name => $filter)
-	{
-		if (is_array($filter))
-			$post[$name] = filter_var($_POST[$name], $filter['filter'], $filter['options']);
-		else
-			$post[$name] = filter_var($_POST[$name], $filter);
-		if (false === $post[$name])
-		{
-			$this->insertMessage(array('Your request failed because %1$s was not a valid entry.', array($name))) ;
-			$this->redirect($URL);
-		}
-	}
+	$post = $_POST ;
 
 	$required = array( 'absoluteURL', 'systemName', 'organisationLogo', 'indexText', 'organisationName', 'organisationNameShort', 
 		'organisationAdministrator', 'organisationDBA', 'organisationHR', 'organisationAdmissions', 'pagination', 'timezone', 
@@ -115,24 +69,24 @@ else {
 		if (! $this->config->setSettingByScope("organisationAdministrator", $post['organisationAdministrator']) ) $fail = true;
 
 		//Update session variables
-		if ($personObj = new \Gibbon\Record\person($this, $post['organisationAdministrator'])) {
-			$this->session->set("organisationAdministratorName", module::formatName("", $personObj->getField("preferredName"), $personObj->getField("surname"), "Staff", FALSE, TRUE)) ;
+		if ($personObj = new person($this, $post['organisationAdministrator'])) {
+			$this->session->set("organisationAdministratorName", $personObj->formatName(FALSE, TRUE)) ;
 			$this->session->set("organisationAdministratorEmail", $personObj->getField("email") );
 		} else $fail = true;
 		
 		
 		if (! $this->config->setSettingByScope("organisationDBA", $post['organisationDBA']) ) $fail = true;
 		//Update session variables
-		if ($personObj = new \Gibbon\Record\person($this, $post['organisationDBA'])) {
-			$this->session->set("organisationDBAName", module::formatName("", $personObj->getField("preferredName"), $personObj->getField("surname"), "Staff", FALSE, TRUE)) ;
+		if ($personObj = new person($this, $post['organisationDBA'])) {
+			$this->session->set("organisationDBAName", $personObj->formatName(FALSE, TRUE)) ;
 			$this->session->set("organisationDBAEmail", $personObj->getField("email")) ;
 		}
 		
 		
 		if (! $this->config->setSettingByScope("organisationHR", $post['organisationHR']) ) $fail = true;
 		//Update session variables
-		if ($personObj = new \Gibbon\Record\person($this, $post['organisationHR'])) {
-			$this->session->set("organisationHRName", module::formatName("", $personObj->getField("preferredName"), $personObj->getField("surname"), "Staff", FALSE, TRUE)) ;
+		if ($personObj = new person($this, $post['organisationHR'])) {
+			$this->session->set("organisationHRName", $personObj->formatName(FALSE, TRUE)) ;
 			$this->session->set("organisationHREmail", $personObj->getField("email")) ;
 		}
 		
@@ -141,7 +95,7 @@ else {
 		if (! $this->config->setSettingByScope("organisationAdmissions", $post['organisationAdmissions']) ) $fail = true;
 		//Update session variables
 		if ($personObj = new \Gibbon\Record\person($this, $post['organisationAdmissions'])) {
-			$this->session->set("organisationAdmissionsName", module::formatName("", $personObj->getField("preferredName"), $personObj->getField("surname"), "Staff", FALSE, TRUE)) ;
+			$this->session->set("organisationAdmissionsName", $personObj->formatName(FALSE, TRUE)) ;
 			$this->session->set("organisationAdmissionsEmail", $personObj->getField("email")) ;
 		}
 		

@@ -30,6 +30,7 @@ use Gibbon\core\view ;
  * @since	21st April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class post extends view
 {

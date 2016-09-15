@@ -26,8 +26,10 @@ namespace Gibbon\Form;
  * @version	15th June 2016
  * @since	15th June 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class script extends element
 {
 	/**

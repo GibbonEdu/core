@@ -26,8 +26,10 @@ namespace Gibbon\Form;
  * @version	29th June 2016
  * @since	27th April 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class button extends element
 {
 	/**

@@ -25,6 +25,9 @@ namespace Gibbon;
  * @version	16th April 2016
  * @since	16th April 2016
  * @author	Craig Rayner
+ * @package	Gibbon
+ * @subpackage	Old
+ * @deprecated
  */
 class trans
 {

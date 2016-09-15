@@ -25,6 +25,7 @@ use Gibbon\core\trans ;
 use Symfony\Component\Yaml\Yaml ;
 use Module\System_Admin\Functions\functions ;
 use Gibbon\Record\person ;
+use Gibbon\Record\setting ;
 
 if (! $this instanceof view) die();
 
@@ -36,25 +37,19 @@ if ($this->getSecurity()->isActionAccessible()) {
 	if ($this->session->get("statsCollection")=="Y") {
 		$absolutePathProtocol="" ;
 		$absolutePath="" ;
-		if (substr($this->session->get("absoluteURL"),0,7)=="http://") {
+		if (substr(GIBBON_URL,0,7)=="http://") {
 			$absolutePathProtocol="http" ;
-			$absolutePath=substr($this->session->get("absoluteURL"),7) ;
+			$absolutePath = substr(GIBBON_URL,7) ;
 		}
-		else if (substr($this->session->get("absoluteURL"),0,8)=="https://") {
+		else if (substr(GIBBON_URL,0,8)=="https://") {
 			$absolutePathProtocol="https" ;
-			$absolutePath=substr($this->session->get("absoluteURL"),8) ;
+			$absolutePath=substr(GIBBON_URL,8) ;
 		}
-		$personOnj = new person($this);
-		$data =array(); 
-		$sql = "SELECT COUNT(`gibbonPersonID`) FROM `gibbonPerson`" ;
-		$result = $this->pdo->executeQuery($data, $sql);
-		$usersTotal = $result->fetchColumn() ;
-
-		$sql="SELECT COUNT(`gibbonPersonID`) FROM `gibbonPerson` WHERE `status` = 'Full'" ;
-		$result = $this->pdo->executeQuery($data, $sql);
-		$usersFull = $result->fetchColumn() ;
-
-		echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($this->session->get('organisationName')) . "&type=" . urlencode($this->session->get('installType')) . "&version=" . urlencode($this->config->get('version')) . "&country=" . $this->session->get('country') . "&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>" ;
+		$personObj = new person($this);
+		$usersTotal = $personObj->getTotalPeople('%');
+		$usersFull = $personObj->getTotalPeople();
+		
+		echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($this->session->get('organisationName')) . "&type=" . urlencode($this->session->get('installType')) . "&version=" . urlencode($this->config->get('version')) . "&country=" . $this->session->get('country') . "&usersTotal=" . $usersTotal . "&usersFull=" . $usersFull  . "'></iframe>" ;
 	}
 
 	//Proceed!
@@ -67,7 +62,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	
 	$this->render('default.flash');
 	
-	$settingObj = new \Gibbon\Record\setting($this);
+	$settingObj = new setting($this);
 	
 	$sysSettings = $settingObj->findAll("SELECT * FROM `gibbonSetting` WHERE `scope` = 'System' ", array(), '', 'name');
 	
@@ -79,10 +74,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$el = $form->addElement('url', null);
 	$el->injectRecord($sysSettings['absoluteURL']->returnRecord());
-	$el->col1->style = 'width: 275px';
-	$el->setLength('Length <= 50', null, 50);
 	$el->setRequired();
-	$el->setURL("Must start with http:// or https://");
+
 
 	$el = $form->addElement('text', null);
 	$el->injectRecord($sysSettings['absolutePath']->returnRecord());
@@ -100,9 +93,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['installType']->returnRecord());
-	$el->setRequired();
 	if ($sysSettings['cuttingEdgeCode']->returnRecord()->value == 'N')
-		$el->addOption(trans::__('Production').'Production');
+		$el->addOption(trans::__('Production'), 'Production');
 	$el->addOption(trans::__('Testing'), 'Testing');
 	$el->addOption(trans::__('Development'), 'Development');
 
@@ -127,10 +119,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->setLength('Length <= 50', null, 50);
 
 
-	$el = $form->addElement('text', null);
+	$el = $form->addElement('email', null);
 	$el->injectRecord($sysSettings['organisationEmail']->returnRecord());
-	$el->setEmail('Provide a valid email address');
-	$el->setLength('Length <= 80', null, 80);
 
 
 	$el = $form->addElement('text', null);

@@ -31,6 +31,7 @@ use Gibbon\Record\house ;
  * @since	15th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class session
 {

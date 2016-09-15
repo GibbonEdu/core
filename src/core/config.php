@@ -22,6 +22,8 @@ namespace Gibbon\core;
 
 use Symfony\Component\Yaml\Yaml ;
 use Gibbon\core\view ;
+use Gibbon\Record\setting ;
+use stdClass ;
 
 /**
  * Configuration Manager
@@ -249,9 +251,9 @@ class config
 			$this->scope = $scope;
 		$value = filter_var($value);
 		if (empty($this->system->$scope))
-			$this->system->$scope = new \stdClass();
+			$this->system->$scope = new stdClass();
 		$this->system->$scope->$name = $value;
-		$pdo = new \Gibbon\Record\setting($this->getView());
+		$pdo = new setting($this->getView());
 		$record = $pdo->findOneBy( array("scope" => $scope, "name" => $name));
 		$ok = true ;
 		if ($pdo->getField('value') != $value)

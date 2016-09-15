@@ -31,6 +31,7 @@ use Gibbon\core\view ;
  * @since	26th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class trail
 {

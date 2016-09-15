@@ -29,6 +29,7 @@ use Gibbon\core\view ;
  * @since	21st June 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class listElement
 {

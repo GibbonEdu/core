@@ -35,6 +35,7 @@ use Gibbon\Record\person ;
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Core
  */
 class view
 {

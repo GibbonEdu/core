@@ -28,8 +28,10 @@ use Gibbon\core\view ;
  * @version	2nd July 2016
  * @since	16th June 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class info extends element
 {
 	/**

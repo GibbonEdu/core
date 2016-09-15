@@ -27,8 +27,10 @@ use Gibbon\core\helper ;
  * @version	6th May 2016
  * @since	20th April 2016
  * @author	Craig Rayner
+
  * @package	Gibbon
- */
+ * @subpackage	Form
+*/
 class yesno extends select
 {
 	/**

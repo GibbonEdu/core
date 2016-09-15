@@ -31,6 +31,7 @@ use Gibbon\Record\notification ;
  * @since	24th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
+ * @subpackage	Menu
  */
 class minorLinks extends menu
 {

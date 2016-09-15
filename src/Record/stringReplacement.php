@@ -29,7 +29,7 @@ use Gibbon\core\view ;
  * @since	2nd May 2016
  * @author	Craig Rayner
  * @package		Gibbon
- * @subpackage	Module
+ * @subpackage	Record
  */
 class stringReplacement extends record
 {
