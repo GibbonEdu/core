@@ -71,7 +71,42 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID =
                         $partialFail == true;
                     }
                 }
-            } else {
+            }
+            else if ($action == 'Copy to class') {
+                $gibbonCourseClassIDCopyTo = (isset($_POST['gibbonCourseClassIDCopyTo']))? $_POST['gibbonCourseClassIDCopyTo'] : NULL;
+                if (!empty($gibbonCourseClassIDCopyTo)) {
+
+                    for ($i = 0; $i < count($people); ++$i) {
+
+                        // Check for duplicates
+                        try {
+                            $dataCheck = array('gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo, 'gibbonPersonID' => $people[$i][0]);
+                            $sqlCheck = 'SELECT gibbonPersonID FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassIDCopyTo AND gibbonPersonID=:gibbonPersonID';
+                            $resultCheck = $connection2->prepare($sqlCheck);
+                            $resultCheck->execute($dataCheck);
+                        } catch (PDOException $e) {
+                            $partialFail == true;
+                        }
+
+                        // Insert new course participants
+                        if ($resultCheck->rowCount() == 0) {
+                            try {
+                                $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $people[$i][0], 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo);
+                                $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail == true;
+                            }
+                        }
+
+
+                    }
+                } else {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                }
+            } else if ($action == 'Mark as left') {
                 for ($i = 0; $i < count($people); ++$i) {
                     if ($people[$i][1] == 'Student' or $people[$i][1] == 'Teacher') {
                         try {
