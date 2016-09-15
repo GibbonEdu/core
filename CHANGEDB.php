@@ -475,4 +475,5 @@ INSERT INTO `gibbonAttendanceCode` (`gibbonAttendanceCodeID`, `name`, `nameShort
 INSERT INTO `gibbonAttendanceCode` (`gibbonAttendanceCodeID`, `name`, `nameShort`, `type`, `direction`, `scope`, `active`, `reportable`, `future`, `gibbonRoleIDAll`, `sequenceNumber`) VALUES (NULL, 'Absent', 'A', 'Core', 'Out', 'Offsite', 'Y', 'Y', 'Y', '001,002,006', '4');end
 INSERT INTO `gibbonAttendanceCode` (`gibbonAttendanceCodeID`, `name`, `nameShort`, `type`, `direction`, `scope`, `active`, `reportable`, `future`, `gibbonRoleIDAll`, `sequenceNumber`) VALUES (NULL, 'Left', 'L', 'Core', 'Out', 'Offsite - Left', 'Y', 'Y', 'N', '001,002,006', '5');end
 INSERT INTO `gibbonAttendanceCode` (`gibbonAttendanceCodeID`, `name`, `nameShort`, `type`, `direction`, `scope`, `active`, `reportable`, `future`, `gibbonRoleIDAll`, `sequenceNumber`) VALUES (NULL, 'Left - Early', 'LE', 'Core', 'Out', 'Offsite - Left', 'Y', 'Y', 'N', '001,002,006', '6');end
+ALTER TABLE `gibbonRollGroup` ADD `attendance` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonRollGroupIDNext`;end
 ";

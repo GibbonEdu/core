@@ -86,6 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 $website = $_POST['website'];
             }
 
+            $attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
+
             if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
@@ -108,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonPersonIDTutor' => $gibbonPersonIDTutor, 'gibbonPersonIDTutor2' => $gibbonPersonIDTutor2, 'gibbonPersonIDTutor3' => $gibbonPersonIDTutor3, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonRollGroupIDNext' => $gibbonRollGroupIDNext, 'website' => $website, 'gibbonRollGroupID' => $gibbonRollGroupID);
-                        $sql = 'UPDATE gibbonRollGroup SET name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext, website=:website WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                        $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonPersonIDTutor' => $gibbonPersonIDTutor, 'gibbonPersonIDTutor2' => $gibbonPersonIDTutor2, 'gibbonPersonIDTutor3' => $gibbonPersonIDTutor3, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonRollGroupIDNext' => $gibbonRollGroupIDNext, 'attendance' => $attendance, 'website' => $website, 'gibbonRollGroupID' => $gibbonRollGroupID);
+                        $sql = 'UPDATE gibbonRollGroup SET name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext, attendance=:attendance, website=:website WHERE gibbonRollGroupID=:gibbonRollGroupID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

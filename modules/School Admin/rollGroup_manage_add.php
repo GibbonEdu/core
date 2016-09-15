@@ -221,6 +221,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 						</td>
 					</tr>
 					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Track Attendance?') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Should this class allow attendance to be taken?') ?></span>
+						</td>
+						<td class="right">
+							<select name="attendance" id="attendance" class="standardWidth">
+								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option value="N"><?php echo __($guid, 'No') ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
 						<td>
 							<b><?php echo __($guid, 'Website') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Include http://') ?></span>
