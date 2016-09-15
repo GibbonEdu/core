@@ -1,0 +1,1 @@
+<button type="button" name="<?php echo $params->name; ?>"<?php echo isset($params->element->class) ? ' class="'.$params->element->class.'"' : 'class="btn btn-default"'; ?><?php echo isset($params->element->style) ? ' style="'.$params->element->style.'"' : ''; ?>><?php echo $params->value; ?></button><!-- bootstrap.form.button -->

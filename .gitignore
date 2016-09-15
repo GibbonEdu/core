@@ -10,7 +10,8 @@ themes/*
 !themes/Default
 !themes/Bootstrap
 src/themes/*
-!src/trhemes/Default
-!src/trhemes/Bootstrap
+!src/themes/Default
+!src/themes/Bootstrap
 .DS_Store
+
 _notes
