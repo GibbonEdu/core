@@ -44,7 +44,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$absolutePathProtocol="https" ;
 			$absolutePath=substr($this->session->get("absoluteURL"),8) ;
 		}
-		$personOnj = new \Gibbon\Record\person($this);
+		$personOnj = new person($this);
 		$data =array(); 
 		$sql = "SELECT COUNT(`gibbonPersonID`) FROM `gibbonPerson`" ;
 		$result = $this->pdo->executeQuery($data, $sql);

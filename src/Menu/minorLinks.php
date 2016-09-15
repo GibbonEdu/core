@@ -67,7 +67,7 @@ class minorLinks extends menu
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" . trans::__("Logout") . "</a> . <a href='./index.php?q=/modules/User Admin/preferences.php'>" . trans::__( 'Preferences') . "</a>" ;
+				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" . trans::__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" . trans::__( 'Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" . trans::__( 'Email') . "</a>" ;
 				}

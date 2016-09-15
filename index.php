@@ -375,7 +375,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						<div id="header-menu">
 							<?php
                                 //Get main menu
-                                if ($cacheLoad) {
+                                if ($cacheLoad || (isset($_SESSION[$guid]['lastMainMenu']) && $_SESSION[$guid]['lastMainMenu'])) {
                                     $mainMenu = new Gibbon\menuMain();
                                     $mainMenu->setMenu();
                                 }

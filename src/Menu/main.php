@@ -23,9 +23,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Menu;
 
-use Gibbon\trans ;
-use Gibbon\security ;
-
+use Gibbon\core\trans ;
+use stdClass ;
 /**
  * Main Menu Class
  *
@@ -69,11 +68,11 @@ class main extends menu
 					$menu .= $this->view->renderReturn('menu.main.start');
 				}
 				if ($result->rowCount() >= 1) {
-					$el = new \stdClass();
+					$el = new stdClass();
 					$el->doNotClose = true;
 					$menu .= $this->view->renderReturn('menu.main.start', $el);
 	
-					$el = new \stdClass();
+					$el = new  stdClass();
 					$el->count = 0;
 					$el->currentCategory="" ;
 					$el->lastCategory="" ;
@@ -111,7 +110,7 @@ class main extends menu
 		else
 			$this->menu = $this->session->get("mainMenu");
 
+		$this->session->set('lastMainMenu', 'Bootstrap');
 		return $this->menu ;
 	}
 }
-?>

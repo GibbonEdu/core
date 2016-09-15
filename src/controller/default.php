@@ -11,7 +11,8 @@ $v13 = array
 		'/modules/User Admin/preferences',
 	);
 
-/*if ($q === '')   //  This will render the home page..
+/*
+if ($q === '')   //  This will render the home page..
 {
 	$path = pathinfo($_SERVER['SCRIPT_FILENAME']);
 	if ($path['basename'] === 'index.php')
