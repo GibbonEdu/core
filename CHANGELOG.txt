@@ -26,7 +26,8 @@ v13.0.00
 		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
 
 	Significant Changes
-		Changed Primary Assessment Scale to Default Assessment Scale
+		System: Changed Primary Assessment Scale to Default Assessment Scale
+		Markbook: added ability to copy columns to other classes
 
 	Security
 		...
@@ -59,6 +60,7 @@ v13.0.00
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
+		School Admin: fixed PHP warning caused by empty arrays in Tracking Settings
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
 		Students: fixed PHP Notice bug in Student Enrolment Add screen

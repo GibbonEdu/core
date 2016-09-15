@@ -75,8 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 				echo '</td>';
 				echo '</tr>';
 			} else {
-				$externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
-				while ($row = $result->fetch()) {
+                $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
+                $externalAssessmentDataPoints = is_array($externalAssessmentDataPoints) ? $externalAssessmentDataPoints : array() ;
+                while ($row = $result->fetch()) {
 					?>
 						<tr>
 							<td>
@@ -122,7 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 					<?php
                     $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
 					$internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
-					foreach ($internalAssessmentTypes as $internalAssessmentType) {
+                    $internalAssessmentDataPoints = is_array($internalAssessmentDataPoints) ? $internalAssessmentDataPoints : array() ;
+                    foreach ($internalAssessmentTypes as $internalAssessmentType) {
 						?>
 						<tr>
 							<td>
