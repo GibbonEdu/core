@@ -85,6 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             } else {
                 //Scroll through days
                 $partialFail = false;
+                $partialFailSchoolClosed = false;
+
                 $dateStartStamp = dateConvertToTimestamp($dateStart);
                 $dateEndStamp = dateConvertToTimestamp($dateEnd);
                 for ($i = $dateStartStamp; $i <= $dateEndStamp; $i = ($i + 86400)) {
@@ -151,11 +153,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             }
                         }
 
+                    } else {
+                        $partialFailSchoolClosed = true;
                     }
                 }
             }
 
-            if ($partialFail == true) {
+            if ($partialFailSchoolClosed == true) {
+                $URL .= '&return=warning2';
+                header("Location: {$URL}");
+            }
+            else if ($partialFail == true) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
             } else {

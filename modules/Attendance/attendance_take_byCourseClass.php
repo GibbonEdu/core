@@ -43,7 +43,7 @@ else {
 	print "</div>" ;
 
 	if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array( 'error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
+        returnProcess($guid, $_GET['return'], null, array( 'error3' => __($guid, 'Your request failed because the specified date is not in the future, or is not a school day.')) );
     }
 
     $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);

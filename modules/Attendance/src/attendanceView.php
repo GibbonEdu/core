@@ -119,7 +119,7 @@ class attendanceView
         $this->excusedReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceExcusedReasons') );
         $this->medicalReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceMedicalReasons') );
 
-        $this->attendanceReasons = array_merge( array(' '), $this->unexcusedReasons, $this->medicalReasons, $this->excusedReasons);
+        $this->attendanceReasons = array_merge( array(''), $this->unexcusedReasons, $this->medicalReasons, $this->excusedReasons);
 
         //Get last 5 school days from currentDate within the last 100
         $timestamp = dateConvertToTimestamp($currentDate);

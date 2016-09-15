@@ -37,7 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, 
-        	array( 'error7' => __($guid, 'Your request failed because the student has already been marked absent for the full day.'),
+        	array( 'warning2' => __($guid, 'Your request was successful, but some data was not properly saved.') .' '. __($guid, 'The specified date is not in the future, or is not a school day.'),
+        		   'error7' => __($guid, 'Your request failed because the student has already been marked absent for the full day.'),
         		   'error8' => __($guid, 'Your request failed because the selected date is not in the future.'), )
         );
     }
