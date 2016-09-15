@@ -449,5 +449,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 ALTER TABLE `gibbonUnit` ADD `tags` TEXT NOT NULL AFTER `description`;end
 UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php' WHERE (name='Edit Markbook_singleClass' OR name='Edit Markbook_multipleClassesInDepartment' OR name='Edit Markbook_multipleClassesAcrossSchool' OR name='Edit Markbook_everything') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
 UPDATE gibbonAction SET precedence=0 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook') AND name='Manage Weightings_singleClass';end
+UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php,markbook_edit_addMulti.php' WHERE (name='Edit Markbook_multipleClassesInDepartment' OR name='Edit Markbook_multipleClassesAcrossSchool') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
 
 ";
