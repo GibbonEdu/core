@@ -1,9 +1,11 @@
-/uploads/*
+uploads/*
+!uploads/index.php
 /config.php
 /config/local/*
 !/config/local/index.php
-modules/IB PYP
-modules/Query Builder
+src/modules/IB PYP
+src/modules/Query Builder
+src/modules/Translation
 missing.yml
 Thumbs.db
 themes/*

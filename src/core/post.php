@@ -22,6 +22,7 @@ namespace Gibbon\core;
 
 use Gibbon\core\logger ;
 use Gibbon\core\view ;
+use Gibbon\core\helper ;
 
 /**
  * Post Manager
@@ -94,37 +95,33 @@ class post extends view
 		if  (empty($this->token))
 		{
 			if ($installType !== 'Production') {
-				dump($_POST);
-				dump($_SERVER, true, true);
+				helper::dump($_POST);
+				helper::dump($_SERVER, true, true);
 			}
 			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if  (empty($this->action))
 		{
 			if ($installType !== 'Production') {
-				dump($_POST);
-				dump($_SERVER, true, true);
+				helper::dump($_POST);
+				helper::dump($_SERVER, true, true);
 			}
 			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if (md5($this->config->get('guid') . $this->action) !== $this->token && $this->token != 'This is an old script!')
 		{
 			if ($installType !== 'Production') {
-				dump('Token validation failed');
-				dump(array(md5($this->config->get('guid') . $this->action), $this->config->get('guid')));
-				dump($_POST);
-				dump($_SERVER, true, true);
+				helper::dump('Token validation failed');
+				helper::dump(array(md5($this->config->get('guid') . $this->action), $this->config->get('guid')));
+				helper::dump($_POST);
+				helper::dump($_SERVER, true, true);
 			}
 			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if (! file_exists($this->action))
 		{
-			if ($installType !== 'Production') {
-				dump('File does not exist.');
-				dump($_POST);
-				dump($_SERVER, true, true);
-			}
-			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
+			parent::__construct('default.error', array(), $this->session, $this->config, $this->pdo);
+			die();
 		}
 		else
 		{
@@ -147,8 +144,8 @@ class post extends view
 			die();
 		}
 		if ($installType !== 'Production') {
-			dump($_POST);
-			dump($_SERVER, true, true);
+			helper::dump($_POST);
+			helper::dump($_SERVER, true, true);
 		}
 		throw new Exception(trans::__('Post to this system must be correctly formatted.'), 28000 + __LINE__);
 	}

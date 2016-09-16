@@ -43,6 +43,7 @@
 		"components/jquery": ">=1.9.1 <3.0",
 		"components/jqueryui": "1.11.*",
 		"twbs/bootstrap": "3.3.*",
+        "phpmailer/phpmailer": "5.2.*",
 		"nostalgiaz/bootstrap-switch": "3.3.*"
 	},
     "require-dev": {

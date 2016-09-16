@@ -50,7 +50,7 @@ class select extends element
 		if ($name !== NULL)
 			$this->name = $name;
 		if ($value !== NULL)
-			$this->value = $value;
+			$this->value = helper::htmlPrep($value);
 		else 
 			$this->value = NULL;
 		$this->element = new \stdClass();
@@ -78,7 +78,7 @@ class select extends element
 			return ;
 		$option = new \StdClass ;
 		$option->display = helper::htmlPrep($display);
-		$option->value = $value;
+		$option->value = helper::htmlPrep($value);
 		$option->class = $class;
 		$this->options[$value] = $option;
 		return $option ;

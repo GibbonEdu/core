@@ -362,6 +362,10 @@ form:
             oneColumn: 1
             col2:
                 class: right
+            success: success
+            info: info
+            default: default
+            warning: warning 
     nothing:
         role: form
 css:

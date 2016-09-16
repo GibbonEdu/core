@@ -347,7 +347,7 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 		$x = $session->get('i18n.missing');
 		if (! is_array($x))
 		{
-			$x = $session->clear('i18n.missing');
+			$session->clear('i18n.missing');
 			return ;
 		}
 		
@@ -359,7 +359,6 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 		{
 			$report[$source] = $source ;
 		}
-		
 		file_put_contents(GIBBON_ROOT.'/i18n/en_GB/gibbon.yml', Yaml::dump($report));
 		
 		$session->clear('i18n.missing');

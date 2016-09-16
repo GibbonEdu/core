@@ -1,5 +1,5 @@
 <?php
-use gibbon\core\trans ;
+use Gibbon\core\trans ;
 ?>
 <h1>
 	<?php echo trans::__('Oh no!'); ?><br/>
@@ -11,5 +11,4 @@ use gibbon\core\trans ;
 </p>
 <?php
 if ($this->session->get('installType') === 'Development')
-	dump($_SESSION, true, true);
-?>
+	Gibbon\core\helper::dump($_SESSION, true, true);

@@ -22,6 +22,7 @@ namespace Gibbon\core;
 
 use Gibbon\core\trans ;
 use Gibbon\core\form ;
+use Gibbon\core\helper ;
 use Gibbon\core\sqlConnection as PDO;
 use Gibbon\core\session;
 use Gibbon\core\config;
@@ -197,7 +198,7 @@ class view
 		if (file_exists($this->address)) 
 			return ;
 		
-		dump(implode('.', $name) .' was not found!', true, true);
+		helper::dump(implode('.', $name) .' was not found!', true, true);
 	}
 
 	/**

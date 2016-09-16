@@ -256,6 +256,10 @@ form:
             oneColumn: 1
             col2:
                 class: right col-md-12 col-lg-12
+            success: btn btn-success form-control
+            info: btn btn-info form-control
+            default: btn btn-default form-control
+            warning: btn btn-warning form-control
     noIntBorder:
         class: form-horizontal noIntBorder
         additional: ' data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh" data-fv-err-container="popover"'

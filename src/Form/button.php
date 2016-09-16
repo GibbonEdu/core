@@ -23,10 +23,9 @@ namespace Gibbon\Form;
 /**
  * button Element
  *
- * @version	29th June 2016
+ * @version	16th September 2016
  * @since	27th April 2016
  * @author	Craig Rayner
-
  * @package	Gibbon
  * @subpackage	Form
 */
@@ -35,7 +34,7 @@ class button extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	29th June 2016
+	 * @version	16th September 2016
 	 * @since	27th April 2016
 	 * @param	string		$name	Name
 	 * @param	mixed		$value	Value
@@ -56,7 +55,32 @@ class button extends element
 		$this->validate = false;  // or false
 		$this->required = false;
 		$this->readOnly = false;
+		$this->setID();
 		$this->element->name = $this->element->type = 'button';
 		if ($view instanceof view) $this->render('form.button');
+	}
+	
+	/**
+	 * On Change Submit
+	 *
+	 * @version	16th September 2016
+	 * @since	16th September 2016
+	 * @return 	void
+	 */
+	public function onClickSubmit()
+	{
+		$this->additional .= ' onClick="this.form.submit()"';
+	}
+	
+	/**
+	 * On Change Reset
+	 *
+	 * @version	16th September 2016
+	 * @since	16th September 2016
+	 * @return 	void
+	 */
+	public function onClickReset()
+	{
+		$this->additional .= ' onClick="this.form.reset()"';
 	}
 }

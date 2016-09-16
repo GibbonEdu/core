@@ -1208,3 +1208,7 @@ table.well tr:nth-child(even) td {
 	 height: 40px; 
 	 padding: 5px 10px;
 }
+
+.g_buttons input {
+	width: 105px;
+}

@@ -1549,7 +1549,7 @@ Thailand: Thailand
 'The import file could not be decompressed.': 'The import file could not be decompressed.'
 'The import file was successfully stored in the database for analysis.': 'The import file was successfully stored in the database for analysis.'
 'The link that points to the school/''s email system': 'The link that points to the school/''s email system'
-'The link that points to the school/''s website': 'The link that points to the school/''s website'
+'The link that points to the school/''s website': 'The link that points to the school''s website'
 'The local FS path to the system': 'The local FS path to the system'
 'The markbook cannot be displayed.': 'The markbook cannot be displayed.'
 'The minimum age, in years, permitted to register.': 'The minimum age, in years, permitted to register.'
@@ -4384,7 +4384,7 @@ Lithuanian: Lithuanian
 140: '140'
 141: '141'
 'Google Integration Note': 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google''s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'
-'SMTP Mail Note': "Many ISP's, to manage spam, require use of an email account to send email.  Should you need assistance, your ISP should be able to provide connection details for an account. Details to setup an account for common email accounts may be found by %1$sclicking here%2$s."
+'SMTP Mail Note': 'Many ISP''s, to manage spam, require use of an email account to send email.  Should you need assistance, your ISP should be able to provide connection details for an account. Details to setup an account for common email accounts may be found by %1$sclicking here%2$s.'
 'SMS Settings Note': 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'
 'Total Student Enrolment: %d': 'Total Student Enrolment: %d'
 'Query Builder': 'Query Builder'
@@ -5307,7 +5307,7 @@ viewCalendarSchool: viewCalendarSchool
 viewCalendarPersonal: viewCalendarPersonal
 viewCalendarSpaceBooking: viewCalendarSpaceBooking
 gibbonApplicationFormID: gibbonApplicationFormID
-lockerNumber: lockerNumber
+lockerNumber: 'Locker Number'
 vehicleRegistration: vehicleRegistration
 personalBackground: personalBackground
 messengerLastBubble: messengerLastBubble

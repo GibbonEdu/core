@@ -1,0 +1,1 @@
+<h2><?php echo Gibbon\core\trans::__($params->title, isset($params->titleDetails) ? $params->titleDetails : array()); ?></h2><!-- default.h2 -->

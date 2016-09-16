@@ -23,7 +23,7 @@ namespace Module\Security ;
 use Gibbon\core\view ;
 use Gibbon\Record\theme ;
 
-if (! $this instanceof view) die(__FILE__.': '.__LINE__);
+if (! $this instanceof view) die();
 
 $URL = GIBBON_URL . 'index.php' ;
 
@@ -34,9 +34,9 @@ $this->session->destroy();
 
 $this->session->start();
 
-if (isset($_GET["timeout"]) && $_GET["timeout"]=="true") {
-		$this->insertMessage('Your session expired, so you were automatically logged out of the system.', 'warning');
-}
+if (isset($_GET["timeout"]) && $_GET["timeout"]=="true")
+	$this->insertMessage('Your session expired, so you were automatically logged out of the system.', 'warning');
+
 $tObj = new theme($this);
 $tObj->setDefaultTheme();
 

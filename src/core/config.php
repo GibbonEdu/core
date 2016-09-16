@@ -22,6 +22,7 @@ namespace Gibbon\core;
 
 use Symfony\Component\Yaml\Yaml ;
 use Gibbon\core\view ;
+use Gibbon\core\helper ;
 use Gibbon\Record\setting ;
 use stdClass ;
 
@@ -77,8 +78,13 @@ class config
 			$this->pdo = $pdo ;
 		$this->upgradeConfig();
 		$this->system = new \stdClass();
-		if (file_exists(GIBBON_ROOT . 'config/local/config.yml')) {
-			$config = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local/config.yml') );
+		if (! file_exists(GIBBON_ROOT . "config/.htaccess"))
+			file_put_contents(GIBBON_ROOT . "config/.htaccess", 'deny from all');
+		if ('5cc8a02be988615b049f5abecba2f3a0' !== md5(file_get_contents(GIBBON_ROOT . "config/.htaccess")))
+			file_put_contents(GIBBON_ROOT . "config/.htaccess", 'deny from all');
+		if (file_exists(GIBBON_ROOT . 'config/local/config.php')) {
+			$content = file_get_contents(GIBBON_ROOT . 'config/local/config.php') ;
+			$config = Yaml::parse(mb_substr($content, 13));
 			foreach($config as $name=>$value)
 				$this->$name = $value ;
 		} else
@@ -145,7 +151,7 @@ class config
 	{
 		$guid = $this->get('guid') ;
 		if (empty($guid)) return ;
-		if (is_dir(GIBBON_ROOT . 'config/local') && ! is_file(GIBBON_ROOT . 'config/local/config.yml'))
+		if (is_dir(GIBBON_ROOT . 'config/local') && ! is_file(GIBBON_ROOT . 'config/local/config.php'))
 		{
 			try
 			{
@@ -170,7 +176,7 @@ class config
 
 		include GIBBON_ROOT . 'config.php';
 
-		if (is_dir(GIBBON_ROOT . 'config/local') && ! file_exists(GIBBON_ROOT . 'config/local/config.yml')) 
+		if (is_dir(GIBBON_ROOT . 'config/local') && ! file_exists(GIBBON_ROOT . 'config/local/config.php')) 
 		{
 			$config = array();
 			$config['database']['dbHost'] = $databaseServer ;
@@ -180,7 +186,7 @@ class config
 			$config['guid'] = $guid; 
 			$config['caching'] = $caching ; 
 
-			if (! file_put_contents(GIBBON_ROOT . 'config/local/config.yml', Yaml::dump($config)))
+			if (! file_put_contents(GIBBON_ROOT . 'config/local/config.php', "<?php\ndie();\n" . Yaml::dump($config)))
 				throw new \Exception('Not able to generate Configuration files.', 28000 + intval(__LINE__));
 			else
 			{

@@ -26,7 +26,7 @@ use Gibbon\core\session ;
 /**
  * Action Element
  *
- * @version	6th September 2016
+ * @version	16th September 2016
  * @since	21st April 2016
  * @author	Craig Rayner
 
@@ -38,7 +38,7 @@ class action extends hidden
 	/**
 	 * view Manager
 	 *
-	 * @version	6th September 2016
+	 * @version	16th September 2016
 	 * @since	20th April 2016
 	 * @param	string		$pageName  Page Name (Target)
 	 * @raram	Gibbon\view	$view
@@ -52,7 +52,7 @@ class action extends hidden
 		$view->render('form.hidden', $this);
 		new token($this->value, $view);
 		$session = new session();
-		$this->setID('action');
+		$this->id = '_action';
 		new address($session->get('address'), $view);
 	}
 }

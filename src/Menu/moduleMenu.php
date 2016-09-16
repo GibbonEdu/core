@@ -98,7 +98,7 @@ class moduleMenu extends menu
 							
 							if ($currentName != $lastName)
 							{
-								$list->addListElement('%1$s'.$currentName.'%2$s', array("<a ".$style." href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/" . $moduleName . "/" . $moduleEntry . "'>", "</a>"));
+								$list->addListElement('%1$s'.$currentName.'%2$s', array("<a ".$style." href='" . GIBBON_URL . "index.php?q=/modules/" . $moduleName . "/" . $moduleEntry . "'>", "</a>"));
 								$links++ ;
 							}
 							$lastCategory = $currentCategory ;
@@ -107,7 +107,7 @@ class moduleMenu extends menu
 					}
 					if ($list instanceof listElement) $output .= $list->renderList($this->view, true);
 	
-					if ($links > 1 || ! $this->getSecurity()->isActionAccessible("/modules/".$moduleName."/".$moduleEntry)) $this->menu = $output ;
+					if ($links > 1 || ! $this->view->getSecurity()->isActionAccessible("/modules/".$moduleName."/".$moduleEntry)) $this->menu = $output ;
 				}
 			}
 		}

@@ -31,6 +31,8 @@ $q = isset($_GET['q']) ? $_GET['q'] : '' ;
 $v13 = array
 	(
 		'/modules/System Admin/systemSettings',
+		'/modules/System Admin/module_manage',
+		'/modules/Translation/',
 		'/modules/Security/',
 		'/modules/Notifications/',
 		'/modules/User Admin/preferences',
