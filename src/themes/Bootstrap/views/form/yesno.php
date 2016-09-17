@@ -1,0 +1,3 @@
+<input name="<?php print $params->name ?>" id="<?php echo isset($params->id) ? $params->id : $params->name ; ?>" value="<?php print Gibbon\core\helper::htmlPrep($params->value) ?>" type="checkbox" <?php echo isset($params->element->class) ?  ' class="'.$params->element->class . '"' : '' ; ?>
+<?php echo isset($params->style->input) ? ' style="' . $params->style->input . '"' : '' ; ?>
+<?php echo isset($el->checked) && $el->checked ? ' checked' : '' ; ?> /><!-- bootstrap.form.yesno -->

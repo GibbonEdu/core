@@ -16,7 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
+/**********************************************************************
+This file is dreprecated and duplicated in:
+      /modules/Security
+Ensure tht any changes made here are reflected in the replacement file.
+**********************************************************************/
 include 'functions.php';
 include 'config.php';
 
