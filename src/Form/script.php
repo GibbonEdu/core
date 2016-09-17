@@ -20,10 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
+use Gibbon\core\view ;
+
 /**
- * Note Element
+ * Script Element
  *
- * @version	15th June 2016
+ * @version	17th September 2016
  * @since	15th June 2016
  * @author	Craig Rayner
 
@@ -35,16 +37,16 @@ class script extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	15th June 2016
+	 * @version	17th September 2016
 	 * @since	15th June 2016
-	 * @param	string		$name	Name
-	 * @param	string		$value	Value
-	 * @param	Gibbon\view	$view
+	 * @param	string		$name
+	 * @param	mixed		$value
+	 * @param	Gibbon\core\view	$view
 	 * @return 	void
 	 */
-	public function __construct($name = NULL, $value = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();
+		parent::__construct($name, $value, $view);
 		$this->name = $name ;
 		$this->value = $value ;
 		$this->element->name = 'script';
