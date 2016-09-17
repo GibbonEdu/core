@@ -25,7 +25,7 @@ use Gibbon\core\view ;
 /**
  * address Element
  *
- * @version	6th September 2016
+ * @version	17th September 2016
  * @since	22nd April 2016
  * @author	Craig Rayner
 
@@ -37,19 +37,17 @@ class address extends hidden
 	/**
 	 * Constructor
 	 *
-	 * @version	6th September 2016
+	 * @version	17th September 2016
 	 * @since	22nd April 2016
 	 * @param	string		$pageName	Page Name (Source)
 	 * @raram	Gibbon\view	$view
 	 * @return 	void
 	 */
-	public function __construct($pageName, view $view)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		parent::__construct();
+		parent::__construct($name, $value, $view);
 		$this->name = 'address';
-		$this->value = $pageName;
+		$this->value = $name;
 		$this->setID('address');
-		if ($view instanceof view)
-			$view->render('form.hidden', $this);
 	}
 }

@@ -25,7 +25,7 @@ use Gibbon\core\view ;
 /**
  * Submit Element
  *
- * @version	29th June 2016
+ * @version	17th September 2016
  * @since	21st April 2016
  * @author	Craig Rayner
 
@@ -37,15 +37,15 @@ class submitBtn extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	29th June 2016
+	 * @version	17th September 2016
 	 * @since	20th April 2016
 	 * @param	mixed		$value
 	 * @param	Gibbon\view	$view
 	 * @return 	void
 	 */
-	public function __construct($name = null, $value = null, view $view = null)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();		
+		parent::__construct($name, $value, $view);
 		if (empty($value))
 			$this->value = 'Submit';
 		else
@@ -57,7 +57,5 @@ class submitBtn extends element
 		$this->nameDisplay = null;
 		$this->id = '_' . $this->name;
 		$this->element->type = $this->element->name = 'submit';
-		if ($view instanceof view)
-			$view->render('form.standard.submit', $this);
 	}
 }

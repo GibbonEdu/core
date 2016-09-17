@@ -77,7 +77,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			
 			$form->addElement('submitBtn', null);
 			
-			$form->renderForm();
+			$form->render();
 		}
 	}
 }

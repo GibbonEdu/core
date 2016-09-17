@@ -20,23 +20,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
+use Gibbon\core\view ;
 use Gibbon\core\trans ;
 use Gibbon\core\session ;
 use Symfony\Component\Yaml\Yaml ;
+use Gibbon\Form\elementInterface ;
 
 /**
  * Element Base
  *
- * @version	6th September 2016
+ * @version	17th September 2016
  * @since	10th May 2016
  * @author	Craig Rayner
-
  * @package	Gibbon
  * @subpackage	Form
-* @subpackage	Form
  */
-class element
+abstract class element implements elementInterface
 {
+	/**
+	 * @var Gibbon\core\view
+	 */
+	protected $view ;
+	
 	/**
 	 * Inject Record
 	 *
@@ -233,19 +238,6 @@ class element
 	}
 
 	/**
-	 * Set Email
-	 *
-	 * @version	1st July 2016
-	 * @since	17th June 2016
-	 * @param	string		$message
-	 * @return	void
-	 */
-	public function setEmail( $message = 'Provide a valid email!' )
-	{
-		$this->getValidate()->Email = $message;
-	}
-
-	/**
 	 * create Defaults
 	 *
 	 * @version	6th September 2016
@@ -272,15 +264,19 @@ class element
 	}
 
 	/**
-	 * create Defaults
+	 * Constructor
 	 *
-	 * @version	2nd June 2016
+	 * @version	17th September 2016
 	 * @since	2nd june 2016
-	 * @return	void
+	 * @param	string		$name	Name
+	 * @param	mixed		$value	Value
+	 * @param	Gibbon\core\view		$view
+	 * @return 	void
 	 */
-	public function __construct()
+	public function __construct($name = null, $value = null, view $view)
 	{
 		$this->createDefaults();
+		$this->view = $view ;
 	}
 
 	/**
@@ -463,22 +459,6 @@ $(function() {
 	{
 		$this->$name = $value ;
 		return $this ;
-	}
-
-	/**
-	 * Set URL
-	 *
-	 * @version	17th June 2016
-	 * @since	17th June 2016
-	 * @param	string		$message
-	 * @param	string		$protocols
-	 * @return	void
-	 */
-	public function setURL($message = 'Invalid URL!', $protocols = 'http,https')
-	{
-		$this->getValidate()->URL = true;
-		$this->getValidate()->messageURL = $message;
-		$this->getValidate()->protocolsURL = $protocols;
 	}
 
 	/**

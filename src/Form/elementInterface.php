@@ -21,35 +21,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Form;
 
 use Gibbon\core\view ;
-use Gibbon\core\session ;
 
 /**
- * Action Element
+ * Element Base Interface
  *
  * @version	17th September 2016
- * @since	21st April 2016
+ * @since	10th May 2016
  * @author	Craig Rayner
 
  * @package	Gibbon
  * @subpackage	Form
-*/
-class action extends hidden
+* @subpackage	Form
+ */
+interface elementInterface
 {
+
 	/**
-	 * view Manager
+	 * create Defaults
 	 *
-	 * @version	17th September 2016
-	 * @since	20th April 2016
-	 * @param	string		$name
-	 * @param	mixed		$value
-	 * @param	Gibbon\view	$view
-	 * @return 	void
+	 * @version	2nd June 2016
+	 * @since	2nd june 2016
+	 * @return	void
 	 */
-	public function __construct($name = null, $value = null, view $view)
-	{
-		parent::__construct($name, $value, $view);
-		$this->name = 'action';
-		$this->value = str_replace('//', '/', GIBBON_ROOT . 'src/' . str_replace(array('//', '\\', 'src/', GIBBON_ROOT), array('/', '/', '', ''), $name));
-		$this->id = '_action';
-	}
+	public function __construct($name = null, $value = null, view $view);
 }

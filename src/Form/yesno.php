@@ -20,11 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
+use Gibbon\core\view ;
 use Gibbon\core\helper ;
 /**
- * Yes No Select Element
+ * Yes No Element
  *
- * @version	6th May 2016
+ * @version	17th September 2016
  * @since	20th April 2016
  * @author	Craig Rayner
 
@@ -36,15 +37,15 @@ class yesno extends select
 	/**
 	 * Constructor
 	 *
-	 * @version	6th May 2016
+	 * @version	17th September 2016
 	 * @since	20th April 2016
 	 * @param	string	$name	Element Name (id)
 	 * @param	string	$value	Element Value
 	 * @return 	void
 	 */
-	public function __construct($name = NULL, $value = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		parent::__construct($name, $value);
+		parent::__construct($name, $value, $view);
 		$this->addOption( helper::ynExpander('Y'), 'Y');
 		$this->addOption( helper::ynExpander('N'), 'N');
 		$this->element->name = 'yesno';

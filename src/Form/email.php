@@ -20,10 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
+use Gibbon\core\view ;
+
 /**
  * Email Element
  *
- * @version	1st July 2016
+ * @version	17th September 2016
  * @since	23rd May 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -33,20 +35,33 @@ class email extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	1st July 2016
+	 * @version	17th September 2016
 	 * @since	23rd May 2016
 	 * @param	string		$name	Name
 	 * @param	mixed		$value	Value
 	 * @return 	void
 	 */
-	public function __construct($name = NULL, $value = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();
+		parent::__construct($name, $value, $view);
 		if ($name !== NULL)
 			$this->name = $name;
 		if ($value !== NULL)
 			$this->value = $value;
 		$this->element->name = 'text';
 		$this->setEmail();  // or false
+	}
+
+	/**
+	 * Set Email
+	 *
+	 * @version	17th September 2016
+	 * @since	17th June 2016
+	 * @param	string		$message
+	 * @return	void
+	 */
+	public function setEmail( $message = 'Provide a valid email!' )
+	{
+		$this->getValidate()->Email = $message;
 	}
 }

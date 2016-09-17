@@ -27,7 +27,7 @@ use Gibbon\Record\theme ;
 /**
  * Configuration Manager
  *
- * @version	9th September 2016
+ * @version	17th September 2016
  * @since	14th June 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -169,7 +169,7 @@ class form
 	/**
 	 * add Element
 	 *
-	 * @version	2nd July 2016
+	 * @version	17th September 2016
 	 * @since	14th June 2016
 	 * @params	string		$type	Element Type
 	 * @params	string		$name	Element Name
@@ -181,7 +181,7 @@ class form
 		if (! is_array($this->elements)) $this->elements = array();
 
 		$className = '\\Gibbon\\Form\\'.$type;
-		$element = new $className($name, $value);
+		$element = new $className($name, $value, $this->view);
 		if (in_array($type, array('multiple'))) // add other element types here
 			$element->form = $this;
 		$this->elements[] = $element ;
@@ -192,17 +192,18 @@ class form
 	/**
 	 * render Form
 	 *
-	 * @version	30th June 2016
+	 * @version	17th September 2016
 	 * @since	14th June 2016
 	 * @param	string		$style	Style with which to render the form
 	 * @param	boolean		$insertSignOff	Insert the Sign Off
 	 * @return	void
 	 */
-	public function renderForm($style = 'standard', $insertSignOff = true)
+	public function render($style = 'standard', $insertSignOff = true)
 	{
 		$this->style = $this->name = $style ;
 		
 		$this->insertSignOff = $insertSignOff;
+		$this->signOff();
 		
 		while ($this->wellCount > 0)
 			$this->endWell();
@@ -258,7 +259,7 @@ class form
 	/**
 	 * Sign Off
 	 *
-	 * @version	14th June 2016
+	 * @version	17th September 2016
 	 * @since	14th June 2016
 	 * @return	void
 	 */
@@ -266,8 +267,10 @@ class form
 	{
 		if (! $this->insertSignOff) return ;
 		if ($this->divert)
-			new \Gibbon\Form\hidden('divert', true, $this->view);
-		new \Gibbon\Form\action($this->handler, $this->view);
+			$this->addElement('hidden', 'divert', true);
+		$this->addElement('action', $this->handler);
+		$this->addElement('token', $this->handler);
+		$this->addElement('address', $this->view->getSession()->get('address'));
 	}
 	
 	/**
@@ -396,21 +399,7 @@ class form
 		$el->nameDisplay = 'Are you sure you want to delete this record?' ;
 		$el->description = 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!' ;
 		$el->span->style = "font-size: 90%; color: #cc0000; ";
-		$this->renderForm();
-	}
-
-	/**
-	 * render
-	 *
-	 * @version	18th July 2016
-	 * @since	18th July 2016
-	 * @param	string		$style	Style with which to render the form
-	 * @param	boolean		$insertSignOff	Insert the Sign Off
-	 * @return	void
-	 */
-	public function render($style = 'standard', $insertSignOff = true)
-	{
-		$this->renderForm($style, $insertSignOff);
+		$this->render();
 	}
 	
 	/**

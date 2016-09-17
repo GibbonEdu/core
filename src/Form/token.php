@@ -20,16 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
-use Gibbon\core\config ;
 use Gibbon\core\view ;
 
 /**
  * Token Element
  *
- * @version	6th September 2016
+ * @version	17th September 2016
  * @since	21st April 2016
  * @author	Craig Rayner
-
  * @package	Gibbon
  * @subpackage	Form
 */
@@ -38,26 +36,25 @@ class token extends hidden
 	/**
 	 * Constructor
 	 *
-	 * @version	6th September 2016
+	 * @version	17th September 2016
 	 * @since	20th April 2016
-	 * @param	string		$pageName
+	 * @param	string		$name
+	 * @param	mixed		$value
 	 * @param	Gibbon\view	$view
 	 * @return 	void
 	 */
-	public function __construct($pageName, view $view = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		parent::__construct();
+		parent::__construct($name, $value, $view);
 		$this->name = '_token';
-		$this->value = $this->generateToken($pageName);
+		$this->value = $this->generateToken($name);
 		$this->setID('token');
-		if ($view !== NULL)
-			$view->render('form.hidden', $this);
 	}
 
 	/**
-	 * view Manager
+	 * generate Token
 	 *
-	 * @version	24th August 2016
+	 * @version	17th September 2016
 	 * @since	20th April 2016
 	 * @return 	void
 	 */
@@ -68,15 +65,14 @@ class token extends hidden
 			$this->guid = GIBBON_UID;
 		else
 		{
-			$config = new config();
-			$this->guid = $config->get('guid');
+			$this->guid = $this->view->getConfig()->get('guid');
 		}
 		$this->action = $this->generateAction($pageName);
 		return md5($this->guid . $this->action);
 	}
 
 	/**
-	 * view Manager
+	 * generate Action
 	 *
 	 * @version	24th August 2016
 	 * @since	20th April 2016

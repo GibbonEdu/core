@@ -310,6 +310,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$form->addElement('submitBtn', null, 'Submit All');
 
-	$form->renderForm();
+	$form->render();
 	
 }

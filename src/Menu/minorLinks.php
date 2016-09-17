@@ -23,6 +23,7 @@ use Gibbon\core\trans ;
 use Gibbon\core\helper ;
 use Gibbon\core\security ;
 use Gibbon\Record\notification ;
+use Gibbon\Form\token ;
 
 /**
  * Main menu building Class
@@ -113,7 +114,7 @@ class minorLinks extends menu
 				if ($this->session->get("gibbonRoleIDCurrentCategory")=="Staff") $interval = 10000 ;
 				
 				$action = '/modules/Notifications/index_notification_ajax.php';
-				$tObj = new \Gibbon\Form\token($action);
+				$tObj = new token($action, null, $this->view);
 
 				$return .= '
 				<script type="text/javascript">

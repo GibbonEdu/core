@@ -20,12 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
-use Gibbon\view ;
+use Gibbon\core\view ;
 
 /**
  * Delete Button Element
  *
- * @version	30th June 2016
+ * @version	17th September 2016
  * @since	30th June 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -35,16 +35,16 @@ class deleteBtn extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	30th June 2016
+	 * @version	17th September 2016
 	 * @since	30th June 2016
 	 * @param	string		$name
 	 * @param	mixed		$value
-	 * @param	Gibbon\view	$view
+	 * @param	Gibbon\core\view	$view
 	 * @return 	void
 	 */
-	public function __construct($name = null, $value = null, view $view = null)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();		
+		parent::__construct($name, $value, $view);
 		if (empty($value))
 			$this->value = 'Delete';
 		else
@@ -56,7 +56,5 @@ class deleteBtn extends element
 		$this->nameDisplay = null;
 		$this->id = '_' . $this->name;
 		$this->element->type = $this->element->name = 'deleteBtn';
-		if ($view instanceof view)
-			$view->render('form.standard.submit', $this);
 	}
 }
