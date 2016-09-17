@@ -16,3 +16,4 @@ src/themes/*
 !src/themes/Bootstrap
 .DS_Store
 _notes
+merge.yml
