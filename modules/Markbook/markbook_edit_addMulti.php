@@ -450,34 +450,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     										}
     										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
     									}
-    									if ($row['gibbonDepartmentID'] != '') {
-    										?>
-    										<optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?>--'>
-    										<?php
-                                            try {
-                                                $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                $sqlSelectWhere = '';
-                                                $years = explode(',', $row['gibbonYearGroupIDList']);
-                                                foreach ($years as $year) {
-                                                    $dataSelect[$year] = "%$year%";
-                                                    $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
-                                                }
-                                                $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
-                                                $resultSelect = $connection2->prepare($sqlSelect);
-                                                $resultSelect->execute($dataSelect);
-                                            } catch (PDOException $e) {
-                                            }
-
-    										while ($rowSelect = $resultSelect->fetch()) {
-    											$label = '';
-    											if ($rowSelect['category'] == '') {
-    												$label = $rowSelect['name'];
-    											} else {
-    												$label = $rowSelect['category'].' - '.$rowSelect['name'];
-    											}
-    											echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-    										}
-    									}
     									?>
     								</select>
     							</td>
@@ -583,34 +555,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         											$label = $rowSelect['category'].' - '.$rowSelect['name'];
         										}
         										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-        									}
-        									if ($row['gibbonDepartmentID'] != '') {
-        										?>
-        										<optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?>--'>
-        										<?php
-                                                try {
-                                                    $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                    $sqlSelectWhere = '';
-                                                    $years = explode(',', $row['gibbonYearGroupIDList']);
-                                                    foreach ($years as $year) {
-                                                        $dataSelect[$year] = "%$year%";
-                                                        $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
-                                                    }
-                                                    $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
-                                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                                    $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
-                                                }
-
-        										while ($rowSelect = $resultSelect->fetch()) {
-        											$label = '';
-        											if ($rowSelect['category'] == '') {
-        												$label = $rowSelect['name'];
-        											} else {
-        												$label = $rowSelect['category'].' - '.$rowSelect['name'];
-        											}
-        											echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-        										}
         									}
         									?>
         								</select>
