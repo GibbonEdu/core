@@ -41,7 +41,7 @@ use Gibbon\core\helper ;
             <?php echo trans::__( $el->moduleObj->getField("type")) ; ?>
         </td>
         <td>
-            <?php echo helper::ynExpander($el->moduleObj->getField("active")) ; ?>
+            <?php echo trans::__($el->moduleObj->getField("active")) ; ?>
         </td>
         <td> <?php
             if ($el->moduleObj->getField("type")=="Additional") {

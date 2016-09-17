@@ -24,6 +24,7 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         ),
         'G' => 
         array (
+            'Gibbon\\core\\functions\\' => 22,
             'Gibbon\\core\\' => 12,
             'Gibbon\\controller\\' => 18,
             'Gibbon\\Record\\' => 14,
@@ -57,6 +58,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         'Library\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Library',
+        ),
+        'Gibbon\\core\\functions\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/core/functions',
         ),
         'Gibbon\\core\\' => 
         array (

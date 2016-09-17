@@ -12,6 +12,7 @@ return array(
     'Module\\System_Admin\\' => array($baseDir . '/src/modules/System Admin'),
     'Module\\' => array($baseDir . '/src/modules'),
     'Library\\' => array($baseDir . '/src/Library'),
+    'Gibbon\\core\\functions\\' => array($baseDir . '/src/core/functions'),
     'Gibbon\\core\\' => array($baseDir . '/src/core'),
     'Gibbon\\controller\\' => array($baseDir . '/src/controller'),
     'Gibbon\\Record\\' => array($baseDir . '/src/Record'),

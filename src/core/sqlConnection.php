@@ -40,6 +40,8 @@ use Gibbon\core\helper ;
  */
 class sqlConnection
 {
+	use \Gibbon\core\functions\developmentFunctions ;
+	
 	/**
 	 * PDO Object
 	 */
@@ -142,7 +144,7 @@ class sqlConnection
 				$message = $e->getMessage();
 			$this->success = false;
 			$this->error = $message;
-			helper::fileAnObject(array('Failed to generate Connection', 'Error', 'PDO', array('error' => $message, 'raw-error'=>$e->getMessage())), 'SQL Failure');
+			$this->fileAnObject(array('Failed to generate Connection', 'Error', 'PDO', array('error' => $message, 'raw-error'=>$e->getMessage())), 'SQL Failure');
 		}
 		$this->result = NULL;
 		$this->query = NULL;
@@ -246,7 +248,7 @@ class sqlConnection
 			$this->querySuccess = false;
 			if (! is_null($message))
 				echo str_replace(array('_', '{message}'), array("<div class='error'>\n" . $this->error . "\n</div>\n", $this->error), $message).'<br/>A detailed error is placed in the temporary directory.';
-			fileAnObject(array('Failed to execute a query', 'Error', 'PDO', array('error'=>$this->error, 'query' => $query, 'data' => $data)), 'SQL Failure');
+			$this->fileAnObject(array('Failed to execute a query', 'Error', 'PDO', array('error'=>$this->error, 'query' => $query, 'data' => $data)), 'SQL Failure');
 			$this->result = null;
 			return $this->result ;
 		} catch ( \Exception $e) 
@@ -259,7 +261,7 @@ class sqlConnection
 			$this->querySuccess = false;
 			if ($message !== NULL)
 				echo str_replace(array('_', '{message}'), array("<div class='error'>\n" . $this->error . "\n</div>\n", $this->error), $message);
-			fileAnObject(array('Failed to execute a query', 'Error', 'PDO', array('error'=>$this->error, 'query' => $query, 'data' => $data)), 'SQL Failure');
+			$this->fileAnObject(array('Failed to execute a query', 'Error', 'PDO', array('error'=>$this->error, 'query' => $query, 'data' => $data)), 'SQL Failure');
 			$this->result = NULL;
 			return $this->result ;
 		}
@@ -633,11 +635,14 @@ class sqlConnection
 		$data = array('dbTable' => $table, 'dbName' => $config->get('dbName'), 'dbField' => $field);
 		$sql = "SELECT COLUMN_TYPE
   			FROM INFORMATION_SCHEMA.COLUMNS
- 			WHERE table_name = :dbTable
-  				AND table_schema = :dbName
-  				AND column_name LIKE :dbField";
+ 			WHERE `table_name` = :dbTable
+  				AND `table_schema` = :dbName
+  				AND `column_name` LIKE :dbField";
 		$this->result = $this->executeQuery($data, $sql);
-		$enum = substr($this->result->fetchColumn(), 5, -1);
+		$col = $this->result->fetchColumn();
+		if (mb_strpos($col, 'enum(') === false)
+			return array();
+		$enum = substr($col, 5, -1);
 		$x = explode(',', $enum);
 		foreach($x as $q=>$w)
 		{

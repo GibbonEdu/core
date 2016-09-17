@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  */
 namespace Gibbon\core;
-
+die();
 use Gibbon\core\view ;
 
 /**
@@ -111,54 +111,6 @@ class helper
 		else
 			self::$config = new config();
 		return self::$config ;
-	}
-	
-	/**
-	 * Yes No Expander
-	 *
-	 * Expands Y and N to Yes and No, with and without translation
-	 * @version	20th May 2016
-	 * @since	20th April 2016
-	 * @param	string		$yn	Y or N
-	 * @param	boolean		$translation	Translation (default = true)
-	 * @return	string		Yes || No || NA
-	 */
-	static public function ynExpander($yn, $translation = true)
-	{
-		$output="" ;
-		
-		$yn = strtoupper($yn);
-
-		if (($x = trans::__('yesno', array(), $yn)) !== 'yesno')
-			return $x ;
-	
-		switch ($yn)
-		{
-			case 'Y';
-				$output = 'Yes';
-				break;
-			case 'N':
-				$output = 'No' ;
-				break ;
-			default:
-				$output = 'NA';
-		}
-	
-		if ($translation) 
-			return trans::__($output) ;
-	
-		return $output ;
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @version	20th April 2016
-	 * @since	20th April 2016
-	 * @return	void
-	 */
-	public function __construct()
-	{
 	}
 
 	/**
@@ -275,21 +227,6 @@ class helper
 	}
 
 	/**
-	 * get Action Name
-	 *
-	 * Get the action name from the address
-	 * @version	31st April 2016
-	 * @since	22nd April 2016
-	 * @param	string		$address Address
-	 * @return	string		Action Name
-	 */
-	static public function getActionName($address) {
-		if (strpos($address, "/modules/") !== false)
-			return substr($address, (10 + strlen(module::getModuleName($address)))) ;
-		return '';
-	}
-
-	/**
 	 * format Name
 	 *
 	 * @version	22nd April 2016
@@ -392,47 +329,6 @@ class helper
 		
 		$nObj = new \Gibbon\Record\notification(new view());
 		$nObj->set($personID, $text, $moduleName, $actionLink);
-	}
-
-	/**
-	 * count Likes by Recipient
-	 *
-	 * $mode can be either "count" to get a numeric count, or "result" to get a result set
-	 * @version	24th April 2016
-	 * @since	copied from functions.php
-	 * @param	integer		Person ID Recipient
-	 * @param	string		Mode
-	 * @param	integer		School Year ID
-	 * @return	integer		
-	 */
-	static public function countLikesByRecipient($personIDRecipient, $mode="count", $gibbonSchoolYearID) {
-		$return = NULL ;
-	
-		$data=array("gibbonPersonIDRecipient"=>$personIDRecipient, "gibbonSchoolYearID"=>$gibbonSchoolYearID);
-		if ($mode=="count") {
-			$sql="SELECT * FROM gibbonLike 
-				WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient 
-					AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-		}
-		else {
-			$sql="SELECT gibbonLike.*, gibbonPersonID, image_240, gibbonRoleIDPrimary, preferredName, surname 
-				FROM gibbonLike 
-					JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDGiver=gibbonPerson.gibbonPersonID) 
-				WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient 
-					AND gibbonSchoolYearID=:gibbonSchoolYearID 
-				ORDER BY timestamp DESC" ;
-		}
-		$result=self::getPDO()->executeQuery($data, $sql);
-		if (! self::getPDO()->getQuerySuccess()) $return = false ;
-	
-		if ($mode == "count") {
-			$return=$result->rowCount() ;
-		}
-		else {
-			$return=$result ;
-		}
-	
-		return $return ;
 	}
 
 	/**
@@ -1127,61 +1023,5 @@ class helper
 		return self::$view;
 	}
 
-	/**
-	 * Print an Object Alias (Dump)
-	 *
-	 * @version	16th February 2015
-	 * @since	OLD
-	 * @param	mixed 		$object		The object to be printed
-	 * @param	boolean 	$stop		Stop execution after printing object.
-	 * @param	boolean 	$full		Full print the Call Trace Stack
-	 * @return	void
-	 */
-	function dump($object, $stop = false, $full = false) 
-	{
-		$caller = debug_backtrace(false);
-		echo "<pre>\n";
-		echo $caller[0]['line'].': '.$caller[0]['file'];
-		echo "\n</pre>\n";
-		echo "<pre>\n";
-		print_r($object);
-		if ($full) 
-			print_r($caller);
-		echo "\n</pre>\n";
-		if ($stop) 
-			die();
-		flush();
-		return ;
-	}
-	
-	/**
-	 * File an Object
-	 *
-	 * @version 10th November 2014
-	 * @since OLD
-	 * @param mixed The object to be printed
-	 * @param string Name of File
-	 * @return void
-	 */
-	function fileAnObject($object, $name = null)
-	{
-		
-		$logpath = GIBBON_CONFIG;
-		if ($name === null)
-			$fn = substr(md5(print_r($object, true)), 0, 12).'.log';
-		else
-			$fn = $name . '.log';
-		$caller = debug_backtrace( false );
-		$data = $caller[0]['line'].': '.$caller[0]['file']."\n";
-		$data .= print_r($object, true);
-		$x = '';
-		foreach ($caller as $w) {
-			$x =  $w['line'].': '.$w['file'].' '.$w['function']."\n". $x;
-		}
-		$data .= "\n".$x;
-		file_put_contents($logpath . $fn, $data);
-	//	die(__FILE__.': '.__LINE__);
-		return ;
-	}
 }
 

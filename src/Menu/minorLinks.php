@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Menu;
 
 use Gibbon\core\trans ;
-use Gibbon\core\helper ;
 use Gibbon\core\security ;
 use Gibbon\Record\notification ;
+use Gibbon\Record\person ;
 use Gibbon\Form\token ;
 
 /**
@@ -50,7 +50,6 @@ class minorLinks extends menu
 			return $this->menu ;
 		if ($this->session->get('refreshCache'))
 		{
-			helper::injectView($this->view);
 			$security = $this->view->getSecurity();
 			$return  = '';
 			if ($this->session->get("username") === NULL) {
@@ -79,8 +78,8 @@ class minorLinks extends menu
 				if ($this->session->get("website")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" . trans::__( 'My Website') . "</a>" ;
 				}
-		
-				$this->session->set("likesCount", helper::countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
+				$pObj = new person($this->view);
+				$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
 				//Show likes
 				if (! $this->session->isEmpty("likesCount")) {
 					if ($this->session->get("likesCount")>0) {

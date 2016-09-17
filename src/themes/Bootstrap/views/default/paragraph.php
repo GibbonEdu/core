@@ -1,0 +1,1 @@
+<p><?php echo Gibbon\core\trans::__($params->message, isset($params->messageDetails) ? $params->messageDetails : array()); ?></p><!-- default.paragraph -->

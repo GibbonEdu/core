@@ -27,6 +27,7 @@
 			"Gibbon\\Record\\": "src/Record/",
 			"Gibbon\\Menu\\": "src/Menu/",
 			"Gibbon\\Form\\": "src/Form/",
+			"Gibbon\\core\\functions\\": "src/core/functions/",
 			"Module\\": "src/modules/",
 			"Module\\System_Admin\\": "src/modules/System Admin/",
 			"Module\\User_Admin\\": "src/modules/User Admin/"

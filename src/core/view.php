@@ -40,6 +40,10 @@ use Gibbon\Record\person ;
  */
 class view
 {
+
+	use functions\stringFunctions , 
+		functions\developmentFunctions ;
+	
 	/**
 	 * @var	sqlConnection	$pdo	Gibbon SQL
 	 */
@@ -198,7 +202,7 @@ class view
 		if (file_exists($this->address)) 
 			return ;
 		
-		helper::dump(implode('.', $name) .' was not found!', true, true);
+		$this->dump(implode('.', $name) .' was not found!', true, true);
 	}
 
 	/**
@@ -1002,19 +1006,6 @@ class view
 		elseif (! empty($id))
 			$this->person->find($id);
 		return $this->person ;
-	}
-
-	/**
-	 * html Preparation
-	 *
-	 * Encode string using htmlentities with the ENT_QUOTES option
-	 * @version	17th September 2016
-	 * @since	24th April 2016
-	 * @param	string		$str 	String to Prepare
-	 * @return	string	Prepared String
-	 */
-	public function htmlPrep($str) {
-		return htmlentities($str, ENT_QUOTES, "UTF-8") ;
 	}
 }
 

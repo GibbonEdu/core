@@ -23,13 +23,14 @@ use Gibbon\core\post ;
 use Gibbon\helper ;
 use Gibbon\trans ;
 use Gibbon\Record\module ;
+use Module\System_Admin\Functions\functions ;
 
 if (! $this instanceof post) die();
 
-$mf = new Functions\functions($this);
+$mf = new functions($this);
 
 $moduleID = $_GET["gibbonModuleID"] ;
-$URL = GIBBON_URL . 'index.php?q=/modules/System Admin/module_manage_update.php&gibbonModuleID=' . $moduleID ;
+$URL = array('q' => '/modules/System Admin/module_manage_update.php', 'gibbonModuleID' => $moduleID) ;
 $this->session->clear("moduleUpdateError") ;
 
 if (! $this->getSecurity()->isActionAccessible("/modules/System Admin/module_manage_update.php")) {

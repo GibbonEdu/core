@@ -671,4 +671,46 @@ class person extends record
 			$total = 0;
 		return $total;
 	}
+
+	/**
+	 * count Likes by Recipient
+	 *
+	 * $mode can be either "count" to get a numeric count, or "result" to get a result set
+	 * @version	24th April 2016
+	 * @since	copied from functions.php
+	 * @param	integer		Person ID Recipient
+	 * @param	string		Mode
+	 * @param	integer		School Year ID
+	 * @return	integer		
+	 */
+	public function countLikesByRecipient($personIDRecipient, $mode="count", $schoolYearID) {
+		$return = false ;
+	
+		$data=array("personIDRecipient"=>$personIDRecipient, "schoolYearID"=>$schoolYearID);
+		$v = clone $this;
+		if ($mode=="count") {
+			$sql="SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike` 
+				WHERE `gibbonPersonIDRecipient` = :personIDRecipient 
+					AND `gibbonSchoolYearID` = :schoolYearID" ;
+			$return = $v->findAll($sql, $data);
+		}
+		else {
+			$sql = "SELECT `gibbonLike`.*, `gibbonPersonID`, `image_240`, `gibbonRoleIDPrimary`, `preferredName`, `surname` 
+				FROM `gibbonLike` 
+					JOIN `gibbonPerson` ON `gibbonLike`.`gibbonPersonIDGiver` = `gibbonPerson`.`gibbonPersonID` 
+				WHERE `gibbonPersonIDRecipient` = :personIDRecipient 
+					AND `gibbonSchoolYearID` = :schoolYearID 
+				ORDER BY `timestamp` DESC" ;
+			$return = $v->findAll($sql, $data);
+		}
+		
+		if (! $v->getSuccess()) $return = false ;
+	
+		if ($mode == "count") {
+			$x = $return[0]->returnRecord();
+			$return = $x->likes ;
+		}
+	
+		return $return ;
+	}
 }

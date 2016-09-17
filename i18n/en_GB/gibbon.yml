@@ -5,11 +5,9 @@ return:
     warning: ['Your optional extra data failed to save.', 'Your request was successful, but some data was not properly saved.', 'Your request was successful, but some data was not properly deleted.']
     error: ['Your request failed because you do not have access to this action.', 'Your request failed because your inputs were invalid.', 'Your request failed due to a database error.', 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'Your request failed because your passwords did not match.', 'Your request failed because there are no records to show.', 'Your request was completed successfully, but one or more images were the wrong size and so were not saved.']
     success: ['Your request was completed successfully.']
-yesno:
-    'Y': 'Yes'
-    'N': 'No'
-    NA: NA
-'%': '%'
+'Y': 'Yes'
+'N': 'No'
+NA: 'N/A'
 Loading: Loading
 'Localhost, IP address or domain.': 'Localhost, IP address or domain.'
 Localisation: Localisation

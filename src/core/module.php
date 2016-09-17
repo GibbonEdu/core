@@ -21,17 +21,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\core;
 
 use Gibbon\core\view ;
+use Gibbon\Record\module as mTable ;
 
 /**
  * Module
  *
- * @version	16th May 2016
+ * @version	18th September 2016
  * @since	15th May 2016
  * @author	Craig Rayner
  * @package	Gibbon
  * @subpackage	Core
  */
-class module extends helper
+class module
 {
 	/**
 	 * Is Module Accessible
@@ -83,7 +84,7 @@ class module extends helper
 		//Get module name from address
 		$module = self::getModuleName($address, $view) ;
 		$data = array("name" => $module, 'active' => 'Y');
-		$mObj = new \Gibbon\Record\module($view);
+		$mObj = new mTable($view);
 		$mod = $mObj->findBy($data);
 		if ($mObj->getSuccess() && $mObj->rowCount() == 1)
 			return $mod->gibbonModuleID ;
@@ -165,8 +166,23 @@ class module extends helper
 	 */
 	public static function getModuleIDFromName($name, view $view)
 	{
-		$mObj = new \Gibbon\Record\module($view);
+		$mObj = new mTable($view);
 		$row = $mObj->findOneBy(array('name' => $name));
 		return $row->gibbonModuleID;
+	}
+
+	/**
+	 * get Action Name
+	 *
+	 * Get the action name from the address
+	 * @version	18th September 2016
+	 * @since	22nd April 2016
+	 * @param	string		$address Address
+	 * @return	string		Action Name
+	 */
+	static public function getActionName($address) {
+		if (strpos($address, "/modules/") !== false)
+			return substr($address, (10 + strlen(module::getModuleName($address)))) ;
+		return '';
 	}
 }

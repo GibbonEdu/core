@@ -18,36 +18,42 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 /**
  */
-namespace Gibbon\Form;
+namespace Gibbon\core\functions ;
 
-use Gibbon\core\view ;
-use Gibbon\core\trans ;
 /**
- * Yes No Element
+ * String Functions
  *
  * @version	18th September 2016
- * @since	20th April 2016
+ * @since	18th September 2016
  * @author	Craig Rayner
-
- * @package	Gibbon
- * @subpackage	Form
-*/
-class yesno extends select
+ * @package		Gibbon
+ * @subpackage	Trait
+ */
+trait stringFunctions
 {
 	/**
-	 * Constructor
+	 * html Preparation
+	 *
+	 * Encode string using htmlentities with the ENT_QUOTES option
+	 * @version	17th September 2016
+	 * @since	24th April 2016
+	 * @param	string		$str 	String to Prepare
+	 * @return	string	Prepared String
+	 */
+	public function htmlPrep($str) {
+		return htmlentities($str, ENT_QUOTES, "UTF-8") ;
+	}
+
+	/**
+	 * sanitise Anchor
 	 *
 	 * @version	18th September 2016
-	 * @since	20th April 2016
-	 * @param	string	$name	Element Name (id)
-	 * @param	string	$value	Element Value
-	 * @return 	void
+	 * @since	6th July 2016
+	 * @params	string		$dirty
+	 * @return	string		Clean
 	 */
-	public function __construct($name = null, $value = null, view $view)
+	public function sanitiseAnchor($dirty)
 	{
-		parent::__construct($name, $value, $view);
-		$this->addOption( trans::__('Y'), 'Y');
-		$this->addOption( trans::__('N'), 'N');
-		$this->element->name = 'yesno';
+		return str_replace(array(' ', '.'), '', filter_var($dirty, FILTER_SANITIZE_STRING));
 	}
 }
