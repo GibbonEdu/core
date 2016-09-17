@@ -20,12 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
+use Gibbon\core\view ;
 use Gibbon\Form\button ;
 
 /**
  * button Element
  *
- * @version	16th September 2016
+ * @version	17th September 2016
  * @since	29th June 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -36,16 +37,16 @@ class buttons extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	29th June 2016
+	 * @version	17th September 2016
 	 * @since	29th June 2016
-	 * @param	string		$name	Name
-	 * @param	mixed		$value	Value
-	 * @param	Gibbon\view	$view
+	 * @param	string		$name
+	 * @param	mixed		$value
+	 * @param	Gibbon\core\view	$view
 	 * @return 	void
 	 */
-	public function __construct($name = NULL, $value = NULL, view $view = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();
+		parent::__construct($name, $value, $view);
 		if ($name !== NULL)
 			$this->name = $name;
 		if ($value !== NULL)
@@ -55,7 +56,6 @@ class buttons extends element
 		$this->validate = false;  // or false
 		$this->required = false;
 		$this->readOnly = false;
-		$this->view = $view ;
 	}
 
 	/**
@@ -71,7 +71,7 @@ class buttons extends element
 	public function addButton($name = NULL, $value = NULL, $type = 'button', $action = 'submit')
 	{
 		if (empty($this->buttons)) $this->buttons = array();
-		$el = new button($name, $value);
+		$el = new button($name, $value, $this->view);
 		$el->type = $type;
 		switch ($action)
 		{

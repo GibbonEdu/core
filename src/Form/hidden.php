@@ -26,7 +26,7 @@ use Gibbon\core\helper ;
 /**
  * Hidden Element
  *
- * @version	29th July 2016
+ * @version	17th September 2016
  * @since	21st April 2016
  * @author	Craig Rayner
 
@@ -38,16 +38,16 @@ class hidden extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	12th July 2016
+	 * @version	17th September 2016
 	 * @since	20th April 2016
-	 * @param	string		$name	Name
-	 * @param	string		$value	Value
-	 * @param	Gibbon\view	$view
+	 * @param	string		$name
+	 * @param	mixed		$value
+	 * @param	Gibbon\core\view	$view
 	 * @return 	void
 	 */
-	public function __construct($name = NULL, $value = NULL, view $view = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();
+		parent::__construct($name, $value, $view);
 		$this->element->name = 'hidden';
 		if ($name !== NULL) $this->name = $name;
 		if ($value !== NULL) $this->value = $this->view->htmlPrep($value); ;

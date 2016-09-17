@@ -20,14 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Form;
 
-use Gibbon\core\helper ;
 use Gibbon\core\view ;
 use Gibbon\Record\fileExtension ;
 
 /**
  * File Element
  *
- * @version	20th August 2016
+ * @version	17th September 2016
  * @since	20th August 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -38,15 +37,16 @@ class file extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	20th August 2016
+	 * @version	17th September 2016
 	 * @since	20th August 2016
-	 * @param	string		$name	Name
-	 * @param	mixed		$value	Value
+	 * @param	string		$name
+	 * @param	mixed		$value
+	 * @param	Gibbon\core\view	$view
 	 * @return 	void
 	 */
-	public function __construct($name = NULL, $value = NULL)
+	public function __construct($name = null, $value = null, view $view)
 	{
-		$this->createDefaults();
+		parent::__construct($name, $value, $view);
 		if ($name !== NULL)
 			$this->name = $name;
 		if ($value !== NULL)
