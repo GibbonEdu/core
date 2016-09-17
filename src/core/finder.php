@@ -174,12 +174,12 @@ class finder
 		$x = 0;
 		while ($rowList = $resultList->fetch()) {
 			$this->el->list[$x]['id'] = substr($rowList["type"],0,3) . "-" . $rowList["id"];
-			$this->el->list[$x]['name'] =  helper::htmlPrep($rowList["type"]) . " - " . helper::htmlPrep($rowList["name"]) ;
+			$this->el->list[$x]['name'] =  $this->view->htmlPrep($rowList["type"]) . " - " . $this->view->htmlPrep($rowList["name"]) ;
 			$x++;
 			if ($rowList["name"] == "Sound Alarm") { //Special lockdown entry
 				if ($this->view->getSecurity()->isActionAccessible("/modules/System Admin/alarm.php")) {
 					$this->el->list[$x]['id'] = substr($rowList["type"],0,3) . "-" . $rowList["id"] ;
-					$this->el->list[$x]['name'] = helper::htmlPrep($rowList["type"]) . " - Lockdown" ;
+					$this->el->list[$x]['name'] = $this->view->htmlPrep($rowList["type"]) . " - Lockdown" ;
 					$x++;
 				}
 			}

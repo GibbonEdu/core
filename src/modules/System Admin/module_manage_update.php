@@ -56,7 +56,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			}	
 			@$versionCode = $moduleVersion ;
 			
-			$this->displayMessage(array('This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.', array(helper::htmlPrep($row["name"]))), 'info') ;
+			$this->displayMessage(array('This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.', array($this->view->htmlPrep($row["name"]))), 'info') ;
 			
 			if ($versionDB>$versionCode OR $versionCode=="") {
 				//Error
@@ -66,7 +66,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 				//Instructions on how to update
 				$this->h3("Update Instructions") ; 
 				$list = $this->startList('ol');
-				$list->addListElement('You are currently using %1$s v%2$s.', array(helper::htmlPrep($row["name"]), $versionCode));
+				$list->addListElement('You are currently using %1$s v%2$s.', array($this->view->htmlPrep($row["name"]), $versionCode));
 				$list->addListElement('Check %1$s for a newer version of this module.', array("<a target='_blank' href='https://gibbonedu.org/extend'>gibbonedu.org</a>"));
 				$list->addListElement('Download the latest version, and unzip it on your computer.');
 				$list->addListElement('Use an FTP client to upload the new files to your server\'s modules folder.'); 
@@ -76,7 +76,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			elseif ($versionDB<=$versionCode) {
 				//Time to update 
 				$this->h3("Datebase Update") ; 
-				$this->paragraph('It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Update" below to continue. This operation cannot be undone: backup your entire database prior to running the update!</b>', array(helper::htmlPrep($row["name"]), $versionDB, $versionCode)); 
+				$this->paragraph('It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Update" below to continue. This operation cannot be undone: backup your entire database prior to running the update!</b>', array($this->view->htmlPrep($row["name"]), $versionDB, $versionCode)); 
 				$form = $this->getForm(GIBBON_ROOT . "modules/System Admin/module_manage_updateProcess.php", array('gibbonModuleID' => $moduleID), true);
 				$form->addElement('hidden', 'versionDB', $versionDB);
 				$form->addElement('hidden', 'versionCode', $versionCode);

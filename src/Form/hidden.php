@@ -50,9 +50,7 @@ class hidden extends element
 		$this->createDefaults();
 		$this->element->name = 'hidden';
 		if ($name !== NULL) $this->name = $name;
-		if ($value !== NULL) $this->value = helper::htmlPrep($value); ;
+		if ($value !== NULL) $this->value = $this->view->htmlPrep($value); ;
 		$this->setID();
-		if ($name !== NULL && $value !== NULL && $view instanceof view)
-			$view->render('form.hidden', $this);
 	}
 }

@@ -40,7 +40,7 @@ class token extends hidden
 	 * @since	20th April 2016
 	 * @param	string		$name
 	 * @param	mixed		$value
-	 * @param	Gibbon\view	$view
+	 * @param	Gibbon\core\view	$view
 	 * @return 	void
 	 */
 	public function __construct($name = null, $value = null, view $view)

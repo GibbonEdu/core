@@ -50,7 +50,7 @@ class file extends element
 		if ($name !== NULL)
 			$this->name = $name;
 		if ($value !== NULL)
-			$this->value = helper::htmlPrep($value);
+			$this->value = $this->view->htmlPrep($value);
 		$this->element->name = 'file';
 		$this->id = '_'.$this->name ;
 		$this->setFile();

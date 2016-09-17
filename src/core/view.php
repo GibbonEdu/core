@@ -1003,5 +1003,18 @@ class view
 			$this->person->find($id);
 		return $this->person ;
 	}
+
+	/**
+	 * html Preparation
+	 *
+	 * Encode string using htmlentities with the ENT_QUOTES option
+	 * @version	17th September 2016
+	 * @since	24th April 2016
+	 * @param	string		$str 	String to Prepare
+	 * @return	string	Prepared String
+	 */
+	public function htmlPrep($str) {
+		return htmlentities($str, ENT_QUOTES, "UTF-8") ;
+	}
 }
 

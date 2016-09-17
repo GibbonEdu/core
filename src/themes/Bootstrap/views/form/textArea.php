@@ -3,5 +3,5 @@
 <?php echo isset($params->rows) ? " rows='".$params->rows . "'" : '' ; ?>
 <?php echo isset($params->cols) ? " cols='".$params->cols . "'" : '' ; ?>
 <?php echo isset($params->element->class) ? ' class="'.$params->element->class . '"' : '' ; ?>
-<?php echo $el->insertValidation($el); ?>><?php echo isset($params->value) ? Gibbon\core\helper::htmlPrep($params->value) : '' ; ?></textarea>
+<?php echo $el->insertValidation($el); ?>><?php echo isset($params->value) ? $this->htmlPrep($params->value) : '' ; ?></textarea>
 <!-- form.textArea -->

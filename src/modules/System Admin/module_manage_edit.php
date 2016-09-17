@@ -50,14 +50,14 @@ if ($this->getSecurity()->isActionAccessible()) {
 			
 			$form->addElement('h3', null, 'Edit Module');
 			
-			$el = $form->addElement('text', 'name', helper::htmlPrep(trans::__($row["name"])));
+			$el = $form->addElement('text', 'name', trans::__($row["name"]));
 			$el->validateOff();
 			$el->nameDisplay = 'Name';
 			$el->description = 'This value cannot be changed.' ;
 			$el->setReadOnly();
 
 
-			$el = $form->addElement('text', 'description', helper::htmlPrep(trans::__( $row["description"])));
+			$el = $form->addElement('text', 'description', trans::__( $row["description"]));
 			$el->nameDisplay = 'Description';
 			$el->description = 'This value cannot be changed.' ;
 			$el->setReadOnly();

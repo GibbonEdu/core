@@ -377,19 +377,6 @@ class helper
 	}
 
 	/**
-	 * html Preparation
-	 *
-	 * Encode string using htmlentities with the ENT_QUOTES option
-	 * @version	24th April 2016
-	 * @since	24th April 2016
-	 * @param	string		$str 	String to Prepare
-	 * @return	string	Prepared String
-	 */
-	static public function htmlPrep($str) {
-		return htmlentities($str, ENT_QUOTES, "UTF-8") ;
-	}
-
-	/**
 	 * set Notification
 	 *
 	 * Sets a system-wide notification

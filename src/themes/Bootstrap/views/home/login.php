@@ -48,7 +48,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 		$el->value = '';
 		foreach($years as $year)
 		{
-			$el->addOption(helper::htmlPrep($year->getField('name')), $year->getField('gibbonSchoolYearID'));
+			$el->addOption($this->view->htmlPrep($year->getField('name')), $year->getField('gibbonSchoolYearID'));
 			if ( $year->getField('status') === "Current") 
 				$el->value = $year->getField('gibbonSchoolYearID');
 		}
@@ -61,7 +61,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 		$el->addOption('Select Language', '');
 		foreach ($this->config->getLanguages() as $code=>$name )
 		{
-			$el->addOption(helper::htmlPrep($name), $code);
+			$el->addOption($this->htmlPrep($name), $code);
 		}
 
 		$el = $form->addElement('script', null, '
