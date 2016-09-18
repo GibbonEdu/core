@@ -16,12 +16,12 @@ else { //Spacing without house logo ?>
 			$test = 3 ;
 		}
 		for ($i=0; $i<$test; $i++) { ?>
-			<span style='font-size: 120%; font-weight: bold'> <?php
+			<span style="font-size: 120%; font-weight: bold"> <?php
 			if (strlen($el->output[$i]["subject"]) <= 30) {
 				echo $el->output[$i]["subject"] ;
 			}
 			else {
-				echo substr($el->output[$i]["subject"],0,30) . "..." ;
+				echo substr($el->output[$i]["subject"],0,30) . '...';
 			} ?>
 			</span><br/>
 			<em><?php echo $el->output[$i]["author"]; ?></em><br/><br/><?php
@@ -34,4 +34,20 @@ else { //Spacing without house logo ?>
 		<a onclick='$("#messageBubble").hide("fade", {}, 1); $("#messageBubbleArrow").hide("fade", {}, 1)' style='text-decoration: none; color: #666' href='<?php echo $el->URL; ?>'><?php echo trans::__('Read All'); ?></a>
 		<a style='text-decoration: none; color: #666' onclick='$("#messageBubble").hide("fade", {}, 1000); $("#messageBubbleArrow").hide("fade", {}, 1000)' href='#'><?php echo trans::__('Dismiss'); ?></a>
 	</div>
-</div>
+</div><?php
+
+$messageBubbleAutoHide = $this->config->getSettingByScope("Messenger", "messageBubbleAutoHide") ;
+if ($messageBubbleAutoHide != "N") { ?>
+<script type="text/javascript">
+	$(function() {
+		setTimeout(function() {
+			$("#messageBubble").hide('fade', {}, 3000)
+		}, 10000);
+	});
+	$(function() {
+		setTimeout(function() {
+			$("#messageBubbleArrow").hide('fade', {}, 3000)
+		}, 10000);
+	});
+</script><?php
+}

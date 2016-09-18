@@ -97,7 +97,7 @@ div.minorLinks {
 	padding-top: 0px;
 	margin-top: 10px; 
 	margin-bottom: 0px; 
-	color: #fff;
+	color: white;
 	font-size: 100%; 
 	font-weight: normal; 
 	min-height: 28px ;
@@ -105,6 +105,7 @@ div.minorLinks {
 
 div.minorLinks a {
 	color: #fff;
+	text-decoration: none ;
 }
 div.minorLinks .glyphicon, div.minorLinks .glyphicons {
 	color: #fff;
@@ -114,7 +115,16 @@ div.minorLinks a .glyphicons-pending-notifications {
 	margin: -3px -6px 0 -4px ;
 }
 div.minorLinks .glyphicons-bell {
+	margin: -3px -10px 0 -6px ;
+}
+div.minorLinks .glyphicons-glyphicon-thumbs-up {
+	margin: 0 ;
+}
+div.minorLinks .glyphicon-envelope {
 	margin: -3px -8px 0 -4px ;
+}
+div.minorLinks .glyphicon-bullhorn {
+	margin: -3px -8px 0 2px ;
 }
 #notifications {
 	margin: 0;
