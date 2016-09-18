@@ -83,5 +83,5 @@ if ($this->getSecurity()->isActionAccessible()) {
 		$x->updateRequired = $updateRequired;
 		$form->addElement('raw', '', $this->renderReturn('fileManage.listEnd', $x)) ;
 
-		$form->renderForm();
+		$form->render();
 }

@@ -618,6 +618,10 @@ tr.info, tr.info td, div.info, td.info {
 	background: none!important ;
 	background-color: #D9EDF7!important ;
 }
+tr.success, tr.success td, div.success, td.success {
+	background: none!important ;
+	background-color: #D4F6DC!important ;
+}
 tr.dull, tr.dull td, div.dull, td.dull {
 	background: none!important ;
 	background-color: #dddddd!important ;

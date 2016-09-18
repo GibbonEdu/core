@@ -11,4 +11,4 @@ use Gibbon\core\trans ;
 </p>
 <?php
 if ($this->session->get('installType') === 'Development')
-	Gibbon\core\helper::dump($_SESSION, true, true);
+	$this->dump($_SESSION, true, true);

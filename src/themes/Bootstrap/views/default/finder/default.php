@@ -25,7 +25,7 @@ use Gibbon\core\trans ;
 								?>
 								<br/>
                     <?php
-					new \Gibbon\Form\action(GIBBON_ROOT . 'plugins/findRedirect.php', $this);
+					new \Gibbon\Form\action(GIBBON_ROOT . 'plugins/findRedirect.php', null,  $this);
 					new \Gibbon\Form\hidden('divert', true, $this);
 					?>
 							</h2>
