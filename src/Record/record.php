@@ -163,7 +163,7 @@ abstract class record implements recordInterface
 	 * find
 	 *
 	 * Will return false is no record or more than one record is found.
-	 * @version	15th May 2016
+	 * @version	19th September 2016
 	 * @since	30th April 2016
 	 * @param	integer		$id Identifier
 	 * @return	mixed		false or stdClass
@@ -180,7 +180,7 @@ abstract class record implements recordInterface
 			$this->success = true;
 			$this->error = null;
 		} elseif ($this->rowCount() !== 1) {
-			$this->error = 'The identifier did not find a record.';
+			$this->error = 'The identifier did not find a record. ' . $this->error;
 			$this->success = false;
 			$this->record = false;
 		}

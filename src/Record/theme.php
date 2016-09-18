@@ -173,7 +173,7 @@ class theme extends record
 	 */
 	public function __construct(view $view, $id = 0 )
 	{
-		$x = parent::__construct($view, $id);
+		parent::__construct($view, $id);
 		if ($this->session->isEmpty('theme.tested') || ! $this->session->get('theme.tested'))
 		{
 			$this->findOneBy(array('name'=>'Bootstrap'));
@@ -203,7 +203,7 @@ class theme extends record
 				$this->writeRecord(array(), true);
 			}
 		}
-		return $x ;
+		return parent::__construct($view, $id);
 	}
 	
 	/**
