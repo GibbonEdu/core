@@ -27,7 +27,7 @@ use Gibbon\Record\house ;
 /**
  * Session Manager
  *
- * @version	30th June 2016
+ * @version	18th September 2016
  * @since	15th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -365,16 +365,17 @@ class session
 	}
 
 	/**
-	 * Plus One
+	 * Plus 
 	 *
-	 * @version	23rd April 2016
+	 * @version	18th September 2016
 	 * @since	23rd April 2016
-	 * @param	string	Session Value Name
+	 * @param	string	$name 	Session Value Name
+	 * @param	integer	$interval	Add the value
 	 * @return	object	Gibbon\session
 	 */
-	public function plus($name)
+	public function plus($name, $interval = 1)
 	{
-		return $this->set($name, intval($this->get($name)) + 1);
+		return $this->set($name, intval($this->get($name)) + $interval);
 	}
 
 	/**

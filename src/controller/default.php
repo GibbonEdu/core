@@ -36,6 +36,7 @@ $v13 = array
 		'/modules/Security/',
 		'/modules/Notifications/',
 		'/modules/User Admin/preferences',
+		'/modules/School Admin/messengerSettings',
 	);
 
 /*

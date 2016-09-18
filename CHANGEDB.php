@@ -453,5 +453,7 @@ UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, mar
 INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('0', 'Security', 'Security scripts for Gibbon', 'index.php', 'Core', 'N', 'Admin', '1.0.00', 'Craig Rayner', 'http://www.craigrayner.com');end
 ALTER TABLE `gibbonModule` CHANGE `category` `category` ENUM('Home','Admin','Assess','Learn','People','Other') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
 INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('0', 'Notifications', 'Notification Scripts for Gibbon', 'index.php', 'Core', 'N', 'Admin', '1.0.00', 'Craig Rayner', 'http://www.craigrayner.com');end
-
+UPDATE `gibbonSetting` SET `name` = 'browseBGColour', `nameDisplay` = 'Browse Library BG Colour' WHERE `gibbonSetting`.`name` = 'browseBGColor' AND `scope` = 'Library';end
+UPDATE `gibbonSetting` SET `name` = 'messageBubbleBGColour', `nameDisplay` = 'Message Bubble Background Colour' WHERE `gibbonSetting`.`name` = 'messageBubbleBGColor' AND `scope` = 'Messenger';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Messenger', 'messageRepeatTime', 'Message Repeat Time', 'Time in seconds to repeat the message bubble notification.', '300');end
 ";

@@ -55,7 +55,7 @@ $caching = $config->get('caching');
 //Deal with caching
 $refreshCache = false ;
 if (is_int($session->get("pageLoads"))) {
-	$session->set("pageLoads", $session->get("pageLoads") + 1) ;
+	$session->plus("pageLoads", 1) ;
 }
 else {
 	$session->set("pageLoads", 0) ;
@@ -63,11 +63,14 @@ else {
 }
 if ($config->get('caching') == 0) {
 	$refreshCache = true ;
+	if ($session->get("pageLoads") > 10) $session->set("pageLoads", 0);
 }
-else if ($caching > 0 AND is_numeric($caching)) {
-	if ($session->get("pageLoads")%$caching == 0) {
-		$refreshCache = true ;
-	}
+elseif ($caching > 0 && is_numeric($caching) && $session->get("pageLoads")%$caching == 0) {
+	$refreshCache = true ;
+	$session->set('pageLoads', 0);
+}
+elseif ($caching > 0 && is_numeric($caching) && $session->get("pageLoads") > $caching) {
+	$session->set('pageLoads', 0);
 }
 if ($session->get('installType') === 'Development')
 	$refreshCache = true ;

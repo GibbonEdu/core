@@ -16,6 +16,7 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
             'Monolog\\' => 8,
             'Module\\User_Admin\\' => 18,
             'Module\\System_Admin\\' => 20,
+            'Module\\School_Admin\\' => 20,
             'Module\\' => 7,
         ),
         'L' => 
@@ -24,7 +25,6 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         ),
         'G' => 
         array (
-            'Gibbon\\core\\functions\\' => 22,
             'Gibbon\\core\\' => 12,
             'Gibbon\\controller\\' => 18,
             'Gibbon\\Record\\' => 14,
@@ -51,6 +51,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         array (
             0 => __DIR__ . '/../..' . '/src/modules/System Admin',
         ),
+        'Module\\School_Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules/School Admin',
+        ),
         'Module\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/modules',
@@ -58,10 +62,6 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         'Library\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Library',
-        ),
-        'Gibbon\\core\\functions\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/core/functions',
         ),
         'Gibbon\\core\\' => 
         array (
