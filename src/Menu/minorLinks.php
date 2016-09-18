@@ -79,89 +79,10 @@ class minorLinks extends menu
 				if ($this->session->get("website")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" . trans::__( 'My Website') . "</a>" ;
 				}
-				$pObj = new person($this->view);
-				$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
-				//Show likes
-				if (! $this->session->isEmpty("likesCount")) {
-					if ($this->session->get("likesCount")>0) {
-						$return.=" . <a title='" . trans::__( 'Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;
-					}
-					else {
-						$return.=" . " . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_off'). "" ;
-					}
-				}
-		
-				//GET & SHOW NOTIFICATIONS
-				$obj = new notification($this->view);
-				$notifications = $obj->findAllBy(array('gibbonPersonID'=>$this->session->get("gibbonPersonID"), 'status'=>'New'));
 				
-/*				$dataNotifications=array("gibbonPersonID"=>$this->session->get("gibbonPersonID"), "gibbonPersonID2"=>$this->session->get("gibbonPersonID"));
-				$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source 
-				FROM gibbonNotification 
-					JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) 
-				WHERE gibbonPersonID=:gibbonPersonID AND status='New')
-					UNION (SELECT gibbonNotification.*, 'System' AS source 
-						FROM gibbonNotification 
-						WHERE gibbonModuleID IS NULL 
-							AND gibbonPersonID=:gibbonPersonID2 
-							AND status='New')
-				ORDER BY timestamp DESC, source, text" ;
-				$nObj = new \Gibbon\Record\notification($this->view);
-				$notifications = $nObj->findAll($sqlNotifications, $dataNotifications, '_'); */
-		
-				//Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
-				$interval = 120000 ;
-				if ($this->session->get("gibbonRoleIDCurrentCategory")=="Staff") $interval = 10000 ;
+				$return .= $this->showLikes();
 				
-				$action = '/modules/Notifications/index_notification_ajax.php';
-				$tObj = new token($action, null, $this->view);
-
-				$return .= '
-				<script type="text/javascript">
-					$(document).ready(function(){
-						setInterval(function() {
-							$("#notifications").load("index.php?q=/modules/Notifications/index_notifications_ajax.php", {
-									"action": "'. $tObj->generateAction($action) . '", 
-									"divert": "true", 
-									"_token": "' . $tObj->generateToken($action) . '"
-								});
-						}, "' . $interval . '");
-					});
-				</script>' ;
-		
-				$return.="<div id='notifications' style='display: inline'>" ;
-					//CHECK FOR SYSTEM ALARM
-					if (! $this->session->isEmpty("gibbonRoleIDCurrentCategory")) {
-						if ($this->session->get("gibbonRoleIDCurrentCategory")=="Staff") {
-							$alarm=$this->config->getSettingByScope( "System", "alarm") ;
-							if ($alarm=="General" OR $alarm=="Lockdown" OR $alarm=="Custom") {
-								$type="general" ;
-								if ($alarm=="Lockdown") {
-									$type="lockdown" ;
-								}
-								else if ($alarm=="Custom") {
-									$type="custom" ;
-								}
-								$return.="<script>
-									if ($('div#TB_window').is(':visible')===false) {
-										var url = '" . GIBBON_URL . "index.php?q=/modules/Notifications/index_notification_ajax_alarm.php&divert=true&type=" . $type . "&KeepThis=true&TB_iframe=true&width=1000&height=500';
-										$(document).ready(function() {
-											tb_show('', url);
-											$('div#TB_window').addClass('alarm') ;
-										}) ;
-									}
-								</script>" ;
-							}
-						}
-					}
-		
-					if (count($notifications)>0) {
-						$return.=" . <a title='" . trans::__( 'Notifications') . "' href='" . GIBBON_URL . "index.php?q=/modules/Notifications/notifications.php'>" . count($notifications) . " x " . $this->view->renderReturn('default.minorLinks.notification_on') . "</a>" ;
-					}
-					else {
-						$return.=" . 0 x " . $this->view->renderReturn('default.minorLinks.notification_off') ;
-					}
-				$return.="</div>" ;
+				$return .= $this->showNotifications();
 				
 				$return .= $this->messageWall();
 				
@@ -184,6 +105,7 @@ class minorLinks extends menu
 	public function messageWall()	
 	{
 		//MESSAGE WALL!
+
 		if ($this->view->getSecurity()->isActionAccessible("/modules/Messenger/messageWall_view.php", null, '')) {
 			$messenger = new messengerFunctions($this->view);
 
@@ -228,7 +150,7 @@ class minorLinks extends menu
 							$el->output[$this->session->get("messageWallCount")]["gibbonMessengerID"] = $rowPosts["gibbonMessengerID"] ;
 
 							$this->session->plus("messageWallCount") ;
-							$last=$rowPosts["gibbonMessengerID"] ;
+							$last = $rowPosts["gibbonMessengerID"] ;
 							$count++ ;
 						}
 					}
@@ -253,7 +175,7 @@ class minorLinks extends menu
 					$return .= " . 0 x ".$this->view->renderReturn('default.minorLinks.messageWall_none')."" ;
 				}
 				else {
-					$return .= " . ".$this->session->get("messageWallCount")." x <a href='".$el->URL."'>".$this->view->renderReturn('default.minorLinks.messageWall')."</a>" ;
+					$return .= " . <a href='".$el->URL."'>".$this->session->get("messageWallCount")." x ".$this->view->renderReturn('default.minorLinks.messageWall')."</a>" ;
 					if ($this->session->isEmpty('messenger.lastShowBubble')) 
 						$this->session->set('messenger.lastShowBubble', 0);
 					if ($this->session->get('messenger.lastShowBubble') <= (time() - $this->config->getSettingByScope("Messenger", "messageRepeatTime")) && ($this->session->isEmpty("messengerLastBubble") || $this->session->get("messengerLastBubble") < date("Y-m-d")))
@@ -274,31 +196,13 @@ class minorLinks extends menu
 							$el->bubbleWidth = 700 ;
 							$el->bubbleLeft = 370 ;
 						}
-						
-						
-						
+
 						$return .= $this->view->renderReturn('default.minorLinks.messageBubble', $el);
 						$this->session->set('messenger.lastShowBubble', time());
 
-						$messageBubbleAutoHide = $this->config->getSettingByScope("Messenger", "messageBubbleAutoHide") ;
-						if ($messageBubbleAutoHide!="N") {
-							$return.="<script type=\"text/javascript\">" ;
-								$return.="$(function() {" ;
-									$return.="setTimeout(function() {" ;
-										$return.="$(\"#messageBubble\").hide('fade', {}, 3000)" ;
-									$return.="}, 10000);" ;
-								$return.="});" ;
-								$return.="$(function() {" ;
-									$return.="setTimeout(function() {" ;
-										$return.="$(\"#messageBubbleArrow\").hide('fade', {}, 3000)" ;
-									$return.="}, 10000);" ;
-								$return.="});" ;
-							$return.="</script>" ;
-						}
-
-						$data=array("messengerLastBubble"=>date("Y-m-d"), "gibbonPersonID"=>$this->session->get("gibbonPersonID") );
-						$sql="UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID" ;
-						$result=$this->pdo->executeQuery($data, $sql);
+						$pObj = new person($this->view, $this->session->get("gibbonPersonID"));
+						$pObj->setField("messengerLastBubble", date("Y-m-d"));
+						$pObj->writeRecord(array("messengerLastBubble"));
 					}
 				}
 			}
@@ -309,5 +213,53 @@ class minorLinks extends menu
 			$return.=" . <img class='minorLinkIconLarge' title='" . $this->session->get("gibbonHouseIDName") . "' style='vertical-align: -75%; margin-left: 4px' src='" . $this->session->get("absoluteURL") . "/" . $this->session->get("gibbonHouseIDLogo") . "'/>" ;
 		}
 		return $return ;
+	}
+
+	/**
+	 * show Likes
+	 * 
+	 * @version	18th September 2016
+	 * @since	moved from functions.php
+	 * @return	HTML String
+	 */
+	public function showLikes()	
+	{
+		$pObj = new person($this->view);
+		$return = '';
+		$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
+		//Show likes
+		if (! $this->session->isEmpty("likesCount") && $this->session->get("likesCount") > 0) {
+			$return .= " . <a title='" . trans::__('Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;
+		} else {
+			$return .= " . " . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_off'). "" ;
+		}
+		return $return ;
+	}
+
+	/**
+	 * show Notifications
+	 * 
+	 * @version	18th September 2016
+	 * @since	moved from functions.php
+	 * @return	HTML String
+	 */
+	public function showNotifications()	
+	{
+		//GET & SHOW NOTIFICATIONS
+		$obj = new notification($this->view);
+		$el = new stdClass;
+		$el->notifications = $obj->findAllBy(array('gibbonPersonID'=>$this->session->get("gibbonPersonID"), 'status'=>'New'));
+		
+
+		//Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
+		$el->interval = 120000 ;
+		if ($this->session->get("gibbonRoleIDCurrentCategory")=="Staff") $el->interval = 10000 ;
+		
+		$action = '/modules/Notifications/index_notification_ajax.php';
+		$tObj = new token($action, null, $this->view);
+		$el->token = $tObj->generateToken($action);
+		$el->action = $tObj->generateAction($action);
+		
+		return $this->view->renderReturn('default.minorLinks.notification', $el);
 	}
 }
