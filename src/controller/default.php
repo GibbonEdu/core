@@ -38,6 +38,7 @@ $v13 = array
 		'/modules/User Admin/preferences',
 		'/modules/School Admin/messengerSettings',
 		'/modules/System Admin/thirdPartySettings',
+		'/modules/System Admin/stringReplacement_manage',
 	);
 
 /*

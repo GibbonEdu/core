@@ -25,7 +25,8 @@ use Gibbon\core\view ;
 /**
  * String Replacement
  *
- * @version	11th September 2016
+ * Unable to use string as a name as it is a reserved php word.
+ * @version	18th September 2016
  * @since	2nd May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -46,14 +47,14 @@ class stringReplacement extends record
 	/**
 	 * Default Record
 	 *
-	 * @version	2nd May 2016
+	 * @version	18th September 2016
 	 * @since	2nd May 2016
 	 * @return	stdClass	Record
 	 */
 	public function defaultRecord()
 	{
   		$this->record = new \stdClass();
-		$this->record->gibbonStringReplacementID = NULL;
+		$this->record->gibbonStringID = NULL;
 		$this->record->original = '';
 		$this->record->replacement = '';
 		$this->record->mode = 'Whole';
@@ -77,14 +78,6 @@ class stringReplacement extends record
 		foreach ($required as $name) 
 			if (! isset($this->record->$name))
 				return $this->uniqueFailed('A necessary field was empty.', 'Debug', 'String Replacement', array($name)) ;
-/*		$data = array('name' => $this->record->name, 'nameShort' => $this->record->nameShort, 'gibbonRoleID' => $this->record->gibbonRoleID);
-		$sql = 'SELECT * 
-			FROM `gibbonString` 
-			WHERE (`name` = :name OR `nameShort` = :nameShort) 
-				AND NOT `gibbonRoleID` = :gibbonRoleID';
-		$v = clone $this;
-		$roles = $v->findAll($sql, $data);
-		if (count($roles) > 0) return $this->uniqueFailed('Field values did not meet the requirements for uniqueness!', 'Debug', 'String Replacement', array((array)$this->returnRecord())) ; */
 		return true ; 
 	}
 

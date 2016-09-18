@@ -28,7 +28,7 @@ use Gibbon\Record\stringReplacement ;
  *
  * Translation is read from a master Yaml file at ./i18n/gibbon.yml<br />
  * if a module is called, then a second file (if available) is loaded from ./modules/{moduleName}/i18n/{lc_code}.yml
- * @version	5th September 2016
+ * @version	18th September 2016
  * @since	16th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -50,7 +50,7 @@ class trans
 	 * Get and store custom string replacements in session
 	 *
 	 * (Moved from Functions)
-	 * @version 5th August 2016
+	 * @version 18th September 2016
 	 * @since	Old
 	 * @param	Gibbon\sqlConnection
 	 * @return	void
@@ -62,7 +62,7 @@ class trans
 			$view->session->set('stringReplacement', array()) ;
 			$sObj = new stringReplacement($view);
 			$result = $sObj->findAll('SELECT * 
-				FROM `gibbonStringReplacement` 
+				FROM `gibbonString` 
 				ORDER BY `priority` DESC, `original` ASC');
 			if (count($result) > 0)
 				foreach($result as $q=>$w)
