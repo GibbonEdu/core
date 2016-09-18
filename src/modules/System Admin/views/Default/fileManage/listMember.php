@@ -5,7 +5,7 @@
 					<td>
 						<?php echo $params->status ; ?>
 					</td>
-					<td>
+					<td class="centre">
 						<?php if (substr($params->status, 0, 6) === 'Update') new Gibbon\Form\checkbox('update-'.$params->name, $params->name, $this);
 						elseif ($params->status == 'Unknown') echo '?';
 						else echo 'Ok'; ?>

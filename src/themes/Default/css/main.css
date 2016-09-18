@@ -1216,3 +1216,6 @@ table.well tr:nth-child(even) td {
 .g_buttons input {
 	width: 105px;
 }
+.centre {
+	text-align: center!important;
+}
