@@ -39,6 +39,7 @@ $v13 = array
 		'/modules/School Admin/messengerSettings',
 		'/modules/System Admin/thirdPartySettings',
 		'/modules/System Admin/stringReplacement_manage',
+		'/modules/System Admin/i18n_manage',
 	);
 
 /*

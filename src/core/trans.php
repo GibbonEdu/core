@@ -28,7 +28,7 @@ use Gibbon\Record\stringReplacement ;
  *
  * Translation is read from a master Yaml file at ./i18n/gibbon.yml<br />
  * if a module is called, then a second file (if available) is loaded from ./modules/{moduleName}/i18n/{lc_code}.yml
- * @version	18th September 2016
+ * @version	19th September 2016
  * @since	16th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -181,7 +181,7 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 	 * en_GB is the default language..  It is always loaded first, then the language set of the system/user.<br />
 	 * module lanaguage sets are loaded on top of the default sets in the same order.
 	 * 
-	 * @version	27th June 2016
+	 * @version	19th September 2016
 	 * @since	18th May 2016
 	 * @return	array
 	 */
@@ -193,32 +193,14 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 			$i18n = $session->get('i18n.code');
 			
 			//Load Default en_GB
-			$file = GIBBON_ROOT.'/i18n/en_GB/gibbon.yml';
+			$file = GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml';
 			if (file_exists($file)) {
 				self::$matrix = Yaml::parse(file_get_contents($file));
 				if ( empty(self::$matrix)) self::$matrix = array();
 			}
 
 			// Load System Language
-			$file = GIBBON_ROOT.'/i18n/'.$i18n.'/gibbon.yml';
-			if ($i18n !== 'en_GB' && file_exists($file)) {
-				$mTrans = Yaml::parse(file_get_contents($file));
-				if (empty($mTrans)) $mTrans = array();
-				self::$matrix = array_merge(self::$matrix, $mTrans);
-			}
-
-			$module = $session->get('module');
-			
-			// Load Module Default Lanaguae
-			$file = GIBBON_ROOT.'/modules/'.$module.'/i18n/en_GB.yml';
-			if (file_exists($file)) {
-				$mTrans = Yaml::parse(file_get_contents($file));
-				if (empty($mTrans)) $mTrans = array();
-				self::$matrix = array_merge(self::$matrix, $mTrans);
-			}
-			
-			// Load Module System Lanaguae
-			$file = GIBBON_ROOT.'/modules/'.$module.'/i18n/'.$i18n.'.yml';
+			$file = GIBBON_ROOT.'src/i18n/'.$i18n.'/gibbon.yml';
 			if ($i18n !== 'en_GB' && file_exists($file)) {
 				$mTrans = Yaml::parse(file_get_contents($file));
 				if (empty($mTrans)) $mTrans = array();
@@ -331,7 +313,7 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 	/**
 	 * Write Translation Missing
 	 *
-	 * @version	5th September 2016
+	 * @version	19th September 2016
 	 * @since	27th June 2016
 	 * @return	void
 	 */
@@ -351,15 +333,15 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 			return ;
 		}
 		
-		if (file_exists(GIBBON_ROOT.'/i18n/en_GB/gibbon.yml'))
-			$report = Yaml::parse(file_get_contents(GIBBON_ROOT.'/i18n/en_GB/gibbon.yml'));
+		if (file_exists(GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml'))
+			$report = Yaml::parse(file_get_contents(GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml'));
 		if (empty($report))
 			$report = array();
 		foreach($x as $source)
 		{
 			$report[$source] = $source ;
 		}
-		file_put_contents(GIBBON_ROOT.'/i18n/en_GB/gibbon.yml', Yaml::dump($report));
+		file_put_contents(GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml', Yaml::dump($report));
 		
 		$session->clear('i18n.missing');
 		
