@@ -7,7 +7,7 @@ return:
     success: ['Your request was completed successfully.']
 'Y': 'Yes'
 'N': 'No'
-NA: 'N/A'
+NA: N/A
 Loading: Loading
 'Localhost, IP address or domain.': 'Localhost, IP address or domain.'
 Localisation: Localisation
@@ -315,7 +315,6 @@ Music: Music
 'My Website': 'My Website'
 Myanmar: Myanmar
 N/A: N/A
-NA: NA
 NYS: NYS
 Name: Name
 'Name In Characters': 'Name In Characters'
@@ -4382,7 +4381,7 @@ Lithuanian: Lithuanian
 140: '140'
 141: '141'
 'Google Integration Note': 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google''s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'
-'SMTP Mail Note': 'Many ISP''s, to manage spam, require use of an email account to send email.  Should you need assistance, your ISP should be able to provide connection details for an account. Details to setup an account for common email accounts may be found by %1$sclicking here%2$s.'
+'SMTP Mail Note': 'Many ISP''s, to manage spam, require use of an email account to send email.  Should you need assistance, your ISP should be able to provide connection details for an account. Details to setup an account for common email accounts may be found at %1$sSMTP Settings Help%2$s.'
 'SMS Settings Note': 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'
 'Total Student Enrolment: %d': 'Total Student Enrolment: %d'
 'Query Builder': 'Query Builder'
@@ -4629,8 +4628,8 @@ Español: Español
 Português: Portugese
 'Português - Brasil': 'Portugese - Brasil'
 Română: Română
-'ру́сский язы́к': 'Russian'
-'українська мова': 'Ukrainian'
+'ру́сский язы́к': Russian
+'українська мова': Ukrainian
 'العربية - المملكة العربية السعودية': 'العربية - المملكة العربية السعودية'
 اُردُو: اُردُو
 فارسی: فارسی
@@ -4782,8 +4781,6 @@ Television: Television
 'These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).': 'These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).'
 'Primary External Assessment': 'Primary External Assessment'
 'Grade scales are used through the ARR modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this.': 'Grade scales are used through the ARR modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this.'
-'Y': 'Y'
-'N': 'N'
 'This is the lowest grade a student can get without being unsatisfactory.': 'This is the lowest grade a student can get without being unsatisfactory.'
 'Preselects this option when using this grade scale in appropriate contexts.': 'Preselects this option when using this grade scale in appropriate contexts.'
 'Grade scales are used through the ARR modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before proceeding.': 'Grade scales are used through the ARR modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before proceeding.'
@@ -5492,3 +5489,44 @@ Medical%1$s: Medical%1$s
 'Medical Condition Record for Julien Barnett': 'Medical Condition Record for Julien Barnett'
 'Edit Medical Condition': 'Edit Medical Condition'
 back: back
+Translation: Translation
+'Manage Translation': 'Manage Translation'
+'Translation Management involves the comparison of the original language file, always "English - United Kingdom" with the target language file. The default settings here will display the first 250 translations that are missing from the target language file for translation.  Translations are added directly to the target file.': 'Translation Management involves the comparison of the original language file, always "English - United Kingdom" with the target language file. The default settings here will display the first 250 translations that are missing from the target language file for translation.  Translations are added directly to the target file.'
+'Target Language': 'Target Language'
+'Edit All Strings': 'Edit All Strings'
+'Access all strings in the system, or limit to missing strings.': 'Access all strings in the system, or limit to missing strings.'
+'Match any part of the key phrase or the translated phrase.': 'Match any part of the key phrase or the translated phrase.'
+'I found %s or more phrases to translate. The en_GB language has %d phrases and the %s language has %d phrases. There are %d missing translations from this language file.': 'I found %s or more phrases to translate. The en_GB language has %d phrases and the %s language has %d phrases. There are %d missing translations from this language file.'
+'Edit this string': 'Edit this string'
+'Enter translation': 'Enter translation'
+'Alter the translation for this phrase.%sThe translation can be a string or an array formatted in YAML format. YAML format details can be found at %s.%sShould you wish to save a string only containing YAML formatting, then enclose the phrase in &quot;Quotes&quot;': 'Alter the translation for this phrase.%sThe translation can be a string or an array formatted in YAML format. YAML format details can be found at %s.%sShould you wish to save a string only containing YAML formatting, then enclose the phrase in &quot;Quotes&quot;'
+'Email Translation File': 'Email Translation File'
+'Once you have completed the changes, you can email the file to Gibbon Support, (or someone else) for review or inclusion in the source code of the Gibbon Project.': 'Once you have completed the changes, you can email the file to Gibbon Support, (or someone else) for review or inclusion in the source code of the Gibbon Project.'
+'Send to': 'Send to'
+'Send the translation file to this email address': 'Send the translation file to this email address'
+'Merge Translation': 'Merge Translation'
+'%1$sManage Translation%2$s': '%1$sManage Translation%2$s'
+'%1$sMerge Translation%2$s': '%1$sMerge Translation%2$s'
+'Messenger Settings': 'Messenger Settings'
+'Message Repeat Time': 'Message Repeat Time'
+'Time in seconds to repeat the message bubble notification.': 'Time in seconds to repeat the message bubble notification.'
+'Manage Dashboard Settings': 'Manage Dashboard Settings'
+'%1$sManage Dashboard Settings%2$s': '%1$sManage Dashboard Settings%2$s'
+SSL: SSL
+TLS: TLS
+'SMTP Mail': 'SMTP Mail'
+'Enable SMTP Mail': 'Enable SMTP Mail'
+'Adds PHPMailer settings for servers with an SMTP connection.': 'Adds PHPMailer settings for servers with an SMTP connection.'
+'SMTP Host': 'SMTP Host'
+'Set the hostname of the mail server.': 'Set the hostname of the mail server.'
+'SMTP Port': 'SMTP Port'
+'Set the SMTP port number - likely to be 25, 465 or 587.': 'Set the SMTP port number - likely to be 25, 465 or 587.'
+'SMTP Username': 'SMTP Username'
+'Username to use for SMTP authentication. Leave blank for no authentication.': 'Username to use for SMTP authentication. Leave blank for no authentication.'
+'SMTP Password': 'SMTP Password'
+'Password to use for SMTP authentication. Leave blank for no authentication.': 'Password to use for SMTP authentication. Leave blank for no authentication.'
+'From EMail': 'From EMail'
+'Email address to set as the from address.': 'Email address to set as the from address.'
+'From Name': 'From Name'
+'The name of the person or Organisation from which the email is sent.': 'The name of the person or Organisation from which the email is sent.'
+'Secure Transport Protocol': 'Secure Transport Protocol'
