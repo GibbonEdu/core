@@ -751,8 +751,8 @@ table.ui-datepicker-calendar tr:last-child th:last-child {
 	margin-top: 5px;
 }
 .standardForm .container-fluid .well .row, .noIntBorder .container-fluid .well .row {
-	border: 1px solid #ccc;
-	border-radius: 5px ;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 	margin-top: -1px;
 	margin-bottom: 0px;
 	padding-top: 5px;
@@ -947,4 +947,12 @@ a,#adminmenu a,a.edButtonPreview,a.edButtonHTML,#the-comment-list p.comment-auth
 
 .g_buttons button {
 	width: 105px;
+}
+div.standard-well, .noIntBorder-well{
+	padding-left: 15px;
+	padding-right: 15px;
+	border: none ;
+}
+div.standard-well div.row, div.noIntBorder-well div.row {
+	border-radius: 0px!important;
 }

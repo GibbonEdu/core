@@ -5,6 +5,6 @@
 					$this->render('home.contentWide');
                 }
 				$this->render('home.content'); ?>
-                </div><!-- end of ContentWide -->
+				</div><!-- end of ContentWide -->
                 <?php $this->render('home.sideBar'); ?>
             </div><!-- close content-wrap -->

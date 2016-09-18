@@ -154,32 +154,6 @@ class helper
 	}
 
 	/**
-	 * date Convert
-	 *
-	 * Converts date from language-specific format to YYYY-MM-DD
-	 * @version	21st April 2016
-	 * @since	21st April 2016
-	 * @param	string		$date Date
-	 * @return	mixed		Date or false
-	 */
-	public static function dateConvert($date) {
-
-		$output = false ;
-		$session = new session();
-		if (! empty($date)) {
-			if ($session->get("i18n.dateFormat") == "mm/dd/yyyy") {
-				$firstSlashPosition = 2 ;
-				$secondSlashPosition = 5 ;
-				$output = substr($date,($secondSlashPosition+1)) . "-" . substr($date,0,$firstSlashPosition) . "-" . substr($date,($firstSlashPosition+1),2) ;
-			}
-			else {
-				$output = date('Y-m-d', strtotime(str_replace('/', '-', $date)));
-			}
-		}
-		return $output ;
-	}
-
-	/**
 	 * date Convert to Timestamp
 	 *
 	 * Converts a specified date (YYYY-MM-DD) into a UNIX timestamp

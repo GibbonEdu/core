@@ -21,25 +21,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Form;
 
 use Gibbon\core\view ;
-use Gibbon\core\helper ;
 
 /**
- * Hidden Element
+ * Radio Element
  *
- * @version	17th September 2016
- * @since	21st April 2016
+ * @version	18th September 2016
+ * @since	17th May 2016
  * @author	Craig Rayner
-
  * @package	Gibbon
- * @subpackage	Form
-*/
-class hidden extends element
+ */
+class radio extends select
 {
 	/**
 	 * Constructor
 	 *
-	 * @version	17th September 2016
-	 * @since	20th April 2016
+	 * @version	18th September 2016
+	 * @since	17th May 2016
 	 * @param	string		$name
 	 * @param	mixed		$value
 	 * @param	Gibbon\core\view	$view
@@ -48,21 +45,40 @@ class hidden extends element
 	public function __construct($name = null, $value = null, view $view)
 	{
 		parent::__construct($name, $value, $view);
-		$this->element->name = 'hidden';
 		if ($name !== NULL) $this->name = $name;
-		if ($value !== NULL) $this->value = $this->view->htmlPrep($value); ;
-		$this->setID();
+		if ($value !== NULL) $this->value = $value ;
+		$this->hideDisplay = false ;
+		$this->required = false;
+		$this->element->name = 'radio';
+		$this->checked = false ;
 	}
-	
+
 	/**
-	 * render Return
+	 * add Option
+	 *
+	 * @version	9th August 2016
+	 * @since	9th August 2016
+	 * @param	mised	$display Value
+	 * @param	mixed	$value
+	 * @param	string	$class	Option Class
+	 * @return  stdClass
+	 */
+	public function addOption($display, $value = null, $class = null)
+	{
+		$option = parent::addOption($display, $value, $class);
+		$option->id = '_' . $this->name . '_' . $value;
+		return $option ;
+	}
+
+	/**
+	 * set Checked
 	 *
 	 * @version	18th September 2016
 	 * @since	18th September 2016
-	 * @return 	html
+	 * @return  void
 	 */
-	public function renderReturn()
+	public function setChecked()
 	{
-		return $this->view->renderReturn('form.hidden', $this);
+		$this->checked = true ;
 	}
 }

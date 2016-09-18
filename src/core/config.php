@@ -260,7 +260,7 @@ class config
 			$this->system->$scope = new stdClass();
 		$this->system->$scope->$name = $value;
 		$pdo = new setting($this->getView());
-		$record = $pdo->findOneBy( array("scope" => $scope, "name" => $name));
+		$record = $pdo->findOneBy(array("scope" => $scope, "name" => $name));
 		$ok = true ;
 		if ($pdo->getField('value') != $value)
 		{

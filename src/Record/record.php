@@ -38,7 +38,8 @@ use Gibbon\core\fileManager ;
  */
 abstract class record implements recordInterface
 {
-	use \Gibbon\core\functions\developmentFunctions ;
+	use \Gibbon\core\functions\developmentFunctions,
+		\Gibbon\core\functions\dateFunctions ;
 	/**
 	 * @var	sqlConnection	$pdo	Gibbon SQL
 	 */
@@ -715,7 +716,7 @@ abstract class record implements recordInterface
 	/**
 	 * set Field
 	 *
-	 * @version	9th September 2016
+	 * @version	19th September 2016
 	 * @since	26th July 2016
 	 * @param	string		$fieldName
 	 * @param	mixed		$fieldValue
@@ -778,7 +779,7 @@ abstract class record implements recordInterface
 				if (! in_array($fieldValue, $options)) $fieldValue = false ;
 				break;
 			case 'date':
-				$fieldValue = helper::dateConvert($fieldValue);
+				$fieldValue = $this->dateConvert($fieldValue);
 				$options =array("options" => array("regexp" => $this->session->get('i18n.dateFormatRegEx')));
 				if (empty($fieldValue) || $fieldValue === '0000-00-00' && $column->Null == 'YES')
 					$fieldValue =  null;

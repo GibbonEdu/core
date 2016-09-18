@@ -215,7 +215,20 @@ else {
                     $_SESSION[$guid]['receiveNotificationEmails'] = $row['receiveNotificationEmails'];
                     $_SESSION[$guid]['gibbonHouseID'] = $row['gibbonHouseID'];
 					$_SESSION[$guid]['security']['lastPageTime'] = strtotime('now');
-					$_SESSION[$guid]['security']['sessionDeuration'] = 1200;
+ 
+					$row = 0 ;
+					try {
+						$data = array('scope' => 'System', 'name' => 'sessionDuration');
+						$sqlLanguage = 'SELECT `value` FROM `gibbonSetting` WHERE `scope` = scope AND `name` = :name';
+						$result = $connection2->prepare($sql);
+						$result->execute($data);
+					} catch (PDOException $e) {
+					}
+					if ($result->rowCount() == 1) {
+						$row = $result->fetchColumn();
+					}
+					$_SESSION[$guid]['security']['sessionDuration'] = $row > 0 ? $row : 1200 ;
+
   
                     //Allow for non-system default language to be specified from login form
                     if (@$_POST['gibboni18nID'] != $_SESSION[$guid]['i18n']['gibboni18nID']) {

@@ -43,7 +43,7 @@ if ( ! defined( 'GIBBON_ROOT' ) )
 	define('GIBBON_URL', $pageURL);
 }
 
-if (defined('GIBBON_NEW')) define('GIBBON_NEW', true);
+if (! defined('GIBBON_NEW')) define('GIBBON_NEW', true);
 
 require GIBBON_ROOT . 'vendor/autoload.php';
 

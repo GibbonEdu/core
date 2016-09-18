@@ -34,7 +34,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$this->h2('Messenger Settings');
 	$form = $this->getForm(GIBBON_ROOT . "modules/School Admin/messengerSettingsProcess.php", array(), true);
-	$form->startWell();
 	$form->addElement('h3', null, 'SMS Settings');
 	
 	$el = $form->addElement('info', null, 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.');
@@ -60,9 +59,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->value = $this->htmlPrep($el->value);
 	$el->setMaxLength(250); 
 
-	$form->endWell();
-	$form->startWell();
-
 	$form->addElement('h3', null, 'Message Wall Settings');
 
 	$el = $form->addElement('select', null);
@@ -84,7 +80,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('number', null);
 	$el->injectRecord($this->config->getSetting('messageRepeatTime', 'Messenger'));
 
-	$form->endwell(true);
-
+	$form->addElement('submitBtn', null);
+	
 	$form->render();
 }
