@@ -299,10 +299,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
                 } else {
                     $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                     if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
-                        echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
+                        echo $messageBubbleBGColour = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColour');
                         $bubbleBG = '';
-                        if ($messageBubbleBGColor != '') {
-                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
+                        if ($messageBubbleBGColour != '') {
+                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColour.')!important';
                             $return .= '<style>';
                             $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
                             $return .= '</style>';

@@ -19,12 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Exception ;
 /**
  * Translation Class
  *
  * @version	16th April 2016
  * @since	16th April 2016
  * @author	Craig Rayner
+ * @package	Gibbon
+ * @subpackage	Old
+ * @deprecated
  */
 class trans
 {
@@ -41,12 +45,14 @@ class trans
 	/**
 	 * Construct
 	 *
-	 * @version 22nd June 2016
+	 * @version 18th September 2016
 	 * @since	16th April 2016
 	 * @return	void
 	 */
 	public function __construct()
 	{
+		if (defined('GIBBON_NEW')) 
+			throw new Exception('Called the old translator from a new script!'); 
 		$this->session = new session();
 	}
 

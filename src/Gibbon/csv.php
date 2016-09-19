@@ -24,6 +24,9 @@ namespace Gibbon;
  * @version	19th April 2016
  * @since	14th April 2016
  * @author	Craig Rayner
+ * @package	Gibbon
+ * @subpackage	Old
+ * @deprecated
  */
 class csv
 {

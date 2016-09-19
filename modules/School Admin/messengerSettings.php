@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Messenger' AND name='messageBubbleBGColor'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Messenger' AND name='messageBubbleBGColour'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {}
