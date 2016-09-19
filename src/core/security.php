@@ -39,7 +39,7 @@ use Gibbon\Record\person ;
  * Security Manager
  *
  * Provides Security Methods for Gibbon
- * @version	9th September 2016
+ * @version	19th September 2016
  * @since	21st April 2016
  */
 class security 
@@ -181,7 +181,7 @@ class security
 	/**
 	 * Is Action Accessible
 	 *
-	 * @version	9th July 2016
+	 * @version	19th September 2016
 	 * @since	Copy from functions.php
 	 * @param	string		$address Address to test
 	 * @param	string		$sub Sub Action
@@ -232,6 +232,7 @@ class security
 			}
 		} else {
 			logger::__('The Username was not set correctly', 'Debug', 'Security', array('username' => $session->get("username")), $pdo);
+			$this->getView()->insertMessage('You need to be authenticated to access the page requested.', 'warning', false, 'loginFlash') ;
 		}
 		// If successfully, then this section of code is not reached.
 		if (! empty($message)) $this->getView()->displayMessage($message) ;

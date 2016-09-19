@@ -1,6 +1,5 @@
 <?php
 use Gibbon\core\trans ;
-use Gibbon\core\helper ;
 use Gibbon\Record\schoolYear ;
 
 // Add Google Login Button
@@ -13,10 +12,15 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 		<div id="siteloader"><?php include GIBBON_ROOT . '/lib/google/index.php'; ?></div>
 		<?php
 	} //End Check for Google Auth
+	
 	if ($this->session->isEmpty("username")){ // If Google Auth set to No make sure login screen not visible when logged in
 		$link = array();
 		if (isset($_GET["q"])) $link['q'] = $_GET['q'];
 		$this->h2(trans::__("Login"));
+
+		$el =  new stdClass();
+		$el->target = 'loginFlash';
+		$this->render('default.flash', $el);
 		
 		$form = $this->getForm(null, array('q'=>'/modules/Security/login.php'), true);
 		$form->setName('login');
@@ -48,7 +52,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 		$el->value = '';
 		foreach($years as $year)
 		{
-			$el->addOption($this->view->htmlPrep($year->getField('name')), $year->getField('gibbonSchoolYearID'));
+			$el->addOption($this->htmlPrep($year->getField('name')), $year->getField('gibbonSchoolYearID'));
 			if ( $year->getField('status') === "Current") 
 				$el->value = $year->getField('gibbonSchoolYearID');
 		}
@@ -83,6 +87,6 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 		$el = $form->addElement('submitBtn', null, 'Login');
 		$el->description = '';
 
-		$form->renderForm('login');
+		$form->render('login');
 	}
 }

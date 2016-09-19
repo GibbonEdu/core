@@ -8,19 +8,18 @@
                 	<div class="col-lg-6">
                     	<div id="header-finder">
                     	<?php 
-                        $finder =  new Gibbon\core\finder($this);
-                        $x = $finder->getFastFinder();
-						if ($x->output) echo "<p>".Gibbon\core\trans::__('Total Student Enrolment: %d', array($x->studentCount))."</p>" ; ?>
-                        </div>  
+                        new Gibbon\Menu\main($this);
+                        $x = $this->session->get("display.studentFastFinder");
+						if (isset($x->output) && $x->output) echo "<p>".Gibbon\core\trans::__('Total Student Enrolment: %d', array($x->studentCount))."</p>" ; ?>
+                        </div><!-- home.header.hedaer-finder --> 
                     </div>
                 </div>
                 <div class="row">
                     <div id="header-menu" >
                         <?php 
-                            new Gibbon\Menu\main($this);
                             //Get main menu
-                            echo  $this->session->notEmpty("mainMenu") ? $this->session->get("mainMenu") : null ;
+                            echo  $this->session->notEmpty("display.menu.main.content") ? $this->session->get("display.menu.main.content") : '' ;
                         ?>
-                    </div>
+                    </div><!-- home.header.hedaer-menu --> 
                 </div>
             </div>

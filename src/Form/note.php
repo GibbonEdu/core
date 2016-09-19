@@ -23,22 +23,21 @@ namespace Gibbon\Form;
 use Gibbon\core\view ;
 
 /**
- * Password Element
+ * Note Element
  *
  * @version	19th September 2016
- * @since	20th April 2016
+ * @since	15th June 2016
  * @author	Craig Rayner
-
  * @package	Gibbon
- * @subpackage	Form
-*/
-class password extends text
+ * @subpackag	Form
+ */
+class note extends element
 {
 	/**
 	 * Constructor
 	 *
 	 * @version	19th September 2016
-	 * @since	20th April 2016
+	 * @since	15th June 2016
 	 * @param	string		$name
 	 * @param	mixed		$value
 	 * @param	Gibbon\core\view	$view
@@ -47,22 +46,11 @@ class password extends text
 	public function __construct($name = null, $value = null, view $view)
 	{
 		parent::__construct($name, $value, $view);
-		if ($name !== NULL)
-			$this->name = $name;
-		if ($value !== NULL)
-			$this->value = $value;
-		$this->maxlength = NULL;
-		$this->element->name = 'password';
-		$this->validate = new \stdClass();  // or false
-		$this->validate->Presence = true;  // or false
-		$this->validate->Format = false;  // or false
-		$this->validate->Numericality = false;   // or true
-		$this->validate->numberMinimum = NULL;   // or a number
-		$this->validate->pattern = "";	// REGEX pattern to match
-		$this->validate->formatMessage = "";  // Prompt for format
-		$this->validate->onlyOnSubmit = false;  // Prompt for format
-		$this->required = false;
-		$this->readOnly = false;
-		$this->id = '_' . $this->name ;
+		$this->name = $name ;
+		$this->value = $value ;
+		$this->element->name = 'note';
+		$this->title = null;
+		$this->titleParameters = array();
+		$this->valueParameters = array();
 	}
 }

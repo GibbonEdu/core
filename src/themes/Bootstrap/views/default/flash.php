@@ -1,10 +1,9 @@
 <?php
-if ( empty($params)) 
+if ( empty($el)) 
 {
-	$params = new stdClass();
-	$params->target = 'flash';
+	$el = new stdClass();
+	$el->target = 'flash';
 }
-$this->getReturn();
-echo $this->session->get($params->target);
-$this->session->clear($params->target);
-?>
+$this->getReturn();  // Old stuff
+echo $this->session->get($el->target);
+$this->session->clear($el->target);

@@ -124,6 +124,13 @@ class theme extends record
 			if (file_exists($this->session->get('theme.path').'settings.yml'))
 				$this->session->set('theme.settings', Yaml::parse(file_get_contents($this->session->get('theme.path').'settings.yml')));
 		}
+		if (in_array($this->record->name, array('Curves')))
+		{
+			$this->session->set("gibbonThemeID", 0013) ;
+			$this->session->set("gibbonThemeName", 'Default') ;
+			$this->session->set("gibbonThemeAuthor", 'Ross Parker') ;
+			$this->session->set("gibbonThemeURL", 'http://rossparker.org/') ;
+		}
 	}
 
 	/**

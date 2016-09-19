@@ -28,7 +28,7 @@ use stdClass ;
 /**
  * Main Menu Class
  *
- * @version	26th April 2016
+ * @version	19th September 2016
  * @since	22nd April 2016
  * @author	Ross Parker
  * @package	Gibbon
@@ -39,14 +39,16 @@ class main extends menu
 	/**
 	 * Construct and store main menu in session
 	 *
-	 * @version 26th April 2016
+	 * @version 19th September 2016
 	 * @since	Moved from /functions.php
 	 * @return	HTML	Menu
 	 */
 	public function setMenu()
 	{
-		if ($this->session->get('refreshCache')) {
-		
+		$el = $this->session->get('display.menu.main');
+		if (empty($el['refresh']) || --$el['refresh'] < 1) {
+
+			$this->session->clear('display.studentFastFinder');	
 			$menu="" ;
 	
 			if ($this->session->isEmpty("gibbonRoleIDCurrent")) {
@@ -105,13 +107,16 @@ class main extends menu
 				}
 			}
 			
-			$this->session->set("mainMenu", $menu);
+			$this->session->set('display.menu.main.style', 'Bootstrap');
+			$this->session->set('display.menu.main.refresh', $this->view->getConfig()->get('cache', 15));
+			$this->session->set('display.menu.main.content', $menu);
 			$this->menu = $menu ;
 		}
 		else
-			$this->menu = $this->session->get("mainMenu");
-
-		$this->session->set('lastMainMenu', 'Bootstrap');
+		{
+			$this->session->plus('display.menu.main.refresh', -1);
+			$this->menu = $this->session->get('display.menu.main.content');
+		}
 		return $this->menu ;
 	}
 }

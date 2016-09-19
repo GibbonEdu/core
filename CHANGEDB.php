@@ -462,5 +462,6 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'System', 'mailerFromName', 'From Name', 'The name of the person or organisation from which the email is sent.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'System', 'mailerSMTPSecure', 'Secure Transport Protocol', '', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'defaultLanguage', 'Default Language', 'Sets the default system Language.  This default can be over-ridden by individual users.', 'en_GB');end
+CREATE TABLE IF NOT EXISTS `gibbonPasswordReset` (`gibbonPasswordResetID` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL, `token` varchar(64) COLLATE utf8_unicode_ci NOT NULL, `requestTime` int(16) NOT NULL, PRIMARY KEY (`gibbonPasswordResetID`),UNIQUE KEY `personID` (`gibbonPersonID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Store Password Reset Requests';end
 
 ";

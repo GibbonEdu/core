@@ -1,6 +1,6 @@
 <?php
 $finder =  new Gibbon\core\finder($this);
-$params = json_decode($this->session->get("display.studentFastFinder")); 
+$params = $finder->getFastFinder();
 
 if ($this->getSecurity()->getRoleCategory($this->session->get("gibbonRoleIDCurrent")) == "Staff") 
 	$search = Gibbon\core\trans::__('%d Student Count', array($params->studentCount));
@@ -31,4 +31,4 @@ if ($params->output)
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-</div>
+</div><!-- menu.main.end -->

@@ -29,10 +29,10 @@ use stdClass ;
 /**
  * Main menu building Class
  *
- * @version	24th April 2016
+ * @version	19th September 2016
  * @since	24th April 2016
  * @author	Craig Rayner
- * @package	Gibbon
+ * @package		Gibbon
  * @subpackage	Menu
  */
 class minorLinks extends menu
@@ -41,15 +41,14 @@ class minorLinks extends menu
 	 * set Menu
 	 * 
 	 * was getMinorLinks
-	 * @version	24th April 2016
+	 * @version	19th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
 	public function setMenu() {
 		
-		if ($this->menu !== NULL)
-			return $this->menu ;
-		if ($this->session->get('refreshCache'))
+		$el = $this->session->get('display.menu.minorLinks', array());
+		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']))
 		{
 			$security = $this->view->getSecurity();
 			$return  = '';
@@ -69,15 +68,15 @@ class minorLinks extends menu
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" . trans::__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" . trans::__( 'Preferences') . "</a>" ;
+				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" . trans::__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" . trans::__('Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" . trans::__( 'Email') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" . trans::__('Email') . "</a>" ;
 				}
 				if ($this->session->get("webLink")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " . trans::__( 'Website') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " . trans::__('Website') . "</a>" ;
 				}
 				if ($this->session->get("website")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" . trans::__( 'My Website') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" . trans::__('My Website') . "</a>" ;
 				}
 				
 				$return .= $this->showLikes();
@@ -87,11 +86,18 @@ class minorLinks extends menu
 				$return .= $this->messageWall();
 				
 			}
-			$this->menu = $return ;
+
+			$this->session->set('display.menu.minorLinks.refresh', $this->view->getConfig()->get('cache', 15));
+			if (empty($return)) 
+				$this->session->set('display.menu.minorLinks.refresh', 0);
+			$this->session->set('display.menu.minorLinks.content', $return);
 			$this->session->set('menuMinorLinks', $this->menu);
 		}
 		else
-			$this->menu = $this->session->get('menuMinorLinks');
+		{
+			$this->session->plus('display.menu.minorLinks.refresh', -1);
+		}
+		$this->menu = $this->session->get('display.menu.minorLinks', array());
 		return $this->menu ;
 	}
 

@@ -83,34 +83,13 @@ class finder
 	{
 		//Show student and staff quick finder
 		$this->el = new \stdClass();
-		if ($this->session->isEmpty("username")) {
-			$this->el->output = false;
-			$this->el->refresh = 0;
-			return $this->el ;
-		}
-		$x = json_decode($this->session->get("display.studentFastFinder"));
-		if (empty($x)) 
-		{
-			$x = new \stdClass();
-			$x->output = false;
-			$x->refresh = 0;
-		}
-		if (empty($x->refresh)) $x->refresh = 0;
-		if ($this->session->get('refreshCache') && $x->refresh < 1) {
-			$this->el->output = false;
-			$this->session->set("display.studentFastFinder", json_encode($this->el)) ;
-		}
-		if ($x->output) {
-			$x->refresh--;
-			$this->session->set("display.studentFastFinder", json_encode($x)) ;
-			return $x ;
-		}
+		
 		$security = $this->view->getSecurity();
 
-		$this->el->studentIsAccessible = $this->view->getSecurity()->isActionAccessible("/modules/students/student_view.php", null, '') ;
-		$this->el->staffIsAccessible = $this->view->getSecurity()->isActionAccessible("/modules/Staff/staff_view.php", null, '') ;
+		$this->el->studentIsAccessible = $security->isActionAccessible("/modules/students/student_view.php", null, '') ;
+		$this->el->staffIsAccessible = $security->isActionAccessible("/modules/Staff/staff_view.php", null, '') ;
 		$this->el->classIsAccessible = false ;
-		$this->el->highestActionClass = $this->view->getSecurity()->getHighestGroupedAction("/modules/Planner/planner.php") ;
+		$this->el->highestActionClass = $security->getHighestGroupedAction("/modules/Planner/planner.php") ;
 		if ($this->view->getSecurity()->isActionAccessible("/modules/Planner/planner.php", null, '') AND $this->el->highestActionClass!="Lesson Planner_viewMyChildrensClasses") 
 			$this->el->classIsAccessible = true ;
 
@@ -189,8 +168,11 @@ class finder
 		}
 		$this->el->list = json_encode($this->el->list);
 		$this->el->output = true ;
-		$this->el->refresh = 15;
-		$this->session->set("display.studentFastFinder", json_encode($this->el)) ;
+		if (empty($this->el->studentCount) || $this->el->studentCount < 0)
+		{
+			$this->el->output = false;
+		}
+		$this->session->set("display.studentFastFinder", $this->el) ;
 		return $this->el ;
 	}
 }

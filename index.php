@@ -240,7 +240,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     $resultTheme->execute($dataTheme);
                     if ($resultTheme->rowCount() == 1) {
                         $rowTheme = $resultTheme->fetch();
-                        $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
+                       	$_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
                         if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
                             $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css' />";
                         }
@@ -256,6 +256,19 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     echo '</div>';
                 }
             }
+			if (in_array($_SESSION[$guid]['gibbonThemeName'], array('Curves'))) 
+			{
+				// Bootstrap is a copy of Default for old scripts.
+                        $_SESSION[$guid]['gibbonThemeID'] = '0013';
+                        $_SESSION[$guid]['gibbonThemeName'] = 'Default';
+                        $_SESSION[$guid]['gibbonThemeAuthor'] = 'Ross Parker';
+                        $_SESSION[$guid]['gibbonThemeURL'] = 'http://rossparker.org/';
+				$_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />";
+				if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
+					$_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />";
+				}
+				$_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
+			}
 
     		echo $_SESSION[$guid]['themeCSS'];
     		echo $_SESSION[$guid]['themeJS'];
