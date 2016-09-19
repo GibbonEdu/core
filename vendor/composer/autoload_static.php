@@ -7,20 +7,81 @@ namespace Composer\Autoload;
 class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
 {
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Component\\Yaml\\' => 23,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+            'Module\\User_Admin\\' => 18,
+            'Module\\System_Admin\\' => 20,
+            'Module\\School_Admin\\' => 20,
+            'Module\\' => 7,
+        ),
         'L' => 
         array (
             'Library\\' => 8,
         ),
         'G' => 
         array (
+            'Gibbon\\core\\' => 12,
+            'Gibbon\\controller\\' => 18,
+            'Gibbon\\Record\\' => 14,
+            'Gibbon\\Menu\\' => 12,
+            'Gibbon\\Form\\' => 12,
             'Gibbon\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Component\\Yaml\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Module\\User_Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules/User Admin',
+        ),
+        'Module\\System_Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules/System Admin',
+        ),
+        'Module\\School_Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules/School Admin',
+        ),
+        'Module\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules',
+        ),
         'Library\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Library',
+        ),
+        'Gibbon\\core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/core',
+        ),
+        'Gibbon\\controller\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/controller',
+        ),
+        'Gibbon\\Record\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Record',
+        ),
+        'Gibbon\\Menu\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Menu',
+        ),
+        'Gibbon\\Form\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Form',
         ),
         'Gibbon\\' => 
         array (
@@ -28,11 +89,34 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'Psr\\Log\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/psr/log',
+            ),
+        ),
+    );
+
+    public static $classMap = array (
+        'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
+        'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
+        'PHPMailerOAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauth.php',
+        'PHPMailerOAuthGoogle' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauthgoogle.php',
+        'POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.pop3.php',
+        'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
+        'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
+        'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$classMap;
 
         }, null, ClassLoader::class);
     }

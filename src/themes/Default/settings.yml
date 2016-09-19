@@ -1,0 +1,472 @@
+# Default Settings for Default Theme.
+name: Default
+form:
+    standard:
+        select:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        radio:
+            row:
+            col1:
+            col2:
+                class: right
+            span: 
+                class: emphasis small
+        optGroup:
+            row:
+            col1:
+            col2:
+                class: right
+            span: 
+                class: emphasis small
+        h3:
+            row: 
+                class: break 
+            oneColumn: 1
+        note:
+            span: 
+                class: emphasis small
+            oneColumn: 1
+            row:
+                class: default 
+        rawElement:
+            span: 
+                class: emphasis small
+            oneColumn: 1
+            row:
+                class: default 
+        warning:
+            span: 
+                class: emphasis small
+            oneColumn: 1
+            row:
+                class: warning 
+        success:
+            span: 
+                class: emphasis small
+            oneColumn: 1
+            row:
+                class: success 
+        info:
+            span: 
+                class: emphasis small
+            oneColumn: 1
+            row:
+                class: info 
+        error:
+            span: 
+                class: emphasis small
+            oneColumn: 1
+            row:
+                class: error
+        submit:
+            row:
+            span:
+                class: emphasis small
+            description: "* denotes a required field."
+            col1: 
+            col2: 
+                class: right 
+        deleteBtn:
+            row:
+            span:
+                class: emphasis small
+            col1: 
+            col2: 
+                class: right 
+        text:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        photo:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        file:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        spreadsheet:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        zipFile:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        audio:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        free:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        date:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        time:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+            hour:
+                element: 
+                    style: 'width: 150px;'
+            minute:
+                element:
+                    style: 'width: 150px;'
+        url:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        password:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        checkbox:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+            span: 
+                class: emphasis small
+        well:
+            start: ''
+            end: ''
+        textArea:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        editor:
+            row:
+            oneColumn: 1
+            col2:
+            element: 
+            span: 
+                class: emphasis small
+        combo:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        multiple:
+            row:
+            oneColumn: 1
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        phone:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        yesno:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        truefalse:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        onoff:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+    login:
+        select:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                style: 'width: 120px'
+            span: 
+                class: emphasis small
+        text:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                style: 'width: 120px'
+            span: 
+                class: emphasis small
+        password:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                style: 'width: 120px'
+            span: 
+                class: emphasis small
+        submit:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                style: 'width: 120px'
+            span: 
+                class: emphasis small
+        note:
+            oneColumn: 1
+            col2:
+                class: right
+            span: 
+                style: 'font-size: 10px; '
+        colour:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        rgba:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        yesno:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+    noIntBorder:
+        role: form 
+        text:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        select:
+            row:
+            col1:
+            col2:
+                class: right
+            element: 
+                class: standardWidth
+            span: 
+                class: emphasis small
+        submit: 
+            element:
+        reset: 
+            element:
+        buttons:
+            oneColumn: 1
+            col2:
+                class: right
+            success: success
+            info: info
+            default: default
+            warning: warning 
+    nothing:
+        role: form
+css:
+    1: /lib/jquery-ui/css/blitzer/jquery-ui.css
+    2: /lib/thickbox/thickbox.css
+    3: /lib/jquery-tokeninput/styles/token-input-facebook.css
+    4: /src/themes/{{themeName}}/css/main.css 
+js:
+    1: /lib/LiveValidation/livevalidation_standalone.compressed.js
+    2: /vendor/components/jquery/jquery.min.js
+    3: /lib/jquery/jquery-migrate.min.js
+    4: /vendor/components/jqueryui/jquery-ui.min.js
+    5: /lib/jquery-autosize/jquery.autosize.min.js
+    6: /lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js
+    7: /lib/jquery-jslatex/jquery.jslatex.js
+    8: /lib/jquery-form/jquery.form.js
+    9: /lib/chained/jquery.chained.mini.js
+    10: /lib/thickbox/thickbox-compressed.js
+    11: /vendor/tinymce/tinymce/tinymce.min.js
+    12: /lib/jquery-tokeninput/src/jquery.tokeninput.js
+    13: /src/themes/Default/js/common.js
+validation:
+    asScript: 1
+    Presence: ' {{id}}.add(Validate.Presence); '
+    Email: ' {{id}}.add(Validate.Email); '
+    Format: ' {{id}}.add(Validate.Format, { pattern: /{{pattern}}/, failureMessage: "{{message}}" } );'
+    URL: ' {{id}}.add(Validate.Format, { pattern: /^(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/, failureMessage: "{{message}}" } );'
+    Confirmation: " {{id}}.add(Validate.Confirmation, { match: '_{{confirm}}' } );"
+    Length: ' {{id}}.add( Validate.Length, { minimum: "{{minLength}}" maximum: "{{maxLength}}", failureMessage: "{{message}}" });'  
+    Numericality: ' {{id}}.add( Validate.Numericality, {failureMessage: "{{message}}", {{onlyInteger}} minimum: {{minValue}}, maximum: {{maxValue}}});' 
+    Inclusion:  ' {{id}}.add( Validate.Inclusion, {failureMessage: "{{message}}", within: [{{within}}]{{partialMatch}}{{caseSensitive}} } );' 
+    Exclusion:  ' {{id}}.add( Validate.Exclusion, {failureMessage: "{{message}}", within: ["{{within}}"]{{extras}} } );'
+datepicker: 1
+# Default
+links:
+    delete:
+        title: Delete
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/garbage.png'/>"
+    uninstall:
+        title: Uninstall
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/garbage.png'/>"
+    edit: 
+        title: Edit
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/config.png'/>"
+    view details: 
+        title: View Details
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/plus.png'/>"
+    update:
+        title: Edit
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/delivery2.png'/>"
+    install:
+        title: Install
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new.png'/>"
+    add:
+        title: Add
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new.png'/>"
+    insert:
+        title: Insert
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new.png'/>"
+    duplicate:
+        title: Duplicate
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/copy.png'/>"
+    change password: 
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/key.png'/>"
+        title: Change Password
+    next:
+        title: Next
+        prompt: ''
+    last:
+        title: Last
+        prompt: ''
+    action:
+        title: Action
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/plus.png'/>"
+    insert existing resource:
+        title: Insert Existing Resource
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/search_mini.png'  onclick='return false;' />"
+    create insert new resource:
+        title: 'Create & Insert New Resource'
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/upload_mini.png'  onclick='return false;' />"
+    quick add:
+        title: Quick Add
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new_mini.png'  onclick='return false;' />"
+linkTop:
+    add:
+        imageName: page_new.png
+        name: Add
+    insert:
+        imageName: plus.png
+        name: Insert
+    edit: 
+        name: Edit
+        imageName: config.png
+    copy all to next year:
+        imageName: copy.png
+        name: Copy All To Next Year
+    back to search results:
+        imageName: reincarnate.png
+        name: Back to Search Results
+    close:
+        imageName: iconCross.png
+        name: Close
+script:
+    display: table-row
