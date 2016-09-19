@@ -54,6 +54,6 @@ trait stringFunctions
 	 */
 	public function sanitiseAnchor($dirty)
 	{
-		return str_replace(array(' ', '.'), '', filter_var($dirty, FILTER_SANITIZE_STRING));
+		return '__' . str_replace(array(' ', '.'), '', filter_var($dirty, FILTER_SANITIZE_STRING));
 	}
 }
