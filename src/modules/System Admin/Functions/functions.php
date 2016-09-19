@@ -34,6 +34,11 @@ use Gibbon\core\trans ;
  */
 class functions extends mFBase
 {
+	/**
+	 * @var	string	Install Path
+	 */
+	private $installPath = GIBBON_ROOT ;
+	
 	//Sets the sequence numbers appropriately for a given first day of the week (either Sunday or Monday)
 	function setFirstDayOfTheWeek($fdotw)
 	{
@@ -44,44 +49,46 @@ class functions extends mFBase
 		}
 		else {
 			//Remove index on sequenceNumber
-			$dataIndex=array("databaseName"=>$this->config->get('dbName')); 
-			$sqlIndex="SELECT * FROM information_schema.statistics WHERE table_schema=:databaseName AND table_name='gibbonDaysOfWeek' AND column_name='sequenceNumber'" ;
+			$dataIndex = array("databaseName"=>$this->config->get('dbName')); 
+			$sqlIndex = "SELECT * FROM information_schema.statistics WHERE table_schema=:databaseName AND table_name='gibbonDaysOfWeek' AND column_name='sequenceNumber'" ;
 			$resultIndex = $this->pdo->executeQuery($dataIndex, $sqlIndex);
-			if ($resultIndex->rowCount()==1)
+			if ($resultIndex->rowCount() == 1)
 			{
-				$sqlIndex="ALTER TABLE gibbonDaysOfWeek DROP INDEX sequenceNumber" ;
-				$resultIndex=$this->pdo->executeQuery(array(), $sqlIndex, '{message}');
+				$sqlIndex = "ALTER TABLE gibbonDaysOfWeek DROP INDEX sequenceNumber" ;
+				$resultIndex = $this->pdo->executeQuery(array(), $sqlIndex, '{message}');
 			}	
 			if (! $this->pdo->getQuerySuccess()) $return = false;
 			
-			$nameShort="" ;
+			$nameShort = "" ;
 			for ($i=1; $i<=7; $i++) {
 				if ($fdotw=="Monday") {
 					switch ($i) {
-						case 1: { $nameShort="Mon" ; break; }
-						case 2: { $nameShort="Tue" ; break; }
-						case 3: { $nameShort="Wed" ; break; }
-						case 4: { $nameShort="Thu" ; break; }
-						case 5: { $nameShort="Fri" ; break; }
-						case 6: { $nameShort="Sat" ; break; }
-						case 7: { $nameShort="Sun" ; break; }
+						case 1: { $nameShort ="Mon" ; break; }
+						case 2: { $nameShort ="Tue" ; break; }
+						case 3: { $nameShort ="Wed" ; break; }
+						case 4: { $nameShort ="Thu" ; break; }
+						case 5: { $nameShort ="Fri" ; break; }
+						case 6: { $nameShort ="Sat" ; break; }
+						case 7: { $nameShort ="Sun" ; break; }
 					}
 				}
 				else
 				{
 					switch ($i) {
-						case 1: { $nameShort="Sun" ; break; }
-						case 2: { $nameShort="Mon" ; break; }
-						case 3: { $nameShort="Tue" ; break; }
-						case 4: { $nameShort="Wed" ; break; }
-						case 5: { $nameShort="Thu" ; break; }
-						case 6: { $nameShort="Fri" ; break; }
-						case 7: { $nameShort="Sat" ; break; }
+						case 1: { $nameShort ="Sun" ; break; }
+						case 2: { $nameShort ="Mon" ; break; }
+						case 3: { $nameShort ="Tue" ; break; }
+						case 4: { $nameShort ="Wed" ; break; }
+						case 5: { $nameShort ="Thu" ; break; }
+						case 6: { $nameShort ="Fri" ; break; }
+						case 7: { $nameShort ="Sat" ; break; }
 					}
 				}
 			}
-			$dataDOTW=array("sequenceNumber"=>$i, "nameShort"=>$nameShort); 
-			$sqlDOTW="UPDATE gibbonDaysOfWeek SET sequenceNumber=:sequenceNumber WHERE nameShort=:nameShort" ;
+			$dataDOTW=array("sequenceNumber" => $i, "nameShort" => $nameShort); 
+			$sqlDOTW="UPDATE `gibbonDaysOfWeek` 
+				SET sequenceNumber=:sequenceNumber 
+				WHERE nameShort=:nameShort" ;
 			$resultDOTW=$this->pdo->executeQuery($dataDOTW, $sqlDOTW, '{message}');
 			if (! $this->pdo->getQuerySuccess() ) $reurn = false;
 			
@@ -118,5 +125,17 @@ class functions extends mFBase
 	function getCurrentVersion() {
 		
 		return $this->view->renderReturn('update.version');
+	}
+	
+	/**
+	 * get Install Path
+	 *
+	 * @version	19th September 2016
+	 * @since	19th September 2016
+	 * @return	string
+	 */
+	function getInstallPath() {
+		
+		return $this->installPath;;
 	}
 }

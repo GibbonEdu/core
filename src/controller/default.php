@@ -30,18 +30,12 @@ $v13 = array();
 $q = isset($_GET['q']) ? $_GET['q'] : '' ;
 $v13 = array
 	(
-		'/modules/System Admin/systemSettings',
-		'/modules/System Admin/module_manage',
+		'/modules/System Admin/',
 		'/modules/Translation/',
 		'/modules/Security/',
 		'/modules/Notifications/',
 		'/modules/User Admin/preferences',
 		'/modules/School Admin/messengerSettings',
-		'/modules/System Admin/thirdPartySettings',
-		'/modules/System Admin/stringReplacement_manage',
-		'/modules/System Admin/i18n_manage',
-		'/modules/System Admin/theme_manage',
-		'/modules/System Admin/alarm',
 	);
 
 /*
