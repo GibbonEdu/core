@@ -41,6 +41,7 @@ $v13 = array
 		'/modules/System Admin/stringReplacement_manage',
 		'/modules/System Admin/i18n_manage',
 		'/modules/System Admin/theme_manage',
+		'/modules/System Admin/alarm',
 	);
 
 /*
