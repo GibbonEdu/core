@@ -18,9 +18,11 @@ use Gibbon\Menu\minorLinks;
         } else {
             print "<div class='minorLinks'>" ;
         }
-		$x = new minorLinks($this);
-		echo $x->setMenu();
-        print "</div>" ;
+		$x = new Gibbon\Menu\minorLinks($this);
+		$menu = $x->setMenu();
+		echo empty($menu['content']) ? '' : $menu['content'] ;
+
+        echo "</div>" ;
 		$this->render('home.wrap');
         ?>
     </div>

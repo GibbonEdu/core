@@ -104,6 +104,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['statsCollection']->returnRecord());
+	
+	$form->addElement('submitBtn', null, 'Submit All');
 
 	$form->addElement('h3', null, 'Organisation Settings');
 
@@ -190,7 +192,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['passwordPolicyNonAlphaNumeric']->returnRecord());
 
 
-	$form->endWell();
+	$form->endWell(true, 'Submit All');
 	$form->startWell();
 	$form->addElement('h4', null, 'Miscellaneous');
 
@@ -205,7 +207,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['allowableHTML']->returnRecord());
 
 
-	$form->endWell();
+	$form->endWell(true, 'Submit All');
 
 	$form->addElement('h3', null, 'gibbonedu.com Value Added Services');
 
@@ -271,6 +273,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 				$el->addOption($w, $q);
 		}
 	}
+
+	$form->addElement('submitBtn', null, 'Submit All');
 
 	$form->addElement('h3', null, 'Miscellaneous');
 
