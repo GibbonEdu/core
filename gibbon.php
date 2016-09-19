@@ -31,7 +31,6 @@ if (!defined('GIBBON_ROOT')) {
     define('GIBBON_ROOT', str_replace(array('/src', '\\src'), '', dirname(__FILE__)).'/');
 }
 
-
 require GIBBON_ROOT.'vendor/autoload.php';
 
 if (file_exists(GIBBON_ROOT.'config.php')) {

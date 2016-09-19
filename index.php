@@ -17,9 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Prevent breakage of back button on POST pages
-ini_set('session.cache_limiter', 'private');
-session_cache_limiter(false);
+include rtrim(__DIR__, '/').'/src/controller/default.php';
 
 //Gibbon system-wide includes
 if (file_exists('./config.php')) {
@@ -35,7 +33,7 @@ include './version.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start();
+//@session_start();
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -242,7 +240,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     $resultTheme->execute($dataTheme);
                     if ($resultTheme->rowCount() == 1) {
                         $rowTheme = $resultTheme->fetch();
-                        $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
+                       	$_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
                         if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
                             $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css' />";
                         }
@@ -258,6 +256,19 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     echo '</div>';
                 }
             }
+			if (in_array($_SESSION[$guid]['gibbonThemeName'], array('Curves'))) 
+			{
+				// Bootstrap is a copy of Default for old scripts.
+                        $_SESSION[$guid]['gibbonThemeID'] = '0013';
+                        $_SESSION[$guid]['gibbonThemeName'] = 'Default';
+                        $_SESSION[$guid]['gibbonThemeAuthor'] = 'Ross Parker';
+                        $_SESSION[$guid]['gibbonThemeURL'] = 'http://rossparker.org/';
+				$_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />";
+				if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
+					$_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />";
+				}
+				$_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
+			}
 
     		echo $_SESSION[$guid]['themeCSS'];
     		echo $_SESSION[$guid]['themeJS'];
@@ -377,7 +388,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						<div id="header-menu">
 							<?php
                                 //Get main menu
-                                if ($cacheLoad) {
+                                if ($cacheLoad || (isset($_SESSION[$guid]['lastMainMenu']) && $_SESSION[$guid]['lastMainMenu'])) {
                                     $mainMenu = new Gibbon\menuMain();
                                     $mainMenu->setMenu();
                                 }
@@ -693,4 +704,3 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 	<?php
 
 }
-?>

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     $smsURL = $_POST['smsURL'];
     $smsURLCredit = $_POST['smsURLCredit'];
     $messageBubbleWidthType = $_POST['messageBubbleWidthType'];
-    $messageBubbleBGColor = $_POST['messageBubbleBGColor'];
+    $messageBubbleBGColour = $_POST['messageBubbleBGColour'];
     $messageBubbleAutoHide = $_POST['messageBubbleAutoHide'];
     $enableHomeScreenWidget = $_POST['enableHomeScreenWidget'];
 
@@ -94,8 +94,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     }
 
     try {
-        $data = array('value' => $messageBubbleBGColor);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBubbleBGColor'";
+        $data = array('value' => $messageBubbleBGColour);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBubbleBGColour'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

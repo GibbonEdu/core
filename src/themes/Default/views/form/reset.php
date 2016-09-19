@@ -1,0 +1,1 @@
+<input<?php echo ! empty($el->element->class) ? ' class="'.$el->element->class.'"' : '' ; ?><?php echo ! empty($el->element->style) ? ' style="'.$el->element->style.'"' : '' ; ?> type="reset" value="<?php echo $el->value; ?>" name="<?php echo $el->name; ?>" id="<?php echo $el->id; ?>" /><!-- form.reset -->

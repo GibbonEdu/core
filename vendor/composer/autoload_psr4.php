@@ -6,6 +6,17 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Module\\User_Admin\\' => array($baseDir . '/src/modules/User Admin'),
+    'Module\\System_Admin\\' => array($baseDir . '/src/modules/System Admin'),
+    'Module\\School_Admin\\' => array($baseDir . '/src/modules/School Admin'),
+    'Module\\' => array($baseDir . '/src/modules'),
     'Library\\' => array($baseDir . '/src/Library'),
+    'Gibbon\\core\\' => array($baseDir . '/src/core'),
+    'Gibbon\\controller\\' => array($baseDir . '/src/controller'),
+    'Gibbon\\Record\\' => array($baseDir . '/src/Record'),
+    'Gibbon\\Menu\\' => array($baseDir . '/src/Menu'),
+    'Gibbon\\Form\\' => array($baseDir . '/src/Form'),
     'Gibbon\\' => array($baseDir . '/src/Gibbon'),
 );

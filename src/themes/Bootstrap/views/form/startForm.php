@@ -1,0 +1,2 @@
+<?php $el->name = isset($el->name) ? $el->name : $el->id ; ?>
+<form method='post' action='<?php echo $el->postTarget; ?>' id='<?php echo $el->id; ?>' name='<?php echo $el->name; ?>'><!-- form.startForm -->

@@ -1,0 +1,4204 @@
+'%': '%'
+'%1$s  birthday today!': 今天是%1$s的生日！
+'%1$s %2$s grade %3$s was successfully recorded for %4$s.': '%1$s %2$s 成績%3$s已經為了%4$s成功地記錄。'
+'%1$s Days Absent': '%1$s天缺席'
+'%1$s Outcomes': '%1$s結果'
+'%1$s SMS(es) were dispatched in %2$s batch(es).': '用 %2$s批送出了%1$s個SMS。'
+'%1$s adds failed.': 加入%1$s次失敗
+'%1$s day until %2$s birthday!': '還有%1$s 天到 %2$s 的生日!'
+'%1$s days until %2$s birthday!': '還有%1$s 天到 %2$s 的生日!'
+'%1$s email(s) were dispatched.': '%1$s 件電郵已送出。'
+'%1$s expense requests in current view': '在觀看目前的 %1$s 費用請求'
+'%1$s form groups have not been registered today  (%2$s).': '%1$s個班級今天還沒有登記(%2$s)。'
+'%1$s invoice(s) in current view': '現在可見有%1$s 個發票'
+'%1$s updates failed.': '%1$s更新失敗'
+'%1$s was successfully inserted into the system.': '%1$s 成功的加入系統'
+'%1$s was successfully updated.': '%1$s 成功更新'
+'%1$s''s birthday today!': 今天是%1$s的生日！
+'%1$sRegister now%2$s to join our online learning community.': '%1$s現在註冊%2$s 讓你加入我們的網上學習社區.'
+'''Name'' filed for department responsible for the item.': '負責這幾個選項的部門''名稱''。'
+(Active): (活性)
+'(CC Self?)': '(CC自己?)'
+'(Current Year Only)': (只限今年)
+(Expected): (預期)
+'(Family CC)': (家庭CC)
+'(e.g. father)': '(例如 父親)'
+'(e.g. mother)': '(例如 母親)'
++/-: +/-
+'../gibbon.sql does not exist, and so the installer cannot proceed.': '../gibbon.sql 不存在，所以安裝不能繼續。'
+'.png or .jpg file, 448 x 268px.': '.png 或 .jpg 檔案，448 x 268px'
+0%: 0%
+'0_Target Grade': 0_目標分數
+0â21: 0â21
+'1 (low) to 4 (high)': '1 (低) 到 4 (高)'
+1%: 1%
+'1, 2 or 3 (each family needs one and only one 1).': '1, 2 或 3 (每個家庭要一個和只是1)。'
+1-4: 1-4
+'1. Format': '1. 格式'
+'10 Years': '10 年'
+10%: 10％
+'100 (highest) to 0 (lowest)': '100 (最高) 到 0 (最低)'
+100%: 100%
+11%: 11%
+12%: 12%
+13%: 13%
+14%: 14%
+'140 (highest) to 60 (lowest)': '140 (最高) 到 60 (最低)'
+15%: 15%
+16%: 16%
+17%: 17%
+18%: 18%
+19%: 19%
+'1_Final Grade': 1_最終分數
+1_Scores: 1_分數
+2%: 2%
+'2. Column is hidden until date is reached.': '2. 列行會在日期到的時候顯示。'
+'2. Enter date after grading.': '2. 評分後加上日期'
+20%: 20%
+21%: 21%
+22%: 22%
+22â31: 22â31
+23%: 23%
+24%: 24%
+'240px by 320px': '240px x 320px'
+'240px x 240px or smaller.': '240px x 240px 或在小'
+25%: 25%
+'255 character limit': 225字數限制
+26%: 26%
+27%: 27%
+28%: 28%
+29%: 29%
+'2_KS3 Target Grades': '2_KS3 目標分數'
+3%: 3％
+'3. Column is hidden without date.': 3.列行沒有日期地隱藏。
+30%: 30%
+31%: 31%
+32%: 32%
+32â39: 32â39
+33%: 33%
+34%: 34%
+35%: 35%
+36%: 36%
+37%: 37%
+38%: 38%
+39%: 39%
+'3_GCSE Target Grades': '3_GCSE 目標分數'
+'3rd Generation Partnership Video': 第三代合作影片
+4%: 4%
+40%: 40%
+40â48: 40â48
+41%: 41%
+42%: 42%
+43%: 43%
+44%: 44%
+'45 (highest) to 0': '45 (最高) to 0'
+45%: 45%
+46%: 46%
+47%: 47%
+48%: 48%
+49%: 49%
+49â60: 49â60
+4A: 4A
+4B: 4B
+4C: 4C
+5%: 5%
+50%: 50%
+51%: 51%
+52%: 52%
+53%: 53%
+54%: 54%
+55%: 55%
+56%: 56%
+57%: 57%
+58%: 58%
+59%: 59%
+5A: 5A
+5B: 5B
+5C: 5C
+6%: 6%
+60%: 60%
+61%: 61%
+62%: 62%
+63%: 63%
+64%: 64%
+65%: 65%
+66%: 66%
+67%: 67%
+68%: 68%
+69%: 69%
+6A: 6A
+6B: 6B
+6C: 6C
+'7 (highest) to 1 (lowest)': '7 (最高) 到 1 (最低)'
+7%: 7%
+70%: 70%
+71%: 71%
+72%: 72％
+73%: 73%
+74%: 74%
+75%: 75%
+'75px by 100px': '75px x 100px'
+76%: 76%
+77%: 77%
+78%: 78%
+79%: 79％
+7A: 7A
+7B: 7B
+7C: 7C
+8%: 8％
+80%: 80%
+81%: 81%
+82%: 82%
+83%: 83%
+84%: 84%
+85%: 85%
+86%: 86%
+87%: 87%
+88%: 88%
+89%: 89%
+8A: 8A
+'8A (highest) to B3 (lowest)': '8A (最高) 到 B3 (最低)'
+'8An(highest) to B3 (lowest)': 8An(最高)到B3(最低)
+8B: 8B
+8C: 8C
+9%: 9%
+90%: 90%
+91%: 91%
+92%: 92%
+93%: 93%
+94%: 94%
+95%: 95%
+96%: 96%
+97%: 97%
+98%: 98%
+99%: 99%
+'<i>Higher numbers move teachers up the order within their grouping.': '<i>高等的數目會把老師的組織中的排序推高。'
+'>Add Lesson Plan': '>加入課堂計畫'
+A: 成績
+'A (highest) to E (lowest)': 'A (最高) 到 E (最低)'
+'A (highest) to F (lowest)': 'A (最高) 到 F (最低)'
+'A Planner CLI script has run.': 'A Planner CLI script has run.'
+'A User Admin CLI script has run, updating %1$s users.': 'A User Admin CLI script has run, updating %1$s users.'
+'A comma-separated list of types for spaces.': 'A comma-separated list of types for spaces.'
+'A custom alarm sound file.': 'A custom alarm sound file.'
+'A custom message to add to the standard email to parents on acceptance.': 加入給家長的承認電郵的獨特信息
+'A family data update request has been submitted.': 一個家庭數據更新的請求已經提交了
+'A finance data update request has been submitted.': 一個金融數據更新的請求已經提交了
+'A leaque table of staff gold stars...just for fun.': 給員工的金星...只是為了娛樂
+'A link to the school behaviour policy.': 學生行為政策的網址
+'A medical data update request has been submitted.': 一個醫療數據更新的請求已經提交了
+'A personal data update request has been submitted.': 一個個人數據更新的請求已經提交了
+'A report for bulk creation of student ID cards.': 一份大量裝作學生身分證的報告。
+'A report showing all new students in the current school year.': 一個檢視今年所有的新學生。
+'A student (%1$s) in your form group has received a behaviour letter.': 'A student (%1$s) in your form group has received a behaviour letter.'
+'A system for keeping track of marks': 保持分數的系統
+'A welcome email could not be sent to': 不能發送歡迎郵件給
+'A welcome email was successfully sent to': 成功的把歡迎郵件寄給
+'A*': 'A*'
+'A* (highest) to U (lowest)': 'A* (最高) 到 U (最低)'
+A+: A+
+'A+ (highest) to F (lowest)': 'A+ (最高) 到 F (最低)'
+A-: A-
+A/B: A/B
+'API Password provided by PayPal.': PayPal提供的API密碼
+'API Signature provided by PayPal.': PayPal提供的API簽名
+'API Username provided by PayPal.': PayPal提供的API用戶名稱
+ARR: ARR
+'Above Expected Level': 高於預期水平
+Absence: 缺席
+Absent: 缺席
+Accept: 接受
+'Accept Application': 接受申請
+'Acceptance Options': 接受選項
+Accepted: 接受
+'Accepts aspect ratio between 1:1.2 and 1:1.4.': 'Accepts aspect ratio between 1:1.2 and 1:1.4.'
+'Accepts images up to 360px by 480px.': 'Accepts images up to 360px by 480px.'
+Access: 評估
+'Access Controls?': '控制接駁?'
+'Access Settings': 進接設定
+'Access data on family''s children?': 進接家庭的兒童的數據嗎？
+'Access denied.': 拒絕接駁。
+'Access to financial functionality': 'Access to financial functionality'
+Accessories: 配件
+'Account Details': 帳戶詳情
+Acorn: Acorn
+Action: 行動
+'Action & Archive': 'Action & Archive'
+'Action & Delete': 行動和刪除
+Actions: 行動
+Active: 活性
+Activities: 活動
+Activity: 活動
+'Activity Choices By Student': 學生的活動選擇
+'Activity Choices by Student': 學生的活動選擇
+'Activity Enrolment': 參加活動
+'Activity Enrolment Summary': 學生報名終結
+'Activity Registration': 活動報名
+'Activity Spread by Roll Group': 班級的活動範圍
+'Activity Type by Roll Group': 班級的
+'Activity Types': 活動類型
+'Activity listing is currently closed.': 活動名單現在暫停
+'Activity name.': 活動名稱
+'Ad Hoc': 特設
+Add: 增加
+'Add & Insert A New Resource': 加入一個新的資源
+'Add Activity': 加入活動
+'Add Adult': 加入成人
+'Add Assessment': 加入測驗
+'Add Block:': 加入方格
+'Add Budget': 加入預選
+'Add Budget Cycle': 加入預算循環
+'Add Category': 加入類型
+'Add Child': 加入孩子
+'Add Class': 加課堂
+'Add Class to Period': 加課堂去期間
+'Add Classes': 加課堂
+'Add Column': 加列行
+'Add Column Row': 加列行
+'Add Comment': 加入意見
+'Add Condition': 加入狀況
+'Add Course': 加課程
+'Add Custom Field': 創造自訂領域
+'Add Day to Date': 加天日期
+'Add Descriptor': 加描述符
+'Add District': 加入地區
+'Add Entry': 加入輸入
+'Add Exception': 加例外
+'Add Expense': 加入費用
+'Add Expense Approver': 加入費用批准者
+'Add Expense Request': 加入費用請求
+'Add External Assessment': 加外部評估
+'Add Family': 加入家庭
+'Add Fees & Invoices': 加入費用和發票
+'Add Field': 加領域
+'Add File Extension': 加文件擴展
+'Add Grade': 加成績
+'Add Grade Scale': 加成績規模
+'Add House': 加社
+'Add Item': 加入物件
+'Add Learning Area': 加學習領域
+'Add Lessons': 加入課堂
+'Add Medical Condition': 加入醫療情況
+'Add Medical Form': 加入醫療表格
+'Add Multiple': 加入多種
+'Add Multiple Columns': 加入多個列行
+'Add Multiple Records': 加入紀錄
+'Add Note Category': 加筆記類別
+'Add Outcome': 加入結果
+'Add Participants': 加參與者
+'Add Periods': 加期間
+'Add Post': 加入留言
+'Add Record': 加記錄
+'Add Resource': 加入資源
+'Add Role': 加角色
+'Add Roll Group': 加班級
+'Add Rubric': 加入評分表
+'Add School Year': 加學年
+'Add Space': 增加空間
+'Add Space Booking': 加入空間預定
+'Add Space Change': 加入位置
+'Add Special Day': 加特別的日期
+'Add Staff': 加入工作人員
+'Add Student': 加入學生
+'Add Student Enrolment': 加入學生申請
+'Add Student Note': 加入學生紀錄
+'Add Submission': 加入申請。
+'Add Term': 加入學期
+'Add Timetable': 增加時間表
+'Add Timetable Day': 加入時間表的日期
+'Add Unit': 加入單元
+'Add User': 加入用戶
+'Add Year Following %1$s': '加年以下 %1$s'
+'Add Year Group': 加年級
+'Add, edit and delete external assessments.': 加入，編輯和刪除對外的評估。
+Additional: 多餘
+Address: 地址
+'Address 1': '地址 1'
+'Address 1 (Country)': '地址 1 (國家)'
+'Address 1 (District)': '地址 1 (地區)'
+'Address 1 Country': '地址 1 國家'
+'Address 1 District': '地址 1 地區'
+'Address 2': '地址 2 '
+'Address 2 (Country)': '地址 2 (國家)'
+'Address 2 (District)': '地址 2 (地區)'
+'Address 2 Country': '地址 2 國家'
+'Address 2 District': '地址 2 地區'
+'Address Name': 地址名稱
+Admin: 管理
+Administration: 行政
+Administrator: 管理員
+Admissions: 申請部
+'Admissions Administrator': 'Admissions Administrator'
+'Admissions Officer': 申請管理員
+'Admissions Officer Email': 申請管理員電郵
+Admn: 管理員
+'Adobe Flash': 'Adobe Flash'
+'Adobe Flash Video': 'Adobe Flash 影片'
+'Adobe Illustrator': 'Adobe 插畫'
+'Adobe Photoshop': 'Adobe Photoshop'
+'Adoptive Parent': 養父母
+Adult: 成人
+'Adult Family Members': 成人家庭成員
+'Adult''s Name': 成人的名字
+Adults: 成人
+'Advance School Year': 推前學年
+'Advance was successful, you are now in a new academic year!': 推前成功，你現在在新的學年！
+'Advanced Options': 特種選擇
+Afghanistan: 阿富汗
+Afrikaans: 南非荷蘭語
+'After End Date': 完成日期後
+'After how many negative records should letter 1 be sent?': 'After how many negative records should letter 1 be sent?'
+'After how many negative records should letter 2 be sent?': 'After how many negative records should letter 2 be sent?'
+'After how many negative records should letter 3 be sent?': 'After how many negative records should letter 3 be sent?'
+Age: 年齡
+'Age & Gender Summary': 年齡和性別
+Agreement: 合約
+'Agreements Signed:': '以簽的協議:'
+Alarm: 警報
+Alarm!: Alarm!
+Albania: 阿爾巴尼亞
+Albanian: 阿爾巴尼亞語
+'Alert Level': 警報級別
+Algeria: 阿爾及利亞
+All: 全部
+'All Ages': 所有年齡
+'All Classes': 全部的客堂
+'All Day%1$s Events': 全日%1$s的事件
+'All Enrolled Students by Alphabet': 用字母排列所有已經申請的學生
+'All Enrolled Students by Roll Group': 用班級排列所有已經申請的學生
+'All Fields': 全部領域
+'All Homework': 所有功課
+'All Learning Areas': 所有教學範圍
+'All Roles': 所有的角色
+'All Roll Groups': 所有班機
+'All Staff': 所有員工
+'All Student Records': 所有學生的紀錄
+'All Students': 所有學生
+'All Time Top 5': 總共的頭5
+'All Users': 所有用戶
+'All Years': 所有年級
+'All children could be read and used, so the import will proceed.': 全部孩子都可以被讀取或使用，所以會繼續導入.
+'All enrolments were deleted.': 全部的註冊被刪除了。
+'All families could be read and used, so the import will proceed.': 全部家庭都可以被讀取或使用，所以會繼續導入.
+'All form groups have been registered today (%1$s).': 今天所有的班級已經登記(%1$s)。
+'All outcomes could be read and used, so the import will proceed.': 所有的後果能閱讀和用，所以會繼續上載。
+'All parents could be read and used, so the import will proceed.': 全部家長都可以被讀取或使用，所以會繼續導入.
+'All results could be read and used, so the import will proceed.': 所有的結果可閱讀和用，所以進口會繼續。
+'All roll groups have been registered.': 所有班級已記錄了。
+'All students are present.': 所有學生也到達
+'All students could be read and used, so the import will proceed.': 全部學生都可以被讀取或使用，所以會繼續導入.
+'All users could be read and used, so the import will proceed.': 全部的用戶都可以被讀取或使用，所以會繼續導入.
+'All users not in the import (except you) have been set to left.': '全部不在輸入裏的用戶 (除了你) 被設置到離開。'
+'All years': 所有年份
+All/None: 所有/沒有
+'Allergy - Animal': 敏感－動物
+'Allergy - Drug': 敏感－藥物
+'Allergy - Food': 敏感－食物
+'Allergy - Grass/Pollen': 敏感－草或花粉
+'Allergy - Insect': 敏感－昆蟲
+'Allergy - Other': 敏感－其他
+'Allow Expense Add': 允許增加費用
+'Allow File Upload': 允許上載文件
+'Allow Outcome Editing': 允許編輯結果
+'Allow admins to create and manage timetables': 允許管理員創造和管理時間表
+'Allow admins to manage timetable columns': 允許管理員管理時間表的列行
+'Allow crowd assessment of homework?': '允許群體評估功課? '
+'Allow students to choose a backup, in case enroled activity is full.': '允許學生選擇備用的活動，萬一參加的活動滿。 '
+'Allow users to update their family''s data': 令用戶可以更新他們家庭的資料
+'Allow users to view assessment data for all students': 允許用戶觀看所有學生的評估資料。
+'Allowable HTML': '允許 HTML'
+'Allowable choices for category': 給類型可以選擇的選擇
+'Allowable choices for purpose when creating a resource': 可
+'Allowalbe choices for negative behaviour': 負極的行為可用的選擇
+'Allowalbe choices for positive behaviour': 積極的行為可用的選擇
+'Allowalbe choices for severity level (from lowest to highest)': 允許嚴重性(最低到最高)的選擇。
+'Allows a school to issue invoices and track payments.': 允許學校發出發票和跟中付款
+'Allows a user to create, edit and delete custom fields for users.': 'Allows a user to create, edit and delete custom fields for users.'
+'Allows a user to manage settings for the Tracking module.': 'Allows a user to manage settings for the Tracking module.'
+'Allows a user to request expenses from budgets they have access to.': 允許一位用戶要求從他們能進入預算中的費用。
+'Allows a user to view the activities they are involved in': 允許一位用戶觀看他們參加的活動。
+'Allows administrators to configure school settings.': 允許管理員配置學校的設定
+'Allows administrators to configure system settings.': 允許管理員配置系統的設定
+'Allows administrators to manage users.': 允許管理員管理用戶
+'Allows admins to control the application form': 允許管理員管制申請表。
+'Allows admins to create learning areas and administrative groups.': 允許管理員創造學習區域和行政小組
+'Allows admins to kick the school forward one year': 允許管理員將學校推前一年。
+'Allows admins to place timetable days into the school calendar': 允許管理員放時間表日期進學校的月曆。
+'Allows admins to process data update requests for medical data': 允許管理員處理更新醫療資料的要求
+'Allows admins to process data update requests for personal data': 允許管理員處理更新私人資料的要求
+'Allows admins to view and action applications': 允許管理員觀看和行動申請表。
+'Allows editing of any column in any class.': 允許編輯在班裡任何的列行。
+'Allows for choice of different day-types (e.g. full-day, half-day).': '允許不同日的種類(例如: 全日，半日) 的選擇。'
+'Allows for current records to be archived for viewing in the future.': 允許目前記錄在未來觀看時存檔。
+'Allows for the quick posting of a Message Wall message to all users.': 允許給所有用戶的快捷信息牆信息。
+'Allows managers to build activity program': 允許經理建立活動計畫
+'Allows members of the public to register to use the system.': 為了使用系統，允許公眾的成員註冊
+'Allows parents to register their children for activities': 允許家長幫他們的孩子登記活動
+'Allows parents to view invoices issued to members of their family.': 'Allows parents to view invoices issued to members of their family.'
+'Allows parents to view their children''s classes': 允許家長觀看他們孩子的課堂
+'Allows parents to view their childrens'' Internal Assessment results.': 'Allows parents to view their childrens'' Internal Assessment results.'
+'Allows parents to view their student''s information': 允許家長觀看他們孩子的資料
+'Allows privileged users to manage settings for spaces.': 'Allows privileged users to manage settings for spaces.'
+'Allows staff to see Internal Assessment results for all children.': 'Allows staff to see Internal Assessment results for all children.'
+'Allows students to view activities and register': 允許學生觀看和申請活動。
+'Allows students to view their own Internal Assessment results.': 'Allows students to view their own Internal Assessment results.'
+'Allows the management of a catalog from which items can be borrowed.': 允許可借項目的目錄的管理
+'Allows uers to view all department details.': 允許用戶觀看所有部門詳情
+'Allows user to control student enrolment in the current year': 允許用戶控制今年的學生登記
+'Allows user to issue a system-wide audio alert to all staff.': 允許用戶發表一個整個系統的警報給員工。
+'Allows user to see a flexible summary of IN data.': 允許用戶觀看IN資料的活動總結
+'Allows user to spot students who are repeat or regular offenders.': 允許用戶找重覆或經常違理的學生
+'Allows user to view IN records for all students': 允許用戶觀看所有學生的IN紀錄
+'Allows users to assess each other''s work': 允許用戶評估其他人的工作
+'Allows users to create a list of spaces and rooms in the school': 允許用戶創造在學校的空間和房間的名單
+'Allows users to create rubrics for assessment': 允許用戶創造評估的評估表
+'Allows users to create, edit and delete budgets.': 允許用戶創作，編輯和刪除預算。
+'Allows users to create, edit and delete fee categories.': 允許用戶創造，編輯和刪除費用類別
+'Allows users to create, view and edit billing windows.': 允許用戶創造，觀看和編輯計費結算窗戶
+'Allows users to create, view and edit fees.': 允許用戶創作，觀看和編輯收費。
+'Allows users to edit IN records for all students ': 允許用戶編輯所有學生的IN紀錄
+'Allows users to edit the text that appears in invoices and receipts.': 允許用戶編輯在發票和收據上的文字
+'Allows users to generate, view, delete and edit invoices.': 允許用戶創作，觀看，刪除和編輯發票
+'Allows users to manage external assessment data': 允許用戶管理以外評估的資料。
+'Allows users to show a summary of medical data for a group of students.': 允許用戶顯示一組學生的醫療資料的結論。
+'Allows users to view a listing of roll groups': 允許用戶觀看班級的列表
+'Allows users to view activities': 允許用戶觀看活動
+'Allows users to view all messages posted on their message wall.': 允許用戶觀看在他們信息牆上的所有信息。
+'Allows users to view and edit invoice recipients.': 允許用戶觀看和編輯發表收件者。
+'Allows users to view staff information': 允許用戶觀看員工的資料
+'Allows users to view student data': 允許用戶觀看學生的資料
+'Allows users to view timetables': 允許用戶觀看時間表
+'Allows users to view timetables in all school years.': 允許用戶觀看所有學年的時間表。
+'Allows users, with or without an account, to apply for student place.': 允許用戶，有或沒有戶口，申請一個學生的位置。
+'Allows users, with or without an account, to apply for student places.': 允許用戶，有或沒有帳戶，申請學生的位置。
+'Alpha Requirement': 'Alpha 要求'
+'Alternate Email': 備用的電子郵件
+'Alternative absence count:': '替代缺席數量:'
+'American Samoa': 美屬薩摩亞
+Amount: 共計
+'Amount Due': 'Amount Due'
+'Amount Paid': 支付共計
+'Amount Paid:': 已支付的數量
+'Amount already approved or spent': 合計已經被批准或用了
+'Amount in current payment.': 目前付款的共計
+'An Attendance CLI script has run.': 'An Attendance CLI script has run.'
+'An application form has been submitted for %1$s.': 'An application form has been submitted for %1$s.'
+'An error has occurred with your expense and budget settings.': 你的費用和預算設定出現了錯誤。
+'An error has occurred.': 'An error has occurred.'
+'An error occurred.': 出現錯誤
+'An error was encountered in deleting all enrolments.': 刪除全部註冊時遇到錯誤
+'An error was encountered in setting users not in the import to Left': 設置不在輸入裏的用戶到離開時遇到錯誤。
+'An new public registration, for %1$s, is pending approval.': 給%1$s的一個新的公開申請正在等贊成。
+'An unknown error occured, so the import will be aborted.': 出現不知明的錯誤，所以會中止導入.
+'An unknown family error occured, so the import will be aborted.': 一個不知明的家庭出現錯誤，所以會中止導入.
+'An unknown parent error occured, so the import will be aborted.': 一位不知明的家長出現錯誤，所以會中止導入.
+Analyse: 分析
+Analytics: 分析
+Andorra: 安道爾
+Angola: 安哥拉
+Anguilla: 安圭拉
+Antarctica: 南極洲
+'Anticipated Year of Entry': 預期進入的年份
+'Antigua and Barbuda': 安地卡及巴布達
+'Apple Keynote': 'Apple Keynote'
+'Apple Numbers': 'Apple Numbers'
+'Apple Pages': 'Apple Pages'
+'AppleScript Script': 'AppleScript Script'
+'Applicant has been successfully accepted into ICHK.': '成功的接受申請人到 ICHK。'
+Applicants: 報名者
+'Applicants from a given year.': 個別年的申請者
+'Application Date': 申請日期
+'Application Documents': 申請文件
+'Application Documents:': 申請文件：
+'Application Fee': 報名費用
+'Application Form': 報名表
+'Application Form Printout': 印出的申請
+'Application Form Settings': 申請表的設置
+'Application ID': 申請編號
+'Application ID, preferred, surname, PayPal transaction ID': 申請編號，首選，姓名，PayPal交易編號
+'Application ID, preferred, surname, payment transaction ID': 申請編號，首選名稱，姓，付款交易編號
+'Application Status': 申請接受狀態
+Applications: 申請表
+'Applies to all staff and students who have transport set.': 試用期給全部有運輸設置的員工和學生
+Apply: 報名
+Approval: 批准
+Approve: 批准
+Approve/Reject: 批准/拒絕
+'Approve/Reject Expense': 批准/拒絕費用
+Approved: 批准
+Arabic: 阿拉伯語
+'Archive Records': 存檔記錄
+'Archive Title': 存檔標題
+'Archived Notifications': 'Archived Notifications'
+'Archived Plans': 存檔計畫
+'Are the required documents compulsory?': '這些需要的文件必須嗎?'
+'Are you running cutting edge code, instead of stable versions?': '你正在用最新的代碼， 還是穩定的版本?'
+'Are you sure you want to accept the application for %1$s?': '你確定要接受 %1$s 地申請嗎？'
+'Are you sure you want to delete this record?': '你確定你要刪除這個記錄嗎?'
+'Are you sure you want to proceed with this request?': '你肯定要繼續這個要求嗎?'
+'Are you sure you want to reject the application for %1$s?': '你確定你想拒絕 %1$s 的申請表？'
+'Are you sure you wish to delete this record?': '你肯定要刪除這一份紀錄?'
+'Are you sure you wish to process this action? It cannot be undone.': '你肯定要將這個行動處理嗎? 這不能回去。'
+Argentina: 阿根廷
+Armenia: 亞美尼雅
+Armenian: 亞美尼亞語
+'Art & Design': 藝術和設計
+Aruba: 阿魯巴
+'As of today': 截至今日
+Assess: 評估
+'Assess %1$s?': '評估 %1$s?'
+'Assess & Give %1$s Feedback': '評估和給 %1$s 反饋'
+'Assess Attainment?': '評估成績?'
+'Assess Effort?': 評估成就
+Assessment: 評估
+'Assessment Complete?': '評估成功?'
+'Assessment Data Points': 評估資料點數
+'Assessment Date': 考試日期
+'Assessment Details': 'Assessment Details'
+'Assessment Name': 考試名稱
+'Assessment Type': 測驗類型
+'Assign & Collect %1$s Work': '分配和收集 %1$s 作業'
+Assistant: 助手
+'Assistant Coordinator': 協調員的助手
+Asthma: 哮喘
+'At Expected Level': 在預期水平
+Att: 發跡
+Attachment: 附件
+Attainment: 成績
+'Attainment Alternative Name': 替代發跡名稱
+'Attainment Alternative Name Abbreviation': 替代發跡名稱縮寫
+'Attainment Rubric': 發跡評分表
+'Attainment Scale': 發跡規模
+'Attainment Target': 發跡目標
+'Attempt to automatically place student in a house?': 'Attempt to automatically place student in a house?'
+Attendance: 出席表
+'Attendance By Person': 由人士找出席
+'Attendance By Roll': 由班級找出席
+'Attendance History for': 這個出席表歷史是
+'Attendance by Activity': 活動的出席表
+'Attendance has been taken at the following times for this lesson:': '出席表在課堂上以下幾個時間紀錄:'
+Audio: 錄音
+'Audio Video Interleave': AVI格式
+Aunt: 阿姨
+Australia: 澳洲
+Austria: 奧地利
+'Authentication Settings': 認證設定
+Author: 作者
+Author/Brand: 作者/品牌
+Author/Producer: 作者/創作人
+'Auto House Assign': 自動分配社
+Available: 可借
+'Available options are limited according to current status.': 根據現在的狀態，可用的選項有限。
+'Available to most users.': 大部分的用戶可用
+Azerbaijan: 亞塞拜然
+B: 行為
+B+: B+
+B-: B-
+B/C: B/C
+B3: B3
+Back: 後
+'Back to Search Results': 返回搜索結果
+Background: 背景
+'Background Color': 背景顏色
+'Background Information': 背景資料
+'Backup Choice': 額外選擇
+Backward: 向後
+Bahamas: 巴哈馬
+Bahrain: 巴林
+Bangladesh: 孟加拉
+'Bank Transfer': 銀行轉賬
+Barbados: 巴貝多
+'Base Path': 基本路徑
+'Base URL': 基本網頁
+Baseline: 底線
+'Basic Information': 基本資料
+Basque: 巴斯克語
+Behaviour: 行為
+'Behaviour Letter for %1$s via %2$s at %3$s': 'Behaviour Letter for %1$s via %2$s at %3$s'
+'Behaviour Letters': 行為信件
+'Behaviour Record': 行為紀錄
+'Behaviour Records': 行為紀錄
+'Behaviour Stars': 行為星
+'Behaviour Tracking': 追查行為
+Belarus: 白俄羅斯
+Belgium: 比利時
+Belize: 貝里斯
+'Below Expected Level ': 低於預期水平
+Bengali: 孟加拉語
+Benin: 貝南
+Bermuda: 百慕達
+Bhutan: 不丹
+Billing: 計費
+'Billing Schedule': 付錢時間表
+'Billing schedule name.': 付錢時間表名稱
+Biography: 傳記
+'Birth Year': 出生年份
+BloM: 更改的布盧姆分類學
+'Block %1$s': 阻塞%1$s
+'Block Contents': 阻塞內容
+'Block Title': 方格標題
+'Blood Type': 血腥
+'Bloom''s Modified': 更改的布盧姆分類學
+Blurb: 簡介
+Body: 正文
+Bolivia: 玻利維亞
+'Borrow Date': 借用日期
+Borrowable: 可借
+'Borrowable?': '可借用?'
+Borrower: 借款人
+'Borrowing User': 借用用戶
+'Bosnia and Herzegovina': 波士尼亞與赫塞哥維納
+Botswana: 波札那
+'Bouvet Island': 布威島
+Brazil: 巴西
+Break: 休會
+'Brief description of assessment and how it is used.': 評估的簡要說明及如何使用。
+'Brief description of how scale is used.': 規模是如何被使用的簡要說明。
+'British Indian Ocean Territory': 英屬印度洋領地
+'Browse Library BG Color': 用背景顏色來遊覽文庫
+'Browse Library BG Image': 用背景圖片來遊覽文庫
+'Browse The Library': 瀏覽文庫
+'Brunei Darussalam': 汶萊
+Buddhism: 佛教
+Budget: 預算
+'Budget Allocations': 預算分配
+'Budget Categories': 預算類別
+'Budget Cycle': 預算循環
+'Budget For Cycle': 給循環的預算
+'Budget Level Expense Approval': 預算及別費用的批准
+'Budget Remaining For Cycle': 給循環剩餘的預算
+'Budget Tracking': 預算跟蹤
+Bulgaria: 保加利亞
+Bulgarian: 保加利亞語
+'Bulk email from the school''s email address': 從學校的電郵送出群發電郵
+'Bulk email to a particular role': 給一個角色的群發電郵
+'Bulk email to any activity': 向任何活動群發電郵
+'Bulk email to any class': 向任何課堂群發電郵
+'Bulk email to any courses': 向任何課程群發電郵
+'Bulk email to any of my activities': 向我任何的活動群發電郵
+'Bulk email to any of my classes': 向我任何的課堂群發電郵
+'Bulk email to any of my courses': 向我任何的課程群發電郵
+'Bulk email to any of my roll groups': 向我任何的班級群發電郵
+'Bulk email to any roll group': 向任何班級群發電郵
+'Bulk email to any year group': 向任何年紀群發電郵
+'Bulk email to applicants by intended school year of entry': 向特定進入年份申請者送出群發電郵
+'Bulk email to indvidual users': 向個別的用戶群發電郵
+'Bulk email to members of all houses': 向所有社中的成員群發電郵
+'Bulk email to members of my house': 向我的社中的成員群發電郵
+Bump: 碰撞
+'Bump Direction': 碰撞方向
+'Bump Forward': 推前
+'Bump Forward Lesson Plan': 將課堂計畫推向前
+'Burkina Faso': 布吉納法索
+Burundi: 蒲隆地
+'Business Studies': 商業理論
+'But you may wish to manually do the following:': 但你可想手動做的以下：
+C: C
+C+: C+
+C-: C-
+C/D: C/D
+CAT: CAT
+'CC Family?': 'CC 家庭'
+'CPU Speed': 'CPU 速度'
+'CPU Type': 'CPU 類型'
+'CSV File': 'CSV 文件'
+'Calendar Feed': 月曆供稿
+'Calendar Week': 月曆週
+'Calendar, Web & Email': '月曆, 網頁, 電子郵件'
+'Call?': 打電話？
+Cambodia: 柬埔寨
+Cambodian: 柬埔寨語
+Cameroon: 喀麥隆
+'Can Login?': 可以登錄？
+'Can this unit be embedded and shared publicly in other websites?': '只一個單元可以在其他的網站公開分享?'
+Canada: 加拿大
+Cancelled: 刪除
+Capacity: 容量
+'Cape Verde': 維德角
+'Card Background': 卡片背景
+Cash: 現金
+Catalan: 加泰羅尼亞語
+Catalog: 目錄
+'Catalog Summary': 目錄總結
+'Catalog Type': 目錄類型
+'Cataloging Authority': 編目管理局
+Categories: 類型
+Category: 類別
+'Cause For Concern': 需要關注
+'Cayman Islands': 開曼群島
+'Central African Republic': 中非共和國
+Chad: 查德
+'Change Password': 更改密碼
+Chat: 信息
+'Check %1$s for a newer version of Gibbon.': '如果要 Gibbon 的最新版本, 查看 %1$s。'
+'Check %1$s for a newer version of this module.': '如果要程式組件的最新版本, 查看 %1$s。'
+'Check %1$s to get the latest commits.': '如果要最新的提交 , 查看 %1$s。'
+'Check & Insert': 'Check & Insert'
+'Check the box to add a new medical condition': 'Check the box to add a new medical condition'
+'Check to indicate that student has signed the relevant agreement.': 檢查學生已經簽了同意書。
+'Checking for Cutting Edge Code.': 檢查尖端編號
+'Checking for Gibbon updates.': 檢查Gibbon更新
+'Chemistry HL': 高級化學
+'Chemistry SL': 標準級化學
+Cheque: 支票
+Child: 兒童
+'Child CSV File': '孩子的 CSV 文件'
+'Child username.': 孩子用戶名。
+'Child with username %1$s had some information malformations.': '孩子提供的用戶名 %1$s 有些資料故障.'
+'Child''s Name': 孩子的名字
+Children: 兒童
+Chile: 智利
+China: 中國
+'Chinese (Cantonese)': '中文 （廣東話）'
+'Chinese (Mandarin)': '中文 (普通話）'
+'Chinese A: Language and Literature HL': '中文A：高級語言和文學 '
+'Chinese A: Language and Literature SL': '中文A：標準級語言和文學 '
+'Chinese B HL': 高級中文B
+'Chinese B SL': 標準級中文B
+'Chinese or other character-based name.': 中文或其他基於字符的的名稱.
+Choose: 選擇
+'Choose A Class': 選擇課堂
+'Choose A Course': 選擇一個課程
+'Choose A Date': 選擇日期
+'Choose A Person': 選擇人員
+'Choose A Space': 選擇空間
+'Choose A Staff Member': 選擇員工
+'Choose A Student': 選一位學生
+'Choose Activity': 選擇活動
+'Choose Assessment': 選擇測驗
+'Choose Course': 選擇課程
+'Choose Date': 選擇日期
+'Choose Family': 選擇家庭
+'Choose Lessons': 選擇課堂
+'Choose Options': 選擇選項
+'Choose Roll Group': 選擇班級
+'Choose Roll Group & Week': 選擇班級和星期
+'Choose Student': 選擇學生
+'Choose Students': 選擇學生
+'Choose Timetable': 選擇時間表
+'Choose User': 選擇用戶
+'Choose a fee to add it': 選擇加入的費用
+'Choose an outcome to add it to this lesson': 選擇這一個課後結果然後加進這一堂課。
+'Choose an outcome to add it to this lesson.': 選擇一個結果然後加入進課堂中。
+'Choose an outcome to add it to this unit': 選擇一個結果然後加入進這一個單元
+'Choose predefined rubric, if desired.': 如果所需，可以選擇預定義的評估表
+'Choose the child you are registering for.': 選擇報名的學生
+'Choose the family you wish to associate this application with.': 請選擇你想見這份表格聯合的家庭。
+Christianity: 基督教
+'Christmas Island': 聖誕島
+Citizenship: 國籍
+'Citizenship 1': '國籍 1'
+'Citizenship 1 Passport': '國籍 1 護照'
+'Citizenship 1 Passport Number': '國籍1 護照號碼'
+'Citizenship 1 Passport Scan': '國籍1 護照掃描'
+'Citizenship 2': '國籍 2'
+'Citizenship 2 Passport': '國籍 2 護照'
+'Citizenship 2 Passport Number': '國籍2 護照號碼'
+'Citizenship Passport Number': 國籍護照號碼
+Class: 班
+'Class Code': 班級代碼
+'Class Count': 班計數
+'Class Enrolment by Roll Group': 按照班級來招生
+'Class List': 學生名單
+'Class List Exception': 課堂名單例外
+'Class Of': 畢業的年份
+'Class Role': 班級的角色
+'Class Short Name</b> - e.g 1 for DR10.1': '課堂簡稱</b> - 例如 DR10.1'
+'Class Teachers': 課堂老師
+Class/Date: 課堂/日期
+Class/Lesson: 課堂/課程
+Classes: 班級
+'Classes in Period': 課堂在期間
+Classmates: 同學
+'Classmates''s Parents': 同學的家長
+Classroom: 課室
+'Clear Filters': 清除過濾器
+'Clear Search': 清除搜索
+'Click here to confirm that you have received this alarm.': 'Click here to confirm that you have received this alarm.'
+'Click to create a new block': 按這裡創作
+'Client ID for Google Project In Developers Console.': 開發者控制台中的谷歌工程客戶編號
+'Client Secret for Google Project In Developers Console.': 開發者控制台中的谷歌工程客戶秘密
+Close: 關
+Closed: 關門
+Coach: 教練
+'Cocos (Keeling) Islands': 科科斯（基林）群島
+Code: 代碼
+'Cognitive Abilities Test': 認知能力測驗
+'Collect and manage resources for teaching and learning': 收集和管理教學和學習的資源
+Collection: 系列
+Colombia: 哥倫比亞
+Column: 列行
+'Column %1$s Grade': 列行%1$s的級別
+'Column %1$s Title': 列行%1$s的標題
+Columns: 列行
+'Columns store assessment levels.': 列行儲存評估的級別
+Com: 完成
+'Comma Seperate Values': 逗號分隔值
+'Comma separated list, e.g: %1$s': '逗號分隔的列表, 例如: %1$s'
+'Comma-separated list': 用逗號分開的名單
+'Comma-separated list of budget categories.': 預算類別逗號分隔列表
+'Comma-separated list of ethnicities available in system': 在系統中擁有種族的用逗號分隔的列表。
+'Comma-separated list of types to make available in the Markbook.': 在成績表的用逗號分隔的列表。
+Comment: 評論
+Comments: 意見
+'Comments on my lessons:': 在我課堂的意見
+'Comments on my work:': '在我作業的意見:'
+Comments/Notes: 意見/筆記
+Comoros: 葛摩
+Comp: 完成
+Company: 公司
+'Company Address': 公司地址
+'Company All?': 全體公司
+'Company Contact Person': 公司聯絡人
+'Company Email': 公司電子郵件
+'Company Fee Categories': 公司收費類別
+'Company Name': 公司名字
+'Company Phone': 公司電話
+Competitive: 競爭性
+Complete: Complete
+'Complete?': 完成？
+Completion: 完成
+Compulsory: 一定
+Computer: 電腦
+Condition: 狀態
+'Condition Name': 狀況名稱
+Conditions: 狀況
+'Configure External Assessment module options': 配置以外評估模板選擇
+'Configure options for the Data Updater module': 資料更新的模塊的配置選擇
+'Configure options for the Markbook module': 成績表的模塊的配置選擇
+'Configure settings relating to user management.': 配置管理用戶的設定
+Confirm: Confirm
+'Confirm New Password': 確認新密碼
+'Confirm Password': 確定密碼
+Confirmed: 確認
+Congo: 剛果共和國
+'Congo, the Democratic Republic of the': 剛果民主共和國
+Contact: 聯絡
+'Contact 1': 聯繫人1
+'Contact 1 Name': '聯絡人1 姓名'
+'Contact 1 Number 1': '聯絡人 1 電話號碼 1'
+'Contact 1 Number 2': '聯絡人 1 電話號碼 2'
+'Contact 1 Relationship': '聯絡人1 關係'
+'Contact 2': 聯繫人2
+'Contact 2 Name': '聯絡人1 姓名'
+'Contact 2 Number 1': '聯絡人 1 電話號碼 1'
+'Contact 2 Number 2': '聯絡人 1 電話號碼 2'
+'Contact 2 Relationship': '聯絡人1 關係'
+'Contact By Email': 通過電子郵件聯絡
+'Contact By Mail': 通過郵件聯絡
+'Contact By Phone': 通過電話聯絡
+'Contact By SMS': 通過短信聯絡
+'Contact Information': 聯絡人資料
+'Contact Priority': 聯絡優先
+Contacts: 聯絡人
+'Contain at least one lowercase letter, and one uppercase letter.': '至少包括一個小寫字母, 和一個大寫字母'
+'Contain at least one number.': 至少包括一個數字
+Content: 內容
+Contents: 內容
+Contributor: 貢獻者
+'Control Number': 控制號碼
+'Control activity settings': 控制活動的設定
+'Control all items in the school library catalog': 控制在學校圖書館所有的項目
+'Controls all aspects of the system': 控制在系統中所有的方面。
+'Controls what a user can do and see.': 控制用戶可以做和看什麼。
+Convulsions/Epilepsy: 驚厥/癲癇
+'Cook Islands': 庫克群島
+Coordinator: 協調員
+'Copy Activities': 複製活動
+'Copy All To Next Year': 複製全部到明年
+'Copy Back Block': 再複製方格
+'Copy Lessons?': '複製課堂?'
+'Copy Target Grades?': '複製目標的分數?'
+'Copy Unit Back': 複製
+'Copy Unit Forward': 向前複製單元
+'Copy and paste this HTML code into the target website.': 複製和貼上這一個HTML編號進目標的網頁
+Copyright: 版權
+Cost: 費用
+'Costa Rica': 哥斯大黎加
+'Cote D''Ivoire': 象牙海岸
+'Couldn''t load this tab.': 這個標籤不能負載.
+Count: 數
+'Count Against Budget': 'Count Against Budget'
+Country: 國家
+'Country Of Origin': 來源地
+'Country of Birth': 出生國
+'Country of Publication': 出版國家
+'County, State, District': '國家, 州, 地區'
+Course: 課程
+'Course Enrolment Rollover': 側翻課程招生
+'Course Enrolment by Class': 按照班級來招生的過程
+'Course Enrolment by Person': 按照人士來招生的過程
+'Course List': 科目名單
+'Course Short Name</b> - e.g. DR10 for Year 10 Drama': '課程簡稱</b> - 例如 DR10 為 10年級戲劇'
+'Courses & Classes': 課程和課堂
+'Cover teachers': 代課老師
+Cr: 創作
+'Create %1$s Outcomes': '創作 %1$s的結果'
+'Create & Insert New Resource': 創建和輸入新的資源
+'Create Invoices': 創作單據
+'Create Markbook Column?': '創作成績表列行?'
+'Create Student Email/Websites for %1$s at %2$s': 在%2$s創作學生電郵/網站給%1$s。
+'Create Target Grades?': '創造目標的分數?'
+'Create a Gibbon user account for the student.': '為學生創作一個 Gibbon 用戶帳戶。'
+'Create a medical record for the student.': 為學生創建醫療記錄。
+'Create a new family.': 創建新家庭
+'Create a timetable for the student.': 為學生創建是健表。
+'Create an individual needs record for the student.': 為學生創作個人的需求記錄。
+'Create family data update request for any user': 創作給任何用戶的更新家庭資料的要求
+'Create finance data update request for any user': 創作給任何用戶的更新經濟資料的要求
+'Create medical data update request for any user': 創作給任何用戶的更新醫療資料的要求
+'Create personal data update request for any user': 創作給任何用戶的更新私人資料的要求
+'Create user accounts for the parents.': 為家長創建用戶帳戶。
+'Created by %1$s (%2$s) at %3$s on %4$s.': '由 %1$s (%2$s) 在 %3$s 的 %4$s創作.'
+'Created under the': 創建之下
+Creating: 創造
+'Creative Commons BY': '共享創意  姓名標示'
+'Creative Commons BY-SA': '共享創意 姓名標示-相同方式分享'
+'Creative Commons BY-SA-NC': '共享創意  姓名標示-非商業性-相同方式分享'
+Credits: 特別鳴謝
+Croatia: 克羅埃西亞
+Croation: 克羅地亞語
+'Crowd Assessment': 群眾評估
+'Crowd Assessment Feedback': 'Crowd Assessment Feedback'
+'Crowd Assessment Stars': 群眾評估星
+'Crowd Assessment?': '群體評估?'
+Cuba: 古巴
+Currency: 貨幣
+Current: 目前
+'Current Alerts:': 現在的通知
+'Current Classes': 現在的課堂
+'Current Enrolment': 目前的註冊
+'Current Guests': 現在的賓客
+'Current Participants': 目前的參與者
+'Current Password': 現在密碼
+'Current Plan': 現在的計畫
+'Current Resources': 現在的資源
+'Current School Year': 現在學年
+'Current Staff': 目前的員工
+'Current Status': 現在的狀態
+'Current Time Slots': 現在的時間插槽
+'Current Value': 目前價值
+'Current attachment:': 現在附件
+'Current balance: %1$s credit(s).': '現在的結餘: %1$s 分數。'
+'Current balance: %1$s credits.': '現在的結餘: %1$s分'
+'Current year only': 只限這年
+'Current/Last School': 目前/之前的學校
+'Current/future years only': 只限這年或將來年份
+'Current/past years only': 只限這年或過去年份
+'Curriculum Mapping': 安排課程
+Custom: Custom
+'Custom Alarm Sound': 自訂警報聲音
+'Custom Fields': 自訂領域
+'Cutting Edge Code': 前沿編號
+'Cutting Edge Code Line': 前沿編號線
+'Cutting Edge Code check failed': 檢查尖端編號失敗。
+'Cutting Edge Code check successful.': 檢查尖端編號成功。
+Cyprus: 賽普勒斯
+Czech: 捷克語
+'Czech Republic': 捷克
+D: D
+'D&T - Electronics': 設計和技術-電子用品
+'D&T - Food': 設計和技術-飲食
+'D&T - Graphics': 設計和技術-圖像
+'D&T - Resistant Materials': 設計和技術-耐磨材料
+'D&T - Systems Control': 設計和技術－控制系統
+'D&T - Textiles': 設計和技術-布料
+D+: D+
+D-: D-
+D/E: D/E
+DBA: 數據庫管理員
+'DBA Email': 數據庫管理員電郵
+DOB: 出生日期
+'DVD Player': 'DVD 播放機'
+Daily: 每天
+Danish: 丹麥語
+Data: 資料
+'Data Access': 進接數據
+'Data Access?': '進接數據?'
+'Data Points': 資料點
+'Data Type': 資料類型
+'Data Updater': 更新資料
+'Data Updater Settings': 更新數據的設置
+'Data displayed in full Student Profile': 全面的學生個人資料數據顯示
+'Database Administrator': 數據庫管理員
+'Database Information': 數據庫資料
+'Database Name': 數據庫名稱
+'Database Password': 數據庫密碼
+'Database Server': 數據庫伺服器
+'Database Type': 數據庫類型
+'Database Username': 數據庫用戶名稱
+Date: 日期
+'Date & Time': 日期和時間
+'Date Out & In': 出、入的日期
+'Date Paid': 支付日期
+'Date Range': 日期範圍
+'Date Sent': 送出日期
+'Date Type': 資料類型
+'Date Updated': 更新日期
+'Date of Birth': 出生日期
+'Date of birth': 出生日期
+'Date of payment, not entry to system.': 支付日期，非輸入近系統
+Date/Time: 日期/時間
+Date<br/>Complete: 日期<br/>完成
+'Datebase Update': 數據庫更新
+Dates: 日期
+'Dates Published': 公布的日期
+Day: 日期
+'Day Name</b> - as used in the target timetable': '日名稱</b> - 使用在指標時間表裏'
+'Day Type': 天型
+'Day-Type Options': 日的類型選項
+'Day-Type Text': 日期類型文字
+Days: 日
+'Days Overdue': 過期的日子
+'De Facto': 'De Facto'
+Deadline: 日期
+'Dear %1$s': 親愛的%1$s
+'Decide who can see this homework.': 決定可以看到功課的人
+Decommission: 退役
+Decommissioned: 退役
+Default: 默認
+'Default Loan Length': 基本借書期限
+'Default Password': 默認密碼
+'Default loan length is %1$s %2$s.': 'Default loan length is %1$s %2$s.'
+'Default loan length is %1$s day(s).': '基本借書期限是%1$s 天。'
+'Default renew length is today plus %1$s day(s)': 基本更新日期是今天加%1$s天。
+'Default: 2 weeks after the start of next term.': '自動: 下一個學期的兩星期後'
+'Default: 2 weeks before the end of the current term.': '自動: 現在的學期完畢的兩星期前'
+'Default: first day of next term.': '自動: 下個學期的第一天'
+'Default: last day of the next term.': '自動: 下個學期的最後一天'
+Delete: 刪除
+'Delete Activity': 刪除活動
+'Delete Adult': 刪除成人
+'Delete All Enrolments': 刪除全部的註冊
+'Delete All Notifications': 刪除所有的通知
+'Delete Assessment': 刪除測驗
+'Delete Budget': 刪除預算
+'Delete Budget Cycle': 刪除預算循環
+'Delete Category': 刪除類型
+'Delete Child': 刪除孩子
+'Delete Class': 刪除班
+'Delete Column': 刪除列行
+'Delete Column Row': 刪除列行
+'Delete Condition': 刪除狀況
+'Delete Course & Classes': 刪除課程和課堂
+'Delete Current Plans?': '刪除目前的計劃?'
+'Delete Custom Field': 刪除自訂領域
+'Delete Day from Date': 刪除從日天
+'Delete Department': 刪除部門
+'Delete Descriptor': 刪除描述符
+'Delete District': 刪除地區
+'Delete Enrolment': 刪除報名
+'Delete Exception': 刪除例外
+'Delete Expense Approver': 刪除費用批准者
+'Delete External Assessment': 刪除外部評估
+'Delete Family': 刪除家庭
+'Delete File Extension': 刪除文件擴展
+'Delete Form': 刪除表格
+'Delete Grade': 刪除成績
+'Delete Grade Scale': 刪除成績規模
+'Delete House': 刪除社
+'Delete Invoice': 刪除發票
+'Delete Item': 刪除物品
+'Delete Lesson Plan': 刪除課堂計畫
+'Delete Medical Form': '刪除 體檢表  '
+'Delete Message': 刪除信息
+'Delete Note Category': 刪除筆記類別
+'Delete Outcome': 刪除結果
+'Delete Participant': 刪除參與者
+'Delete Record': 刪除記錄
+'Delete Request': 刪除請求
+'Delete Role': 刪除角色
+'Delete Roll Group': 刪除班級
+'Delete Rubric': 刪除評分表
+'Delete School Year': 刪除學年
+'Delete Space': 刪除空間
+'Delete Space Booking': 刪除空間設定
+'Delete Space Change': 刪除空間改變
+'Delete Special Day': 刪除特別的日期
+'Delete Staff': 刪除員工
+'Delete Student Enrolment': 刪除學生申請
+'Delete Student Note': 刪除學生紀錄
+'Delete Term': 刪除學期
+'Delete Timetable': 刪除時間表
+'Delete Timetable Day': 刪除時間表的日期
+'Delete Unit': 刪除單元
+'Delete User': 刪除用戶
+'Delete Year Group': 刪除年級
+'Deliver this message to user''s mobile phone?': '把這個信息發送到用戶的手提電話?'
+'Deliver this message to user''s primary email account?': '寄送這一個電郵到用戶的主要電郵戶口嗎?'
+'Delivery Mode': 發送模型
+Denmark: 丹麥
+Department: 部門
+'Department Access': 部門接駁
+'Department with name %1$s in import cannot be found.': 部門名稱%1$s的用戶的輸入不能發現。
+Departments: 部門
+'Departure Reason': 離開原因
+'Departure Reasons': 離開原因
+'Deploy Working Copy': 部署工作版本
+'Depunerea on-line este  %1$s pentru această temă.': 'Depunerea on-line este  %1$s pentru această temă.'
+Description: 描寫
+'Descriptive text to accompany image privacy option when shown to users.': 顯示用戶時在相片私人條例隔壁的描述文字。
+Descriptor: 描述符
+Descriptors: Descriptors
+'Design & Tech': 設計和技術
+Details: 詳情
+'Details below.': 詳情以下
+'Determines menu structure': 確定選單結構
+'Development Information': 開發資料
+Diabetes: 糖尿病
+'Digital copy of the receipt for this payment.': 付款的收據的電子複本
+Director: 導演
+'Disable External Provider Signup': 關閉外部提供者申請
+Discuss: 討論
+Dismiss: 關閉
+'Dismiss Smart Workflow Help': 解僱智能工作流程幫助
+'Displayed at 240px by 320px.': 'Displayed at 240px by 320px.'
+'Displaying lessons from class:': 顯示從班的課堂
+Divorced: 離婚
+'Dizziness or Fainting spells': 頭暈或昏厥
+Djibouti: 吉布地
+Do: 做
+'Do not contact by SMS.': 請別用SMS聯絡
+'Do not contact by email.': 不要通過電子郵件聯絡。
+'Do not contact by phone.': 不要通過電話聯絡。
+'Do not include a header row in the CSV files.': '不要在 CSV 文件裡包括一個標題行。'
+'Do not include a second parent/guardian': 不要包括第二個家長/監護人
+'Do you agree to the above?': 同意以上的嗎？
+Doctor: 醫生
+Document: 文件
+'Does not apply to the message wall.': 不適用信息牆。
+'Does not include non-school days.': 不包括非學校天
+'Does not meet password policy.': 不符合密碼的政策。
+Doing: 行動
+Dominica: 多米尼克
+'Dominican Republic': 多明尼加
+'Download Unit Outline': 下載單元模型
+'Download more information': 下載更多資料
+'Download the latest commits, and unzip it on your computer.': 下載最新的提交，然後在你的電腦解壓。
+'Download the latest version, and unzip it on your computer.': '下載最新版本, 然後在你的電腦解壓。'
+'Downloadable Unit Outline': 在網上可下載的單元格式
+Dr.: 博士
+Dra: 草稿
+Draft: 草稿
+Drafts: 草稿
+Drama: 演藝
+'Dropdown: comma separated list of options.': 'Dropdown: comma separated list of options.'
+'Due Date': 到期日期
+'Due at %1$s on %2$s': '在 %1$s 的 %2$s 到期'
+'Due on %1$s at %2$s.': 在%1$s的%2$s需要提交。
+'Dump Unit': 刪除單元
+Duplicate: 重複
+'Duplicate Item': 複製物件
+'Duplicate Lesson Plan': 複制課堂計畫
+'Duplicate Markbook Columns?': '複製成績表列行?'
+'Duplicate Role': 複製角色
+'Duplicate Rubric': 複製評分表
+'Duplicate Unit': 複製單元
+Dutch: 荷蘭語
+E: E
+E+: E+
+E-: E-
+E/F: E/F
+EAL: EAL
+EP: 卓越的表現
+'Earliest acceptable update': 最早可接受的更新
+'Earliest student end date to include.': 最早加入的
+'Earliest student start date to include.': 最早包括學生開始日期
+Economics: 經濟
+'Economics HL': 高級經濟
+'Economics SL': 標準級經濟
+Ecuador: 厄瓜多
+Edit: 編輯
+'Edit %1$s.%2$s Enrolment': '編輯 %1$s. %2$s 招生'
+'Edit Activity': 編輯活動
+'Edit Adult': 編輯成人
+'Edit Assessment': 編輯測驗
+'Edit Blocks': 編輯方格
+'Edit Budget': 編輯預算
+'Edit Budget Cycle': 編輯預算循環
+'Edit Category': 編輯類型
+'Edit Child': 編輯孩子
+'Edit Class': 編輯班
+'Edit Class in Period': 編輯期間裏的課堂
+'Edit Classes': 編輯課堂
+'Edit Classes by Period': 按照期間來編輯課堂
+'Edit Column': 編輯列行
+'Edit Column Row': 編輯列行
+'Edit Column Rows': 編輯列行
+'Edit Condition': 編輯狀況
+'Edit Course': 編輯課程
+'Edit Course & Classes': 編輯課程和課堂
+'Edit Custom Field': 編輯自訂領域
+'Edit Days in Date': 編輯日期天
+'Edit Department': 編輯部門
+'Edit Descriptor': 編輯描述符
+'Edit District': 編輯地區
+'Edit Entry': 編輯輸入
+'Edit Expense': 編輯費用
+'Edit Expense Approver': 編輯費用贊同者
+'Edit External Assessment': 編輯外部評估
+'Edit Family': '編輯家庭 '
+'Edit Fee': 編輯費用
+'Edit Fields': 編輯領域
+'Edit File Extensions': 編輯文件擴展
+'Edit Form': 編輯表格
+'Edit Grade': 編輯成績
+'Edit Grade Scale': 編輯成績規模
+'Edit Grades': 編輯成績
+'Edit House': 編輯社
+'Edit Individual Needs Record': 編輯個人需求記錄
+'Edit Invoice': 編輯發票
+'Edit Invoicee': 編輯收發票人
+'Edit Item': 編輯項目
+'Edit Lesson Plan': 編輯課堂計畫
+'Edit Markbook': 編輯成績表
+'Edit Markbook_everything': 編輯成績表_所有東西
+'Edit Markbook_multipleClassesAcrossSchool': 編輯成績表_在學校中多重的課堂
+'Edit Markbook_multipleClassesInDepartment': 編輯成績表_在部門中多重的課堂
+'Edit Markbook_singleClass': 編輯成績表_單一課堂
+'Edit Medical Form': 編輯醫療表格
+'Edit Message': 編輯信息
+'Edit Module': 編輯程式組件
+'Edit Note Category': 編輯筆記類別
+'Edit Outcome': 編輯結果
+'Edit Participant': 編輯參與者
+'Edit Record': 編輯記錄
+'Edit Request': 編輯請求
+'Edit Resource': 編輯資源
+'Edit Role': 編輯角色
+'Edit Roll Group': 編輯班級
+'Edit Rubric': 編輯評分表
+'Edit Rubric Rows & Columns': 編輯評估表的行和列行
+'Edit School Year': 編輯學年
+'Edit Space': 編輯空間
+'Edit Special Day': 編輯特別的日期
+'Edit Staff': 編輯員工
+'Edit Student Enrolment': 編輯學生申請
+'Edit Student Note': 編輯學生紀錄
+'Edit Term': 編輯學期
+'Edit Timetable': 編輯時間表
+'Edit Timetable Day': 編輯時間表的日期
+'Edit Timetable Days': 編輯時間表的日期
+'Edit Timetables': 編輯時間表
+'Edit Unit': 編輯單元
+'Edit User': 編輯用戶
+'Edit Working Copy': 編輯工作版本
+'Edit all messages': 編輯所有信息
+'Edit all messages created by the user': 編輯所有用戶創造的信息
+'Edit any user within the system': 編輯在系統裡任何的學生
+'Edit columns and grades for a single class at a time.': 編輯一班中的列行和分數
+'Edit settings for the planner': 編輯計畫表的設定
+'Edit staff within the system': 編輯在系統裡的員工
+Edit<br/>Markbook: 編輯<br/>的成績表
+Edition: 版本
+Education: 教育
+'Educational Assistant': 教育助手
+Eff: 成就
+Effort: 成就
+'Effort Alternative Name': 替代成就名稱
+'Effort Alternative Name Abbreviation': 替代成就名稱縮寫
+'Effort Rubric': 成就評分表
+'Effort Scale': 成就規模
+Egypt: 埃及
+'El Salvador': 薩爾瓦多
+Electronics: 電子用品
+Email: 電子郵件
+'Email Alternate': 另外的電郵
+'Email From': 電郵從
+'Email Invoice': 用電郵傳發票
+'Email Receipt': 用電郵傳收據
+'Email Reminder': 用電郵傳提醒
+'Email address to send finance emails from.': 用來送財政網頁的電郵
+'Email sent via %1$s at %2$s.': '電郵經 %1$s 在 %2$s。'
+'Email?': 電子郵件？
+'Embed Code': 加入編號
+Embeddable: 可以加入
+'Emergency 1  Relationship': '緊急 1 關係'
+'Emergency 1 Name': '緊急 1 名字'
+'Emergency 1 Number 1': '緊急 1 號碼 1'
+'Emergency 1 Number 2': '緊急 1 號碼 2'
+'Emergency 1 Relationship': '緊急 1 關係'
+'Emergency 2  Relationship': '緊急 2 關係'
+'Emergency 2 Name': '緊急 2 名字'
+'Emergency 2 Number 1': '緊急 1 號碼 2'
+'Emergency 2 Number 2': '緊急 2 號碼 2'
+'Emergency 2 Relationship': '緊急 2 關係'
+'Emergency Contact 1': '緊急聯繫 1'
+'Emergency Contact 2': '緊急聯繫 2'
+'Emergency Contacts': 緊急聯絡
+'Emergency Data Summary': 緊急資料終結
+'Emergency SMS by Transport': 緊急交通SMS
+'Emergency SMS by Year Group': 年級的緊急SMS
+Employer: 雇主
+Employment: 僱用
+'Enable Behaviour Letters': 'Enable Behaviour Letters'
+'Enable Descriptors': 'Enable Descriptors'
+'Enable Gibbon-wide integration with the Google APIs?': '允許全Gibbon積分的谷歌 API?'
+'Enable Home Screen Widget': 啟用主頁微件
+'Enable Levels': 'Enable Levels'
+'Enable OAuth login via a Google Account.': 允許用谷歌的戶口OAuth登入。
+'Enable Online Payment': 啟用網上付款
+'Enable Payments': 啟用付錢
+'Enable Public Registration': 啟用公開註冊
+'Enable Student Notes': 啟用學生筆記
+'End Date': 結束日期
+'End Time': 結束時間
+'End of': 結束
+English: 英文
+'English A: Language and Literature HL': '英文A：高級語言和文學 '
+'English A: Language and Literature SL': '英文A：標準級語言和文學 '
+'English A: Literature HL': 英文A：高級文學
+'English A: Literature SL': 英文A：標準級文學
+'English Language': 英文語言
+'English Literature': 英文文學
+'English as an Additional Language': 英語是額外的語言
+Enrol: 報名
+'Enrol All Students': 招收全部學生
+'Enrol New Students (Status Expected)': '加入新學生 (預期）'
+'Enrol New Students (Status Full)': 加入新學生（滿）
+'Enrol the student in the relevant academic year.': 招收學生在有關的學年。
+'Enrolable Classes': 能招收的課堂
+'Enrolable Students': 能註冊的學生
+'Enrolable year groups.': 能註冊到的年級
+'Enroled Students': 在校生
+Enrolment: 報名
+'Enrolment Type': 報名品種
+'Enrolment by Class': 按照班級來招生
+'Enrolment by Person': 按照人士來招生
+'Enrolment process type': 報名過程類型
+'Enter Data': 加入資料
+'Enter Internal Assessment Results': 'Enter Internal Assessment Results'
+'Enter Marks': 輸入成績
+'Enter Personal Address?': 加入私人地址？
+'Entry Year': 進入年份
+'Environmental Management': 環境管理
+'Environmental Systems and Society SL': 環境系統和社會基本級
+'Equatorial Guinea': 赤道幾內亞
+Eritrea: 厄利垂亞
+Error: 錯誤
+Estonia: 愛沙尼亞
+Estonian: 愛沙尼亞語
+Ethiopia: 衣索比亞
+Ethnicity: 種族
+Event: 事件
+'Exceptional Performance': 優秀表現
+Exceptions: 例外
+'Excludes "Not Accepted"': '不包括"沒有接受"'
+Exe: 模範
+Exemption: 豁免
+'Existing Condition': 現在的狀況
+Expected: 預期
+'Expected Return Date': 預期返回日期
+'Expense Approval Type': 費用批准類型
+'Expense Export': 輸出費用
+'Expense Number': 費用號碼
+'Expense Request Template': 費用請求模式
+Expenses: 費用
+'Explanatory text to appear with the required documents?': '和需要的文件一起顯示的解釋文字?'
+'Explanatory text to include with Day-Type Otpions.': 和日選擇一起顯示的解釋文字
+Export: 輸出
+'Export to Excel': '導出到 Excel'
+'Extend & Update': '擴大&更新'
+'Extended Brief Profile': 擴展基本檔案
+Extension: 擴展
+'Extension Number': 分機號碼
+External: 外部
+'External Assessment': 外部評估
+'External Assessment Data': 以外評估資料
+'External Assessment Data Points': 'External Assessment Data Points'
+'External Assessment Data_manage': 外部評估資料_管理
+'External Assessment Data_view': 外部評估資料_觀看
+'External Assessment Settings': 外部評估的設置
+'External Assessment field with name %1$s in import cannot be found.': 在輸入的名字是%1$s的以外評估領域找不到。
+'External Assessment with name %1$s in import cannot be found.': 在輸入的名字是%1$s的以外評估找不到。
+F: F
+'F or M': 女或男
+FLG: 滿字母成績
+'Facilitates tracking of student performance in external examinations.': 方便檢查學生在以外的考試的表現。
+Facilities: 設施
+'Falkland Islands (Malvinas)': 福克蘭群島
+Family: 家庭
+'Family %1$s was successfully created.': '成功的創建了家庭 %1$s。'
+'Family %1$s was successfully updated.': '成功的更新了家庭 %1$s。'
+'Family + Company': '家庭＋ 公司'
+'Family Address by Student': 用學生的家庭地址
+'Family CSV File': '家庭的 CSV 文件'
+'Family Data Updates': 家庭數據更新
+'Family Details': 家庭的詳細資料
+'Family Name': 姓
+'Family Status': 家庭狀況
+'Family Sync Key': 家庭同步的關鍵
+'Family could not be created!': 不能創建家庭！
+'Family name': 姓
+'Family name as shown in ID documents.': 顯示在身分證明文件的名稱。
+'Family name.': 姓.
+'Family with sync key %1$s had some information malformations.': '家庭同步見 %1$s 有些資料故障.'
+'Faroe Islands': 法羅群島
+'Fast Finder': 'Fast Finder'
+Father: 父親
+Fax: 傳真
+Fee: 費用
+'Fee Name': 費用名稱
+'Fee Table': 費用表
+'Fee name, category name.': 費用名稱，類型名稱
+Fees: 費用
+'Fees For': 費用
+'Fees will be listed here...': 費用會在這了列舉
+Female: 女性
+Field: 領域
+'Field Delimiter': 領域定界符
+'Field Name': 領域名稱
+'Field Name Category': 領域名稱類型
+'Field Set': 域設置
+'Field Values': 領域值
+Fiji: 斐濟
+Fijian: 斐濟語
+File: 文件
+'File %1$s': '文件 %1$s'
+'File Import': 導入文件
+'File Upload': 上載文件
+Filter: 過濾
+'Filter & Search': '過濾器&搜尋'
+Filters: 篩選
+Fin: 最後
+Final: 最終
+'Final Decision': 最終決定
+'Final Grade': 終極分數
+'Final Payment Date': 最終付款日期
+'Final Payment Date.': 最終付款日期。
+'Final Result': 最終的結果
+'Final amount paid.': 最終合計
+Finance: 財經
+'Finance Data Updates': 金融數據更新
+'Find Behaviour Patterns': 尋找行為的模式
+'Find Staff': 尋找員工
+'Find Staff & Students': 尋找員工和學生
+'Find Students': 尋找
+Finland: 芬蘭
+Finnish: 芬蘭語
+First: 第一
+'First Aid': 急救
+'First Aid Expiry': 急救證書過期日期
+'First Aid Qualified?': '急救資格?'
+'First Day': 第一天
+'First Language': 第一語言
+'First Language<': 第一語言<
+'First Lesson': 第一堂
+'First Name': 名字
+'First name as shown in ID documents.': 顯示在身分證明文件的名稱。
+Five: '5'
+'Follow Up': 根據
+'Font/Border Color': '字形/邊境 顏色'
+'For Office Use': 適合辦公室使用
+'For entire programme': 給整個程序
+'For example, a computer''s MAC address or a book''s ISBN.': 例如，一個電腦的MAC地址或一本書的ISBN。
+'For parents only': 只是給家長
+'For students and staff only': 只是給學生和員工
+'For support, please visit %1$sgibbonedu.org%2$s.': 如果需要穫支緩，請到%1$sgibbonedu.org%2$s。
+'For testing': 測試用
+'For this class:': 給這一班
+'Force Reset Password?': 強迫重置密碼？
+'Forgot Password?': 忘記密碼
+'Form Count': 班級數目
+'Form Factor': 外型
+'Form Tutors': 班主任
+'Formal Assessment': 'Formal Assessment'
+'Formal Assessment Settings': 'Formal Assessment Settings'
+'Formal name to address parents with.': 稱呼家長以正式名稱。
+Format: 模式
+'Format:': 格式：
+'Format: hh:mm': '各式: 小時:分鐘'
+'Format: hh:mm (24hr)': '格式: hh:mm (24小時)'
+'Former Participants': 前任的參與者
+'Former Students': '原先的學生 '
+Forward: 向前
+Four: '4'
+Four<: 4<
+France: 法國
+French: 法語
+'French Guiana': 法屬蓋亞那
+'French Polynesia': 法屬玻里尼西亞
+'French Southern Territories': 法屬南部領地
+'Frequent Nose Bleeds': 密切流鼻血
+Fri: 星期五
+Friday: 星期五
+Friend: 朋友
+'From Date': 從日期
+'From GCSE Target Grades': 從GCSE的目標分數
+'From last 30 days': 從上30天
+Full: 滿
+'Full Letter Grade': 完整字母分數
+'Full Screen': 全螢幕
+'Full name as shown in ID documents.': 顯示在身分證明文件的全名。
+'Further Information': '更多 資料'
+'Future Information': 未來資料
+G: G
+'G6PD Deficiency': 葡萄糖-6-磷酸脫氫酶缺乏症
+GCSE: GCSE
+'GCSE Final Grades': GCSE最終的分數
+'GCSE Target Grades': GCSE目標分數
+GCSE/iGCSE: GCSE/IGCSE
+'GIMP eXperimental Computing Facility': 位图图像文件格式
+GPrd: 英國
+Gabon: 加彭
+Gambia: 甘比亞
+Gender: 性別
+General: 一般
+'General Alarm!': 一般警報!
+'General Details': 一般資料
+'General Information': 基本資料
+'General Options': 基本選項
+'General Settings': 設定
+'General email address for the school': 學校的總電郵
+'Generate Invoice - Simulate': 'Generate Invoice - Simulate'
+'Generate Invoices': 創作單據
+'Generate Invoices To %1$s': 為%1$s創作發票
+Geography: 地理
+Georgia: 喬治亞
+Georgian: 格魯吉亞語
+German: 德語
+Germany: 德國
+'Get Book Data From Google': 從谷歌取書的資料
+'Getting Started': 開始
+Ghana: 迦納
+'Gibbon Units': Gibbon的單元
+Gibraltar: 直布羅陀
+'Given Name': 給定的名稱
+'Given name': 給定的名稱
+Giver: 贈與者
+'Gives access to enable and configure public registration.': 允許用戶啟用和配置公開的註冊。
+'Gives access to full control all expenses across all budgets.': 允許用戶有所有預算的費用的權利。
+Go: 前往
+'Go Live Date': 可以觀看日期
+'Google Calendar ID for your personal calendar.': 你個人月曆的Google月曆編號。
+'Google Developers Client ID': 谷歌開發者客戶編號
+'Google Developers Client Name': 谷歌開發者客戶名稱
+'Google Developers Client Secret': 谷歌開發者客戶秘密
+'Google Developers Developer Key': 谷歌開發者開發關鍵
+'Google Developers Redirect Uri': 谷歌開發商重新定向的同意資源記認
+'Google Developers Redirect Url': 谷歌開發商重新定向URL
+'Google Integration': 'Google 積分'
+'Google OAuth': 谷歌OAuth
+'Google Redirect on sucessful auth.': 在谷歌從新定成功權威。
+'Google SketchUp': '穀歌 SketchUp'
+'Google project Developer Key.': 谷歌項目開發商鑰匙
+Grade: 分數
+'Grade Scale': 成績規模
+'Grade scale used to control values that can be assigned.': 用來控制直可以被指派的成績規模。
+Grades%1$sAttended: 已出席的級別%1$s
+Grades<br/>Attended: 成績<br/>參與
+'Grading Completion Date': 評分完成日期
+'Grading Scale': 計分規模
+Grandfather: 祖父
+Grandmother: 祖母
+'Graphics Interchange Format': 圖像互換格式
+Graphics/Design: 圖像/設計
+Graphing: Graphing
+Greece: 希臘
+Greek: 希臘語
+Greenland: 格陵蘭
+Grenada: 格瑞那達
+Grouping: 分組
+'Grouping Priority': 優先分組
+Groupings: 分組
+'Groups not in an active TT this year.': 組今年不在活性的時間表。
+Guadeloupe: 瓜德羅普
+Guam: 關島
+Guardian: 監護人
+Guatemala: 瓜地馬拉
+'Guest Assistant': 助手賓客
+'Guest List': 賓客名單
+'Guest Parent': 家長賓客
+'Guest Student': 學生賓客
+'Guest Teacher': 老師賓客
+'Guest Technician': 技術支緩賓客
+Guests: 賓客
+Guinea: 幾內亞
+Guinea-Bissau: 幾內亞比索
+Gujarati: 古吉拉特語
+Guyana: 蓋亞那
+HTML: HTML
+'HTML code to be inserted into blank note.': 'HTML 代碼被插入到空白記。'
+'HTML text that will appear above the public registration form.': 'HTML 文件會在公眾註冊表格以上出現'
+'HTML text that will appear underneath the public registration form.': 'HTML 文件會在公眾註冊以下出現.'
+Haiti: 海地
+Hall: 禮堂
+'Has payment (%1$s %2$s) been made for this application.': '有沒有為這個申請書製作付款(%1$s %2$s).'
+'Has task has been completed?': 功課完成？
+'Heard Island and Mcdonald Islands': 赫德島和麥克唐納群島
+'Hearing Impairment': 聾
+'Heart Condition': 心血管疾病
+Hebrew: 希伯來語
+Height: 身高
+'Hide External Provider Cost': 隱蔽外部提供者的費用
+'Hide Itemisation': 'Hide Itemisation'
+'Hide fee and payment details in receipts?': 'Hide fee and payment details in receipts?'
+Hifi: 音響
+High: 高
+'Higher Education Coordinator': 高等教育管理員
+'Higher numbers move teachers up the order within their grouping.': 高等的數目會把老師的組織中的排序推高。
+'Higher priority applicants appear first in list of applications.': 更高的優先級的申請人會在申請名單裏排第一。
+Hindi: 印地語
+Hinduism: 印度教
+'Historical Data': 歷史資料
+History: 歷史
+'Holy See (Vatican City State)': 梵蒂岡
+Home: 主頁
+'Home Address': 住址
+'Home Address (Country)': '住址 (國家)'
+'Home Address (District)': '家庭住址 (地區)'
+'Home Economics': 家庭經濟
+'Home Language': 母語
+'Home Language - Primary': 'Home Language - Primary'
+'Home Language - Secondary': 'Home Language - Secondary'
+'Home Languages': 'Home Languages'
+Homework: 功課
+'Homework & Deadlines': 功課和限期
+'Homework + Deadlines': '功課 ＋ 制止日期'
+'Homework Details': 功課詳情
+'Homework Due Date': 功課制止日期
+'Homework Due Date Time': 功課制止時間
+'Homework History': 功課歷史
+'Homework?': 功課？
+Honduras: 宏都拉斯
+'Hong Kong': 香港
+Hours: 小時
+House: 社
+'House short name, as set in School Admin. Must already exist).': '柱簡稱, 在學校管理設置. 必須已經存在。'
+Houses: 社
+'Houses for competitions, etc.': 用在比賽的社
+'How Did You Hear About Us?': '你是怎麼知道我們的?'
+'How Did Your Hear?': 你這麼樣聽到？
+'How many are there': 哪裡有多少
+'How many are there?': 哪裡有多少？
+'How many copies do you want to make of this item?': '這樣物件你要幾多分副本?'
+'How should expense approval be dealt with?': '怎樣處理費用的批准?'
+'How should invoice numbers be constructed?': '發票編號應該怎麼樣創造?'
+'How will attainment be graded?': 發跡這麼樣評分？
+'How will effort be graded?': 成就這麽樣評分？
+Hungarian: 匈牙利語
+Hungary: 匈牙利
+'HyperText Marrkup Language': 超文本標記語言
+Hypertension: 高血壓
+IB: 國際文憑組織
+'IB Diploma': 國際文憑組織證書
+'IB Diploma (Subject)': '國際文憑大學預科課程 (科目)'
+'IB Diploma (Total)': '國際文憑大學預科課程 (共計)'
+'IB Diploma Total': 國際文憑組織證書總頟
+IBDS: '國際文憑大學預科課程 (科目)'
+IBDT: '國際文憑大學預科課程 (總共)'
+IBEE: '國際文憑大學預科課程 擴展文章'
+ICHK: ICHK
+ICT: 信息及通信技術
+ID: 身分
+'ID Card': 身分證
+'ID Card Number': 身分證號碼
+'ID Card Scan': 身分證掃描
+ID/Name/Producer: 編號/名稱/裝作者
+'IDD code, without 00 or +': 'IDD 區號，無需 00 ＋'
+IN: 個人的需求
+ISBN10: ISBN10
+ISBN13: ISBN13
+Iceland: 冰島
+Icelandic: 冰島語
+'If blank, default password or random password will be used.': 'If blank, default password or random password will be used.'
+'If not checked, show all. If checked, show only non-compliant students.': 如果沒有檢查，顯示所有。如果檢查，只顯示非符合規定學生。
+'If not set, and Password field is empty, random passwords will be used.': 'If not set, and Password field is empty, random passwords will be used.'
+'If not, they will be inserted as images.': 如果否，他們會被輸入成圖片.
+'If relevant.': 如果相關。
+'If set to No, logins are limited to current year.': 如果被設置到不，
+'If set, the student will automatically be enroled on Accept.': '如果訂了, 學生會自動被報名和接受。'
+'If the user is not in a family.': 如果用戶不在家庭中。
+'If the user''s family does not have a home address set.': 如果用戶的家庭沒有定住址。
+'If yes, members of the public can submit applications': 如果是，那公眾人士可以提交申請表
+'If you do not have an %1$s %2$s account, please use the form below.': '如果你沒有一個%1$s %2$s戶口，請用以下的表。'
+'Ignore Enrolment': 忽視申請
+'Ignore Status': 忽視狀態
+'Illegal address detected: access denied.': 檢測到非法的地址。
+'Illegal file type!': 非法的文件類型!
+Image: 圖片
+'Image (240)': '圖像 (240)'
+'Image (75)': '圖像 (75)'
+'Image File': 相片文件
+'Image Link': 相片網頁
+'Image Privacy': 圖像隱私
+'Image Type': 相片類型
+Images: 照片
+Import: 導入
+'Import Assessment Results': 輸入評估結果
+'Import CSV files of families and their members, and use it to sync.': 上載家庭和家庭成員的CSV檔案，用來同步。
+'Import Families': 'Import Families'
+'Import Outcomes': 上載後果
+'Import Records': 上載紀錄
+'Import Student Enrolment': 'Import Student Enrolment'
+'Import Timetable Data': 輸入時間表的數據
+'Import Users': 'Import Users'
+'Import cannot proceed, as the "Mode" field have been left blank.': 'Import cannot proceed, as the "Mode" field have been left blank.'
+'In %1$s.': 在%1$s。
+'In Use': 正在使用
+'In:': '入:'
+Inc: 有限公司
+'Incase %1$s is full.': 如果%1$s已經滿了。
+Incident: 意外
+'Incident Date': 事件日期
+'Incident:': '事件:'
+Include: 加入
+'Include Comment?': 包括評論
+'Include Expected and Left.': 包括期待和離開
+'Include In Application Form?': 在申請表裡加入？
+'Include In Data Updater?': 'Include In Data Updater?'
+'Include Students': 包括學生
+'Include Teachers': 包括老師
+'Include Uploaded Response?': 包括上載的回應
+'Include Working Units?': '包括工作單元?'
+'Include all staff, regardless of status, start date, end date, etc.': '包括所有的員工， 無論狀態，開始日期，結束日期等等的。'
+'Include all studenusersts, regardless of status and current enrolment.': 'Include all studenusersts, regardless of status and current enrolment.'
+'Include http://': '包括 http://'
+'Include non-staff, non-student users.': 包括非人員，非學生的用戶。
+'Include parents in messages posted to activities': 在活動中公告的信息包括家長。
+'Include parents in messages posted to classes': 在班級中公告的信息包括家長。
+'Include parents in messages posted to courses': 在課程中公告的信息包括家長。
+'Include parents in messages posted to parents': 在家長中公告的信息包括家長。
+'Include parents in messages posted to year group': 在年紀中公告的信息包括家長。
+'Include parents?': '包括家長?'
+'Include staff?': '包括員工?'
+'Include student?': '包括學生?'
+'Include students whose status is not "Full".': '包括狀態不是 "滿"的學生'
+'Include students?': '包括學生?'
+'Include?': '包括?'
+'Includes student data & teacher''s notes': 包括學生資料和老師的筆記
+Incomplete: 沒有完成
+'Incomplete Attendance Report': 沒有完成的出席記錄
+'Incorrect username and password.': 用戶名或密碼不正確
+'Index Page Text': 指數頁的正文
+India: 印度
+'Indicate if you are interested in a scholarship.': 表明如果你肚餓獎學金優興趣。
+'Indicates how secure a student''s learning is': 表示學生掌握了多少
+Individual: 個人
+'Individual Education Plan': 個人學習計畫
+'Individual Needs': 個人需要
+'Individual Needs Records': 個別需要紀錄
+'Individual Needs Records_view': 個人需要紀錄_觀看
+'Individual Needs Records_viewContribute': 個人需要紀錄_觀看貢獻
+'Individual Needs Records_viewEdit': 個人需要紀錄_觀看編輯
+'Individual Needs Status': 個人需要狀態
+'Individual Needs Summary': 個別需要終結
+'Individual Needs alert is set, with an alert level of %1$s.': '個人的個人需求警報設定, 隨著警報級別 %1$s 。'
+'Individual Needs alerts are set, up to a maximum alert level of %1$s.': '個人的個人需求警報設定, 到最大的警報級別 %1$s。'
+'Individual for whom invoices are generated.': 給創作發票的
+'Individual needs descriptors or severity levels have not been set.': 個人需要描述或嚴重性還沒有定。
+'Individuals from the whole school.': 在學校的人
+Indonesia: 印度尼西亞
+Indonesian: 印度尼西亞語
+Indviduals: 人
+Information: 資料
+'Information & Communication Technology': 資料和通訊技術
+'Information Technology': 信息技術
+'Information to display at the end of the form': 在表格的結尾可觀看的資料
+'Information to display before the form': 在表格前可觀看的資料
+'Information to display before the scholarship options': 顯示獎學金前的資料
+'Initial Columns': 最初的列行
+'Initial Rows': 最初的行
+'Initial availability.': 應該的可用性。
+Initials: 縮寫
+Insert: 加入
+'Insert Existing Resource': 輸入存在的資源
+'Insert Images As': 輸入圖片為
+'Insert Images As Links?': '用鏈接上載圖片?'
+Install: 安裝
+'Install Demo Data?': '安裝樣板資料?'
+'Install Module': 安裝程式組件
+'Install Theme': 安裝主題
+'Install Type': 安裝類型
+'Install failed, but module was added to the system and set non-active.': '安裝失敗, 但是在系統中加入了程式組件和被設置到非活躍。'
+'Install was successful, but module could not be activated.': '安裝成功, 但是不能啟動程式組件。'
+'Installation - Step %1$s': 安裝－第%1$s步
+Installed: 已安裝
+'Insufficient data': 不足資料
+'Integrate Twitter Content': 綜合Twitter內容
+'Intended Date': 原本日期
+'Intended Start Date': 進入的日期
+'Intended issue date.': 原本發行日期
+'Interactive White Board': 電子白板
+'Interal Assessment': 內部評估
+Interest: 興趣
+'Interface Options': 界面選項
+'Interface Settings': 接口設定
+'Internal Assessment': 內部評估
+'Internal Assessment Columns': 'Internal Assessment Columns'
+'Internal Assessment Data Points': 'Internal Assessment Data Points'
+'Internal Assessment Settings': 'Internal Assessment Settings'
+'Internal Assessment Types': 'Internal Assessment Types'
+'Internal Assessments': 'Internal Assessments'
+'International Baccalaureate': 國際文憑組織
+'International Baccalaureate Diploma': 國際文憑大學預科課程
+'International Baccalaureate EE': '國際文憑大學預科課程 擴展文章'
+'International College HK': 香港國際書院
+Introduction: 簡介
+'Introductory text if Language Options section is turned on.': 如果開了語言選項的介紹文字
+Invoice: 發票
+'Invoice & Receipt Settings': 發表和收據設定
+'Invoice Due Date': 發票應有日期
+'Invoice Export': 輸出發票
+'Invoice Issue Date': 提出發票日期
+'Invoice Notes': 發票筆記
+'Invoice Number': 發票號碼
+'Invoice Number Style': 發票號碼類型
+'Invoice Text': 發票文字
+'Invoice To': 發表給
+'Invoice Total': 'Invoice Total'
+'Invoice Total:': 發票共計
+Invoicee: 收發票人
+Invoicees: 收發票人
+Invoices: 發票
+'Invoices Generated': 產生發票
+'Invoices Not Yet Generated': 單據還沒創作
+'Iran, Islamic Republic of': 伊朗
+Iraq: 伊拉克
+Ireland: 愛爾蘭島
+Irish: 愛爾蘭語
+'Is Default?': '是否自動?'
+'Is a scholarship required for you to take up a place at the school?': '如果要在這間學校佔用一個學位，獎學金需要嗎?'
+'Is class studying this unit?': '這班在學習這個單元嗎?'
+'Is item available for loan?': '這樣物件可借用?'
+'Is item available for loan? ': '這樣物件可以借?'
+'Is set?': '以頂?'
+'Is this field compulsory?': 這一個領域必須填嗎？
+Islam: 伊斯蘭教
+Israel: 以色列
+Issue: 發行
+'Issue Date': 發行日期
+'Issue Invoice': 發行發票
+'Issue Reminders': 發行提醒
+Issued: 以發行
+'Issued - Overdue': 以發行-過期
+'It''s free!': 免費!
+Italian: 意大利語
+'Italian ab initio SL': 初級義大利文基本級
+Italy: 義大利
+Item: 物件
+'Item Details': 項目詳情
+Jamaica: 牙買加
+Japan: 日本
+Japanese: 日文
+Javanese: 爪哇語
+'Javascript code to integrate statistics, such as Google Analytics': 審問資料的Javascript代碼，例如谷歌分析。
+'Job Title': 職稱
+'Join our mailing list and recieve a welcome email from the team.': 參加我們的郵件列表和獲贈從團隊的歡迎電郵。
+'Joining Date': 加入日期
+'Joint Picture Expert Group': JPEG
+'Joint Problems': 關節問題
+Jordan: 約旦
+Ju: 判斷
+Judaism: 猶太教
+Judging: 判斷
+KS3: KS3
+'KS3 Target Grades': KS3目標分數
+KS3S: KS3S
+Kazakhstan: 哈薩克
+'Keep lesson in original unit?': '將課堂保持在原本的單元?'
+Kenya: 肯亞
+Key: 關鍵
+'Key outcomes listed here...': 主要的結果在這裏列出來
+'Kidney Disease': 腎病
+Kiribati: 吉里巴斯
+Kn: 知道
+Knowing: 知道
+'Korea, Democratic People''s Republic of': 朝鮮民主主義人民共和國
+'Korea, Republic of': 大韓民國
+Korean: 韓文
+Kuwait: 科威特
+Kyrgyzstan: 吉爾吉斯斯坦
+LS: LS
+Language: 語言
+'Language Choice': 語言選項
+'Language Choice Experience': 選擇語言的經驗
+'Language Learning Options': 學習語言的選項
+'Language Options Active': 語言選擇開動
+'Language Options Blurb': 語言選擇簡介
+'Language Options Language List': 語言選擇語言表
+'Language Selection': 選擇語言
+'Language Settings': 語言設置
+'Language of%1$sInstruction': 教%1$sI的語言
+'Language of<br/>Instruction': 說明的<br/>語言
+'Lao People''s Democratic Republic': 寮國
+Last: 最後
+'Last Day': 最後一天
+'Last Episode': 上一個情節
+'Last Episode Date': 最後發作日期
+'Last Episode Treatment': 最近
+'Last IP Address': '最後的網際網路協定地址:'
+'Last Reinstall Date': 最後重新安裝日期
+'Last School': 去年的學校
+'Last Update': 上一個更新
+'Last Week': 上一個星期
+Late: 遲到
+'Latest student end date to include.': 最新包括學生最後一天。
+'Latest student start date to include.': 最近加入的學生。
+Latin: 拉丁文
+Latvia: 拉脫維亞
+Latvian: 拉脫維亞語
+Learn: 學習
+'Learn With Us': 和我們一起學習
+Learning: 學習
+'Learning Area': 學習領域
+'Learning Area Outcomes': 學習範圍的結果
+'Learning Area Rubrics': 學習區域評分表
+'Learning Area name, or blank if scope is School': 學習區域名稱，或如果在學校就空白。
+'Learning Areas': 學習領域
+'Learning Overview': 學習慨覧
+'Learning Security': 學習安全
+Lebanon: 黎巴嫩
+Left: 離開
+'Left - Early': 離開-早
+'Left Students': 離開的學生
+Legend: 圖例
+Lending: 借
+'Lending & Activity Log': 借和活動紀錄
+Length: 長度
+Lesotho: 賴索托
+'Less than 1440px by 900px': '少過1440px 成 900px。'
+Lesson: 課
+'Lesson Content': 課堂內容
+'Lesson Details': 課堂的詳情
+'Lesson Details Template': 課堂詳情模型
+'Lesson Outcomes': 課堂結果
+'Lesson Planner': 課程計畫
+'Lesson Planner_viewAllEditMyClasses': 課堂計畫_觀看編輯所有我的課堂
+'Lesson Planner_viewEditAllClasses': 課堂計畫_觀看編輯所有課堂
+'Lesson Planner_viewMyChildrensClasses': 課堂計畫_觀看所有我兒童的課堂
+'Lesson Planner_viewMyClasses': 課堂計畫_觀看所有我的課堂
+'Lesson View': 觀看課堂
+Lesson%1$sNumber: 課堂%1$s好嗎
+Lesson/Unit: 課/單元
+Lesson<br/>Number: 課堂<br/>號碼
+Lessons: 課堂
+'Lessons & Blocks': '課堂&方格'
+Letter: 信件
+'Letter 1 Count': 信件1數目
+'Letter 1 Text': 信件1正文
+'Letter 2 Count': 信件2數目
+'Letter 2 Text': 信件2正文
+'Letter 3 Count': 信件3數目
+'Letter 3 Text': 信件2正文
+'Letter Body': 信件正文
+'Letters Home by Roll Group': 從班級寄回家的信
+Level: 級別
+'Level 1': 第一級
+'Level 2': 第二級
+'Level 3': 第3級
+'Level 4': 第4級
+'Level 5': 第5級
+'Level 6': 第6級
+'Level 7': 第7級
+'Level 8': 第8級
+'Level 8 (highest) to Level 3 (lowest)': 'Level 8 (最高) 到 Level 3 (l最低)'
+Levels: 級
+Liberia: 賴比瑞亞
+Library: 圖書館
+'Library Borrowing': 借書
+'Library Borrowing Record': 圖書館借書紀錄
+'Libyan Arab Jamahiriya': 利比亞
+License: 牌照
+'License Expiry': 牌照過期日期
+'License Management Link': 牌照管理網頁
+'License Name': 牌照名稱
+'License Serial Number': 牌照變好
+'License Type': 牌照類型
+Liechtenstein: 列支敦斯登
+Like: 喜歡
+Likes: Likes
+Link: 網頁
+'Link To Email': 電郵的連結
+'Link To Lesson?': 連繫到課堂
+'Link To Web': 網站的連結
+'Link columns to grades on a scale?': '需要鏈接列行到規模上的分數嗎?'
+'Link student and parents to the family.': 連結學生和家長到家庭
+'Link the student to their family (who are already in Gibbon).': '連結學生到他的家庭 (已經在 Gibbon 裏)。'
+Link/File: 連繫/檔案
+'Linked Markbook': 鏈接的成績表
+'Linked to this lesson by default.': 自動和這一堂連結
+Listaver: Listaver
+'Listing Dates': 名單日期
+'Listing End Date': 名單最後一天
+'Listing Start Date': 列表開始日期
+Lithuania: 立陶宛
+Lithuanian: 立陶宛語
+Loading: 載入中
+'Localhost, IP address or domain.': '本地主機，IP 地址或域。'
+Localisation: 本土化
+Location: 地點
+'Location Detail': 地點詳情
+'Location with name %1$s in import cannot be found.': 地點名稱%1$s的輸入不能發現。
+Lockdown: 鎖定
+'Lockdown Alarm!': 鎖定警報!
+Lockdown!: 鎖定學校!
+Locker: 儲物櫃
+'Locker Number': 儲物櫃號碼
+Log: 目錄
+Login: 登錄
+'Login To Future Years': 登入將來年份
+'Login To Non-Current Years': 登入非目前的年份
+'Login To Past Years': 登入過去年份
+'Login Years': 登入年份
+'Login with Google': '使用 Google 登錄'
+Logo: 徽標
+Logout: 登出
+'Long Term': 長期
+'Long Term Medication': 長期的藥物治療
+'Long Term Medication Details': 長期的服藥細節
+'Long Text: number of rows for field.': '長文: 領域行數。'
+'Long-Term Medication?': '有沒有長期藥物?'
+Lost: 不見了
+Low: 低
+'Lowest Acceptable': 最低可接受
+Luxembourg: 盧森堡
+M: 醫療
+MFL: 現代外國語言
+'MPEG Audio': 'MPEG 音頻'
+'MPEG Video': 'MPEG 視頻'
+'MPG Varient': 'MPG Varient'
+Macao: 澳門
+'Macedonia, the Former Yugoslav Republic of': 馬其頓共和國
+Macedonian: 馬其頓語
+Madagascar: 馬達加斯加
+'Mail?': 郵件？
+'Main Tutor': 主要老師
+'Main User': 主要用戶
+'Main system settings': 系統主要設定
+Maintainer: 保持系
+'Make Departments Public': 公開部門
+'Make Units Public': 公開單元
+Malawi: 馬拉維
+Malay: 馬來語
+Malayalam: 馬拉雅拉姆語
+Malaysia: 馬來西亞
+Maldives: 馬爾地夫
+Male: 男性
+Mali: 馬利共和國
+Malta: 馬爾他
+Maltese: 馬耳他語
+Manage: Manage
+'Manage Activities': 編輯活動
+'Manage Activity Settings': 管理活動設置
+'Manage Alert Levels': 管理警報級別
+'Manage Application Forms': 管理申請表
+'Manage Applications': 編輯報名表
+'Manage Behavior Settings': 管理行為的設置
+'Manage Behaviour Records': 編輯行為的報告
+'Manage Behaviour Records_all': 管理行為紀錄_所有
+'Manage Behaviour Records_my': 管理行為紀錄_我的
+'Manage Behaviour Settings': 管理行為的設置
+'Manage Billing Schedule': 管理付錢時間表
+'Manage Budget Cycles': 編輯預算循環
+'Manage Budgets': 編輯預算
+'Manage Catalog': 管理目錄
+'Manage Columns': 管理列行
+'Manage Courses & Classes': 管理課程和課堂
+'Manage Custom Fields': 管理自訂的領域
+'Manage Days of the Week': 管理一周中的日子
+'Manage Departments': 管理部門
+'Manage District': 管理地區
+'Manage Districts': 管理地區
+'Manage Exceptions': 編輯例外
+'Manage Expense Approvers': 編輯費用批准人
+'Manage Expenses': 編輯費用
+'Manage External Assessments': 管理外部評估
+'Manage Families': 管理家庭
+'Manage Fee Categories': 編輯費用的級別
+'Manage Fees': 編輯費用
+'Manage File Extensions': 管理文件擴展
+'Manage Finance Settings': 編輯經濟的設定
+'Manage Grade Scales': 管理成績規模
+'Manage Houses': 管理社
+'Manage IN Descriptors': 管理IN描述
+'Manage Individual Needs Descriptors': 管理個人需求描述符
+'Manage Internal Assessment': 'Manage Internal Assessment'
+'Manage Internal Assessments': 管理內部評估
+'Manage Invoicees': 管理發票
+'Manage Invoices': 編輯發票
+'Manage Library Settings': 管理圖書館的設置
+'Manage Medical Forms': 管理醫療表格
+'Manage Messages': 編輯信息
+'Manage Messages_all': 管理信息_所有
+'Manage Messages_my': 管理信息_我的
+'Manage Messenger Settings': 編輯信息設定
+'Manage Modules': 管理程式組件
+'Manage Outcomes': 編輯結果
+'Manage Outcomes_viewAll': 管理結果_觀看所有
+'Manage Outcomes_viewAllEditLearningArea': 管理結果_觀看所有編輯學習區域
+'Manage Outcomes_viewEditAll': 管理結果_觀看編輯所有
+'Manage Permissions': 編輯授權
+'Manage Planner Settings': 編輯計畫的設定
+'Manage Resource Settings': 管理資源的設置
+'Manage Resources': 編輯資源
+'Manage Resources_all': 管理資源_所有
+'Manage Resources_my': 管理資源_我的
+'Manage Role': 管理角色
+'Manage Roles': 編輯角色
+'Manage Roll Groups': 管理班級
+'Manage Rubrics': 管理評分表
+'Manage Rubrics_viewAllEditLearningArea': 管理評分表_觀看所有編輯學習區域
+'Manage Rubrics_viewEditAll': 管理評分表_觀看編輯所有
+'Manage SMS Settings': 管理短信的設置
+'Manage School Year': 管理學年
+'Manage School Years': 管理學年
+'Manage Space Bookings': 管理位置的申請
+'Manage Space Changes': 管理位置更改
+'Manage Space Settings': 'Manage Space Settings'
+'Manage Spaces': 管理空間
+'Manage Special Days': 全力特別的日期
+'Manage Staff': 編輯員工
+'Manage Student Enrolment': 管理學生報名
+'Manage Students Settings': 管理學生們的設置
+'Manage Terms': 管理學期
+'Manage Themes': 管理主題
+'Manage Timetables': 管理時間表
+'Manage Units': 編輯單元
+'Manage Units_all': 管理單元_所有
+'Manage Units_learningAreas': 管理單元_學習區域
+'Manage User Custom Fields': 'Manage User Custom Fields'
+'Manage User Settings': 編輯用戶設定
+'Manage Users': 編輯用戶
+'Manage Year Groups': 管理年級
+'Manage a list of districts for address autocomplete.': 管理自動完成的地區名單。
+'Manage all behaviour records': 管理所有的行為記錄
+'Manage all outcomes in the school': 管理學校中所有的結果
+'Manage all resources': 管理所有的資源
+'Manage all rubrics in the school': 管理在學校中所有的評分表
+'Manage all units within the school': 管理在學校中所有的單元
+'Manage behaviour records create by the user': 管理用戶所創造的的行為紀錄
+'Manage course enrolment for a single user': 管理一位用戶的課程申請
+'Manage file extensions allowed across the system': 管理在系統中所有的文件擴展名。
+'Manage gateway settings for outgoing SMS messages.': 管理送出的所有信息的網關設定。
+'Manage lending, returns, reservations, repairs, decommissioning, etc.': 管理借書，換書，儲備，修理，退役等等。
+'Manage medical form information for users ': 管理給用戶的醫療表資料
+'Manage requests for updates to family data.': 管理更新家庭資料的要求
+'Manage requests for updates to finance data.': 管理更新財經資料的要求
+'Manage resources created by the user': 管理用戶創作的資源
+'Manage settings for the Behaviour module': 管理行為模塊的設定
+'Manage settings for the Library module': 管理圖書館模塊的設定
+'Manage settings for the Student module': 管理學生模塊的設定
+'Manage settings for the resources module': 管理資源模塊的設定
+Manager: 經理
+'Manually set status. "Approved" not permitted.': '手動設置狀態。 "批准" 不允許。'
+Maori: 毛利語
+'Map Classess': 編班
+Marathi: 馬拉地語
+'Marital Status': 婚姻狀況
+Mark: 批改
+'Mark Rubric': 批改評分表
+'Mark as left': 被標記為離開
+Markbook: 成績表
+'Markbook Columns': 成績表列行
+'Markbook Settings': 成績表的設置
+'Markbook Type': 成績表的類型
+Markbook<br/>Average: 成績表的<br/>平均
+'Marked on': 在這天評估
+Marks: 分數
+Married: 已婚
+'Married, Separated, Divorced, De Facto or Other': 已婚，分居，離婚，實施婚姻或其他
+'Marshall Islands': 馬紹爾群島
+Martinique: 馬丁尼克
+'Matching Address 1': 吻合地址1
+Mathematics: 數學
+'Mathematics HL': "高級數學\t"
+'Mathematics SL': 標準級數學
+Maths: 數學
+'Maths Studies SL': 標準級數學研究
+Mauritania: 茅利塔尼亞
+Mauritius: 模里西斯
+'Max Participants': 最多參加者
+'Maximum Activities per Term': 一個學期中的最多活動
+'Maximum Participants': 最多參加者
+'Maximum file size: %1$sMB': '文件的最大尺寸 : %1$sMB'
+'Maximum size for all files: %1$sMB': '全部文件的最大尺寸 : %1$sMB'
+'May be used to adjust arrangement of courses in reports.': 'May be used to adjust arrangement of courses in reports.'
+Mayotte: 馬約特
+'Mean Age': 平均年齡
+'Media Studies': 媒體研究
+Medical: 醫療
+'Medical Condition': 醫療情況
+'Medical Conditions': 醫療狀況
+'Medical Conditions?': 醫療狀況？
+'Medical Data': 醫療資料
+'Medical Data Summary': 醫療資料結論
+'Medical Data Updates': 醫療的數據更新
+'Medical Form Updates ': 醫療表格
+'Medical Form?': 醫療表？
+'Medical Information': 醫療資料
+'Medical alerts are set, up to a maximum of %1$s': '醫療警報以警報設定, 到最大的%1$s'
+Medication: 藥物治療
+'Medication Details': 藥物資料
+Medium: 中
+'Medium Portrait': 中等肖像
+'Members of a class within a course.': 課程中的課堂中的成員
+'Members of a course of study.': 課程中的成員
+'Members of an activity.': 活動中的成員
+Memory: 記憶
+Message: 信息
+'Message Bubble Auto Hide': 自動隱藏信息泡泡
+'Message Bubble Background Color': 信息泡泡背景顏色
+'Message Bubble Width Type': 信息泡泡寬度類型
+'Message Details': 信息詳情
+'Message Wall': 信息牆
+'Message Wall Settings': 信息牆設定
+Messages: 信息
+Messenger: 信息
+Mexico: 墨西哥
+'Micronesia, Federated States of': 密克羅尼西亞聯邦
+'Microsoft Excel 2007+': 'Microsoft Excel 2007+'
+'Microsoft Excel 97/2000/XP': 'Microsoft Excel 97/2000/XP'
+'Microsoft PowerPoint 2007+': 'Microsoft PowerPoint 2007+'
+'Microsoft PowerPoint 97/2000/XP': 'Microsoft PowerPoint 97/2000/XP'
+'Microsoft Word 2007+': 'Microsoft Word 2007+'
+'Microsoft Word 97/2000/XP': 'Microsoft Word 97/2000/XP'
+Milestones: 里程碑
+'Minimum Count': 最低數目
+'Minimum Length': 最少的長度
+'Minimum acceptable password length.': 最短可接受的密碼長度
+Minutes: 分中國
+Miscellaneous: 雜項
+Miss: 小姐
+Miss.: 失誤。
+Mobile: 手提電話
+'Mobile, Home, Work, Fax, Page, Other': 手提電話，住宅電話，辦公室電話，傳真，網頁，其他
+'Mobile, Home, Work, Fax, Pager, Other': 手提電話，住宅電話，工作，傳真，傳呼機，其他
+'Model ID': 型號編號
+'Model Name': 型號名稱
+'Module Error': 組件錯誤
+'Module Manifest': 程式組件清單
+'Module Menu': 程式組件選單
+'Module error due to incorrect manifest file or folder name.': 模型因為錯的貨單或文件夾名而有錯誤。
+'Moldova, Republic of': 摩爾多瓦
+Mon: 星期一
+Monaco: 摩納哥
+Monday: 星期一
+Mongolia: 蒙古國
+Mongolian: 蒙語
+Month: 月
+'Month of Issue': 發行月份
+'Monthly Top 5': 每月的頂5
+Montserrat: 蒙哲臘
+'More info': 更多資料
+Morocco: 摩洛哥
+'Most common name, alias, nickname, etc.': '最常見的名稱, 別號, 綽號 等等'
+'Most common name, alias, nickname, handle, etc': '最常見的名字, 別號, 綽號, 處理 等等'
+Mother: 父母
+Mozambique: 莫三比克
+Mr.: 先生
+Mrs.: 夫人
+Ms: 小姐
+Ms.: 小姐
+'Multi Add': 同期加入
+Music: 音樂
+'Must be at least %1$s characters in length.': '長度至少要有 %1$s 的字符'
+'Must be numeric. Number of records shown per page.': 一定要是數字。一頁中的紀錄數目。
+'Must be unique': 必須由獨特
+'Must be unique for this column.': 這個列行必須要獨特.
+'Must be unique for this course.': 必須為這個課程獨特
+'Must be unique for this grade scale.': 必須為這個成績規模獨特
+'Must be unique for this school year.': 必須為這個學年獨特。
+'Must be unique for this timetable.': 必須為這個時間表獨特。
+'Must be unique if set.': 如果訂了一定要獨特。
+'Must be unique to roll group if set.': 如果班級已定，一定要獨特
+'Must be unique, or will lead to update not insert.': 一定要獨特，如果不會更新不會開始。
+'Must be unique.': 必須獨特。
+'Must be unique. Controls chronological ordering.': '必須獨特. 控制實足的排序. '
+'Must be unique. System login name.': 一定要獨特。系統登錄名稱。
+'Must be unique. System login name. Cannot be changed.': 一定要獨特。系統登錄。不可以改。
+'Must match value of gibbonExternalAssessment.name in database.': '一定要和在數據庫的gibbonExternalAssessment.name的價值相配。 '
+'Must match value of gibbonExternalAssessmentField.name in database.': '一定要和在數據庫的gibbonExternalAssessmentField.name 的價值相配。 '
+'Must match value of gibbonPerson.officialName in database,': gibbonPerson.officialName
+'Must match value of gibbonScaleGrade.value in database.': '一定要和在數據庫的gibbonScaleGrade.value的價值相配。 '
+'Must start with http:// or https://': '必須使用 http:// 或 https://'
+'My Activities': 我的活動
+'My Children''s Classes': 我孩子的課堂
+'My Classes': 我的課堂
+'My Expense Requests': 我的費用請求
+'My Roll Group': 我的班級
+'My Roll Groups': 我的班級
+'My Timetable': 我的時間表
+'My Website': 我的網站
+Myanmar: 緬甸
+N/A: 無法使用
+NA: 無法使用
+NYS: 還沒掌握
+Name: 名稱
+'Name In Characters': 字母的名稱
+'Name Short': 短名稱
+'Name by which family is known.': 家庭已知的名稱。
+'Name of Google Project in Devlopers Console.': 在開發者控制台谷歌工程的名稱。
+'Name to appear on written communication to family.': 會在通訊和家庭寫入的名稱。
+Name/Unit: 名稱／單元
+Namibia: 納米比亞
+Nanny/Helper: 保母/家務助理
+'National ID Card': 國際身分證
+'National ID Card Number': 國民身分證號碼
+'National ID Card Scan': 國民身分證掃描
+Nationality: 國籍
+Nauru: 諾魯
+'Need help?': 需要支緩？
+Negative: 負
+'Negative Count': 負數目
+'Negative Descriptors': 負面描述符
+'Negative behaviour records this week': 這一星期的消極行為
+Nepal: 尼泊爾
+Nepali: 尼泊爾語
+Netherlands: 荷蘭
+'Netherlands Antilles': 荷屬安地列斯
+'New Caledonia': 新喀里多尼亞
+'New Class': 新班
+'New Condition': 新狀況
+'New Guests': 新的賓客
+'New Message': 新信息
+'New Message_activities_any': 新信息_活動_任何
+'New Message_activities_my': 新信息_活動_我的
+'New Message_activities_parents': 新信息_活動_家長
+'New Message_applicants': 新信息_申請人
+'New Message_byEmail': 新信息_用電郵
+'New Message_byMessageWall': 新信息_用信息表
+'New Message_bySMS': 新信息_用SMS
+'New Message_classes_any': 新信息_班級_任何
+'New Message_classes_my': 新信息_班級_我的
+'New Message_classes_parents': 新信息_班級_家長
+'New Message_courses_any': 新信息_課程_任何
+'New Message_courses_my': 新信息_課程_我的
+'New Message_courses_parents': 新信息_課程_家長
+'New Message_fromSchool': 新信息_從學校
+'New Message_houses_all': 新信息_社_所有
+'New Message_houses_my': 新信息_社_我的
+'New Message_individuals': 新信息_個人
+'New Message_role': 新信息_角色
+'New Message_rollGroups_any': 新信息_班級_任何
+'New Message_rollGroups_my': 新信息_班級_我的
+'New Message_rollGroups_parents': 新信息_班級_家長
+'New Message_yearGroups_any': 新信息_年級_任何
+'New Message_yearGroups_parents': 新信息_年級_家長
+'New Messages': 新信息
+'New Notifications': 'New Notifications'
+'New Password': 新密碼
+'New Quick Wall Message': 新的快捷信息牆信息
+'New Resource %1$s': 新資源%1$s
+'New Space': 新的位置
+'New Staff': 新員工
+'New Status': 新狀態
+'New Students': 新學生
+'New Time Slots': 新時間插槽
+'New Titles': 新的題目
+'New Unit Name': 新的單元名
+'New Value': 新價值
+'New Zealand': 紐西蘭
+Newer: 新
+Next: 下一個
+'Next Cycle': 下一個循環
+'Next Lesson': 下個課堂
+'Next Roll Group': 下個班級
+'Next School': 下一間學校
+'Next Week': 下一個星期
+'Next Year': 明年
+Nicaragua: 尼加拉瓜
+Niger: 尼日
+Nigeria: 奈及利亞
+Niue: 紐埃
+'No': 否
+'No Current Alerts': 沒有現在的通知
+'No Learning Areas available.': 沒有可用的學習領域
+'No Space Allocated': 沒有位置分配
+'No Type': 沒有
+'No data': 沒有資料
+'No known siblings': 沒有已知的兄弟姐妹
+'No medical data': 沒有醫療資料
+'No number available.': 沒有可用的電話號碼
+'No spaces or punctuation, just numbers': 空格或標點符號，只有數字
+'No terms available.': 沒有可用的學期
+'No upcoming deadlines!': "將來沒有限期!\t"
+'No upcoming deadlines. Yay!': '沒有即將到來的最後日期. 好!'
+'No year groups available.': 沒有年級可用。
+'Non-Alphanumeric Requirement': 需由非數字或積木
+'Non-Current Courses': 非現在的課程
+Non-Verbal: 非語言
+'Non-numeric scale aiming to reduce mark obsession': 非數字的規模，目標是減少痴迷分數。
+Non-student: 非學生
+None: 無
+Nonreligious/Agnostic/Atheist: 沒有宗教信仰
+'Norfolk Island': 諾福克島
+'Normal (Roll Order, Surname, Preferred Name)': '正常 (出席表秩序，姓，首選名稱)'
+'Northern Mariana Islands': 北馬里亞納群島
+Norway: 挪威
+Norwegian: 挪威語
+'Not Accepted': 沒有接受
+'Not Available': 不可用
+'Not Confirmed': 沒有確認
+'Not Installed': 還沒安裝
+'Not Sent': 沒有送出
+'Not Submitted Online': 不是在網上提交
+'Not Yet Secure': 還沒掌握
+'Not recommended for non-experts!.': 不推薦給非專家!
+'Not sent by email.': 沒有用電郵送
+'Not sent by message wall.': 不是用信息牆寄出
+'Not sent by sms.': 不是用SMS發送。
+'Not submitted online': 沒有在網上提交
+Note: 筆記
+'Note Taker': 記錄者
+Notes: 筆記
+'Notes & Review': 筆記和評論
+Notification: 通知
+'Notification Options': 通知選項
+Notifications: 通知
+'Notifications can always be viewed on screen.': 總值可以在螢幕上觀看
+Number: 數字
+'Number 1': '電話號碼 1'
+'Number 2': '電話號碼 2'
+'Number of Copies': 多少副本
+'Number of inputs on this page': 在這網頁輸入的數量
+Numeric: 數字
+'Numeric Requirement': 需要數字
+'Numeric value in %1$s.': '在數值的 %1$s'
+'Numeric value of the fee in %1$s.': 在%1$s的費用數值
+'Numeric value of the fee.': 費用的數值
+'Numeric value of the replacement cost in %1$s.': 更換費用的%1$s價值。
+'Numeric value of the replacement cost.': 更換費用的價值。
+'Numeric value.': 數值
+'ON': 'ON'
+OTHERS: 其他
+OUTCOMES: 結果
+'Obvious language needs in English acquisition.': 在英文中需要幫助。
+'Off': 關
+Office: 辦公室
+'Official Name': 正式名稱
+'Official learning needs that have been professionally identified.': 正式的學習需求需要專業確定
+Offspring: 子孫
+'Oh no!': 糟糕了！
+Older: 舊
+'Older occurrences not shown...': 就的出現次數沒有顯示。
+Oman: 阿曼
+'On': 開
+'On Loan': 貸款
+'On Return': 正在退還
+'On Time': 準時
+One: '1'
+'One To Four': 一到四
+'One of:': 其中一個：
+'One of: ''School'' or ''Individual''.': '其中一個：“學校” 或 “個人”'
+'One of: ''Y'' or ''N''.': 其中一個：“是”或“否”
+Online: 線上
+'Online Payment': 網上付錢
+'Online Payment Threshold': 網上付錢戶限
+'Online Submission': 網上提交
+'Online Submission?': 網上提交
+'Online submission is %1$s for this homework.': 為了這一份功課，網上提交是%1$s。
+Online%1$sSubmission: 網上%1$s提交
+'Only Learning Areas for which the student has data will be displayed.': 'Only Learning Areas for which the student has data will be displayed.'
+'Only available if source and target classes are in the same course.': 如果來源和目標課堂是同一個課程才可用。
+'Only enables timetable integration when logging in via Google.': 只在用谷歌登錄時允許時間表積分。
+'OpenOffice SpreadSheet': 'OpenOffice SpreadSheet'
+'OpenOffice Text': 'OpenOffice Text'
+'Operating System': 操作系統
+Optional: 不一定
+Options: 選擇
+Order: 秩序
+'Order By': 秩序
+Ordered: 訂購
+'Organisation Email': 組織電郵
+'Organisation Initials': 組織縮寫
+'Organisation Name': 組織名稱
+'Organisation Settings': 數據庫設置
+Organiser: 主辦單位
+'Original Space': 原本位置
+'Orphaned Modules': 孤獨的模塊
+'Orphaned Themes': 孤獨的主題
+Other: 其他
+'Other Fields': 其他領域
+'Other Guest': 其他賓客
+'Other Information': 其他資料
+'Other Lessons': 其他課堂
+'Other Needs': 其他的需要
+'Other Parents': 其他家長
+'Other Relation': 其他關係
+'Other Students': 其他學生
+'Other Teachers': 其他老師
+'Out:': '出:'
+Outcome: 成果
+'Outcome %1$s was successfully created.': '%1$s 的結果順利創作。'
+'Outcome Based': 根據結果
+'Outcome with name %1$s had some information malformations.': 名字是%1$s的後果有些資料的錯誤。
+Outcomes: 結果
+'Outcomes By Course': 課程的結果
+'Outcomes listed here...': 在這裡列出結果
+Outdoor: 戶外
+'Outstanding Balance': 超支結餘
+'Outstanding Balance:': '超支結餘:'
+'Override the system default language.': 重寫系統內定的語言
+'Override the system theme.': 重寫系統主題
+Overview: 簡介
+Owner: 物主
+Owner/User: 物主/用戶
+Ownership: 所有權
+'Ownership Type': 使用權類型
+P: 隱私
+'PAS Equivalent': PAS的相同
+'PAS Grade': PAS的分數
+'PAS Result': 基本評估規模的結果
+'PAYPAL SUPPORTED': 支持Paypal
+PE: 體育
+'Page Count': 頁數
+Pager: 傳呼機
+'Pagination Count': 頁數
+Paid: 已支付
+'Paid - Complete': '付費 －完成'
+'Paid - Late': 以支付－遲
+'Paid - Partial': '付費 － 局部'
+Pakistan: 巴基斯坦
+Palau: 帛琉
+'Palestinian Territory, Occupied': 巴勒斯坦領土
+Panama: 巴拿馬
+'Papua New Guinea': 巴布亞紐幾內亞
+Paraguay: 巴拉圭
+Parent: 家長
+'Parent %1$s By Email': '家長 %1$s 通過電子郵件'
+'Parent %1$s Contact Priority': '家長 %1$s 聯繫優先'
+'Parent %1$s Email': '家長 %1$s 電子郵件'
+'Parent %1$s Employer': '家長 %1$s 雇主'
+'Parent %1$s First Language': '家長 %1$s 第一語言'
+'Parent %1$s Name': '家長 %1$s 名字'
+'Parent %1$s Phone': '家長 %1$s 電話'
+'Parent %1$s Profession': '家長 %1$s 職業'
+'Parent %1$s Relationship': '家長 %1$s 關係'
+'Parent %1$s Second Langage': '家長 %1$s 第二語言'
+'Parent %1$s was successfully updated.': '成功的更新了家長 %1$s。'
+'Parent 1': '家長 1'
+'Parent 1 Contact Priority': '家長 1 聯繫優先'
+'Parent 1 Email': '家長 1 電子郵件'
+'Parent 1 Employer': '家長 1 雇主'
+'Parent 1 First Language': '家長 1 第一語言'
+'Parent 1 Name': '家長 1 名字'
+'Parent 1 Phone': '家長 1 電話'
+'Parent 1 Profession': '家長 1 職業'
+'Parent 1 Relationship': '家長 1 關係'
+'Parent 1 Second Langage': '家長 1 第二語言'
+'Parent 1 already exists in Gibbon, and so does not need a new account.': '家長 1 已經存在 Gibbon 裏，所以不需要新的帳戶'
+'Parent 1 could not be created!': '不能創建家長 1!'
+'Parent 1 could not be linked to family!': '家長 1 不能喝家庭連結！'
+'Parent 2': '家長 2'
+'Parent 2 could not be created!': '不能創建家長 2!'
+'Parent 2 could not be linked to family!': '家長 2 不能喝家庭連結！'
+'Parent CSV File': '家長的 CSV 文件'
+'Parent Emails': 家長的電郵
+'Parent Weekly Email Summary': 家長每週電郵結論
+'Parent Weekly Email Summary Include Behaviour': 家長每週電郵總結包括行為
+'Parent or guardian of person studying in': 正在學習的學生的家長或監護人
+'Parent username': 家長用戶名
+'Parent with username %1$s had some information malformations.': '家長提供的用戶名 %1$s 有些資料故障.'
+Parent/Guardian: 家長/監護人
+'Parent/Guardian %1$s Background': '家長/監護人 %1$s 背景'
+'Parent/Guardian %1$s Contact': '家長/監護人 %1$s 聯絡'
+'Parent/Guardian %1$s Personal Data': '家長/監護人 %1$s 個人資料'
+'Parent/Guardian 1': '家長/監護人 1'
+'Parental Contacts': 家長聯絡人
+'Parental Dashboard': 家長主頁
+Parents: 家長
+'Parents Notification Default': 自動家長通知
+'Parents Notification Message': 家長通知留言
+'Parents who come to school to help out': 來到學校幫忙的家長
+Parents/Guardians: 家長/監護人
+Participant: 參與者
+Participants: 參與者
+'Participants by Activity': 活動的參加者
+'Participants for': 參加者－
+Passport: 護照
+'Passport Number': 護照號碼
+Password: 密碼
+'Password Policy': 密碼策略
+'Password Reset': 重置密碼
+Past: 過去
+Pastoral: 領導
+'Pay Now': 現在繳錢
+'PayPal API Password': 'PayPal API 密碼'
+'PayPal API Signature': 'PayPal API 簽名'
+'PayPal API Username': 'PayPal API 用戶名稱'
+'PayPal Payment Gateway': 'PayPal 付款網關'
+'PayPal Payment Payer ID:': 'PayPal 付款付款者 身分: '
+'PayPal Payment Receipt ID:': 'PayPal 付款付款者 收據 身分: '
+'PayPal Payment Token:': 'PayPal 付款象徵'
+'PayPal Payment Transaction ID:': 'PayPal 付款付款者 交易 身分:'
+Payee: 付款者
+Payment: 付款
+'Payment Details': 付款的詳情
+'Payment Event': 付款項目
+'Payment ID': 付款身分
+'Payment Information': 付款資料
+'Payment Log': 付款登陸
+'Payment Method': 付款方式
+'Payment Payer ID:': '付款付款人編號:'
+'Payment Receipt': 付款收據
+'Payment Receipt ID:': '付款收據編號:'
+'Payment Token:': '付款象徵:'
+'Payment Total': 總付款
+'Payment Transaction ID:': '付款交易編號:'
+'Payment Type': 付款種類
+'Payment system': 付款系統
+Pen: 待決
+Pending: 等待
+'Pending Approval': 待決批准
+People: 人士
+'Per Activity': 每個活動
+'Per Activty payment is switched off': 每活動繳付關了
+Percentage: 百分比
+Performance: 表現
+Period: 期間
+Persian: 波斯語
+Person: 人士
+'Person studying in the school': 在學校學習的人
+'Person the device is assigned to.': 這個設備的負責人。
+Personal: 個人
+'Personal Background': 個人背景
+'Personal Calendar': 私人月曆
+'Personal Calendar Feed': 個人月曆信件提供
+'Personal Data': 私人資料
+'Personal Data Updater Required Fields': 更新個人資料需要的地方
+'Personal Data Updates': 個人的數據更新
+'Personal Data Updates ': 私人資料更新
+'Personal Google Calendar ID': 個人Google月曆編號
+'Personal Language': 個人語言
+'Personal Theme': 個人主題
+'Personalised Warnings': 個人的警告
+'Personalised attainment target grade': 個人發跡目標分數
+'Personalised target grade': 個人分屬目標
+Peru: 秘魯
+Philippines: 菲律賓
+Phone: 電話
+'Phone %1$s': '電話 %1$s'
+'Phone %1$s Country Code': '電話 %1$s 國家代碼'
+'Phone %1$s Type': '電話電話 %1$s 類型'
+'Phone 1': 電話號碼1
+'Phone 1 (Country Code)': '電話 1 (國家代碼)'
+'Phone 1 (Type)': '電話 1 (類型) '
+'Phone 2': '電話 2'
+'Phone 2 (Country Code)': '電話 2 (國家代碼)'
+'Phone 2 (Type)': '電話 2 (類型)'
+'Phone 3': '電話 3'
+'Phone 3 (Country Code)': '電話 3 (國家代碼)'
+'Phone 3 (Type)': '電話 3 (類型)'
+'Phone 4': '電話 4'
+'Phone 4 (Country Code)': '電話 4 (國家代碼)'
+'Phone 4 (Type)': '電話 4 (類型)'
+'Phone Number': 電話號碼
+'Phone:': 電話號碼
+Photo: 照片
+'Physical Education': 體育
+'Physics HL': 高級威力學
+'Physics SL': 標準級物理學
+Pitcairn: 皮特肯群島
+'Place this message on user''s message wall?': '這個信息放置於用戶的信息牆嗎?'
+'Plain Text': 純文本
+Plan: 計畫
+'Plan & Deploy %1$s Smart Units': '計劃和部署 %1$s 智能單元'
+'Planned Lesson': 已計劃的課堂
+Planned%1$Lesson: 已經計畫%1$課堂
+Planned%1$sLesson: 已經計畫%1$s課堂
+Planner: 計劃表
+'Planner - Learning Feedback': 'Planner - Learning Feedback'
+'Planner - Lesson Design': 'Planner - Lesson Design'
+'Planner Discussion Post': 計畫討論信息
+'Planner Settings': 計劃表設置
+'Planner Stars': 計劃表星
+'Planner Templates': 計劃表模板
+Planning: 計畫
+'Please choose preferred additional language to study.': 請另外選擇首選語言來學習。
+'Please contact %1$s for help.': '有問題, 請聯絡 %1$s'
+'Please contact %1$s if you have any questions.': '如果有問題, 聯絡%1$s。 '
+'Please create the following for new student %1$s.': 請裝造以下的給新生%1$s。
+'Please find below a summary of homework and behaviour for %1$s.': 在以下的是%1$s的功課和行為的總結
+'Please give information on the applicants''s siblings.': 請給一些關於這位申請人的兄弟姐妹的資料。
+'Please indicate any medical conditions.': 請表示任何醫療情況。
+'Please note that there is an application fee of:': '請注意，這會有一共的費用:'
+'Please provide URL to image.': '請給你的圖像提供 URL'
+'Please select...': 請選擇...
+'Please upload a passport photo to use as a profile picture.': 請上載一張護照相片最為頭像。
+'Plus more': 增加
+'Plus/Minus Value Added': '加入了 加/減 的價值 '
+Poland: 波蘭
+'Policy Link': 政策網頁
+Polish: 拋光語
+'Portable Document Format': 便攜式文件格式
+'Portable Network Graphics': 便攜式網絡圖形
+Portugal: 葡萄牙
+Portuguese: 葡萄牙語
+Position: 位置
+Positive: 肯定
+'Positive Behaviour': 'Positive Behaviour'
+'Positive Descriptors': 正面描述符
+'Positive behaviour records this week': 這一星期的積極行為
+'Posted at': 發佈在
+Postscript: 附筆
+'Powered by': 搭載
+Preferences: 設定
+'Preferred Name': 首選名稱
+'Preferred Name (PreferredName, Surname)': 首選姓名（首選名稱，姓）
+'Preferred Names': 首選地名稱
+'Preferred, surname, username, email, phone number, vehicle registration': 首選姓名，姓，用戶名，電郵，電話號碼，車輛登記
+'Preferred, surname, username.': 首選，姓，用戶名。
+'Prepare Database Tables': 準備數據庫表
+Present: 到
+'Present - Late': 到-遲到
+'Present - Offsite': 到-不在校園
+Presentation: 介紹
+Previous: 以
+'Previous Concussion or Head Injury': 之前腦震動或頭部受傷
+'Previous Cycle': 之前的循環
+'Previous Lesson': 上個課堂
+'Previous Schools': 以前學校
+'Previous Serious Injury': 之前嚴重受傷
+'Previous Year': 前一年
+'Previously requested action.': 之前要求的動作
+'Primary Assessment Scale': 基本評估規模
+'Primary Assessment Scale Grade': 主要評估規模分數
+'Primary External Assessement': 主要外部評估
+'Primary External Assessment By Year Group': 年級的基本另外評估
+'Primary Role': 主要角色
+'Primary assessment scale equivalent': 主要評估規模相等
+Print: 打印
+'Print Expense': 打印費用
+'Print Invoices, Receipts & Reminders': 打印發票，收據和通知。
+'Print Publication': 印出發表
+'Print a report of students who are not present on a given day': 印出所有在指定日期沒有上學的學生名單
+'Print attendance lists': 打印出席表
+'Print participant lists': 印出參加者的名單
+'Print payment list': 印出費用名單
+'Print roll group lists showing count of various activity types': 印出顯示不同活動的類型的。班級名單
+'Print student roll group lists': 印出學生班級的名單
+'Print work summary statistical data by roll group': 印出班級的工作總結資料。
+Priority: 優先
+Privacy: 隱私
+'Privacy Blurb': 私人簡介
+'Privacy Choices by Student': 學生的私人選擇
+'Privacy Options': 私人選擇
+'Privacy Statement': 私人聲明
+'Privacy is required: %1$s': '隱私需要: %1$s'
+'Privacy not required or not set.': 不需要私人或沒有定
+'Privacy required:': '需要私人:'
+Prnt: 打印
+Producer: 裝作者
+Profession: 職業
+Profiles: 戶口
+'Program Dates': 活動日期
+'Program End Date': 活動終止日期
+'Program Start Date': 活動開始日期
+Projector: 放映機
+Provider: 提供者
+'Provides an summary overview of items in the catalog.': 提供在目錄的所有的項目的總結。
+'Psychological Condition': 心裡病
+'Psychology HL': 高級心理學
+'Psychology SL': 標準級心理學
+'Public Applications?': '公眾應用程式?'
+'Public Domain': 公眾領域
+'Public Registration': 公開註冊
+'Public Registration Agreement': 公開註冊協議
+'Public Registration Default Role': 公開註冊的自動角色
+'Public Registration Default Status': 公開註冊預設狀態
+'Public Registration Introductory Text': 公開註冊介紹文字
+'Public Registration Minimum Age': 公開註冊最低年齡
+'Public Registration Postscript': 公開註冊後記
+'Public Registration Privacy Statement': 公開註冊隱私聲明
+'Public Registration Settings': 公開登記設定
+'Publication Date': 出版日期
+'Publication Dates': 發布日期
+Publisher: 出版社
+'Puerto Rico': 波多黎各
+Punjabi: 旁遮普語
+'Purchase By': 購買者
+'Purchase Date': 購買日期
+'Purchase Details': 購買詳情
+'Purchasing Officer': 購買主任
+Purpose: 目的
+'Purposes (General)': '目的 (一般)'
+'Purposes (Restricted)': '目的 (受限)'
+Qatar: 卡達
+Qualifications: 資格
+Quechua: 克丘亞語
+'Quick Add': 快速添加
+'Quick File Upload': 快捷上載文件
+'Quick Insert': 快進入
+'Quick Star': 星
+'QuickTime Movie': 'QuickTime 影片'
+'Rare Blood Type': 稀有血型
+'Re-Enrol Other Students': 重新將其他學生報名
+Reaction: 反應
+Read: 閱覽
+'Read All': 閱讀全部
+'Read more': 閱讀更多
+'Reader Age (Oldest)': '讀者年齡 (最大）'
+'Reader Age (Youngest)': '讀者年齡 (最小）'
+Reason: 原因
+Receipt: 收據
+'Receipt %1$s': '收據 %1$s'
+'Receipt Confirmation Report': 'Receipt Confirmation Report'
+'Receipt Notes': 收據筆記
+'Receipt Number (on this invoice)': 'Receipt Number (on this invoice)'
+'Receipt Text': 收據文字
+'Receipt To': 收據
+Receipts: 發票
+'Receive Email Notifications?': '接受電郵通知?'
+'Receive Support?': 接受支援
+'Receive non-emergency SMS messages from school?': 有沒有從學校收到非緊急的短信？
+'Receive non-emergency emails from school?': 有沒有從學校收到非緊急的郵件？
+'Receive non-emergency phone calls from school?': 有沒有從學校收到非緊急的電話？
+'Receive postage mail from school?': 有沒有從學校收到郵資的郵件？
+'Recent Attendance Summary': 最近出席結論
+'Recent Discussion': 最近的討論
+'Recent Grades': 最近的成績
+'Recent Marks': 最近的分數
+Recipients: 收件人
+'Record with ID %1$s had some information malformations.': 紀錄名稱%1$s的輸入出現錯誤。
+'Recorded By': 紀錄
+'Recorded at': 紀錄於
+'Recorded at %1$s on %2$s': '記錄在 %1$s 的 %2$s'
+'Recorded at %1$s on %2$s by %3$s': '%3$s在%1$s的%2$s記錄'
+'Recorded at %1$s on %2$s by %3$s.': '%3$s在%1$s的%2$s記錄'
+Records: 記錄
+Reenrol: 重新報名
+Refresh: 更新
+Refunded: 以退錢
+Register: 登記
+'Register New Staff': 登記新員工
+Registered: 已報名
+Registration: 註冊
+'Registration is closed, or you do not have permission to register.': 報名現在暫停，或你不可以報名
+'Registration is currently closed, but you can still view activities.': 報名現在暫停，但是你還可以觀看活動。
+'Registration was successful.': 報名成功
+Regular: 定期
+'Regular, classroom teacher': 平常的課堂老師
+Reimbursement: 報銷
+'Reimbursement Comment': 報銷評論
+'Reimbursement Officer': 報銷主任
+'Reimbursement Status': 報銷狀態
+Reject: 拒絕
+'Reject Application': 拒絕申請
+Rejected: 拒絕
+'Related Classes': 有關課堂
+Relationship: 關係
+'Relationship Unknown': 關係不明
+Relationships: 關係
+'Relative path to site logo (250x107px)': 相對網頁徽標(250x107px)去路徑
+'Relative path to site logo (400 x 100px)': '到網頁徽標(400 x 100px)的路徑。'
+'Relevant student year groups': 'Relevant student year groups'
+Religion: 宗教
+'Religious Education': 中交教育
+'Reminder 1': 提示1
+'Reminder 1 Text': '提示1 信息'
+'Reminder 2': 提示2
+'Reminder 2 Text': '提示2 信息'
+'Reminder 3': 題詩3
+'Reminder 3 Text': '提示3 信息'
+Reminders: 提示
+'Removal of old periods failed.': 失敗清楚舊的期間。
+'Removal of old periods was successful.': 成功清楚舊的期間
+'Remove Class from Period': 清除期間的課堂
+'Remove Data': 'Remove Data'
+'Remove Old Periods': 清除舊的期間
+'Remove Record': 清除記錄
+'Renew Item': 更新項目
+Repair: 修理
+'Repair Log/Notes': 修理紀錄/筆記
+'Repeat Daily': 每天重覆
+'Repeat Weekly': 每週重覆
+'Repeat daily for this many days.': 每天重覆許多天
+'Repeat weekly for this many days.': 每星期重覆許多天
+'Repeat?': '重複?'
+'Replacement Cost': 更換費用
+'Replacement Year': 更換年份
+'Replies to me:': 對我的回復
+'Reply To': 回覆給
+'Report Data': 報告數據
+Reportable: 可報告
+'Reportable?': 可報告？
+Reports: 報告
+'Request Reimbursement': 請求報銷
+Requested: 請求
+'Requested - Approval Required': '已請求 － 需要批准'
+'Requesting User': 發出請求去的用戶
+'Require at least one numeric character?': '需要要求最少一個數字?'
+'Require both upper and lower case alpha characters?': '需要要求大楷和小楷的字母?'
+Required: 需要
+'Required Documents': 需要的文件
+'Required Documents Compulsory?': 必須要需要的文件？
+'Required Documents Options': 所需文件選項
+'Required Documents Text': 需要的文件的文字
+'Required Fields for Personal Updates': 個人更新所需的領域
+'Required?': '需要嗎?'
+Reserve: 保留
+Reserved: 保留
+'Reset Password': 重置密碼
+'Reset User Password': 重置用戶密碼
+'Residency Status': 居留身份
+'Residency/Visa Type': 住所/簽證種類
+'Resource %1$s File': 資源%1$s文件
+'Resource %1$s Name': 資源%1$s名稱
+'Resource %1$s Type': 資源%1$s種類
+'Resource %1$s URL': 資源%1$s網頁地址
+'Resource Contents': 資源內容
+'Resource Details': 資源詳情
+'Resource Tags': 資源標籤
+'Resource name.': 資源名稱
+Resources: 資源
+Response: 回應
+'Responsible User': 負責用戶
+'Restrict search to particular space types': 限制搜索到特別的種類。
+Result: 結果
+Results: 結果
+'Return Action': 返回活動
+'Return Date': 退回日期
+'Return Item': 返回項目
+'Return to': 回
+'Returned tweets will display in your lesson. TAKE CARE!': 恢復的Twitter的公告會在你的課堂中顯示。小心一點!
+Reunion: 留尼旺
+'Rheumatic Fever': 風濕熱
+'Rich Text Format': 富文本格式
+Risk: 風險
+Role: 角色
+'Role Categories': 角色類型
+'Role Category': 角色類別
+'Role ID not specified.': 角色編號未指定
+'Role Switcher': 轉換角色
+'Role switched successfully.': 轉換角色時成功
+Roles: 角色
+'Roll Group': 班級
+'Roll Group Summary': 班級總結
+'Roll Group at Entry': 進入時的班級
+'Roll Groups': 班級
+'Roll Groups Not Registered': 還沒有登記的班級
+'Roll Order': 出席表秩序
+'Roll group short name, as set in School Admim. Must already exist.': 在學校管理設置的班級簡稱。必須已經存在。
+Rollover: 側翻
+Romania: 羅馬尼亞
+Romanian: 羅馬尼亞語
+Room: 房間
+'Room''s external phone number.': 房間的外部電話號碼
+'Room''s internal phone number.': 房間的內部電話號碼。
+'Room:': 房間
+'Row %1$s Title': 行%1$s的標題
+'Row Long Name</b> - as used in the target timetable': '行長名稱</b> - 使用在指標時間表裏'
+Rows: 行
+'Rows store assessment strands.': 行儲存評估的部分
+Rubric: 評分表
+'Rubric Basics': 評分表基礎
+'Rubric Design': 評分表設計
+'Rubric name.': 評估表名稱
+Rubrics: 評分表
+'Run a school activities program': 進行一個學校活動的系統
+Running: 進行中
+'Runs the school''s activitiy programs': 運行學校活動的計畫
+Russian: 俄語
+'Russian Federation': 俄羅斯
+Rwanda: 盧安達
+S: 掌握
+'SCHOOL OUTCOMES': 學校的加果
+SEN: 額外
+SIP: 部分掌握
+SLG: 簡單字母成績
+SMS: SMS
+'SMS NOT CONFIGURED. Please contact %1$s for help.': SMS不能配置。請找%1$s支援。
+'SMS Password': 'SMS 密碼'
+'SMS Settings': SMS設定
+'SMS URL': 'SMS 網頁'
+'SMS URL Credit': 'SMS 網頁信貸'
+'SMS Username': 'SMS 用戶名稱'
+'SMS gateway URL for checking credit.': 檢查分數的SMS網關URL。
+'SMS gateway URL for send requests.': '為了寄送要求的SMS網關URL '
+'SMS gateway password.': SMS網關密碼
+'SMS gateway username.': SMS網關登錄名
+'SMS?': 短信？
+SQL: SQL
+'Saint Helena': 聖赫勒拿島
+'Saint Kitts and Nevis': 聖克里斯多福及尼維斯
+'Saint Lucia': 聖露西亞
+'Saint Pierre and Miquelon': 聖皮耶與密克隆群島
+'Saint Vincent and the Grenadines': 聖文森及格瑞那丁
+Samoa: 薩摩亞
+Samoan: 薩摩亞語
+'San Marino': 聖馬利諾
+'Sao Tome and Principe': 聖多美和普林西比
+Sat: 星期六
+Satisfactory: 滿意
+Saturday: 星期六
+'Saudi Arabia': 沙烏地阿拉伯
+'Save the student''s payment preferences.': 儲存學生的支付偏好。
+'Scalable Vector Graphics': 可縮放矢量圖形
+Scale: 規模
+Schedule: 時間表
+Scheduling: 調度
+Scholarships: 獎學金
+School: 學校
+'School Admin': 學校
+'School Attendance': 學校出席
+'School Attending': 參與的學校
+'School Calendar': 學校月曆
+'School Closed': 學校關門
+'School Closes': 學校關閉
+'School Closure': 學校停課
+'School Day': 上學日
+'School Ends': 學校結束
+'School Google Calendar ID': '學校 Google 月曆編號'
+'School History': 學校歷史
+'School ID': 學校編號
+'School Information': 學校資料
+'School Name': 學生名稱
+'School Nurse': 學校護士
+'School Opens': 開放
+'School Outcomes': 學校結果
+'School Rubrics': 學校的評分表
+'School Starts': 開學
+'School Year': 學年
+'School Year Name': 學年的名字
+'School Years': 學校年級
+'School attendance taking': 點學校出席表
+'School is closed on the specified day.': 學校在指定日期關門。
+'School is not open on the specified day.': 學校在一個特定的日期不開放。
+'School is not open, so no emails will be sent.': 學校關門，所以電郵不會送出
+'School or Learning Area': 學校或學習區域
+'School-unique ID or barcode.': 學校獨特的號碼或條碼
+Science: 科學
+'Science - Biology': 科學－生物學
+'Science - Chemistry': 科學－化學
+'Science - Double Award': 科學－雙獎
+'Science - Physics': 科學－物理學
+'Science - Single Award': 科學－單獎
+Scope: 範圍
+Scores: 分數
+Scratch: Scratch
+'Scratch 2': 'Scratch 2'
+Search: 搜索
+'Search & Filter': 搜索和過濾
+'Search For': 搜索
+'Search For Activity': 搜索活動
+'Search In': 在這裏搜索
+'Search and view all borrowable items maintained by the library': 搜索和觀看所有圖書館管理可借的項目。
+'Second Language': 第二語言
+Secure: 掌握
+'Secure In Parts': 部分掌握
+'Security Settings': 保障設置
+'See Description below.': 觀看以下的描述
+'See Notes below for specification.': 為規範，觀看以下的筆記。
+'See activity details': 觀看活動詳情
+'Select Activities': 選擇活動
+'Select Classes': 選擇課堂
+'Select Courses': 選擇課程
+'Select Houses': 選擇社
+'Select Individuals': 選擇個体
+'Select Role Categories': 選擇角色的選項
+'Select Roles': 選擇角色
+'Select Roll Groups': 選擇班級
+'Select Transport': 選擇運輸
+'Select Year Groups': 選擇年紀
+'Select Years': 選擇年級
+'Select action': 選擇行動
+'Select classes which will have access to this unit.': 選擇可以觀看這個單元的班。
+'Select classes which will study this unit.': 選擇會學習這個單元的班
+'Select something!': 選擇一些東西
+'Select up to three individual dates.': 選擇最多三個個別的日期
+Selected: 選定
+'Selected Students': 已選擇的學生
+Selection: 選擇
+'Self-Taught Language SL': 標準及自學語言
+'Send Fail Count': 送出失敗數目
+'Send Future Invoices To': '未來的發票送給:'
+'Send Invoices To': 送出發票去
+'Send Succeed Count': 送出成功數目
+'Send messages by SMS.': 用SMS送出信息
+'Send messages by email.': 用電郵送出信息
+'Send messages by message wall.': 用信息牆送出信息
+'Send messages parents of users by transport field.': 根據不同的交通工具各用戶家長的信息。
+'Send messages users by transport field.': 根據用戶的交通工具傳播信息.
+Senegal: 塞內加爾
+'Senior Leadership Team': 高級領導組
+Sent: 送出
+'Sent by email.': 用電郵已送
+'Sent by message wall.': 用信息牆寄出。
+'Sent by sms.': 用SMS發送。
+Separated: 分居
+Sequence: 序列
+'Sequence Number': 序列號
+'Serbia and Montenegro': 塞爾維亞與蒙特內哥羅
+Serbian: 塞爾維亞語
+'Serial Number': 編號
+Service: 服務
+'Session Duration': 會期時間
+'Set Expected Users To Full': 定預期的用戶去滿
+'Set Final Year Students To Left': '最後一年的學生定做 Left'
+'Set Future Absence': 定未來的缺席
+'Set Future Attendance': 定將來的出席
+'Set Personalised Attainment Targets': 定個人發跡目標
+'Set To Left': 組到左
+'Set future absences one student at a time': 一次過定一位學生的未來缺席。
+'Set the status of the application to "Accepted".': '設置申請的狀態去 "接受"。'
+'Set values for applicants to specify which language they wish to learn.': 給申請人設定值來指定哪個語言他們希望學習.
+'Set your own custom background image.': 設置自己定義的背景圖片。
+'Sets student progression on Listaver.': 'Sets student progression on Listaver.'
+'Sets student progression on rollover.': 在側翻設置學生的級數。
+'Setting to No reduces complexity of behaviour tracking.': 'Setting to No reduces complexity of behaviour tracking.'
+Settings: 設定
+Seychelles: 塞席爾
+'Share, Teach %1$s & Interact': '共享, 教 %1$s 和交互'
+'Shared Publically': 公開分享
+'Shared Resources': 共享資源
+Sharing: 共享
+'Sharing Default: Parents': '自動分享:家長'
+'Sharing Default: Students': '自動分享:學生'
+'Shelf, cabinet, sector, etc': 暑假，櫃，部分等等。
+'Short Name': 簡稱
+'Short Text: number of characters, up to 255.': '短文: 字數可高達255字。'
+'Should activities be organised around dates (flexible) or terms (easy)?': '活動應該用日期(靈活)還是用學期(簡單)分類?'
+'Should all items be billed to the specified company, or just some?': 應不應該把全部的項目收取費用，或只是一些。
+'Should approval from a budget member with Full access be required?': '應不應該需求一個有許可的預算成員的批准?'
+'Should automated behaviour letter functionality be enabled?': 'Should automated behaviour letter functionality be enabled?'
+'Should message bubble fade out automatically?': 信息泡泡應該自動隱藏嗎？
+'Should new users be ''Full'' or ''Pending Approval''?': '新用戶應不應該是 ''滿'' 或 ''待決批准''?'
+'Should parent acceptance email be turned on or off by default.': '家長承認電郵應該自動開關?'
+'Should payments be enabled across the system?': '付款可以在系統中用嗎?'
+'Should privacy options be turned on across the system?': 私人選擇應該在系統中開嗎？
+'Should student acceptance email be turned on or off by default.': '學生承認電郵應該自動開關?'
+'Should student notes be turned on?': '學生的筆記應不應該關上?'
+'Should the Language Options section be turned on?': '語言選擇應該開嗎?'
+'Should the family be sent a copy of billing emails?': 應不應該發送帳單電郵的副本給家長？
+'Should the message bubble be regular or wide?': 信息泡泡應該一般還是很寬？
+'Should the student record include the option of a file upload?': '學生紀錄應該包括上傳文件的選擇嗎?'
+'Should this class show in reports?': 應不應該在報告裏顯示這個班？
+'Should users be allowed to set their own personal backgrounds?': '用戶可以定自己的背景嗎?'
+'Show Advanced Options': 觀看特種選擇
+'Show Comment': 觀看留言
+'Show Confidential Data': 顯示機密的數據
+'Show Only Non-Compliant?': '只顯示不符合規定?'
+'Show Parent Attainment Warning': 顯示家長成就的警告
+'Show Parent Effort Warning': 顯示家長成就的警告
+'Show SMS emergency details by transport route': 觀看交通路線的SMS緊急資料。
+'Show Student Attainment Warning': 顯示學生發跡警告
+'Show Student Effort Warning': 顯示學生成就警告
+'Show low attainment grade visual warning to parents?': '應該顯示低發跡警告給家長看?'
+'Show low attainment grade visual warning to students?': '應該顯示低發跡警告給學生看?'
+'Show low effort grade visual warning to parents?': '應該顯示低成就警告給家長看?'
+'Show low effort grade visual warning to students?': '應該顯示低成就警告給學生看?'
+Show/Hide: 觀看/隱藏
+'Show/Hide Details': 顯示/隱藏細節
+'Shows student transport details': 觀看學生交通資料
+'Sibling %1$s Date of Birth': '兄弟姊妹 %1$s 出生日期'
+'Sibling %1$s Name': '兄弟姊妹 %1$s 名字'
+'Sibling %1$s School': '兄弟姊妹 %1$s 學校'
+'Sibling Count': 兄弟姊妹數目
+'Sibling Name': 兄弟姊妹名字
+Siblings: 兄弟姊妹們
+'Sierra Leone': 獅子山
+'Sign Out': 登出
+'Simple Letter Grade': 簡單字幕分數
+Singapore: 新加坡
+Single: 單
+'Single + Per Activity': '單 + 每個活動'
+Slot: 插槽
+'Slot %1$s': '插槽 %1$s'
+'Slot %1$s Day': 插槽%1$s日期
+'Slot %1$s End Time': 插槽%1$s完成時間
+'Slot %1$s Location': 插槽%1$s地點
+'Slot %1$s Start Time': 插槽%1$s開始時間
+Slovak: 斯洛伐克語
+Slovakia: 斯洛伐克
+Slovenia: 斯洛維尼亞
+Slovenian: 斯洛文尼亞語
+'Small Portrait': 小的肖像
+'Smart Block Template': 智能方塊模型
+'Smart Blockify was successful.': 成功智能方塊
+'Smart Blocks': 智能方格
+'Smart Workflow': 智能工作流程
+Sociology: 社會學
+Software: 軟件
+'Solomon Islands': 索羅門群島
+Somalia: 索馬利亞
+'Some activities not accepted.': 有些活動沒有接受。
+'Some aspects of your update failed, effecting the following areas:': 你的更新再有些地方
+'Some aspects of your update failed.': 你的更新中有一些地方有錯誤。
+'Some elements of your request failed, but others were successful.': 你的要求有些部分失敗了，但是其他的也成功。
+'Some updates failed due to a database error.': 有些更新因為數據庫失敗而失敗。
+'Someone failed to login to account "%1$s" 3 times in a row.': '有人連續三次失敗登入進帳戶 "%1$s" '
+'Someone has added a note ("%1$s") about your tutee, %2$s.': '有人加入了一個筆記 ("%1$s") 關於你的學生，%2$s'
+'Someone has commented on your homework for lesson plan "%1$s".': '有人在課堂計畫 "%1$s"的功課上留言。'
+'Someone has commented on your lesson plan "%1$s".': '有人在你的課堂計畫"%1$s"上留言。'
+'Someone has created a negative behaviour record for your tutee, %1$s.': 'Someone has created a negative behaviour record for your tutee, %1$s.'
+'Someone has replied to a comment on homework for lesson plan "%1$s".': '有人在課堂計畫 "%1$s"的功課上留言的回覆。'
+'Someone has replied to a comment you made on lesson plan "%1$s".': '有人在課堂計畫"%1$s"上回覆了你的留言。'
+'Someone has requested expense approval for "%1$s" in budget "%2$s".': '有人請求了用費的批准在預算 "%2$s" 裏的 "%1$s"'
+'Someone has requested reimbursement for "%1$s" in budget "%2$s".': '有人請求了報銷在預算 "%2$s" 裏的"%1$s" '
+'Something has gone wrong: the Gibbons have escaped!': '有些東西有錯誤: 所有的Gibbon也逃走了!'
+'Sort By': 分類選項
+'Sound Alarm': 啟用警報
+'Sound a system wide alarm to all staff.': 聲音系統級警報給全部的員工
+Source: 來源
+'Source Class': 來源班
+'South Africa': 南非
+'South Georgia and the South Sandwich Islands': 南喬治亞與南三明治群島
+Space: 空間
+'Space ''Name'' field.': '空間''名稱'' 領域'
+'Space Booking': 地方預定
+'Space Settings': 'Space Settings'
+'Space Type': 空間種類
+'Space Types': 空間類型
+'Space name.': 空間名稱
+Spaces: 位置
+Spain: 西班牙
+Spanish: 西班牙語
+'Spanish B HL': 高級西班牙語B
+'Spanish B SL': 標準級西班牙語
+Speakers: 音箱
+'Special Education Needs': 特別教育的需要
+Sport: 體育
+Spouse: 配偶
+Spreadsheet: 電子表格
+'Sri Lanka': 斯里蘭卡
+Staff: 員工
+'Staff Gold Stars': 員工的星
+'Staff Like': 'Staff Like'
+'Staff Likes': 職員讚好
+'Staff Type': 員工類別
+'Staff plus Library permissions.': 員工加圖書館批准
+'Staff who made, or arranged, the payment.': 製造或安排付款的員工
+'Staff who support teaching and learning': 支持教書和學習的員工
+Staffroom: 教工休息室
+Standalone: 獨立
+Star: 星
+'Star Blocks': 星星方塊
+Stars: 星
+Stars/Lesson: 星/課堂
+'Start Date': 開始日期
+'Start Time': 開始時間
+'Start of': 開始
+Statistics: 統計
+'Statistics Collection': 收集統計
+Status: 狀態
+'Status?': 狀態？
+Step: 歩驟
+'Step 1': 第一步
+'Step 1 - Choose Class': 第一步－選擇課堂
+'Step 1 - Choose Space': '第1步: 選擇地方'
+'Step 1 - Quantity': 第一步—數量
+'Step 1 - Select CSV Files': '第一步 - 選擇 CSV 文件'
+'Step 1 - Select Lessons': '第一步- 選擇課堂'
+'Step 2': 第二步
+'Step 2 (Optional)': 第二步(自選）
+'Step 2 - Availability Check': 第二步－可用檢查
+'Step 2 - Choose Options': 第二步－選擇選項
+'Step 2 - Data Check & Confirm': '第二步 - 數據檢查和確認'
+'Step 2 - Details': 第二步－詳情
+'Step 2 - Distribute Blocks': 第二步－分發方格
+'Step 3': 第三步
+'Step 3 - Import': '第三步 - 導入'
+Step-Father: 繼父
+Step-Mother: 繼母
+Storage: 存儲
+'Storage Type': 儲存格式
+'String Enclosure': 線機殼
+Stud: 學生
+Student: 學生
+'Student %1$s was successfully created.': '成功的創建了學生 %1$s。'
+'Student %1$s was successfully updated.': '學生 %1$s 更新時成功.'
+'Student & Date': 學生和日期
+'Student - Left': '學生 － 離開了'
+'Student Agreement Options': 學生同意項目
+'Student Agreements': 學生的誠諾
+'Student Background': 學生背景
+'Student Borrowing Record': 學生結束紀錄
+'Student Computers': 學生的電腦
+'Student Contact': 學生聯繫
+'Student Count': 學生統計
+'Student Data Updater History': 學生更新資料歷史
+'Student Default Email': 學生自動電郵
+'Student Default Website': 學生自動網站
+'Student Details': 學生的詳細資料
+'Student Education': 學生教育
+'Student Email & Website': 學生電郵和網站
+'Student Emergency Data Summary': 學生緊急資料總結
+'Student Enrolment': 學生申請
+'Student History': 學生歷史
+'Student History_all': 學生歷史_所有
+'Student History_myChildren': 學生歷史_我的兒童
+'Student ID': 學生號碼
+'Student ID Cards': 學生身分證
+'Student ID Cards ': 學生身分證
+'Student Medical & Development': 學生醫療和發展
+'Student Medical Data Summary': 學生緊急資料總結
+'Student Note Categories': 學生筆記類別
+'Student Notification Default': 自動學生通知
+'Student Notification Message': 學生通知信息
+'Student Personal Data': 學生的個人資料
+'Student Profile': 學生檔案
+'Student Recorded': 學生已紀錄
+'Student Recorded Homework': 學生已紀錄功課
+'Student Transport': 學生交通工具
+'Student Welcome Email': 歡迎學生的郵件
+'Student could not be created!': 不能創建學生!
+'Student could not be linked to family!': 學生不能喝家庭連結！
+'Student has a %1$s alert for behaviour over the past 60 days.': '學生對過去60天內行為的警告有 %1$s 。'
+'Student joined school after assessment was given.': 學生在給功課後才加入學校
+'Student joined school after lesson was taught.': 課程被教導後學生才加入學校.
+'Student with username %1$s had some information malformations.': '學生提供的用戶名 %1$s 有些資料故障.'
+'Student''s Teachers': 學生的老師
+'Student''s intended first day at school.': 學生打算在學校的第一天。
+'Student''s native/first/mother language.': 學生的本地/第一/母語。
+Students: 學生
+'Students By Roll Group': 用班級找找學生
+'Students Not Onsite': 學生不在學校
+'Students Not Present': 學生不在
+'Students With Records': 有記錄的學生
+'Students by Name': 用名字來找學生
+'Students by Roll Group': 用班級找學生
+'Students by Roll Groups': 用班級找學生
+'Students in year; all staff.': '在一年中的學生; 所有的員工'
+'Students who are already enroled will have their enrolment updated.': 已經申請的學生的聲請會更新。
+Study: 學習
+'Study Plan': 學習計畫
+SuSt: 支援員工
+Sub: 提交
+Subject: 科目
+'Subject List': 科目名單
+'Subject Listing': 列表科目
+'Subject, body.': 科目，主體
+Subjects: 科目
+Submission: 提交
+'Submission Open Date': 提交開始日期
+'Submission Required': 提交需求
+'Submission Type': 提交種類
+Submit: 提交
+'Submit File': 提交文件
+'Submit Link': 提交網頁
+'Submitted Work': 提交的工作
+'Submitted at': 遞交於
+'Submitted at %1$s on %2$s': '提交在 %1$s 的 %2$s'
+Submitter: 提交人
+'Submitter''s Parents': 提交者的家長
+'Success! Your new timetable is in place.': 成功！你的新時間表到位
+Sudan: 蘇丹共和國
+'Sumbission Open Date': 提交開始日期
+'Summarises gender and number of students across all roll groups.': 總結所有班級中的性別和學生數量。
+'Summarises gender, age and school year': 性別，年齡和年級結論
+Summary: 總結
+Sun: 星期天
+Sunday: 星期日
+Support: 支援
+'Support Staff': 支援員工
+'Supporting Documents': 支援文件
+Suriname: 蘇利南
+Surname: 姓
+'Surname (Surname, Preferred Name)': 姓（姓，首選名稱）
+'Svalbard and Jan Mayen': 斯瓦巴和揚馬延
+Swahili: 斯瓦希裡語
+Swaziland: 史瓦濟蘭
+Sweden: 瑞典
+'Swedish ': 瑞典語
+Switzerland: 瑞士
+Sync: Sync
+'Sync Families': 同步家庭
+'Sync Results': 同步結果
+'Sync Student Enrolment': 同步註冊
+'Sync Users': 同步用戶
+'Syrian Arab Republic': 敘利亞
+'System Acces': 進接系統
+'System Access': 進接系統
+'System Admin': 系統管理員
+'System Administrator': 系統管理員
+'System Administrator Email': 系統管理員電郵
+'System Data': 系統資料
+'System Name': 系統名稱
+'System Settings': 系統設置
+'System Settings are not set: the system cannot be displayed': '沒有設置系統設置: 不能顯示系統.'
+'System login ID.': 系統扥都名稱
+'System role to be assigned to registering members of the public.': 系統角色要分配為公眾的註冊成員
+'System-wde currency for financial transactions.': 為了金融交易的系統的貨幣.
+'System-wide access control': 控制全系統的接駁
+TST: TST
+'TT Period': 時間表時期
+'TT Period%1$Time': 'TT Period%1$Time'
+'TT Period%1$sTime': 時間表時期%1$s時間
+TV: 電視
+Table: Table
+Tags: 標籤
+Taiwan: 台灣
+Tajikistan: 塔吉克
+'Take Attendance': 點名
+'Take Attendance by Person': 用人士點出席表
+'Take Attendance by Roll Group': 用班級點出席表
+'Take attendance, one person at a time': 用一個一個人來點出席表
+'Take attendance, one roll group at a time': 用一個班級點出席表
+Tamil: 泰米爾語
+'Tanzania, United Republic of': 'Tanzania, United Republic o'
+Target: 目標
+'Target Class': 目標的班
+'Target Family': 目標家庭
+'Target Grade': 目標分數
+'Target School Year': 目標的學年
+'Target User': 目標用戶
+'Target Year': 目標年
+Targets: 目標
+Tasks: 工作
+Tatar: 韃靼語
+'Taught by:': 那位老師教：
+Tchr: 老師
+Teacher: 老師
+'Teacher (Curriculum)': '老師 (課程)'
+'Teacher - Left': '老師 - 走了'
+'Teacher Recorded': 老師已紀錄
+'Teacher Recorded Homework': 老師已紀錄功課
+'Teacher Sync': 同步老師
+'Teacher''s Computer': 老師的電腦
+'Teacher''s Notes': 老師的筆記
+'Teacher''s Notes Template': 老師筆記的模型
+'Teacher, Support Staff, Student or Parent': 老師，教學支援員工，學生，家長
+Teachers: 教師
+'Teachers new to ICHK': 到ICHK的新的老師
+Teaching: 教學
+'Teaching & Learning': 教導和學習
+'Teaching Strategies': 教學戰略
+'Teaching computer': 老師的電腦
+Technician: 技術員
+'Tell Us More': 告訴我們更多
+Telugu: 泰盧固語
+Template: 模板
+'Template to be inserted into Lesson Details field': 在課堂詳情裏需要加入模型
+'Template to be inserted into Teacher''s Notes field': 在老師筆記裏需要加入模型
+'Template to be inserted into Unit Outline section of planner': 加入進計畫的單元概要的模板。
+'Template to be inserted into new block in Smart Unit': 加入進智能單元的新方塊的模板。
+Term: 學期
+Terms: 條件
+'Terms in which the activity will run.': 這個活動進行的學期。
+Test: 考試
+'Test taken on': 考試在這一天發生：
+Testing: 測試
+Tetanus: 破傷風
+'Tetanus Last 10 Years?': '上十年破傷風?'
+'Tetanus Within 10 Years': 10年中的破傷風
+'Tetanus Within Last 10 Years?': '十年之內破傷風發作?'
+'Text displayed in system''s welcome page.': 在系統歡迎頁顯示的文字。
+'Text to appear in invoice, above invoice details and fees.': 在發票上的發票詳情和費用以上可顯示的文字。
+'Text to appear in invoice, below invoice details and fees.': 在發票上的發票詳情和費用以下可顯示的文字。
+'Text to appear in receipt, above receipt details and fees.': 在收據上的收據詳情和費用以上可顯示的文字。
+'Text to appear in receipt, below receipt details and fees.': 在收據上的收據詳情和費用以下可顯示的文字。
+Thai: 泰語
+Thailand: 泰國
+'Thank you for confirmed receipt and reading of this email.': 多謝確定收據和觀看這個電郵
+'The Behaviour Letter CLI script has run: no emails were sent.': 'The Behaviour Letter CLI script has run: no emails were sent.'
+'The Current budget cycle cannot be determined.': 不能確定目前的預算循環
+'The Primary Assessment Scale equivalent grade.': 基本評估規模相當成績
+'The address at which the whole system resides.': 整個系統的地址
+'The applying family is already a member of %1$s.': '在申請的家庭已經是 %1$s 的員。'
+'The are less than 4 data points, so no graph can be produced.': 'The are less than 4 data points, so no graph can be produced.'
+'The contents of letter 1, as HTML.': 信件1的正文的HTML版本。
+'The contents of letter 2, as HTML.': 信件2的正文的HTML版本。
+'The contents of letter 3, as HTML.': 信件3的正文的HTML版本。
+'The cost of applying to the school.': 申請學校的費用
+'The country the school is located in': 學校位於的國家
+'The current class (%1$s.%2$s) has already been selected.': '已經挑選了目前的課堂 (%1$s.%2$s)'
+'The database could not be locked for use.': 數據庫不能被鎖定為利用。
+'The database tables could not be emptied.': 不能空數據庫表
+'The database tables were successfully emptied.': 成功的空了數據庫表
+'The database was successfully locked.': 成功的鎖定了數據庫。
+'The deadline has passed, and no work has been submitted.': 到期日期已經過了，沒有工作提交。
+'The deadline has passed. Your work will be marked as late.': 到期日期已經過了。你的功課會標明做遲。
+'The following SQL statements caused errors:': '以下的 SQL 陳述導致到錯誤: '
+'The following classes were added to Gibbon: %1$s.': '以下的課堂被加入 Gibbon 裏：%1$s。'
+'The following courses were added to Gibbon: %1$s.': '以下的課程被加入 Gibbon 裏：%1$s。'
+'The following future absences have been set for the selected student.': 以下的未來缺席是選擇的學生的。
+'The highest grouped action cannot be determined.': 最高的組織行動不能堅決。
+'The import does not include student lists.': 這個輸入不包括學生名單。
+'The import file was successfully stored in the database for analysis.': 成功的儲存輸入文件在數據裏來分析。
+'The link that points to the school/''s email system': 這鏈接指向學校的電郵系統。
+'The link that points to the school/''s website': 這鏈接指向學校的網頁。
+'The local FS path to the system': 本地進入系統的FS路線
+'The markbook cannot be displayed.': 這個成績表不能顯示。
+'The minimum age, in years, permitted to register.': 'The minimum age, in years, permitted to register.'
+'The most a student can sign up for in one term. Set to 0 for unlimited.': '一個學期中學生能登記的最多的活動。如果無限，定做 0。'
+'The most commonly used, or official, assessment scale for the school.': 在學校中最常用的評估規模。
+'The name of a person or link to a website, etc.': 這一個人的姓名可以是網頁的地址等等。
+'The name of a person or link to a website.': 人士的名稱或鏈接到一個網站。
+'The order in which school should contact family members.': 學校應該順序聯絡家庭，
+'The password policy stipulates that passwords must:': '密碼策略條規定密碼必須:'
+'The primary language used in the student''s home.': 學生在家庭使用的主要語言.
+'The purpose of this installation of Gibbon': 安裝Gibbon的原因
+'The rubric cannot be drawn.': 這個聘僱表不能關看。
+'The selected application does not exist or has already been processed.': 所選的申請不存在或已經被處理
+'The selected page cannot be displayed due to a hook error.': 因為加入內容時發出錯誤，選擇的頁不能顯示。
+'The selected record does not exist, or you do not have access to it.': '所選的記錄不存在, 或你沒有進接.'
+'The specified budget cycle cannot be determined.': 不能確定指定的預算循環
+'The specified date is in the future: it must be today or earlier.': '這一個日期是在未來: 一定要是今天或再造。'
+'The specified date is outside of the allowed range.': 指定的數據是在允許的範圍之外。
+'The specified recod cannot be found.': 無法找到指定的記錄。
+'The specified record cannot be found.': 無法找到指定的記錄
+'The specified record does not exist or you do not have access to it.': 'The specified record does not exist or you do not have access to it.'
+'The specified record does not exist.': 指定的記錄不存在
+'The staff member who receives notifications for admissions events.': 會收到申請事件通知的工作人員。
+'The staff member who receives notifications for data events.': 會收到資料事件通知的工作人員。
+'The staff member who receives notifications for system events.': 會收到系統事件通知的工作人員。
+'The standard loan length for a library item, in days': 在圖書館標準借書天數長度。
+'The student has automatically been assigned to %1$s house.': 'The student has automatically been assigned to %1$s house.'
+'The system will perform the following actions:': 這個系統會進行以下的行動：
+'The timezone where the school is located': 學校地點的時區
+'The version of the Gibbon database': 這個Gibbon數據庫的版本。
+'Theatre Arts HL': 高級戲劇
+'Theatre Arts SL': 基本級戲劇
+'Their are no classes associated with this period on this day.': 沒有與這天的期間有相關聯的課堂。
+'Theme Error': 主題錯誤
+'Theme Manifest': 主題清單
+'Theme by': 主題裝作人
+'There are currently no lessons to for you to crowd asess.': 現在沒有你可以評估的考試
+'There are no family members available to send this receipt to.': 現在沒有可以將收據送給的家庭成員。
+'There are no fields in this assessment.': 在這個評估中沒有領域。
+'There are no privacy options in place.': 現在沒有私人設定。
+'There are no records to display': 沒有可以觀看的紀錄。
+'There are no records to display.': 沒有要顯示的記錄
+'There are no sessions available, and so this form cannot be submitted.': 沒有時間可用，所以你的表格不能提交。
+'There are no terms in the specied year.': 在指定的年份沒有學期。
+'There are not enough people in this family to form relationships.': 這個家庭有不足夠的人去形式關係.
+'There has been no activity since your last login.': 至你上一次登入，沒有活動
+'There is a problem with your database information for school days.': 由於數據庫信息學校天而出現了問題。
+'There is currently no attendance data today for the selected student.': 現在沒有這位學生的出席資料。
+'There is currently no work to assess.': 現在沒有可以評估的考試
+'There is no company contact available to send this invoice to.': 現在沒有可以送發票的公司聯絡。
+'There is no content to display': 沒有內容要顯示
+'There is no data to display, or an error has occurred.': '沒有數據顯示,或出現錯誤. '
+'There is no family information available for the current staff member.': 這指定的員工沒有家庭資料。
+'There is no family information available for the current student.': '這位學生沒有提供家庭資料. '
+'There is no information for the date specified.': 指定的日期沒有資訊。
+'There is nothing to print, as the invoice has yet to be issued.': 現在沒有東西打印，因為還沒有發行。
+'There was an error creating family:': '創造家族有錯誤:'
+'There was an error creating outcome:': 創作這個結果的時候有錯誤。
+'There was an error creating parent:': '創建家長時有錯誤:'
+'There was an error creating student:': 創建學生時有錯誤：
+'There was an error creating user:': '創造用戶有錯誤:'
+'There was an error enroling student:': '註冊學生時有錯誤:'
+'There was an error inserting user:': 'There was an error inserting user:'
+'There was an error locating family:': '尋找家庭時有錯誤:'
+'There was an error locating parent:': '尋找家長時有錯誤:'
+'There was an error locating student:': '尋找學生時有錯誤:'
+'There was an error locating user:': '尋找用戶時有錯誤:'
+'There was an error updating family:': '更新家庭時有錯誤:'
+'There was an error updating parent:': '更新家長時有錯誤:'
+'There was an error updating user:': '更新用戶時有錯誤:'
+'There was an error with the role of user:': '用戶角色有錯誤:'
+'These users have similar Address 1. Do you want to change them too?': 這兩個用戶的地址1很接近。需不需要也轉呢？
+'These will be calculated from the student''s GCSE grades.': 這些會從學生的GCSE的分數計出來
+'These will come from the student''s last CAT test.': 這會從學生對上的CAT考試。
+Thickness: 厚度
+'Third Language': 第三語言
+'Third Party Settings': 第三者設定
+'Third-Party Integration': 第三者積分
+'This Event': 這個項目
+'This category cannot%1$sbe edited or deleted.': 這個類別不能%1$s編輯或刪除
+'This conversation has not yet begun!': 這個討論還沒開始!
+'This database must already exist. Collation should be utf8_general_ci.': 這一個數據庫應該已經存在。整理應該是utf8_general_ci。
+'This determines visibility within the system.': 這確定系統中的能見度。
+'This element has already been selected!': 這一個項目已經選擇了!
+'This field cannot be required': 這個領域不能按要求
+'This is a Star Block': 這是一個已經封鎖星星
+'This item has already been signed out.': 這趟項目已經借出。
+'This item is now %1$s%2$s days overdue': 這一件項目已經過期了%1$s%2$s天。
+'This lesson has not had any Smart Blocks content assigned to it.': 這一課裏沒有任何的方格內容。
+'This lesson has not had any content assigned to it.': 這個課堂沒有任何的內容
+'This page shows all roll groups in the current school year.': 這一頁顯示出這一年所有的班級
+'This report prints a summary of medical data for the selected students.': 這一份報告打印指定學生的緊急資料。
+'This script cannot be run from a browser, only via CLI.': 這一份腳本不能用瀏覽器運用，只能用CLI。
+'This script cannot be run, as no school email address has been set.': 這份腳本不能運做，因為沒有定學校的電郵。
+'This student has one or more %1$s risk medical conditions': 這位學生有一個或多個%1$s風險的醫療狀況
+'This student has one or more %1$s risk medical conditions.': 這位學生有一個或多個%1$s風險的醫療狀況
+'This value cannot be changed.': 不能改變這個價值。
+'This work is shared under the following license:': '這一份文件時在以下的執照分享:'
+Three: '3'
+Thu: 星期四
+Thursday: 星期四
+Tibetan: 藏語
+'Tie Days To Dates': 天連繫到日期
+'Tie Days to Dates': 扎日去日期
+Time: 時間
+'Time Slots': 時間插槽
+'Time:': '事件:'
+'Timeslot:': 時隙
+Timestamp: 時間戳
+Timetable: 時間表
+'Timetable Admin': 時間表管理員
+'Timetable Chooser': 選擇時間表
+'Timetable Column': 時間表列行
+'Timetable administration': 時間表管理
+Timezone: 時區
+'Timing Change': 時間變化
+Timor-Leste: 東帝汶
+'TinyMCE-style list of acceptable HTML tags and options.': 接受的HTML標籤和選項的小MCE風格的名單。
+Title: 標題
+'To Date': 至今
+'Today''s Classes': 今天的課堂
+'Today''s Lessons': 今天的課堂
+'Today''s Messages': 今天的信息
+Togo: 多哥
+Tokelau: 托克勞群島
+Tonga: 東加
+Tongan: 湯加語
+'Too many failed logins: please %1$sreset password%2$s.': '太多失敗的登入: 請%1$s重置密碼%2$s'
+Total: 總
+'Total Cost': 總費用
+'Total Count': 總共數目
+'Total Occurences:': '總共的出現次數:'
+'Total Payment On This Invoice:': 'Total Payment On This Invoice:'
+'Total Student Enrolment:': '總招生:'
+'Total Value': 總共價值
+'Total number of school days absent:': 總共缺席的學天
+'Total number of school days attended:': 上學總共幾多天
+'Total number of school days to date:': 至今總共學天
+'Total students absent from room:': 總共缺席的學生
+'Total students present in room:': 總共在房間裡的學生
+'Total students:': 總共學生：
+Tracking: Tracking
+'Tracking Settings': 跟蹤設定
+'Tracking Student Behaviour': 觀察學生的行為
+'Transaction ID': '交易 '
+'Transaction ID to identify this payment.': 交易身分來鑑定這個付款
+'Translation led by': 翻譯作者
+Transport: 交通工區
+'Transport ': 交通
+'Transport Notes': 'Transport Notes'
+'Travel Sickness': 暈浪
+Triggers: 觸發
+'Trinidad and Tobago': 千里達及托巴哥
+Tue: 星期二
+Tuesday: 星期二
+Tunisia: 突尼西亞
+Turkey: 土耳其
+Turkish: 土耳其語
+Turkmenistan: 土庫曼
+'Turks and Caicos Islands': 特克斯和凱科斯群島
+'Turn Alarm Off': 關閉報警器
+'Tutees and tutors.': 學生和老師
+Tutor: 班主任
+Tutors: 導師
+Tuvalu: 吐瓦魯
+Twitter: Twitter
+Two: '2'
+Type: 類型
+'Type with name %1$s in import cannot be found.': 類型名稱%1$s的輸入不能發現。
+'Type, country code, number.': '類型, 國家代碼'
+'Type-Specific Details': '選擇特定的詳情 '
+'Type-Specific Fields': 類別特定領域
+U: U
+'UK National Curriculum KS3': KS3英國國家課程
+'UK National Curriculum KS3 Simplified': KS3英國國家課程簡單
+'UK-based General Certificate of Secondary Education': GCSE
+'URL to background image used behind library browsing screen.': 圖書館頁的背景相片的URL。
+Uganda: 烏干達
+Ukraine: 烏克蘭
+Ukranian: 烏克蘭1
+Un: 明白
+Unclassified: 不明
+Uncle: 叔叔
+'Under what conditions can this work be reused?': '這一份工作時在什麼情況下再用?'
+Undercover: 臥底
+Understanding: 明白
+'Unified messenger for email, message wall and more.': 電郵，信息牆和其他的公用的信息者。
+'Uninstall Module': 卸裝程式組件
+'Uninstall Theme': 卸載主題
+'Uninstall was successful.': 刪除上載成功。
+'Unique ID for family, according to source system.': 根據原系統，獨特標識為家庭。
+Unit: 單元
+'Unit Basics': 單元的基本資料
+'Unit Blocks': 單元方塊
+'Unit Content': 單元內容
+'Unit Lessons': 單元的課堂
+'Unit Outcomes': 單元的結果
+'Unit Outline': 單元簡介
+'Unit Outline Template': 單元概要模型
+'Unit Overview': 單元概觀
+'Unit Planner': 單元計畫表
+'Unit Resources': 單元資源
+'Unit Smart Blocks': 單元智能方格
+'Unit, Building, Street': '單位, 建築, 街'
+'Unit:': '單元:'
+'United Arab Emirates': 阿拉伯聯合大公國
+'United Kingdom': 英國
+'United Kingdom GCSE/iGCSE': 英國的GCSE/IGCSE
+'United Kingdom GCSE/iGCSE Predicted': 英國的GCSE/IGCSE已經預測
+'United States': 美國
+'United States Minor Outlying Islands': 美國本土外小島嶼
+Units: 單元
+Unknown: 不明
+Unmarked: 沒有評分
+Unregister: 刪除報名
+'Unregistration was successful.': 刪除報名成功
+Unsatisfactory: 不滿意
+Unspecified: 不明
+Unstar: 刪除星星
+Upcoming: 即將到來
+'Upcoming Class Slots': 即將的課堂插槽
+'Upcoming Deadlines': 即將到來的期限
+Update: 更新
+'Update & Insert': 更新和插入
+'Update & Insert Families': 更新和插入家庭
+'Update & Insert Parents': '更新和插入家長 '
+'Update & Insert Students': 更新和插入學生
+'Update Data': 更新資料
+'Update Family Data': 更新家庭資料
+'Update Family Data_any': 更新家庭資料_任何
+'Update Family Data_family': 更新家庭資料_家庭
+'Update Finance Data': 更新財政
+'Update Finance Data_any': 更新財政資料_任何
+'Update Finance Data_family': 更新財政資料_家庭
+'Update Gibbon to a new version': 更新Gibbon到最新的版本。
+'Update Instructions': 更新說明
+'Update Medical Data': 更新醫療資料
+'Update Medical Data_any': 更新醫療資料_任何
+'Update Medical Form': 更新醫療表
+'Update Medical Form_family': 更新醫療治療_家庭
+'Update Module': 更新程式組件
+'Update Personal Data': 更新私人資料
+'Update Personal Data_any': 更新個人資料_任何
+'Update Personal Data_family': 更新個人資料_家庭
+'Update Submission': 更新申請
+'Update succeeded, although some fields were not recorded.': '成功更新, 但有些領域沒有記錄。'
+'Updated:': 需後更新：
+Upl: 上載
+'Upload File': 上載文件
+'Uploaded File': 已上載了文件
+'Uploaded Response': 上載了回應
+Uploading: 上載
+Urdu: 烏爾都語
+Uruguay: 烏拉圭
+Usage: 用法
+'Use Control, Command and/or Shift to select multiple.': '用 Control, Command 和/或 Shift 去選擇更多。'
+'Use lots of tags!': 用很多標籤!
+'Use the class listing on the right to choose a Markbook to edit.': 從右手邊的的課堂名單來選擇編輯成績表。
+'Use this to attach raw data, graphical summary, etc.': '用這加入原始數據，圖表結論 等等。'
+'Used to group staff when creating a staff directory.': 在創作員工目錄是用來組織。
+'Useful Reading': 有用的閱讀
+User: 用戶
+'User %1$s was successfully created with password %2$s.': '成功的創建了用戶 %1$s 和他的密碼 %2$s.'
+'User %1$s was successfully enroled.': '用戶 %1$s 成功的報了名。'
+'User %1$s was successfully updated.': 用戶%1$s更新時成功.
+'User 1': '用戶 1'
+'User 2': '用戶 2'
+'User Account': 用戶的帳戶
+'User Admin': 用戶管理員
+'User Admin CLI Report': 用戶管理員指令介面報告
+'User Interface Options': 用戶接口選項
+'User Management': 用戶管理
+'User Photo': 'User Photo'
+'User responsible for purchasing for the school.': 用戶有責任幫學校購買
+'User responsible for reimbursing expenses.': 用戶有責任報銷費用
+'User will be prompted on next login.': 用戶在下次登錄會提示。
+'User with official Name %1$s had some information malformations.': 用戶的正式名稱%1$s有些資料錯誤。
+'User with official name %1$s in import cannot be found.': 用戶的正式名稱%1$s輸入找不到。
+'User with username %1$s had some information malformations.': '用戶提供的用戶名 %1$s 有些資料故障.'
+'User with username %1$s in import cannot be found.': 用戶名稱%1$s的用戶的輸入不能發現。
+User/Owner: 用戶/物主
+Username: 用戶名
+'Username of person the device is assigned to.': 這個設備的主管人的用戶名稱。
+'Username or password not set.': 用戶名或密碼沒有設置
+'Users Updated': 用戶已更新
+'Users of a certain type.': 某型的用戶
+'Users''s first day at school.': 用戶在學校的第一天
+'Users''s last day at school.': 用戶在學校的最後一天
+Uzbek: 烏茲別克語
+Uzbekistan: 烏茲別克
+VALORI: 價值
+Value: 價值
+'Value already in use!': 價值已經啟用!
+Vanuatu: 萬那杜
+'Vehicle Registration': 車牌號碼
+Vendor: 供應商
+Venezuela: 委內瑞拉
+Verbal: 語言
+Version: 版本
+'Version check failed': 檢查版本失敗
+Video: 影片
+'Viet Nam': 越南
+Vietnamese: 越南語
+View: 觀看
+'View & Contribute To Individual Needs Record': 觀看及填寫／補充個人需求記錄資料
+'View & Contribute To Record': 觀看和加入進記錄
+'View Activities': 觀看活動
+'View Activities_studentRegister': 觀看活動_學生登記
+'View Activities_studentRegisterByParent': 觀看活動_由家長做學生登記
+'View Activities_view': 觀看_觀看
+'View Adults': 觀看大人
+'View All': 觀看所有
+'View All Assessments': 觀看左右的測驗
+'View All Deadlines': 觀看全部的期限
+'View All Internal Assessments': 'View All Internal Assessments'
+'View All Timetables': 觀看所有時間表
+'View Any Class': 看任何課堂
+'View Assessment': 觀看測驗
+'View Available Activities': 觀看有空的活動
+'View Available Spaces': 觀看有的位置
+'View Available Teachers': 觀看有的老師
+'View Behaviour Letters': 觀看行為信件
+'View Behaviour Policy': 觀看行為的政策
+'View Behaviour Records': 觀看行為紀錄
+'View Children': 觀看兒童
+'View Classes': 'View Classes'
+'View Departments': 觀看部門
+'View Description': 觀看說明
+'View Details': 觀看詳情
+'View Expense': 觀看費用
+'View Expense Request': 觀看費用請求
+'View Homework': 觀看功課
+'View Individual Needs Record': 觀看個人需求記錄。
+'View Internal Assessments': 觀看內部評估
+'View Invoices': 觀看單據
+'View Item': 觀看項目
+'View Lesson Plan': 觀看課堂計畫
+'View Linked Lesson': 觀看關聯的課堂
+'View Markbook': 觀看成績表
+'View Markbook_allClassesAllData': 觀看成績表_所有課堂所有資料
+'View Markbook_myMarks': 觀看成績表_我的分數
+'View Master Timetable': 觀看主時間表
+'View Message Wall': 觀看留言牆
+'View Messages': 觀看信息
+'View My Childrens''s Internal Assessments': 'View My Childrens''s Internal Assessments'
+'View My Internal Assessments': 'View My Internal Assessments'
+'View Overdue Items': 觀看過期物品
+'View Planner': 觀看計劃表
+'View Record': 觀看紀錄
+'View Resources': 觀看資源
+'View Roll Groups': 觀看班級
+'View Rubric': 觀看分數表
+'View Rubrics': 觀看評分表
+'View Send Report': 觀看送出的紀錄
+'View Staff Profile': 觀看員工資料
+'View Staff Profile_brief': 觀看員工資料_簡介
+'View Staff Profile_full': 觀看員工資料_
+'View Staff Profiles': 觀看員工檔案
+'View Student Profile': 觀看學生資料
+'View Student Profile_brief': 觀看學生檔案_基本
+'View Student Profile_full': 觀看學生檔案_完整
+'View Student Profile_myChildren': 觀看學生檔案_我的兒童
+'View Student Profiles': 觀看學生檔案
+'View Student Record': 觀看學生紀錄
+'View Student Records': 觀看學生的記錄
+'View Timetable': 觀看時間表
+'View Timetable by Person': 觀看個人時間表
+'View Timetable by Space': 觀看地方時間表
+'View Timetables': 觀看時間表
+'View Unit': 觀看單元
+'View a brief profile of roll groups in school.': 觀看在學校中的班級的檔案
+'View all markbook information for all users': 觀看所有用戶的成績表資料
+'View all outcomes in the school': 觀看學校中的所有結果
+'View all planner information for classes user is in': 觀看用戶課堂所有的計畫資料。
+'View and edit all planner information for all classes': 觀看和編輯所有課堂的所有計畫資料
+'View behaviour records by student': 用行為紀錄找學生
+'View behaviour records for students within a family.': 'View behaviour records for students within a family.'
+'View brief profile of any staff member in the school.': 觀看在任何學校的員工的基本檔案
+'View brief profile of any student in the school.': 觀看在任何學校的學生的基本檔案
+'View details within a department': 觀看部門中的詳情
+'View family addresses by student': 用家庭地址觀看學生
+'View full profile of any staff member in the school.': 觀看在任何學校的員工的完整檔案
+'View full profile of any student in the school.': 觀看在任何學校的學生的完整檔案
+'View items borrowed by an individual student.': 觀看以為學生借的項目
+'View items which are on loan and have exceeded their due date.': 觀看正在借出和過期的項目
+'View lesson:': '觀看課堂:'
+'View resources': 觀看資源
+'View space usage according to the timetable': 觀看根據時間表的地方運用。
+'View spread of enrolment over terms and days by roll group': 觀看班級的學期和日期的申請的傳播。
+'View unassigned rooms by timetable.': 觀看時間表中的沒分配的房間
+'View unassigned teachers by timetable.': 觀看時間表中的沒分配的老師
+'View your own marks': 遠看個人的分數
+View<br/>Markbook: 看<br/>的成績表
+ViewMarkbook_viewMyChildrensClasses: 成績表_觀看我兒童的課堂
+'Viewable <br/>to Parents': '<br/>家長可見'
+'Viewable <br/>to Students': '<br/>學生可見'
+'Viewable to Parents': 家長可見
+'Viewable to Students': 學生可見
+'Virgin Islands, British': 英屬維京群島
+'Virgin Islands, U.s.': 美屬維京群島
+'Visa Expiry Date': 簽證到期日
+Visual: 視覺
+'Visual Arts HL': 高級藝術
+'Visual Arts SL': 標準級藝術
+'Visual Impairment': 視力障礙
+'Visual Impairment - Colour Blindness': 視力障礙－色盲
+'Visual Impairment - Requiring Contact Lenses or Glasses': 視力障礙-需要隱形眼鏡或眼鏡
+Visualise: 想像
+'Volume or product name.': 篇或產品名稱
+'Vorbis Ogg': 'Vorbis Ogg'
+'Vîrsta minimă, în ani, care permite înregistrarea.': 'Vîrsta minimă, în ani, care permite înregistrarea.'
+'Wallis and Futuna': 瓦利斯和富圖納
+Warnings: 警告
+'Warranty Expiry': 保證過期日期
+'Warranty Number': 保證號碼
+Wed: 星期三
+0: '0'
+Waiting: 等候
+'Waiting List': 等候名單
+Wall: 牆
+Website: 網站
+Wednesday: 星期三
+Week: 星期
+'Week %1$s': 第%1$s個星期
+Weekly: 每週
+'Weekly Planner Summary Email Sending Report.': 每週計畫結論送出電郵報告
+'Weekly Planner Summary for %1$s via %2$s at %3$s': 每週計畫總結用%2$s在%3$s給%1$s。
+Welcome: 歡迎
+'Welcome To Gibbon': 歡迎來到Gibbon
+'Welcome to %1$s at %2$s': '歡迎到 %1$s 在 %2$s'
+'Welfare, Holistic, Achievement Team': 'Welfare, Holistic, Achievement Team'
+'Well Above Expected Level': 非常高於預期水平
+'Well Below Expected Level': 非常地於預期水平
+Welsh: 威爾士語
+'Western Sahara': 西撒哈拉
+'What line of SQL code did the last cutting edge update hit?': '對上的最新更新擊中那一行的SQL代碼?'
+'What school year will the student join in?': 學生在那一年會加入？
+'What to do when item is next returned.': 返回後
+'When is the student expected to graduate?': 學生預期什麼時候畢業
+'When is this item scheduled for replacement.': 這一件物件什麼時候預定了更換。
+'When will the student join?': '車聲會什麼時候加入? '
+'Which department is responsible for the item?': '這樣物件是哪個部門主管?'
+'Which year level will student enter.': 學生會進入哪個級別。
+'Who created the item?': 誰闖在了這個項目？
+'Who is responsible for this new status?': 誰負責這個新狀態
+'Who supplied the item?': '誰提供了項目?'
+'Who will be responsible for the future status?': '誰負責未來中的狀態?'
+Wide: 寬
+Width: 寬度
+'Will duplicate any columns linked to this lesson.': 會複製和這一課有關的成績表列行
+'Will overwrite existing attachment': 會重寫現有的附件
+'Will overwrite existing attachment.': 會覆蓋現有的附件
+'Windows Media Audio': 'Windows Media 音響'
+'Windows Media Video': 'Windows Media 影片'
+'Wired MAC Address': '有線MAC 地址'
+'Wireless MAC Address': '無線MAC 地址'
+Withdrawn: 推出
+'Wordpress Comment Push': 推Wordpress的評論
+Work: 作業
+'Work Summary by Roll Group': 班級的工作結論
+'Work complete': 工作完成
+'Work incomplete': 工作沒有完成
+'Work submitted late': 工作遲到提交
+Write: 寫
+'Write Internal Assessments': 'Write Internal Assessments'
+'Write your comment below:': 請在以下留言：
+'XML feed for the school calendar (Google Calendar only)': '給學校月曆的XML信件提供 （只能用谷歌月曆)'
+'XML feed for the your calendar (Google Calendar only)': '為你的月曆的 XML 信件提供  (只是 Google 月曆)'
+Xhosa: 科薩語
+Y07: Y07
+Y08: Y08
+Y09: Y09
+Y10: Y10
+Y11: Y11
+Y12: Y12
+Y13: Y13
+Year: 年份
+'Year 10': 10年級
+'Year 11': 11年級
+'Year 12': 12年級
+'Year 13': 13年級
+'Year 7': 7年級
+'Year 8': 8年級
+'Year 9': 9年級
+'Year Group': 年級
+'Year Group at Entry': 進入時的年級
+'Year Groups': 年級
+'Year Overview': 年度
+'Year group short name, as set in School Admin. Must already exist': 在學校管理設置的年級簡稱。必須已經存在。
+'Year groups to which this field is relevant.': 對這個領域相關的年級。
+'Year of Entry': 進入年份
+Year/Roll: 年級/班級
+Years: 年
+'Years, Days & Times': 年，日，時間
+Yemen: 葉門
+'Yes': 是
+'You are currently using %1$s v%2$s.': '你正在用 %1$s v%2$s。'
+'You are currently using Cutting Edge Gibbon v%1$s': '你正在使用 Cutting Edge Gibbon v%1$s'
+'You are currently using Gibbon v%1$s.': '你目前在使用 Gibbon v%1$s。'
+'You can change this below if you wish.': 如果你想，可以在以下更改。
+'You can now edit more details of your newly duplicated entry.': 你現在可以編輯在你新複製的輸入的更過詳情。
+'You cannot proceed. Fix the issues listed above and try again.': 你不能繼續。解決在以上名單裏的問題然後再試一次。
+'You do not have Full or Write access to any budgets.': 你對任何預算沒充分有或寫的許可
+'You do not have access to the specified role.': 你對這個指定的角色沒有進接
+'You do not have access to this action.': 你對這個行動沒有進。
+'You do not have permission to access this timetable at this time.': 你沒有權利現在觀看時間表.
+'You do not have sufficient privileges to login.': 你沒有足夠的特權去登入
+'You have an overdue loan item that needs to be returned (%1$s).': 'You have an overdue loan item that needs to be returned (%1$s).'
+'You have not specified one or more required parameters.': 你沒有指定一個或多個需要的參數。
+'You have received a notification on %1$s at %2$s': 你在%1$s的%2$s收到了通知。
+'You have received a notification on %1$s at %2$s (%3$s %4$s)': '你在%1$s的%2$s分(%3$s %4$s) 收到了通知。'
+'You may only submit CSV files.': '你只可以提交 CSV 文件。'
+'You may wish to now do the following:': 你可希望現在做：
+'You seem to be all up to date, good work buddy!': 你似乎是所有最新的，夥伴祝你好運！
+'You seem to be all up to date, good work!': '你似乎是所有最新的, 良好的工作!'
+'Your current role type cannot be determined.': 不能確定你當前的角色類型。
+'Your expense request for "%1$s" in budget "%2$s" has been rejected.': '你的費用請求為在 預算 "%2$s" 裏的  "%1$s" 被拒絕'
+'Your import should only include all current students.': 你的導入應該只是包括全部目前的學生.
+'Your input was partially or entirely unsuccessful.': 你的投入有部分或完全失敗
+'Your optional extra data failed to save.': 'Your optional extra data failed to save.'
+'Your request failed because some required value were not unique.': 你的要求失敗了，因為要求的價值不獨特。
+'Your request failed because theme does not exist or is active.': 你的請求失敗了因為主題不存在或正在活性.
+'Your request failed because you do not have access to this action.': 你的請求失敗因為你對這個行動沒有進接。
+'Your request failed because your inputs were invalid.': 你的請求失敗了因為你的輸入無效
+'Your request failed because your manifest file was invalid.': '你的請求失敗因為你的清單文件無效. '
+'Your request failed because your passwords did not match.': 你的要求失敗了因為你的密碼沒有相配。
+'Your request failed due to a database error.': 由於數據庫錯誤，你的要求失敗了.
+'Your request failed due to an attachment error.': 你的請求失敗由於復健錯誤。
+'Your request failed.': 你的請求失敗了
+'Your request was completed successfully.': "你的請求成功了完成。\t"
+'Your request was successful, but some data was not properly saved.': '你的請求成功了, 但是有些數據沒有正確的保存。'
+'Your request was successful.': 你的要求成功。
+'Your request was was successful.': 你的要求成功
+'Your session is about to expire: you will be logged out shortly.': 你的會期很快有過期，短時間後會自動登出。
+'Your uploads folder doesn''t exist so you cannot install modules.': 你的上載文件夾不存在所以你不可以安裝程式組件。
+'ZIP Compressed Archive': 'ZIP 文件格式'
+Zambia: 尚比亞
+Zimbabwe: 辛巴威
+by: 作者
+'day until %1$s birthday!': 天到%1$s的生日!
+'days until %1$s birthday!': 天到%1$s的生日!
+dd/mm/yyyy: 日期/月份/年
+'denotes a required field': 表示需要的領域
+'e.g. Chinese name': '例如 中文姓名'
+'e.g. Mr, Mrs, Dr': '例如 先生, 夫人, 博士'
+'e.g. Present or Present - Late': '例如: 到或到-遲到'
+'e.g. not Present and not Present - Late': '例如: 缺席和缺席-遲到'
+'fee entires encountered problems.': 進入費用遇到問題。
+'gibbonedu.com Organisation Key': 'gibbonedu.com 組織關鍵'
+'gibbonedu.com Organisation Name': 'gibbonedu.com 組織名稱'
+'gibbonedu.com Value Added Services': 'gibbonedu.com 加入價值父母'
+'gibbonedu.com Value-Added Services': 'gibbonedu.com 直-增值服務'
+'invoices encountered problems.': 發票遇到問題。
+'length (min)': 長度(分鐘）
+m: m
+min: 分鐘
+months: 月
+of: 於
+'on': 在
+'path from /uploads/ to medium portrait image (240px by 320px)': '從道/上傳/去中肖像圖像 (240px 由 320px)'
+'path from /uploads/ to small portrait image (75px by 100px)': '從道/上傳/去小肖像圖像 (75px 由 100px)'
+said: 說
+students: 學生
+'students encountered problems.': 學生遇到問題。
+'type (e.g. discussion, outcome)': '類別 (例如: 討論，結果)'
+'y': 'y'
+years: 年
+1: '1'
+2: '2'
+3: '3'
+4: '4'
+5: '5'
+6: '6'
+7: '7'
+8: '8'
+9: '9'
+10: '10'
+11: '11'
+12: '12'
+13: '13'
+14: '14'
+15: '15'
+16: '16'
+17: '17'
+18: '18'
+19: '19'
+20: '20'
+21: '21'
+22: '22'
+23: '23'
+24: '24'
+25: '25'
+26: '26'
+27: '27'
+28: '28'
+29: '29'
+30: '30'
+31: '31'
+32: '32'
+33: '33'
+34: '34'
+35: '35'
+36: '36'
+37: '37'
+38: '38'
+39: '39'
+40: '40'
+41: '41'
+42: '42'
+43: '43'
+44: '44'
+45: 44%
+60: '60'
+61: '61'
+62: '62'
+63: '63'
+64: '64'
+65: '65'
+66: '66'
+67: '67'
+68: '68'
+69: '69'
+70: '70'
+71: '71'
+72: '72'
+73: '73'
+74: '74'
+75: '75'
+76: '76'
+77: '77'
+78: '78'
+79: '79'
+80: '80'
+81: '81'
+82: '82'
+83: '83'
+84: '84'
+85: '85'
+86: '86'
+87: '87'
+88: '88'
+89: '89'
+90: '90'
+91: '91'
+92: '92'
+93: '93'
+94: '94'
+95: '95'
+96: '96'
+97: '97'
+98: '98'
+99: '99'
+100: '100'
+101: '101'
+102: '102'
+103: '103'
+104: '104'
+105: '105'
+106: '106'
+107: '107'
+108: '108'
+109: '109'
+110: '110'
+111: '111'
+112: '112'
+113: '113'
+114: '114'
+115: '115'
+116: '116'
+117: '117'
+118: '118'
+119: '119'
+120: '120'
+121: '121'
+122: '122'
+123: '123'
+124: '124'
+125: '125'
+126: '126'
+127: '127'
+128: '128'
+129: '129'
+130: '130'
+131: '131'
+132: '132'
+133: '133'
+134: '134'
+135: '135'
+136: '136'
+137: '137'
+138: '138'
+139: '139'
+140: '140'
+141: '141'
