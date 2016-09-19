@@ -1,3 +1,3 @@
-<?php echo isset($params->label) ? $params->label.'&nbsp;' : '' ; ?><input name="<?php print $params->name ?>" id="<?php echo isset($params->id) ? $params->id : $params->name ; ?>" value="<?php print $this->htmlPrep($params->value) ?>" type="checkbox" <?php echo isset($params->element->class) ?  ' class="'.$params->element->class . '"' : '' ; ?>
-<?php echo isset($params->style->input) ? ' style="' . $params->style->input . '"' : '' ; ?>
+<?php echo isset($el->label) ? $el->label.'&nbsp;' : '' ; ?><input name="<?php print $el->name ?>" id="<?php echo isset($el->id) ? $el->id : $el->name ; ?>" value="<?php print $this->htmlPrep($el->value) ?>" type="checkbox" <?php echo isset($el->element->class) ?  ' class="'.$el->element->class . '"' : '' ; ?>
+<?php echo isset($el->style->input) ? ' style="' . $el->style->input . '"' : '' ; ?>
 <?php echo isset($el->checked) && $el->checked ? ' checked' : '' ; ?> /><!-- form.checkbox -->

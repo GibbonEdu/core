@@ -305,7 +305,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			ORDER BY name" ;
 		$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
 		while ($row = $resultSelect->fetchObject()) 
-			$el->addOption($this->view->htmlPrep(trans::__($row->name ) ), $row->gibbonScaleID );
+			$el->addOption($this->htmlPrep(trans::__($row->name ) ), $row->gibbonScaleID );
 	}
 
 	$form->addElement('submitBtn', null, 'Submit All');
