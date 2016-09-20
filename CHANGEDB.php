@@ -507,5 +507,6 @@ UPDATE `gibbonFileExtension` SET `mimeType` = 'text/html' WHERE `extension` = 'h
 UPDATE `gibbonFileExtension` SET `mimeType` = 'text/html' WHERE `extension` = 'html';end
 UPDATE `gibbonFileExtension` SET `mimeType` = 'video/3gpp' WHERE `extension` = '3gp';end
 UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-aac' WHERE `extension` = 'aac';end
+ALTER TABLE `gibbonModule` CHANGE `category` `category` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
 
 ";

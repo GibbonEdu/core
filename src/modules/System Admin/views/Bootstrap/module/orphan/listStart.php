@@ -1,8 +1,6 @@
-		<h2 style='margin-top: 40px'>
-			<?php echo Gibbon\core\trans::__("Orphaned Modules") ; ?>
-		</h2>
-		<p>
-			<?php echo Gibbon\core\trans::__("These modules are installed in the database, but are missing from within the file system.") ; ?>
+<?php		
+		$this->h4("Orphaned Modules") ; 
+		$this->paragraph("These modules are installed in the database, but are missing from within the file system.") ; ?>
 		</p>
 		
 		<table cellspacing='0' style='width: 100%'>
@@ -11,7 +9,7 @@
 				<th>
 					<?php echo Gibbon\core\trans::__("Name") ; ?>
 				</th>
-				<th style='width: 150px!important'>
+				<th style='width: 150px'>
 					<?php echo Gibbon\core\trans::__("Action") ; ?>
 				</th>
 			</tr>

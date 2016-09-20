@@ -33,6 +33,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$trail->trailEnd = 'Edit Module';
 	$trail->render($this);
 	
+	$this->h2('Edit Module');
 	$this->render('default.flash');
 	
 	//Check if school year specified
@@ -48,7 +49,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 			
 			$form = $this->getForm(null, array('q' => "/modules/System Admin/module_manage_editProcess.php", "gibbonModuleID" => $moduleID), true);
 			
-			$form->addElement('h3', null, 'Edit Module');
 			
 			$el = $form->addElement('text', 'name', trans::__($row["name"]));
 			$el->validateOff();
@@ -56,21 +56,16 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->description = 'This value cannot be changed.' ;
 			$el->setReadOnly();
 
-
 			$el = $form->addElement('text', 'description', trans::__( $row["description"]));
 			$el->nameDisplay = 'Description';
 			$el->description = 'This value cannot be changed.' ;
 			$el->setReadOnly();
+			$el->setLength(10);
 
-
-			$el = $form->addElement('select', 'category', $row['category']);
+			$el = $form->addElement('text', 'category', $row['category']);
 			$el->setRequired();
-			$menu = $this->pdo->getEnum('gibbonModule', 'category');
-			foreach($menu as $category)
-				$el->addOption(trans::__($category), $category);
 			$el->nameDisplay = 'Category';
 			$el->description = 'Determines menu structure' ;
-
 
 			$el = $form->addElement('yesno', 'active', $row['active']);
 			$el->nameDisplay = 'Active';

@@ -611,7 +611,7 @@ tbody td:last-child {
 }
 tbody td {
 	text-align: left;
-	padding:12px;
+	padding: 12px;
 	border-top: 1px solid #ffffff;
 	border-bottom:1px solid #dfdfdf;
 	border-left: 1px solid #dfdfdf;
@@ -629,6 +629,9 @@ tbody tr:last-child td:last-child {
 	-moz-border-radius-bottomright:3px;
 	-webkit-border-bottom-right-radius:3px;
 	border-bottom-right-radius:3px;
+}
+table span.glyphicons {
+	font-size: 18px;
 }
 .right {
 	text-align: right!important;

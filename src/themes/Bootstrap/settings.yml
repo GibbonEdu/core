@@ -365,7 +365,7 @@ validation:
     lessThan: ' data-fv-lessthan="true" data-fv-lessthan-inclusive="true" data-fv-lessthan-value="{{maxValue}}" data-fv-lessthan-message="{{message}}"' 
     Integer: ' data-fv-integer="true" data-fv-integer-message="{{message}}"' 
     Confirmation: ' data-fv-identical="true" data-fv-identical-field="{{confirm}}" data-fv-identical-message="{{message}}"'
-    URL: ' data-fv-uri="true" data-fv-uri-protocol="{{protocols}}" data-fv-uri-message="{{message}}"'
+    URL: ' data-fv-uri="true" data-fv-uri-protocol="{{protocols}}" data-fv-uri-message="{{message}}" data-fv-uri-allowlocal="true"'
     Date: ' data-fv-date="true" data-fv-date-format="{{format}}" data-fv-date-message="{{message}}" data-fv-date-min="{{after}}" data-fv-date-max="{{before}}"'
     Phone: ' data-fv-phone="true" data-fv-phone-country="{{countryCode}}" data-fv-phone-message="{{message}}"'
     PleaseSelect: ' data-fv-remote="true" data-fv-remote-type="POST" data-fv-remote-url="./src/Form/Validator/pleaseSelect.php" data-fv-remote-message="{{message}}" data-fv-remote-name="testMe"'
