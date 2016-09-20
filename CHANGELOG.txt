@@ -45,6 +45,7 @@ v13.0.00
 		System: updated .gitignore to include .DS_store files
 		System: updated PayPal integration to set localecode based on current Gibbon language
 		System: updated the reincarnate image on Default theme
+		System: removed robots meta tag
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
