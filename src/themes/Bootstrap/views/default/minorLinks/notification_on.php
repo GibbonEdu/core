@@ -1,1 +1,1 @@
-<span class="glyphicons glyphicons-pending-notifications"></span>
+<span class="glyphicons glyphicons-pending-notifications x2"></span>

@@ -58,6 +58,7 @@ class minorLinks extends menu
 				}
 			}
 			else {
+				$return .= '<div class="minorLinksContent">';
 				$name = $this->session->get("preferredName") . " " . $this->session->get("surname");
 				if (! $this->session->isEmpty("gibbonRoleIDCurrentCategory")) {
 					if ($this->session->get("gibbonRoleIDCurrentCategory")=="Student") {
@@ -84,6 +85,7 @@ class minorLinks extends menu
 				$return .= $this->showNotifications();
 				
 				$return .= $this->messageWall();
+				$return .= '</div>';
 				
 			}
 
@@ -120,8 +122,8 @@ class minorLinks extends menu
 			$updateReturn = isset($_GET["updateReturn"]) ? $_GET["updateReturn"] : null ;
 
 			$deleteReturn = isset($_GET["deleteReturn"]) ? $_GET["deleteReturn"] : null;
-			
-			$return = '';
+				
+			$return = '<div id="messageLink">';
 			
 			$el = new stdClass;
 			
@@ -218,6 +220,7 @@ class minorLinks extends menu
 		if (@$isHouseLogo) {
 			$return.=" . <img class='minorLinkIconLarge' title='" . $this->session->get("gibbonHouseIDName") . "' style='vertical-align: -75%; margin-left: 4px' src='" . $this->session->get("absoluteURL") . "/" . $this->session->get("gibbonHouseIDLogo") . "'/>" ;
 		}
+		$return .= '</div>';
 		return $return ;
 	}
 
@@ -231,7 +234,7 @@ class minorLinks extends menu
 	public function showLikes()	
 	{
 		$pObj = new person($this->view);
-		$return = '';
+		$return = '<div id="likeLink">';
 		$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
 		//Show likes
 		if (! $this->session->isEmpty("likesCount") && $this->session->get("likesCount") > 0) {
@@ -239,33 +242,19 @@ class minorLinks extends menu
 		} else {
 			$return .= " . " . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_off'). "" ;
 		}
+		$return .= '</div>';
 		return $return ;
 	}
 
 	/**
 	 * show Notifications
 	 * 
-	 * @version	18th September 2016
+	 * @version	20th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
 	public function showNotifications()	
 	{
-		//GET & SHOW NOTIFICATIONS
-		$obj = new notification($this->view);
-		$el = new stdClass;
-		$el->notifications = $obj->findAllBy(array('gibbonPersonID'=>$this->session->get("gibbonPersonID"), 'status'=>'New'));
-		
-
-		//Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
-		$el->interval = 120000 ;
-		if ($this->session->get("gibbonRoleIDCurrentCategory")=="Staff") $el->interval = 10000 ;
-		
-		$action = '/modules/Notifications/index_notification_ajax.php';
-		$tObj = new token($action, null, $this->view);
-		$el->token = $tObj->generateToken($action);
-		$el->action = $tObj->generateAction($action);
-		
-		return $this->view->renderReturn('default.minorLinks.notification', $el);
+		return $this->view->renderReturn('default.minorLinks.notification');
 	}
 }

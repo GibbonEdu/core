@@ -93,42 +93,25 @@ div.trailHead a:hover {
 
 div.minorLinks {
 	text-align: right; 
-	padding-right: 13px; 
-	padding-top: 0px;
-	margin-top: 10px; 
-	margin-bottom: 0px; 
 	color: white;
-	font-size: 100%; 
 	font-weight: normal; 
-	min-height: 28px ;
+	min-height: 65px ;
+	line-height: 15px;
 }
-
+.minorLinksContent {
+	line-height: 65px ;
+	vertical-align: middle ;
+	display: inline-block ;
+}
 div.minorLinks a {
 	color: #fff;
 	text-decoration: none ;
 }
 div.minorLinks .glyphicon, div.minorLinks .glyphicons {
 	color: #fff;
-	font-size: 100% ;
 }
-div.minorLinks a .glyphicons-pending-notifications {
-	margin: -3px -6px 0 -4px ;
-}
-div.minorLinks .glyphicons-bell {
-	margin: -3px -10px 0 -6px ;
-}
-div.minorLinks .glyphicons-glyphicon-thumbs-up {
-	margin: 0 ;
-}
-div.minorLinks .glyphicon-envelope {
-	margin: -3px -8px 0 -4px ;
-}
-div.minorLinks .glyphicon-bullhorn {
-	margin: -3px -8px 0 2px ;
-}
-#notifications {
-	margin: 0;
-	padding: 0;
+#notifications, #messageLink, #likeLink {
+	display: inline ;
 }
 div.minorLinks a:hover, div.minorLinks a .glyphicon:hover, div.minorLinks a .glyphicons:hover {
 	color: #aaa;
@@ -506,7 +489,6 @@ ul.moduleMenu h4 {
 	text-decoration: none!important ;
 }
 .glyphicons, .glyphicon {
-	font-size: 150%;
 	color: #757B81;
 }
 

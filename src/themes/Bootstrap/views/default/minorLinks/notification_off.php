@@ -1,1 +1,1 @@
-<span class="glyphicons glyphicons-bell" style="margin: -3px -6px 0 -4px ;"></span>
+<span class="glyphicons glyphicons-bell x2"></span>

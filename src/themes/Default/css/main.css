@@ -1219,3 +1219,6 @@ table.well tr:nth-child(even) td {
 .centre {
 	text-align: center!important;
 }
+#notifications {
+	display: inline ;
+}
