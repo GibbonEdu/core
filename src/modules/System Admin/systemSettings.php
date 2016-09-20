@@ -105,7 +105,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['statsCollection']->returnRecord());
 	
-	$form->addElement('submitBtn', null, 'Submit All');
 
 	$form->addElement('h3', null, 'Organisation Settings');
 
@@ -167,7 +166,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->addOption($person->formatName(true, true), $person->getID());
 	}
 
-	$form->addElement('submitBtn', null, 'Submit All');
 
 	$form->addElement('h3', null, 'Security Settings');
 	$form->startWell();
@@ -192,7 +190,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['passwordPolicyNonAlphaNumeric']->returnRecord());
 
 
-	$form->endWell(true, 'Submit All');
+	$form->endWell();
 	$form->startWell();
 	$form->addElement('h4', null, 'Miscellaneous');
 
@@ -207,7 +205,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['allowableHTML']->returnRecord());
 
 
-	$form->endWell(true, 'Submit All');
+	$form->endWell();
 
 	$form->addElement('h3', null, 'gibbonedu.com Value Added Services');
 
@@ -221,7 +219,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->maxlength = 36;
 	$el->validateOff();
 
-	$form->addElement('submitBtn', null, 'Submit All');
 	$form->addElement('h3', null, 'Localisation');
 	
 	$el = $form->addElement('select', null);
@@ -274,8 +271,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 		}
 	}
 
-	$form->addElement('submitBtn', null, 'Submit All');
-
 	$form->addElement('h3', null, 'Miscellaneous');
 
 	$el = $form->addElement('url', null);
@@ -312,7 +307,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->addOption($this->htmlPrep(trans::__($row->name ) ), $row->gibbonScaleID );
 	}
 
-	$form->addElement('submitBtn', null, 'Submit All');
+	$form->addElement('submitBtn', null);
 
 	$form->render();
 }

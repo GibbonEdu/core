@@ -11,6 +11,8 @@
 			$x = array('<a href="#'.$link.'">'.Gibbon\core\trans::__($name).'</a>');
 			$list->addListElement('%1$s', $x);
 		}
+		$x = array('<a href="#footer">'.Gibbon\core\trans::__('Bottom').'</a>');
+		$list->addListElement('%1$s', $x);
 		$list->renderList($this);
 	}
 	$this->session->clear('pageAnchors');

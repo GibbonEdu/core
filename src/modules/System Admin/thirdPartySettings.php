@@ -84,8 +84,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($this->config->getSetting('paypalAPISignature', 'System'));
 	$el->setMaxLength(255);
 
-	$form->addElement('submitBtn', '', 'Submit All');
-
 	$el = $form->addElement('h3', '', 'SMS Settings');
 	$el->note = "SMS Settings Note";
 	$el->noteDetails = array("<a href='http://onewaysms.com' target='_blank'>", '</a>');
@@ -155,6 +153,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->setMaxLength(75);
 	if (isset($mailSetting['FromName']) && $mailSetting['FromName']) $el->value = $mailSetting['FromName'];
 
-	$form->addElement('submitBtn', '', 'Submit All');
+	$form->addElement('submitBtn', null);
 	$form->render();
 }
