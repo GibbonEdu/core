@@ -19,7 +19,8 @@ CHANGELOG
 v13.0.00
 --------
 	Headlines
-		...
+		Transition to object oriented code base
+		New, Bootstrap-based theme
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
@@ -46,6 +47,7 @@ v13.0.00
 		System: updated the reincarnate image on Default theme
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
+		Activities: fixed bug which cut one student off print view of attendance print out
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.

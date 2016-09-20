@@ -5530,3 +5530,6 @@ TLS: TLS
 'From Name': 'From Name'
 'The name of the person or Organisation from which the email is sent.': 'The name of the person or Organisation from which the email is sent.'
 'Secure Transport Protocol': 'Secure Transport Protocol'
+'The name of the person or organisation from which the email is sent.': 'The name of the person or organisation from which the email is sent.'
+'Notification Scripts for Gibbon': 'Notification Scripts for Gibbon'
+'These modules are installed in the database, but are missing from within the file system.': 'These modules are installed in the database, but are missing from within the file system.'
