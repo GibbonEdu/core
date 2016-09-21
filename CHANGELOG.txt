@@ -71,6 +71,7 @@ v13.0.00
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
 		School Admin: fixed PHP warning caused by empty arrays in Tracking Settings
+		School Admin: added ability to link Educational Assistances to Form/Roll Groups
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
 		Students: fixed PHP Notice bug in Student Enrolment Add screen

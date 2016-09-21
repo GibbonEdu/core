@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
 Gibbon, Flexible & Open School System
@@ -510,5 +510,6 @@ UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-aac' WHERE `extension` = 
 ALTER TABLE `gibbonModule` CHANGE `category` `category` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
 ALTER TABLE `gibbonUnit` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this unit be included in curriculum maps and other summaries?' AFTER `tags`;end
 ALTER TABLE `gibbonCourseClass` ADD `gibbonScaleIDTarget` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `reportable`;end
+ALTER TABLE `gibbonRollGroup` ADD `gibbonPersonIDEA` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDTutor3`, ADD `gibbonPersonIDEA2` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA`, ADD `gibbonPersonIDEA3` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA2`;end
 
 ";
