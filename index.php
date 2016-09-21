@@ -701,5 +701,4 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 		</body>
 	</html>
 	<?php
-
 }

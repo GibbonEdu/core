@@ -9,7 +9,7 @@
 			}
 			$el->titleDetails = isset($el->titleDetails) ? $el->titleDetails : array() ; ?>
             <?php $this->render('default.h3', $el); ?>
-            <?php echo isset($el->note) ? '<p>'.Gibbon\core\trans::__($el->note, isset($el->noteDetails) ? $el->noteDetails : array()).'</p>' : NULL ; ?>  
+            <?php echo isset($el->note) ? '<p>'.$this->__($el->note, isset($el->noteDetails) ? $el->noteDetails : array()).'</p>' : NULL ; ?>  
         </div>                              
     </div>
 </div><!-- bootstrap.form.standard.h3 -->

@@ -1,1 +1,1 @@
-<span class="glyphicon glyphicon-bullhorn"></span>
+<span class="glyphicons glyphicons-newspaper x2" style="color: red;"></span>

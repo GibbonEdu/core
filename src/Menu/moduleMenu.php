@@ -25,7 +25,6 @@ namespace Gibbon\Menu;
 
 use Gibbon\core\trans ;
 use Gibbon\core\security ;
-use Gibbon\core\module as helper ;
 use Gibbon\Record\module ;
 use Gibbon\core\listElement ;
 
@@ -54,7 +53,7 @@ class moduleMenu extends menu
 		//Check address to see if we are in the module area
 		if (substr($this->session->get("address"),0,8) == "/modules") {
 			//Get and check the module name
-			$moduleID = helper::checkModuleReady($this->session->get("address"), $this->view);
+			$moduleID = $this->view->checkModuleReady($this->session->get("address"), $this->view);
 			if ( $moduleID ) {
 				$moduleObj = new Module($this->view, $moduleID);
 				$RoleIDCurrent = null ;
@@ -83,11 +82,11 @@ class moduleMenu extends menu
 						{
 							$entryList[] = $moduleEntry ;
 							
-							$style = strpos($row->getField("URLList"), helper::getActionName($this->session->get("address"))) === 0 ? 'class="active"' : '' ;
+							$style = strpos($row->getField("URLList"), $this->view->getActionName($this->session->get("address"))) === 0 ? 'class="active"' : '' ;
 		
 							$currentCategory = $row->getField("category");
 							
-							$currentName = strpos($row->getField("name"),"_") > 0 ? trans::__(substr($row->getField("name"), 0, strpos($row->getField("name"),"_"))) : trans::__($row->getField("name")) ;
+							$currentName = strpos($row->getField("name"),"_") > 0 ?$this->view->__(substr($row->getField("name"), 0, strpos($row->getField("name"),"_"))) :$this->view->__($row->getField("name")) ;
 							
 							if ($currentCategory != $lastCategory)
 							{

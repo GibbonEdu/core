@@ -98,7 +98,7 @@ class post extends view
 				helper::dump($_POST);
 				helper::dump($_SERVER, true, true);
 			}
-			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
+			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if  (empty($this->action))
 		{
@@ -106,7 +106,7 @@ class post extends view
 				helper::dump($_POST);
 				helper::dump($_SERVER, true, true);
 			}
-			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
+			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if (md5($this->config->get('guid') . $this->action) !== $this->token && $this->token != 'This is an old script!')
 		{
@@ -116,7 +116,7 @@ class post extends view
 				helper::dump($_POST);
 				helper::dump($_SERVER, true, true);
 			}
-			throw new Exception( trans::__('The submitted form is not valid!'), 28000 + __LINE__);
+			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if (! file_exists($this->action))
 		{
@@ -147,7 +147,7 @@ class post extends view
 			helper::dump($_POST);
 			helper::dump($_SERVER, true, true);
 		}
-		throw new Exception(trans::__('Post to this system must be correctly formatted.'), 28000 + __LINE__);
+		throw new Exception( $this->__('Post to this system must be correctly formatted.'), 28000 + __LINE__);
 	}
 
 	/**

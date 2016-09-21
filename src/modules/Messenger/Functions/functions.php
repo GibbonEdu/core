@@ -391,7 +391,7 @@ class functions extends mFBase
 			
 			if ($resultPosts->rowCount()<1) {
 				$return.= "<div class='warning'>" ;
-					$return.= Gibbon\trans::__( "There are no records to display.") ;
+					$return.= $this->__( "There are no records to display.") ;
 				$return.= "</div>" ;
 			}
 			else {
@@ -418,10 +418,10 @@ class functions extends mFBase
 				$return.= "<table cellspacing='0' style='margin-top: 10px'>" ;
 					$return.= "<tr>" ;
 						$return.= "<th style='text-align: center'>" ;
-							$return.= Gibbon\trans::__( "Sharing") ;
+							$return.= $this->__( "Sharing") ;
 						$return.= "</th>" ;
 						$return.= "<th>" ;
-							$return.= Gibbon\trans::__( "Message") ;
+							$return.= $this->__( "Message") ;
 						$return.= "</th>" ;
 					$return.= "</tr>" ;
 					$rowCount=0;
@@ -443,25 +443,26 @@ class functions extends mFBase
 								$likesGiven=countLikesByContextAndGiver($connection2, "Messenger", "gibbonMessengerID", $output[$i]["gibbonMessengerID"], $this->session->get("gibbonPersonID"), $output[$i]["gibbonPersonID"]) ;
 								if ($output[$i]["gibbonPersonID"]==$this->session->get("gibbonPersonID")) {
 									if ($likesGiven==1) {
-										$return.=$likesGiven . "x " . Gibbon\trans::__( 'Like') . "<br/><br/>" ;
+										$return.=$likesGiven . "x " . $this->__( 'Like') . "<br/><br/>" ;
 									}
 									else {
-										$return.=$likesGiven . "x " . Gibbon\trans::__( 'Likes') . "<br/><br/>" ;
+										$return.=$likesGiven . "x " . $this->__( 'Likes') . "<br/><br/>" ;
 									}
 								}
 								else {
 									$comment=addSlashes($output[$i]["subject"]) ;
 									$return.="<div id='star" . $output[$i]["gibbonMessengerID"] . "'>" ;
-										$return.="<script type=\"text/javascript\">" ;
-											$return.="$(document).ready(function(){" ;
-												$return.="$(\"#starAdd" . $output[$i]["gibbonMessengerID"] . "\").click(function(){" ;
-													$return.="$(\"#star" . $output[$i]["gibbonMessengerID"] . "\").load(\"" . $this->session->get("absoluteURL") . "/modules/Messenger/messageWall_view_starAjax.php\",{\"gibbonPersonID\": \"" . $output[$i]["gibbonPersonID"] . "\", \"gibbonMessengerID\": \"" . $output[$i]["gibbonMessengerID"] . "\", \"mode\": \"add\", \"comment\": \"" . $comment . "\"});" ;
-												$return.="});" ;
-												$return.="$(\"#starRemove" . $output[$i]["gibbonMessengerID"] . "\").click(function(){" ;
-													$return.="$(\"#star" . $output[$i]["gibbonMessengerID"] . "\").load(\"" . $this->session->get("absoluteURL") . "/modules/Messenger/messageWall_view_starAjax.php\",{\"gibbonPersonID\": \"" . $output[$i]["gibbonPersonID"] . "\", \"gibbonMessengerID\": \"" . $output[$i]["gibbonMessengerID"] . "\", \"mode\": \"remove\", \"comment\": \"" . $comment . "\"});" ;
-												$return.="});" ;
-											$return.="});" ;
-										$return.="</script>" ;
+$this->addScript('
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#starAdd' . $output[$i]["gibbonMessengerID"] . '").click(function(){
+			$("#star' . $output[$i]["gibbonMessengerID"] . '").load("' . $this->session->get("absoluteURL") . '/modules/Messenger/messageWall_view_starAjax.php",{"gibbonPersonID": "' . $output[$i]["gibbonPersonID"] . '", "gibbonMessengerID": "' . $output[$i]["gibbonMessengerID"] . '", "mode": "add", "comment": "' . $comment . '"});
+			});
+			$("#starRemove' . $output[$i]["gibbonMessengerID"] . '").click(function(){
+				$("#star' . $output[$i]["gibbonMessengerID"] . '").load("' . $this->session->get("absoluteURL") . '/modules/Messenger/messageWall_view_starAjax.php",{"gibbonPersonID": "' . $output[$i]["gibbonPersonID"] . '", "gibbonMessengerID": "' . $output[$i]["gibbonMessengerID"] . '", "mode": "remove", "comment": "' . $comment . '"});
+			});
+		});
+</script>');
 										if ($likesGiven!=1) {
 											$return.="<a id='starAdd" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/like_off.png'></a>" ;
 										}

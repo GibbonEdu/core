@@ -4,8 +4,12 @@
     	<?php $this->render('form.style.elements', $el); ?>	
         </div>
     </div>
-</form><script>
+</form><!-- bootstrap.form.style.standard --><?php
+$id = ! $el->isEmpty('id') ? $el->get('id') : "TheForm" ;
+$this->addScript("
+<script>
 $(document).ready(function() {
-    $('#<?php echo ! $el->isEmpty('id') ? $el->get('id') : 'TheForm' ;?>').formValidation();
+    $('#".$id."').formValidation();
 });
-</script><!-- bootstrap.form.style.standard -->
+</script>
+");

@@ -4,11 +4,11 @@ use Gibbon\Record\theme ;
 ?>
     <tr class="<?php echo isset($el->rowNum) ? $el->rowNum : ''; ?>">
         <td>
-            <?php echo trans::__( ! $el->isEmpty('name') ? $el->getField('name') : $el->themeName ) ; ?>
+            <?php echo $this->__( ! $el->isEmpty('name') ? $el->getField('name') : $el->themeName ) ; ?>
         </td>
         <?php if ($el->installed) { ?>
             <td>
-                <?php echo trans::__("Installed") ; ?>
+                <?php echo $this->__("Installed") ; ?>
             </td> <?php
         }
         else {
@@ -23,12 +23,12 @@ use Gibbon\Record\theme ;
             }
             if ($manifestOK) { ?>
                 <td colspan=5>
-                    <?php echo trans::__("Not Installed") ; ?>
+                    <?php echo $this->__("Not Installed") ; ?>
                 </td> <?php
             }
             else { ?>
                 <td colspan=6>
-                    <?php echo trans::__("Theme Error") ; ?>
+                    <?php echo $this->__("Theme Error") ; ?>
                 </td> <?php
             }
         }

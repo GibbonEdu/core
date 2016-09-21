@@ -1,7 +1,10 @@
-<script type='text/javascript'>
+<?php
+$el->id = isset($el->id) ? $el->id : 'id';
+$this->addScript('
+<script >
 	$(document).ready(function() {
-		$("#<?php echo isset($params->id) ? $params->id : 'id'; ?>")
-			.tokenInput(<?php echo $params->list; ?>, {
+		$("#'.$el->id.'")
+			.tokenInput('.$el->list.', {
 				theme: "facebook",
 				hintText: "Start typing a name...",
 				allowCreation: false,
@@ -10,3 +13,4 @@
 		});
 	});
 </script>
+');

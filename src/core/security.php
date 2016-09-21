@@ -28,7 +28,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\core;
 
-use Gibbon\core\module;
 use Gibbon\Record\passwordReset ;
 use Symfony\Component\Yaml\Yaml ;
 use Gibbon\core\logger ;
@@ -201,10 +200,10 @@ class security
 			//Check user has a current role set
 			if (! is_null($session->get("gibbonRoleIDCurrent"))) {
 				//Check module ready
-				$moduleID = module::checkModuleReady($address, $this->getView());
+				$moduleID = $this->view->checkModuleReady($address, $this->getView());
 				if ($moduleID) {
 					//Check current role has access rights to the current action.
-						$data = array("actionName"=>"%" . module::getActionName($address) . "%", "gibbonRoleID" => $session->get("gibbonRoleIDCurrent"), 'moduleID' => $moduleID);
+						$data = array("actionName"=>"%" . $this->view->getActionName($address) . "%", "gibbonRoleID" => $session->get("gibbonRoleIDCurrent"), 'moduleID' => $moduleID);
 						$sqlWhere = "" ;
 						if (! empty($sub)) {
 							$data["sub"] = $sub ;
@@ -367,10 +366,10 @@ class security
 	{
 		$address = is_null($address) ? $_GET['q'] : $address ;
 		$output = false ;
-		$moduleID = module::checkModuleReady($address, $this->view);
+		$moduleID = $this->view->checkModuleReady($address, $this->view);
 		
 		$obj = new \Gibbon\Record\action($this->view);
-		$data = array("actionName" => "%" . module::getActionName($address) . "%", "roleID" => $this->view->session->get("gibbonRoleIDCurrent"), "moduleID" => $moduleID);
+		$data = array("actionName" => "%" . $this->view->getActionName($address) . "%", "roleID" => $this->view->session->get("gibbonRoleIDCurrent"), "moduleID" => $moduleID);
 		$sql = "SELECT `gibbonAction`.`name` 
 			FROM `gibbonAction`, `gibbonPermission`, `gibbonRole` 
 			WHERE `gibbonAction`.`URLList` LIKE :actionName  
@@ -406,22 +405,22 @@ class security
 		$minLength = $this->config->getSettingByScope( "System", "passwordPolicyMinLength" ) ;
 	
 		if ( ! $alpha || ! $numeric || ! $punctuation || ! $minLength ) {
-			$output.= trans::__( "An error occurred.") ;
+			$output.=  $this->__( "An error occurred.") ;
 		}
 		else if ($alpha!="N" OR $numeric!="N" OR $punctuation!="N" OR $minLength>=0) {
-			$output.= trans::__( "The password policy stipulates that passwords must:") . "<br/>" ;
+			$output.=  $this->__( "The password policy stipulates that passwords must:") . "<br/>" ;
 			$output.="<ul>" ;
 				if ($alpha=="Y") {
-					$output.="<li>" . trans::__( 'Contain at least one lowercase letter, and one uppercase letter.') . "</li>" ;
+					$output.="<li>" .  $this->__( 'Contain at least one lowercase letter, and one uppercase letter.') . "</li>" ;
 				}
 				if ($numeric=="Y") {
-					$output.="<li>" . trans::__( 'Contain at least one number.') . "</li>" ;
+					$output.="<li>" .  $this->__( 'Contain at least one number.') . "</li>" ;
 				}
 				if ($punctuation=="Y") {
-					$output.="<li>" . trans::__( 'Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).') . "</li>" ;
+					$output.="<li>" .  $this->__( 'Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).') . "</li>" ;
 				}
 				if ($minLength>=0) {
-					$output.="<li>" . sprintf(trans::__( 'Must be at least %1$s characters in length.'), $minLength) . "</li>" ;
+					$output.="<li>" . sprintf( $this->__( 'Must be at least %1$s characters in length.'), $minLength) . "</li>" ;
 				}
 			$output.="</ul>" ;
 		}

@@ -7,7 +7,7 @@ $googleOAuth = $this->config->getSettingByScope("System", "googleOAuth") ;
 
 if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 	if ($googleOAuth == "Y") {
-		$this->h2(trans::__("Login with Google")) ; ?>
+		$this->h2($this->__("Login with Google")) ; ?>
 
 		<div id="siteloader"><?php include GIBBON_ROOT . '/lib/google/index.php'; ?></div>
 		<?php
@@ -16,7 +16,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 	if ($this->session->isEmpty("username")){ // If Google Auth set to No make sure login screen not visible when logged in
 		$link = array();
 		if (isset($_GET["q"])) $link['q'] = $_GET['q'];
-		$this->h2(trans::__("Login"));
+		$this->h2($this->__("Login"));
 
 		$el =  new stdClass();
 		$el->target = 'loginFlash';
@@ -68,7 +68,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 			$el->addOption($this->htmlPrep($name), $code);
 		}
 
-		$el = $form->addElement('script', null, '
+		$this->addScript('
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#schoolYear").hide();
@@ -82,7 +82,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 					</script>');
 
 		$el = $form->addElement('note', null, null);
-		$el->description = array('%1$s', array('<a class="show_hide" onclick="false" href="#">'.trans::__("Options").'</a> . <a href="'.GIBBON_URL.'/index.php?q=/modules/Security/passwordReset.php">'.trans::__("Forgot Password?").'</a><br/>'.trans::__('* Denotes a required field.')));
+		$el->description = array('%1$s', array('<a class="show_hide" onclick="false" href="#">'.$this->__("Options").'</a> . <a href="'.GIBBON_URL.'/index.php?q=/modules/Security/passwordReset.php">'.$this->__("Forgot Password?").'</a><br/>'.$this->__('* Denotes a required field.')));
 
 		$el = $form->addElement('submitBtn', null, 'Login');
 		$el->description = '';

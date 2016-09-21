@@ -359,18 +359,18 @@ class helper
 		$output.="<div style='margin-top: 10px; font-style: italic; color: #c00'>" ;
 		if ($multiple) {
 			if ($post < $file) {
-				$output.=sprintf(trans::__( 'Maximum size for all files: %1$sMB'), $post) . "<br/>" ;
+				$output.=sprintf( $this->__( 'Maximum size for all files: %1$sMB'), $post) . "<br/>" ;
 			}
 			else {
-				$output.=sprintf(trans::__( 'Maximum size for all files: %1$sMB'), $file) . "<br/>" ;
+				$output.=sprintf( $this->__( 'Maximum size for all files: %1$sMB'), $file) . "<br/>" ;
 			}
 		}
 		else {
 			if ($post < $file) {
-				$output.=sprintf(trans::__( 'Maximum file size: %1$sMB'), $post) . "<br/>" ;
+				$output.=sprintf( $this->__( 'Maximum file size: %1$sMB'), $post) . "<br/>" ;
 			}
 			else {
-				$output.=sprintf(trans::__( 'Maximum file size: %1$sMB'), $file) . "<br/>" ;
+				$output.=sprintf( $this->__( 'Maximum file size: %1$sMB'), $file) . "<br/>" ;
 			}
 		}
 		$output.="</div>" ;
@@ -399,69 +399,69 @@ class helper
 			if ($row["smartWorkflowHelp"]=="Y") {
 				$output="<div id='smartWorkflowHelp' class='message' style='padding-top: 14px'>" ;
 					$output.="<div style='padding: 0 7px'>" ;
-						$output.="<span style='font-size: 175%'><i><strong>" . trans::__('Smart Workflow') . "</strong></i> " . trans::__('Getting Started') . "</span><br/>" ;
-						$output.=trans::__("Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.") . "<br/>" ;
+						$output.="<span style='font-size: 175%'><i><strong>" .  $this->__('Smart Workflow') . "</strong></i> " .  $this->__('Getting Started') . "</span><br/>" ;
+						$output.= $this->__("Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.") . "<br/>" ;
 					$output.="</div>" ;
 					$output.="<table cellspacing='0' style='width: 100%; margin: 10px 0px; border-spacing: 4px;'>" ;
 						$output.="<tr>" ;
 							if ($step==1) {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('One') . "</span><br/>" ;
-									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(trans::__('Create %1$s Outcomes'), "<br/>") . "</span><br/></span>" ;
+									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('One') . "</span><br/>" ;
+									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf( $this->__('Create %1$s Outcomes'), "<br/>") . "</span><br/></span>" ;
 								$output.="</td>" ;
 							}
 							else {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('One') . "</span><br/>" ;
-									$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/outcomes.php'>" . sprintf(trans::__('Create %1$s Outcomes'), "<br/>") . "</span><br/></a>" ;
+									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('One') . "</span><br/>" ;
+									$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/outcomes.php'>" . sprintf( $this->__('Create %1$s Outcomes'), "<br/>") . "</span><br/></a>" ;
 								$output.="</td>" ;
 							}
 							if ($step==2) {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Two') . "</span><br/>" ;
-									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(trans::__('Plan & Deploy %1$s Smart Units'), "<br/>") . "</span><br/></span>" ;
+									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Two') . "</span><br/>" ;
+									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf( $this->__('Plan & Deploy %1$s Smart Units'), "<br/>") . "</span><br/></span>" ;
 								$output.="</td>" ;
 							}
 							else {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Two') . "</span><br/>" ;
-									$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/units.php'>" . sprintf(trans::__('Plan & Deploy %1$s Smart Units'), "<br/>") . "</span><br/></a>" ;
+									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Two') . "</span><br/>" ;
+									$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/units.php'>" . sprintf( $this->__('Plan & Deploy %1$s Smart Units'), "<br/>") . "</span><br/></a>" ;
 								$output.="</td>" ;
 							}
 							if ($step==3) {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Three') . "</span><br/>" ;
-									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(trans::__('Share, Teach %1$s & Interact'), "<br/>") . "</span><br/></span>" ;
+									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Three') . "</span><br/>" ;
+									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf( $this->__('Share, Teach %1$s & Interact'), "<br/>") . "</span><br/></span>" ;
 								$output.="</td>" ;
 							}
 							else {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Three') . "</span><br/>" ;
-									$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner.php'>" . sprintf(trans::__('Share, Teach %1$s & Interact'), "<br/>") . "</span><br/></a>" ;
+									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Three') . "</span><br/>" ;
+									$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner.php'>" . sprintf( $this->__('Share, Teach %1$s & Interact'), "<br/>") . "</span><br/></a>" ;
 								$output.="</td>" ;
 							}
 							if ($step==4) {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Four<') . "/span><br/>" ;
-									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(trans::__('Assign & Collect %1$s Work'), "<br/>") . "</span><br/></span>" ;
+									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Four<') . "/span><br/>" ;
+									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf( $this->__('Assign & Collect %1$s Work'), "<br/>") . "</span><br/></span>" ;
 								$output.="</td>" ;
 							}
 							else {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Four') . "</span><br/>" ;
-								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner_deadlines.php'>" . sprintf(trans::__('Assign & Collect %1$s Work'), "<br/>") . "</span><br/></a>" ;
+									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Four') . "</span><br/>" ;
+								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner_deadlines.php'>" . sprintf( $this->__('Assign & Collect %1$s Work'), "<br/>") . "</span><br/></a>" ;
 								$output.="</td>" ;
 							}
 							if ($step==5) {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Five') . "</span><br/>" ;
-									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(trans::__('Assess & Give %1$s Feedback'), "<br/>") . "</span><br/></span>" ;
+									$output.="<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Five') . "</span><br/>" ;
+									$output.="<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf( $this->__('Assess & Give %1$s Feedback'), "<br/>") . "</span><br/></span>" ;
 								$output.="</td>" ;
 							}
 							else {
 								$output.="<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>" ;
-									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . trans::__('Five') . "</span><br/>" ;
-								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Markbook/markbook_view.php'>" . sprintf(trans::__('Assess & Give %1$s Feedback'), "<br/>") . "</span><br/></a>" ;
+									$output.="<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" .  $this->__('Five') . "</span><br/>" ;
+								$output.="<span style='font-size: 140%; letter-spacing: 70%'><a href='" . GIBBON_URL . "index.php?q=/modules/Markbook/markbook_view.php'>" . sprintf( $this->__('Assess & Give %1$s Feedback'), "<br/>") . "</span><br/></a>" ;
 								$output.="</td>" ;
 							}
 						$output.="</tr>" ;
@@ -469,31 +469,31 @@ class helper
 							$output.="<tr>" ;
 								$output.="<td style='text-align: justify; font-size: 125%; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 15px 4px' colspan=5>" ;
 									if ($step==1) {
-										$output.=trans::__('<strong>Outcomes</strong> provide a way to plan and track what is being taught in school, and so are a great place to get started.<br/><br/>Click on the "Add" button (below this message, on the right) to add a new outcome, which can either be school-wide, or attached to a particular department.') . "<br/>" ;
-										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . trans::__('<strong>Note</strong>: You need to be in a department, with the correct permissions, in order to be able to do this.') . " " . sprintf(trans::__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
+										$output.= $this->__('<strong>Outcomes</strong> provide a way to plan and track what is being taught in school, and so are a great place to get started.<br/><br/>Click on the "Add" button (below this message, on the right) to add a new outcome, which can either be school-wide, or attached to a particular department.') . "<br/>" ;
+										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" .  $this->__('<strong>Note</strong>: You need to be in a department, with the correct permissions, in order to be able to do this.') . " " . sprintf( $this->__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
 									}
 									else if ($step==2) {
-										$output.=trans::__('<strong>Smart Units</strong> support you in the design of course content, and can be quickly turned into individual lesson plans using intuitive drag and drop. Smart Units cut planning time dramatically, and support ongoing improvement and reuse of content.<br/><br/>Choose a course, using the dropdown menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit. Once your master unit is complete, deploy it to a class to create your lesson plans.') . "<br/>" ;
-										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . trans::__('<strong>Note</strong>: You need to be in a department, with the correct permissions, in order to be able to do this.') . " " . sprintf(trans::__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
+										$output.= $this->__('<strong>Smart Units</strong> support you in the design of course content, and can be quickly turned into individual lesson plans using intuitive drag and drop. Smart Units cut planning time dramatically, and support ongoing improvement and reuse of content.<br/><br/>Choose a course, using the dropdown menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit. Once your master unit is complete, deploy it to a class to create your lesson plans.') . "<br/>" ;
+										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" .  $this->__('<strong>Note</strong>: You need to be in a department, with the correct permissions, in order to be able to do this.') . " " . sprintf( $this->__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
 									}
 									else if ($step==3) {
-										$output.=sprintf(trans::__('<strong>Planner</strong> supports online lesson plans which can be shared with students, parents and other teachers. Create your lesson by hand, or automatically via %1$sSmart Units%2$s. Lesson plans facilitate sharing of course content, homework assignment and submission, text chat, and attendance taking.<br/><br/>Choose a date or class, using the menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit.'), "<a href='" . GIBBON_URL . "index.php?q=/modules/Planner/units.php'>", "</a>") . "<br/>" ;
-										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . trans::__('<strong>Note</strong>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . " " . sprintf(trans::__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
+										$output.=sprintf( $this->__('<strong>Planner</strong> supports online lesson plans which can be shared with students, parents and other teachers. Create your lesson by hand, or automatically via %1$sSmart Units%2$s. Lesson plans facilitate sharing of course content, homework assignment and submission, text chat, and attendance taking.<br/><br/>Choose a date or class, using the menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit.'), "<a href='" . GIBBON_URL . "index.php?q=/modules/Planner/units.php'>", "</a>") . "<br/>" ;
+										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" .  $this->__('<strong>Note</strong>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . " " . sprintf( $this->__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
 									}
 									else if ($step==4) {
-										$output.=sprintf(trans::__('<strong>Homework + Deadlines</strong> allows teachers and students to see upcoming deadlines, cleanly displayed in one place. Click on an entry to view the details for that piece of homework, and the lesson it is attached to.<br/><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows teachers to view all submitted work, and records late and incomplete work.'), "<a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner.php'>", "</a>") . "<br/>" ;
-										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . trans::__('<strong>Note</strong>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . " " . sprintf(trans::__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
+										$output.=sprintf( $this->__('<strong>Homework + Deadlines</strong> allows teachers and students to see upcoming deadlines, cleanly displayed in one place. Click on an entry to view the details for that piece of homework, and the lesson it is attached to.<br/><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows teachers to view all submitted work, and records late and incomplete work.'), "<a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner.php'>", "</a>") . "<br/>" ;
+										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" .  $this->__('<strong>Note</strong>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . " " . sprintf( $this->__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
 									}
 									else if ($step==5) {
-										$output.=sprintf(trans::__('<strong>Markbook</strong> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the "Add" button (below this message, on the right) to create a new markbook column.'), "<a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner.php'>", "</a>") . "<br/>" ;
-										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . trans::__('<strong>Note</strong>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . " " . sprintf(trans::__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
+										$output.=sprintf( $this->__('<strong>Markbook</strong> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the "Add" button (below this message, on the right) to create a new markbook column.'), "<a href='" . GIBBON_URL . "index.php?q=/modules/Planner/planner.php'>", "</a>") . "<br/>" ;
+										$output.="<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" .  $this->__('<strong>Note</strong>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . " " . sprintf( $this->__('Please contact %1$s for help.'), "<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>") . "</div>" ;
 									}
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						}
 					$output.="</table>" ;
 					$output.="<div style='text-align: right; font-size: 90%; padding: 0 7px'>" ;
-						$output.="<a title='". trans::__('Dismiss Smart Workflow Help') . "' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"" . GIBBON_URL . "index_SmartWorkflowHelpAjax.php\"})' href='#'>" . trans::__('Dismiss Smart Workflow Help') . "</a>" ;
+						$output.="<a title='".  $this->__('Dismiss Smart Workflow Help') . "' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"" . GIBBON_URL . "index_SmartWorkflowHelpAjax.php\"})' href='#'>" .  $this->__('Dismiss Smart Workflow Help') . "</a>" ;
 					$output.="</div>" ;
 				$output.="</div>" ;
 			}
@@ -596,11 +596,11 @@ class helper
 
 			if (! is_null($w)) {
 				if ($obj->rowCount()==1) 
-					$title = trans::__(array('Individual Need alert is set. Alert level of %1$s.', array($w->getField('name')))) ;
+					$title =  $this->__(array('Individual Need alert is set. Alert level of %1$s.', array($w->getField('name')))) ;
 				else 
-					$title = trans::__(array('%1$s Individual Needs alerts are set. Maximum alert level of %2$s.', array($obj->rowCount(), $w->getField('name')))) ;
+					$title =  $this->__(array('%1$s Individual Needs alerts are set. Maximum alert level of %2$s.', array($obj->rowCount(), $w->getField('name')))) ;
 
-				$output.="<a style='font-size: " . $fontSize . "px; color: #" . $w->getField('color') . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Individual Needs'><div title='$title' class='alertBar' style='float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 4px solid #" . $highestColour . "; margin: -2px 0 0 2px; background-color: #" . $w->getField('colorBG') . "'>" . trans::__('IN') . "</div></a>" ;
+				$output.="<a style='font-size: " . $fontSize . "px; color: #" . $w->getField('color') . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Individual Needs'><div title='$title' class='alertBar' style='float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 4px solid #" . $highestColour . "; margin: -2px 0 0 2px; background-color: #" . $w->getField('colorBG') . "'>" .  $this->__('IN') . "</div></a>" ;
 			}
 	
 			//Academic
@@ -629,8 +629,8 @@ class helper
 			if (! empty($alertLevelID)) {
 				$alert = $aObj->getAlert($alertLevelID) ;
 				if ($alert!=FALSE) {
-					$title=sprintf(trans::__('Student has a %1$s alert for academic concern in the current academic year.'), trans::__($alert["name"])) ;
-					$output.="<a style='font-size: " . $fontSize . "px; color: #" . $alert["color"] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Markbook&filter=" . $session->get("gibbonSchoolYearID") . "'><div title='$title' class='alertBar' style='max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 2px solid #" . $alert["color"] . "; background-color: #" . $alert["colorBG"] . "'>" . trans::__('A') . "</div></a>" ;
+					$title=sprintf( $this->__('Student has a %1$s alert for academic concern in the current academic year.'),  $this->__($alert["name"])) ;
+					$output.="<a style='font-size: " . $fontSize . "px; color: #" . $alert["color"] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Markbook&filter=" . $session->get("gibbonSchoolYearID") . "'><div title='$title' class='alertBar' style='max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 2px solid #" . $alert["color"] . "; background-color: #" . $alert["colorBG"] . "'>" .  $this->__('A') . "</div></a>" ;
 				}
 			}
 	
@@ -656,17 +656,17 @@ class helper
 			if ($alertLevelID!="") {
 				$alert = helper::getAlert($alertLevelID) ;
 				if ($alert!=FALSE) {
-					$title = trans::__(array('Student has a %1$s alert for behaviour over the past 60 days.', array(trans::__($alert["name"])))) ;
-					$output.="<a style='font-size: " . $fontSize . "px; color: #" . $alert["color"] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Behaviour'><div title='$title' class='alertBar' style='float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 2px solid #" . $alert["color"] . ";  background-color: #" . $alert["colorBG"] . "'>" . trans::__('B') . "</div></a>" ;
+					$title =  $this->__(array('Student has a %1$s alert for behaviour over the past 60 days.', array( $this->__($alert["name"])))) ;
+					$output.="<a style='font-size: " . $fontSize . "px; color: #" . $alert["color"] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Behaviour'><div title='$title' class='alertBar' style='float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 2px solid #" . $alert["color"] . ";  background-color: #" . $alert["colorBG"] . "'>" .  $this->__('B') . "</div></a>" ;
 				}
 			}
 	
 			//Medical
 			$alert = self::getHighestMedicalRisk($personID, self::$view) ;
 			if ($alert) {
-				$title = trans::__(array('Medical alerts are set, up to a maximum of %1$s', array($alert['name']))) ;
+				$title =  $this->__(array('Medical alerts are set, up to a maximum of %1$s', array($alert['name']))) ;
 				$output .= "<a style='font-size: " . $fontSize . "px; color: #" . $alert['colour'] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Medical'>
-				<div title='$title' class='alertBar' style='max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 4px solid #" . $alert['colour'] . "; background-color: #" . $alert['colourBG'] . "'><strong>" . trans::__('M') . "</strong></div>
+				<div title='$title' class='alertBar' style='max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 4px solid #" . $alert['colour'] . "; background-color: #" . $alert['colourBG'] . "'><strong>" .  $this->__('M') . "</strong></div>
 				</a>" ;
 			}
 	
@@ -674,8 +674,8 @@ class helper
 			$privacySetting = $config->getSettingByScope("User Admin", "privacy" ) ;
 			if ($privacySetting=="Y" && ! empty($privacy)) {
 				$alert=helper::getAlert(001) ;
-				$title=sprintf(trans::__('Privacy is required: %1$s'), $privacy) ;
-				$output.="<div title='$title' class='alertBar' style='font-size: " . $fontSize . "px; float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 4px solid #" . $alert["color"] . "; color: #" . $alert["color"] . "; background-color: #" . $alert["colorBG"] . "'>" . trans::__('P') . "</div>" ;
+				$title=sprintf( $this->__('Privacy is required: %1$s'), $privacy) ;
+				$output.="<div title='$title' class='alertBar' style='font-size: " . $fontSize . "px; float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 4px solid #" . $alert["color"] . "; color: #" . $alert["color"] . "; background-color: #" . $alert["colorBG"] . "'>" .  $this->__('P') . "</div>" ;
 			}
 	
 			if ($div) {
@@ -711,12 +711,12 @@ class helper
 		if (! is_null($medical)) {
 			$output = array() ;
 			$output[0] = $medical->getField("gibbonAlertLevelID");
-			$output[1] = trans::__($medical->getField("name")) ;
+			$output[1] =  $this->__($medical->getField("name")) ;
 			$output[2] = $medical->getField("nameShort") ;
 			$output[3] = $medical->getField("color") ;
 			$output[4] = $medical->getField("colorBG") ;
 			$output['level'] = $medical->getField("gibbonAlertLevelID");
-			$output['name'] = trans::__($medical->getField("name")) ;
+			$output['name'] =  $this->__($medical->getField("name")) ;
 			$output['nameShort'] = $medical->getField("nameShort") ;
 			$output['colour'] = $medical->getField("colour") ;
 			$output['colourBG'] = $medical->getField("colourBG") ;
@@ -840,7 +840,7 @@ class helper
 						}
 					}
 					if ($translated==TRUE) {
-						$output.=trans::__($rowYears["nameShort"]) ;
+						$output.= $this->__($rowYears["nameShort"]) ;
 					}
 					else {
 						$output.=$rowYears["nameShort"] ;
@@ -912,10 +912,10 @@ class helper
 		$years = $diff->y;
 		$months = $diff->m ;
 		if ($short) {
-			$output = $years . trans::__("y") . ", " . $months . trans::__("m") ;
+			$output = $years .  $this->__("y") . ", " . $months .  $this->__("m") ;
 		}
 		else {
-			$output = $years . " " . trans::__("years") . ", " . $months . " " . trans::__("months") ;
+			$output = $years . " " .  $this->__("years") . ", " . $months . " " .  $this->__("months") ;
 		}
 		if ($yearsOnly) {
 			$output = $years ;

@@ -101,23 +101,27 @@ class functions extends mFBase
 		return $return ;
 	}
 		
-		
 	/**
-	 * @version	24th August 2016
+	 * get Theme Version
+	 *
+	 * @version	19th September 2016
+	 * @return	string/false
 	 */
 	function getThemeVersion($themeName) {
 		$return = false ;
 		
-		$file=file(GIBBON_ROOT . "src/themes/$themeName/manifest.php") ;
-		foreach($file AS $fileEntry) {
-			if (substr($fileEntry,1,7)=="version") {
-				$temp="" ;
-				$temp=substr($fileEntry,10,-1) ;
-				$temp=substr($temp, 0, strpos($temp, "\"")) ;
-				$return=$temp ;
+		if (file_exists(GIBBON_ROOT . "src/themes/".$themeName.'/manifest.php')) 
+		{
+			$file = file(GIBBON_ROOT . "src/themes/".$themeName.'/manifest.php') ;
+			foreach($file AS $fileEntry) {
+				if (substr($fileEntry,1,7) == "version") {
+					$temp = "" ;
+					$temp = substr($fileEntry,10,-1) ;
+					$temp = substr($temp, 0, strpos($temp, "\"")) ;
+					$return = $temp ;
+				}
 			}
 		}
-		
 		return $return ;
 	}
 	

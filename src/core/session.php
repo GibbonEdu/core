@@ -68,6 +68,7 @@ class session
 			$path = '/';
 //			session_name('Gibbon-v13-Backwards');
 			session_start(array('cookie_path' => $path, 'cache_limiter' => 'private_no_expire'));
+			$this->clear('scripts');
 		}
 		date_default_timezone_set($this->get('timezone', 'UTC'));
 		if ($this->notEmpty('username') && $this->get('security.lastPageTime') < strtotime('now') - $this->get('security.sessionDuration', 1200))
@@ -91,7 +92,7 @@ class session
 	public function get($name, $default = NULL)
 	{
 		if (strpos(',', $name))
-			throw new Exception(trans::__('Session Name cannot contain a comma. '.$name));
+			throw new Exception( $this->__('Session Name cannot contain a comma. '.$name));
 		if (strpos($name, $this->guid) === false) $name = $this->guid.'.'.$name;
 		$steps = explode('.', $name);
 		foreach($steps as $q=>$w)
@@ -123,7 +124,7 @@ class session
 	{
 		$this->base = NULL;
 		if (strpos(',', $name))
-			throw new Exception(trans::__('Session Name cannot contain a comma. '.$name));
+			throw new Exception( $this->__('Session Name cannot contain a comma. '.$name));
 		if (strpos($name, $this->guid) === false) $name = $this->guid.'.'.$name;
 		$steps = explode('.', $name);
 		foreach($steps as $q=>$w)
@@ -401,9 +402,9 @@ class session
 	public function loadLogo()
 	{
 		//Get house logo and set session variable, only on first load after login (for performance)
-		if (intval($this->get("pageLoads")) === 0 AND $this->notEmpty("username") AND $this->notEmpty("gibbonHouseID"))
+		if (intval($this->get("pageLoads")) === 0 && $this->notEmpty("username") && $this->notEmpty("gibbonHouseID"))
 		{
-			$hObj = new house(new view('default.blank'), $this->get("gibbonHouseID"));
+			$hObj = new house(new view(), $this->get("gibbonHouseID"));
 	
 			if ($hObj->getSuccess()) {
 				$this->set("gibbonHouseIDLogo", $hObj->getField("logo")) ;
@@ -434,10 +435,10 @@ class session
 	 * @param	mixed	$value		Value to push to the array
 	 * @return	object	Gibbon\session
 	 */
-	public function push($name, $value)
+	public function push($name, $value, $v)
 	{
 		$x = $this->get($name);
-		if (! is_array($x)) $x = array();
+		$x = ! empty($x) && is_array($x) ? $x : array();
 		$x[] = $value;
 		return $this->set($name, $x);
 	}

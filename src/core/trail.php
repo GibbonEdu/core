@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\core;
 
 use Gibbon\core\trans ;
-use Gibbon\core\module ;
 use Gibbon\core\view ;
 
 /**
@@ -52,11 +51,11 @@ class trail
 	public function __construct($address, view $view)
 	{
 		$this->view = $view;
-		$this->addTrail(trans::__('Home'), array());
-		$module = module::getModuleName($address, $this->view);
+		$this->addTrail( $this->view->__('Home'), array());
+		$module = $this->view->getModuleName($address);
 		if (strpos($address, '/plugins/') === false)
 			if (! empty($module))
-				$this->addTrail($module, array('q'=>'/modules/' . $module . "/" . module::getModuleEntry($address, $this->view)) );
+				$this->addTrail($module, array('q'=>'/modules/' . $module . "/" . $this->view->getModuleEntry($address)) );
 		$this->trailEnd = 'Not Set';
 	}
 
@@ -82,7 +81,7 @@ class trail
 			$link = rtrim($link, '&');
 			$link = rtrim($link, '?');
 		}
-		$this->trailHead[trans::__($prompt)] = $link;
+		$this->trailHead[ $this->view->__($prompt)] = $link;
 	}
 
 	/**

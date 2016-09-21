@@ -46,8 +46,8 @@ class yesno extends select
 	public function __construct($name = null, $value = null, view $view)
 	{
 		parent::__construct($name, $value, $view);
-		$this->addOption( trans::__('Y'), 'Y');
-		$this->addOption( trans::__('N'), 'N');
+		$this->addOption( $this->view->__('Y'), 'Y');
+		$this->addOption( $this->view->__('N'), 'N');
 		$this->element->name = 'yesno';
 	}
 }

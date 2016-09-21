@@ -3,7 +3,7 @@ $finder =  new Gibbon\core\finder($this);
 $params = $finder->getFastFinder();
 
 if ($this->getSecurity()->getRoleCategory($this->session->get("gibbonRoleIDCurrent")) == "Staff") 
-	$search = Gibbon\core\trans::__('%d Student Count', array($params->studentCount));
+	$search = $this->__('%d Student Count', array($params->studentCount));
 else
 	$search = 'Search';
 if ($el->count > 0) { ?>

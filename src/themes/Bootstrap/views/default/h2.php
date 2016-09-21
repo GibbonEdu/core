@@ -1,1 +1,1 @@
-<h2><?php echo Gibbon\core\trans::__($params->title, isset($params->titleDetails) ? $params->titleDetails : array()); ?></h2><!-- default.h2 -->
+<h2><?php echo $this->__($el->title, isset($el->titleDetails) ? $el->titleDetails : array()); ?></h2><!-- default.h2 -->

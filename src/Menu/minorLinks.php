@@ -54,10 +54,11 @@ class minorLinks extends menu
 			$return  = '';
 			if ($this->session->isEmpty("username")) {
 				if ($this->session->get("webLink")!="") {
-					$return.= trans::__("Return to") . " <a style='margin-right: 12px' target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " . trans::__( 'Website') . "</a>" ;
+					$return.=$this->view->__("Return to") . " <a style='margin-right: 12px' target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " .$this->view->__( 'Website') . "</a>" ;
 				}
 			}
 			else {
+				$return .= '<div class="minorLinksContent">';
 				$name = $this->session->get("preferredName") . " " . $this->session->get("surname");
 				if (! $this->session->isEmpty("gibbonRoleIDCurrentCategory")) {
 					if ($this->session->get("gibbonRoleIDCurrentCategory")=="Student") {
@@ -68,15 +69,15 @@ class minorLinks extends menu
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" . trans::__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" . trans::__('Preferences') . "</a>" ;
+				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" . trans::__('Email') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" .$this->view->__('Email') . "</a>" ;
 				}
 				if ($this->session->get("webLink")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " . trans::__('Website') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " .$this->view->__('Website') . "</a>" ;
 				}
 				if ($this->session->get("website")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" . trans::__('My Website') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" .$this->view->__('My Website') . "</a>" ;
 				}
 				
 				$return .= $this->showLikes();
@@ -84,6 +85,8 @@ class minorLinks extends menu
 				$return .= $this->showNotifications();
 				
 				$return .= $this->messageWall();
+
+				$return .= '</div>';
 				
 			}
 
@@ -120,8 +123,8 @@ class minorLinks extends menu
 			$updateReturn = isset($_GET["updateReturn"]) ? $_GET["updateReturn"] : null ;
 
 			$deleteReturn = isset($_GET["deleteReturn"]) ? $_GET["deleteReturn"] : null;
-			
-			$return = '';
+				
+			$return = '<div id="messageLink">';
 			
 			$el = new stdClass;
 			
@@ -218,6 +221,7 @@ class minorLinks extends menu
 		if (@$isHouseLogo) {
 			$return.=" . <img class='minorLinkIconLarge' title='" . $this->session->get("gibbonHouseIDName") . "' style='vertical-align: -75%; margin-left: 4px' src='" . $this->session->get("absoluteURL") . "/" . $this->session->get("gibbonHouseIDLogo") . "'/>" ;
 		}
+		$return .= '</div>';
 		return $return ;
 	}
 
@@ -231,41 +235,27 @@ class minorLinks extends menu
 	public function showLikes()	
 	{
 		$pObj = new person($this->view);
-		$return = '';
+		$return = '<div id="likeLink">';
 		$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
 		//Show likes
 		if (! $this->session->isEmpty("likesCount") && $this->session->get("likesCount") > 0) {
-			$return .= " . <a title='" . trans::__('Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;
+			$return .= " . <a title='" .$this->view->__('Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;
 		} else {
 			$return .= " . " . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_off'). "" ;
 		}
+		$return .= '</div>';
 		return $return ;
 	}
 
 	/**
 	 * show Notifications
 	 * 
-	 * @version	18th September 2016
+	 * @version	20th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
 	public function showNotifications()	
 	{
-		//GET & SHOW NOTIFICATIONS
-		$obj = new notification($this->view);
-		$el = new stdClass;
-		$el->notifications = $obj->findAllBy(array('gibbonPersonID'=>$this->session->get("gibbonPersonID"), 'status'=>'New'));
-		
-
-		//Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
-		$el->interval = 120000 ;
-		if ($this->session->get("gibbonRoleIDCurrentCategory")=="Staff") $el->interval = 10000 ;
-		
-		$action = '/modules/Notifications/index_notification_ajax.php';
-		$tObj = new token($action, null, $this->view);
-		$el->token = $tObj->generateToken($action);
-		$el->action = $tObj->generateAction($action);
-		
-		return $this->view->renderReturn('default.minorLinks.notification', $el);
+		return $this->view->renderReturn('default.minorLinks.notification');
 	}
 }

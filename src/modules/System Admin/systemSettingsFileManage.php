@@ -73,7 +73,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			}
 			elseif ($x['version'] == $y['version'])
 			{
-				$params->status = trans::__('%1$s is the latest version.', array($x['version']));
+				$params->status = $this->__('%1$s is the latest version.', array($x['version']));
 				$params->rowNum = 'success';
 			}
 			$params->name = $name;

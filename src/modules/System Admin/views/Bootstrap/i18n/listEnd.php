@@ -7,11 +7,13 @@
     echo $x->renderReturn(); 
     $x = new \Gibbon\Form\token(GIBBON_ROOT . 'modules/System Admin/i18n_manageProcess.php', null, $this);
     echo $x->renderReturn(); ?>
-</form>
+</form><?php
+$this->addScript("
 <script>
-$('#TheForm input[name="gibboni18nCode"]').change(function(){
+$('#TheForm input[name=\"gibboni18nCode\"]').change(function(){
 
     $('#TheForm').submit();    
 
 });
 </script>
+");

@@ -9,7 +9,7 @@
         <?php echo $el->mode ; ?>
     </td>
     <td>
-        <?php echo Gibbon\core\trans::__($el->caseSensitive) ; ?>
+        <?php echo $this->__($el->caseSensitive) ; ?>
     </td>
     <td>
         <?php echo $el->priority ; ?>

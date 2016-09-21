@@ -31,26 +31,16 @@ use Gibbon\core\trans ;
 use Gibbon\Record\theme ;
 use stdClass ;
 
-if (class_exists('gibbon'))
-{
-	$view = new view('default.blank', array(),  $session, $config, $pdo);
-	$config = $view->config;
-	$session = $view->session;
-	$pdo = $view->pdo;
-}
-else
-{
-	include "src/controller/gibbon.php";
-	$view = new view('default.blank', array(),  $session, $config, $pdo);
-	$config = $view->config;
-	$session = $view->session;
-	$pdo = $view->pdo;
-}
+$view = new view('default.blank', array(), $session, $config, $pdo);
 
 $config->injectView($view);
 
 $version = $config->get('version');
 $caching = $config->get('caching');
+$session->set("module", $view->getModuleName($session->get("address"))) ;
+$session->set("action", $view->getActionName($session->get("address"))) ;
+
+
 
 //Deal with caching
 $refreshCache = false ;
@@ -82,10 +72,7 @@ $session->set("cuttingEdgeCode", $config->getSettingByScope("System", "cuttingEd
 //Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $session->set("sidebarExtra", "") ;
 $session->set("sidebarExtraPosition", "") ;
-if (isset($_GET["sidebar"]))
-	$sidebar = $_GET["sidebar"] ;
-else 
-	$sidebar = false ;
+$sidebar = isset($_GET["sidebar"]) ? $_GET["sidebar"] : false ;
 
 //Check to see if system settings are set from databases
 if ($session->isEmpty("systemSettingsSet")) 
@@ -118,7 +105,7 @@ if ($session->notEmpty("passwordForceReset")) {
 	}
 }
 
-if ($session->isEmpty("address") AND ! $sidebar) {
+if ($session->isEmpty("address") && ! $sidebar) {
 	$dataSidebar=array("action"=>"%" . $session->get("action") . "%", "name"=>$session->get("module")); 
 	$sqlSidebar="SELECT gibbonAction.name 
 		FROM gibbonAction 
@@ -128,7 +115,7 @@ if ($session->isEmpty("address") AND ! $sidebar) {
 			AND gibbonModule.name=:name" ;
 	$resultSidebar = $pdo->executeQuery($dataSidebar, $sqlSidebar);
 	if ($pdo->getQuerySuccess() && $resultSidebar->rowCount( )> 0) 
-		$sidebar = "false" ;
+		$sidebar = false ;
 }
 
 $session->set('sidebar', $sidebar);
@@ -149,10 +136,8 @@ else
 		$params = new stdClass();
 		$params->action = $session->get('absolutePath') . $session->get("address");
 		new view('post.inject', $params, $session, $config, $pdo);
-		trans::writeTranslationMissing();
-		die();
-	}
-    new view('home.html', array(), $session, $config, $pdo);
+	} else
+    	new view('home.html', array(), $session, $config, $pdo);
 }
 trans::writeTranslationMissing();
 die();  // Stop here, or run into old scripts
