@@ -129,9 +129,9 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$el = $form->addElement('select', '');
 	$el->injectRecord($this->config->getSetting('mailerSMTPSecure', 'System'));
-	$el->addOption(trans::__('None'), 'none');
-	$el->addOption(trans::__('SSL'), 'ssl');
-	$el->addOption(trans::__('TLS'), 'tls');
+	$el->addOption($this->__('None'), 'none');
+	$el->addOption($this->__('SSL'), 'ssl');
+	$el->addOption($this->__('TLS'), 'tls');
 	if (isset($mailSetting['SMTPSecure']) && $mailSetting['SMTPSecure']) $el->value = $mailSetting['SMTPSecure'];
 
 	$el = $form->addElement('text', '');

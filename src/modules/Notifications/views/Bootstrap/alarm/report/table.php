@@ -1,13 +1,13 @@
 <table cellspacing='0' style='width: 400px; margin: 0 auto'>
     <tr class='head'>
         <th style='color: #ff3; text-align: left'>
-    		<?php echo Gibbon\trans::__('Name');?><br/>Bootstrap
+    		<?php echo $this->__('Name');?><br/>Bootstrap
 		</th>
         <th style='color: #ff3; text-align: left'>
-            <?php echo Gibbon\trans::__('Confirmed'); ?>
+            <?php echo $this->__('Confirmed'); ?>
         </th>
         <th style='color: #ff3; text-align: left'>
-    		<?php echo Gibbon\trans::__('Actions'); ?>
+    		<?php echo $this->__('Actions'); ?>
         </th>
     </tr>
 
@@ -29,7 +29,7 @@
         	</td>
             <td style='color: #ff3'><?php
         		if ($el->gibbonPersonID == $rowConfirm->getField('gibbonPersonID')) {
-            		echo  Gibbon\trans::__('NA');
+            		echo  $this->__('NA');
 				} else {
             		if (! empty($rowConfirm->getField('gibbonAlarmConfirmID'))) { ?>
                 		<span class="glyphicons glyphicons-check"></span><?php

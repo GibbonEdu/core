@@ -4,7 +4,7 @@ $this->addScript("
 	$(document).ready(function() {
 		$('#finderID')
 			.tokenInput(".$params->list.", {
-				hintText: '".Gibbon\core\trans::__('Start typing a name...')."',
+				hintText: '".$this->__('Start typing a name...')."',
 				tokenLimit: 1,
 				preventDuplicates: true,
 				allowCreation: false,

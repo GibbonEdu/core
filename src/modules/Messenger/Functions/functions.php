@@ -391,7 +391,7 @@ class functions extends mFBase
 			
 			if ($resultPosts->rowCount()<1) {
 				$return.= "<div class='warning'>" ;
-					$return.= Gibbon\trans::__( "There are no records to display.") ;
+					$return.= $this->__( "There are no records to display.") ;
 				$return.= "</div>" ;
 			}
 			else {
@@ -418,10 +418,10 @@ class functions extends mFBase
 				$return.= "<table cellspacing='0' style='margin-top: 10px'>" ;
 					$return.= "<tr>" ;
 						$return.= "<th style='text-align: center'>" ;
-							$return.= Gibbon\trans::__( "Sharing") ;
+							$return.= $this->__( "Sharing") ;
 						$return.= "</th>" ;
 						$return.= "<th>" ;
-							$return.= Gibbon\trans::__( "Message") ;
+							$return.= $this->__( "Message") ;
 						$return.= "</th>" ;
 					$return.= "</tr>" ;
 					$rowCount=0;
@@ -443,10 +443,10 @@ class functions extends mFBase
 								$likesGiven=countLikesByContextAndGiver($connection2, "Messenger", "gibbonMessengerID", $output[$i]["gibbonMessengerID"], $this->session->get("gibbonPersonID"), $output[$i]["gibbonPersonID"]) ;
 								if ($output[$i]["gibbonPersonID"]==$this->session->get("gibbonPersonID")) {
 									if ($likesGiven==1) {
-										$return.=$likesGiven . "x " . Gibbon\trans::__( 'Like') . "<br/><br/>" ;
+										$return.=$likesGiven . "x " . $this->__( 'Like') . "<br/><br/>" ;
 									}
 									else {
-										$return.=$likesGiven . "x " . Gibbon\trans::__( 'Likes') . "<br/><br/>" ;
+										$return.=$likesGiven . "x " . $this->__( 'Likes') . "<br/><br/>" ;
 									}
 								}
 								else {

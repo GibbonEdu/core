@@ -1,5 +1,5 @@
 <?php		
-		$this->h4("Orphaned Modules") ; 
+		$this->h3("Orphaned Modules") ; 
 		$this->paragraph("These modules are installed in the database, but are missing from within the file system.") ; ?>
 		</p>
 		
@@ -7,10 +7,10 @@
         <thead>
 			<tr class='head'>
 				<th>
-					<?php echo Gibbon\core\trans::__("Name") ; ?>
+					<?php echo $this->__("Name") ; ?>
 				</th>
 				<th style='width: 150px'>
-					<?php echo Gibbon\core\trans::__("Action") ; ?>
+					<?php echo $this->__("Action") ; ?>
 				</th>
 			</tr>
         </thead>

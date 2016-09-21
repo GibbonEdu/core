@@ -15,13 +15,13 @@ use Gibbon\core\trans ;
                         <td style='vertical-align: top; padding: 0px' colspan=2>
                             <h2 style='padding-bottom: 0px'>
 								<?php 
-								echo trans::__("Fast Finder: Actions");
+								echo $this->__("Fast Finder: Actions");
 								if ($params->classIsAccessible)
-									echo ", " . trans::__("Classes") ;
+									echo ", " . $this->__("Classes") ;
 								if ($params->studentIsAccessible)
-									", " . trans::__("Students") ;
+									", " . $this->__("Students") ;
 								if ($params->staffIsAccessible)
-									", " . trans::__("Staff") ; 
+									", " . $this->__("Staff") ; 
 								?>
 								<br/>
                     <?php
@@ -43,14 +43,14 @@ use Gibbon\core\trans ;
 							 "); ?>
                         </td>
                         <td class='right' style='vertical-align: top; border: none'>
-                            <input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='<?php echo trans::__( 'Go') ?>'>
+                            <input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='<?php echo $this->__( 'Go') ?>'>
                         </td>
                     </tr>
                     <?php if ($this->getSecurity()->getRoleCategory($this->session->get("gibbonRoleIDCurrent"))=="Staff") { ?>
                         <tr>
                             <td style='vertical-align: top' colspan='2'>
                                 <div style="padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;">
-                                    <?php echo trans::__('Total Student Enrolment: %d', array($params->studentCount)) ; ?>
+                                    <?php echo $this->__('Total Student Enrolment: %d', array($params->studentCount)) ; ?>
                                 </div>
                             </td>
                         </tr>

@@ -92,7 +92,7 @@ class session
 	public function get($name, $default = NULL)
 	{
 		if (strpos(',', $name))
-			throw new Exception(trans::__('Session Name cannot contain a comma. '.$name));
+			throw new Exception( $this->__('Session Name cannot contain a comma. '.$name));
 		if (strpos($name, $this->guid) === false) $name = $this->guid.'.'.$name;
 		$steps = explode('.', $name);
 		foreach($steps as $q=>$w)
@@ -124,7 +124,7 @@ class session
 	{
 		$this->base = NULL;
 		if (strpos(',', $name))
-			throw new Exception(trans::__('Session Name cannot contain a comma. '.$name));
+			throw new Exception( $this->__('Session Name cannot contain a comma. '.$name));
 		if (strpos($name, $this->guid) === false) $name = $this->guid.'.'.$name;
 		$steps = explode('.', $name);
 		foreach($steps as $q=>$w)
@@ -402,7 +402,7 @@ class session
 	public function loadLogo()
 	{
 		//Get house logo and set session variable, only on first load after login (for performance)
-		if (intval($this->get("pageLoads")) === 0 AND $this->notEmpty("username") AND $this->notEmpty("gibbonHouseID"))
+		if (intval($this->get("pageLoads")) === 0 && $this->notEmpty("username") && $this->notEmpty("gibbonHouseID"))
 		{
 			$hObj = new house(new view(), $this->get("gibbonHouseID"));
 	

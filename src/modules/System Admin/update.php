@@ -40,7 +40,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$this->render('default.flash');
 
 	if ($this->session->notEmpty('systemUpdateError')) 
-		$this->displayMessage(trans::__("The following SQL statements caused errors:") . " " . $this->session->get("systemUpdateError"));
+		$this->displayMessage($this->__("The following SQL statements caused errors:") . " " . $this->session->get("systemUpdateError"));
 	
 	$this->session->clear('systemUpdateError') ;
 	

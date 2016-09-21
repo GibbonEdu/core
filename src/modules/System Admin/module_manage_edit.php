@@ -50,13 +50,13 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$form = $this->getForm(null, array('q' => "/modules/System Admin/module_manage_editProcess.php", "gibbonModuleID" => $moduleID), true);
 			
 			
-			$el = $form->addElement('text', 'name', trans::__($row["name"]));
+			$el = $form->addElement('text', 'name', $this->__($row["name"]));
 			$el->validateOff();
 			$el->nameDisplay = 'Name';
 			$el->description = 'This value cannot be changed.' ;
 			$el->setReadOnly();
 
-			$el = $form->addElement('text', 'description', trans::__( $row["description"]));
+			$el = $form->addElement('text', 'description', $this->__( $row["description"]));
 			$el->nameDisplay = 'Description';
 			$el->description = 'This value cannot be changed.' ;
 			$el->setReadOnly();

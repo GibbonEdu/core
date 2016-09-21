@@ -54,7 +54,7 @@ class minorLinks extends menu
 			$return  = '';
 			if ($this->session->isEmpty("username")) {
 				if ($this->session->get("webLink")!="") {
-					$return.= trans::__("Return to") . " <a style='margin-right: 12px' target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " . trans::__( 'Website') . "</a>" ;
+					$return.=$this->view->__("Return to") . " <a style='margin-right: 12px' target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " .$this->view->__( 'Website') . "</a>" ;
 				}
 			}
 			else {
@@ -69,15 +69,15 @@ class minorLinks extends menu
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" . trans::__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" . trans::__('Preferences') . "</a>" ;
+				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" . trans::__('Email') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" .$this->view->__('Email') . "</a>" ;
 				}
 				if ($this->session->get("webLink")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " . trans::__('Website') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("webLink") . "'>" . $this->session->get("organisationNameShort") . " " .$this->view->__('Website') . "</a>" ;
 				}
 				if ($this->session->get("website")!="") {
-					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" . trans::__('My Website') . "</a>" ;
+					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" .$this->view->__('My Website') . "</a>" ;
 				}
 				
 				$return .= $this->showLikes();
@@ -239,7 +239,7 @@ class minorLinks extends menu
 		$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
 		//Show likes
 		if (! $this->session->isEmpty("likesCount") && $this->session->get("likesCount") > 0) {
-			$return .= " . <a title='" . trans::__('Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;
+			$return .= " . <a title='" .$this->view->__('Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;
 		} else {
 			$return .= " . " . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_off'). "" ;
 		}

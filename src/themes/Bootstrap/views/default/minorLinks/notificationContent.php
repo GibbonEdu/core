@@ -21,7 +21,7 @@ if ($this->session->isEmpty('gibbonPersonID')) {
 	$obj = new Gibbon\Record\notification($this);
 	$notifications = $obj->getCurrentUserNotifications();
 	if (count($notifications) > 0) { ?>
- . <a title="<?php echo trans::__('Notifications'); ?>" href="<?php echo GIBBON_URL; ?>index.php?q=/modules/Notifications/notifications.php"><?php echo count($notifications); ?> x <?php echo $this->renderReturn('default.minorLinks.notification_on'); ?></a><?php
+ . <a title="<?php echo $this->__('Notifications'); ?>" href="<?php echo GIBBON_URL; ?>index.php?q=/modules/Notifications/notifications.php"><?php echo count($notifications); ?> x <?php echo $this->renderReturn('default.minorLinks.notification_on'); ?></a><?php
 	}
 	else { ?>
  . 0 x <?php echo $this->renderReturn('default.minorLinks.notification_off');

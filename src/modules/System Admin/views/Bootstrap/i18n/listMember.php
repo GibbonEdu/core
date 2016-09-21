@@ -3,13 +3,13 @@ use Gibbon\core\trans ;
 ?>
         <tr <?php echo $el['active'] == 'N' ? 'class="warning"': '';?>>
             <td>
-            <strong><?php echo trans::__($el['name']); ?></strong>
+            <strong><?php echo $this->__($el['name']); ?></strong>
             </td>
             <td>
             <?php echo $el['code']; ?>
             </td>
             <td>
-            <?php echo trans::__($el['active']); ?>
+            <?php echo $this->__($el['active']); ?>
             </td>
             <td>
             <?php echo $el['version']; ?>

@@ -36,7 +36,7 @@ if ($this->session->notEmpty("username")) {
 <script type='text/javascript'>
 	$(document).ready(function(){
 		$.sessionTimeout({
-			message: '".Gibbon\core\trans::__("Your session is about to expire: you will be logged out shortly.")."',
+			message: '".$this->__("Your session is about to expire: you will be logged out shortly.")."',
 			keepAliveUrl: 'index.php?q=/modules/Security/keepAlive.php&divert=true' ,
 			redirUrl: 'index.php?q=/modules/Security/logout.php&timeout=true&divert=true', 
 			logoutUrl: 'index.php?q=/modules/Security/logout.php&timeout=true&divert=true' , 

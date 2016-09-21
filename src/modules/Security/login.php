@@ -65,12 +65,12 @@ else {
 			$pObj->writeRecord();
 		
 			if ($person->failCount == 3) {
-				$notificationText=sprintf(trans::__('Someone failed to login to account "%1$s" 3 times in a row.'), $_POST['username']) ;
+				$notificationText=sprintf($this->__('Someone failed to login to account "%1$s" 3 times in a row.'), $_POST['username']) ;
 				Gibbon\helper::setNotification($this->session->get("organisationAdministrator"), $notificationText, "System", "/index.php?q=/modules/User Admin/user_manage.php&search=".$_POST['username']) ;
 			}
 		
 			logger::__(array('Too many failed logins: please %1$sreset password%2$s.', array("<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/passwordReset.php'>", "</a>")), 'Warning', 'Security') ;
-			$this->insertMessage(trans::__('Too many failed logins: please %1$sreset password%2$s.', array("<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/passwordReset.php'>", "</a>")), 'error', false, 'login.flash');
+			$this->insertMessage($this->__('Too many failed logins: please %1$sreset password%2$s.', array("<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/passwordReset.php'>", "</a>")), 'error', false, 'login.flash');
 			$this->redirect($URL);
 		}
 		else {
@@ -108,7 +108,7 @@ else {
 							//Check number of rows returned.
 							//If it is not 1, show error
 							if (! $syObj->getSuccess()) {
-								throw new Gibbon\Exception( trans::__("Configuration Error: there is a problem accessing the current Academic Year from the database.")) ;
+								throw new Gibbon\Exception( $this->__("Configuration Error: there is a problem accessing the current Academic Year from the database.")) ;
 							}
 							//Else get year details
 							else {

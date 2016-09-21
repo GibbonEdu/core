@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?php echo $this->session->get("absoluteURL")?>/index.php"><?php echo Gibbon\core\trans::__('Home'); ?></a>
+          <a class="navbar-brand" href="<?php echo $this->session->get("absoluteURL")?>/index.php"><?php echo $this->__('Home'); ?></a>
         </div>
     
         <!-- Collect the nav links, forms, and other content for toggling -->

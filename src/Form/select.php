@@ -110,7 +110,7 @@ class select extends element
 		$this->validate->pleaseSelect = true;
 		$this->pleaseSelect = true;
 		if (empty($this->options))
-			$this->addOption(trans::__('Please select...'), 'Please select...');
+			$this->addOption($this->view->__('Please select...'), 'Please select...');
 	}
 	
 	/**
@@ -135,6 +135,6 @@ class select extends element
 	 */
 	public function addOptGroup($groupName)
 	{
-		return $this->addOption('optgroup', trans::__($groupName));
+		return $this->addOption('optgroup', $this->view->__($groupName));
 	}
 }

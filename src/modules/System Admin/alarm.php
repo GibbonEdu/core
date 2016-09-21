@@ -48,11 +48,11 @@ if ($this->getSecurity()->isActionAccessible()) {
 	
 	$el = $form->addElement('select', null, null);
 	$el->injectRecord($this->config->getSetting('alarm', 'System')) ;
-	$el->addOption(trans::__('None'), 'None');
-	$el->addOption(trans::__('General'), 'General');
-	$el->addOption(trans::__('Lockdown'), 'Lockdown');
+	$el->addOption($this->__('None'), 'None');
+	$el->addOption($this->__('General'), 'General');
+	$el->addOption($this->__('Lockdown'), 'Lockdown');
 	if ($el->value === 'Custom')
-		$el->addOption(trans::__('Custom'), 'Custom');
+		$el->addOption($this->__('Custom'), 'Custom');
 
 	$form->addElement("hidden", "alarmCurrent", $el->value);
 

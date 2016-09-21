@@ -87,10 +87,10 @@ if ($this->getSecurity()->isActionAccessible()) {
 							$name="" ;
 							$moduleTable = trim($moduleTable) ;
 							if (substr($moduleTable, 0, 12)=="CREATE TABLE") {
-								$type = trans::__("Table") ;
+								$type = $this->__("Table") ;
 							}
 							else if (substr($moduleTable, 0, 11)=="CREATE VIEW") {
-								$type = trans::__("View") ;
+								$type = $this->__("View") ;
 							}
 							if (! empty($type)) {
 								$tokens = preg_split('/ +/', $moduleTable);
