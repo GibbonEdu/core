@@ -5,23 +5,23 @@ use Gibbon\core\trans ;
     <thead>
         <tr class='head'>
             <th>
-                <?php echo trans::__( "Original String"); ?>
+                <?php echo $this->__( "Original String"); ?>
             </th>
             <th>
-                <?php echo trans::__( "Replacement String") ; ?>
+                <?php echo $this->__( "Replacement String") ; ?>
             </th>
             <th>
-                <?php echo trans::__( "Mode") ; ?>
+                <?php echo $this->__( "Mode") ; ?>
             </th>
             <th>
-                <?php echo trans::__( "Case Sensitive") ; ?>
+                <?php echo $this->__( "Case Sensitive") ; ?>
             </th>
             <th>
-                <?php echo trans::__( "Priority") ; ?>
+                <?php echo $this->__( "Priority") ; ?>
             </th>
             <?php if (isset($params->action) && (bool) $params->action) { ?>
             <th>
-                <?php echo trans::__( "Actions") ; ?>
+                <?php echo $this->__( "Actions") ; ?>
             </th>
             <?php } ?>
         </tr>

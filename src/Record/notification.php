@@ -159,4 +159,32 @@ class notification extends record
 			}
 		}
 	}
+	
+	/**
+	 * get Notifications for Current User
+	 *
+	 * @version	20th September 2016
+	 * @since	20th September 2016
+	 * @params	string		$status
+	 * @return	array		Gibbon\Record\notification
+	 */
+	public function getCurrentUserNotifications($status = 'New')
+	{
+		$data = array('personID' => $this->session->get('gibbonPersonID'), 'personID2' => $this->session->get('gibbonPersonID'), 'status' => $status, 'status1' => $status);
+		$sql = "(SELECT `gibbonNotification`.*, `gibbonModule`.`name` AS `source` 
+			FROM `gibbonNotification` 
+				JOIN `gibbonModule` ON `gibbonNotification`.`gibbonModuleID` = `gibbonModule`.`gibbonModuleID` 
+			WHERE `gibbonPersonID` = :personID 
+				AND `status` = :status)
+			UNION
+				(SELECT `gibbonNotification`.*, 'System' AS `source` 
+					FROM `gibbonNotification` 
+					WHERE `gibbonModuleID` IS NULL 
+						AND `gibbonPersonID` = :personID2 
+						AND `status` = :status1)
+			ORDER BY `timestamp` DESC, `source`, `text`";
+		$notice = $this->findAll($sql, $data, '_');
+		if ($this->getSuccess()) return $notice ;
+		return array();
+	}
 }

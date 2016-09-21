@@ -44,7 +44,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	//Get list of modules in /modules directory
 	$themesFS = glob(GIBBON_ROOT .'src/themes/*' , GLOB_ONLYDIR);
 	
-	$this->displayMessage(trans::__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.', array("<strong><u>" . GIBBON_ROOT . "src/themes/</u></strong>")), 'info');
+	$this->displayMessage($this->__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.', array("<strong><u>" . GIBBON_ROOT . "src/themes/</u></strong>")), 'info');
 	
 	if (count($themesFS)<1) {
 		$this->displayMessage("There are no records to display.") ;

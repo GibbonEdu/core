@@ -71,8 +71,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 			
 			$el = $form->addElement('select', 'mode', $sObj->getField('mode'));
 			$el->nameDisplay = 'Mode';
-			$el->addOption(trans::__('Whole'), 'Whole');
-			$el->addOption(trans::__('Partial'), 'Partial');
+			$el->addOption($this->__('Whole'), 'Whole');
+			$el->addOption($this->__('Partial'), 'Partial');
 			
 			$el = $form->addElement('yesno', 'caseSensitive', $sObj->getField('caseSensitive'));
 			$el->nameDisplay = 'Case Sensitive';

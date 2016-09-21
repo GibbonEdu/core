@@ -10,7 +10,7 @@ $this->render('default.header');
             if ($this->session->notEmpty("address")) {
                 if (! strstr($this->session->get("address"),"..")) {
                     if ( Gibbon\core\module::getModuleName($this->session->get("address"))!="" ) {
-                        echo " - " . Gibbon\core\trans::__( Gibbon\core\module::getModuleName($this->session->get("address")) ) ;
+                        echo " - " . $this->__( Gibbon\core\module::getModuleName($this->session->get("address")) ) ;
                     }
                 }
             }

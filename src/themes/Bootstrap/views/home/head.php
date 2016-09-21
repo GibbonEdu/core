@@ -1,5 +1,4 @@
 <?php
-use Gibbon\core\module ;
 use Gibbon\core\trans ;
 $this->render('default.header');
 ?>
@@ -8,11 +7,11 @@ $this->render('default.header');
     <head>
         <title>
             <?php 
-            print $this->session->get("organisationNameShort") . " - " . $this->session->get("systemName") ;
+            echo $this->session->get("organisationNameShort") . " - " . $this->session->get("systemName") ;
             if ($this->session->notEmpty("address")) {
                 if (strstr($this->session->get("address"),"..")==FALSE) {
-                    if ( module::getModuleName($this->session->get("address"))!="" ) {
-                        print " - " . trans::__( module::getModuleName($this->session->get("address")) ) ;
+                    if ($this->getModuleName($this->session->get("address"))!="" ) {
+                        echo " - " . $this->__($this->getModuleName($this->session->get("address")) ) ;
                     }
                 }
             }
@@ -22,8 +21,10 @@ $this->render('default.header');
         <meta name="author" content="Ross Parker, International College Hong Kong"/>
         <meta name="robots" content="none"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-		<?php $this->render('home.scripts'); ?>
-        <?php $this->render('home.style'); ?>
+		<?php 
+		$this->render('home.scripts'); 
+        $this->render('home.style'); 
+		?>
         
         <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 

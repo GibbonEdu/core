@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\System_Admin ;
 
 use Gibbon\core\view ;
-use Gibbon\core\helper ;
-use Gibbon\core\trans ;
 use Symfony\Component\Yaml\Yaml ;
 use Module\System_Admin\Functions\functions ;
 use Gibbon\Record\person ;
@@ -59,9 +57,9 @@ if ($this->getSecurity()->isActionAccessible()) {
 	
 	//Check for new version of Gibbon
 	echo $systemAdmin->getCurrentVersion() ;
-	
+
 	$this->render('default.flash');
-	
+
 	$settingObj = new setting($this);
 	
 	$sysSettings = $settingObj->findAll("SELECT * FROM `gibbonSetting` WHERE `scope` = 'System' ", array(), '', 'name');
@@ -94,9 +92,9 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['installType']->returnRecord());
 	if ($sysSettings['cuttingEdgeCode']->returnRecord()->value == 'N')
-		$el->addOption(trans::__('Production'), 'Production');
-	$el->addOption(trans::__('Testing'), 'Testing');
-	$el->addOption(trans::__('Development'), 'Development');
+		$el->addOption($this->__('Production'), 'Production');
+	$el->addOption($this->__('Testing'), 'Testing');
+	$el->addOption($this->__('Development'), 'Development');
 
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['cuttingEdgeCode']->returnRecord());
@@ -165,8 +163,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->addOption($person->formatName(true, true), $person->getID());
 	}
 
-	$form->addElement('submitBtn', null, 'Submit All');
-
 	$form->addElement('h3', null, 'Security Settings');
 	$form->startWell();
 	$form->addElement('h4', null, 'Password Policy');
@@ -219,29 +215,28 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->maxlength = 36;
 	$el->validateOff();
 
-	$form->addElement('submitBtn', null, 'Submit All');
 	$form->addElement('h3', null, 'Localisation');
 	
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['country']->returnRecord());
-	$el->addOption(trans::__('Select a Country!'), '' );
+	$el->addOption($this->__('Select a Country!'), '' );
 	$countries = Yaml::parse(file_get_contents(GIBBON_CONFIG . 'country.yml'));
 	foreach($countries['countries'] as $name=>$value) 
-		$el->addOption(trans::__( $name ), $name );
+		$el->addOption($this->__( $name ), $name );
 	$el->setRequired();
 
 	if (isset($sysSettings['firstDayOfTheWeek'])) {
 		$el = $form->addElement('select', null);
 		$el->injectRecord($sysSettings['firstDayOfTheWeek']->returnRecord());
-		$el->addOption( trans::__('Monday'), 'Monday' );
-		$el->addOption( trans::__('Sunday'), 'Sunday' );
+		$el->addOption( $this->__('Monday'), 'Monday' );
+		$el->addOption( $this->__('Sunday'), 'Sunday' );
 	}
 
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['timezone']->returnRecord());
 	$el->setRequired() ;
 	if (empty($el->value)) $el->value = date_default_timezone_get();
-	$el->addOption(trans::__( 'Please select...' ), '');
+	$el->addOption($this->__( 'Please select...' ), '');
 	$area = '';
 	foreach(timezone_identifiers_list() as $timezone)
 	{
@@ -261,12 +256,12 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['currency']->returnRecord());
 	$el->setRequired() ;
 	$currencies = $this->config->getCurrencyList();
-	$el->addOption(trans::__('Please select...' ), '');
+	$el->addOption($this->__('Please select...' ), '');
 	foreach($currencies as $value=>$display)
 	{
 		if (is_array($display))
 		{
-			$el->addOption('optgroup', '--'.trans::__($value).'--');
+			$el->addOption('optgroup', '--'.$this->__($value).'--');
 			foreach($display as $q=>$w)
 				$el->addOption($w, $q);
 		}
@@ -294,21 +289,18 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['analytics']->returnRecord());
 	$el->validateOff() ;
 
-	if (isset($sysSettings['primaryAssessmentScale'])) {
-		$el = $form->addElement('select', null);
-		$el->injectRecord($sysSettings['primaryAssessmentScale']->returnRecord());
-		$el->setRequired();
-		$el->addOption( trans::__( 'Please select...' ), '' );
-		$sql = "SELECT * 
-			FROM gibbonScale 
-			WHERE active='Y' 
-			ORDER BY name" ;
-		$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
-		while ($row = $resultSelect->fetchObject()) 
-			$el->addOption($this->htmlPrep(trans::__($row->name ) ), $row->gibbonScaleID );
-	}
+	$el = $form->addElement('select', null);
+	$el->injectRecord($sysSettings['defaultAssessmentScale']->returnRecord());
+	$el->setPleaseSelect();
+	$sql = "SELECT * 
+		FROM gibbonScale 
+		WHERE active='Y' 
+		ORDER BY name" ;
+	$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
+	while ($row = $resultSelect->fetchObject()) 
+		$el->addOption($this->htmlPrep($this->__($row->name ) ), $row->gibbonScaleID );
 
-	$form->addElement('submitBtn', null, 'Submit All');
+	$form->addElement('submitBtn', null);
 
 	$form->render();
 }

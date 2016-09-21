@@ -4,8 +4,15 @@
     	<?php $this->render('form.style.elements', $el); ?>	
         </div>
     </div>
-</form><script>
-$(document).ready(function() {
-    $('#<?php echo isset($el->id) ? $el->id : "TheForm" ;?>').formValidation();
-});
-</script><!-- bootstrap.form.style.standard -->
+
+</form><!-- bootstrap.form.style.standard --><?php
+$id = ! empty($el->get('id')) ? ' id="'.$el->get('id').'"' : ' id="TheForm"' ; ;
+$this->addScript("
+<script>
+    $(document).ready(function() {
+        $('#".$id."').formValidation();
+    });
+</script>
+");
+
+

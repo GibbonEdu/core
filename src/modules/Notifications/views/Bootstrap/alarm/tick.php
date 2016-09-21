@@ -3,7 +3,7 @@
 </td>
 <td style='color: #ff3'> <?php
 	if ($el->getField('sounder') == $el->getField('confirmer')) 
-		echo Gibbon\trans::__('NA');
+		echo $this->__('NA');
 	else {
 		if (! empty($el->getField('gibbonAlarmConfirmID'))) { ?>
 			<span class="glyphicons glyphicons-check"></span>  <?php

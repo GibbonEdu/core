@@ -29,7 +29,13 @@ if ( ! defined( 'GIBBON_ROOT' ) )
 	$path = pathinfo($_SERVER['PHP_SELF']);
 	$dr = dirname(dirname(dirname(__FILE__)));
 	$dr = rtrim( str_replace("\\", '/', $dr), '/' );
-	define("GIBBON_ROOT", $dr . '/'); 
+/**
+ * @const	Calculated Root path of the Site.
+ */
+ 	define("GIBBON_ROOT", $dr . '/'); 
+/**
+ * @const	Calculated Config path of the Site.
+ */
 	define ("GIBBON_CONFIG", GIBBON_ROOT . 'config/local/');
 
 	$pageURL = 'http';
@@ -40,9 +46,15 @@ if ( ! defined( 'GIBBON_ROOT' ) )
 	else
 		$pageURL .= $_SERVER["SERVER_NAME"].(! empty($path['dirname']) ? $path['dirname'] : '');
 	$pageURL = str_replace(array('lib/google/'), '', rtrim($pageURL, '/ ') . '/');
+/**
+ * @const	Calculated Root URL of the Site.
+ */
 	define('GIBBON_URL', $pageURL);
 }
 
+/**
+ * @const	Use only New Scripts.
+ */
 if (! defined('GIBBON_NEW')) define('GIBBON_NEW', true);
 
 require GIBBON_ROOT . 'vendor/autoload.php';
@@ -55,18 +67,16 @@ use Gibbon\core\post ;
 use Gibbon\core\sqlConnection ;
 use Gibbon\Record\theme ;
 
-//$whoops = new \Whoops\Run ;
-//$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-//$whoops->register();
 
 $config = new config();
 $session = new session();
+$session->set('rustart',getrusage());
 $session->set('absoluteURL', rtrim(GIBBON_URL, '/'));
 $session->set('absolutePath', rtrim(GIBBON_ROOT, '/'));
 $session->set('SQLConnection', 0);
 $session->clear('pageAnchors');
 
-//testing option Only  Change the default theme.
+//testing option Only Change the default theme.
 if (isset($_GET['template']) && $session->get('installType') === 'Development') 
 {
 	$tObj = new theme(new view('default.blank'));
@@ -84,8 +94,7 @@ else {
 $session->clear("module") ;
 $session->clear("action") ;
 $session->clear("install") ;
-$session->set("module", module::getModuleName($session->get("address"))) ;
-$session->set("action", module::getActionName($session->get("address"))) ;
+
 
 if ($config->isInstall()) {
 	$session->set('install', true);

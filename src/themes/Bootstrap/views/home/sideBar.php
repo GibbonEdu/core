@@ -109,16 +109,16 @@ if ($this->session->get('sidebar') !== 'false')
 										$postSideBar .= "</div>" ;
 									$postSideBar .= "</td>" ;
 								$postSideBar .= "</tr>" ;
-								$postSideBar .= "
+								$this->addScript( "
 									<script type=\"text/javascript\">
 										$(document).ready(function(){
 											$(\"#messageWall$pos\").hide();
 										});
-									</script>" ;
+									</script>" );
 							}
 						$postSideBar .= "</table>" ;
 						$order = substr($order, 0, strlen($order)-2);
-						$postSideBar .= "
+						$this->addScript(  "
 							<script type=\"text/javascript\">
 								$(document).ready(function(){
 									var order=[". $order . "];
@@ -161,10 +161,10 @@ if ($this->session->get('sidebar') !== 'false')
 										}
 									}, 8000);
 								});
-							</script>" ;
+							</script>" );
 					}
 					$postSideBar .= "<p style='padding-top: 5px; text-align: right'>" ;
-					$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Messenger/messageWall_view.php'>" . trans::__('View Message Wall') . "</a>" ;
+					$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Messenger/messageWall_view.php'>" . $this->__('View Message Wall') . "</a>" ;
 					$postSideBar .= "</p>" ;
 
 				}
@@ -257,7 +257,7 @@ if ($this->session->get('sidebar') !== 'false')
 			}
 
 			$postSideBar .= "<p style='padding-top: 0px; text-align: right'>" ;
-			$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Planner/planner_deadlines.php'>" . trans::__('View Homework') . "</a>" ;
+			$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Planner/planner_deadlines.php'>" . $this->__('View Homework') . "</a>" ;
 			$postSideBar .= "</p>" ;
 		}
 	}
@@ -294,7 +294,7 @@ if ($this->session->get('sidebar') !== 'false')
 		$postSideBar .= $this->h2("Resource Tags", array(), true) ;
 		$postSideBar .= $resource->getTagCloud(20) ;
 		$postSideBar .= "<p style='margin-bototm: 20px; text-align: right'>" ;
-		$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Resources/resources_view.php'>" . trans::__('View Resources') . "</a>" ;
+		$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Resources/resources_view.php'>" . $this->__('View Resources') . "</a>" ;
 		$postSideBar .= "</p>" ;
 	}
 
@@ -313,30 +313,30 @@ if ($this->session->get('sidebar') !== 'false')
 			$class="error" ;
 			if (!($switchReturn=="")) {
 				if ($switchReturn=="fail0") {
-					$switchReturnMessage=trans::__("Role ID not specified.") ;
+					$switchReturnMessage=$this->__("Role ID not specified.") ;
 				}
 				else if ($switchReturn=="fail1") {
-					$switchReturnMessage=trans::__("You do not have access to the specified role.") ;
+					$switchReturnMessage=$this->__("You do not have access to the specified role.") ;
 				}
 				else if ($switchReturn=="success0") {
-					$switchReturnMessage=trans::__("Role switched successfully.") ;
+					$switchReturnMessage=$this->__("Role switched successfully.") ;
 					$class="success" ;
 				}
 				$postSideBar .= $this->returnMessage($switchReturnMessage, $class);
 			}
 
 			$postSideBar .= "<p>" ;
-				$postSideBar .= trans::__("You have multiple roles within the system. Use the list below to switch role:") ;
+				$postSideBar .= $this->__("You have multiple roles within the system. Use the list below to switch role:") ;
 			$postSideBar .= "</p>" ;
 
 			$postSideBar .= "<ul>" ;
 			$roleIDAll = $this->session->get("gibbonRoleIDAll");
 			for ($i=0; $i<count($roleIDAll); $i++) {
 				if ($roleIDAll[$i][0]==$this->session->get("gibbonRoleIDCurrent")) {
-					$postSideBar .= "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $roleIDAll[$i][0] . "'>" . trans::__( $roleIDAll[$i][1]) . "</a> <i>" . trans::__('(Active)') . "</i></li>" ;
+					$postSideBar .= "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $roleIDAll[$i][0] . "'>" . $this->__( $roleIDAll[$i][1]) . "</a> <i>" . $this->__('(Active)') . "</i></li>" ;
 				}
 				else {
-					$postSideBar .= "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $roleIDAll[$i][0] . "'>" . trans::__( $roleIDAll[$i][1]) . "</a></li>" ;
+					$postSideBar .= "<li><a href='roleSwitcherProcess.php?gibbonRoleID=" . $roleIDAll[$i][0] . "'>" . $this->__( $roleIDAll[$i][1]) . "</a></li>" ;
 				}
 			}
 			$postSideBar .= "</ul>" ;

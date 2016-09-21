@@ -26,6 +26,7 @@ namespace Gibbon\Record ;
  * @version	6th September 2016
  * @since	5th May 2016
  * @author	Craig Rayner
+ * @todo	Add sort ability to Category Field (but not enum.)
  * @package		Gibbon
  * @subpackage	Record
  */

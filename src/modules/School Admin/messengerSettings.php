@@ -64,8 +64,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('select', null);
 	$el->injectRecord($this->config->getSetting('messageBubbleWidthType', 'Messenger'));
 	$el->value = $this->htmlPrep($el->value);
-	$el->addOption(trans::__('Regular'), 'Regular');
-	$el->addOption(trans::__('Wide'), 'Wide');
+	$el->addOption($this->__('Regular'), 'Regular');
+	$el->addOption($this->__('Wide'), 'Wide');
 
 	$el = $form->addElement('rgba', null);
 	$el->injectRecord($this->config->getSetting('messageBubbleBGColour', 'Messenger'));

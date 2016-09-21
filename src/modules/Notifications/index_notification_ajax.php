@@ -19,56 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Module\Notifications ;
 
-use Gibbon\core\view ;
-use Gibbon\core\trans;
+use Gibbon\core\post ;
+use stdClass;
 use Gibbon\Record\notification ;
 
-if (! $this instanceof view) die();
+if (! $this instanceof post) die();
 
-$output = '';
-
-$themeName = $this->session->notEmpty('theme.Name') ? $this->session->get('theme.Name') : 'Default';
-
-$this->session->set('module', 'Notifications');
-
-if ($this->session->isEmpty('gibbonPersonID')) {
-    $output .= ' . 0 x ' . $this->renderReturn('default.minorLinks.notification_off') ;
-} else {
-    //CHECK FOR SYSTEM ALARM
-    if ($this->session->notEmpty('gibbonRoleIDCurrentCategory')) {
-        if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
-            $alarm = $this->config->getSettingByScope('System', 'alarm');
-            if ($alarm == 'General' || $alarm == 'Lockdown' || $alarm == 'Custom') {
-                $el = new \stdClass();
-				$el->type = mb_strtolower($alarm);
-				$output .= $this->renderReturn('Notifications.alarm.on', $el);
-            } else {
-				$output .= $this->renderReturn('Notifications.alarm.off');
-            }
-        }
-    }
-
-    //GET & SHOW NOTIFICATIONS
-	$nObj = new notification($this);
-	$data = array('gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
-	$sql = "(SELECT gibbonNotification.*, gibbonModule.name AS source 
-		FROM gibbonNotification 
-			JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) 
-		WHERE gibbonPersonID=:gibbonPersonID AND status='New')
-		UNION
-			(SELECT gibbonNotification.*, 'System' AS source 
-				FROM gibbonNotification 
-				WHERE gibbonModuleID IS NULL 
-					AND gibbonPersonID=:gibbonPersonID2 
-					AND status='New')
-		ORDER BY timestamp DESC, source, text";
-	$notice = $nObj->findAll($sql, $data, '_');
-
-    if (count($notice) > 0) {
-        $output .= " . <a title='".trans::__('Notifications')."' href='./index.php?q=/modules/Notifications/notifications.php'>".count($notice).' x ' . $this->renderReturn('default.minorLinks.notification_on') . '</a>' ;
-    } else {
-        $output .= ' . 0 x ' . $this->renderReturn('default.minorLinks.notification_off') ;
-    }
-}
-
-echo $output;
+$this->render('default.minorLinks.notificationContent');

@@ -32,7 +32,7 @@ use Gibbon\Record\person ;
 /**
  * view Manager
  *
- * @version	6th September 2016
+ * @version	21st September 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -42,7 +42,8 @@ class view
 {
 
 	use functions\stringFunctions , 
-		functions\developmentFunctions ;
+		functions\developmentFunctions ,
+		functions\moduleFunctions ;
 	
 	/**
 	 * @var	sqlConnection	$pdo	Gibbon SQL
@@ -95,6 +96,11 @@ class view
 	private $person ;
 
 	/**
+	 * @var Gibbon\core\trans
+	 */
+	private $trans ;
+
+	/**
 	 * Constructor
 	 *
 	 * @version	23rd April 2016
@@ -123,6 +129,7 @@ class view
 				$this->pdo = $pdo ;
 		$this->mapReturns();
 		$this->setTheme();
+		$this->trans = new trans();
 		$this->render($name, $params);
 	}
 
@@ -294,11 +301,11 @@ class view
 			$message = trim($this->returns[$message]);
 		if (empty($message)) return ;
 		if (is_string($echo) && $echo == 'return')
-			return '<div class="'. $style .'">' . trans::__($message, $messageInfo) .'</div>';
+			return '<div class="'. $style .'">' .  $this->__($message, $messageInfo) .'</div>';
 		elseif ($echo)
-			echo '<div class="'. $style .'">' . trans::__($message, $messageInfo) .'</div>';
+			echo '<div class="'. $style .'">' .  $this->__($message, $messageInfo) .'</div>';
 		else
-			$this->session->append($target, '<div class="'. $style .'">' . trans::__($message, $messageInfo) .'</div>') ;
+			$this->session->append($target, '<div class="'. $style .'">' .  $this->__($message, $messageInfo) .'</div>') ;
 		return ;
 	}
 
@@ -370,7 +377,7 @@ class view
 		$returnMessage = 'return.'.$class.'.'.$key;
 		if($class == "success" && $editLink != NULL) {
 			$this->insertMessage($returnMessage, $class, $echo);
-			$returnMessage = sprintf( trans::__('You can edit your record %1$shere%2$s.'), "<a href='$editLink'>", "</a>" );
+			$returnMessage = sprintf(  $this->__('You can edit your record %1$shere%2$s.'), "<a href='$editLink'>", "</a>" );
 		}
 		$this->insertMessage($returnMessage, $class, $echo);
 	}
@@ -678,7 +685,7 @@ class view
 		$type = mb_strtolower($type);
 		if ($type === '') 
 		{
-			$prompt = empty($prompt) ? '' : trans::__($prompt) ;
+			$prompt = empty($prompt) ? '' :  $this->__($prompt) ;
 			echo "<a href='".$this->convertGetArraytoURL($href)."'>".$imgParameters.$prompt."</a> ";
 			return ;
 		}
@@ -828,7 +835,7 @@ class view
 		if (empty($message)) return ;
 		
 		$x = "<div class='error' style='background-color: #".$alert[4].'; border: 1px solid #'.$alert[3].'; color: #'.$alert[3]."'>";
-		$x .= trans::__('This student has one or more %1$s risk medical conditions.', $alert[1]);
+		$x .=  $this->__('This student has one or more %1$s risk medical conditions.', $alert[1]);
 		$x .= '</div>';
 		
 		if ($echo == 'return')
@@ -980,14 +987,15 @@ class view
 		elseif (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/module.css'))
 			$cssURL = GIBBON_URL . 'src/modules/'.$module.'/css/module.css';
 		if (! empty($cssURL)) {
-		?>
+			$this->addScript('
 <script type="application/javascript" language="javascript">
 
-	var cssURL = "<?php echo $cssURL; ?>";
+	var cssURL = "'.$cssURL.'";
 	
-	$('head').append('<link rel="stylesheet" type="text/css" href="'+cssURL+'" media="screen" />');
+	$("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"\'+cssURL+\'\" media=\"screen\" />");
 
-</script><?php
+</script>
+');
 		}
 	} 
 
@@ -1007,5 +1015,31 @@ class view
 			$this->person->find($id);
 		return $this->person ;
 	}
-}
 
+	/**
+	 * add Script
+	 * 
+	 * @version	21st September 2016
+	 * @since	21st September 2016
+	 * @param	string		$script
+	 * @return	void
+	 */
+	public function addScript($script)
+	{	
+		$script = preg_replace("/<script.*>/", '', $script);
+		$script = str_replace('</script>', '', $script);
+		$this->session->push('scripts', $script, $this);
+	}
+
+	/**
+	 * Translation
+	 *
+	 * @version	21st September 2016
+	 * @since	21st September 2016
+	 * @return	void
+	 */
+	public function __($text, $options = array(), $choice = NULL)
+	{
+		return $this->trans->__($text, $options, $choice);
+	}
+}

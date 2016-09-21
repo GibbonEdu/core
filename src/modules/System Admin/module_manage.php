@@ -35,6 +35,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$this->session->clear("moduleInstallError") ;
 	$this->render('default.flash');
 	
+	$this->h2('Manage Modules');
 	//Get modules from database, and store in an array
 	$obj = new module($this);
 	$modulesSQL = $obj->findAll("SELECT * FROM gibbonModule ORDER BY name", array(), '_', 'name');

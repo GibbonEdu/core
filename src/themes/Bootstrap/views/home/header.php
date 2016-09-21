@@ -10,7 +10,7 @@
                     	<?php 
                         new Gibbon\Menu\main($this);
                         $x = $this->session->get("display.studentFastFinder");
-						if (isset($x->output) && $x->output) echo "<p>".Gibbon\core\trans::__('Total Student Enrolment: %d', array($x->studentCount))."</p>" ; ?>
+						if (isset($x->output) && $x->output) echo "<p>".$this->__('Total Student Enrolment: %d', array($x->studentCount))."</p>" ; ?>
                         </div><!-- home.header.hedaer-finder --> 
                     </div>
                 </div>

@@ -54,7 +54,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			}
 			else
 			{
-				$i18nObj['version'] = trans::__('No File') ;
+				$i18nObj['version'] = $this->__('No File') ;
 				$i18nObj['active'] = 'N';
 			}
 			if (file_exists(GIBBON_ROOT . 'src/i18n/'.$i18nObj['code'].'/gibbon.yml'))  //Remote Download Location

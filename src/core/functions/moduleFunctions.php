@@ -18,21 +18,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 /**
  */
-namespace Gibbon\core;
+namespace Gibbon\core\functions;
 
-use Gibbon\core\view ;
 use Gibbon\Record\module as mTable ;
 
 /**
- * Module
+ * Module Functions
  *
- * @version	18th September 2016
+ * @version	21st September 2016
  * @since	15th May 2016
  * @author	Craig Rayner
  * @package	Gibbon
  * @subpackage	Core
  */
-class module
+trait moduleFunctions
 {
 	/**
 	 * Is Module Accessible
@@ -40,28 +39,28 @@ class module
 	 * @version	27th June 2016
 	 * @since	copied from functions.php
 	 * @params	string	$address	Address of Module
-	 * @params	Gibbon\view		$view
+	 * @params	Gibbon\view		$this
 	 * @return	boolean
 	 */
-	static public function isModuleAccessible($address = '', view $view) {
+	public function isModuleAccessible($address = '') {
 		
-		if (empty($address)) $address = self::getSession()->get("address");
+		if (empty($address)) $address = $this->getSession()->get("address");
 
 		//Check user is logged in
-		if (self::getSession()->notEmpty("username")) {
+		if ($this->getSession()->notEmpty("username")) {
 			//Check user has a current role set
-			if (self::getSession()->notEmpty("gibbonRoleIDCurrent")) {
+			if ($this->getSession()->notEmpty("gibbonRoleIDCurrent")) {
 				//Check module ready
-				$moduleID = self::checkModuleReady($address, $view);
+				$moduleID = $this->checkModuleReady($address, $this);
 				if ($moduleID) {
-					$data=array("gibbonRoleID"=>self::getSession()->get("gibbonRoleIDCurrent"), "moduleID"=>$moduleID);
+					$data=array("gibbonRoleID"=>$this->getSession()->get("gibbonRoleIDCurrent"), "moduleID"=>$moduleID);
 					$sql="SELECT * 
 						FROM gibbonAction, gibbonPermission, gibbonRole 
 						WHERE (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) 
 							AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) 
 							AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) 
 							AND (gibbonAction.gibbonModuleID=:moduleID)" ;
-					$result = self::getPDO()->executeQuery($data, $sql);
+					$result = $this->getPDO()->executeQuery($data, $sql);
 					if ($result->rowCount()>0) return true ;
 				}
 			}
@@ -76,15 +75,14 @@ class module
 	 * @version	21st April 2016
 	 * @since	21st April 2016
 	 * @param	string		$address	Address
-	 * @params	Gibbon\view		$view
 	 * @return	mixed		ModuleID or false
 	 */
-	static public function checkModuleReady($address, view $view)
+	public function checkModuleReady($address)
 	{
 		//Get module name from address
-		$module = self::getModuleName($address, $view) ;
+		$module = $this->getModuleName($address) ;
 		$data = array("name" => $module, 'active' => 'Y');
-		$mObj = new mTable($view);
+		$mObj = new mTable($this);
 		$mod = $mObj->findBy($data);
 		if ($mObj->getSuccess() && $mObj->rowCount() == 1)
 			return $mod->gibbonModuleID ;
@@ -100,7 +98,7 @@ class module
 	 * @param	string		$address Address
 	 * @return	string		Name
 	 */
-	static public function getModuleName($address) {
+	public function getModuleName($address) {
 		if (strpos($address, '/modules/') !== false)
 			return substr(substr($address,9),0,strpos(substr($address,9),"/")) ;
 		return '';
@@ -113,16 +111,15 @@ class module
 	 * @version	16th May 2016
 	 * @since	21st April 2016
 	 * @param	string		$address Address
-	 * @param	Gibbon\view	$view
 	 * @return	string		URL
 	 */
-	static public function getModuleEntry($address, view $view)
+	public function getModuleEntry($address)
 	{
 		$output = false ;
-		$pdo = $view->getPDO();
-		$session = $view->getSession();
+		$pdo = $this->getPDO();
+		$session = $this->getSession();
 		
-		$data = array("moduleName"=>module::getModuleName($address),"gibbonRoleID"=>$session->get("gibbonRoleIDCurrent"));
+		$data = array("moduleName"=>$this->getModuleName($address),"gibbonRoleID"=>$session->get("gibbonRoleIDCurrent"));
 		$sql = "SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL 
 			FROM `gibbonModule`, gibbonAction, gibbonPermission 
 			WHERE gibbonModule.name=:moduleName 
@@ -135,7 +132,7 @@ class module
 		if ($result->rowCount()==1) {
 			$row = $result->fetch() ;
 			$entryURL = $row["entryURL"] ;
-			if ($view->getSecurity()->isActionAccessible("/modules/" . $row["name"] . "/" . $entryURL, NULL, '')==FALSE AND $entryURL!="index.php") {
+			if ($this->getSecurity()->isActionAccessible("/modules/" . $row["name"] . "/" . $entryURL, NULL, '')==FALSE AND $entryURL!="index.php") {
 				$dataEntry=array("gibbonRoleID"=>$session->get("gibbonRoleIDCurrent"), "moduleName"=>$row["name"]);
 				$sqlEntry="SELECT DISTINCT gibbonAction.entryURL 
 					FROM gibbonModule, gibbonAction, gibbonPermission 
@@ -161,12 +158,11 @@ class module
 	 * @version	4th July 2016
 	 * @since	copied from functions.php
 	 * @param	string		$address Address
-	 * @param	Gibbon\view	$view
 	 * @return	integer		ModuleID
 	 */
-	public static function getModuleIDFromName($name, view $view)
+	public function getModuleIDFromName($name)
 	{
-		$mObj = new mTable($view);
+		$mObj = new mTable($this);
 		$row = $mObj->findOneBy(array('name' => $name));
 		return $row->gibbonModuleID;
 	}
@@ -180,9 +176,9 @@ class module
 	 * @param	string		$address Address
 	 * @return	string		Action Name
 	 */
-	static public function getActionName($address) {
+	public function getActionName($address) {
 		if (strpos($address, "/modules/") !== false)
-			return substr($address, (10 + strlen(module::getModuleName($address)))) ;
+			return substr($address, (10 + strlen($this->getModuleName($address)))) ;
 		return '';
 	}
 }

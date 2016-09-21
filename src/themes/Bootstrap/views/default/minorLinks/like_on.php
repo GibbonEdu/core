@@ -1,1 +1,1 @@
-<span class="glyphicon glyphicon-thumbs-up"></span>
+<span class="glyphicons glyphicons-star x2" style="color: red;"></span>

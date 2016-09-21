@@ -2,9 +2,11 @@
     <div class='gibbon-form'>
     	<?php $this->render('form.style.elements', $el); ?>	
     </div>
-</form>
+</form><!-- bootstrap.form.style.login --><?php
+$this->addScript("
 <script>
 $(document).ready(function() {
     $('#loginForm').formValidation();
 });
-</script><!-- bootstrap.form.style.login -->
+</script>
+");

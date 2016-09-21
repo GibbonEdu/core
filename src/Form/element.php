@@ -356,12 +356,12 @@ abstract class element implements elementInterface
 		$val = '';
 		if (! empty($el->validate->URL) && $el->validate->URL && isset($this->validation['URL']))
 		{
-			$val .= str_replace(array('{{message}}', '{{protocols}}', '{{id}}'), array(trans::__($el->validate->messageURL), $el->validate->protocolsURL, $el->id), $this->validation['URL']);
+			$val .= str_replace(array('{{message}}', '{{protocols}}', '{{id}}'), array($this->view->__($el->validate->messageURL), $el->validate->protocolsURL, $el->id), $this->validation['URL']);
 		}
 
 		if (! empty($el->validate->Phone) && isset($this->validation['Phone']))
 		{
-//			$val .= str_replace(array('{{message}}', '{{countryCode}}', '{{id}}'), array(trans::__($el->validate->Phone), $el->validate->protocolsURL, $el->id), $this->validation['URL']);
+//			$val .= str_replace(array('{{message}}', '{{countryCode}}', '{{id}}'), array($this->view->__($el->validate->Phone), $el->validate->protocolsURL, $el->id), $this->validation['URL']);
 		}
 
 		if (! empty($el->validate->Date) && $el->validate->Date && isset($this->validation['Date']))
@@ -372,19 +372,19 @@ abstract class element implements elementInterface
 
 		if (isset($el->validate->Format) && $el->validate->Format && isset($this->validation['Format']))
 		{
-			$val .= str_replace(array('{{pattern}}', '{{message}}', '{{id}}'), array($el->validate->pattern, trans::__($el->validate->formatMessage), $el->id), $this->validation['Format']);
+			$val .= str_replace(array('{{pattern}}', '{{message}}', '{{id}}'), array($el->validate->pattern, $this->view->__($el->validate->formatMessage), $el->id), $this->validation['Format']);
 		}
 		if (! empty($el->validate->Email) && isset($this->validation['Email']))
 		{
-			$val .= str_replace(array('{{message}}', '{{id}}'), array(trans::__($el->validate->Email), $el->id), $this->validation['Email']);
+			$val .= str_replace(array('{{message}}', '{{id}}'), array($this->view->__($el->validate->Email), $el->id), $this->validation['Email']);
 		}
 		if (! empty($el->validate->Presence) && $el->validate->Presence && isset($this->validation['Presence']))
 		{
-			$val .= str_replace(array('{{message}}', '{{id}}'), array(trans::__($el->validate->presenceMessage), $el->id), $this->validation['Presence']);
+			$val .= str_replace(array('{{message}}', '{{id}}'), array($this->view->__($el->validate->presenceMessage), $el->id), $this->validation['Presence']);
 		}
 		if (! empty($el->validate->Length) && $el->validate->Length && isset($this->validation['Length']))
 		{
-			$x = str_replace(array('{{message}}', '{{minLength}}', '{{maxLength}}', '{{id}}'), array(trans::__($el->validate->lengthMessage), $el->validate->minLength, $el->validate->maxLength, $el->id), $this->validation['Length']);
+			$x = str_replace(array('{{message}}', '{{minLength}}', '{{maxLength}}', '{{id}}'), array($this->view->__($el->validate->lengthMessage), $el->validate->minLength, $el->validate->maxLength, $el->id), $this->validation['Length']);
 			$x = str_replace(array(' minLength=""', ' maxLength=""', ' minimum: ""', ' maximum: ""'), '', $x);
 			if (false !== (strpos($x, 'minimum:')) && false !== (strpos($x, 'maximum:')))
 				$x = str_replace('maximum', ', maximum', $x);
@@ -392,44 +392,44 @@ abstract class element implements elementInterface
 		}
 		if (! empty($el->validate->Numericality) && $el->validate->Numericality && isset($this->validation['Numericality']))
 		{
-			$val .= str_replace(array('{{message}}', '{{id}}', '{{maxValue}}', '{{minValue}}', '{{onlyInteger}}'), array(trans::__($el->validate->numberMessage), $el->id, $el->validate->numberMaximum, $el->validate->numberMinimum, $el->validate->onlyInteger), $this->validation['Numericality']);
+			$val .= str_replace(array('{{message}}', '{{id}}', '{{maxValue}}', '{{minValue}}', '{{onlyInteger}}'), array($this->view->__($el->validate->numberMessage), $el->id, $el->validate->numberMaximum, $el->validate->numberMinimum, $el->validate->onlyInteger), $this->validation['Numericality']);
 			$val = str_replace(array('  ', ' minimum: ,', ', maximum: }'), array(' ', '', '}'), $val);
 			if (! empty($el->validate->numberMaximum) && isset($this->validation['lessThan']) )
 			{
-				$val .= str_replace(array('{{message}}', '{{maxValue}}', '{{id}}'), array(trans::__($el->validate->numberMessageMaximum), $el->validate->numberMaximum,  $el->id), $this->validation['lessThan']);
+				$val .= str_replace(array('{{message}}', '{{maxValue}}', '{{id}}'), array($this->view->__($el->validate->numberMessageMaximum), $el->validate->numberMaximum,  $el->id), $this->validation['lessThan']);
 			}
 			if (! empty($el->validate->numberMinimum) && isset($this->validation['greaterThan']) )
 			{
-				$val .= str_replace(array('{{message}}', '{{minValue}}', '{{id}}'), array(trans::__($el->validate->numberMessageMinimum), $el->validate->numberMinimum,  $el->id), $this->validation['greaterThan']);
+				$val .= str_replace(array('{{message}}', '{{minValue}}', '{{id}}'), array($this->view->__($el->validate->numberMessageMinimum), $el->validate->numberMinimum,  $el->id), $this->validation['greaterThan']);
 			}
 			if (! empty($el->validate->integer) && $el->validate->integer && isset($this->validation['Integer']) )
 			{
-				$val .= str_replace(array('{{message}}', '{{id}}'), array(trans::__($el->validate->numberMessageInteger),  $el->id), $this->validation['Integer']);
+				$val .= str_replace(array('{{message}}', '{{id}}'), array($this->view->__($el->validate->numberMessageInteger),  $el->id), $this->validation['Integer']);
 			}
 		}
 		if (! empty($el->validate->Confirmation) && $el->validate->Confirmation && isset($this->validation['Confirmation']))
 		{
-			$val .= str_replace(array('{{message}}', '{{confirm}}', '{{id}}'), array(trans::__($el->validate->messageConfirmation), $el->validate->Confirmation, $el->id), $this->validation['Confirmation']);
+			$val .= str_replace(array('{{message}}', '{{confirm}}', '{{id}}'), array($this->view->__($el->validate->messageConfirmation), $el->validate->Confirmation, $el->id), $this->validation['Confirmation']);
 		}
 		if (! empty($el->validate->pleaseSelect) && $el->validate->pleaseSelect && isset($this->validation['PleaseSelect']))
 		{
-			$val .= str_replace(array('{{message}}', '{{id}}', '{{extras}}', '{{name}}'), array(trans::__($el->validate->exclusionMessage), $el->id, $el->validate->exclusionExtras, $el->name), $this->validation['PleaseSelect']);
+			$val .= str_replace(array('{{message}}', '{{id}}', '{{extras}}', '{{name}}'), array($this->view->__($el->validate->exclusionMessage), $el->id, $el->validate->exclusionExtras, $el->name), $this->validation['PleaseSelect']);
 			$el->validate->Exclusion = false ;
 		}
 		if (! empty($el->validate->Exclusion) && $el->validate->Exclusion && isset($this->validation['Exclusion']))
 		{
 			$jsonWithin = substr(json_encode(array('within' => $el->validate->within)), 1, -1);
-			$val .= str_replace(array('{{message}}', '{{id}}', '{{within}}', '{{jsonwithin}}', '{{extras}}', '{{name}}'), array(trans::__($el->validate->exclusionMessage), $el->id, $el->validate->within, $jsonWithin, $el->validate->exclusionExtras, $el->name), $this->validation['Exclusion']);
+			$val .= str_replace(array('{{message}}', '{{id}}', '{{within}}', '{{jsonwithin}}', '{{extras}}', '{{name}}'), array($this->view->__($el->validate->exclusionMessage), $el->id, $el->validate->within, $jsonWithin, $el->validate->exclusionExtras, $el->name), $this->validation['Exclusion']);
 		}
 
 		if (! empty($el->validate->Inclusion) && $el->validate->Inclusion && isset($this->validation['Inclusion']))
 		{
-			$val .= str_replace(array('{{message}}', '{{id}}', '{{within}}', '{{partialMatch}}', '{{caseSensitive}}'), array(trans::__($el->validate->inclusionMessage), $el->id, $el->validate->inclusionWithin,  $el->validate->inclusionPartialMatch, $el->validate->inclusionCaseSensitive), $this->validation['Inclusion']);
+			$val .= str_replace(array('{{message}}', '{{id}}', '{{within}}', '{{partialMatch}}', '{{caseSensitive}}'), array($this->view->__($el->validate->inclusionMessage), $el->id, $el->validate->inclusionWithin,  $el->validate->inclusionPartialMatch, $el->validate->inclusionCaseSensitive), $this->validation['Inclusion']);
 		}
 
 		if (! empty($el->validate->File) && $el->validate->File && isset($this->validation['File']))
 		{
-			$val .= str_replace(array('{{message}}', '{{id}}', '{{within}}', '{{mimeType}}'), array(trans::__($el->validate->inclusionMessage), $el->id, str_replace("'", '', $el->validate->inclusionWithin), $el->validate->mimeType), $this->validation['File']);
+			$val .= str_replace(array('{{message}}', '{{id}}', '{{within}}', '{{mimeType}}'), array($this->view->__($el->validate->inclusionMessage), $el->id, str_replace("'", '', $el->validate->inclusionWithin), $el->validate->mimeType), $this->validation['File']);
 		}
 		
 		

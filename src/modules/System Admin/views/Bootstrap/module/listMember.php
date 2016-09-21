@@ -4,11 +4,11 @@ use Gibbon\core\helper ;
 ?>
 <tr>
     <td>
-        <?php echo trans::__($el->moduleName) ; ?>
+        <?php echo $this->__($el->moduleName) ; ?>
     </td>
     <?php if ($el->installed) { ?>
         <td>
-            <?php echo trans::__("Installed") ; ?>
+            <?php echo $this->__("Installed") ; ?>
         </td> <?php 
     }
     else {
@@ -24,24 +24,24 @@ use Gibbon\core\helper ;
         }
         if ($manifestOK) { ?>
             <td colspan=6>
-                <?php echo trans::__("Not Installed") ; ?>
+                <?php echo $this->__("Not Installed") ; ?>
             </td> <?php
         }
         else { ?>
             <td colspan=7>
-                <?php echo trans::__("Module error due to incorrect manifest file or folder name.") ; ?>
+                <?php echo $this->__("Module error due to incorrect manifest file or folder name.") ; ?>
             </td> <?php
         }
     }
     if ($el->installed) { ?>
         <td>
-            <?php echo trans::__( $el->moduleObj->getField("description")) ; ?>
+            <?php echo $this->__( $el->moduleObj->getField("description")) ; ?>
         </td>
         <td>
-            <?php echo trans::__( $el->moduleObj->getField("type")) ; ?>
+            <?php echo $this->__( $el->moduleObj->getField("type")) ; ?>
         </td>
         <td>
-            <?php echo trans::__($el->moduleObj->getField("active")) ; ?>
+            <?php echo $this->__($el->moduleObj->getField("active")) ; ?>
         </td>
         <td> <?php
             if ($el->moduleObj->getField("type")=="Additional") {
