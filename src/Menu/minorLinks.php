@@ -85,6 +85,7 @@ class minorLinks extends menu
 				$return .= $this->showNotifications();
 				
 				$return .= $this->messageWall();
+
 				$return .= '</div>';
 				
 			}

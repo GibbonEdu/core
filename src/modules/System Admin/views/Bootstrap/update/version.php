@@ -33,7 +33,7 @@ $this->addScript('
 </script>
 ');
 		
-$cuttingEdgeCode=$this->config->getSettingByScope( "System", "cuttingEdgeCode" ) ; 
+$cuttingEdgeCode=$this->config->getSettingByScope("System", "cuttingEdgeCode" ) ; 
 if ($cuttingEdgeCode == "N") { ?>
         <div id='status' class='warning'>
             <div style='width: 100%; text-align: center'>

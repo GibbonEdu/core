@@ -1,4 +1,4 @@
-<?php 
+<?php
 $this->addScript("
 <script type='text/javascript' language='javascript'>
 	$(document).ready(function() {

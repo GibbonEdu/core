@@ -53,16 +53,19 @@ if ($this->view->getSecurity()->isActionAccessible('/modules/Messenger/messageWa
 	$pattern = $this->session->isEmpty('i18n.dateFormatRegEx') ? "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$" : $this->session->get('i18n.dateFormatRegEx');
 	$format = $this->session->isEmpty('i18n.dateFormat') ? 'dd/mm/yyyy' : $this->session->get('i18n.dateFormat');
 	$this->addScript('
-		<script type="text/javascript">
-			var date=new LiveValidation("date");
-			date.add( Validate.Format, {pattern: '.$pattern.', failureMessage: "Use '.$format.'" } ); 
-			date.add(Validate.Presence);
-		</script>
-		<script type="text/javascript">
-			$(function() {
-				$( "#date" ).datepicker();
-			});
-		</script>'); ?>
+<script type="text/javascript">
+	var date=new LiveValidation("date");
+	date.add( Validate.Format, {pattern: '.$pattern.', failureMessage: "Use '.$format.'" } ); 
+	date.add(Validate.Presence);
+</script>
+');
+$this->addScript('
+<script type="text/javascript">
+	$(function() {
+		$( "#date" ).datepicker();
+	});
+</script>
+'); ?>
 		<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 		<?php	
 	echo '</form>';

@@ -104,7 +104,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['statsCollection']->returnRecord());
-	
 
 	$form->addElement('h3', null, 'Organisation Settings');
 
@@ -165,7 +164,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 		foreach ($rows as $person)
 			$el->addOption($person->formatName(true, true), $person->getID());
 	}
-
 
 	$form->addElement('h3', null, 'Security Settings');
 	$form->startWell();

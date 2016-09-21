@@ -36,10 +36,10 @@ use Gibbon\core\trans ;
                             <input class='topFinder' style='width: 275px' type='text' id='id' name='id' />
                     		<?php $this->render('default.finder.list', $params); 
 							$this->addScript("
-                            <script type='text/javascript'>
-                                var id=new LiveValidation('id');
-                                id.add(Validate.Presence);
-                             </script>
+<script type='text/javascript'>
+	var id=new LiveValidation('id');
+	id.add(Validate.Presence);
+</script>
 							 "); ?>
                         </td>
                         <td class='right' style='vertical-align: top; border: none'>

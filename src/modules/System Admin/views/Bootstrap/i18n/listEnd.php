@@ -15,4 +15,5 @@ $('#TheForm input[name=\"gibboni18nCode\"]').change(function(){
     $('#TheForm').submit();    
 
 });
-</script>");
+</script>
+");

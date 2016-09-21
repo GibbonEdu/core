@@ -162,7 +162,6 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			</title>
 			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
-			<meta name="robots" content="none"/>
 
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
@@ -256,7 +255,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     echo '</div>';
                 }
             }
-			if (in_array($_SESSION[$guid]['gibbonThemeName'], array('Curves'))) 
+			if (in_array($_SESSION[$guid]['gibbonThemeName'], array('Curves')))
 			{
 				// Bootstrap is a copy of Default for old scripts.
                         $_SESSION[$guid]['gibbonThemeID'] = '0013';
@@ -702,5 +701,4 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 		</body>
 	</html>
 	<?php
-
 }

@@ -508,5 +508,7 @@ UPDATE `gibbonFileExtension` SET `mimeType` = 'text/html' WHERE `extension` = 'h
 UPDATE `gibbonFileExtension` SET `mimeType` = 'video/3gpp' WHERE `extension` = '3gp';end
 UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-aac' WHERE `extension` = 'aac';end
 ALTER TABLE `gibbonModule` CHANGE `category` `category` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
+ALTER TABLE `gibbonUnit` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this unit be included in curriculum maps and other summaries?' AFTER `tags`;end
+ALTER TABLE `gibbonCourseClass` ADD `gibbonScaleIDTarget` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `reportable`;end
 
 ";

@@ -32,7 +32,7 @@ use Gibbon\Record\person ;
 /**
  * view Manager
  *
- * @version	6th September 2016
+ * @version	21st September 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -980,13 +980,15 @@ class view
 		elseif (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/module.css'))
 			$cssURL = GIBBON_URL . 'src/modules/'.$module.'/css/module.css';
 		if (! empty($cssURL)) {
-			$this->addScript('<script type="application/javascript" language="javascript">
+			$this->addScript('
+<script type="application/javascript" language="javascript">
 
 	var cssURL = "'.$cssURL.'";
 	
 	$("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"\'+cssURL+\'\" media=\"screen\" />");
 
-</script>');
+</script>
+');
 		}
 	} 
 
@@ -1008,7 +1010,7 @@ class view
 	}
 
 	/**
-	 * get Person
+	 * add Script
 	 * 
 	 * @version	21st September 2016
 	 * @since	21st September 2016
@@ -1022,4 +1024,3 @@ class view
 		$this->session->push('scripts', $script, $this);
 	}
 }
-

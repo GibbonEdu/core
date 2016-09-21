@@ -14,5 +14,6 @@ $this->addScript('
 		convert_urls: false,
 		relative_urls: false
 	});
+
 </script>
 ');

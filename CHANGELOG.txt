@@ -19,7 +19,8 @@ CHANGELOG
 v13.0.00
 --------
 	Headlines
-		...
+		Transition to object oriented code base
+		New, Bootstrap-based theme
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
@@ -44,14 +45,18 @@ v13.0.00
 		System: updated .gitignore to include .DS_store files
 		System: updated PayPal integration to set localecode based on current Gibbon language
 		System: updated the reincarnate image on Default theme
+		System: removed robots meta tag
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
+		Activities: fixed bug which cut one student off print view of attendance print out
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
 		Markbook: removed Learning Area rubrics from multiple column add
+		Markbook: fixed return and presetting of fields when landing on add page from Planner
+		Markbook: made target scale selectable (so not constained to Default Assessment Scale)
 		Messenger: fixed formatting of Sent From Gibbon tag
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Messenger: disabled Canned Response for any non-staff users
@@ -60,6 +65,7 @@ v13.0.00
 		Planner: added ability to tag units, in order to help build curriculum maps
 		Planner: fixed lesson plan duplicate return bug, when not in current year
 		Planner: improved readability of Unit Overview in lesson plan view, by removing chat section where no messages exist
+		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Resources: improved usability of tag entry interface
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards

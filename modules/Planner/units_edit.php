@@ -175,6 +175,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         									</select>
         								</td>
         							</tr>
+                                    <tr>
+        								<td>
+        									<b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+        									<span class="emphasis small"></span>
+        								</td>
+        								<td class="right">
+                                            <select name="map" id="map" class="standardWidth">
+        										<option <?php if ($row['map'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+        										<option <?php if ($row['map'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+        									</select>
+        								</td>
+        							</tr>
 									<tr>
 										<td>
 											<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
