@@ -36,40 +36,33 @@ if ($this->view->getSecurity()->isActionAccessible('/modules/Messenger/messageWa
 
     echo "<div class='linkTop' style='height: 27px'>";
     echo "<div style='text-align: left; width: 40%; float: left;'>";
-    echo "<form method='post' action='".$this->session->get('absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    	echo "<input name='date' maxlength=10 value='".date($this->session->get('i18n.dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) - (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
+    echo "<form method='post' action='".$this->session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php'>";
+    	echo "<input name='date' maxlength=10 value='".date($this->session->get('i18n.dateFormatPHP'), (dateConvertToTimestamp(dateConvert($guid, $date)) - (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
 		<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
 		<?php	
 	echo '</form>';
-    echo "<form method='post' action='".$this->session->get('absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    	echo "<input name='date' maxlength=10 value='".date($this->session->get('i18n.dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) + (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
+    echo "<form method='post' action='".$this->session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php'>";
+    	echo "<input name='date' maxlength=10 value='".date($this->session->get('i18n.dateFormatPHP'), (dateConvertToTimestamp(dateConvert($guid, $date)) + (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
 		<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
 		<?php	
 	echo '</form>';
     echo '</div>';
     echo "<div style='width: 40%; float: right'>";
-    echo "<form method='post' action='".$this->session->get('absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    echo "<input name='date' id='date' maxlength=10 value='".$date."' type='text' style='width:100px; float: none; margin-right: 4px;'>"; ?>
+    echo "<form method='post' action='".$this->session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php'>";
+    echo "<input name='date' id='date' maxlength=10 value='".$date."' type='text' style='width:100px; float: none; margin-right: 4px;'>"; 
+	$pattern = $this->session->isEmpty('i18n.dateFormatRegEx') ? "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$" : $this->session->get('i18n.dateFormatRegEx');
+	$format = $this->session->isEmpty('i18n.dateFormat') ? 'dd/mm/yyyy' : $this->session->get('i18n.dateFormat');
+	$this->addScript('
 		<script type="text/javascript">
-			var date=new LiveValidation('date');
-			date.add( Validate.Format, {pattern: <?php if ($this->session->get('i18n.dateFormatRegEx'] == '') {
-					echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-				} else {
-					echo $this->session->get('i18n.dateFormatRegEx'];
-				}
-					?>, failureMessage: "Use <?php if ($this->session->get('i18n.dateFormat'] == '') {
-					echo 'dd/mm/yyyy';
-				} else {
-					echo $this->session->get('i18n.dateFormat'];
-				}
-				?>." } ); 
+			var date=new LiveValidation("date");
+			date.add( Validate.Format, {pattern: '.$pattern.', failureMessage: "Use '.$format.'" } ); 
 			date.add(Validate.Presence);
 		</script>
 		<script type="text/javascript">
 			$(function() {
 				$( "#date" ).datepicker();
 			});
-		</script>
+		</script>'); ?>
 		<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 		<?php	
 	echo '</form>';
@@ -78,4 +71,3 @@ if ($this->view->getSecurity()->isActionAccessible('/modules/Messenger/messageWa
 
     echo getMessages($guid, $connection2, 'print', dateConvert($guid, $date));
 }
-?>

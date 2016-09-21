@@ -113,7 +113,7 @@ else {
 		if (! $this->config->setSettingByScope("analytics", $post['analytics']) ) $fail = true;
 		if (! $this->config->setSettingByScope("emailLink", $post['emailLink']) ) $fail = true;
 		if (! $this->config->setSettingByScope("webLink", $post['webLink']) ) $fail = true;
-		if (! $this->config->setSettingByScope("primaryAssessmentScale", $post['primaryAssessmentScale']) ) $fail = true;
+		if (! $this->config->setSettingByScope("defaultAssessmentScale", $post['defaultAssessmentScale']) ) $fail = true;
 		if (! $this->config->setSettingByScope("installType", $post['installType']) ) $fail = true;
 		if (! $this->config->setSettingByScope("statsCollection", $post['statsCollection']) ) $fail = true;
 		if (! $this->config->setSettingByScope("passwordPolicyMinLength", $post['passwordPolicyMinLength']) ) $fail = true;

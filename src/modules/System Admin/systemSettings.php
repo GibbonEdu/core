@@ -293,19 +293,16 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['analytics']->returnRecord());
 	$el->validateOff() ;
 
-	if (isset($sysSettings['primaryAssessmentScale'])) {
-		$el = $form->addElement('select', null);
-		$el->injectRecord($sysSettings['primaryAssessmentScale']->returnRecord());
-		$el->setRequired();
-		$el->addOption( trans::__( 'Please select...' ), '' );
-		$sql = "SELECT * 
-			FROM gibbonScale 
-			WHERE active='Y' 
-			ORDER BY name" ;
-		$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
-		while ($row = $resultSelect->fetchObject()) 
-			$el->addOption($this->htmlPrep(trans::__($row->name ) ), $row->gibbonScaleID );
-	}
+	$el = $form->addElement('select', null);
+	$el->injectRecord($sysSettings['defaultAssessmentScale']->returnRecord());
+	$el->setPleaseSelect();
+	$sql = "SELECT * 
+		FROM gibbonScale 
+		WHERE active='Y' 
+		ORDER BY name" ;
+	$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
+	while ($row = $resultSelect->fetchObject()) 
+		$el->addOption($this->htmlPrep(trans::__($row->name ) ), $row->gibbonScaleID );
 
 	$form->addElement('submitBtn', null);
 

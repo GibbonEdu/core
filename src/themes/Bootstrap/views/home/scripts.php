@@ -19,9 +19,11 @@ if ($this->session->notEmpty("i18n.code") && $this->session->get('theme.settings
 	}
 }
 
-?>
+$this->addScript('
 <script type="text/javascript">$(function () { $(".latex").latex();});</script>
-<script type="text/javascript"> var tb_pathToImage="<?php echo GIBBON_URL ?>lib/thickbox/loadingAnimation.gif"</script>
+');
+?>
+<script type="text/javascript"> var tb_pathToImage="<?php echo GIBBON_URL; ?>lib/thickbox/loadingAnimation.gif"</script>
 <?php
 if ($this->session->notEmpty("username")) {
 	$sessionDuration = $this->config->getSettingByScope("System", "sessionDuration") ;
@@ -30,16 +32,16 @@ if ($this->session->notEmpty("username")) {
 	}
 	if ($sessionDuration < 1200)
 		$sessionDuration = 1200 ;
-	?>
-<script type="text/javascript">
+	$this->addScript("
+<script type='text/javascript'>
 	$(document).ready(function(){
 		$.sessionTimeout({
-			message: '<?php print Gibbon\core\trans::__("Your session is about to expire: you will be logged out shortly.") ?>',
+			message: '".Gibbon\core\trans::__("Your session is about to expire: you will be logged out shortly.")."',
 			keepAliveUrl: 'index.php?q=/modules/Security/keepAlive.php&divert=true' ,
 			redirUrl: 'index.php?q=/modules/Security/logout.php&timeout=true&divert=true', 
 			logoutUrl: 'index.php?q=/modules/Security/logout.php&timeout=true&divert=true' , 
-			warnAfter: <?php print ($sessionDuration*1000) ?>,
-			redirAfter: <?php print ($sessionDuration*1000)+600000 ?>
+			warnAfter: ".($sessionDuration*1000).",
+			redirAfter: ".(($sessionDuration*1000)+600000)."
 		});
 	});
    // Keep all submit buttons from working
@@ -51,6 +53,7 @@ if ($this->session->notEmpty("username")) {
    $(window).load(function(){
        $('input:submit').die();
    });
-</script><!-- home.scripts --><?php
+</script>
+");
 }
 $this->render('default.tinymce.init');

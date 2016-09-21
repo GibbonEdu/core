@@ -1,6 +1,8 @@
-<?php $this->render('form.text', $el); ?>
+<?php $this->render('form.text', $el); 
+$this->addScript('
 <script type="text/javascript">
-	$( "#<?php echo isset($el->id) ? $el->id : $el->name ;?>" ).datepicker({
+	$( "#'.isset($el->id) ? $el->id : $el->name.'" ).datepicker({
 		onClose: function () { this.focus(); }
 	});
-</script><!-- form.date -->
+</script>
+'); ?><!-- form.date -->

@@ -7,13 +7,15 @@ $input .= ' value="'. $params->value. '"';
 $input .= $id = isset($params->element->style) ? ' ' . $params->element->style : '' ;
 $input .= $id = (isset($params->required) AND $params->required) ? ' required' : "" ; 
 $input .= $id = (isset($params->placeholder) AND $params->placeholder) ? ' placeholder="'.$params->placeholder.'"' : "" ;
-$input .= ' /></div>';
-echo $input;?>
+$input .= ' /></div><!-- form.colour -->';
+echo $input;
+$this->addScript('
 <script>
 $(document).ready(function(){
-	$("#<?php echo $params->id; ?>").on('change', function(){
-		$('#div_<?php echo $params->id; ?>').css("background-color", "#" + $("#<?php echo $params->id; ?>").val());
-		$('#div_<?php echo $params->id; ?>').css("border-color", "#" + $("#<?php echo $params->id; ?>").val());
+	$("#'.$params->id.'").on("change", function(){
+		$("#div_<'.$params->id.'").css("background-color", "#" + $("#'.$params->id.'").val());
+		$("#div_'.$params->id.'").css("border-color", "#" + $("#'.$params->id.'").val());
 	});
 });
-</script><!-- form.colour -->
+</script>
+');

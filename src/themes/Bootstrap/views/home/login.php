@@ -68,7 +68,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 			$el->addOption($this->htmlPrep($name), $code);
 		}
 
-		$el = $form->addElement('script', null, '
+		$this->addScript('
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#schoolYear").hide();

@@ -2,6 +2,7 @@
 use Gibbon\core\module ;
 use Gibbon\core\trans ;
 $this->render('default.header');
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

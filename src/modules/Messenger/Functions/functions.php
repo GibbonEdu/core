@@ -452,16 +452,17 @@ class functions extends mFBase
 								else {
 									$comment=addSlashes($output[$i]["subject"]) ;
 									$return.="<div id='star" . $output[$i]["gibbonMessengerID"] . "'>" ;
-										$return.="<script type=\"text/javascript\">" ;
-											$return.="$(document).ready(function(){" ;
-												$return.="$(\"#starAdd" . $output[$i]["gibbonMessengerID"] . "\").click(function(){" ;
-													$return.="$(\"#star" . $output[$i]["gibbonMessengerID"] . "\").load(\"" . $this->session->get("absoluteURL") . "/modules/Messenger/messageWall_view_starAjax.php\",{\"gibbonPersonID\": \"" . $output[$i]["gibbonPersonID"] . "\", \"gibbonMessengerID\": \"" . $output[$i]["gibbonMessengerID"] . "\", \"mode\": \"add\", \"comment\": \"" . $comment . "\"});" ;
-												$return.="});" ;
-												$return.="$(\"#starRemove" . $output[$i]["gibbonMessengerID"] . "\").click(function(){" ;
-													$return.="$(\"#star" . $output[$i]["gibbonMessengerID"] . "\").load(\"" . $this->session->get("absoluteURL") . "/modules/Messenger/messageWall_view_starAjax.php\",{\"gibbonPersonID\": \"" . $output[$i]["gibbonPersonID"] . "\", \"gibbonMessengerID\": \"" . $output[$i]["gibbonMessengerID"] . "\", \"mode\": \"remove\", \"comment\": \"" . $comment . "\"});" ;
-												$return.="});" ;
-											$return.="});" ;
-										$return.="</script>" ;
+$this->addScript('
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#starAdd' . $output[$i]["gibbonMessengerID"] . '").click(function(){
+			$("#star' . $output[$i]["gibbonMessengerID"] . '").load("' . $this->session->get("absoluteURL") . '/modules/Messenger/messageWall_view_starAjax.php",{"gibbonPersonID": "' . $output[$i]["gibbonPersonID"] . '", "gibbonMessengerID": "' . $output[$i]["gibbonMessengerID"] . '", "mode": "add", "comment": "' . $comment . '"});
+			});
+			$("#starRemove' . $output[$i]["gibbonMessengerID"] . '").click(function(){
+				$("#star' . $output[$i]["gibbonMessengerID"] . '").load("' . $this->session->get("absoluteURL") . '/modules/Messenger/messageWall_view_starAjax.php",{"gibbonPersonID": "' . $output[$i]["gibbonPersonID"] . '", "gibbonMessengerID": "' . $output[$i]["gibbonMessengerID"] . '", "mode": "remove", "comment": "' . $comment . '"});
+			});
+		});
+</script>');
 										if ($likesGiven!=1) {
 											$return.="<a id='starAdd" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/like_off.png'></a>" ;
 										}

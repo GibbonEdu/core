@@ -980,14 +980,13 @@ class view
 		elseif (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/module.css'))
 			$cssURL = GIBBON_URL . 'src/modules/'.$module.'/css/module.css';
 		if (! empty($cssURL)) {
-		?>
-<script type="application/javascript" language="javascript">
+			$this->addScript('<script type="application/javascript" language="javascript">
 
-	var cssURL = "<?php echo $cssURL; ?>";
+	var cssURL = "'.$cssURL.'";
 	
-	$('head').append('<link rel="stylesheet" type="text/css" href="'+cssURL+'" media="screen" />');
+	$("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"\'+cssURL+\'\" media=\"screen\" />");
 
-</script><?php
+</script>');
 		}
 	} 
 
@@ -1006,6 +1005,21 @@ class view
 		elseif (! empty($id))
 			$this->person->find($id);
 		return $this->person ;
+	}
+
+	/**
+	 * get Person
+	 * 
+	 * @version	21st September 2016
+	 * @since	21st September 2016
+	 * @param	string		$script
+	 * @return	void
+	 */
+	public function addScript($script)
+	{	
+		$script = preg_replace("/<script.*>/", '', $script);
+		$script = str_replace('</script>', '', $script);
+		$this->session->push('scripts', $script, $this);
 	}
 }
 

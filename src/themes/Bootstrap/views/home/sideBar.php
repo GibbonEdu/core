@@ -109,16 +109,16 @@ if ($this->session->get('sidebar') !== 'false')
 										$postSideBar .= "</div>" ;
 									$postSideBar .= "</td>" ;
 								$postSideBar .= "</tr>" ;
-								$postSideBar .= "
+								$this->addScript( "
 									<script type=\"text/javascript\">
 										$(document).ready(function(){
 											$(\"#messageWall$pos\").hide();
 										});
-									</script>" ;
+									</script>" );
 							}
 						$postSideBar .= "</table>" ;
 						$order = substr($order, 0, strlen($order)-2);
-						$postSideBar .= "
+						$this->addScript(  "
 							<script type=\"text/javascript\">
 								$(document).ready(function(){
 									var order=[". $order . "];
@@ -161,7 +161,7 @@ if ($this->session->get('sidebar') !== 'false')
 										}
 									}, 8000);
 								});
-							</script>" ;
+							</script>" );
 					}
 					$postSideBar .= "<p style='padding-top: 5px; text-align: right'>" ;
 					$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Messenger/messageWall_view.php'>" . trans::__('View Message Wall') . "</a>" ;

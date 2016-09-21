@@ -182,11 +182,11 @@ class menuModule
 									$count++ ;
 								}
 						
-								$this->menu.="<script>
+								$this->view->addScript("<script>
 									$(\"#floatingModuleMenu\").change(function() {
 										document.location.href = $(this).val();
 									});
-								</script>" ;
+								</script>") ;
 							$this->menu.="</select>" ;
 							$this->menu.="<div style='float: right; padding-top: 10px'>" ;
 								$this->menu.=__($this->config->get('guid'), "Module Menu") ;

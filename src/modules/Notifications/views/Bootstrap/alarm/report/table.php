@@ -13,14 +13,14 @@
 
 	<?php
     $rowCount = 0;
-    foreach($el->staff as $rowConfirm) { ?>
-        <script type="text/javascript">
+    foreach($el->staff as $rowConfirm) { 
+		$this->addScript('<script type="text/javascript">
 			$(document).ready(function(){
 				setInterval(function() {
-					$("#row<?php echo $rowCount; ?>").load("index.php", {"q": "index_notification_ajax_alarm_tickUpdate.php", "divert": "true", "gibbonAlarmID": "<?php echo $el->gibbonAlarmID; ?>", "gibbonPersonID": "<?php echo $rowConfirm->getField('gibbonPersonID'); ?>"});
+					$("#row'.$rowCount.'").load("index.php", {"q": "index_notification_ajax_alarm_tickUpdate.php", "divert": "true", "gibbonAlarmID": "'.$el->gibbonAlarmID.'", "gibbonPersonID": "'.$rowConfirm->getField('gibbonPersonID').'"});
 				}, 5000);
 			});
-		</script>
+		</script>'); ?>
         <tr id='row<?php echo $rowCount; ?>'>
        		<td style='color: #ff3'>
        			<?php echo $rowConfirm->formatName(true, true); ?><br/>

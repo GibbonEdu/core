@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Module\Notifications ;
 
-use Gibbon\core\view ;
+use Gibbon\core\post ;
 use stdClass;
 use Gibbon\Record\notification ;
 
-if (! $this instanceof view) die();
+if (! $this instanceof post) die();
 
 $this->render('default.minorLinks.notificationContent');
