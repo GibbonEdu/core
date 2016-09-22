@@ -66,6 +66,28 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
     }
 }
 
+//Get last N school days from currentDate within the last 100
+function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = false ) {
+
+
+    $timestamp = dateConvertToTimestamp($date);
+    if ($inclusive == true)  $timestamp += 86400;
+    
+    $count = 0;
+    $spin = 1;
+    $lastNSchoolDays = array();
+    while ($count < $n and $spin <= 100) {
+        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
+        if (isSchoolOpen($guid, $date, $connection2 )) {
+            $lastNSchoolDays[$count] = $date;
+            ++$count;
+        }
+        ++$spin;
+    }
+
+    return $lastNSchoolDays;
+}
+
 //Get's a count of late days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error.
 function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd)
 {

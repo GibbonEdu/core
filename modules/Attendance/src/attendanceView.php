@@ -122,19 +122,7 @@ class attendanceView
         $this->attendanceReasons = array_merge( array(''), $this->unexcusedReasons, $this->medicalReasons, $this->excusedReasons);
 
         //Get last 5 school days from currentDate within the last 100
-        $timestamp = dateConvertToTimestamp($currentDate);
-        $count = 0;
-        $spin = 1;
-        $this->last5SchoolDays = array();
-        while ($count < 5 and $spin <= 100) {
-            $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
-            if (isSchoolOpen($this->guid, $date, $this->pdo->getConnection() )) {
-                $this->last5SchoolDays[$count] = $date;
-                ++$count;
-            }
-            ++$spin;
-        }
-
+        $this->last5SchoolDays = getLastNSchoolDays($this->guid, $this->pdo->getConnection(), $currentDate, 5);
     }
 
     public function getAttendanceCodeByType( $type ) {
