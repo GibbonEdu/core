@@ -135,6 +135,97 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     echo '</tr>';
                     echo '</table>';
 
+                    // Show Roll Group - Link to Details
+                    if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == true) {
+
+                        try {
+                            $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                            $sqlDetail = "SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID )";
+                            $resultDetail = $connection2->prepare($sqlDetail);
+                            $resultDetail->execute($dataDetail);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultDetail->rowCount() > 0) {
+
+                            echo '<h4>';
+                            echo __($guid, "Teacher's Roll Group");
+                            echo '</h4>';
+
+                            echo '<ul>';
+                            while ($rowDetail = $resultDetail->fetch()) {
+                                echo '<li>';
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=".$rowDetail['gibbonRollGroupID']."'>";
+                                    echo $rowDetail['name'].'</a>';
+
+                                echo '</li>';
+                            }
+                            echo '</ul>';
+                        }
+                    }
+
+                    // Show Classes - Link to Departments
+                    if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.php') == true) {
+
+                        try {
+                            $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                            $sqlDetail = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as className, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort FROM gibbonCourseClassPerson, gibbonCourseClass, gibbonCourse WHERE gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID =:gibbonPersonID AND gibbonCourseClassPerson.role='Teacher' AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
+                            $resultDetail = $connection2->prepare($sqlDetail);
+                            $resultDetail->execute($dataDetail);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultDetail->rowCount() > 0) {
+
+                            echo '<h4>';
+                            echo __($guid, "Teacher's Classes");
+                            echo '</h4>';
+
+                            echo '<ul>';
+                            while ($rowDetail = $resultDetail->fetch()) {
+                                echo '<li>';
+                                    echo '<span style="min-width:120px;display:inline-block;">'.$rowDetail['courseNameShort'].'.'.$rowDetail['className'].'</span>';
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$rowDetail['gibbonCourseClassID']."' title='".$rowDetail['courseNameShort'].'.'.$rowDetail['className']."'>";
+                                    echo $rowDetail['courseName'].'</a>';
+
+                                echo '</li>';
+                            }
+                            echo '</ul>';
+                        }
+                    }
+
+                    //Show timetable
+                    if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
+
+                        $highestTTAction = getHighestGroupedAction($guid, '/modules/Timetable/tt_view.php', $connection2);
+                            if ($highestTTAction == 'View Timetable by Person' || $highestTTAction == 'View Timetable by Person_allYears') {
+
+                            echo "<a name='timetable'></a>";
+                            echo '<h4>';
+                            echo __($guid, 'Timetable');
+                            echo '</h4>';
+
+                            include './modules/Timetable/moduleFunctions.php';
+                            $ttDate = '';
+                            if (isset($_POST['ttDate'])) {
+                                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+                            }
+                            $gibbonTTID = null;
+                            if (isset($_GET['gibbonTTID'])) {
+                                $gibbonTTID = $_GET['gibbonTTID'];
+                            }
+                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Staff/staff_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search#timetable");
+                            if ($tt != false) {
+                                echo $tt;
+                            } else {
+                                echo "<div class='error'>";
+                                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                echo '</div>';
+                            }
+
+                        }
+                    }
+
                     //Set sidebar
                     $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
                 }
@@ -250,6 +341,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
+
+                        // Show Roll Group - Link to Details
+                        if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == true) {
+
+                            try {
+                                $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                                $sqlDetail = "SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID )";
+                                $resultDetail = $connection2->prepare($sqlDetail);
+                                $resultDetail->execute($dataDetail);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            if ($resultDetail->rowCount() > 0) {
+
+                                echo '<h4>';
+                                echo __($guid, "Teacher's Roll Group");
+                                echo '</h4>';
+
+                                echo '<ul>';
+                                while ($rowDetail = $resultDetail->fetch()) {
+                                    echo '<li>';
+                                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=".$rowDetail['gibbonRollGroupID']."'>";
+                                        echo $rowDetail['name'].'</a>';
+
+                                    echo '</li>';
+                                }
+                                echo '</ul>';
+                            }
+                        }
+
+                        // Show Classes - Link to Departments
+                        if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.php') == true) {
+
+                            try {
+                                $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                                $sqlDetail = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as className, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort FROM gibbonCourseClassPerson, gibbonCourseClass, gibbonCourse WHERE gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID =:gibbonPersonID AND gibbonCourseClassPerson.role='Teacher' AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
+                                $resultDetail = $connection2->prepare($sqlDetail);
+                                $resultDetail->execute($dataDetail);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            if ($resultDetail->rowCount() > 0) {
+
+                                echo '<h4>';
+                                echo __($guid, "Teacher's Classes");
+                                echo '</h4>';
+
+                                echo '<ul>';
+                                while ($rowDetail = $resultDetail->fetch()) {
+                                    echo '<li>';
+                                        echo '<span style="min-width:120px;display:inline-block;">'.$rowDetail['courseNameShort'].'.'.$rowDetail['className'].'</span>';
+                                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$rowDetail['gibbonCourseClassID']."' title='".$rowDetail['courseNameShort'].'.'.$rowDetail['className']."'>";
+                                        echo $rowDetail['courseName'].'</a>';
+
+                                    echo '</li>';
+                                }
+                                echo '</ul>';
+                            }
+                        }
 
                         //Show timetable
                         echo "<a name='timetable'></a>";
