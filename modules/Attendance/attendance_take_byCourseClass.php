@@ -245,6 +245,11 @@ else {
 				if ($CourseClassFail) {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
+				else if ($row["attendance"] == 'N') {
+					print "<div class='error'>" ;
+						print _("Attendance taking has been disabled for this class.") ;
+					print "</div>" ;
+				}
 				else {
 					//Get last 5 school days from currentDate within the last 100
 					$timestamp=dateConvertToTimestamp($currentDate) ;
