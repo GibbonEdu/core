@@ -32,7 +32,7 @@ use Gibbon\Record\person ;
 /**
  * view Manager
  *
- * @version	21st September 2016
+ * @version	23rd September 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -103,7 +103,7 @@ class view
 	/**
 	 * Constructor
 	 *
-	 * @version	23rd April 2016
+	 * @version	23rd September 2016
 	 * @since	19th April 2016
 	 * @param	string	View Name
 	 * @param	stdClass	Parameters
@@ -129,7 +129,7 @@ class view
 				$this->pdo = $pdo ;
 		$this->mapReturns();
 		$this->setTheme();
-		$this->trans = new trans();
+		$this->trans = $this->getTrans();
 		$this->render($name, $params);
 	}
 
@@ -1034,12 +1034,26 @@ class view
 	/**
 	 * Translation
 	 *
-	 * @version	21st September 2016
+	 * @version	23rd September 2016
 	 * @since	21st September 2016
 	 * @return	void
 	 */
 	public function __($text, $options = array(), $choice = NULL)
 	{
-		return $this->trans->__($text, $options, $choice);
+		return $this->getTrans()->__($text, $options, $choice);
+	}
+
+	/**
+	 * get Translation
+	 *
+	 * @version	23rd September 2016
+	 * @since	23rd September 2016
+	 * @return	void
+	 */
+	public function getTrans()
+	{
+		if (! $this->trans instanceof trans)
+			$this->trans = new trans();
+		return $this->trans;
 	}
 }
