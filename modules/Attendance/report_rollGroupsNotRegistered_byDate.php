@@ -36,6 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     echo __($guid, 'Choose Date');
     echo '</h2>';
 
+    $today = date('Y-m-d');
+
     if (isset($_GET['dateStart']) == false) {
         $dateStart = date('Y-m-d');
     } else {
@@ -46,6 +48,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     } else {
         $dateEnd = dateConvert($guid, $_GET['dateEnd']);
     }
+
+    // Correct inverse date ranges rather than generating an error
+    if ($dateStart > $dateEnd) {
+        $swapDates = $dateStart;
+        $dateStart = $dateEnd;
+        $dateEnd = $swapDates;
+    }
+
+    $datediff = strtotime($dateEnd) - strtotime($dateStart);
+    $daysBetweenDates = max(1, floor($datediff / (60 * 60 * 24)) );
+
+    $last5SchoolDays = getLastNSchoolDays($guid, $connection2, $dateEnd, max(5, $daysBetweenDates), true);
+    $daysBetweenDates = min( count($last5SchoolDays), $daysBetweenDates);
     ?>
 	
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
@@ -126,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         //Produce array of attendance data
         try {
             $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-            $sql = 'SELECT date, gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+            $sql = 'SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -150,6 +165,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             echo "<div class='error'>";
             echo __($guid, 'There are no records to display.');
             echo '</div>';
+        } else if ($dateStart > $today || $dateEnd > $today) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified date is in the future: it must be today or earlier.');
+            echo '</div>';
         } else {
             //Produce array of roll groups
             $rollGroups = $result->fetchAll();
@@ -163,8 +182,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             echo '<th>';
             echo __($guid, 'Roll Group');
             echo '</th>';
-            echo '<th>';
+            echo '<th >';
             echo __($guid, 'Date');
+            echo '</th>';
+            echo '<th width="164px">';
+            echo __($guid, 'History');
             echo '</th>';
             echo '<th>';
             echo __($guid, 'Tutor');
@@ -177,12 +199,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 			//Loop through each date
 			$timestampStart = dateConvertToTimestamp($dateStart);
             $timestampEnd = dateConvertToTimestamp($dateEnd);
-            for ($i = $timestampStart; $i <= $timestampEnd; $i = ($i + (60 * 60 * 24))) {
-                if (isSchoolOpen($guid, date('Y-m-d', $i), $connection2, true)) {
+            // for ($i = $timestampStart; $i <= $timestampEnd; $i = ($i + (60 * 60 * 24))) {
+            //     if (isSchoolOpen($guid, date('Y-m-d', $i), $connection2, true)) {
                     //Loop through each roll group
                         foreach ($rollGroups as $row) {
                             //Output row only if not registered on specified date
-                            if (isset($log[date('Y-m-d', $i)][$row['gibbonRollGroupID']]) == false) {
+                            if (isset($log[$dateEnd][$row['gibbonRollGroupID']]) == false) {
                                 if ($count % 2 == 0) {
                                     $rowNum = 'even';
                                 } else {
@@ -196,7 +218,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                                 echo $row['name'];
                                 echo '</td>';
                                 echo '<td>';
-                                echo dateConvertBack($guid, date('Y-m-d', $i));
+                                echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
+                                echo '</td>';
+                                echo '<td style="padding: 0;">';
+                        
+                                    echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
+                                    echo '<tr>';
+                                    for ($i = count($last5SchoolDays)-1; $i >= 0; --$i) {
+                                        $link = '';
+                                        if ($i > ( count($last5SchoolDays) - 1)) {
+                                            echo "<td class='highlightNoData'>";
+                                            echo '<i>'.__($guid, 'NA').'</i>';
+                                            echo '</td>';
+                                        } else {
+                                            
+                                            $currentDayTimestamp = dateConvertToTimestamp($last5SchoolDays[$i]);
+
+                                            if (isset($log[$last5SchoolDays[$i]][$row['gibbonRollGroupID']]) == false) {
+                                                //$class = 'highlightNoData';
+                                                $class = 'highlightAbsent';
+                                            } else {
+                                                $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.$last5SchoolDays[$i];
+                                                $class = 'highlightPresent';
+                                            }
+
+                                            echo "<td class='$class' style='padding: 12px !important;'>";
+                                            if ($link != '') {
+                                                echo "<a href='$link'>";
+                                                echo date('d', $currentDayTimestamp).'<br/>';
+                                                echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                                echo '</a>';
+                                            } else {
+                                                echo date('d', $currentDayTimestamp).'<br/>';
+                                                echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                            }
+                                            echo '</td>';
+                                        }
+
+                                        // Wrap to a new line every 10 dates
+                                        if (  (count($last5SchoolDays) - $i) % 10 == 0  ) {
+                                            echo '</tr><tr>';
+                                        }
+                                    }
+
+                                    if (isSchoolOpen($guid, $dateEnd, $connection2, true) == false) {
+                                        $currentDayTimestamp = dateConvertToTimestamp($dateEnd);
+                                        echo "<td class='highlightNoData'>";
+                                            echo '<i>'.__($guid, 'NA').'</i>';
+                                        echo '</td>';
+                                    }
+
+                                    echo '</tr>';
+                                    echo '</table>';
+
                                 echo '</td>';
                                 echo '<td>';
                                 if ($row['gibbonPersonIDTutor'] == '' and $row['gibbonPersonIDTutor2'] == '' and $row['gibbonPersonIDTutor3'] == '') {
@@ -219,8 +293,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                                 echo '</tr>';
                             }
                         }
-                }
-            }
+                //}
+            //}
 
             if ($count == 0) {
                 echo "<tr class=$rowNum>";
@@ -230,6 +304,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                 echo '</tr>';
             }
             echo '</table>';
+
+            if ($count > 0) {
+                echo "<div class='success'>";
+                    echo '<b>'.__($guid, 'Total:')." $count</b><br/>";
+                echo "</div>";
+            }
         }
     }
 }
