@@ -181,6 +181,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 }
                 if ($rollGroupFail) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                else if ($row["attendance"] == 'N') {
+                    print "<div class='error'>" ;
+                        print _("Attendance taking has been disabled for this roll group.") ;
+                    print "</div>" ;
                 } else {
 
                     //Show attendance log for the current day
