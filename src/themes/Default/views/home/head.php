@@ -5,17 +5,12 @@ $this->render('default.header');
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>
-            <?php 
+            <?php
             print $this->session->get("organisationNameShort") . " - " . $this->session->get("systemName") ;
             if ($this->session->notEmpty("address")) {
                 if (! strstr($this->session->get("address"),"..")) {
-<<<<<<< HEAD
-                    if ( Gibbon\core\module::getModuleName($this->session->get("address"))!="" ) {
-                        echo " - " . $this->__( Gibbon\core\module::getModuleName($this->session->get("address")) ) ;
-=======
                     if ( $this->getModuleName($this->session->get("address"))!="" ) {
                         echo " - " . $this->__( $this->getModuleName($this->session->get("address")) ) ;
->>>>>>> 9f852d0fb1c6b3799f833bd1593409785cc98f71
                     }
                 }
             }
@@ -26,10 +21,10 @@ $this->render('default.header');
         <meta name="robots" content="none"/>
 <?php $this->render('home.scripts'); ?>
 <?php $this->render('home.style'); ?>
-        
+
         <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 
-   
+
         <?php
         //Analytics setting
         echo $this->session->notEmpty("analytics") ? $this->session->get("analytics") : '' ;
