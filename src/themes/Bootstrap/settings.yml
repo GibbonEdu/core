@@ -372,38 +372,38 @@ validation:
     File: ' data-fv-file="true" data-fv-file-message="{{message}}" data-fv-file-extension="{{within}}" data-fv-file-type="{{mimeType}}"'
 
 css:
-    1: /lib/jquery-ui/css/blitzer/jquery-ui.css
-    2: /lib/thickbox/thickbox.css
-    3: /vendor/twbs/bootstrap/dist/css/bootstrap.min.css
-    4: /vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css
-    5: /src/themes/Bootstrap/css/glyphicons.css
-    6: /src/themes/Bootstrap/css/glyphicons-halflings.css
-    7: /src/themes/Bootstrap/css/formValidation.min.css
-    8: /src/themes/Bootstrap/css/token-input-gibbon.css
-    9: /src/themes/Bootstrap/css/main.css
-    a: /vendor/nostalgiaz/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css
+    - /lib/jquery-ui/css/blitzer/jquery-ui.css
+    - /lib/thickbox/thickbox.css
+    - /vendor/twbs/bootstrap/dist/css/bootstrap.min.css
+    - /vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css
+    - /src/themes/Bootstrap/css/glyphicons.css
+    - /src/themes/Bootstrap/css/glyphicons-halflings.css
+    - /src/themes/Bootstrap/css/formValidation.min.css
+    - /src/themes/Bootstrap/css/main.css
+    - /vendor/nostalgiaz/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css
 
 table: 
     class: table
     additional: to do 
 js:
-    1: /lib/LiveValidation/livevalidation_standalone.compressed.js
-    2: /vendor/components/jquery/jquery.min.js
-    3: /lib/jquery/jquery-migrate.min.js
-    4: /vendor/components/jqueryui/jquery-ui.min.js
-    5: /lib/jquery-autosize/jquery.autosize.min.js
-    6: /lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js
-    7: /vendor/twbs/bootstrap/dist/js/bootstrap.min.js
-    8: /src/themes/Bootstrap/js/formValidation.min.js
-    9: /src/themes/Bootstrap/js/framework/bootstrap.min.js
-    a: /lib/jquery-jslatex/jquery.jslatex.js
-    b: /lib/jquery-form/jquery.form.js
-    c: /lib/chained/jquery.chained.mini.js
-    d: /lib/thickbox/thickbox-compressed.js
-    e: /vendor/tinymce/tinymce/tinymce.min.js  
-    f: /lib/jquery-tokeninput/src/jquery.tokeninput.js
-    g: /src/themes/Bootstrap/js/common.js
-    h: /vendor/nostalgiaz/bootstrap-switch/dist/js/bootstrap-switch.min.js
+    - /lib/LiveValidation/livevalidation_standalone.compressed.js
+    - /vendor/components/jquery/jquery.min.js
+    - /lib/jquery/jquery-migrate.min.js
+    - /vendor/components/jqueryui/jquery-ui.min.js
+    - /lib/jquery-autosize/jquery.autosize.min.js
+    - /lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js
+    - /vendor/twbs/bootstrap/dist/js/bootstrap.min.js
+    - /src/themes/Bootstrap/js/formValidation.min.js
+    - /src/themes/Bootstrap/js/framework/bootstrap.min.js
+    - /lib/jquery-jslatex/jquery.jslatex.js
+    - /lib/jquery-form/jquery.form.js
+    - /lib/chained/jquery.chained.mini.js
+    - /lib/thickbox/thickbox-compressed.js
+    - /vendor/tinymce/tinymce/tinymce.min.js  
+    - /src/themes/Bootstrap/js/common.js
+    - /vendor/nostalgiaz/bootstrap-switch/dist/js/bootstrap-switch.min.js
+    - /src/themes/Bootstrap/js/bootstrap-tokenfield.js
+
 datepicker: 1
 # Bootstrap
 # links keys need to be lowercase
@@ -493,3 +493,6 @@ linkTop:
         name: Close
 script:
     display: block
+tokeninput:
+    id: value
+    name: label

@@ -9,7 +9,7 @@ use Gibbon\core\trans ;
             div.token-input-dropdown-facebook { width: 275px; z-index: 99999999 }
         </style>
         <div style="padding-bottom: 7px; height: 40px; margin-top: 0px">
-            <form method='post' action='<?php echo $this->session->get("absoluteURL") ?>/index.php'>
+        	<form role="search" method="post" id="finderForm" action="<?php echo $this->convertGetArraytoURL(array('q' => '/core/scripts/findRedirect.php')); ?>">
                 <table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>
                     <tr>
                         <td style='vertical-align: top; padding: 0px' colspan=2>
@@ -19,14 +19,19 @@ use Gibbon\core\trans ;
 								if ($params->classIsAccessible)
 									echo ", " . $this->__("Classes") ;
 								if ($params->studentIsAccessible)
-									", " . $this->__("Students") ;
+									echo ", " . $this->__("Students") ;
 								if ($params->staffIsAccessible)
-									", " . $this->__("Staff") ; 
+									echo ", " . $this->__("Staff") ; 
 								?>
 								<br/>
                     <?php
-					new \Gibbon\Form\action(GIBBON_ROOT . 'plugins/findRedirect.php', null,  $this);
-					new \Gibbon\Form\hidden('divert', true, $this);
+				$action = '/core/scripts/findRedirect.php';
+				$x = new Gibbon\Form\action($action, null, $this);
+				echo $x->renderReturn();
+				$x = new Gibbon\Form\token($action, null, $this);
+				echo $x->renderReturn();
+				$x = new Gibbon\Form\hidden('divert', true, $this);
+				echo $x->renderReturn();
 					?>
 							</h2>
                         </td>

@@ -84,7 +84,7 @@ class main extends menu
 						$el->name = $row['name'];
 						$el->entryURL=$row["entryURL"] ;
 
-						if (! $this->view->getSecurity()->isActionAccessible("/modules/" . $row["name"] . "/" . $el->entryURL, NULL, '') AND $el->entryURL != "index.php") {
+						if (! $this->view->getSecurity()->isActionAccessible("/modules/" . $row["name"] . "/" . $el->entryURL, NULL, '') && $el->entryURL != "index.php") {
 							$dataEntry=array("gibbonRoleID"=>$this->session->get("gibbonRoleIDCurrent"),"name"=>$row["name"]);
 							$sqlEntry="SELECT DISTINCT gibbonAction.entryURL 
 								FROM gibbonModule, gibbonAction, gibbonPermission 
