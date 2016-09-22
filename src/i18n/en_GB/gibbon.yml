@@ -5534,4 +5534,7 @@ TLS: TLS
 'Notification Scripts for Gibbon': 'Notification Scripts for Gibbon'
 'These modules are installed in the database, but are missing from within the file system.': 'These modules are installed in the database, but are missing from within the file system.'
 'To install a theme, upload the theme folder to <strong><u>/Applications/MAMP/htdocs/github_gibbonEdu/core/src/themes/</u></strong> on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.': 'To install a theme, upload the theme folder to <strong><u>/Applications/MAMP/htdocs/github_gibbonEdu/core/src/themes/</u></strong> on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'
-
+'Default Assessment Scale': 'Default Assessment Scale'
+'This is the scale used as a default where assessment scales need to be selected.': 'This is the scale used as a default where assessment scales need to be selected.'
+Top: Top
+Bottom: Bottom

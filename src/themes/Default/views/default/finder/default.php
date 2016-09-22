@@ -14,14 +14,14 @@ use Gibbon\core\trans ;
                     <tr>
                         <td style='vertical-align: top; padding: 0px' colspan=2>
                             <h2 style='padding-bottom: 0px'>
-								<?php 
+								<?php
 								echo $this->__("Fast Finder: Actions");
 								if ($params->classIsAccessible)
 									echo ", " . $this->__("Classes") ;
 								if ($params->studentIsAccessible)
 									echo ", " . $this->__("Students") ;
 								if ($params->staffIsAccessible)
-									echo ", " . $this->__("Staff") ; 
+									echo ", " . $this->__("Staff") ;
 								?>
 								<br/>
                     <?php
@@ -39,7 +39,7 @@ use Gibbon\core\trans ;
                     <tr>
                         <td style='vertical-align: top; border: none'>
                             <input class='topFinder' style='width: 275px' type='text' id='id' name='id' />
-                    		<?php $this->render('default.finder.list', $params); 
+                    		<?php $this->render('default.finder.list', $params);
 							$this->addScript("
 <script type='text/javascript'>
 	var id=new LiveValidation('id');

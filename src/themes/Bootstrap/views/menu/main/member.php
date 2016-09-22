@@ -1,4 +1,4 @@
-<?php 
+<?php
 use Gibbon\core\trans ;
 if ($el->currentCategory != $el->lastCategory) {
 	if ($el->count > 0) { ?>
@@ -11,4 +11,4 @@ if ($el->currentCategory != $el->lastCategory) {
 }
 else { ?>
 			<li><a href='<?php echo GIBBON_URL ?>index.php?q=/modules/<?php echo $el->name ; ?>/<?php echo $el->entryURL ; ?>'><?php echo $this->__($el->name); ?></a></li> <?php
-} 
+}

@@ -5,7 +5,7 @@ $this->render('default.header');
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>
-            <?php 
+            <?php
             print $this->session->get("organisationNameShort") . " - " . $this->session->get("systemName") ;
             if ($this->session->notEmpty("address")) {
                 if (! strstr($this->session->get("address"),"..")) {
@@ -21,10 +21,10 @@ $this->render('default.header');
         <meta name="robots" content="none"/>
 <?php $this->render('home.scripts'); ?>
 <?php $this->render('home.style'); ?>
-        
+
         <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
 
-   
+
         <?php
         //Analytics setting
         echo $this->session->notEmpty("analytics") ? $this->session->get("analytics") : '' ;
