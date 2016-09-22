@@ -67,8 +67,47 @@ body {
 	background-color: #ffffff ;
 	border-radius: 5px 5px 0 0; 
 }
+.header-row-1 {
+	height: 120px;
+}
 #header-logo {
 	color: #ccc;
+	border: none;
+}
+#header-finder {
+	margin: 10px;
+	padding: 0;
+	max-height: 90px ;
+}
+#header-finder .container-fluid {
+	background-color: #FBFBFB;
+	padding: 0;
+	margin: 0;
+	border-radius: 15px;
+	border: 1px solid #ccc;
+}
+#header-finder input{
+	height: 30px;
+}
+#header-finder h2 {
+	padding: 0;
+	margin: 10px 10px 0 10px;
+	font-size: 80%;
+	text-align: right;
+}
+#header-finder p {
+	padding: 0;
+	margin: 10px;
+	text-align: right;
+	color: #3b3b3b;
+	font-size: 10px;
+}
+#header-finder div.input-group {
+	margin: 10px 10px 10px 50px;
+}
+input#finderID-tokenfield {
+	margin-top: -6px;
+	margin-left: -12px;
 	border: none;
 }
 div.trailEnd {
@@ -125,6 +164,14 @@ div.minorLinks a:hover, div.minorLinks a .glyphicon:hover, div.minorLinks a .gly
 	font-size: 90% ;
 	text-transform: uppercase ;
 	border-top: none ;
+}
+li.dropdown a{
+	height: 30px ;
+	margin: 0 ;
+	padding: 15px;
+}
+ul.dropdown-menu li a{
+	padding: 7px 0 0 10px;
 }
 ul.nav li.dropdown:hover > ul.dropdown-menu {
     display: block;  
@@ -655,13 +702,6 @@ td.centre {
 	text-align: center!important;
 	font-size: 11px!important;
 	padding: 3px!important ;
-}
-#header-finder p {
-	font-size: 10px;
-	text-align: right;
-	margin-top: 88px;
-	font-style: italic;
-	color: #3b3b3b;
 }
 div#ui-datepicker-div {
 	z-index: 1000!important;

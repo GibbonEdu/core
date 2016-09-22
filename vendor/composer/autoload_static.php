@@ -11,6 +11,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         array (
             'Symfony\\Component\\Yaml\\' => 23,
         ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+        ),
         'M' => 
         array (
             'Monolog\\' => 8,
@@ -38,6 +42,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'Monolog\\' => 
         array (
@@ -89,16 +97,6 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'P' => 
-        array (
-            'Psr\\Log\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/psr/log',
-            ),
-        ),
-    );
-
     public static $classMap = array (
         'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
         'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
@@ -115,7 +113,6 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb::$classMap;
 
         }, null, ClassLoader::class);

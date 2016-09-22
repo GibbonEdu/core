@@ -1,4 +1,4 @@
-<?php
+<?php /*
 $this->addScript("
 <script type='text/javascript' language='javascript'>
 	$(document).ready(function() {
@@ -12,4 +12,15 @@ $this->addScript("
 		});
 	});
 </script>
+"); */
+$this->addScript("
+$('#finderID').tokenfield({
+  autocomplete: {
+    source: ".$el->list.",
+    delay: 100
+  },
+  showAutocompleteOnFocus: true,
+  minWidth: 282,
+  limit: 1
+});
 ");

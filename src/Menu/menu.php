@@ -75,4 +75,3 @@ abstract class menu implements menuInterface
 		$this->setMenu();
 	}
 }
-?>

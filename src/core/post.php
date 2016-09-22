@@ -22,7 +22,6 @@ namespace Gibbon\core;
 
 use Gibbon\core\logger ;
 use Gibbon\core\view ;
-use Gibbon\core\helper ;
 
 /**
  * Post Manager
@@ -95,26 +94,26 @@ class post extends view
 		if  (empty($this->token))
 		{
 			if ($installType !== 'Production') {
-				helper::dump($_POST);
-				helper::dump($_SERVER, true, true);
+				$this->dump($_POST);
+				$this->dump($_SERVER, true, true);
 			}
 			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if  (empty($this->action))
 		{
 			if ($installType !== 'Production') {
-				helper::dump($_POST);
-				helper::dump($_SERVER, true, true);
+				$this->dump($_POST);
+				$this->dump($_SERVER, true, true);
 			}
 			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
 		if (md5($this->config->get('guid') . $this->action) !== $this->token && $this->token != 'This is an old script!')
 		{
 			if ($installType !== 'Production') {
-				helper::dump('Token validation failed');
-				helper::dump(array(md5($this->config->get('guid') . $this->action), $this->config->get('guid')));
-				helper::dump($_POST);
-				helper::dump($_SERVER, true, true);
+				$this->dump('Token validation failed');
+				$this->dump(array(md5($this->config->get('guid') . $this->action), $this->config->get('guid')));
+				$this->dump($_POST);
+				$this->dump($_SERVER, true, true);
 			}
 			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
@@ -144,8 +143,8 @@ class post extends view
 			die();
 		}
 		if ($installType !== 'Production') {
-			helper::dump($_POST);
-			helper::dump($_SERVER, true, true);
+			$this->dump($_POST);
+			$this->dump($_SERVER, true, true);
 		}
 		throw new Exception( $this->__('Post to this system must be correctly formatted.'), 28000 + __LINE__);
 	}

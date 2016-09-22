@@ -9,8 +9,13 @@ $this->render('default.header');
             print $this->session->get("organisationNameShort") . " - " . $this->session->get("systemName") ;
             if ($this->session->notEmpty("address")) {
                 if (! strstr($this->session->get("address"),"..")) {
+<<<<<<< HEAD
                     if ( Gibbon\core\module::getModuleName($this->session->get("address"))!="" ) {
                         echo " - " . $this->__( Gibbon\core\module::getModuleName($this->session->get("address")) ) ;
+=======
+                    if ( $this->getModuleName($this->session->get("address"))!="" ) {
+                        echo " - " . $this->__( $this->getModuleName($this->session->get("address")) ) ;
+>>>>>>> 9f852d0fb1c6b3799f833bd1593409785cc98f71
                     }
                 }
             }
