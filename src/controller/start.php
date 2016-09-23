@@ -78,7 +78,7 @@ $sidebar = isset($_GET["sidebar"]) ? $_GET["sidebar"] : false ;
 if ($session->isEmpty("systemSettingsSet")) 
 	$session->getSystemSettings($pdo);
 
-trans::setStringReplacementList($view) ;
+$view->getTrans()->setStringReplacementList($view) ;
 
 //Try to autoset user's calendar feed if not set already
 if ($session->notEmpty("calendarFeedPersonal") && $session->notEmpty('googleAPIAccessToken')) {
@@ -127,7 +127,7 @@ if ($session->get('refreshCache') || $session->isEmpty("theme.ID") || $session->
 }
 //If still false, show warning, otherwise display page
 if (! $session->get("systemSettingsSet")) {
-	echo trans::__("System Settings are not set: the system cannot be displayed") ;
+	echo $view->__("System Settings are not set: the system cannot be displayed") ;
 }
 else 
 {
@@ -139,5 +139,5 @@ else
 	} else
     	new view('home.html', array(), $session, $config, $pdo);
 }
-trans::writeTranslationMissing();
+$view->getTrans()->writeTranslationMissing();
 die();  // Stop here, or run into old scripts

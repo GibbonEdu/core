@@ -132,15 +132,15 @@ class notification extends record
 			{
 		
 				//Attempt email send
-				$subject = trans::__(array('You have received a notification on %1$s at %2$s (%3$s %4$s)', array($this->view->session->get("systemName"), $this->view->session->get("organisationNameShort"), date("H:i"), helper::dateConvertBack(date("Y-m-d"))))) ;
-				$body = trans::__( 'Notification') . ": " . trans::__($text) . "<br/><br/>" ;
-				$body .= trans::__(array('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/modules/Notifications/notifications.php'>", "</a>"))) ;
+				$subject = $this->view->__(array('You have received a notification on %1$s at %2$s (%3$s %4$s)', array($this->view->session->get("systemName"), $this->view->session->get("organisationNameShort"), date("H:i"), helper::dateConvertBack(date("Y-m-d"))))) ;
+				$body = $this->view->__( 'Notification') . ": " . $this->view->__($text) . "<br/><br/>" ;
+				$body .= $this->view->__(array('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/modules/Notifications/notifications.php'>", "</a>"))) ;
 				$body .= "<br/><br/>" ;
 				$body .= "<hr/>" ;
 				$body .= "<p style='font-style: italic; font-size: 85%'>" ;
-				$body .= trans::__(array('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/preferences.php'>", "</a>"))) ;
+				$body .= $this->view->__(array('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/preferences.php'>", "</a>"))) ;
 				$body .= "<br/><br/>" ;
-				$body .= trans::__(array('Email sent via %1$s at %2$s.' , array($this->view->session->get("systemName"), $this->view->session->get("organisationName")))) ;
+				$body .= $this->view->__(array('Email sent via %1$s at %2$s.' , array($this->view->session->get("systemName"), $this->view->session->get("organisationName")))) ;
 				$body .= "</p>" ;
 				$bodyPlain = preg_replace('#<br\s*/?>#i', "\n", $body) ;
 				$bodyPlain = str_replace("</p>", "\n\n", $bodyPlain) ;

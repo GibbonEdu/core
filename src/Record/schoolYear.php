@@ -363,7 +363,7 @@ class schoolYear extends record
 		//Check number of rows returned.
 		//If it is not 1, show error
 		if (! $v->getSuccess())  // find One By does all this test for us.
-			die(\Gibbon\trans::__("Your request failed due to a database error.")) ;
+			die($this->view->__("Your request failed due to a database error.")) ;
 		else {
 			//Else get schoolYearID
 			$this->session->set("gibbonSchoolYearID", $year->gibbonSchoolYearID) ;

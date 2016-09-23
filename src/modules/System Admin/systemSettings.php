@@ -91,8 +91,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['installType']->returnRecord());
-	if ($sysSettings['cuttingEdgeCode']->returnRecord()->value == 'N')
-		$el->addOption($this->__('Production'), 'Production');
+	$el->addOption($this->__('Production'), 'Production');
 	$el->addOption($this->__('Testing'), 'Testing');
 	$el->addOption($this->__('Development'), 'Development');
 

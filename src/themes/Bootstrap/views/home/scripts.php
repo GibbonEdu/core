@@ -40,8 +40,8 @@ if ($this->session->notEmpty("username")) {
 			keepAliveUrl: 'index.php?q=/modules/Security/keepAlive.php&divert=true' ,
 			redirUrl: 'index.php?q=/modules/Security/logout.php&timeout=true&divert=true', 
 			logoutUrl: 'index.php?q=/modules/Security/logout.php&timeout=true&divert=true' , 
-			warnAfter: ".($sessionDuration*1000).",
-			redirAfter: ".(($sessionDuration*1000)+600000)."
+			warnAfter: ".($sessionDuration * 1000).",
+			redirAfter: ".(($sessionDuration * 1000) + 600000)."
 		});
 	});
    // Keep all submit buttons from working

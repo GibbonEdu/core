@@ -217,7 +217,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 
             }
             //Set theme
-            if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
+            if ($cacheLoad or empty($_SESSION[$guid]['themeCSS']) or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
                 $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />";
                 if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
                     $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />";
