@@ -112,7 +112,7 @@ $el->setRequired();
 $el->setConfirmation('Match the New Password', 'passwordNew');
 $el->nameDisplay = "Confirm New Password";
 
-$el = $form->addElement('submitBtn', 'submitBtn', 'Submit');
+$el = $form->addElement('submitBtn', null);
 
 $form->render();
 
@@ -152,13 +152,13 @@ if ($pObj->getField('personalLanguageCode') != '')
 	$el->value = $pObj->getField('personalLanguageCode');
 foreach ($this->config->getLanguages() as $code=>$name )
 {
-	$el->addOption($this->__($name), $code);
+	$x = $this->session->get('defaultLanguage') == $code ? ' ('.$this->__("System Default").')': '';
+	$el->addOption($this->__($name) . $x, $code);
 }
-
 $el = $form->addElement('yesno', "receiveNotificationEmails", $this->session->get("receiveNotificationEmails"));
 $el->nameDisplay = "Receive Email Notifications?";
 $el->description = "Notifications can always be viewed on screen.";
 
-$el = $form->addElement('submitBtn', 'submitBtn', 'Submit');
+$el = $form->addElement('submitBtn', null);
 
 $form->render();

@@ -20,8 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Record ;
 
-use Gibbon\core\module as helper ;
-use Gibbon\mailer ;
+use Gibbon\core\mailer ;
 
 /**
  * Notification Record
@@ -105,7 +104,7 @@ class notification extends record
 	{
 		$moduleName = empty($moduleName) ? null : $moduleName ;
 		if (! is_null($moduleName))
-			$moduleID = helper::getModuleIDFromName($moduleName, $this->view);	
+			$moduleID = $this->view->getModuleIDFromName($moduleName, $this->view);	
 		$moduleID = empty($moduleID) ? null : $moduleID ;
 		
 		//Check for existence of notification in new status
@@ -132,7 +131,7 @@ class notification extends record
 			{
 		
 				//Attempt email send
-				$subject = $this->view->__(array('You have received a notification on %1$s at %2$s (%3$s %4$s)', array($this->view->session->get("systemName"), $this->view->session->get("organisationNameShort"), date("H:i"), helper::dateConvertBack(date("Y-m-d"))))) ;
+				$subject = $this->view->__(array('You have received a notification on %1$s at %2$s (%3$s %4$s)', array($this->view->session->get("systemName"), $this->view->session->get("organisationNameShort"), date("H:i"), $this->view->dateConvertBack(date("Y-m-d"))))) ;
 				$body = $this->view->__( 'Notification') . ": " . $this->view->__($text) . "<br/><br/>" ;
 				$body .= $this->view->__(array('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/modules/Notifications/notifications.php'>", "</a>"))) ;
 				$body .= "<br/><br/>" ;
