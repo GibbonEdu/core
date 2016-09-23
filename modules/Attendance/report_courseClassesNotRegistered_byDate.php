@@ -38,46 +38,88 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
     $today = date('Y-m-d');
 
-    if (isset($_GET['date']) == false) {
-        $date = date('Y-m-d');
-    } else {
-        $date = dateConvert($guid, $_GET['date']);
+    $dateEnd = (isset($_GET['dateEnd']))? dateConvert($guid, $_GET['dateEnd']) : date('Y-m-d');
+    $dateStart = (isset($_GET['dateStart']))? dateConvert($guid, $_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
+
+    // Correct inverse date ranges rather than generating an error
+    if ($dateStart > $dateEnd) {
+        $swapDates = $dateStart;
+        $dateStart = $dateEnd;
+        $dateEnd = $swapDates;
     }
 
-    $last5SchoolDays = getLastNSchoolDays($guid, $connection2, $date, 5);
+    $datediff = strtotime($dateEnd) - strtotime($dateStart);
+    $daysBetweenDates = floor($datediff / (60 * 60 * 24)) + 1;
+
+    $lastSetOfSchoolDays = getLastNSchoolDays($guid, $connection2, $dateEnd, $daysBetweenDates, true);
+
+    $lastNSchoolDays = array();
+    for($i = 0; $i < count($lastSetOfSchoolDays); $i++) {
+        if ( $lastSetOfSchoolDays[$i] >= $dateStart  ) $lastNSchoolDays[] = $lastSetOfSchoolDays[$i];
+    }
+
     ?>
 	
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $date) ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-						date.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#date" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
+                <td style='width: 275px'> 
+                    <b><?php echo __($guid, 'Start Date') ?> *</b><br/>
+                    <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
+                </td>
+                <td class="right">
+                    <input name="dateStart" id="dateStart" maxlength=10 value="<?php echo dateConvertBack($guid, $dateStart) ?>" type="text" class="standardWidth">
+                    <script type="text/javascript">
+                        var dateStart=new LiveValidation('dateStart');
+                        dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+                        } else {
+                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+                        }
+                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+                            echo 'dd/mm/yyyy';
+                        } else {
+                            echo $_SESSION[$guid]['i18n']['dateFormat'];
+                        }
+                        ?>." } ); 
+                        dateStart.add(Validate.Presence);
+                    </script>
+                     <script type="text/javascript">
+                        $(function() {
+                            $( "#dateStart" ).datepicker();
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style='width: 275px'> 
+                    <b><?php echo __($guid, 'End Date') ?> *</b><br/>
+                    <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
+                </td>
+                <td class="right">
+                    <input name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $dateEnd) ?>" type="text" class="standardWidth">
+                    <script type="text/javascript">
+                        var dateEnd=new LiveValidation('dateEnd');
+                        dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+                        } else {
+                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+                        }
+                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+                            echo 'dd/mm/yyyy';
+                        } else {
+                            echo $_SESSION[$guid]['i18n']['dateFormat'];
+                        }
+                        ?>." } ); 
+                        dateEnd.add(Validate.Presence);
+                    </script>
+                     <script type="text/javascript">
+                        $(function() {
+                            $( "#dateEnd" ).datepicker();
+                        });
+                    </script>
+                </td>
+            </tr>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_courseClassesNotRegistered_byDate.php">
@@ -88,20 +130,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 	</form>
 	<?php
 
-    if (isSchoolOpen($guid, $date, $connection2) == false) {
-        echo "<div class='error'>";
-        echo __($guid, 'School is closed on the specified date, and so attendance information cannot be recorded.');
-        echo '</div>';
-    }
-    else if ($date != '') {
+    if ($dateStart != '') {
         echo '<h2>';
         echo __($guid, 'Report Data');
         echo '</h2>';
 
         //Produce array of attendance data
         try {
-            $data = array('attendanceDate' => $date);
-            $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date=:attendanceDate ORDER BY date";
+            $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
+            $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -109,12 +147,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         }
         $log = array();
         while ($row = $result->fetch()) {
-            $log[$row['date']][$row['gibbonCourseClassID']] = true;
+            $log[$row['gibbonCourseClassID']][$row['date']] = true;
         }
 
+        // Produce an array of scheduled classes
         try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'attendanceDate' => $date );
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:attendanceDate AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+            $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+            $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
+
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+        $tt = array();
+        while ($row = $result->fetch()) {
+            $tt[$row['gibbonCourseClassID']][$row['date']] = true;
+        }
+
+
+        try {
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -126,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             echo __($guid, 'There are no records to display.');
             echo '</div>';
         }
-        else if ($date > $today) {
+        else if ($dateStart > $today || $dateEnd > $today) {
             echo "<div class='error'>";
             echo __($guid, 'The specified date is in the future: it must be today or earlier.');
             echo '</div>';
@@ -135,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             $classes = $result->fetchAll();
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_courseClassesNotRegistered_byDate_print.php&date='.dateConvertBack($guid, $date)."'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_courseClassesNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
@@ -156,114 +210,105 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
             $count = 0;
 
-			//Loop through each date
-			if (isSchoolOpen($guid, $date, $connection2, true)) {
-                //Loop through each roll group
-                foreach ($classes as $row) {
+            $timestampStart = dateConvertToTimestamp($dateStart);
+            $timestampEnd = dateConvertToTimestamp($dateEnd);
 
-                    // Skip classes with no students
-                    if ($row['studentCount'] <= 0) continue;
+            //Loop through each roll group
+            foreach ($classes as $row) {
 
-                    //Output row only if not registered on specified date
-                    if (isset($log[$date][$row['gibbonCourseClassID']]) == false) {
-                        ++$count;
+                // Skip classes with no students
+                if ($row['studentCount'] <= 0) continue;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr>";
-                        echo '<td>';
-                        echo $row['courseShort'].'.'.$row['class'];
-                        echo '</td>';
-                        echo '<td>';
-                        echo dateConvertBack($guid, $date);
-                        echo '</td>';
-                        echo '<td style="padding: 0;">';
-                        
-                            echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
-                            echo '<tr>';
-                            for ($i = 4; $i >= 0; --$i) {
-                                $link = '';
-                                if ($i > ( count($last5SchoolDays) - 1)) {
-                                    echo "<td class='highlightNoData'>";
-                                    echo '<i>'.__($guid, 'NA').'</i>';
-                                    echo '</td>';
+                //Output row only if not registered on specified date, and timetabled for that day
+                if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false || 
+                    count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
+                    ++$count;
+
+                    //COLOR ROW BY STATUS!
+                    echo "<tr>";
+                    echo '<td>';
+                    echo $row['courseShort'].'.'.$row['class'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
+                    echo '</td>';
+                    echo '<td style="padding: 0;">';
+                    
+                        echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
+                        echo '<tr>';
+
+                        $historyCount = 0;
+                        for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
+                            $link = '';
+                            if ($i > ( count($lastNSchoolDays) - 1)) {
+                                echo "<td class='highlightNoData'>";
+                                echo '<i>'.__($guid, 'NA').'</i>';
+                                echo '</td>';
+                            } else {
+
+                                $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
+                                
+                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
+
+                                if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
+                                    $class = 'highlightPresent';
                                 } else {
-                                    $currentDayTimestamp = dateConvertToTimestamp($last5SchoolDays[$i]);
-                                    
-                                    try {
-                                        $dataLast5SchoolDays = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'attendanceDate' => $last5SchoolDays[$i] );
-                                        $sqlLast5SchoolDays = 'SELECT gibbonTTDayDate.date, UNIX_TIMESTAMP(gibbonAttendanceLogCourseClass.timestampTaken) as timestamp FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) LEFT JOIN gibbonAttendanceLogCourseClass ON (gibbonAttendanceLogCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID AND gibbonAttendanceLogCourseClass.date = gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonTTDayDate.date=:attendanceDate LIMIT 1';
-                                        $resultLast5SchoolDays = $pdo->executeQuery($dataLast5SchoolDays, $sqlLast5SchoolDays);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
+                                    if (isset($tt[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
+                                        $class = 'highlightAbsent';
 
-                                    if ($resultLast5SchoolDays->rowCount() == 0) {
+                                    } else {
                                         $class = 'highlightNoData';
-                                        
-                                    } else {
-
-                                        $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$last5SchoolDays[$i];
-                                        $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-
-                                        if ( empty($rowLast5SchoolDays['timestamp']) ) {
-                                            $class = 'highlightAbsent';
-                                        } else {
-                                            $class = 'highlightPresent';
-                                        }
-                                        
+                                        $link = '';
                                     }
-
-                                    echo "<td class='$class' style='padding: 12px !important;'>";
-                                    if ($link != '') {
-                                        $title = (!empty($rowLast5SchoolDays['timestamp']))? __($guid, "Taken").' '.date('F j, Y, g:i a', $rowLast5SchoolDays['timestamp']) : '';
-                                        echo "<a href='$link' title='".$title."'>";
-                                        echo date('d', $currentDayTimestamp).'<br/>';
-                                        echo "<span>".date('M', $currentDayTimestamp).'</span>';
-                                        echo '</a>';
-                                    } else {
-                                        echo date('d', $currentDayTimestamp).'<br/>';
-                                        echo "<span>".date('M', $currentDayTimestamp).'</span>';
-                                    }
-                                    echo '</td>';
                                 }
-                            }
 
+                                echo "<td class='$class' style='padding: 12px !important;'>";
+                                if ($link != '') {
+                                    echo "<a href='$link' >";
+                                    echo date('d', $currentDayTimestamp).'<br/>';
+                                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                    echo '</a>';
+                                } else {
+                                    echo date('d', $currentDayTimestamp).'<br/>';
+                                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                }
+                                echo '</td>';
 
-                            $currentDayTimestamp = dateConvertToTimestamp($date);
-                            echo "<td class='highlightAbsent'>";
-                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$date;
-                                echo "<a href='$link'>";
-                                echo date('d', $currentDayTimestamp).'<br/>';
-                                echo "<span>".date('M', $currentDayTimestamp).'</span>';
-                                echo '</a>';
-                            echo '</td>';
+                                // Wrap to a new line every 10 dates
+                                if (  ($historyCount+1) % 10 == 0 ) {
+                                    echo '</tr><tr>';
+                                }
 
-                            echo '</tr>';
-                            echo '</table>';
-
-                        echo '</td>';
-                        echo '<td>';
-
-                        try {
-                            $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
-                            $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
-                            $resultTutor = $connection2->prepare($sqlTutor);
-                            $resultTutor->execute($dataTutor);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-
-                        if ($resultTutor->rowCount() > 0) {
-                            while ($rowTutor = $resultTutor->fetch()) {
-                                echo formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
+                                $historyCount++;
                             }
                         }
-                        
-                        echo '</td>';
+
                         echo '</tr>';
+                        echo '</table>';
+
+                    echo '</td>';
+                    echo '<td>';
+
+                    try {
+                        $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
+                        $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
+                        $resultTutor = $connection2->prepare($sqlTutor);
+                        $resultTutor->execute($dataTutor);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
                     }
+
+                    if ($resultTutor->rowCount() > 0) {
+                        while ($rowTutor = $resultTutor->fetch()) {
+                            echo formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
+                        }
+                    }
+                    
+                    echo '</td>';
+                    echo '</tr>';
                 }
             }
+            
             
 
             if ($count == 0) {
