@@ -147,7 +147,7 @@ $el = $form->addElement('select', "personalLanguageCode", $pObj->getField('perso
 $el->nameDisplay = "Personal Language" ;
 $el->description = "Override the system default language.";
 $el->validateOff();
-$el->addOption('');
+$el->addOption($this->__('Select Personal Language'),'');
 if ($pObj->getField('personalLanguageCode') != '')
 	$el->value = $pObj->getField('personalLanguageCode');
 foreach ($this->config->getLanguages() as $code=>$name )

@@ -40,8 +40,6 @@ $caching = $config->get('caching');
 $session->set("module", $view->getModuleName($session->get("address"))) ;
 $session->set("action", $view->getActionName($session->get("address"))) ;
 
-
-
 //Deal with caching
 $refreshCache = false ;
 if (is_int($session->get("pageLoads"))) {
@@ -132,9 +130,8 @@ else
 	{
 		$params = new stdClass();
 		$params->action = $session->get('absolutePath') . $session->get("address");
-		new view('post.inject', $params, $session, $config, $pdo);
+		$view->render('post.inject', $params);
 	} else
-    	new view('home.html', array(), $session, $config, $pdo);
+    	$view->render('home.html');
 }
-$view->getTrans()->writeTranslationMissing();
 die();  // Stop here, or run into old scripts

@@ -7,10 +7,11 @@ $this->render('default.header');
         <title>
             <?php 
             echo $this->session->get("organisationNameShort") . " - " . $this->session->get("systemName") ;
-            if ($this->session->notEmpty("address")) {
-                if (strstr($this->session->get("address"),"..")==FALSE) {
-                    if ($this->getModuleName($this->session->get("address"))!="" ) {
-                        echo " - " . $this->__($this->getModuleName($this->session->get("address")) ) ;
+			$address = $this->session->get("address");
+            if (! empty($address)) {
+                if (strstr($address,"..") == false) {
+                    if ($this->getModuleName($address)!="" ) {
+                        echo " - " . $this->__($this->getModuleName($address)) ;
                     }
                 }
             }

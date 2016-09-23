@@ -312,7 +312,7 @@ class config
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/languages.yml") );
 			foreach($x['languages'] as $code=>$details)
 			{
-				if (file_exists(GIBBON_ROOT . 'src/i18n/'.$code.'/gibbon.yml') && $details['active'] == 'Y')
+				if ($details['active'] == 'Y')
 					$this->languages[$code] = $details['name'];
 			}
 		} elseif (empty ($this->languages) && file_exists(GIBBON_ROOT . "config/languages.yml"))
@@ -321,7 +321,7 @@ class config
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . "config/languages.yml") );
 			foreach($x['languages'] as $code=>$details)
 			{
-				if (file_exists(GIBBON_ROOT . 'src/i18n/'.$code.'/gibbon.yml') && $details['active'] == 'Y')
+				if ($details['active'] == 'Y')
 					$this->languages[$code] = $details['name'];
 			}
 		}

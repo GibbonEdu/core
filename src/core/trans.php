@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\core;
 
-use Symfony\Component\Yaml\Yaml ;
 use Gibbon\Record\stringReplacement ;
 
 /**
@@ -118,18 +117,12 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 	public function __($text, $options = array(), $choice = NULL)
 	{
 		if (is_array($text)) return $this->__($text[0], $text[1]);
-		$this->matrix = $this->loadMatrix();
 		$text = trim($text);
 		$text = trim($text, '"');
 		$text = trim($text, "'");
 		$this->source = $text ;
 
-		$text = $this->getText($text) ;
-
-		if (is_array($text) and isset($text[$choice]))
-			$text = $text[$choice];
-		elseif (is_array($text))
-			$text = array_pop($text);
+		$text = getText($this->source) ;
 		
 		if (! empty($options)) {
 			try {
@@ -176,175 +169,23 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 	}
 	
 	/**
-	 * Load Language Matrix
+	 * Translation Construct
 	 *
 	 * en_GB is the default language..  It is always loaded first, then the language set of the system/user.<br />
 	 * module lanaguage sets are loaded on top of the default sets in the same order.
 	 * 
-	 * @version	21st September 2016
-	 * @since	18th May 2016
-	 * @return	array
-	 */
-	private function loadMatrix()
-	{
-		if (count($this->matrix) == 0)
-		{
-			$session = new session();
-			$i18n = $session->get('i18n.code');
-			
-			//Load Default en_GB
-			$file = GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml';
-			if (file_exists($file)) {
-				$this->matrix = Yaml::parse(file_get_contents($file));
-				if ( empty($this->matrix)) $this->matrix = array();
-			}
-
-			// Load System Language
-			$file = GIBBON_ROOT.'src/i18n/'.$i18n.'/gibbon.yml';
-			if ($i18n !== 'en_GB' && file_exists($file)) {
-				$mTrans = Yaml::parse(file_get_contents($file));
-				if (empty($mTrans)) $mTrans = array();
-				$this->matrix = array_merge($this->matrix, $mTrans);
-			}
-			
-		}
-		return $this->matrix ;
-	}
-	
-	/**
-	 * get Text
-	 *
-	 * @version	18th May 2016
-	 * @since	18th May 2016
-	 * @param	string		$text
-	 * @return	array|string
-	 */
-	private function getText($text)
-	{
-		
-		$this->source = $text;
-		if (isset($this->matrix[$text]) && is_string($this->matrix[$text]))
-			return $this->matrix[$text] ;
-		$period = strpos($text, '.') ;
-		if ($period === false)
-		{
-			$key = $text;
-		}
-		else
-		{
-			$key = substr($text, 0, $period) ;
-			$sub = trim(substr($text, $period + 1));
-		}
-		if (isset($this->matrix[$key]))
-		{
-			if (is_array($this->matrix[$key]))
-			{
-				if (! isset($sub))
-					return $this->matrix[$key];
-				else
-					return $this->getSubText($this->matrix[$key], $sub);
-			}
-		}
-		// Not Found
-		$this->reportTranslationMissing();
-		return $this->source ;
-	}
-	
-	/**
-	 * get Sub Text
-	 *
-	 * @version	18th May 2016
-	 * @since	18th May 2016
-	 * @param	array		$matrix
-	 * @param	string		$text
-	 * @return	array|string
-	 */
-	private function getSubText($matrix, $text)
-	{
-		if (isset($matrix[$text]) && is_string($matrix[$text]))
-			return $matrix[$text] ;
-		$period = strpos($text, '.') ;
-		$key = substr($text, 0, $period) ;
-		if ( $period === false && isset($matrix[$text]))
-		{
-		return $matrix[$text];
-		}
-		if (isset($matrix[$key]))
-		{
-			if (is_array($matrix[$key]))
-			{
-				return $this->getSubText($matrix[$key], substr($text, $period + 1));
-			}
-			elseif (is_string($matrix[$key]))
-				return $matrix[$key] ;
-		}
-		// Not Found
-		$this->reportTranslationMissing();
-		return $this->source ;
-	}
-	
-	/**
-	 * report Translation Missing
-	 *
-	 * @version	27th June 2016
-	 * @since	18th May 2016
+	 * @version	23rd September 2016
+	 * @since	23rd September 2016
 	 * @return	void
 	 */
-	private function reportTranslationMissing()
+	public function __construct()
 	{
+		//Set up for i18n via gettext
 		$session = new session();
-		if ($session->get('installType') !== 'Development')
-			return ;
-
-		$x = $session->get('i18n.missing');
-		
-		if (isset($x[$this->source]))
-			return ;
-
-		
-		$x[$this->source] = $this->source ;
-		
-		$session->set('i18n.missing', $x);
-
-		return ;
-
-	}
-	
-	/**
-	 * Write Translation Missing
-	 *
-	 * @version	19th September 2016
-	 * @since	27th June 2016
-	 * @return	void
-	 */
-	public function writeTranslationMissing()
-	{
-		$session = new session();
-		if ($session->get('installType') !== 'Development')
-			return ;
-
-		if ($session->isEmpty('i18n.missing'))
-			return ;
-		
-		$x = $session->get('i18n.missing');
-		if (! is_array($x))
-		{
-			$session->clear('i18n.missing');
-			return ;
-		}
-		
-		if (file_exists(GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml'))
-			$report = Yaml::parse(file_get_contents(GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml'));
-		if (empty($report))
-			$report = array();
-		foreach($x as $source)
-		{
-			$report[$source] = $source ;
-		}
-		file_put_contents(GIBBON_ROOT.'src/i18n/en_GB/gibbon.yml', Yaml::dump($report));
-		
-		$session->clear('i18n.missing');
-		
-		return ;
+		putenv('LC_ALL='.$session->get('i18n.code', 'en_GB'));
+		setlocale(LC_ALL, $session->get('i18n.code', 'en_GB'));
+		bindtextdomain('gibbon', './i18n');
+		textdomain('gibbon');
+		bind_textdomain_codeset('gibbon', 'UTF-8');
 	}
 }
