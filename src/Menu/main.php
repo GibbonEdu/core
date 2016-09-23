@@ -108,7 +108,7 @@ class main extends menu
 			}
 			
 			$this->session->set('display.menu.main.style', 'Bootstrap');
-			$this->session->set('display.menu.main.refresh', $this->view->getConfig()->get('cache', 15));
+			$this->session->set('display.menu.main.refresh', $this->view->getConfig()->get('caching', 15));
 			$this->session->set('display.menu.main.content', $menu);
 			$this->menu = $menu ;
 		}

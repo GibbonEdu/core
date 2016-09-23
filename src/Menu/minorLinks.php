@@ -90,7 +90,7 @@ class minorLinks extends menu
 				
 			}
 
-			$this->session->set('display.menu.minorLinks.refresh', $this->view->getConfig()->get('cache', 15));
+			$this->session->set('display.menu.minorLinks.refresh', $this->view->getConfig()->get('caching', 15));
 			if (empty($return)) 
 				$this->session->set('display.menu.minorLinks.refresh', 0);
 			$this->session->set('display.menu.minorLinks.content', $return);
