@@ -386,12 +386,10 @@ table:
     class: table
     additional: to do 
 js:
-    - /lib/LiveValidation/livevalidation_standalone.compressed.js
     - /vendor/components/jquery/jquery.min.js
     - /lib/jquery/jquery-migrate.min.js
     - /vendor/components/jqueryui/jquery-ui.min.js
     - /lib/jquery-autosize/jquery.autosize.min.js
-    - /lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js
     - /vendor/twbs/bootstrap/dist/js/bootstrap.min.js
     - /src/themes/Bootstrap/js/formValidation.min.js
     - /src/themes/Bootstrap/js/framework/bootstrap.min.js
@@ -403,6 +401,7 @@ js:
     - /src/themes/Bootstrap/js/common.js
     - /vendor/nostalgiaz/bootstrap-switch/dist/js/bootstrap-switch.min.js
     - /src/themes/Bootstrap/js/bootstrap-tokenfield.js
+    - /src/themes/Bootstrap/js/bootstrap-session-timeout.min.js
 
 datepicker: 1
 # Bootstrap

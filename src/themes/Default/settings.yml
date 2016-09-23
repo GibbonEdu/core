@@ -369,24 +369,24 @@ form:
     nothing:
         role: form
 css:
-    1: /lib/jquery-ui/css/blitzer/jquery-ui.css
-    2: /lib/thickbox/thickbox.css
-    3: /lib/jquery-tokeninput/styles/token-input-facebook.css
-    4: /src/themes/{{themeName}}/css/main.css 
+    - /lib/jquery-ui/css/blitzer/jquery-ui.css
+    - /lib/thickbox/thickbox.css
+    - /lib/jquery-tokeninput/styles/token-input-facebook.css
+    - /src/themes/{{themeName}}/css/main.css 
 js:
-    1: /lib/LiveValidation/livevalidation_standalone.compressed.js
-    2: /vendor/components/jquery/jquery.min.js
-    3: /lib/jquery/jquery-migrate.min.js
-    4: /vendor/components/jqueryui/jquery-ui.min.js
-    5: /lib/jquery-autosize/jquery.autosize.min.js
-    6: /lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js
-    7: /lib/jquery-jslatex/jquery.jslatex.js
-    8: /lib/jquery-form/jquery.form.js
-    9: /lib/chained/jquery.chained.mini.js
-    10: /lib/thickbox/thickbox-compressed.js
-    11: /vendor/tinymce/tinymce/tinymce.min.js
-    12: /lib/jquery-tokeninput/src/jquery.tokeninput.js
-    13: /src/themes/Default/js/common.js
+    - /lib/LiveValidation/livevalidation_standalone.compressed.js
+    - /vendor/components/jquery/jquery.min.js
+    - /lib/jquery/jquery-migrate.min.js
+    - /vendor/components/jqueryui/jquery-ui.min.js
+    - /lib/jquery-autosize/jquery.autosize.min.js
+    - /src/themes/Default/js/jquery.sessionTimeout.min.js
+    - /lib/jquery-jslatex/jquery.jslatex.js
+    - /lib/jquery-form/jquery.form.js
+    - /lib/chained/jquery.chained.mini.js
+    - /lib/thickbox/thickbox-compressed.js
+    - /vendor/tinymce/tinymce/tinymce.min.js
+    - /lib/jquery-tokeninput/src/jquery.tokeninput.js
+    - /src/themes/{{themeName}}/js/common.js
 validation:
     asScript: 1
     Presence: ' {{id}}.add(Validate.Presence); '
