@@ -1,7 +1,0 @@
-security:
-    cost: 12
-    passwordPolicy:
-        MinLength: 8
-        Numeric: Yes
-        NonAlphaNumeric: No
-        Alpha: Yes 
