@@ -97,12 +97,9 @@ if ($session->notEmpty("calendarFeedPersonal") && $session->notEmpty('googleAPIA
 }
 
 //Check for force password reset flag
-if ($session->notEmpty("passwordForceReset")) {
-	if ($session->get("passwordForceReset")=="Y" AND $q!="preferences.php") {
-		$URL = $session->get('AbsoluteURL') . "/index.php?q=preferences.php" ;
-		$URL=$URL. "&forceReset=Y" ;
-		header("Location: {$URL}") ;
-	}
+if ($session->notEmpty("passwordForceReset") && $session->get("passwordForceReset")=="Y" && $q!="/modules/User Admin/preferences.php") {
+		$URL = array('q'=>'/modules/User Admin/preferences.php', 'forceReset' => 'Y') ;
+		$this->view->redirect($URL) ;
 }
 
 if ($session->isEmpty("address") && ! $sidebar) {

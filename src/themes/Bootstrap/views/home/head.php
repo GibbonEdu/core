@@ -1,5 +1,4 @@
 <?php
-use Gibbon\core\trans ;
 $this->render('default.header');
 ?>
 <!DOCTYPE html>

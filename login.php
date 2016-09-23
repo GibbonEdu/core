@@ -209,7 +209,9 @@ else {
                     $_SESSION[$guid]['personalBackground'] = $row['personalBackground'];
                     $_SESSION[$guid]['messengerLastBubble'] = $row['messengerLastBubble'];
                     $_SESSION[$guid]['gibbonThemeIDPersonal'] = $row['gibbonThemeIDPersonal'];
-                    $_SESSION[$guid]['gibboni18nIDPersonal'] = $row['gibboni18nIDPersonal'];
+                    $_SESSION[$guid]['personalLanguageCode'] = $row['personalLanguageCode'];  //  Necessary change for new code...
+					if (! empty($_SESSION[$guid]['personalLanguageCode']))
+						$_SESSION[$guid]['i18n']['code'] = $row['personalLanguageCode'];
                     $_SESSION[$guid]['googleAPIRefreshToken'] = $row['googleAPIRefreshToken'];
                     $_SESSION[$guid]['googleAPIAccessToken'] = null; //Set only when user logs in with Google
                     $_SESSION[$guid]['receiveNotificationEmails'] = $row['receiveNotificationEmails'];

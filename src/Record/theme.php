@@ -26,7 +26,7 @@ use Gibbon\core\view ;
 /**
  * Theme Record
  *
- * @version	26th August 2016
+ * @version	23rd September 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -136,7 +136,7 @@ class theme extends record
 	/**
 	 * set Default Theme
 	 *
-	 * @version	5th July 2016
+	 * @version	23rd September 2016
 	 * @since	2nd June 2016
 	 * @return	void		
 	 */

@@ -138,7 +138,7 @@ class notification extends record
 				$body .= "<br/><br/>" ;
 				$body .= "<hr/>" ;
 				$body .= "<p style='font-style: italic; font-size: 85%'>" ;
-				$body .= $this->view->__(array('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/preferences.php'>", "</a>"))) ;
+				$body .= $this->view->__(array('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/modules/User Admin/preferences.php'>", "</a>"))) ;
 				$body .= "<br/><br/>" ;
 				$body .= $this->view->__(array('Email sent via %1$s at %2$s.' , array($this->view->session->get("systemName"), $this->view->session->get("organisationName")))) ;
 				$body .= "</p>" ;

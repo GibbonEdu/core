@@ -119,8 +119,8 @@ if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['
 
 //Check for force password reset flag
 if (isset($_SESSION[$guid]['passwordForceReset'])) {
-    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $q != 'preferences.php') {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
+    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $q != '/modules/User Admin/preferences.php') {
+        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/preferences.php';
         $URL = $URL.'&forceReset=Y';
         header("Location: {$URL}");
         exit();

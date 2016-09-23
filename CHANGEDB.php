@@ -511,4 +511,9 @@ ALTER TABLE `gibbonUnit` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'S
 ALTER TABLE `gibbonCourseClass` ADD `gibbonScaleIDTarget` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `reportable`;end
 ALTER TABLE `gibbonRollGroup` ADD `gibbonPersonIDEA` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDTutor3`, ADD `gibbonPersonIDEA2` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA`, ADD `gibbonPersonIDEA3` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA2`;end
 ALTER TABLE `gibbonModule` CHANGE `category` `category` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'defaultLanguage', 'Default Language', 'Sets the default system Language.  This default can be over-ridden by individual users.', 'en_GB');end
+ALTER TABLE `gibbonPerson` ADD `personalLanguageCode` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'en_GB' AFTER `gibboni18nIDPersonal`;end
+UPDATE `gibbonPerson`, `gibboni18n` SET `gibbonPerson`.`personalLanguageCode` = `gibboni18n`.`code` WHERE `gibboni18n`.`gibboni18nID` = `gibbonPerson`.`gibboni18nIDPersonal` AND `gibbonPerson`.`gibboni18nIDPersonal` > 0;end
+ALTER TABLE `gibbonPerson` DROP `gibboni18nIDPersonal`;end
+
 ";
