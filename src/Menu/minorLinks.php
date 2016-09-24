@@ -58,7 +58,7 @@ class minorLinks extends menu
 				}
 			}
 			else {
-				$return .= '<div class="minorLinksContent">';
+				$return .= $this->view->renderReturn('default.minorLinks.startLinks');
 				$name = $this->session->get("preferredName") . " " . $this->session->get("surname");
 				if (! $this->session->isEmpty("gibbonRoleIDCurrentCategory")) {
 					if ($this->session->get("gibbonRoleIDCurrentCategory")=="Student") {
@@ -86,7 +86,7 @@ class minorLinks extends menu
 				
 				$return .= $this->messageWall();
 
-				$return .= '</div>';
+				$return .= $this->view->renderReturn('default.minorLinks.endLinks');
 				
 			}
 

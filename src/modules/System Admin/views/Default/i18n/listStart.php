@@ -15,12 +15,6 @@ new Gibbon\Form\startForm(array('q'=>'/modules/System Admin/i18n_manageProcess.p
             <?php echo $this->__('Active'); ?>
             </th>
             <th>
-            <?php echo $this->__('Version'); ?>
-            </th>
-            <th>
-            <?php echo $this->__('Update to'); ?>
-            </th>
-            <th>
             <?php echo $this->__('Maintainer'); ?>
             </th>
             <th>

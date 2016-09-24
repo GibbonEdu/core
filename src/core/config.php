@@ -29,7 +29,7 @@ use stdClass ;
 /**
  * Configuration Manager
  *
- * @version	10th September 2016
+ * @version	24th September 2016
  * @since	8th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -205,7 +205,7 @@ class config
 	 * get Setting Value by Scope
 	 *
 	 * Gets the desired setting, specified by name and scope.
-	 * @version	15th July 2016
+	 * @version	24th September 2016
 	 * @since	20th April 2016
 	 * @param	string	$scope		Scope
 	 * @param	string	$name		Name
@@ -224,13 +224,13 @@ class config
 		$this->system->$scope->$name = false ;
 		$pdo = $this->getPDO();
 		$data = array("scope"=>$scope, "name"=>$name);
-		$sql = "SELECT `value` 
+		$sql = "SELECT `value`, `type`
 			FROM `gibbonSetting` 
 			WHERE `scope`=:scope 
 				AND `name`=:name" ;
 		$result = $pdo->executeQuery($data, $sql);
 		if ($pdo->getQuerySuccess() && $result->rowCount() === 1) 
-			return $this->system->$scope->$name = $result->fetchColumn() ;
+			return $this->system->$scope->$name = $this->databaseToValue($result->fetchObject()) ;
 		else
 		{
 			unset($this->system->$scope->$name);
@@ -242,10 +242,10 @@ class config
 	/**
 	 * set Setting by Scope
 	 *
-	 * @version	9th September 2016
+	 * @version	24th September 2016
 	 * @since	21st April 2016
 	 * @param	string		$name	Name
-	 * @param	miced		$value	Value
+	 * @param	mixed		$value	Value
 	 * @param	string		$scope	Scope
 	 * @return	boolean		Success
 	 */
@@ -258,9 +258,13 @@ class config
 		$value = filter_var($value);
 		if (empty($this->system->$scope))
 			$this->system->$scope = new stdClass();
-		$this->system->$scope->$name = $value;
 		$pdo = new setting($this->getView());
 		$record = $pdo->findOneBy(array("scope" => $scope, "name" => $name));
+		$value = $this->valueToDatabase($record, $value);
+		$el = new stdClass();
+		$el->type = $record->type;
+		$el->value = $value;
+		$this->system->$scope->$name = $this->databaseToValue($el);
 		$ok = true ;
 		if ($pdo->getField('value') != $value)
 		{
@@ -268,7 +272,7 @@ class config
 			$ok = $pdo->writeRecord(array('value'));
 		}
 		if (isset($this->setting[$scope][$name]))
-			$this->updateConfigYaml($name, $value);
+			$this->updateConfigYaml($name, $this->system->$scope->$name);
 		return $ok;
 	}
 
@@ -348,7 +352,7 @@ class config
 	 * get Setting
 	 *
 	 * Gets the desired setting, specified by name and scope.
-	 * @version	10th May 2016
+	 * @version	24th September 2016
 	 * @since	25th April 2016
 	 * @param	string		$name	Name
 	 * @param	string		$scope	Scope
@@ -357,11 +361,16 @@ class config
 	 */
 	public function getSetting( $name, $scope, $object = '\stdClass' )
 	{
-		$settingObj = new \Gibbon\Record\setting($this->view);
+		$settingObj = new setting($this->view);
 		$row = $settingObj->findBy(array('scope' => $scope, 'name' => $name));
 		if ($settingObj->rowCount() === 1)  {
 			if (isset($this->setting[$scope][$name]))
 				$row->value = $this->setting[$scope][$name];
+			else
+			{
+				$this->setting[$scope][$name] = $this->databaseToValue($row);
+				$row->value = $this->setting[$scope][$name];
+			}
 			return $row ;
 		}
 		else
@@ -685,6 +694,52 @@ class config
 		if (! $this->view instanceof view)
 			$this->view = new view();
 		return $this->view ;
+	}
+
+	/**
+	 * database To Value
+	 *
+	 * @version	24th September 2016
+	 * @since	24th September 2016
+	 * @param	stdClass	$data	
+	 * @return	mixed	Value
+	 */
+	private function databaseToValue($data)
+	{
+		switch($data->type)
+		{
+			case 'array':
+				$value = json_decode($data->value);
+				return $value ;
+				break;
+			default:
+				return $data->value ;
+		}
+	}
+
+	/**
+	 * value to Database
+	 *
+	 * @version	24th September 2016
+	 * @since	24th September 2016
+	 * @param	stdClass	$record	
+	 * @param	mixed		$value
+	 * @return	mixed	Value
+	 */
+	private function valueToDatabase($record, $value)
+	{
+		switch ($record->type)
+		{
+			case 'array':
+				$x = explode(',', filter_var($value));
+				foreach($x as $q=>$w)
+					if (empty($w)) unset($x[$q]);
+				return json_encode($x); 
+				break ;
+			default:
+				return filter_var($value);
+		}
+		$this->view->dump(array($record, $value), true);
 	}
 }
 

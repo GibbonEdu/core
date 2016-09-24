@@ -74,8 +74,8 @@ use Gibbon\Record\theme ;
             </td>
     <?php if ($el->action) { ?>
             <td> <?php 
-            if (! in_array($el->getField("name"), array("Default", 'Bootstrap')) && $el->getField('name') != $this->session->get('theme.Name')) 
-                $this->getLink('delete', GIBBON_URL . 'index.php?q=/modules/System Admin/theme_manage_uninstall.php&gibbonThemeID='.$el->getField("gibbonThemeID"));
+            if (! in_array($el->getField("name"), array("Default", 'Bootstrap')) && $el->getField('name') != $el->defaultTheme) 
+                $this->getLink('delete', array('q'=>'/modules/System Admin/theme_manage_uninstall.php', 'gibbonThemeID'=>$el->getField("gibbonThemeID")));
             ?>
             </td> <?php
             }
