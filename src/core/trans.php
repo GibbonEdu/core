@@ -35,6 +35,8 @@ use Gibbon\Record\stringReplacement ;
  */
 class trans
 {
+	use functions\developmentFunctions ;
+
 	/**
 	 * @var	Translation Matrix
 	 */
@@ -121,9 +123,11 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 		$text = trim($text, '"');
 		$text = trim($text, "'");
 		$this->source = $text ;
-
-		$text = getText($this->source) ;
 		
+		if (empty($this->source)) return $this->source ;
+		
+		$text = getText($this->source) ;
+
 		if (! empty($options)) {
 			try {
 				$text = vsprintf($text, $options);
