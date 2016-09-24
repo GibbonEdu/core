@@ -365,7 +365,7 @@ class session
 	 */
 	public function clear($name)
 	{
-		return $this->set($name, NULL);
+		return $this->set($name, null);
 	}
 
 	/**

@@ -61,8 +61,9 @@ if (! $pObj->writeRecord(array('calendarFeedPersonal', 'personalBackground', 'gi
 $this->session->set('calendarFeedPersonal', $pObj->getField('calendarFeedPersonal'));
 $this->session->set('personalBackground', $pObj->getField('personalBackground'));
 $this->session->set('gibbonThemeIDPersonal', $pObj->getField('gibbonThemeIDPersonal'));
-if ($this->session->notEmpty('gibbonThemeIDPersonal')) {
-	$tObj = new theme($this, $this->session->get('gibbonThemeIDPersonal'));
+$this->session->set('theme.IDPersonal', $pObj->getField('gibbonThemeIDPersonal'));
+if ($this->session->notEmpty('theme.IDPersonal')) {
+	$tObj = new theme($this, $this->session->get('theme.IDPersonal'));
 	$tObj->setDefaultTheme();
 }
 $this->session->set('personalLanguageCode', $pObj->getField('personalLanguageCode'));

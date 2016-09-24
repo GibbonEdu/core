@@ -145,8 +145,10 @@ class theme extends record
 		if (isset($_GET['template']))
 			return $this->switchTemplate($_GET['template']);
 		$this->findOneBy(array('active' => 'Y'));
-		if ($this->session->notEmpty('gibbonThemeIDPersonal'))
-			$this->find($this->session->get('gibbonThemeIDPersonal'));
+		if ($this->session->notEmpty('theme.IDPersonal'))
+		{
+			$this->find($this->session->get('theme.IDPersonal'));
+		}
 		$this->setSessionTheme();
 	}
 
