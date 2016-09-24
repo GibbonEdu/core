@@ -48,7 +48,7 @@ class minorLinks extends menu
 	public function setMenu() {
 		
 		$el = $this->session->get('display.menu.minorLinks', array());
-		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']))
+		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']) || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name')))
 		{
 			$security = $this->view->getSecurity();
 			$return  = '';
@@ -94,6 +94,7 @@ class minorLinks extends menu
 			if (empty($return)) 
 				$this->session->set('display.menu.minorLinks.refresh', 0);
 			$this->session->set('display.menu.minorLinks.content', $return);
+			$this->session->set('display.menu.minorLinks.theme', $this->session->get('theme.Name'));
 			$this->session->set('menuMinorLinks', $this->menu);
 		}
 		else

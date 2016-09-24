@@ -30,7 +30,7 @@ use Gibbon\Record\module ;
 /**
  * Main Menu Class
  *
- * @version	19th September 2016
+ * @version	24th September 2016
  * @since	22nd April 2016
  * @author	Ross Parker
  * @package	Gibbon
@@ -41,14 +41,14 @@ class main extends menu
 	/**
 	 * Construct and store main menu in session
 	 *
-	 * @version 19th September 2016
+	 * @version 24th September 2016
 	 * @since	Moved from /functions.php
 	 * @return	HTML	Menu
 	 */
 	public function setMenu()
 	{
 		$el = $this->session->get('display.menu.main');
-		if (empty($el['refresh']) || --$el['refresh'] < 1) {
+		if (empty($el['refresh']) || --$el['refresh'] < 1 || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name'))) {
 
 			$this->session->clear('display.studentFastFinder');	
 			$menu="" ;
@@ -127,6 +127,7 @@ class main extends menu
 			}
 			$this->session->set('display.menu.main.refresh', $this->view->getConfig()->get('caching', 15));
 			$this->session->set('display.menu.main.content', $menu);
+			$this->session->set('display.menu.main.theme', $this->session->get('theme.Name'));
 			$this->menu = $menu ;
 		}
 		else
