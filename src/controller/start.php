@@ -40,8 +40,6 @@ $caching = $config->get('caching');
 $session->set("module", $view->getModuleName($session->get("address"))) ;
 $session->set("action", $view->getActionName($session->get("address"))) ;
 
-
-
 //Deal with caching
 $refreshCache = false ;
 if (is_int($session->get("pageLoads"))) {
@@ -97,12 +95,9 @@ if ($session->notEmpty("calendarFeedPersonal") && $session->notEmpty('googleAPIA
 }
 
 //Check for force password reset flag
-if ($session->notEmpty("passwordForceReset")) {
-	if ($session->get("passwordForceReset")=="Y" AND $q!="preferences.php") {
-		$URL = $session->get('AbsoluteURL') . "/index.php?q=preferences.php" ;
-		$URL=$URL. "&forceReset=Y" ;
-		header("Location: {$URL}") ;
-	}
+if ($session->notEmpty("passwordForceReset") && $session->get("passwordForceReset")=="Y" && $q!="/modules/User Admin/preferences.php") {
+		$URL = array('q'=>'/modules/User Admin/preferences.php', 'forceReset' => 'Y') ;
+		$this->view->redirect($URL) ;
 }
 
 if ($session->isEmpty("address") && ! $sidebar) {
@@ -135,9 +130,8 @@ else
 	{
 		$params = new stdClass();
 		$params->action = $session->get('absolutePath') . $session->get("address");
-		new view('post.inject', $params, $session, $config, $pdo);
+		$view->render('post.inject', $params);
 	} else
-    	new view('home.html', array(), $session, $config, $pdo);
+    	$view->render('home.html');
 }
-$view->getTrans()->writeTranslationMissing();
 die();  // Stop here, or run into old scripts

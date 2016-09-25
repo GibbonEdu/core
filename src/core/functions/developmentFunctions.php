@@ -41,7 +41,7 @@ trait developmentFunctions
 	 * @param	boolean 	$full		Full print the Call Trace Stack
 	 * @return	void
 	 */
-	function dump($object, $stop = false, $full = false) 
+	public function dump($object, $stop = false, $full = false) 
 	{
 		$caller = debug_backtrace(false);
 		echo "<pre>\n";
@@ -67,7 +67,7 @@ trait developmentFunctions
 	 * @param string Name of File
 	 * @return void
 	 */
-	function fileAnObject($object, $name = null)
+	public function fileAnObject($object, $name = null)
 	{
 		
 		$logpath = GIBBON_CONFIG;
@@ -86,5 +86,25 @@ trait developmentFunctions
 		file_put_contents($logpath . $fn, $data);
 	//	die(__FILE__.': '.__LINE__);
 		return ;
+	}
+
+
+
+	// Script end
+	private function rutime($ru, $rus, $index)
+	{
+		return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
+		 -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
+	}
+
+	public function stop($die = false)
+	{
+		$ru = getrusage();
+		echo "<br />This process used " . $this->rutime($ru, $this->session->get('rustart'), "utime") .
+			" ms for its computations\n";
+		echo "It spent " . $this->rutime($ru, $this->session->get('rustart'), "stime") .
+			" ms in system calls\n";
+		if ($die)
+			die();
 	}
 }

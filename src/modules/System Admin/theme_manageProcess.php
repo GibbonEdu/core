@@ -26,9 +26,8 @@ use Gibbon\Record\theme ;
 
 if (! $this instanceof post) die();
 
-
-$themeID=$_POST["gibbonThemeID"] ;
-$URL = array('q'=>'/modules/System Admin/theme_manage.php') ;
+$themeID = $_POST["gibbonThemeID"] ;
+$URL = array('q' => '/modules/System Admin/theme_manage.php') ;
 
 if (! $this->getSecurity()->isActionAccessible("/modules/System Admin/theme_manage.php")) {
 	$this->insertMessage("return.error.0") ;
@@ -43,6 +42,7 @@ else {
 	}
 	else {
 		$themeObj = new theme($this, $themeID);
+
 		if ($themeObj) {
 			//Deactivate all themes
 			$sql = "UPDATE gibbonTheme SET active='N'" ;
@@ -54,7 +54,7 @@ else {
 
 			//Write to database
 			$themeObj->setField('active', 'Y');
-			if (! $themeObj->writeRecord()) { 
+			if (! $themeObj->writeRecord(array('active'))) { 
 				$this->insertMessage("return.error.2") ;
 				$this->redirect($URL);
 			}

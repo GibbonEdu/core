@@ -37,20 +37,33 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$this->render('default.flash');
 	//Get themes from database, and store in an array
 	$themeObj = new theme($this);
-	$themesSQL = $themeObj->findAll("SELECT * FROM gibbonTheme ORDER BY name", array(), '_', 'name');
+	$themesSQL = $themeObj->findAll("SELECT * 
+		FROM `gibbonTheme` 
+		ORDER BY `name`", array(), '_', 'name');
 	foreach ($themesSQL as $q=>$w)
 		$themesSQL[$q]->setField('status', 'orphaned');
 
 	//Get list of modules in /modules directory
 	$themesFS = glob(GIBBON_ROOT .'src/themes/*' , GLOB_ONLYDIR);
 	
-	$this->displayMessage($this->__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.', array("<strong><u>" . GIBBON_ROOT . "src/themes/</u></strong>")), 'info');
+	$this->displayMessage(array('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.', array("<strong><u>" . GIBBON_ROOT . "src/themes/</u></strong>")), 'info');
 	
+	$theme = $themeObj->findBy(array('active' => 'Y'));
+	
+	if (intval($this->session->get('theme.IDPersonal')) > 0)
+		if (intval($this->session->get('theme.IDPersonal', $theme->gibbonThemeID)) !== intval($theme->gibbonThemeID) )
+		{
+			$this->displayMessage(array('You currently have a personal theme selected. Changes made here will not be reflected by Gibbon on your account.  To change your personal theme, alter the setting on the %1$spreferences%2$s page.', array('<a href="./index.php?q=/modules/User Admin/preferences.php">', '</a>')), 'warning');
+		}
+		else
+		{
+			$this->displayMessage(array('You currently have a personal theme selected. Changes made here will not be reflected by Gibbon on your account.  To change your personal theme, alter the setting on the %1$spreferences%2$s page.', array('<a href="./index.php?q=/modules/User Admin/preferences.php">', '</a>')), 'info');
+		}
+
 	if (count($themesFS)<1) {
 		$this->displayMessage("There are no records to display.") ;
 	}
 	else {
-		
 		$form = $this->getForm(null, array('q'=>'/modules/System Admin/theme_manageProcess.php'), true );
 				
 		$el = new \stdClass();
@@ -67,6 +80,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			}
 			$el->setField('status', "present") ;
 			
+			$el->defaultTheme = $theme->name ;
 			$el->themeName = $themeName ;
 			$el->installed = true;
 			$el->action = true;

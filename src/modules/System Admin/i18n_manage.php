@@ -42,34 +42,8 @@ if ($this->getSecurity()->isActionAccessible()) {
     } else { 
 		$params = new \stdClass();
     	$this->render('i18n.listStart', $params);
-
-        foreach($languages['languages'] as $i18nObj){
-			if (file_exists(GIBBON_ROOT . 'src/i18n/'.$i18nObj['code'].'/gibbon.yml'))
-			{
-				$lang = Yaml::parse(file_get_contents(GIBBON_ROOT . 'src/i18n/'.$i18nObj['code'].'/gibbon.yml'));
-				if (isset($lang['Gibbon']) && isset($lang['Gibbon']['Version']))
-					$i18nObj['version'] = $lang['Gibbon']['Version'];
-				else
-					$i18nObj['version'] = '0.00' ;
-			}
-			else
-			{
-				$i18nObj['version'] = $this->__('No File') ;
-				$i18nObj['active'] = 'N';
-			}
-			if (file_exists(GIBBON_ROOT . 'src/i18n/'.$i18nObj['code'].'/gibbon.yml'))  //Remote Download Location
-			{
-				$lang = Yaml::parse(file_get_contents(GIBBON_ROOT . 'src/i18n/'.$i18nObj['code'].'/gibbon.yml'));
-				if (isset($lang['Gibbon']) && isset($lang['Gibbon']['Version']))
-					$version = $lang['Gibbon']['Version'];
-				else
-					$version = '0.00' ;
-			}
-			$i18nObj['update'] = NULL;
-			if ($version > $i18nObj['version']) 
-				$i18nObj['update'] = $version ;
+        foreach($languages['languages'] as $i18nObj)
 			$this->render('i18n.listMember', $i18nObj);
-        }
 		$this->render('i18n.listEnd');
     }
 }

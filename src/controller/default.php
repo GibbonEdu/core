@@ -36,6 +36,8 @@ $v13 = array
 		'/modules/Notifications/',
 		'/modules/User Admin/preferences',
 		'/modules/School Admin/messengerSettings',
+		'/modules/School Admin/fileExtensions_manage',
+		'/modules/School Admin/formalAssessmentSettings',
 		'/core/scripts/',
 	);
 

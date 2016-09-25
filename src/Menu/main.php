@@ -25,10 +25,12 @@ namespace Gibbon\Menu;
 
 use Gibbon\core\trans ;
 use stdClass ;
+use Gibbon\Record\module ;
+
 /**
  * Main Menu Class
  *
- * @version	19th September 2016
+ * @version	24th September 2016
  * @since	22nd April 2016
  * @author	Ross Parker
  * @package	Gibbon
@@ -39,14 +41,14 @@ class main extends menu
 	/**
 	 * Construct and store main menu in session
 	 *
-	 * @version 19th September 2016
+	 * @version 24th September 2016
 	 * @since	Moved from /functions.php
 	 * @return	HTML	Menu
 	 */
 	public function setMenu()
 	{
 		$el = $this->session->get('display.menu.main');
-		if (empty($el['refresh']) || --$el['refresh'] < 1) {
+		if (empty($el['refresh']) || --$el['refresh'] < 1 || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name'))) {
 
 			$this->session->clear('display.studentFastFinder');	
 			$menu="" ;
@@ -55,6 +57,7 @@ class main extends menu
 				$menu .= $this->view->renderReturn('menu.main.start');
 			}
 			else {
+				$mObj = new module($this->view);
 				$data=array("gibbonRoleID"=>$this->session->get("gibbonRoleIDCurrent"));
 				$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL 
 					FROM `gibbonModule`, gibbonAction, gibbonPermission 
@@ -63,26 +66,42 @@ class main extends menu
 						AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) 
 						AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) 
 					ORDER BY (gibbonModule.category='Other') ASC, category, name";
-				$result = $this->pdo->executeQuery($data, $sql);
-
+				$raw = $mObj->findAll($sql, $data);
+				$order = $this->config->getSettingByScope('System', 'mainMenuCategories');
+				$result = array();
+				foreach($order as $cat)
+				{
+					$found = false;
+					foreach($raw as $w)
+					{
+						if ($cat == $w->getField('category'))
+						{
+							$found = true;
+							$result[] = $w->returnRecord();
+						}
+						if ($found && $cat != $w->getField('category'))
+							break;
+					}
+				}
 		
 				if (! $this->pdo->getQuerySuccess()) {
 					$menu .= $this->view->insertMessage($this->pdo->getError());
 					$menu .= $this->view->renderReturn('menu.main.start');
 				}
-				if ($result->rowCount() >= 1) {
+				if (count($result) >= 1) {
 					$el = new stdClass();
 					$el->doNotClose = true;
 					$menu .= $this->view->renderReturn('menu.main.start', $el);
 	
-					$el = new  stdClass();
+					$el = new stdClass();
 					$el->count = 0;
 					$el->currentCategory="" ;
 					$el->lastCategory="" ;
-					while ($row=$result->fetch()) {
-						$el->currentCategory=$row["category"] ;
+					foreach($result as $w) {
+						$row = (array) $w;
+						$el->currentCategory = $row["category"] ;
 						$el->name = $row['name'];
-						$el->entryURL=$row["entryURL"] ;
+						$el->entryURL = $row["entryURL"] ;
 
 						if (! $this->view->getSecurity()->isActionAccessible("/modules/" . $row["name"] . "/" . $el->entryURL, NULL, '') && $el->entryURL != "index.php") {
 							$dataEntry=array("gibbonRoleID"=>$this->session->get("gibbonRoleIDCurrent"),"name"=>$row["name"]);
@@ -106,10 +125,9 @@ class main extends menu
 					$menu .= $this->view->renderReturn('menu.main.end', $el);
 				}
 			}
-			
-			$this->session->set('display.menu.main.style', 'Bootstrap');
 			$this->session->set('display.menu.main.refresh', $this->view->getConfig()->get('caching', 15));
 			$this->session->set('display.menu.main.content', $menu);
+			$this->session->set('display.menu.main.theme', $this->session->get('theme.Name'));
 			$this->menu = $menu ;
 		}
 		else
