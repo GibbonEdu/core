@@ -24,7 +24,7 @@ use Gibbon\core\post;
 if (! $this instanceof post) die();
 
 $code = $_POST['gibboni18nCode'];
-$URL = array('q'=>'/modules/System Admin/i18n_manage.php');
+$URL = array('q' => '/modules/System Admin/i18n_manage.php');
 
 if ($this->getSecurity()->isActionAccessible('/modules/System Admin/i18n_manage.php')) {
     //Proceed!

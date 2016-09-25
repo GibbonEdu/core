@@ -41,18 +41,6 @@ use Gibbon\core\trans ;
     echo "real: ".(memory_get_peak_usage(true)/1024/1024)." MiB\n\n";
     echo 'SQL Connections: ' . $this->session->get('SQLConnection');
     $this->session->clear('SQLConnection');
-	// Code ...
-
-// Script end
-function rutime($ru, $rus, $index) {
-    return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
-     -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
-}
-
-$ru = getrusage();
-echo "<br />This process used " . rutime($ru, $this->session->get('rustart'), "utime") .
-    " ms for its computations\n";
-echo "It spent " . rutime($ru, $this->session->get('rustart'), "stime") .
-    " ms in system calls\n";
-	?>
+	$this->stop();
+?>
 </div><!-- home.footer -->

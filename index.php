@@ -119,8 +119,8 @@ if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['
 
 //Check for force password reset flag
 if (isset($_SESSION[$guid]['passwordForceReset'])) {
-    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $q != 'preferences.php') {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
+    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $q != '/modules/User Admin/preferences.php') {
+        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/preferences.php';
         $URL = $URL.'&forceReset=Y';
         header("Location: {$URL}");
         exit();
@@ -206,8 +206,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						$.sessionTimeout({
 							message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
 							keepAliveUrl: 'keepAlive.php' ,
-							redirUrl: 'logout.php?timeout=true',
-							logoutUrl: 'logout.php' ,
+							redirUrl: 'index.php?q=/modules/Security/logout.php?timeout=true&divert=true',
+							logoutUrl: 'index.php?q=/modules/Security/logout.php&divert=true' ,
 							warnAfter: <?php echo $sessionDuration * 1000 ?>,
 							redirAfter: <?php echo($sessionDuration * 1000) + 600000 ?>
 			 			});

@@ -52,6 +52,7 @@ body {
 	position:relative ;
 	border-radius: 5px; 
 	box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+	background-color: rgba(255,255,255,0.9) ;
 }
 #wrap-report {
 	width:1101px;
@@ -1221,4 +1222,10 @@ table.well tr:nth-child(even) td {
 }
 #notifications {
 	display: inline ;
+}
+.center {
+	text-align: centre!important;
+}
+#likeLink, #notifications, #messageLink {
+	display: inline;
 }

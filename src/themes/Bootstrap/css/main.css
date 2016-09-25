@@ -971,3 +971,6 @@ a,#adminmenu a,a.edButtonPreview,a.edButtonHTML,#the-comment-list p.comment-auth
 .g_buttons button {
 	width: 105px;
 }
+.center {
+	text-align: centre!important;
+}

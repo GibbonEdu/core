@@ -16,27 +16,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-/**********************************************************************
-This file is dreprecated and duplicated in:
-      /modules/Security
-Ensure tht any changes made here are reflected in the replacement file.
-**********************************************************************/
-include 'functions.php';
-include 'config.php';
 
-@session_start();
+namespace Module\School_Admin ;
 
-$URL = './index.php';
-if (isset($_GET['timeout'])) {
-    if ($_GET['timeout'] == 'true') {
-        $URL = './index.php?timeout=true';
-    }
-}
+use Gibbon\core\post ;
+use Gibbon\core\deleteRecord ;
 
-unset($_SESSION[$guid]['googleAPIAccessToken']);
-unset($_SESSION[$guid]['gplusuer']);
+if (! $this instanceof post) die();
 
-session_destroy();
+$_GET['page'] = isset($_GET['page']) ? $_GET['page'] : 1 ;
 
-$_SESSION[$guid] = null;
-header("Location: {$URL}");
+new deleteRecord
+	(
+		'fileExtension', 
+		$_GET["gibbonFileExtensionID"], 
+		"/modules/School Admin/fileExtensions_manage_delete.php", 
+		array('q'=>'/modules/School Admin/fileExtensions_manage_delete.php', 'gibbonFileExtensionID' => $_GET["gibbonFileExtensionID"], 'page'=>$_GET['page']), 
+		array('q'=>'/modules/School Admin/fileExtensions_manage.php', 'page'=>$_GET['page']),
+		$this
+	);

@@ -62,8 +62,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$settingObj = new setting($this);
 	
-	$sysSettings = $settingObj->findAll("SELECT * FROM `gibbonSetting` WHERE `scope` = 'System' ", array(), '', 'name');
-	
+	$sysSettings = $settingObj->findAll("SELECT * FROM `gibbonSetting` WHERE `scope` = :scope", array('scope' =>'System'), '', 'name');
+
 	$form = $this->getForm(null, array('q'=> "/modules/System Admin/systemSettingsProcess.php"), true);
 	
 	$form->setName('systemSettingsForm');

@@ -405,22 +405,22 @@ class security
 		$minLength = $this->config->getSettingByScope( "System", "passwordPolicyMinLength" ) ;
 	
 		if ( ! $alpha || ! $numeric || ! $punctuation || ! $minLength ) {
-			$output.=  $this->__( "An error occurred.") ;
+			$output.=  $this->getView()->__( "An error occurred.") ;
 		}
 		else if ($alpha!="N" OR $numeric!="N" OR $punctuation!="N" OR $minLength>=0) {
-			$output.=  $this->__( "The password policy stipulates that passwords must:") . "<br/>" ;
+			$output.=  $this->getView()->__( "The password policy stipulates that passwords must:") . "<br/>" ;
 			$output.="<ul>" ;
 				if ($alpha=="Y") {
-					$output.="<li>" .  $this->__( 'Contain at least one lowercase letter, and one uppercase letter.') . "</li>" ;
+					$output.="<li>" .  $this->getView()->__( 'Contain at least one lowercase letter, and one uppercase letter.') . "</li>" ;
 				}
 				if ($numeric=="Y") {
-					$output.="<li>" .  $this->__( 'Contain at least one number.') . "</li>" ;
+					$output.="<li>" .  $this->getView()->__( 'Contain at least one number.') . "</li>" ;
 				}
 				if ($punctuation=="Y") {
-					$output.="<li>" .  $this->__( 'Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).') . "</li>" ;
+					$output.="<li>" .  $this->getView()->__( 'Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).') . "</li>" ;
 				}
 				if ($minLength>=0) {
-					$output.="<li>" . sprintf( $this->__( 'Must be at least %1$s characters in length.'), $minLength) . "</li>" ;
+					$output.="<li>" . sprintf( $this->getView()->__( 'Must be at least %1$s characters in length.'), $minLength) . "</li>" ;
 				}
 			$output.="</ul>" ;
 		}
@@ -562,7 +562,7 @@ class security
 	 * @param	string		Salt
 	 * @return	boolean
 	 */
-	private function updatePassword($hash, $salt)
+	public function updatePassword($hash, $salt)
 	{
 		$username = isset($_POST['username']) ? $_POST['username'] : '' ;
 		$username = empty($username) ? $this->getSession()->get('username') : $username ;
