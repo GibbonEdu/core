@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/librarySettin
 } else {
     //Proceed!
     $defaultLoanLength = $_POST['defaultLoanLength'];
-    $browseBGColor = $_POST['browseBGColor'];
+    $browseBGColour = $_POST['browseBGColour'];
     $browseBGImage = $_POST['browseBGImage'];
 
     //Validate Inputs
@@ -58,8 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/librarySettin
         }
 
         try {
-            $data = array('value' => $browseBGColor);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Library' AND name='browseBGColor'";
+            $data = array('value' => $browseBGColour);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Library' AND name='browseBGColour'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

@@ -209,12 +209,29 @@ else {
                     $_SESSION[$guid]['personalBackground'] = $row['personalBackground'];
                     $_SESSION[$guid]['messengerLastBubble'] = $row['messengerLastBubble'];
                     $_SESSION[$guid]['gibbonThemeIDPersonal'] = $row['gibbonThemeIDPersonal'];
-                    $_SESSION[$guid]['gibboni18nIDPersonal'] = $row['gibboni18nIDPersonal'];
+                    $_SESSION[$guid]['personalLanguageCode'] = $row['personalLanguageCode'];  //  Necessary change for new code...
+					if (! empty($_SESSION[$guid]['personalLanguageCode']))
+						$_SESSION[$guid]['i18n']['code'] = $row['personalLanguageCode'];
                     $_SESSION[$guid]['googleAPIRefreshToken'] = $row['googleAPIRefreshToken'];
                     $_SESSION[$guid]['googleAPIAccessToken'] = null; //Set only when user logs in with Google
                     $_SESSION[$guid]['receiveNotificationEmails'] = $row['receiveNotificationEmails'];
                     $_SESSION[$guid]['gibbonHouseID'] = $row['gibbonHouseID'];
+					$_SESSION[$guid]['security']['lastPageTime'] = strtotime('now');
+ 
+					$row = 0 ;
+					try {
+						$data = array('scope' => 'System', 'name' => 'sessionDuration');
+						$sqlLanguage = 'SELECT `value` FROM `gibbonSetting` WHERE `scope` = scope AND `name` = :name';
+						$result = $connection2->prepare($sql);
+						$result->execute($data);
+					} catch (PDOException $e) {
+					}
+					if ($result->rowCount() == 1) {
+						$row = $result->fetchColumn();
+					}
+					$_SESSION[$guid]['security']['sessionDuration'] = $row > 0 ? $row : 1200 ;
 
+  
                     //Allow for non-system default language to be specified from login form
                     if (@$_POST['gibboni18nID'] != $_SESSION[$guid]['i18n']['gibboni18nID']) {
                         try {

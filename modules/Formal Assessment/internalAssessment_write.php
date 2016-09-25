@@ -207,7 +207,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         } else {
                                             $courseWhere = substr($courseWhere, 0, -4).')';
                                         }
-                                        $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name";
+                                        $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category, gibbonScale.name AS scale
+                    						FROM gibbonExternalAssessmentField
+                    							JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
+                    							JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID)
+                    						WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID
+                    							AND category=:category $courseWhere
+                    						ORDER BY name
+                    						LIMIT 1";
                                         $resultExternalAssessment = $connection2->prepare($sqlExternalAssessment);
                                         $resultExternalAssessment->execute($dataExternalAssessment);
                                     } catch (PDOException $e) {
@@ -221,6 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $externalAssessmentFields[1] = $rowExternalAssessment['name'];
                                         $externalAssessmentFields[2] = $rowExternalAssessment['assessment'];
                                         $externalAssessmentFields[3] = $rowExternalAssessment['category'];
+                                        $externalAssessmentFields[4] = $rowExternalAssessment['name'];
                                     }
                                 }
                             }
@@ -262,22 +270,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 							$title = __($guid, $externalAssessmentFields[2]).' | ';
 							$title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
 							$title .= __($guid, $externalAssessmentFields[1]);
+                            $title .= ' | '.$externalAssessmentFields[4].' '.__($guid, 'Scale').' ';
 
-								//Get PAS
-								$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
-							try {
-								$dataPAS = array('gibbonScaleID' => $PAS);
-								$sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-								$resultPAS = $connection2->prepare($sqlPAS);
-								$resultPAS->execute($dataPAS);
-							} catch (PDOException $e) {
-							}
-							if ($resultPAS->rowCount() == 1) {
-								$rowPAS = $resultPAS->fetch();
-								$title .= ' | '.$rowPAS['name'].' '.__($guid, 'Scale').' ';
-							}
-
-							echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+                            echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
 							echo __($guid, 'Baseline').'<br/>';
 							echo '</div>';
 							echo '</th>';
@@ -466,7 +461,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     echo "<td style='text-align: center'>";
                                     try {
                                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
-                                        $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND NOT gibbonScaleGradeIDPrimaryAssessmentScale='' ORDER BY date DESC";
+                                        $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
+                                            FROM gibbonExternalAssessmentStudentEntry
+                                                JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID)
+                                                JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
+                                            WHERE gibbonPersonID=:gibbonPersonID
+                                                AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID
+                                                AND NOT gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=''
+                                                ORDER BY date DESC";
                                         $resultEntry = $connection2->prepare($sqlEntry);
                                         $resultEntry->execute($dataEntry);
                                     } catch (PDOException $e) {

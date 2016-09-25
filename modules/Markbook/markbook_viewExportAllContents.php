@@ -23,11 +23,19 @@ include '../../config.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-//Get alternative header names
+//Get settings
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+
+//Set up adjustment for presence of effort column or not
+if ($enableEffort == 'Y')
+    $effortAdjust = 0 ;
+else
+    $effortAdjust = 1 ;
 
 @session_start();
 
@@ -88,15 +96,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             }
 
             if ($columnID[$i]) {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * 3)), 1, $row['name']);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * 3)), 1)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * 3)), 1)->applyFromArray($style_head_fill);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * 3)), 1)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * 3)), 1)->applyFromArray($style_head_fill);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * 3)), 1)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * 3)), 1)->applyFromArray($style_head_fill);
-                //$excel->mergeCells("G".PHPExcel_Cell::stringFromColumnIndex((1 + ($i * 3))).":I".PHPExcel_Cell::stringFromColumnIndex((3 + ($i * 3))));
-            }
+				$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), 1, $row['name']);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), 1)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), 1)->applyFromArray($style_head_fill);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), 1)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), 1)->applyFromArray($style_head_fill);
+                $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 1)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 1)->applyFromArray($style_head_fill);
+                }
 
             $excel->getActiveSheet()->getStyleByColumnAndRow(0, 2)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow(0, 2)->applyFromArray($style_head_fill2);
@@ -106,20 +113,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     		} else {
     			$x = __($guid, 'Att');
     		}
-    		$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * 3)), 2, $x);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * 3)), 2)->applyFromArray($style_border);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * 3)), 2)->applyFromArray($style_head_fill2);
-            if ($effortAlternativeNameAbrev != '') {
-                $x = $effortAlternativeNameAbrev;
-            } else {
-                $x = __($guid, 'Eff');
+    		$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), 2, $x);
+            $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
+            if ($enableEffort == 'Y') {
+                if ($effortAlternativeNameAbrev != '') {
+                    $x = $effortAlternativeNameAbrev;
+                } else {
+                    $x = __($guid, 'Eff');
+                }
+        		$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (3-$effortAdjust))), 2, $x);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
             }
-    		$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * 3)), 2, $x);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * 3)), 2)->applyFromArray($style_border);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * 3)), 2)->applyFromArray($style_head_fill2);
-    		$excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * 3)), 2, __($guid, 'Com'));
-            $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * 3)), 2)->applyFromArray($style_border);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * 3)), 2)->applyFromArray($style_head_fill2);
+            $excel->getActiveSheet()->setCellValueByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2, __($guid, 'Com'));
+            $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
         }
 
 		$r = 2;
@@ -160,8 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                             $attainment = __($guid, 'Inc');
                         }
-						$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * 3)), $r, htmlPrep($rowEntry['attainmentValue']));
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * 3)), $r)->applyFromArray($style_border);
+						$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r, htmlPrep($rowEntry['attainmentValue']));
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
 
                         $effort = '';
                         if ($rowEntry['effortValue'] != '') {
@@ -172,17 +181,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         } elseif ($rowEntry['effortValue'] == 'Incomplete') {
                             $effort = __($guid, 'Inc');
                         }
- 						$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * 3)), $r, $rowEntry['effortValue']);
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * 3)), $r)->applyFromArray($style_border);
- 						$excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * 3)), $r, $rowEntry['comment']);
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * 3)), $r)->applyFromArray($style_border);
+ 						if ($enableEffort == 'Y') {
+                            $excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (3-$effortAdjust))), $r, $rowEntry['effortValue']);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
+                        }
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), $r, $rowEntry['comment']);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
                     } else { //Fill empty spaces
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * 3)), $r, '');
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * 3)), $r)->applyFromArray($style_border);
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * 3)), $r, '');
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * 3)), $r)->applyFromArray($style_border);
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * 3)), $r, '');
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * 3)), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r, '');
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (3-$effortAdjust))), $r, '');
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), $r, '');
+                        $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
                     }
                 }
             }

@@ -52,6 +52,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     if ($_POST['gibbonPersonIDTutor3'] != '') {
         $gibbonPersonIDTutor3 = $_POST['gibbonPersonIDTutor3'];
     }
+    $gibbonPersonIDEA = null;
+    if ($_POST['gibbonPersonIDEA'] != '') {
+        $gibbonPersonIDEA = $_POST['gibbonPersonIDEA'];
+    }
+    $gibbonPersonIDEA2 = null;
+    if ($_POST['gibbonPersonIDEA2'] != '') {
+        $gibbonPersonIDEA2 = $_POST['gibbonPersonIDEA2'];
+    }
+    $gibbonPersonIDEA3 = null;
+    if ($_POST['gibbonPersonIDEA3'] != '') {
+        $gibbonPersonIDEA3 = $_POST['gibbonPersonIDEA3'];
+    }
     $gibbonSpaceID = null;
     if ($_POST['gibbonSpaceID'] != '') {
         $gibbonSpaceID = $_POST['gibbonSpaceID'];
@@ -87,8 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'gibbonPersonIDTutor' => $gibbonPersonIDTutor, 'gibbonPersonIDTutor2' => $gibbonPersonIDTutor2, 'gibbonPersonIDTutor3' => $gibbonPersonIDTutor3, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonRollGroupIDNext' => $gibbonRollGroupIDNext, 'website' => $website);
-                $sql = 'INSERT INTO gibbonRollGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext, website=:website';
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'gibbonPersonIDTutor' => $gibbonPersonIDTutor, 'gibbonPersonIDTutor2' => $gibbonPersonIDTutor2, 'gibbonPersonIDTutor3' => $gibbonPersonIDTutor3, 'gibbonPersonIDEA' => $gibbonPersonIDEA, 'gibbonPersonIDEA2' => $gibbonPersonIDEA2, 'gibbonPersonIDEA3' => $gibbonPersonIDEA3, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonRollGroupIDNext' => $gibbonRollGroupIDNext, 'website' => $website);
+                $sql = 'INSERT INTO gibbonRollGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonPersonIDEA=:gibbonPersonIDEA, gibbonPersonIDEA2=:gibbonPersonIDEA2, gibbonPersonIDEA3=:gibbonPersonIDEA3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext, website=:website';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

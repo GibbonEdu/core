@@ -44,9 +44,10 @@ $client = new Google_Client();
 $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
-//$client->addScope("email");
-//$client->addScope("profile");
-$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
+$client->setAccessType('offline');
+$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/plus.me',
+    'https://www.googleapis.com/auth/calendar')); // set scope during user login
 
 /************************************************
   When we create the service here, we pass the

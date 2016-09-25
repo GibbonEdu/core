@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_accept.php') == false) {
@@ -215,6 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $username = str_replace('[surname]', strtolower($row['surname']), $username);
                             $username = str_replace(' ', '', $username);
                             $username = str_replace("'", '', $username);
+                            $username = str_replace("-", '', $username);
                             $username = substr($username, 0, 12);
                         }
                         $usernameBase = $username;
@@ -336,7 +337,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                             $bodyPlain = emailBodyConvert($body);
 
-                            $mail = new PHPMailer();
+                            $mail = getGibbonMailer($guid);
+                            $mail->IsSMTP();
                             $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                             $mail->AddAddress($to);
                             $mail->CharSet = 'UTF-8';
@@ -884,6 +886,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             $username = str_replace('[surname]', strtolower($row['parent1surname']), $username);
                                             $username = str_replace(' ', '', $username);
                                             $username = str_replace("'", '', $username);
+                                            $username = str_replace("-", '', $username);
                                             $username = substr($username, 0, 12);
                                         }
                                         $usernameBase = $username;
@@ -1193,7 +1196,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = new PHPMailer();
+                                $mail = getGibbonMailer($guid);
+                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -1233,7 +1237,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = new PHPMailer();
+                                $mail = getGibbonMailer($guid);
+                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';

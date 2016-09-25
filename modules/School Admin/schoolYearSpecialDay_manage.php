@@ -101,10 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 echo '<h3>';
                 echo $row['name'];
                 echo '</h3>';
-                list($firstDayYear, $firstDayMonth, $firstDayDay) = explode('-', $row['firstDay']);
-                $firstDayStamp = mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
-                list($lastDayYear, $lastDayMonth, $lastDayDay) = explode('-', $row['lastDay']);
-                $lastDayStamp = mktime(0, 0, 0, $lastDayMonth, $lastDayDay, $lastDayYear);
+                $firstDayStamp = dateConvertToTimestampGM($row['firstDay']);
+                $lastDayStamp = dateConvertToTimestampGM($row['lastDay']);
 
                 //Count back to first Monday before first day
                 $startDayStamp = $firstDayStamp;
@@ -202,8 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
                     if (isset($rowSpecial)) {
                         if ($rowSpecial == true) {
-                            list($specialDayYear, $specialDayMonth, $specialDayDay) = explode('-', $rowSpecial['date']);
-                            $specialDayStamp = mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+                            $specialDayStamp = dateConvertToTimestampGM($rowSpecial['date']);
                         }
                     }
 
