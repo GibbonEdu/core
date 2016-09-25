@@ -5538,3 +5538,8 @@ TLS: TLS
 'This is the scale used as a default where assessment scales need to be selected.': 'This is the scale used as a default where assessment scales need to be selected.'
 Top: Top
 Bottom: Bottom
+'You need to be authenticated to access the page requested.': 'You need to be authenticated to access the page requested.'
+'Password - Minimum Length': 'Password - Minimum Length'
+'Password - Alpha Requirement': 'Password - Alpha Requirement'
+'Password - Numeric Requirement': 'Password - Numeric Requirement'
+'Password - Non-Alphanumeric Requirement': 'Password - Non-Alphanumeric Requirement'

@@ -46,7 +46,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 		$personObj = new person($this);
 		$usersTotal = $personObj->getTotalPeople('%');
 		$usersFull = $personObj->getTotalPeople();
-		
+
 		echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($this->session->get('organisationName')) . "&type=" . urlencode($this->session->get('installType')) . "&version=" . urlencode($this->config->get('version')) . "&country=" . $this->session->get('country') . "&usersTotal=" . $usersTotal . "&usersFull=" . $usersFull  . "'></iframe>" ;
 	}
 
@@ -54,20 +54,20 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$trail = $this->initiateTrail();
 	$trail->trailEnd = 'System Settings';
 	$trail->render($this);
-	
+
 	//Check for new version of Gibbon
 	echo $systemAdmin->getCurrentVersion() ;
 
 	$this->render('default.flash');
 
 	$settingObj = new setting($this);
-	
+
 	$sysSettings = $settingObj->findAll("SELECT * FROM `gibbonSetting` WHERE `scope` = 'System' ", array(), '', 'name');
-	
+
 	$form = $this->getForm(null, array('q'=> "/modules/System Admin/systemSettingsProcess.php"), true);
-	
+
 	$form->setName('systemSettingsForm');
-	
+
 	$form->addElement('h3', null, 'System Settings');
 
 	$el = $form->addElement('url', null);
@@ -129,10 +129,10 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['organisationAdministrator']->returnRecord());
 	$el->setPleaseSelect();
-	$sql = "SELECT `gibbonPerson`.* 
-		FROM `gibbonPerson` 
+	$sql = "SELECT `gibbonPerson`.*
+		FROM `gibbonPerson`
 		JOIN `gibbonStaff` ON `gibbonPerson`.`gibbonPersonID` = `gibbonStaff`.`gibbonPersonID`
-		WHERE `status` = 'Full' 
+		WHERE `status` = 'Full'
 		ORDER BY `surname`,`preferredName`" ;
 	$pObj = new person($this);
 	$rows = $pObj->findAll($sql);
@@ -146,13 +146,13 @@ if ($this->getSecurity()->isActionAccessible()) {
 	foreach ($rows as $person)
 		$el->addOption($person->formatName(true, true), $person->getID());
 
-	
+
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['organisationAdmissions']->returnRecord());
 	$el->setPleaseSelect();
 	foreach ($rows as $person)
 		$el->addOption($person->formatName(true, true), $person->getID());
-	
+
 
 	if (isset($sysSettings['organisationHR'])) {
 		$el = $form->addElement('select', null);
@@ -163,20 +163,15 @@ if ($this->getSecurity()->isActionAccessible()) {
 	}
 
 	$form->addElement('h3', null, 'Security Settings');
-	$form->startWell();
-	$form->addElement('h4', null, 'Password Policy');
-
 
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['passwordPolicyMinLength']->returnRecord());
 	$el->setRequired();
-	for ($i=4; $i<13; $i++) 
+	for ($i=4; $i<13; $i++)
 		$el->addOption($i);
-
 
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['passwordPolicyAlpha']->returnRecord());
-
 
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['passwordPolicyNumeric']->returnRecord());
@@ -184,23 +179,14 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('yesno', null);
 	$el->injectRecord($sysSettings['passwordPolicyNonAlphaNumeric']->returnRecord());
 
-
-	$form->endWell();
-	$form->startWell();
-	$form->addElement('h4', null, 'Miscellaneous');
-
-
 	$el = $form->addElement('text', null);
 	$el->injectRecord($sysSettings['sessionDuration']->returnRecord());
 	$el->setRequired();
-	$el->setNumericality('Number > 1200 Seconds.', 1200, null, true);	
+	$el->setNumericality('Number > 1200 Seconds.', 1200, null, true);
 
 
 	$el = $form->addElement('textArea', null);
 	$el->injectRecord($sysSettings['allowableHTML']->returnRecord());
-
-
-	$form->endWell();
 
 	$form->addElement('h3', null, 'gibbonedu.com Value Added Services');
 
@@ -215,12 +201,12 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->validateOff();
 
 	$form->addElement('h3', null, 'Localisation');
-	
+
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['country']->returnRecord());
 	$el->addOption($this->__('Select a Country!'), '' );
 	$countries = Yaml::parse(file_get_contents(GIBBON_CONFIG . 'country.yml'));
-	foreach($countries['countries'] as $name=>$value) 
+	foreach($countries['countries'] as $name=>$value)
 		$el->addOption($this->__( $name ), $name );
 	$el->setRequired();
 
@@ -239,7 +225,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$area = '';
 	foreach(timezone_identifiers_list() as $timezone)
 	{
-		if (strpos($timezone, '/') !== false) 
+		if (strpos($timezone, '/') !== false)
 		{
 			$w = substr($timezone, 0, strpos($timezone, '/'));
 			if ($w !== $area)
@@ -288,15 +274,16 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['analytics']->returnRecord());
 	$el->validateOff() ;
 
+
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['defaultAssessmentScale']->returnRecord());
 	$el->setPleaseSelect();
-	$sql = "SELECT * 
-		FROM gibbonScale 
-		WHERE active='Y' 
+	$sql = "SELECT *
+		FROM gibbonScale
+		WHERE active='Y'
 		ORDER BY name" ;
 	$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
-	while ($row = $resultSelect->fetchObject()) 
+	while ($row = $resultSelect->fetchObject())
 		$el->addOption($this->htmlPrep($this->__($row->name ) ), $row->gibbonScaleID );
 
 	$form->addElement('submitBtn', null);
