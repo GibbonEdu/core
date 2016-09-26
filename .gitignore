@@ -17,3 +17,4 @@ src/themes/*
 .DS_Store
 _notes
 merge.yml
+src/i18n/en_GB/gibbon.yml

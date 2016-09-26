@@ -1,8 +1,8 @@
-<?php 
+<?php
 $finder =  new Gibbon\core\finder($this);
 $el = $finder->getFastFinder();
-if ($el->output) 
-{ 
+if ($el->output)
+{
 
 	$head = $this->__("Fast Finder: Actions");
 	if ($el->classIsAccessible)
@@ -10,22 +10,17 @@ if ($el->output)
 	if ($el->studentIsAccessible)
 		$head .= ", " . $this->__("Students") ;
 	if ($el->staffIsAccessible)
-		$head .= ", " . $this->__("Staff") ; 
-	
-	
-	
-	if ($this->getSecurity()->getRoleCategory($this->session->get("gibbonRoleIDCurrent")) == "Staff") 
-		$search = $this->__('%d Student Count', array($el->studentCount));
-	else
-		$search = 'Search';
+		$head .= ", " . $this->__("Staff") ;
+
+
 	$action = '/core/scripts/findRedirect.php';
-?>
+	?>
     <div class="container-fluid">
         <form role="search" method="post" id="finderForm" action="<?php echo $this->convertGetArraytoURL(array('q' => '/core/scripts/findRedirect.php')); ?>">
             <div class="right">
             	<h2><?php echo $head; ?></h2>
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="<?php echo $search; ?>" name="id" id="finderID">
+                    <input type="text" class="form-control" placeholder="" name="id" id="finderID">
                     <span class="input-group-btn">
                     	<button class="btn btn-default btn-sm" type="sunmit"><span class="glyphicon glyphicon-search"></span></button>
                     </span>
