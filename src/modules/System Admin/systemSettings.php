@@ -22,8 +22,9 @@ namespace Module\System_Admin ;
 use Gibbon\core\view ;
 use Symfony\Component\Yaml\Yaml ;
 use Module\System_Admin\Functions\functions ;
-use Gibbon\Record\person ;
+use Gibbon\People\staff ;
 use Gibbon\Record\setting ;
+use Gibbon\Record\scale ;
 
 if (! $this instanceof view) die();
 
@@ -43,9 +44,9 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$absolutePathProtocol="https" ;
 			$absolutePath=substr(GIBBON_URL,8) ;
 		}
-		$personObj = new person($this);
-		$usersTotal = $personObj->getTotalPeople('%');
-		$usersFull = $personObj->getTotalPeople();
+		$pObj = new staff($this);
+		$usersTotal = $pObj->getTotalPeople('%');
+		$usersFull = $pObj->getTotalPeople();
 
 		echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=" . urlencode($absolutePathProtocol) . "&absolutePath=" . urlencode($absolutePath) . "&organisationName=" . urlencode($this->session->get('organisationName')) . "&type=" . urlencode($this->session->get('installType')) . "&version=" . urlencode($this->config->get('version')) . "&country=" . $this->session->get('country') . "&usersTotal=" . $usersTotal . "&usersFull=" . $usersFull  . "'></iframe>" ;
 	}
@@ -73,7 +74,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el = $form->addElement('url', null);
 	$el->injectRecord($sysSettings['absoluteURL']->returnRecord());
 	$el->setRequired();
-
 
 	$el = $form->addElement('text', null);
 	$el->injectRecord($sysSettings['absolutePath']->returnRecord());
@@ -109,36 +109,26 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->setRequired() ;
 	$el->setLength('Length <= 50', null, 50);
 
-
 	$el = $form->addElement('text', null);
 	$el->injectRecord($sysSettings['organisationNameShort']->returnRecord());
 	$el->setRequired() ;
 	$el->setLength('Length <= 50', null, 50);
 
-
 	$el = $form->addElement('email', null);
 	$el->injectRecord($sysSettings['organisationEmail']->returnRecord());
-
 
 	$el = $form->addElement('text', null);
 	$el->injectRecord($sysSettings['organisationLogo']->returnRecord());
 	$el->setRequired() ;
 	$el->setLength('Length <= 80', null, 80);
 
-
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['organisationAdministrator']->returnRecord());
 	$el->setPleaseSelect();
-	$sql = "SELECT `gibbonPerson`.*
-		FROM `gibbonPerson`
-		JOIN `gibbonStaff` ON `gibbonPerson`.`gibbonPersonID` = `gibbonStaff`.`gibbonPersonID`
-		WHERE `status` = 'Full'
-		ORDER BY `surname`,`preferredName`" ;
-	$pObj = new person($this);
-	$rows = $pObj->findAll($sql);
+	$pObj = new staff($this);
+	$rows = $pObj->allStaff();
 	foreach ($rows as $person)
 		$el->addOption($person->formatName(true, true), $person->getID());
-
 
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['organisationDBA']->returnRecord());
@@ -146,13 +136,11 @@ if ($this->getSecurity()->isActionAccessible()) {
 	foreach ($rows as $person)
 		$el->addOption($person->formatName(true, true), $person->getID());
 
-
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['organisationAdmissions']->returnRecord());
 	$el->setPleaseSelect();
 	foreach ($rows as $person)
 		$el->addOption($person->formatName(true, true), $person->getID());
-
 
 	if (isset($sysSettings['organisationHR'])) {
 		$el = $form->addElement('select', null);
@@ -183,7 +171,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['sessionDuration']->returnRecord());
 	$el->setRequired();
 	$el->setNumericality('Number > 1200 Seconds.', 1200, null, true);
-
 
 	$el = $form->addElement('textArea', null);
 	$el->injectRecord($sysSettings['allowableHTML']->returnRecord());
@@ -258,32 +245,25 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['emailLink']->returnRecord());
 	$el->setURL("Must start with http:// or https://");
 
-
 	$el = $form->addElement('url', null);
 	$el->injectRecord($sysSettings['webLink']->returnRecord());
 	$el->setURL("Must start with http:// or https://");
-
 
 	$el = $form->addElement('text', null);
 	$el->injectRecord($sysSettings['pagination']->returnRecord());
 	$el->setRequired();
 	$el->setNumericality(null, 10, 100, true);
 
-
 	$el = $form->addElement('textArea', null);
 	$el->injectRecord($sysSettings['analytics']->returnRecord());
 	$el->validateOff() ;
 
-
 	$el = $form->addElement('select', null);
 	$el->injectRecord($sysSettings['defaultAssessmentScale']->returnRecord());
 	$el->setPleaseSelect();
-	$sql = "SELECT *
-		FROM gibbonScale
-		WHERE active='Y'
-		ORDER BY name" ;
-	$resultSelect = $this->pdo->executeQuery(array(), $sql, '_');
-	while ($row = $resultSelect->fetchObject())
+	$sObj = new scale($this);
+	$resultScale = $sObj->findAllBy(array('active'=>'Y'), array('name'=>'ASC'));
+	foreach($resultScale as $row)
 		$el->addOption($this->htmlPrep($this->__($row->name ) ), $row->gibbonScaleID );
 
 	$form->addElement('submitBtn', null);

@@ -25,6 +25,7 @@
 			"Gibbon\\controller\\": "src/controller/",
 			"Gibbon\\core\\": "src/core/",
 			"Gibbon\\Record\\": "src/Record/",
+			"Gibbon\\People\\": "src/core/People/",
 			"Gibbon\\Menu\\": "src/Menu/",
 			"Gibbon\\Form\\": "src/Form/",
 			"Module\\": "src/modules/",

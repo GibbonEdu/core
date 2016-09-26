@@ -24,6 +24,7 @@ return array(
     'Gibbon\\core\\' => array($baseDir . '/src/core'),
     'Gibbon\\controller\\' => array($baseDir . '/src/controller'),
     'Gibbon\\Record\\' => array($baseDir . '/src/Record'),
+    'Gibbon\\People\\' => array($baseDir . '/src/core/People'),
     'Gibbon\\Menu\\' => array($baseDir . '/src/Menu'),
     'Gibbon\\Form\\' => array($baseDir . '/src/Form'),
     'Gibbon\\' => array($baseDir . '/src/Gibbon'),

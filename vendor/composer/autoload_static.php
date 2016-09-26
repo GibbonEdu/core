@@ -49,6 +49,7 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
             'Gibbon\\core\\' => 12,
             'Gibbon\\controller\\' => 18,
             'Gibbon\\Record\\' => 14,
+            'Gibbon\\People\\' => 14,
             'Gibbon\\Menu\\' => 12,
             'Gibbon\\Form\\' => 12,
             'Gibbon\\' => 7,
@@ -131,6 +132,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         'Gibbon\\Record\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Record',
+        ),
+        'Gibbon\\People\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/core/People',
         ),
         'Gibbon\\Menu\\' => 
         array (
