@@ -40,6 +40,7 @@ $v13 = array
 		'/modules/School Admin/formalAssessmentSettings',
 		'/modules/School Admin/externalAssessments_',
 		'/modules/School Admin/gradeScales_manage',
+		'/modules/School Admin/markbookSettings',
 		'/core/scripts/',
 	);
 
