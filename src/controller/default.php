@@ -72,7 +72,6 @@ do
 } while (mb_strlen($q) > 3);
 
 // So do the old stuff.
-
 //Prevent breakage of back button on POST pages
 ini_set('session.cache_limiter', 'private');
 session_cache_limiter(false);
