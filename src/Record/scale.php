@@ -152,4 +152,25 @@ class scale extends record
 		$this->setField('numeric', 'N');
 		return $this->record ;
 	}
+	
+	/**
+	 * get Fields
+	 *
+	 * @version	18th July 2016
+	 * @since	18th July 2016
+	 * @return	array
+	 */
+	public function getGrades()
+	{
+		$data = array("scaleID" => $this->record->gibbonScaleID ); 
+		$sql = "SELECT * 
+			FROM `gibbonScaleGrade` 
+			WHERE `gibbonScaleID` = :scaleID 
+			ORDER BY `sequenceNumber`" ; 
+		$obj = new scaleGrade($this->view);
+		$list = $obj->findAll($sql, $data);
+		if (empty($list)) $list = array();
+		$this->fieldList = $list ;
+		return $list ;
+	}
 }

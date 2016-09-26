@@ -100,7 +100,7 @@ class optGroup extends element
 		if ($this->checkAll)
 			return $this ;
 		$this->checkAll = true;
-		$w = $this->addOption('checkAll', '', trans::__( "All") .  " / " . trans::__( "None"));
+		$w = $this->addOption('checkAll', '', $this->__( "All") .  " / " . $this->__( "None"));
 		$w->class = 'checkAll';
 		return $this ;
 	}

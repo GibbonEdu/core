@@ -39,6 +39,7 @@ $v13 = array
 		'/modules/School Admin/fileExtensions_manage',
 		'/modules/School Admin/formalAssessmentSettings',
 		'/modules/School Admin/externalAssessments_',
+		'/modules/School Admin/gradeScales_manage',
 		'/core/scripts/',
 	);
 
