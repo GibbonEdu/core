@@ -62,10 +62,14 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->setReadOnly();
 			$el->setLength(10);
 
-			$el = $form->addElement('text', 'category', $row['category']);
+			$form->addElement('info', null, array('To manage the categories available to your school, and the order in which they appear, please visit the %1$sMain Menu Manager%2$s.', array('<a href="./index.php?q=/modules/System Admin/menu_manage.php">', '</a>')));
+
+			$el = $form->addElement('select', 'category', $row['category']);
 			$el->setRequired();
 			$el->nameDisplay = 'Category';
 			$el->description = 'Determines menu structure' ;
+			foreach($this->config->getSettingByScope('System', 'mainMenuCategories') as $cat)
+				$el->addOption($this->__($cat), $cat);
 
 			$el = $form->addElement('yesno', 'active', $row['active']);
 			$el->nameDisplay = 'Active';

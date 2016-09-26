@@ -48,7 +48,7 @@ class minorLinks extends menu
 	public function setMenu() {
 		
 		$el = $this->session->get('display.menu.minorLinks', array());
-		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']))
+		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']) || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name')))
 		{
 			$security = $this->view->getSecurity();
 			$return  = '';
@@ -58,7 +58,7 @@ class minorLinks extends menu
 				}
 			}
 			else {
-				$return .= '<div class="minorLinksContent">';
+				$return .= $this->view->renderReturn('default.minorLinks.startLinks');
 				$name = $this->session->get("preferredName") . " " . $this->session->get("surname");
 				if (! $this->session->isEmpty("gibbonRoleIDCurrentCategory")) {
 					if ($this->session->get("gibbonRoleIDCurrentCategory")=="Student") {
@@ -69,7 +69,7 @@ class minorLinks extends menu
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='./index.php?q=/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
+				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='./index.php?q=/modules/User Admin/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" .$this->view->__('Email') . "</a>" ;
 				}
@@ -86,7 +86,7 @@ class minorLinks extends menu
 				
 				$return .= $this->messageWall();
 
-				$return .= '</div>';
+				$return .= $this->view->renderReturn('default.minorLinks.endLinks');
 				
 			}
 
@@ -94,6 +94,7 @@ class minorLinks extends menu
 			if (empty($return)) 
 				$this->session->set('display.menu.minorLinks.refresh', 0);
 			$this->session->set('display.menu.minorLinks.content', $return);
+			$this->session->set('display.menu.minorLinks.theme', $this->session->get('theme.Name'));
 			$this->session->set('menuMinorLinks', $this->menu);
 		}
 		else

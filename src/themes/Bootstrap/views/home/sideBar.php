@@ -1,6 +1,10 @@
 <?php
 use Gibbon\core\trans ;
-if ($this->session->get('sidebar') !== 'false') 
+
+$sidebar = true;
+if ((defined('NO_SIDEBAR_MENU') && NO_SIDEBAR_MENU) || $this->session->get('sidebar') === 'false')
+	$sidebar = false;
+if ($sidebar) 
 {
 	$preSideBar = '';
 	$slider = '';

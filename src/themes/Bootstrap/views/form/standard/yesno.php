@@ -9,8 +9,8 @@ $disabled = isset($el->disabled) && $el->disabled ? 'disabled: true,' : '';
 $this->addScript('
 <script type="text/jscript" language="javascript">
 	$("[name=\''.$el->name.'\']").bootstrapSwitch({
-		onText: "'.mb_strtoupper($this->__('Y')).'",
-		offText: "'.mb_strtoupper($this->__('N')).'",
+		onText: "'.mb_strtoupper($this->__('Yes')).'",
+		offText: "'.mb_strtoupper($this->__('No')).'",
 		onColor: "success",
 		offColor: "warning",
 		'.$disabled.'

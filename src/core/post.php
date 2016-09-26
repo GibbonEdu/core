@@ -95,7 +95,7 @@ class post extends view
 		{
 			if ($installType !== 'Production') {
 				$this->dump($_POST);
-				$this->dump($_SERVER, true, true);
+				$this->dump($_SERVER, false, true);
 			}
 			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}
@@ -103,7 +103,7 @@ class post extends view
 		{
 			if ($installType !== 'Production') {
 				$this->dump($_POST);
-				$this->dump($_SERVER, true, true);
+				$this->dump($_SERVER, false, true);
 			}
 			throw new Exception(  $this->__('The submitted form is not valid!'), 28000 + __LINE__);
 		}

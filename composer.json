@@ -25,6 +25,7 @@
 			"Gibbon\\controller\\": "src/controller/",
 			"Gibbon\\core\\": "src/core/",
 			"Gibbon\\Record\\": "src/Record/",
+			"Gibbon\\People\\": "src/core/People/",
 			"Gibbon\\Menu\\": "src/Menu/",
 			"Gibbon\\Form\\": "src/Form/",
 			"Module\\": "src/modules/",
@@ -45,6 +46,7 @@
 		"components/jqueryui": "1.11.*",
 		"twbs/bootstrap": "3.3.*",
         "phpmailer/phpmailer": "5.2.*",
+		"google/apiclient": "2.0.*",
 		"nostalgiaz/bootstrap-switch": "3.3.*"
 	},
     "require-dev": {

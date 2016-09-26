@@ -6,10 +6,10 @@
 				$finder =  new Gibbon\core\finder($this);
 				$this->render('default.finder.render', $finder->getFastFinder()); ?>
                 <div id="header-menu">
-                    <?php 
-						new Gibbon\Menu\main($this);
+					<?php
                         //Get main menu
-                        if (! $this->session->isEmpty("mainMenu")) echo $this->session->get("mainMenu") ;
+                        new Gibbon\Menu\main($this);
+                        echo $this->session->notEmpty("display.menu.main.content") ? $this->session->get("display.menu.main.content") : '' ;
                     ?>
                 </div>
             </div>

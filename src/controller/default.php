@@ -36,6 +36,11 @@ $v13 = array
 		'/modules/Notifications/',
 		'/modules/User Admin/preferences',
 		'/modules/School Admin/messengerSettings',
+		'/modules/School Admin/fileExtensions_manage',
+		'/modules/School Admin/formalAssessmentSettings',
+		'/modules/School Admin/externalAssessments_',
+		'/modules/School Admin/gradeScales_manage',
+		'/modules/School Admin/markbookSettings',
 		'/core/scripts/',
 	);
 
@@ -70,7 +75,6 @@ do
 } while (mb_strlen($q) > 3);
 
 // So do the old stuff.
-
 //Prevent breakage of back button on POST pages
 ini_set('session.cache_limiter', 'private');
 session_cache_limiter(false);

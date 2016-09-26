@@ -141,7 +141,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             }
         }
         $return .= $name.' . ';
-        $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
+        $return .= "<a href='./index.php?q=/modules/Security/logout.php&divert=true'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=/modules/User Admin/preferences.php'>".__($guid, 'Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
         }
@@ -1863,7 +1863,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= '<br/><br/>';
         $body .= '<hr/>';
         $body .= "<p style='font-style: italic; font-size: 85%'>";
-        $body .= sprintf(__($guid, 'If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php'>", '</a>');
+        $body .= sprintf(__($guid, 'If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/preferences.php'>", '</a>');
         $body .= '<br/><br/>';
         $body .= sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
         $body .= '</p>';
