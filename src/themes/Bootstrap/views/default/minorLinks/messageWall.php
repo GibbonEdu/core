@@ -1,0 +1,1 @@
+<span class="glyphicons glyphicons-newspaper x2" style="color: red;"></span>

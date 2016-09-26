@@ -52,7 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             //Validate Inputs
             $name = $_POST['name'];
             $description = $_POST['description'];
+            $tags = $_POST['tags'];
             $active = $_POST['active'];
+            $map = $_POST['map'];
             $ordering = $_POST['ordering'];
             $details = $_POST['details'];
             $license = $_POST['license'];
@@ -62,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             }
             $embeddable = $_POST['embeddable'];
 
-            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $name == '' or $description == '' or $active == '' or $ordering == '' or $embeddable == '') {
+            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $name == '' or $description == '' or $active == '' or $map == '' or $ordering == '' or $embeddable == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
@@ -294,8 +296,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'attachment' => $attachment, 'description' => $description, 'active'=>$active, 'ordering' => $ordering, 'details' => $details, 'license' => $license, 'sharedPublic' => $sharedPublic, 'embeddable' => $embeddable, 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonUnitID' => $gibbonUnitID);
-                            $sql = 'UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, active=:active, ordering=:ordering, details=:details, license=:license, sharedPublic=:sharedPublic, embeddable=:embeddable, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID';
+                            $data = array('name' => $name, 'attachment' => $attachment, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'details' => $details, 'license' => $license, 'sharedPublic' => $sharedPublic, 'embeddable' => $embeddable, 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonUnitID' => $gibbonUnitID);
+                            $sql = 'UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, details=:details, license=:license, sharedPublic=:sharedPublic, embeddable=:embeddable, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

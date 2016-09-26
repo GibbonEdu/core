@@ -122,20 +122,10 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                                 $gibbonScaleGradeID = $_POST[$i.'-gibbonScaleGradeID'];
                             }
                         }
-                        if (isset($_POST[$i.'-gibbonScaleGradeIDPAS']) == false) {
-                            $gibbonScaleGradeIDPAS = null;
-                        } else {
-                            if ($_POST[$i.'-gibbonScaleGradeIDPAS'] == '') {
-                                $gibbonScaleGradeIDPAS = null;
-                            } else {
-                                $gibbonScaleGradeIDPAS = $_POST[$i.'-gibbonScaleGradeIDPAS'];
-                            }
-                        }
-
                         if ($gibbonExternalAssessmentStudentEntryID != '') {
                             try {
-                                $data = array('gibbonScaleGradeID' => $gibbonScaleGradeID, 'gibbonScaleGradeIDPAS' => $gibbonScaleGradeIDPAS, 'gibbonExternalAssessmentStudentEntryID' => $gibbonExternalAssessmentStudentEntryID);
-                                $sql = 'UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeID=:gibbonScaleGradeID, gibbonScaleGradeIDPrimaryAssessmentScale=:gibbonScaleGradeIDPAS WHERE gibbonExternalAssessmentStudentEntryID=:gibbonExternalAssessmentStudentEntryID';
+                                $data = array('gibbonScaleGradeID' => $gibbonScaleGradeID, 'gibbonExternalAssessmentStudentEntryID' => $gibbonExternalAssessmentStudentEntryID);
+                                $sql = 'UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeID=:gibbonScaleGradeID WHERE gibbonExternalAssessmentStudentEntryID=:gibbonExternalAssessmentStudentEntryID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {

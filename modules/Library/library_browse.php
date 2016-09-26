@@ -34,10 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</div>';
 
     //Get display settings
-    $browseBGColorStyle = null;
-    $browseBGColor = getSettingByScope($connection2, 'Library', 'browseBGColor');
-    if ($browseBGColor != '') {
-        $browseBGColorStyle = "; background-color: #$browseBGColor";
+    $browseBGColourStyle = null;
+    $browseBGColour = getSettingByScope($connection2, 'Library', 'browseBGColour');
+    if ($browseBGColour != '') {
+        $browseBGColourStyle = "; background-color: #$browseBGColour";
     }
     $browseBGImageStyle = null;
     $browseBGImage = getSettingByScope($connection2, 'Library', 'browseBGImage');
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $browseBGImageStyle = "; background-image: url(\"$browseBGImage\")";
     }
 
-    echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
+    echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColourStyle $browseBGImageStyle'>";
     echo "<div style='width: 762px; margin: 0 auto'>";
             //Display filters
             echo "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>";

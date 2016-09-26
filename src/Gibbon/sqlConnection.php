@@ -25,6 +25,9 @@ namespace Gibbon ;
  * @version	18th April 2016
  * @since	8th April 2016
  * @author	Craig Rayner
+ * @package	Gibbon
+ * @subpackage	Old
+ * @deprecated
  */
 class sqlConnection
 {

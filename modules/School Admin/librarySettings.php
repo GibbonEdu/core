@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Library' AND name='browseBGColor'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Library' AND name='browseBGColour'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {}
