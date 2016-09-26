@@ -261,7 +261,7 @@ class session
 	/**
 	 * set Language Session
 	 *
-	 * @version	6th September 2016
+	 * @version	23rd September 2016
 	 * @since	pulled from functions.php
 	 * @param	string	$code	Language Code
 	 * @return	void
@@ -286,6 +286,9 @@ class session
 		$this->set("i18n.maintainerName", $row["maintainer"]['name']) ;
 		$this->set("i18n.maintainerWebsite", $row["maintainer"]['website']) ;
 		$this->set("i18n.rtl", $row["rtl"]) ;
+		
+		$this->set('display.menu.minorLinks.refresh', 0);
+		$this->set('display.menu.main.refresh', 0);
 	}
 
 	/**
@@ -362,7 +365,7 @@ class session
 	 */
 	public function clear($name)
 	{
-		return $this->set($name, NULL);
+		return $this->set($name, null);
 	}
 
 	/**

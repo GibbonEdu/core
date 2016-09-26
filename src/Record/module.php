@@ -227,5 +227,20 @@ class module extends record
 			return false ;
 		return true;
 	}
+
+	/**
+	 * write Record
+	 *
+	 * @version	24th September 2016
+	 * @since	24th September 2016
+	 * @param	array	$fields		Limit the write to these fields
+	 * @param	boolean	$forceInsert	Use the Identifier set as an INsert, not an update.
+	 * @return	mixed	Object or False	
+	 */
+	public function writeRecord($fields = array(), $forceInsert = false)
+	{
+		$ok = parent::writeRecord($fields, $forceInsert);
+		$this->view->getSession()->set('display.menu.main.refresh', 0);
+		return $ok ;
+	}
 }
-?>

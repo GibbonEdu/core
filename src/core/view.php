@@ -331,7 +331,7 @@ class view
 	/**
 	 * Map Returns
 	 *
-	 * @version	3rd May 2016
+	 * @version	24th September 2016
 	 * @since	29th April 2016
 	 * @return	void
 	 */
@@ -349,6 +349,17 @@ class view
 		$returns["warning0"] = "Your optional extra data failed to save.";
 		$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
 		$returns["warning2"] = "Your request was successful, but some data was not properly deleted.";
+		$returns["return.success.0"] = "Your request was completed successfully.";
+		$returns["return.error.0"] = "Your request failed because you do not have access to this action.";
+		$returns["return.error.1"] = "Your request failed because your inputs were invalid.";
+		$returns["return.error.2"] = "Your request failed due to a database error.";
+		$returns["return.error.3"] = "Your request failed because some inputs did not meet a requirement for uniqueness.";
+		$returns["return.error.4"] = "Your request failed because your passwords did not match.";
+		$returns["return.error.5"] = "Your request failed because there are no records to show.";
+		$returns["return.error.6"] = "Your request was completed successfully, but one or more images were the wrong size and so were not saved.";
+		$returns["return.warning.0"] = "Your optional extra data failed to save.";
+		$returns["return.warning.1"] = "Your request was successful, but some data was not properly saved.";
+		$returns["return.warning.2"] = "Your request was successful, but some data was not properly deleted.";
 		$this->returns = $returns;
 	}
 

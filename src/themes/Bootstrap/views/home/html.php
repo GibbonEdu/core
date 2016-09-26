@@ -1,4 +1,5 @@
 <?php
 	$this->render('home.head');
-	$this->render('home.body'); ?>
+	$this->render('home.body');
+?>
 </html>

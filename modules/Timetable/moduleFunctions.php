@@ -176,7 +176,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
-        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/src/Google/autoload.php';
+        require_once $_SESSION[$guid]['absolutePath'].'/vendor/autoload.php';  //new autoloader..
 
         $client = new Google_Client();
         $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);

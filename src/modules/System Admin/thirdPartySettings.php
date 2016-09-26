@@ -36,8 +36,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$form = $this->getForm($this->session->get('absolutePath').'/modules/System Admin/thirdPartySettingsProcess.php', array(), true);
 
 	$el = $form->addElement('h3', '', 'Google Integration');
-	$el->note = "Google Integration Note";
-	$el->noteDetails = array("<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>');
+	$el->note = 'If your school uses Google Apps, you can enable single sign on and calendar integration with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.   %3$sGoogle Apps Console%4$s';
+	$el->noteDetails = array("<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>', "<a href='https://www.google.com.au/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&sqi=2&ved=0ahUKEwjowb2C46nPAhVCEpQKHeKmDBEQFggbMAA&url=https%3A%2F%2Fconsole.developers.google.com%2F&usg=AFQjCNF0eH059mv86nMIlRmfsf42kde-wA&bvm=bv.133700528,d.dGo&cad=rja' target='_blank'>", '</a>');
 
 	$el = $form->addElement('yesno', '');;
 	$el->injectRecord($this->config->getSetting('googleOAuth', 'System'));
@@ -85,7 +85,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->setMaxLength(255);
 
 	$el = $form->addElement('h3', '', 'SMS Settings');
-	$el->note = "SMS Settings Note";
+	$el->note = 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.';
 	$el->noteDetails = array("<a href='http://onewaysms.com' target='_blank'>", '</a>');
 
 	$el = $form->addElement('text', '');
@@ -110,7 +110,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 		$mailSetting = Yaml::parse(file_get_contents( GIBBON_ROOT . 'config/local/mailer.yml'));
 
 	$el = $form->addElement('h3', '', 'SMTP Mail');
-	$el->note = "SMTP Mail Note";
+	$el->note = 'Many ISP\'s, to manage spam, require use of an email account to send email.  Should you need assistance, your ISP should be able to provide connection details for an account. Details to setup an account for common email accounts may be found by %1$sclicking here%2$s.';
 	$el->noteDetails = array("<a href='https://gibbonedu.org/support/administrators/installing-gibbon/smtp-mail-settings/' target='_blank'>", '</a>');
 
 	$el = $form->addElement('yesno', '');;
