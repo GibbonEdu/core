@@ -99,7 +99,7 @@ class attendanceView
         // Get attendance codes
         try {
 	        $data = array();
-	        $sql = 'SELECT * FROM gibbonAttendanceCode ORDER BY sequenceNumber ASC, name';
+	        $sql = "SELECT * FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY sequenceNumber ASC, name";
 	        $result = $this->pdo->executeQuery($data, $sql);
 	    } catch (PDOException $e) {
 	        echo "<div class='error'>".$e->getMessage().'</div>';
@@ -207,10 +207,31 @@ class attendanceView
 
 	    $output = '';
 
+        // Collect the current IDs of the user
+        $userRoleIDs = array();
+        foreach ($_SESSION[$this->guid]['gibbonRoleIDAll'] as $role) {
+            if (isset($role[0])) $userRoleIDs[] = $role[0];
+        }
+
 	    $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
 	    if ( !empty($this->attendanceTypes) ) {
 	        foreach ($this->attendanceTypes as $name => $attendanceType) {
+                // Skip non-future codes on Set Future Absence
 	        	if ($future && $attendanceType['future'] == 'N') continue;
+
+                // Check if a role is restricted - blank for unrestricted use
+                if ( !empty($attendanceType['gibbonRoleIDAll']) ) {
+                    $allowAttendanceType = false;
+                    $rolesAllowed = explode(',', $attendanceType['gibbonRoleIDAll']);
+
+                    foreach ($rolesAllowed as $role) {
+                        if ( in_array($role, $userRoleIDs, true) ) {
+                            $allowAttendanceType = true;
+                        }
+                    }
+                    if ($allowAttendanceType == false) continue;
+                }
+
 	            $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $name, (($lastType == $name)? 'selected' : '' ) );
 	        }
 	    }
