@@ -38,6 +38,7 @@ $v13 = array
 		'/modules/School Admin/messengerSettings',
 		'/modules/School Admin/fileExtensions_manage',
 		'/modules/School Admin/formalAssessmentSettings',
+		'/modules/School Admin/externalAssessments_',
 		'/core/scripts/',
 	);
 

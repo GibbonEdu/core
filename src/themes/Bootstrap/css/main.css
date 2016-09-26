@@ -616,20 +616,21 @@ div.linkTop {
 	font-size: 12px;
 	margin: 15px 0px -40px 0px
 }
-div.linkTop .glyphicons, div.linkTop .glyphicon {
-	color: #c00;
-	vertical-align: middle ;
-	margin-top: -5px;
-}
-div.linkTop .glyphicons:hover, div.linkTop .glyphicon:hover, div.linkTop .glyphicons:active, div.linkTop .glyphicon:active {
-	color: #069;
-}
-
 div.linkTopLeft {
 	text-align: left;
 	font-size: 12px;
 	margin: 15px 0px 30px 0px
 }
+div.linkTop .glyphicons, div.linkTop .glyphicon {
+	color: #c00;
+	vertical-align: middle ;
+	margin-top: -5px;	
+	font-size: 20px;
+}
+div.linkTop .glyphicons:hover, div.linkTop .glyphicon:hover, div.linkTop .glyphicons:active, div.linkTop .glyphicon:active {
+	color: #069;
+}
+
 
 
 /* TAG CLOUD STYLE */

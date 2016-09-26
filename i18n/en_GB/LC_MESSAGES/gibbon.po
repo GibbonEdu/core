@@ -75244,3 +75244,9 @@ msgstr ""
 #: modules/System Admin/thirdPartySettings.php:370
 msgid "SMTP Mail"
 msgstr ""
+
+msgid "Y"
+msgstr "Yes"
+
+msgid "N"
+msgstr "No"
