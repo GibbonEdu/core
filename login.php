@@ -22,6 +22,7 @@ include 'config.php';
 
 @session_start();
 
+
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
@@ -137,7 +138,7 @@ else {
                     header("Location: {$URL}");
                 } else {
                     //Allow for non-current school years to be specified
-                    if ($_POST['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
+                    if (! empty($_POST['gibbonSchoolYearID']) && $_POST['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
                         if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
                             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
                             $URL .= '?loginReturn=fail9';
@@ -229,38 +230,24 @@ else {
 					if ($result->rowCount() == 1) {
 						$row = $result->fetchColumn();
 					}
-					$_SESSION[$guid]['security']['sessionDuration'] = $row > 0 ? $row : 1200 ;
+					$_SESSION[$guid]['security']['sessionDuration'] = $row >= 1200 ? $row : 1200 ;
 
-  
                     //Allow for non-system default language to be specified from login form
-                    if (@$_POST['gibboni18nID'] != $_SESSION[$guid]['i18n']['gibboni18nID']) {
-                        try {
-                            $dataLanguage = array('gibboni18nID' => $_POST['gibboni18nID']);
-                            $sqlLanguage = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
-                            $resultLanguage = $connection2->prepare($sqlLanguage);
-                            $resultLanguage->execute($dataLanguage);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultLanguage->rowCount() == 1) {
-                            $rowLanguage = $resultLanguage->fetch();
-                            setLanguageSession($guid, $rowLanguage);
-                        }
-                    } else {
-                        //If no language specified, get user preference if it exists
-                        if (!is_null($_SESSION[$guid]['gibboni18nIDPersonal'])) {
-                            try {
-                                $dataLanguage = array('gibboni18nID' => $_SESSION[$guid]['gibboni18nIDPersonal']);
-                                $sqlLanguage = "SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID";
-                                $resultLanguage = $connection2->prepare($sqlLanguage);
-                                $resultLanguage->execute($dataLanguage);
-                            } catch (PDOException $e) {
-                            }
-                            if ($resultLanguage->rowCount() == 1) {
-                                $rowLanguage = $resultLanguage->fetch();
-                                setLanguageSession($guid, $rowLanguage);
-                            }
-                        }
-                    }
+  					$_SESSION[$guid]['i18n']['overRideCode'] = ! empty($_POST['gibboni18nCode']) ? $_POST['gibboni18nCode'] : '';
+					$_SESSION[$guid]['i18n']['code'] = ! empty($_SESSION[$guid]['i18n']['overRideCode']) ? $_SESSION[$guid]['i18n']['overRideCode'] : $_SESSION[$guid]['i18n']['code'];
+					
+                    //and now set the appropriate Language Settings
+					try {
+						$dataLanguage = array('code' => $_SESSION[$guid]['i18n']['code']);
+						$sqlLanguage = 'SELECT * FROM `gibboni18n` WHERE `code`=:code';
+						$resultLanguage = $connection2->prepare($sqlLanguage);
+						$resultLanguage->execute($dataLanguage);
+					} catch (PDOException $e) {
+					}
+					if ($resultLanguage->rowCount() == 1) {
+						$rowLanguage = $resultLanguage->fetch();
+						setLanguageSession($guid, $rowLanguage);
+					}
 
                     //Make best effort to set IP address and other details, but no need to error check etc.
                     try {

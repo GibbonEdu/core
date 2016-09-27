@@ -531,19 +531,6 @@ div.success, p.success {
 	margin: 10px 0px 15px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
-
-.break {
-	background: #FAFAFA!important;
-	padding: 0 10px 0 10px;
-}
-.break h3 {
-	margin-top: 10px!important;
-	text-decoration: none!important ;
-}
-.break h4 {
-	margin: 5px 0 0 15px!important;
-	text-decoration: none!important ;
-}
 .gibbon-message {
 	margin: -26px -29px 0 -30px ;
 }
