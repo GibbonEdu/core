@@ -219,10 +219,10 @@ class minorLinks extends menu
 		}
 
 		//House logo
-		if (@$isHouseLogo) {
-			$return.=" . <img class='minorLinkIconLarge' title='" . $this->session->get("gibbonHouseIDName") . "' style='vertical-align: -75%; margin-left: 4px' src='" . $this->session->get("absoluteURL") . "/" . $this->session->get("gibbonHouseIDLogo") . "'/>" ;
-		}
 		$return .= '</div>';
+		if ($this->session->notEmpty('gibbonHouseIDLogo') && $this->session->notEmpty('gibbonHouseIDName')) {
+			$return .= " . <img class='minorLinkIconLarge' title='" . $this->session->get("gibbonHouseIDName") . "' src='" . GIBBON_URL . $this->session->get("gibbonHouseIDLogo") . "'/>" ;
+		}
 		return $return ;
 	}
 
