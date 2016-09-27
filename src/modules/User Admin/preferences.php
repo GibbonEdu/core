@@ -148,7 +148,6 @@ if ($this->session->notEmpty('i18n.overRideCode'))
 $el = $form->addElement('select', "personalLanguageCode", $pObj->getField('personalLanguageCode'));
 $el->nameDisplay = "Personal Language" ;
 $el->description = "Override the system default language.";
-
 $el->validateOff();
 $el->addOption($this->__('Select Personal Language'),'');
 if ($pObj->getField('personalLanguageCode') != '')
