@@ -493,6 +493,10 @@ li {
 img.logo {
 	margin: 15px 0 6px 0 ;
 }
+#siteloader img {
+	width: 250px;
+	margin: 0;
+}
 
 /* TABLES */
 table {

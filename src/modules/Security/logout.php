@@ -29,7 +29,7 @@ $URL = GIBBON_URL . 'index.php' ;
 
 $this->session->clear('googleAPIAccessToken');
 $this->session->clear('gplusuer');
- 
+
 $this->session->destroy();
 
 $this->session->start();

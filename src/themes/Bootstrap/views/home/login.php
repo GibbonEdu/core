@@ -50,6 +50,7 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 			FROM `gibbonSchoolYear` 
 			ORDER BY `sequenceNumber`');
 		$el->value = '';
+		$el->addOption('Select School Year', '');
 		foreach($years as $year)
 		{
 			$el->addOption($this->htmlPrep($year->getField('name')), $year->getField('gibbonSchoolYearID'));
@@ -73,6 +74,8 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 						$(document).ready(function(){
 							$("#schoolYear").hide();
 							$("#language").hide();
+							$("#_gibboni18nCode").val("");
+							$("#_gibbonSchoolYearID").val("");
 							$(".show_hide").fadeIn(1000);
 							$(".show_hide").click(function(){
 							$("#schoolYear").fadeToggle(1000);
