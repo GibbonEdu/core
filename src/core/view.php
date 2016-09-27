@@ -229,38 +229,6 @@ class view
 	}
 
 	/**
-	 * get Editor
-	 *
-	 * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
-	 * @version	18th August 2016
-	 * @since	Copied from functions.php
-	 * @param	lots of unexplained stuff
-	 * @return	HTML String
-	 */
-	public function getEditor($tinymceInit = true, $id, $value="", $rows=10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload=true, $initialFilter="", $resourceAlphaSort = false ) {
-
-		$output = false ;
-		$resourceAlphaSort = ! $resourceAlphaSort ? 'false' : 'true' ;
-	
-		$el = new \stdClass();
-		$el->id = $id;
-		$el->showMedia = $showMedia;
-		$el->allowUpload = $allowUpload ;
-		$el->required = $required;
-		$el->initiallyHidden = $initiallyHidden;
-		$el->allowUpload = $allowUpload;
-		$el->initialFilter = $initialFilter;
-		$el->resourceAlphaSort = $resourceAlphaSort;
-		$el->rows = $rows;
-		$el->value = $value;
-		$el->tinymceInit = $tinymceInit;
-	
-		$output = $this->renderReturn('form.editor.toolbar', $el);
-	
-		return $output ;
-	}
-
-	/**
 	 * insert Message
 	 *
 	 * adds to Flash/ returns or echos to stdOut

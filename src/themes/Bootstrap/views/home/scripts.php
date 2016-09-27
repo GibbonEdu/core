@@ -56,4 +56,3 @@ if ($this->session->notEmpty("username")) {
 </script>
 ");
 }
-$this->render('default.tinymce.init');

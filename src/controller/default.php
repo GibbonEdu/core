@@ -42,6 +42,7 @@ $v13 = array
 		'/modules/School Admin/gradeScales_manage',
 		'/modules/School Admin/markbookSettings',
 		'/modules/School Admin/trackingSettings',
+		'/modules/School Admin/department_manage',
 		'/core/scripts/',
 	);
 
