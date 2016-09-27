@@ -37,26 +37,26 @@ use Gibbon\core\fileManager ;
  */
 class person extends record
 {
-	/** 
+	/**
 	 * @var	string	$table	Table Name
 	 */
 	protected $table = 'gibbonPerson';
-	
+
 	/**
 	 * @var	string	$identifier	Table Identifier Name
 	 */
 	protected $identifier = 'gibbonPersonID';
-	
+
 	/**
 	 * @var	object	$role	Gibbon\Record\Role
 	 */
 	protected $role ;
-	
+
 	/**
 	 * @var	stdClass	Titles for Fields
 	 */
 	protected $title ;
-	
+
 	/**
 	 * Unique Test
 	 *
@@ -104,10 +104,10 @@ class person extends record
 	public function findAllStaff($status = 'Full')
 	{
 		$data = array('status' => $status);
-		return $this->findAll("SELECT * 
-			FROM `gibbonPerson` 
-				JOIN `gibbonStaff` on (`gibbonPerson`.`gibbonPersonID`=`gibbonStaff`.`gibbonPersonID`) 
-			WHERE `status` = :status 
+		return $this->findAll("SELECT *
+			FROM `gibbonPerson`
+				JOIN `gibbonStaff` on (`gibbonPerson`.`gibbonPersonID`=`gibbonStaff`.`gibbonPersonID`)
+			WHERE `status` = :status
 			ORDER BY `surname`, `preferredName`", $data);
 	}
 
@@ -116,7 +116,7 @@ class person extends record
 	 *
 	 * @version	25th May 2016
 	 * @since	25th May 2016
-	 * @return	boolean		
+	 * @return	boolean
 	 */
 	public function canDelete()
 	{
@@ -128,7 +128,7 @@ class person extends record
 	 *
 	 * @version	19th June 2016
 	 * @since	2nd June 2016
-	 * @return	object	
+	 * @return	object
 	 */
 	public function getRole()
 	{
@@ -136,7 +136,7 @@ class person extends record
 			return $this->role;
 		if (isset($this->record->gibbonRoleIDPrimary) && intval($this->record->gibbonRoleIDPrimary) > 0)
 			$this->role = new role($this->view, $this->record->gibbonRoleIDPrimary);
-		else 
+		else
 			$this->role = new role($this->view);
 		return $this->role;
 	}
@@ -146,26 +146,26 @@ class person extends record
 	 *
 	 * @version	6th June 2016
 	 * @since	6th June 2016
-	 * @param	integer		$schoolYearID  
+	 * @param	integer		$schoolYearID
 	 * @return	array
 	 */
 	public function getAllStudentEnrolment($schoolYearID)
 	{
-		$sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, 
-				preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, 
-				gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type, gibbonRoleIDPrimary 
-			FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup 
-			WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-				AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
-				AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
-				AND gibbonStudentEnrolment.gibbonSchoolYearID=".intval($schoolYearID)." AND gibbonPerson.status='Full' 
-				AND gibbonPerson.gibbonPersonID = ".intval($this->record->gibbonPersonID).") 
-			UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS rollGroup, 'Staff' AS type, gibbonRoleIDPrimary 
-				FROM gibbonPerson 
-					JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) 
-				WHERE type='Teaching' 
-					AND gibbonPerson.status='Full' 
-					AND gibbonPerson.gibbonPersonID=".intval($this->record->gibbonPersonID).") 
+		$sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname,
+				preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup,
+				gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type, gibbonRoleIDPrimary
+			FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup
+			WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+				AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+				AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+				AND gibbonStudentEnrolment.gibbonSchoolYearID=".intval($schoolYearID)." AND gibbonPerson.status='Full'
+				AND gibbonPerson.gibbonPersonID = ".intval($this->record->gibbonPersonID).")
+			UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS rollGroup, 'Staff' AS type, gibbonRoleIDPrimary
+				FROM gibbonPerson
+					JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+				WHERE type='Teaching'
+					AND gibbonPerson.status='Full'
+					AND gibbonPerson.gibbonPersonID=".intval($this->record->gibbonPersonID).")
 			ORDER BY surname, preferredName";
 		return $this->getStudentEnrolment($schoolYearID, $sql);
 	}
@@ -175,23 +175,23 @@ class person extends record
 	 *
 	 * @version	6th June 2016
 	 * @since	6th June 2016
-	 * @param	integer		$schoolYearID  
+	 * @param	integer		$schoolYearID
 	 * @param	string		$sql	Query
-	 * @return	object	
+	 * @return	object
 	 */
 	public function getStudent_Enrolment($schoolYearID, $sql = NULL)
 	{
-		if (! empty($this->studentEnrolment)) 
+		if (! empty($this->studentEnrolment))
 			return $this->studentEnrolment;
 		if (is_null($sql))
-			$sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, 
-					image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 
-					'Student' AS type, gibbonRoleIDPrimary 
-				FROM gibbonPerson 
-					LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=".intval($schoolYearID).") 
-					LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
-					LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
-				WHERE gibbonPerson.status='Full' 
+			$sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title,
+					image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup,
+					'Student' AS type, gibbonRoleIDPrimary
+				FROM gibbonPerson
+					LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=".intval($schoolYearID).")
+					LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+					LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+				WHERE gibbonPerson.status='Full'
 					AND gibbonPerson.gibbonPersonID=".intval($this->record->gibbonPersonID)." ORDER BY surname, preferredName";
 		$se = new studentEnrolment($this->view);
 		$this->studentEnrolment = $se->findAll($sql, array(), '_', 'gibbonPersonID');
@@ -202,7 +202,7 @@ class person extends record
 	 *
 	 * @version	6th June 2016
 	 * @since	6th June 2016
-	 * @return	object	
+	 * @return	object
 	 */
 	public function clearStudentEnrolment()
 	{
@@ -221,9 +221,9 @@ class person extends record
 	public function formatName($reverse = false, $informal = false)	{
 
 		$roleCategory = $this->getRole()->getField('category');
-		
+
 		$output = false ;
-	
+
 		if ($roleCategory == "Staff" || $roleCategory == "Other" || empty($roleCategory)) {
 			if (! $informal) {
 				if ($reverse) {
@@ -267,7 +267,7 @@ class person extends record
 			else {
 				$output = $this->record->preferredName. " " . $this->record->surname ;
 			}
-	
+
 		}
 
 		return trim($output) ;
@@ -280,12 +280,12 @@ class person extends record
 	 * @version	30th June 2016
 	 * @since	copied from functions.php
 	 * @param	string		$path	Photo Path
-	 * @param	string		$size	
+	 * @param	string		$size
 	 * @return	string		HTML
 	 */
 	public function getUserPhoto($path, $size) {
 		$output = "" ;
-				
+
 		$sizeStyle="style='width: 75px; height: 100px'" ;
 		if ($size==240) {
 			$sizeStyle="style='width: 240px; height: 320px'" ;
@@ -352,7 +352,7 @@ class person extends record
 		} else {
 			$_POST['privacy'] = empty($this->record->privacy) ? null : $this->record->privacy ;
 		}
-		
+
 		if (isset($_POST['studentAgreements']) && is_array($_POST['studentAgreements'])) {
 			$_POST['studentAgreements'] = rtrim(implode(',', $_POST['studentAgreements']), ',');
 		} else {
@@ -364,7 +364,7 @@ class person extends record
 		$customRequireFail = false;
 		$resultFields = $this->getCustomFields($student, $staff, $parent, $other);
 		$fields = array();
-		if ($resultFields && count($resultFields) > 0) 
+		if ($resultFields && count($resultFields) > 0)
 		{
 			while ($rowFields = $resultFields->fetch()) {
 				if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']])) {
@@ -390,15 +390,15 @@ class person extends record
 			$fm1 = new fileManager($this->view);
 			if (! $fm1->fileManage('file1', $username.'_240')) $imageFail = true ;
 			if (! $fm1->validImage(360, 480, 1.2, 1.4)) $imageFail = true ;
-			$_POST['image_240'] = empty($fm1->fileName) ? $_POST['image_240'] : $fm1->fileName ; 
+			$_POST['image_240'] = empty($fm1->fileName) ? $_POST['image_240'] : $fm1->fileName ;
 			$fm1 = new fileManager($this->view);
 			if (! $fm1->fileManage('nationalIDCardScanNew', $username.'_idscan')) $imageFail = true ;
 			if (! $fm1->validImage(1440, 900)) $imageFail = true ;
-			$_POST['nationalIDCardScan'] = empty($fm1->fileName) ? $_POST['nationalIDCardScan'] : $fm1->fileName ; 
+			$_POST['nationalIDCardScan'] = empty($fm1->fileName) ? $_POST['nationalIDCardScan'] : $fm1->fileName ;
 			$fm1 = new fileManager($this->view);
 			if (! $fm1->fileManage('citizenship1PassportScanNew', $username.'_passportscan')) $imageFail = true ;
 			if (! $fm1->validImage(1400, 900)) $imageFail = true ;
-			$_POST['citizenship1PassportScan'] = empty($fm1->fileName) ? $_POST['citizenship1PassportScan'] : $fm1->fileName ; 
+			$_POST['citizenship1PassportScan'] = empty($fm1->fileName) ? $_POST['citizenship1PassportScan'] : $fm1->fileName ;
 		} elseif (! empty($_FILES) && is_null($username))
 			$this->view->insertMessage("Images where not saved as the username was not set.", 'warning');
 
@@ -418,47 +418,47 @@ class person extends record
 			if (! empty($this->record->$p))
 				$this->record->$p = preg_replace('/[^0-9+]/', '', $this->record->$p);
 		}
-		
+
 		return $ok ;
 	}
-	
+
 	/**
 	 * get Family
 	 *
 	 * @version	20th July 2016
 	 * @since	20th July 2016
-	 * @param	integer		$personID	
+	 * @param	integer		$personID
 	 * @return	family
 	 */
 	public function getFamily($personID = null)
 	{
 		$this->family = array();
-		if (is_null($personID)) 
+		if (is_null($personID))
 			$personID = $this->record->gibbonPersonID;
 		if (intval($personID) < 1) return array();
-		
+
 		$fObj = new family($this->view);
 		$xx = $fObj->findAll('SELECT `gibbonFamilyAdult`.`gibbonFamilyID`
-			FROM `gibbonFamily` 
-				JOIN `gibbonFamilyAdult` ON `gibbonFamilyAdult`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID` 
+			FROM `gibbonFamily`
+				JOIN `gibbonFamilyAdult` ON `gibbonFamilyAdult`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID`
 			WHERE `gibbonFamilyAdult`.`gibbonPersonID` = :personID', array('personID' => $personID));
-		if (count($xx) !== 1) 
+		if (count($xx) !== 1)
 			$xx = $fObj->findAll('SELECT `gibbonFamilyChild`.`gibbonFamilyID`
-				FROM `gibbonFamily` 
-					JOIN `gibbonFamilyChild` ON `gibbonFamilyChild`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID` 
+				FROM `gibbonFamily`
+					JOIN `gibbonFamilyChild` ON `gibbonFamilyChild`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID`
 				WHERE `gibbonFamilyChild`.`gibbonPersonID` = :personID', array('personID' => $personID));
 		if (count($xx) !== 1)
 			return array();
 		$family = reset($xx);
 		$familyID = $family->getField('gibbonFamilyID');
-		$xx = $fObj->findAll('SELECT `gibbonFamilyAdult`.`gibbonFamilyID`, `gibbonFamilyAdult`.`gibbonPersonID`, "adult" AS `role`, `gibbonFamily`.`name`, `dob` 
-			FROM `gibbonFamily` 
-				JOIN `gibbonFamilyAdult` ON `gibbonFamilyAdult`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID` 
+		$xx = $fObj->findAll('SELECT `gibbonFamilyAdult`.`gibbonFamilyID`, `gibbonFamilyAdult`.`gibbonPersonID`, "adult" AS `role`, `gibbonFamily`.`name`, `dob`
+			FROM `gibbonFamily`
+				JOIN `gibbonFamilyAdult` ON `gibbonFamilyAdult`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID`
 				JOIN `gibbonPerson` ON `gibbonFamilyAdult`.`gibbonPersonID` = `gibbonPerson`.`gibbonPersonID`
 			WHERE `gibbonFamilyAdult`.`gibbonFamilyID` = :familyID
-			UNION (SELECT `gibbonFamilyChild`.`gibbonFamilyID`, `gibbonFamilyChild`.`gibbonPersonID`, "child" AS `role`, `gibbonFamily`.`name`, `dob` 
-				FROM `gibbonFamily` 
-					JOIN `gibbonFamilyChild` ON `gibbonFamilyChild`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID` 
+			UNION (SELECT `gibbonFamilyChild`.`gibbonFamilyID`, `gibbonFamilyChild`.`gibbonPersonID`, "child" AS `role`, `gibbonFamily`.`name`, `dob`
+				FROM `gibbonFamily`
+					JOIN `gibbonFamilyChild` ON `gibbonFamilyChild`.`gibbonFamilyID` = `gibbonFamily`.`gibbonFamilyID`
 					JOIN `gibbonPerson` ON `gibbonFamilyChild`.`gibbonPersonID` = `gibbonPerson`.`gibbonPersonID`
 				WHERE `gibbonFamilyChild`.`gibbonFamilyID` = :familyID1)
 			ORDER BY `gibbonFamilyID`, `role`, `dob` DESC, `gibbonPersonID`', array('familyID' => $familyID, 'familyID1' => $familyID));
@@ -467,13 +467,13 @@ class person extends record
 				$this->family[] = $person->returnRecord();
 		return $this->family;
 	}
-	
+
 	/**
-	 * delete Record 
+	 * delete Record
 	 *
 	 * @version	21st July 2016
 	 * @since	21st July 2016
-	 * @param	integer		$personID	
+	 * @param	integer		$personID
 	 * @return	boolean
 	 */
 	public function deleteRecord($personID)
@@ -483,7 +483,7 @@ class person extends record
 		$ok = parent::deleteRecord($personID);
 		return $ok;
 	}
-	
+
 	/**
 	 * delete User Photos
 	 *
@@ -500,7 +500,7 @@ class person extends record
 		}
 		return true ;
 	}
-	
+
 	/**
 	 * get Details of Person
 	 *
@@ -513,7 +513,7 @@ class person extends record
 	public function getDetailsOfPerson($recordClass, $name = null)
 	{
 		$IDName = 'gibbon'.$recordClass.'ID';
-		if (isset($this->record->$IDName)) 
+		if (isset($this->record->$IDName))
 		{
 			$className = '\\Gibbon\\Record\\'.lcfirst($recordClass);
 			$obj = new $className($this->view, $this->record->$IDName);
@@ -524,7 +524,7 @@ class person extends record
 		}
 		return null;
 	}
-		
+
 	/**
 	 * set Insert Defaults
 	 *
@@ -549,8 +549,8 @@ class person extends record
 		if (is_array($defaults))
 		{
 			if (! empty($defaults['role'])) {
-				$this->record->gibbonRoleIDPrimary = $defaults['role'];	
-				$this->record->gibbonRoleIDAll = $defaults['role'];	
+				$this->record->gibbonRoleIDPrimary = $defaults['role'];
+				$this->record->gibbonRoleIDAll = $defaults['role'];
 			}
 			if (! empty($defaults['password'])) {
 				$this->record->passwordStrong = $this->view->getSecurity()->getPasswordHash($defaults['password']);
@@ -559,7 +559,7 @@ class person extends record
 			}
 		}
 	}
-	
+
 	/**
 	 * get Title
 	 *
@@ -629,7 +629,7 @@ class person extends record
 			return $this->title->$fieldName;
 		return $fieldName ;
 	}
-	
+
 	/**
 	 * get Custom Feilds
 	 *
@@ -660,9 +660,9 @@ class person extends record
 	 */
 	public function getTotalPeople($status = 'Full')
 	{
-		$data =array('status' => $status); 
-		$sql = "SELECT COUNT(`gibbonPersonID`) 
-			FROM `gibbonPerson` 
+		$data =array('status' => $status);
+		$sql = "SELECT COUNT(`gibbonPersonID`)
+			FROM `gibbonPerson`
 			WHERE `status` LIKE :status" ;
 		$v = clone $this ;
 		$result = $v->executeQuery($data, $sql);
@@ -681,36 +681,36 @@ class person extends record
 	 * @param	integer		Person ID Recipient
 	 * @param	string		Mode
 	 * @param	integer		School Year ID
-	 * @return	integer		
+	 * @return	integer
 	 */
 	public function countLikesByRecipient($personIDRecipient, $mode="count", $schoolYearID) {
 		$return = false ;
-	
+
 		$data=array("personIDRecipient"=>$personIDRecipient, "schoolYearID"=>$schoolYearID);
 		$v = clone $this;
 		if ($mode=="count") {
-			$sql="SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike` 
-				WHERE `gibbonPersonIDRecipient` = :personIDRecipient 
+			$sql="SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike`
+				WHERE `gibbonPersonIDRecipient` = :personIDRecipient
 					AND `gibbonSchoolYearID` = :schoolYearID" ;
 			$return = $v->findAll($sql, $data);
 		}
 		else {
-			$sql = "SELECT `gibbonLike`.*, `gibbonPersonID`, `image_240`, `gibbonRoleIDPrimary`, `preferredName`, `surname` 
-				FROM `gibbonLike` 
-					JOIN `gibbonPerson` ON `gibbonLike`.`gibbonPersonIDGiver` = `gibbonPerson`.`gibbonPersonID` 
-				WHERE `gibbonPersonIDRecipient` = :personIDRecipient 
-					AND `gibbonSchoolYearID` = :schoolYearID 
+			$sql = "SELECT `gibbonLike`.*, `gibbonPersonID`, `image_240`, `gibbonRoleIDPrimary`, `preferredName`, `surname`
+				FROM `gibbonLike`
+					JOIN `gibbonPerson` ON `gibbonLike`.`gibbonPersonIDGiver` = `gibbonPerson`.`gibbonPersonID`
+				WHERE `gibbonPersonIDRecipient` = :personIDRecipient
+					AND `gibbonSchoolYearID` = :schoolYearID
 				ORDER BY `timestamp` DESC" ;
 			$return = $v->findAll($sql, $data);
 		}
-		
+
 		if (! $v->getSuccess()) $return = false ;
-	
+
 		if ($mode == "count") {
 			$x = $return[0]->returnRecord();
 			$return = $x->likes ;
 		}
-	
+
 		return $return ;
 	}
 }
