@@ -218,7 +218,7 @@ else {
                     $_SESSION[$guid]['receiveNotificationEmails'] = $row['receiveNotificationEmails'];
                     $_SESSION[$guid]['gibbonHouseID'] = $row['gibbonHouseID'];
 					$_SESSION[$guid]['security']['lastPageTime'] = strtotime('now');
- 
+
 					$row = 0 ;
 					try {
 						$data = array('scope' => 'System', 'name' => 'sessionDuration');
@@ -235,7 +235,7 @@ else {
                     //Allow for non-system default language to be specified from login form
   					$_SESSION[$guid]['i18n']['overRideCode'] = ! empty($_POST['gibboni18nCode']) ? $_POST['gibboni18nCode'] : '';
 					$_SESSION[$guid]['i18n']['code'] = ! empty($_SESSION[$guid]['i18n']['overRideCode']) ? $_SESSION[$guid]['i18n']['overRideCode'] : $_SESSION[$guid]['i18n']['code'];
-					
+
                     //and now set the appropriate Language Settings
 					try {
 						$dataLanguage = array('code' => $_SESSION[$guid]['i18n']['code']);

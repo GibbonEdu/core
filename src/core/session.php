@@ -129,7 +129,7 @@ class session
 		$steps = explode('.', $name);
 		foreach($steps as $q=>$w)
 			$steps[$q] = trim($w);
-			
+
 		if (count($steps) > 1)
 		{
 			$aValue = $this->setSub($steps, $this->get($steps[0]), $value);
@@ -187,7 +187,7 @@ class session
 		{
 			if (empty($existing) || ! is_array($existing))
 				$existing = array();
-			$existing[$steps[0]] = $value; 
+			$existing[$steps[0]] = $value;
 		}
 		else
 		{
@@ -195,9 +195,9 @@ class session
 			if (empty($existing[$steps[0]])) $existing[$steps[0]] = array();
 			$existing[$steps[0]] = $this->setSub($steps, $existing[$steps[0]], $value);
 		}
-		return $existing;	
+		return $existing;
 	}
-	
+
 	/**
 	 * set System Settings
 	 *
@@ -216,14 +216,14 @@ class session
 		$data=array();
 		$sql="SELECT * FROM gibbonSetting WHERE scope='System'" ;
 		$result=$pdo->executeQuery($data, $sql, $message);
-		if (! $pdo->getQuerySuccess()) 
+		if (! $pdo->getQuerySuccess())
 			$this->set("systemSettingsSet", false) ;
 		else
-			while ($row=$result->fetch()) 
+			while ($row=$result->fetch())
 				$this->set($row["name"], $row["value"]) ;
-				
+
 		$this->set('security.sessionDuration', $this->get('sessionDuration', 1200));
-	
+
 		//Get names and emails for administrator, dba, admissions
 		//System Administrator
 		$pObj = new person(new view('default.blank', array(), $this, null, $pdo), $this->get("organisationAdministrator"));
@@ -250,12 +250,12 @@ class session
 			$this->set("organisationHRName", $pObj->formatName(false, true)) ;
 			$this->set("organisationHREmail",$pObj->getField("email")) ;
 		}
-	
-	
-		//Language settings 
-		
+
+
+		//Language settings
+
 		$this->setLanguageSession($this->get('defaultLanguage')) ;
-	
+
 	}
 
 	/**
@@ -267,7 +267,7 @@ class session
 	 * @param	string	$code	Language Code
 	 * @return	void
 	 */
-	public function setLanguageSession( $code ) 
+	public function setLanguageSession( $code )
 	{
 		if (empty($code))
 			$code = 'en_GB';
@@ -276,7 +276,7 @@ class session
 		$this->clear('i18n');
 		$x = Yaml::parse( file_get_contents(GIBBON_ROOT . "config/local/languages.yml") );
 		$row = $x['languages'][$code];
-		if (empty($row)) 
+		if (empty($row))
 		{
 			$code = 'en_GB';
 			$row = $x['languages'][$code];
@@ -290,7 +290,7 @@ class session
 		$this->set("i18n.maintainerWebsite", $row["maintainer"]['website']) ;
 		$this->set("i18n.rtl", $row["rtl"]) ;
 		$this->set('i18n.overRideCode', $oCode);
-		
+
 		$this->set('display.menu.minorLinks.refresh', 0);
 		$this->set('display.menu.main.refresh', 0);
 	}
@@ -338,7 +338,7 @@ class session
 		if (PHP_SESSION_ACTIVE === session_status())
 			return true ;
 		return false ;
-			
+
 	}
 
 	/**
@@ -375,7 +375,7 @@ class session
 	}
 
 	/**
-	 * Plus 
+	 * Plus
 	 *
 	 * @version	18th September 2016
 	 * @since	23rd April 2016
@@ -414,7 +414,7 @@ class session
 		if (intval($this->get("pageLoads")) === 0 && $this->notEmpty("username") && $this->notEmpty("gibbonHouseID"))
 		{
 			$hObj = new house(new view(), $this->get("gibbonHouseID"));
-	
+
 			if ($hObj->getSuccess()) {
 				$this->set("gibbonHouseIDLogo", $hObj->getField("logo")) ;
 				$this->set("gibbonHouseIDName", $hObj->getField("name")) ;
