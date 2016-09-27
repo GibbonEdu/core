@@ -41,14 +41,14 @@ class minorLinks extends menu
 	 * set Menu
 	 * 
 	 * was getMinorLinks
-	 * @version	19th September 2016
+	 * @version	27th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
 	public function setMenu() {
 		
 		$el = $this->session->get('display.menu.minorLinks', array());
-		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']) || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name')))
+		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']) || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name')) || empty($el['content']))
 		{
 			$security = $this->view->getSecurity();
 			$return  = '';

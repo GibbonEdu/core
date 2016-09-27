@@ -42,15 +42,9 @@ if ($this->getSecurity()->isActionAccessible()) {
 	if (empty($el->value)) 
 	{
 		$mObj = new module($this);
-		$cats = array();
-		foreach($mObj->findAll('SELECT DISTINCT `category` 
-			FROM `gibbonModule` 
-			ORDER BY `category`') as $cat=>$w)
-			if ($cat !== 'Other')
-				$cats[] = $cat;
-		$cats[] = 'Other';
+		$cats = $mObj->getCategories();
 		$el->value = trim(implode(',', $cats), ',');
-		$this->config->setSettingByScope('mainMenuCategories', $el->value, 'System');
+		$this->config->setSettingByScope('mainMenuCategories', $cats, 'System');
 	} else
 		$el->value = trim(implode(',', $el->value), ',');
 	

@@ -9,7 +9,8 @@ $id = ! $el->isEmpty('id') ? $el->get('id') : "TheForm" ;
 $this->addScript("
 <script>
 $(document).ready(function() {
-    $('#".$id."').formValidation();
+    $('#".$id."').formValidation(".$this->session->get('form.validation.extra').");
 });
 </script>
 ");
+$this->session->clear('form.validation.extra');

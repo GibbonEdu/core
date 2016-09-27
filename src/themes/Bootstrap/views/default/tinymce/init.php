@@ -1,4 +1,16 @@
 <?php 
+$required = '';
+if ($el->required)
+{
+	$required = ',
+		setup: function(editor) {
+            editor.on("keyup", function(e) {
+                // Revalidate the field
+                $("#'.$el->formID.'").formValidation("revalidateField", "'.$el->id.'");
+            });
+        }
+';
+}
 $this->addScript('
 <script type="text/javascript">
 	tinymce.init({
@@ -12,8 +24,7 @@ $this->addScript('
 		apply_source_formatting : true,
 		browser_spellcheck: true,
 		convert_urls: false,
-		relative_urls: false
+		relative_urls: false'.$required.'
 	});
-
 </script>
 ');
