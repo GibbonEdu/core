@@ -27,7 +27,7 @@ use Gibbon\Record\house ;
 /**
  * Session Manager
  *
- * @version	18th September 2016
+ * @version	27th September 2016
  * @since	15th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -261,7 +261,8 @@ class session
 	/**
 	 * set Language Session
 	 *
-	 * @version	23rd September 2016
+	 * Precedence:  Login Script Language / then $code set by calling script.
+	 * @version	27th September 2016
 	 * @since	pulled from functions.php
 	 * @param	string	$code	Language Code
 	 * @return	void
@@ -270,6 +271,8 @@ class session
 	{
 		if (empty($code))
 			$code = 'en_GB';
+		$oCode = $this->get('i18n.overRideCode', '');
+		$code = $this->notEmpty('i18n.overRideCode') ? $oCode : $code ;
 		$this->clear('i18n');
 		$x = Yaml::parse( file_get_contents(GIBBON_ROOT . "config/local/languages.yml") );
 		$row = $x['languages'][$code];
@@ -286,6 +289,7 @@ class session
 		$this->set("i18n.maintainerName", $row["maintainer"]['name']) ;
 		$this->set("i18n.maintainerWebsite", $row["maintainer"]['website']) ;
 		$this->set("i18n.rtl", $row["rtl"]) ;
+		$this->set('i18n.overRideCode', $oCode);
 		
 		$this->set('display.menu.minorLinks.refresh', 0);
 		$this->set('display.menu.main.refresh', 0);
@@ -309,15 +313,17 @@ class session
 	/**
 	 * destroy
 	 *
-	 * @version	20th June 2016
+	 * @version	27th September 2016
 	 * @since	20th April 2016
 	 * @return	void
 	 */
 	public function destroy()
 	{
-		$this->clear('security.lastPageTime');
 		if (PHP_SESSION_ACTIVE === session_status())
+		{
+			$_SESSION = null;
 			session_unset();
+		}
 	}
 
 	/**

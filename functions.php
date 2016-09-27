@@ -2869,6 +2869,7 @@ function sidebar($connection2, $guid)
 						</td>
 						<td class="right">
 							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
+                            	<option value=''></option>
 								<?php
                                 try {
                                     $dataSelect = array();
@@ -2894,7 +2895,8 @@ function sidebar($connection2, $guid)
 							<b><?php echo __($guid, 'Language'); ?></b>
 						</td>
 						<td class="right">
-							<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+							<select name="gibboni18nCode" id="gibboni18nCode" style="width: 120px">
+                            	<option value=''></option>
 								<?php
                                 try {
                                     $dataSelect = array();
@@ -2909,7 +2911,7 @@ function sidebar($connection2, $guid)
                     if ($rowSelect['systemDefault'] == 'Y') {
                         $selected = 'selected';
                     }
-                    echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                    echo "<option $selected value='".$rowSelect['code']."'>".htmlPrep($rowSelect['name']).'</option>';
                 }
                 ?>
 							</select>
@@ -2919,18 +2921,19 @@ function sidebar($connection2, $guid)
 						<td>
 						</td>
 						<td class="right">
-							<?php
-                            echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo '$(".schoolYear").hide();';
-                echo '$(".language").hide();';
-                echo '$(".show_hide").fadeIn(1000);';
-                echo '$(".show_hide").click(function(){';
-                echo '$(".schoolYear").fadeToggle(1000);';
-                echo '$(".language").fadeToggle(1000);';
-                echo '});';
-                echo '});';
-                echo '</script>'; ?>
+<script type='text/javascript'>
+	$(document).ready(function(){
+		$(".schoolYear").hide();
+		$(".language").hide();
+		$("#gibboni18nCode").val("");
+		$("#gibbonSchoolYearID").val("");
+		$(".show_hide").fadeIn(1000);
+		$(".show_hide").click(function(){
+			$(".schoolYear").fadeToggle(1000);
+			$(".language").fadeToggle(1000);
+		});
+	});
+</script>
 							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
 						</td>
 					</tr>

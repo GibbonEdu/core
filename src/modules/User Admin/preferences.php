@@ -143,6 +143,8 @@ $el->addOption($this->__('Select your theme!'), '');
 foreach($tObj->findAll("SELECT * FROM `gibbonTheme` ORDER BY `name`") as $theme)
 	$el->addOption($theme->getField("active") == 'Y' ? $theme->getField("name")." (".$this->__("System Default").")" : $theme->getField("name"), $theme->getField("gibbonThemeID"));
 
+if ($this->session->notEmpty('i18n.overRideCode'))
+	$form->addElement('info', null, array('A login language over-ride is being applied, so changing the language here will not be reflected until you logout and login again without the over-ride.', array('<br />')));
 $el = $form->addElement('select', "personalLanguageCode", $pObj->getField('personalLanguageCode'));
 $el->nameDisplay = "Personal Language" ;
 $el->description = "Override the system default language.";
