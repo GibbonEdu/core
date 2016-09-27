@@ -30,7 +30,7 @@ use Gibbon\Record\module ;
 /**
  * Main Menu Class
  *
- * @version	24th September 2016
+ * @version	27th September 2016
  * @since	22nd April 2016
  * @author	Ross Parker
  * @package	Gibbon
@@ -41,14 +41,14 @@ class main extends menu
 	/**
 	 * Construct and store main menu in session
 	 *
-	 * @version 24th September 2016
+	 * @version 27th September 2016
 	 * @since	Moved from /functions.php
 	 * @return	HTML	Menu
 	 */
 	public function setMenu()
 	{
 		$el = $this->session->get('display.menu.main');
-		if (empty($el['refresh']) || --$el['refresh'] < 1 || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name'))) {
+		if (empty($el['refresh']) || --$el['refresh'] < 1 || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name')) || empty($el['content'])) {
 
 			$this->session->clear('display.studentFastFinder');	
 			$menu="" ;
@@ -68,6 +68,11 @@ class main extends menu
 					ORDER BY (gibbonModule.category='Other') ASC, category, name";
 				$raw = $mObj->findAll($sql, $data);
 				$order = $this->config->getSettingByScope('System', 'mainMenuCategories');
+				if (empty($order))
+				{
+					$order = $mObj->getCategories();
+					$this->config->setSettingByScope('mainMenuCategories', $order, 'System');
+				}
 				$result = array();
 				foreach($order as $cat)
 				{

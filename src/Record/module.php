@@ -243,4 +243,23 @@ class module extends record
 		$this->view->getSession()->set('display.menu.main.refresh', 0);
 		return $ok ;
 	}
+
+	/**
+	 * get Categories
+	 *
+	 * @version	27th September 2016
+	 * @since	27th September 2016
+	 * @return	array	Categories
+	 */
+	public function getCategories()
+	{
+		$cats = array();
+		foreach($this->findAll('SELECT DISTINCT `category` 
+			FROM `gibbonModule` 
+			ORDER BY `category`') as $cat=>$w)
+			if ($cat !== 'Other')
+				$cats[] = $cat;
+		$cats[] = 'Other';
+		return $cats;
+	}
 }
