@@ -398,7 +398,16 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
-								print "<td class='right' colspan=5>" ;
+								// Drop-downs to change the whole group at once
+			                    echo "<td colspan=3>";
+			                        echo $attendance->renderAttendanceTypeSelect( '', "set-all-type", '110px');
+			                        echo $attendance->renderAttendanceReasonSelect( '', "set-all-reason", '110px');
+			                        echo "<input type='text' maxlength=255 name='set-all-comment' id='set-all-comment' style='float: none; width:100px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+			                        echo "<input id='set-all' type='button' value='Change All'>";
+			                        echo "<span id='set-all-note' class='emphasis small' style='display:none;color:#CC0000;'>".__($guid, "* Submit to save changes.")."</span>";
+			                    echo "</td>";
+
+								print "<td class='right' colspan=2>" ;
 									print "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'>" ;
 									print "<input type='hidden' name='currentDate' value='$currentDate'>" ;
 									print "<input type='hidden' name='count' value='" . $resultCourseClass->rowCount() . "'>" ;

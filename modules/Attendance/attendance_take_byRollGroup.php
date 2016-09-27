@@ -340,12 +340,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
-                        echo "<td class='right' colspan=5>";
-                        echo "<input type='hidden' name='gibbonRollGroupID' value='$gibbonRollGroupID'>";
-                        echo "<input type='hidden' name='currentDate' value='$currentDate'>";
-                        echo "<input type='hidden' name='count' value='".$resultRollGroup->rowCount()."'>";
-                        echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                        echo "<input type='submit' value='Submit'>";
+
+                        // Drop-downs to change the whole group at once
+                        echo "<td colspan=3>";
+                            echo $attendance->renderAttendanceTypeSelect( '', "set-all-type", '110px');
+                            echo $attendance->renderAttendanceReasonSelect( '', "set-all-reason", '110px');
+                            echo "<input type='text' maxlength=255 name='set-all-comment' id='set-all-comment' style='float: none; width:100px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+                            echo "<input id='set-all' type='button' value='Change All'>";
+                            echo "<span id='set-all-note' class='emphasis small' style='display:none;color:#CC0000;'>".__($guid, "* Submit to save changes.")."</span>";
+                        echo "</td>";
+
+                        echo "<td class='right' colspan=2>";
+                            echo "<input type='hidden' name='gibbonRollGroupID' value='$gibbonRollGroupID'>";
+                            echo "<input type='hidden' name='currentDate' value='$currentDate'>";
+                            echo "<input type='hidden' name='count' value='".$resultRollGroup->rowCount()."'>";
+                            echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
+                            echo "<input type='submit' value='Submit'>";
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';

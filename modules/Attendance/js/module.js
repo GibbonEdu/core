@@ -62,4 +62,11 @@ jQuery(function($){
 			}
 		}
 	});
+
+	$('#set-all').click( function() {
+		$('select[name$="-type"]').val(  $('select[name="set-all-type"]').val() );
+		$('select[name$="-reason"]').val(  $('select[name="set-all-reason"]').val() );
+		$('input[name$="-comment"]').val(  $('input[name="set-all-comment"]').val() );
+		$('#set-all-note').show();
+	});
 });
