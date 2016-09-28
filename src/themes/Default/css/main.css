@@ -1229,3 +1229,8 @@ table.well tr:nth-child(even) td {
 #likeLink, #notifications, #messageLink {
 	display: inline;
 }
+.form-element-photo {
+	width: 75px ;
+	float: left ;
+	margin-left: 100px;
+}

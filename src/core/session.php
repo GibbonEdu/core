@@ -464,7 +464,7 @@ class session
 	public function appendUnique($name, $value)
 	{
 		$was = $this->get($name);
-		if (mb_strpos($was, $value) === false)
+		if (mb_strpos($was, $value) !== false)
 			return $this ;
 		$value = $was . $value;
 		return $this->set($name, $value);
