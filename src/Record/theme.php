@@ -153,7 +153,7 @@ class theme extends record
 	public function setDefaultTheme()
 	{
 		$this->findOneBy(array('active' => 'Y'));
-		if ($this->session->get('theme.IDPersonal') > 0 && $this->record->gibbonThemeID != $this->session->get('theme.IDPersonal'))
+		if ($this->session->notEmpty('theme.IDPersonal') && $this->record->gibbonThemeID != $this->session->get('theme.IDPersonal'))
 		{
 			$this->find($this->session->get('theme.IDPersonal'));
 		}

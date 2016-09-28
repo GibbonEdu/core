@@ -344,7 +344,7 @@ class session
 	/**
 	 * is Empty
 	 *
-	 * @version	24th April 2016
+	 * @version	29th September 2016
 	 * @since	21st April 2016
 	 * @param	string		Name
 	 * @return	boolean		is the value empty.
@@ -352,11 +352,15 @@ class session
 	public function isEmpty($name)
 	{
 		$value = $this->get($name);
-		if ($value === NULL)
+		if (empty($value))
+			return true;
+		if ($value === null)
 			return true;
 		if ($value === "")
 			return true;
 		if ($value === array())
+			return true;
+		if ($value === 0)
 			return true;
 		return false;
 	}
