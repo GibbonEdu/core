@@ -208,9 +208,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                 }
                 $notificationText .= '<br/>';
             }
-
-            $notificationText .= "<i>We're testing a new Gibbon notification system, please contact sandra.kuipers@tis.edu.mo if you have any questions. Thanks!</i>";
-
+            
             setNotification($connection2, $guid,  $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$id.'&currentDate='.dateConvertBack($guid, date('Y-m-d')));
 
         }
