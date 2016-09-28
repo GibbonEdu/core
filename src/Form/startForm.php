@@ -101,7 +101,7 @@ class startForm
 	{
 		if (! empty($this->defaults))
 			return true;
-		$this->theme = $this->getView()->session->get('gibbonThemeName');
+		$this->theme = $this->getView()->session->get('theme.Name');
 		if (empty($this->theme))
 			return true;
 		if (! file_exists($this->view->session->get('absolutePath').'/themes/'.$this->theme.'/default.yml'))

@@ -138,11 +138,11 @@ if ($this->session->isEmpty("gibbonPersonID"))
 		$el->description = "Set your own custom background image.<br/>Please provide URL to image.";
 	}
 	
-	$el = $form->addElement('select', "gibbonThemeIDPersonal", $this->session->get("gibbonThemeIDPersonal"));
+	$el = $form->addElement('select', "gibbonThemeIDPersonal", $this->session->get("theme.IDPersonal"));
 	$el->nameDisplay = "Personal Theme";
 	$el->description = "Override the system theme.";
 	$tObj = new theme($this);
-	$el->addOption($this->__('Select your theme!'), '');
+	$el->addOption($this->__('Select your theme!'), 0);
 	foreach($tObj->findAll("SELECT * FROM `gibbonTheme` ORDER BY `name`") as $theme)
 		$el->addOption($theme->getField("active") == 'Y' ? $theme->getField("name")." (".$this->__("System Default").")" : $theme->getField("name"), $theme->getField("gibbonThemeID"));
 	

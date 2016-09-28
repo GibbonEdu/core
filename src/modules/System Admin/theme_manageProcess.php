@@ -45,7 +45,7 @@ else {
 
 		if ($themeObj) {
 			//Deactivate all themes
-			$sql = "UPDATE gibbonTheme SET active='N'" ;
+			$sql = "UPDATE `gibbonTheme` SET `active` = 'N'" ;
 			$this->pdo->executeQuery(array(), $sql);
 			if (! $this->pdo->getQuerySuccess()) { 
 				$this->insertMessage("Not able to clear the active theme.") ;

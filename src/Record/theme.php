@@ -84,7 +84,7 @@ class theme extends record
 	/**
 	 * set Session
 	 *
-	 * @version	26th August 2016
+	 * @version	28th August 2016
 	 * @since	1st June 2016
 	 * @return	void		
 	 */
@@ -92,6 +92,11 @@ class theme extends record
 	{
 		if (isset($this->record->gibbonThemeID) && intval($this->record->gibbonThemeID) > 0)
 		{
+			$this->session->set("gibbonThemeID", $this->record->gibbonThemeID) ;
+			$this->session->set("gibbonThemeName", $this->record->name) ;
+			$this->session->set("gibbonThemeAuthor", $this->record->author) ;
+			$this->session->set("gibbonThemeURL", $this->record->url) ;
+
 			$this->session->set("theme.ID", $this->record->gibbonThemeID) ;
 			$this->session->set("theme.Name", $this->record->name) ;
 			$this->session->set("theme.Author.name", $this->record->author) ;
@@ -112,6 +117,11 @@ class theme extends record
 		}
 		else
 		{
+			$this->session->set("gibbonThemeID", 0001) ;
+			$this->session->set("gibbonThemeName", 'Bootstrap') ;
+			$this->session->set("gibbonThemeAuthor", 'Craig Rayner') ;
+			$this->session->set("gibbonThemeURL", 'http://www.craigrayner.com') ;
+
 			$this->session->set("theme.ID", '0001') ;
 			$this->session->set("theme.Name", 'Bootstrap') ;
 			$this->session->set("theme.Author.name", 'Craig Rayner') ;
@@ -136,16 +146,14 @@ class theme extends record
 	/**
 	 * set Default Theme
 	 *
-	 * @version	23rd September 2016
+	 * @version	28th September 2016
 	 * @since	2nd June 2016
 	 * @return	void		
 	 */
 	public function setDefaultTheme()
 	{
-		if (isset($_GET['template']))
-			return $this->switchTemplate($_GET['template']);
 		$this->findOneBy(array('active' => 'Y'));
-		if ($this->session->notEmpty('theme.IDPersonal'))
+		if ($this->session->get('theme.IDPersonal') > 0 && $this->record->gibbonThemeID != $this->session->get('theme.IDPersonal'))
 		{
 			$this->find($this->session->get('theme.IDPersonal'));
 		}
@@ -180,7 +188,7 @@ class theme extends record
 	 * @param	integer		$id 
 	 * @return	void
 	 */
-	public function __construct(view $view, $id = 0 )
+	public function __construct(view $view, $id = 0)
 	{
 		parent::__construct($view, $id);
 		if ($this->session->isEmpty('theme.tested') || ! $this->session->get('theme.tested'))
@@ -213,37 +221,5 @@ class theme extends record
 			}
 		}
 		return parent::__construct($view, $id);
-	}
-	
-	/**
-	 * Switch Template
-	 *
-	 * @version	11th September 2016
-	 * @since	11th September 2016
-	 * @return	void
-	 */
-	public function switchTemplate($name)
-	{
-		$this->record = $this->findOneBy(array('name' => $name));
-		if ($this->rowCount() === 1) 
-		{
-			$this->session->set("theme.ID", $this->record->gibbonThemeID) ;
-			$this->session->set("theme.Name", $this->record->name) ;
-			$this->session->set("theme.Author.name", $this->record->author) ;
-			$this->session->set("theme.Author.URL", $this->record->url) ;
-			$this->session->set("theme.path", GIBBON_ROOT.'src/themes/'.$this->record->name.'/') ;
-			$this->session->set("theme.url", GIBBON_URL.'src/themes/'.$this->record->name.'/') ;
-			$this->session->set("theme.defaultPath", GIBBON_ROOT.'src/themes/Default/') ;
-			$this->session->set("theme.defaultURL", GIBBON_URL.'src/themes/Default/') ;
-			$this->session->clear('theme.settings');
-			if (file_exists($this->session->get('theme.path').'settings.yml'))
-				$this->session->set('theme.settings', Yaml::parse(file_get_contents($this->session->get('theme.path').'settings.yml')));
-			elseif (file_exists($this->session->get('theme.defaultPath').'settings.yml'))
-			{
-				$this->session->set('theme.settings', Yaml::parse(file_get_contents($this->session->get('theme.defaultPath').'settings.yml')));
-				$this->session->set("theme.path", GIBBON_ROOT.'src/themes/Default/') ;
-				$this->session->set("theme.url", GIBBON_URL.'src/themes/Default/') ;
-			}
-		}
 	}
 }
