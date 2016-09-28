@@ -37,7 +37,7 @@ class textArea extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	17th September 2016
+	 * @version	29th September 2016
 	 * @since	20th April 2016
 	 * @param	string		$name	Name
 	 * @param	mixed		$value	Value
@@ -46,10 +46,10 @@ class textArea extends element
 	public function __construct($name = null, $value = null, view $view)
 	{
 		parent::__construct($name, $value, $view);
-		if ($name !== NULL)
+		if ($name !== null)
 			$this->name = $name;
-		if ($value !== NULL)
-			$this->value = $value;
+		if ($value !== null)
+			$this->value = $this->handleArray($value);
 		$this->rows = 8;
 		$this->id = '_' . $this->name ;
 		$this->element->name = 'textArea';

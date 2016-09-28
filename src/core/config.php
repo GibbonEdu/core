@@ -699,8 +699,9 @@ class config
 	/**
 	 * database To Value
 	 *
-	 * @version	24th September 2016
+	 * @version	29th September 2016
 	 * @since	24th September 2016
+	 * @todo	Date management not implemented.
 	 * @param	stdClass	$data	
 	 * @return	mixed	Value
 	 */
@@ -710,7 +711,28 @@ class config
 		{
 			case 'array':
 				$value = json_decode($data->value);
+				if (is_null($value) && is_string($data->value) && mb_strlen($data->value) > 0)
+				{
+					$value = explode(',', $data->value);
+				}
 				return $value ;
+				break;
+			case 'number':
+				$value = 0;
+				if (is_numeric($data->value))
+				{
+					if (is_integer($data->value))
+						$value = intval($data->value);
+					else
+						$value = floatval($data->value);
+				}
+				return $value ;
+				break;
+			case 'date':
+			die('Need to work on dates');
+				break;
+			case 'text':
+				return $data->value ;
 				break;
 			default:
 				return $data->value ;

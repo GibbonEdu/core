@@ -53,14 +53,13 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->nameDisplay = 'Name' ;
 			$el->description = 'Must be unique.' ;
 
-			$types = explode(',', $this->config->getSettingByScope('School Admin', 'facilityTypes'));
+			$types = $this->config->getSettingByScope('School Admin', 'facilityTypes');
 
 			$el = $form->addElement('select', 'type', $dbObj->getField("type"));
 			$el->setPleaseSelect();
 			$el->nameDisplay = 'Type' ;
-			$el->addOption($this->__('Please select...'), 'Please select...');
 			foreach($types as $w)
-				$el->addOption(trim($w));
+				$el->addOption($w);
 
 			$el = $form->addElement('select', 'gibbonPersonID1', $dbObj->getField("gibbonPersonID1"));
 			$el->nameDisplay = 'User 1' ;

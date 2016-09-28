@@ -21,15 +21,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Form;
 
 use Gibbon\core\view ;
-use Gibbon\core\trans ;
-use Gibbon\core\session ;
 use Symfony\Component\Yaml\Yaml ;
 use Gibbon\Form\elementInterface ;
 
 /**
  * Element Base
  *
- * @version	17th September 2016
+ * @version	29th September 2016
  * @since	10th May 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -45,7 +43,7 @@ abstract class element implements elementInterface
 	/**
 	 * Inject Record
 	 *
-	 * @version	10th May 2016
+	 * @version	29th September 2016
 	 * @since	10th May 2016
 	 * @param	object or array	$record	Data to insert into Class
 	 * @return	void
@@ -54,7 +52,7 @@ abstract class element implements elementInterface
 	{
 		foreach((array)$record as $name=>$value)
 		{
-			$this->$name = $value;
+			$this->$name = $this->handleArray($value);
 		}
 		$this->id = '_'.$this->name ;
 	}
@@ -341,7 +339,7 @@ abstract class element implements elementInterface
 	{
 		if (! isset($this->validation))
 		{
-			$session = new session();
+			$session = $this->view->session ;
 			if ($session->isEmpty('theme.Name'))
 				$session->set('theme.Name', 'Bootstrap');
 			if (file_exists(GIBBON_ROOT . 'src/themes/' . $session->get('theme.Name') . '/settings.yml'))
@@ -583,4 +581,26 @@ $(function() {
 		$this->availableTags = rtrim($avail, ',');
 		$this->autoComplete = true ;
     }
+	
+	/**
+	 * handle Array
+	 *
+	 * @version	29th September 2016
+	 * @since	29th September 2016
+	 * @param	mixed		$value
+	 * @return 	string		
+	 */
+	protected function handleArray($value)
+	{
+		if (! is_array($value))
+			return $value ;
+		foreach($value as $q=>$w)
+		{
+			 if (mb_strlen(trim($w)) == 0)
+			 	unset($value[$q]);
+			else
+				$value[$q] = trim($w);
+		}
+		return implode(',', $value);
+	}
 }
