@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\School_Admin ;
 
 use Gibbon\core\view ;
-use Gibbon\core\trans ;
 
 if (! $this instanceof view) die();
 
@@ -33,7 +32,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$this->render('default.flash');
 
 	$this->h2('Messenger Settings');
-	$form = $this->getForm(GIBBON_ROOT . "modules/School Admin/messengerSettingsProcess.php", array(), true);
+	$form = $this->getForm(null, array('q' => '/modules/School Admin/messengerSettingsProcess.php'), true);
+
 	$form->addElement('h3', null, 'SMS Settings');
 	
 	$el = $form->addElement('info', null, 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.');

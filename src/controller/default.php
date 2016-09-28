@@ -46,6 +46,7 @@ $v13 = array
 		'/modules/School Admin/house_manage',
 		'/modules/School Admin/rollGroup_manage',
 		'/modules/School Admin/yearGroup_manage',
+		'/modules/School Admin/dashboardSettings',
 		'/core/scripts/',
 	);
 
