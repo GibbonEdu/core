@@ -42,7 +42,17 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
 $currentDate=$_POST["currentDate"] ;
 $today=date("Y-m-d");
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
+
+$moduleName = getModuleName($_POST["address"]);
+
+if ($moduleName == "Planner") {
+	$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
+} else {
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
+}
+
+//$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
 	//Fail 0

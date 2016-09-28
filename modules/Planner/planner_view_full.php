@@ -105,14 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</div>';
                     } else {
                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'date' => $date, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPlannerEntryID2' => $gibbonPlannerEntryID);
-                        $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2 AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2) ORDER BY date, timeStart";
+                        $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2 AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2) ORDER BY date, timeStart";
                     }
                 }
             } elseif ($highestAction == 'Lesson Planner_viewMyClasses') {
                 $data = array('date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=".$_SESSION[$guid]['gibbonPersonID'].' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) ORDER BY date, timeStart';
+                $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=".$_SESSION[$guid]['gibbonPersonID'].' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) ORDER BY date, timeStart';
             } elseif ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-                $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonDepartmentID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID ORDER BY date, timeStart";
+                $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonDepartmentID, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID ORDER BY date, timeStart";
                 $teacher = false;
                 try {
                     $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID2' => $gibbonPlannerEntryID, 'date2' => $date);
@@ -1630,12 +1630,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $gibbonCourseClassID = $row['gibbonCourseClassID'];
                         $columns = 2;
 
-                        // Only show if Class Attendance is Enabled
-                        if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') {
+                        // Only show if Class Attendance is Enabled school-wide, and for this particular class
+                        if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y' && $row['attendance'] == 'Y') {
 
                             require_once './modules/Attendance/src/attendanceView.php';
 
-                            $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+                            $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo );
 
                             try {
                                 $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -1648,7 +1648,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             $_SESSION[$guid]['sidebarExtra'] = "<div style='width:260px; float: right; font-size: 115%; font-weight: bold; margin-top: 8px; padding-left: 25px'>Participants & Attendance<br/>";
                                 //Show attendance log for the current day
-                                if ($row['role'] == 'Teacher' and $teacher == true) {
+                                if ( ($row['role'] == 'Teacher' and $teacher == true) || isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
                                     try {
                                         $dataLog = array( 'date' => $row['date'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                         $sqlLog = 'SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND date LIKE :date AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY timestampTaken';
@@ -1666,14 +1666,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Attendance has been taken at the following times for this lesson:');
                                         $_SESSION[$guid]['sidebarExtra'] .= "<ul style='margin-left: 20px'>";
                                         while ($rowLog = $resultLog->fetch()) {
-                                            $_SESSION[$guid]['sidebarExtra'] .= '<li>'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__($guid, 'by').' '.formatName($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true).'</li>';
+                                            $_SESSION[$guid]['sidebarExtra'] .= '<li><a style="color:inherit;" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.dateConvertBack($guid, $row['date'] ).'">'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__($guid, 'by').' '.formatName($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true).'</a></li>';
                                         }
                                         $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                                         $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                                     }
                                 }
 
-                            $_SESSION[$guid]['sidebarExtra'] .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_fullProcess.php'>";
+                            $_SESSION[$guid]['sidebarExtra'] .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_take_byCourseClassProcess.php'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<table class='noIntBorder' cellspacing='0' style='width:260px; float: right; margin-bottom: 30px'>";
                             $count = 0;
                             $countStudents = 0;
@@ -1685,6 +1685,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     							//Get attendance status for students
     							$status = 'Present';
                                 $reason = '';
+                                $comment = '';
                                 if ($rowClassGroup['role'] == 'Student') {
 
     								//Check for school attendance
@@ -1700,9 +1701,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										$rowAtt = $resultAtt->fetch();
                                         $status = $rowAtt['type'];
                                         $reason = $rowAtt['reason'];
+                                        $comment = $rowAtt['comment'];
 									}
     								
                                 }
+
                                 //$status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite'
                                 if ( $attendance->isTypeAbsent($status) ) {
                                     $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #CC0000; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
@@ -1743,15 +1746,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
     									//DEAL WITH LIKES
     									$likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $gibbonPlannerEntryID, $_SESSION[$guid]['gibbonPersonID'], $rowClassGroup['gibbonPersonID']);
-                                        $comment = addSlashes($row['course'].'.'.$row['class'].': '.$row['name']);
+                                        $likeComment = addSlashes($row['course'].'.'.$row['class'].': '.$row['name']);
                                         $_SESSION[$guid]['sidebarExtra'] .= "<div id='star".$rowClassGroup['gibbonPersonID']."'>";
                                         $_SESSION[$guid]['sidebarExtra'] .= '<script type="text/javascript">';
                                         $_SESSION[$guid]['sidebarExtra'] .= '$(document).ready(function(){';
                                         $_SESSION[$guid]['sidebarExtra'] .= '$("#starAdd'.$rowClassGroup['gibbonPersonID'].'").click(function(){';
-                                        $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "add", "comment": "'.$comment.'"});';
+                                        $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "add", "comment": "'.$likeComment.'"});';
                                         $_SESSION[$guid]['sidebarExtra'] .= '});';
                                         $_SESSION[$guid]['sidebarExtra'] .= '$("#starRemove'.$rowClassGroup['gibbonPersonID'].'").click(function(){';
-                                        $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "remove", "comment": "'.$comment.'"});';
+                                        $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "remove", "comment": "'.$likeComment.'"});';
                                         $_SESSION[$guid]['sidebarExtra'] .= '});';
                                         $_SESSION[$guid]['sidebarExtra'] .= '});';
                                         $_SESSION[$guid]['sidebarExtra'] .= '</script>';
@@ -1774,6 +1777,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                         $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $status, "$countStudents-type", '84px');
                                         $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $reason, "$countStudents-reason", '84px');
+
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($comment)."'>";
 
                                     }
                                 }
@@ -1809,9 +1814,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td class='right' colspan=5>";
                                 $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='params' value='$params'>";
+                                $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'>";
                                 $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
                                 $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='currentDate' value='".$row['date']."'>";
-                                $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='countStudents' value='$countStudents'>";
+                                $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='count' value='$countStudents'>";
                                 $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
                                 $_SESSION[$guid]['sidebarExtra'] .= "<input type='submit' value='Submit'>";
                                 $_SESSION[$guid]['sidebarExtra'] .= '</td>';
