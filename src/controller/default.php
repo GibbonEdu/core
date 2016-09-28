@@ -44,6 +44,7 @@ $v13 = array
 		'/modules/School Admin/trackingSettings',
 		'/modules/School Admin/department_manage', 
 		'/modules/School Admin/house_manage',
+		'/modules/School Admin/rollGroup_manage',
 		'/core/scripts/',
 	);
 
