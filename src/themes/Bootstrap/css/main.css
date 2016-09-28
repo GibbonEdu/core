@@ -500,6 +500,10 @@ div.form-element p.help-block {
 	text-align: left ;
 	font-size: 120%;
 }
+.form-element-photo {
+	width: 75px ;
+	float: left ;
+}
 div.error, p.error {
 	border-left: 6px solid #CC0000;
 	color: #CC0000;
@@ -610,6 +614,7 @@ ul.moduleMenu h4 {
 }
 .glyphicons, .glyphicon {
 	color: #757B81;
+	font-size: 18px;
 }
 
 div.linkTop {
@@ -679,7 +684,7 @@ div#tabs {
 }
 #siteloader img {
 	width: 210px;
-	margin: -20px 0 0 -24px;
+	margin: -3px 0 0 -3px;
 }
 
 /* TABLES */
@@ -1047,4 +1052,12 @@ a,#adminmenu a,a.edButtonPreview,a.edButtonHTML,#the-comment-list p.comment-auth
 }
 .center {
 	text-align: centre!important;
+}
+.photo-delete span {
+	margin-top: -8px;
+	color: red ;
+	font-size: 18px;
+}
+.photo-delete span:hover {
+	color: #069 ;
 }

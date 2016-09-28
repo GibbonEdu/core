@@ -16,28 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-// @version 20th April 2016
 
-namespace Module\Security ;
+namespace Module\School_Admin ;
 
-use Gibbon\core\view ;
-use Gibbon\Record\theme ;
+use Gibbon\core\post ;
+use Gibbon\core\deleteRecord ;
 
-if (! $this instanceof view) die();
+if (! $this instanceof post) die();
 
-$URL = GIBBON_URL . 'index.php' ;
-
-$this->session->clear('googleAPIAccessToken');
-$this->session->clear('gplusuer');
-
-$this->session->destroy();
-
-$this->session->start();
-
-if (isset($_GET["timeout"]) && $_GET["timeout"]=="true")
-	$this->insertMessage('Your session expired, so you were automatically logged out of the system.', 'warning');
-
-$tObj = new theme($this);
-$tObj->setDefaultTheme();
-
-$this->redirect($URL);
+new deleteRecord
+	(
+		'rollGroup', 
+		$_GET["gibbonRollGroupID"], 
+		"/modules/School Admin/rollGroup_manage_delete.php", 
+		array('q'=>'=/modules/School Admin/rollGroup_manage_delete.php', 'gibbonSchoolYearID'=>$_GET["gibbonSchoolYearID"], 'gibbonRollGroupID'=>$_GET["gibbonRollGroupID"]), 
+		array('q'=>'/modules/School Admin/rollGroup_manage.php', 'gibbonSchoolYearID'=>$_GET["gibbonSchoolYearID"]), 
+		$this
+	);

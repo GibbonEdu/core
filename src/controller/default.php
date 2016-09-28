@@ -43,6 +43,9 @@ $v13 = array
 		'/modules/School Admin/markbookSettings',
 		'/modules/School Admin/trackingSettings',
 		'/modules/School Admin/department_manage', 
+		'/modules/School Admin/house_manage',
+		'/modules/School Admin/rollGroup_manage',
+		'/modules/School Admin/yearGroup_manage',
 		'/core/scripts/',
 	);
 

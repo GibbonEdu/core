@@ -273,7 +273,7 @@ class view
 		elseif ($echo)
 			echo '<div class="'. $style .'">' .  $this->__($message, $messageInfo) .'</div>';
 		else
-			$this->session->append($target, '<div class="'. $style .'">' .  $this->__($message, $messageInfo) .'</div>') ;
+			$this->session->appendUnique($target, '<div class="'. $style .'">' .  $this->__($message, $messageInfo) .'</div>') ;
 		return ;
 	}
 

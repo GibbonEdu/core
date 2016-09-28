@@ -26,7 +26,7 @@ use Gibbon\Record\fileExtension ;
 /**
  * Photo Element
  *
- * @version	27th September 2016
+ * @version	28th September 2016
  * @since	30th June 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -83,5 +83,39 @@ class photo extends element
 			$mimeType[] = $w->mimeType;
 		}
 		$this->validate->mimeType = implode(',', $mimeType);
+	}
+
+	/**
+	 * display Photo
+	 *
+	 * @version	28th September 2016
+	 * @since	28th September 2016
+	 * @param	string		$photoFile
+	 * @param	string		$description
+	 * @param	array		$descriptionParameters
+	 * @param	array		$url to Delete Photo
+	 * @return 	void
+	 */
+	public function displayPhoto($photoFile, $description, $descriptionParameters, $url )
+	{
+		if (! empty($photoFile))
+		{
+			$y = '';
+			$description .= '%'.count($descriptionParameters).'$sWill overwrite existing attachment.';
+			$descriptionParameters = array_merge($descriptionParameters, array('<br />'));
+			if (file_exists(GIBBON_ROOT . $photoFile)) {
+				$y .= " <img class='form-element-photo' src='".GIBBON_URL . $photoFile."'/>";
+				$y .= "<a target='_blank' title='".$this->view->__('View Photo')."' href='".GIBBON_URL.$photoFile."'>".basename($photoFile)."</a> <a class='photo-delete' title='".$this->view->__('Delete Photo')."' href='".$this->view->convertGetArraytoURL($url)."' onclick='return confirm(\"".$this->view->__('Are you sure you want to delete this photo? Unsaved changes will be lost.')."\")'>";
+				$y .= $this->view->returnLinkImage('delete', '')."</a><br /><br />";
+				$this->deletePhoto = array('Current attachment:%1$s', array($y));
+			}
+			else
+			{
+				$y .= basename($photoFile)." <a class='photo-delete' title='".$this->view->__('Delete Photo')."' href='".$this->view->convertGetArraytoURL($url)."' onclick='return confirm(\"".$this->view->__('Are you sure you want to delete this photo? Unsaved changes will be lost.')."\")'>";
+				$y .= $this->view->returnLinkImage('delete', '')."</a><br /><br />";
+				$this->deletePhoto = array('Current attachment: %1$s', array($y));
+			}
+		}
+		$this->description = array($description, $descriptionParameters);
 	}
 }

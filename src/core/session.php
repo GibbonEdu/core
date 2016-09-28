@@ -27,7 +27,7 @@ use Gibbon\Record\house ;
 /**
  * Session Manager
  *
- * @version	27th September 2016
+ * @version	28th September 2016
  * @since	15th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -321,8 +321,8 @@ class session
 	{
 		if (PHP_SESSION_ACTIVE === session_status())
 		{
-			$_SESSION = null;
-			session_unset();
+			session_unset(); //removes sesion variables
+			session_destroy();  //removes the session
 		}
 	}
 
@@ -450,5 +450,23 @@ class session
 		$x = ! empty($x) && is_array($x) ? $x : array();
 		$x[] = $value;
 		return $this->set($name, $x);
+	}
+
+	/**
+	 * append Unique Value
+	 *
+	 * @version	28th September 2016
+	 * @since	28th September 2016
+	 * @param	string	Session Value Name
+	 * @param	mixed	Session Value
+	 * @return	object	Gibbon\session
+	 */
+	public function appendUnique($name, $value)
+	{
+		$was = $this->get($name);
+		if (mb_strpos($was, $value) !== false)
+			return $this ;
+		$value = $was . $value;
+		return $this->set($name, $value);
 	}
 }

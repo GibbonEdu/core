@@ -1169,7 +1169,7 @@ div.colourPatch {
 }
 #siteloader img {
 	width: 260px;
-	margin: -20px 0 0 -24px;
+	margin: -5px 0 0 -5px;
 }
 fieldset {
 	border: none ;
@@ -1228,4 +1228,9 @@ table.well tr:nth-child(even) td {
 }
 #likeLink, #notifications, #messageLink {
 	display: inline;
+}
+.form-element-photo {
+	width: 75px ;
+	float: left ;
+	margin-left: 100px;
 }

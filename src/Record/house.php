@@ -42,6 +42,11 @@ class house extends record
 	protected $identifier = 'gibbonHouseID';
 	
 	/**
+	 * @var	boolean	$imageFail
+	 */
+	public $imageFail = false;
+	
+	/**
 	 * Unique Test
 	 *
 	 * @version	5th May 2016

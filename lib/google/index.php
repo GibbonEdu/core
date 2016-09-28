@@ -108,9 +108,7 @@ if ($this->session->notEmpty('googleAPIAccessToken')  && $this->session->get('go
 
 if (isset($authUrl)){
 	//show login url
-	print '<div style="margin: 0px">';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img width="250" src="src/themes/' . $this->session->get("gibbonThemeName") . '/img/g_login_btn.png" /></a>';
-	print '</div>';
+	print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img src="src/themes/' . $this->session->get("theme.Name") . '/img/g_login_btn.png" /></a>';
 } else {
 	$user = $service->userinfo->get(); //get user info
 	$email = $user->email;
