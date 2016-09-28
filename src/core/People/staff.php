@@ -35,12 +35,25 @@ class staff extends person
 	/**
 	 * all Staff
 	 *
-	 * @version	26th September 2016
+	 * @version	29th September 2016
 	 * @since	26th September 2016
 	 * @param	string		$status		Status to load.
 	 * @return	array		Gibbon\People\staff 
 	 */
 	public function allStaff($status = 'Full')
+	{
+		return $this->findAllStaffByType($type);
+	}
+
+	/**
+	 * find All Staff by Type
+	 *
+	 * @version	29th September 2016
+	 * @since	29th September 2016
+	 * @param	string		$status		Status to load.
+	 * @return	array		Gibbon\People\staff 
+	 */
+	public function findAllStaffByType($status = 'Full')
 	{
 		$sql = "SELECT `gibbonPerson`.*
 			FROM `gibbonPerson`

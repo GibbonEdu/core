@@ -48,6 +48,7 @@ $v13 = array
 		'/modules/School Admin/yearGroup_manage',
 		'/modules/School Admin/dashboardSettings',
 		'/modules/School Admin/space',
+		'/modules/School Admin/financeSettings',
 		'/core/scripts/',
 	);
 

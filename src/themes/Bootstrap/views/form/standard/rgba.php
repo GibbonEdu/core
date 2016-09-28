@@ -8,7 +8,7 @@
 $this->addScript('
 <script>
 $(document).ready(function(){
-	$("#<?php echo $el->id; ?>").on("change", function(){
+	$("#'.$el->id.'").on("change", function(){
 		$("#div_'.$el->id.'").css("background-color", "rgba(" + $("#'.$el->id.'").val() + ")");
 		$("#div_'.$el->id.'").css("border-color", "rgba(" + $("#'.$el->id.'").val() + ")");
 	});
