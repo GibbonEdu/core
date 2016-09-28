@@ -1225,3 +1225,7 @@ div.blockOuter {
 h1.bigTop, h2.bigTop, h3.bigTop, h4.bigTop, h5.bigTop, h6.bigTop {
 	margin-top: 50px!important;
 }
+#siteloader img {
+	width: 250px;
+	margin: 0 ;
+}

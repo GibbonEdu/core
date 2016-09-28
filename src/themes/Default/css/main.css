@@ -493,10 +493,6 @@ li {
 img.logo {
 	margin: 15px 0 6px 0 ;
 }
-#siteloader img {
-	width: 250px;
-	margin: 0;
-}
 
 /* TABLES */
 table {
@@ -1173,7 +1169,7 @@ div.colourPatch {
 }
 #siteloader img {
 	width: 260px;
-	margin: -20px 0 0 -24px;
+	margin: -5px 0 0 -5px;
 }
 fieldset {
 	border: none ;
