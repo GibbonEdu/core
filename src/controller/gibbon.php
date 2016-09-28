@@ -89,7 +89,6 @@ if (isset($_GET["q"])) {
 }
 else {
 	$session->clear("address") ;
-	unset($_GET['q']);
 }
 $session->clear("module") ;
 $session->clear("action") ;

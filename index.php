@@ -206,8 +206,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						$.sessionTimeout({
 							message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
 							keepAliveUrl: 'keepAlive.php' ,
-							redirUrl: 'index.php?q=/modules/Security/logout.php?timeout=true&divert=true',
-							logoutUrl: 'index.php?q=/modules/Security/logout.php&divert=true' ,
+							redirUrl: '<?php echo $_SESSION[$guid]['absoluteURL']; ?>/index.php?q=/modules/Security/logout.php?timeout=true&divert=true',
+							logoutUrl: '<?php echo $_SESSION[$guid]['absoluteURL']; ?>/index.php?q=/modules/Security/logout.php&divert=true' ,
 							warnAfter: <?php echo $sessionDuration * 1000 ?>,
 							redirAfter: <?php echo($sessionDuration * 1000) + 600000 ?>
 			 			});
