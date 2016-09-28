@@ -145,21 +145,21 @@ div.minorLinks {
 	text-align: right;
 	color: white;
 	font-weight: normal;
-	line-height: 15px;
 	margin-top: 15px;
 	margin-bottom: 2px;
-	height: 65px;
+	height: 55px;
 	font-size: 13px;
+	padding-top: 20px;
 }
 .minorLinksContent {
-	line-height: 65px ;
 	vertical-align: middle ;
 	display: inline-block ;
-	height: 65px;
+	height: 55px;
 }
 div.minorLinks span.glyphicons.x2 {
 	margin-left: -8px;
 	margin-right: -8px;
+	margin-top: -20px;
 	vertical-align: middle ;
 }
 div.minorLinks a {
@@ -630,7 +630,7 @@ div.linkTopLeft {
 div.linkTop .glyphicons, div.linkTop .glyphicon {
 	color: #c00;
 	vertical-align: middle ;
-	margin-top: -5px;	
+	margin-top: -5px;
 	font-size: 20px;
 }
 div.linkTop .glyphicons:hover, div.linkTop .glyphicon:hover, div.linkTop .glyphicons:active, div.linkTop .glyphicon:active {
