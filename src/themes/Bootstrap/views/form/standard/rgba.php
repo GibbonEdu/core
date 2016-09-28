@@ -6,7 +6,7 @@
 </div><!-- bootstrap.form.rgba -->
 <?php $this->render('form.standard.rowEnd', $el); 
 $this->addScript('
-<script>
+<script type="text/javascript">
 $(document).ready(function(){
 	$("#'.$el->id.'").on("change", function(){
 		$("#div_'.$el->id.'").css("background-color", "rgba(" + $("#'.$el->id.'").val() + ")");
