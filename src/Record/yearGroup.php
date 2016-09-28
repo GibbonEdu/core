@@ -52,7 +52,7 @@ class yearGroup extends record
 	{
 		if (empty($this->record))
 			return $this->uniqueFailed('The Record has not been set.', 'Debug', 'yearGroup') ;
-        $required = array('name','nameShort','sequenceNumber');
+        $required = array('name', 'nameShort', 'sequenceNumber');
 		foreach ($required as $name) 
 			if (! isset($this->record->$name))
 				return $this->uniqueFailed('A necessary field was empty.', 'Debug', 'yearGroup', array($name)) ;
