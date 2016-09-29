@@ -524,5 +524,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Main Menu Settings'));end
 UPDATE `gibbonSetting` SET value='en_GB' WHERE `scope`='System'  AND `name`='defaultLanguage';end
 UPDATE `gibbonSetting` SET `type` = 'array' WHERE `gibbonSetting`.`name` = 'facilityTypes' AND `scope` = 'School Admin';end
+ALTER TABLE `gibbonSchoolYearTerm` DROP INDEX `sequenceNumber`, ADD UNIQUE `sequenceNumber` (`sequenceNumber`, `gibbonSchoolYearID`);end
 
 ";

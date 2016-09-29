@@ -60,6 +60,7 @@ $v13 = array
 		'/modules/School Admin/daysOfWeek_manage',
 		'/modules/School Admin/schoolYear_manage',
 		'/modules/School Admin/schoolYearSpecialDay_manage',
+		'/modules/School Admin/schoolYearTerm_manage',
 		'/core/scripts/',
 	);
 
