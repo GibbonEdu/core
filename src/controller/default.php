@@ -51,6 +51,7 @@ $v13 = array
 		'/modules/School Admin/financeSettings',
 		'/modules/School Admin/alertLevelSettings',
 		'/modules/School Admin/behaviourSettings',
+		'/modules/School Admin/inDescriptors_manage',
 		'/core/scripts/',
 	);
 
