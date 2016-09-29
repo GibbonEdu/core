@@ -38,7 +38,7 @@ $date = $_GET['date'];
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
-    $URL .= '&reutrn=error0';
+    $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
