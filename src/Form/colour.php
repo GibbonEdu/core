@@ -23,14 +23,14 @@ namespace Gibbon\Form;
 use Gibbon\core\view ;
 
 /**
- * RGBA Element
+ * Colour Element
  *
  * @version	29th September 2016
- * @since	11th July 2016
+ * @since	20th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
  */
-class rgba extends element
+class colour extends element
 {
 	/**
 	 * Constructor
@@ -45,23 +45,22 @@ class rgba extends element
 	public function __construct($name = null, $value = null, view $view)
 	{
 		parent::__construct($name, $value, $view);
-		if ($name !== NULL)
+		if ($name !== null)
 			$this->name = $name;
-		if ($value !== NULL)
+		if ($value !== null)
 			$this->value = $value;
-		$this->element->name = "rgba";
+		$this->element->name = "colour";
 		$this->setID();
-		$this->setRGBA();
+		$this->setColour();
 	}
 	/**
 	 * Set Colour
 	 *
-	 * @version	11th July 2016
-	 * @since	11th July 2016
+	 * @version	9th July 2016
+	 * @since	9th July 2016
 	 */
-	public function setRGBA($message = 'Colour Format: 0-255,0-255,0-255,0.00-1 (e.g. 100,100,100,0,5 ) No spaces.')
+	public function setColour($message = 'Colour must be 3 or 6 characters long. Only these characters accepted: 0-9, a-f or A-F')
 	{
-		$this->setFormat("^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),(1|0\.([0-9]{1,2}))$", $message);
-		$this->setMaxLength(16);
+		$this->setFormat("^([0-9a-fA-F]{6})$|^([0-9a-fA-F]{3})$", $message);
 	}
 }

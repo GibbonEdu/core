@@ -42,7 +42,7 @@ class staff extends person
 	 */
 	public function allStaff($status = 'Full')
 	{
-		return $this->findAllStaffByType($type);
+		return $this->findAllStaffByType($status);
 	}
 
 	/**
