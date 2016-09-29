@@ -127,7 +127,7 @@ class attendanceView
 
     public function getAttendanceCodeByType( $type ) {
     	if ( isset($this->attendanceTypes[$type]) == false ) return '';
-    	return $this->attendanceTypes[$type]['nameShort'];
+    	return $this->attendanceTypes[$type];
     }
 
 

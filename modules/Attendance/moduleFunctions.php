@@ -110,6 +110,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     }
 }
 
+
 //$dateStart and $dateEnd refer to the students' first and last day at the school, not the range of dates for the report
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd)
 {
@@ -348,7 +349,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                         $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {
-                                                $output .= $attendance->getAttendanceCodeByType( $log[$x][0] );
+                                                $output .= $attendance->getAttendanceCodeByType( $log[$x][0] )['nameShort'];
                                             }
                                             if ($x != 0 and $x != count($log)) {
                                                 $output .= ' : ';
