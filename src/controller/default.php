@@ -58,6 +58,7 @@ $v13 = array
 		'/modules/School Admin/plannerSettings',
 		'/modules/School Admin/resourceSettings',
 		'/modules/School Admin/daysOfWeek_manage',
+		'/modules/School Admin/schoolYear_manage',
 		'/core/scripts/',
 	);
 
