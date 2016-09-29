@@ -33,7 +33,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$this->h2('Manage Resource Settings');
 
-	$form = $this->getForm(GIBBON_ROOT . "modules/School Admin/resourceSettingsProcess.php", array(), true);
+	$form = $this->getForm(null, array('q'=>'/modules/School Admin/resourceSettingsProcess.php'), true);
 
 	$el = $form->addElement('textArea', null) ;
 	$el->injectRecord($this->config->getSetting('categories', 'Resources'));

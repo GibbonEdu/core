@@ -1,0 +1,2 @@
+<div<?php echo isset($el->element->class) ? ' class="'.$el->element->class.'"' : '' ; ?><?php echo isset($el->element->style) ? ' style="'.$el->element->style.'"' : '' ; ?>>
+<?php $this->render('form.select', $params->minute);  $this->render('form.select', $params->hour); ?></div><!-- bootstrap.form.time -->

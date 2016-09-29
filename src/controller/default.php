@@ -57,6 +57,7 @@ $v13 = array
 		'/modules/School Admin/librarySettings',
 		'/modules/School Admin/plannerSettings',
 		'/modules/School Admin/resourceSettings',
+		'/modules/School Admin/daysOfWeek_manage',
 		'/core/scripts/',
 	);
 
