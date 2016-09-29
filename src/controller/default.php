@@ -54,6 +54,7 @@ $v13 = array
 		'/modules/School Admin/inDescriptors_manage',
 		'/modules/School Admin/studentsSettings',
 		'/modules/School Admin/activitySettings',
+		'/modules/School Admin/librarySettings',
 		'/core/scripts/',
 	);
 
