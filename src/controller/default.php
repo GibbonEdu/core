@@ -55,6 +55,7 @@ $v13 = array
 		'/modules/School Admin/studentsSettings',
 		'/modules/School Admin/activitySettings',
 		'/modules/School Admin/librarySettings',
+		'/modules/School Admin/plannerSettings',
 		'/core/scripts/',
 	);
 
