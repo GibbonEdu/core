@@ -52,6 +52,7 @@ $pObj->setField('gibbonThemeIDPersonal', $ThemeIDPersonal);
 $pObj->setField('personalLanguageCode', $LanguageCode);
 $pObj->setField('receiveNotificationEmails', $receiveNotificationEmails);
 
+
 if (! $pObj->writeRecord(array('calendarFeedPersonal', 'personalBackground', 'gibbonThemeIDPersonal', 'personalLanguageCode', 'receiveNotificationEmails'))) {
     $this->insertMessage('return.error.2');
     $this->redirect($URL);
@@ -62,10 +63,9 @@ $this->session->set('calendarFeedPersonal', $pObj->getField('calendarFeedPersona
 $this->session->set('personalBackground', $pObj->getField('personalBackground'));
 $this->session->set('gibbonThemeIDPersonal', $pObj->getField('gibbonThemeIDPersonal'));
 $this->session->set('theme.IDPersonal', $pObj->getField('gibbonThemeIDPersonal'));
-if ($this->session->notEmpty('theme.IDPersonal')) {
-	$tObj = new theme($this, $this->session->get('theme.IDPersonal'));
-	$tObj->setDefaultTheme();
-}
+$tObj = new theme($this);
+$tObj->setDefaultTheme();
+
 $this->session->set('personalLanguageCode', $pObj->getField('personalLanguageCode'));
 $this->session->set('receiveNotificationEmails', $pObj->getField('receiveNotificationEmails'));
 

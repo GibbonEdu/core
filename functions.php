@@ -141,7 +141,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             }
         }
         $return .= $name.' . ';
-        $return .= "<a href='./index.php?q=/modules/Security/logout.php&divert=true'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=/modules/User Admin/preferences.php'>".__($guid, 'Preferences').'</a>';
+        $return .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Security/logout.php&divert=true'>".__($guid, 'Logout')."</a> . <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/preferences.php'>".__($guid, 'Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
         }

@@ -34,10 +34,6 @@ if (! $this->getSecurity()->isActionAccessible('/modules/School Admin/messengerS
     //Write to database
     $fail = false;
 
-	if (! $this->config->setSettingByScope('smsUsername', $_POST['smsUsername'], 'Messenger' )) $fail = true;
-	if (! $this->config->setSettingByScope('smsPassword', $_POST['smsPassword'], 'Messenger' )) $fail = true;
-	if (! $this->config->setSettingByScope('smsURL', $_POST['smsURL'], 'Messenger' )) $fail = true;
-	if (! $this->config->setSettingByScope('smsURLCredit', $_POST['smsURLCredit'], 'Messenger' )) $fail = true;
 	if (! $this->config->setSettingByScope('messageBubbleWidthType', $_POST['messageBubbleWidthType'], 'Messenger' )) $fail = true;
 	if (! $this->config->setSettingByScope('messageBubbleBGColour', $_POST['messageBubbleBGColour'], 'Messenger' )) $fail = true;
 	if (! $this->config->setSettingByScope('messageBubbleAutoHide', $_POST['messageBubbleAutoHide'], 'Messenger' )) $fail = true;

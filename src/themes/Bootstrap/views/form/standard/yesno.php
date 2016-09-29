@@ -20,10 +20,12 @@ $this->addScript('
 		if (state) {
 			$(\'input[name="'.$el->name.'"]\').val("Y");
 			$(\'input[name="'.$el->name.'"]\').prop("checked", true);
+			$(\'input[name="'.$el->name.'"]\').blur();
 		} else {
 			$(\'input[name="'.$el->name.'"]\').prop("checked", false);
+			$(\'input[name="'.$el->name.'"]\').blur();
 		}
 	});
 </script>
-');?>
+'); ?>
 <input type="hidden" name="boolean[<?php echo $el->name; ?>]" value="N" /><!-- bootstrap.form.standard.yesno -->

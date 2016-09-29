@@ -266,28 +266,6 @@ class helper
 	}
 
 	/**
-	 * date Convert Back
-	 *
-	 * Converts date from YYYY-MM-DD to language-specific format.
-	 * @version	22nd April 2016
-	 * @since	22nd April 2016
-	 * @param	string		$date Date
-	 * @return	string
-	 */
-	static public function dateConvertBack($date) {
-		$output = false; ;
-		if (! empty($date)) {
-			$session = self::getSession();
-			$timestamp = strtotime($date) ;
-			if (! $session->isEmpty("i18n.dateFormatPHP") ) 
-				$output = date($session->get("i18n.dateFormatPHP"), $timestamp) ;
-			else 
-				$output = date("d/m/Y", $timestamp) ;
-		}
-		return $output ;
-	}
-
-	/**
 	 * set Notification
 	 *
 	 * Sets a system-wide notification

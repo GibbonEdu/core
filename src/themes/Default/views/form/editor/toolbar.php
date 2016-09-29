@@ -60,7 +60,7 @@
         //DEFINE MEDIA INPUT DISPLAY ?>
         <div id='<?php echo $el->id; ?>resourceSlider' style='display: none; width: 100%; min-height: 60px;'>
             <div style='text-align: center; width: 100%; margin-top: 5px'>
-                <img style='margin: 10px 0 5px 0' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get('gibbonThemeName') ; ?>/img/loading.gif' alt='<?php echo $this->__('Loading'); ?>' onclick='return false;' /><br/>
+                <img style='margin: 10px 0 5px 0' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get('theme.Name') ; ?>/img/loading.gif' alt='<?php echo $this->__('Loading'); ?>' onclick='return false;' /><br/>
                 <?php echo $this->__('Loading') ; ?>
             </div>
         </div>
@@ -68,7 +68,7 @@
         <!-- DEFINE QUICK INSERT -->
         <div id='<?php echo $el->id; ?>resourceQuickSlider' style='display: none; width: 100%; min-height: 60px;'>
             <div style='text-align: center; width: 100%; margin-top: 5px'>
-                <img style='margin: 10px 0 5px 0' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get('gibbonThemeName') ; ?>/img/loading.gif' alt='<?php echo $this->__('Loading'); ?>' onclick='return false;' /><br/>
+                <img style='margin: 10px 0 5px 0' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get('theme.Name') ; ?>/img/loading.gif' alt='<?php echo $this->__('Loading'); ?>' onclick='return false;' /><br/>
                 <?php echo $this->__('Loading') ; ?>
             </div>
         </div>
@@ -78,7 +78,7 @@
         //DEFINE MEDIA ADD DISPLAY ?>
         <div id='<?php echo $el->id; ?>resourceAddSlider' style='display: none; width: 100%; min-height: 60px;'>
             <div style='text-align: center; width: 100%; margin-top: 5px'>
-                <img style='margin: 10px 0 5px 0' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get('gibbonThemeName') ; ?>/img/loading.gif' alt='<?php echo $this->__('Loading'); ?>' onclick='return false;' /><br/>
+                <img style='margin: 10px 0 5px 0' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get('theme.Name') ; ?>/img/loading.gif' alt='<?php echo $this->__('Loading'); ?>' onclick='return false;' /><br/>
                 <?php echo $this->__('Loading') ; ?>
             </div>
         </div>

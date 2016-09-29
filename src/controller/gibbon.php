@@ -76,20 +76,12 @@ $session->set('absolutePath', rtrim(GIBBON_ROOT, '/'));
 $session->set('SQLConnection', 0);
 $session->clear('pageAnchors');
 
-//testing option Only Change the default theme.
-if (isset($_GET['template']) && $session->get('installType') === 'Development') 
-{
-	$tObj = new theme(new view('default.blank'));
-	$tObj->switchTemplate($_GET['template']);
-}
-
 //Deal with address param q
 if (isset($_GET["q"])) {
 	$session->set("address", $_GET["q"]);
 }
 else {
 	$session->clear("address") ;
-	unset($_GET['q']);
 }
 $session->clear("module") ;
 $session->clear("action") ;

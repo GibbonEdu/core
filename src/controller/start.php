@@ -49,7 +49,7 @@ else {
 	$session->set("pageLoads", 0) ;
 	$refreshCache = true ;
 }
-if ($config->get('caching') == 0) {
+if ($caching == 0) {
 	$refreshCache = true ;
 	if ($session->get("pageLoads") > 10) $session->set("pageLoads", 0);
 }

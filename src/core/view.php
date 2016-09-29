@@ -621,7 +621,7 @@ class view
 	public function setTheme()
 	{
 		if ($this->config->isInstall()) return ;
-		$tObj = new theme($this, $this->getSession()->get('gibbonThemeID'));
+		$tObj = new theme($this, $this->getSession()->get('theme.ID'));
 		$tObj->setDefaultTheme();
 	}
 

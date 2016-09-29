@@ -31,6 +31,8 @@ namespace Gibbon\Record ;
  */
 class schoolYearTerm extends record
 {
+	use \Gibbon\core\functions\dateFunctions ;
+
 	/** 
 	 * @var	string	$table	Table Name
 	 */
@@ -74,8 +76,8 @@ class schoolYearTerm extends record
 		$data=array("sequenceNumber"=>$this->record->sequenceNumber, "schoolYearID"=>$this->record->gibbonSchoolYearID, "schoolYearTermID"=>$this->record->gibbonSchoolYearTermID); 
 		$sql="SELECT * 
 			FROM `gibbonSchoolYearTerm` 
-			WHERE `sequenceNumber` = :sequenceNumber 
-				AND `gibbonSchoolYearID` = :schoolYearID
+			WHERE (`sequenceNumber` = :sequenceNumber 
+				AND `gibbonSchoolYearID` = :schoolYearID)
 				AND NOT `gibbonSchoolYearTermID` = :schoolYearTermID" ;
 		$v = clone $this;
 		$roles = $v->findAll($sql, $data);

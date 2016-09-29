@@ -4,7 +4,7 @@
 						<img class='user' style='max-width: 150px' src='<?php echo GIBBON_URL.$el->logo; ?>'/>
 					<?php }
 					else { ?>
-						<img class='user' style='max-width: 150px' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get("gibbonThemeName"); ?>/img/anonymous_240_square.jpg'/>
+						<img class='user' style='max-width: 150px' src='<?php echo GIBBON_URL; ?>themes/<?php echo $this->session->get("theme.Name"); ?>/img/anonymous_240_square.jpg'/>
 					<?php } ?>
 				</td>
 				<td>

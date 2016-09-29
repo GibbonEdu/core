@@ -25,7 +25,7 @@ use Gibbon\core\view ;
 /**
  * RGBA Element
  *
- * @version	18th September 2016
+ * @version	29th September 2016
  * @since	11th July 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -35,7 +35,7 @@ class rgba extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	18th September 2016
+	 * @version	29th September 2016
 	 * @since	20th April 2016
 	 * @param	string		$name
 	 * @param	mixed		$value

@@ -23,6 +23,7 @@ use Gibbon\core\logger ;
 use Gibbon\core\post ;
 use Gibbon\Record\schoolYear ;
 use Gibbon\core\trans ;
+use Gibbon\Record\theme ;
 
 if (! $this instanceof post ) die();
 
@@ -161,7 +162,8 @@ else {
 					$this->session->set("personalBackground", $person->personalBackground );
 					$this->session->set("messengerLastBubble", $person->messengerLastBubble) ;
 					$this->session->set("gibbonThemeIDPersonal", $person->gibbonThemeIDPersonal) ;
-					$this->session->set("personalLanguage", $pObj->getField('gibbonLanguageCode')) ;
+					$this->session->set("theme.IDPersonal", $person->gibbonThemeIDPersonal) ;
+					$this->session->set("personalLanguageCode", $pObj->getField('personalLanguageCode')) ;
 					$this->session->set("googleAPIRefreshToken", $person->googleAPIRefreshToken) ;
 					$this->session->clear('googleAPIAccessToken') ; //Set only when user logs in with Google
 					$this->session->set('receiveNotificationEmails', $person->receiveNotificationEmails) ;
@@ -181,11 +183,8 @@ else {
 						}
 					}
 					
-					if ($this->session->notEmpty("gibbonThemeIDPersonal") && $this->session->get("gibbonThemeIDPersonal") != $this->session->get("gibbonThemeID"))
-					{
-						$tObj = new \Gibbon\Record\theme($this, $this->session->get("gibbonThemeIDPersonal"));
-						$tObj->setSessionTheme();
-					}
+					$tObj = new theme($this);
+					$tObj->setDefaultTheme();
 					
 					//Make best effort to set IP address and other details, but no need to error check etc.
 					$pObj->setField("lastFailIPAddress", $_SERVER["REMOTE_ADDR"]);
@@ -195,14 +194,14 @@ else {
 					$pObj->writeRecord() ;
 					if (isset($_GET["q"])) {
 						if ($_GET["q"]=="/publicRegistration.php") {
-							$this->session->get('absoluteURL')."/index.php";
+							GIBBON_URL."index.php";
 						}
 						else {
-							$this->session->get('absoluteURL')."/index.php?q=" . $_GET["q"] ;
+							GIBBON_URL."index.php?q=" . $_GET["q"] ;
 						}
 					}
 					else {
-						$this->session->get('absoluteURL')."/index.php";
+						GIBBON_URL."index.php";
 					}	
 					$security->clearTokens($pObj->getField('gibbonPersonID'));	
 					logger::__("Login - Success", 'Info', 'Security', array("username"=>$_POST['username'])) ;

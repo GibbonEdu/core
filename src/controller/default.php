@@ -35,17 +35,7 @@ $v13 = array
 		'/modules/Security/',
 		'/modules/Notifications/',
 		'/modules/User Admin/preferences',
-		'/modules/School Admin/messengerSettings',
-		'/modules/School Admin/fileExtensions_manage',
-		'/modules/School Admin/formalAssessmentSettings',
-		'/modules/School Admin/externalAssessments_',
-		'/modules/School Admin/gradeScales_manage',
-		'/modules/School Admin/markbookSettings',
-		'/modules/School Admin/trackingSettings',
-		'/modules/School Admin/department_manage', 
-		'/modules/School Admin/house_manage',
-		'/modules/School Admin/rollGroup_manage',
-		'/modules/School Admin/yearGroup_manage',
+		'/modules/School Admin/',
 		'/core/scripts/',
 	);
 

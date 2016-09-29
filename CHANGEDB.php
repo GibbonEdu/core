@@ -523,4 +523,7 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Main Menu Settings', 0, 'Settings', 'Allows administrators to configure the main menu Categories and the order they are displayed.', 'menu_manage.php', 'menu_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Main Menu Settings'));end
 UPDATE `gibbonSetting` SET value='en_GB' WHERE `scope`='System'  AND `name`='defaultLanguage';end
+UPDATE `gibbonSetting` SET `type` = 'array' WHERE `gibbonSetting`.`name` = 'facilityTypes' AND `scope` = 'School Admin';end
+ALTER TABLE `gibbonSchoolYearTerm` DROP INDEX `sequenceNumber`, ADD UNIQUE `sequenceNumber` (`sequenceNumber`, `gibbonSchoolYearID`);end
+
 ";

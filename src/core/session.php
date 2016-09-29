@@ -48,7 +48,7 @@ class session
 	/**
 	 * Construct
 	 *
-	 * @version	29th June 2016
+	 * @version	28th September 2016
 	 * @since	15th April 2016
 	 * @return	void
 	 */
@@ -61,7 +61,7 @@ class session
 			$config = new config();
 			$this->guid = $config->get('guid');
 		}
-		if (PHP_SESSION_ACTIVE !== session_status())
+		if (! $this->isValid())
 		{
 //			session_name("Gibbon-".$this->guid);
 //			session_set_cookie_params(0);
@@ -313,15 +313,15 @@ class session
 	/**
 	 * destroy
 	 *
-	 * @version	27th September 2016
+	 * @version	28th September 2016
 	 * @since	20th April 2016
 	 * @return	void
 	 */
 	public function destroy()
 	{
-		if (PHP_SESSION_ACTIVE === session_status())
+		if ($this->isValid())   
 		{
-			session_unset(); //removes sesion variables
+			session_unset(); 	//removes session variables
 			session_destroy();  //removes the session
 		}
 	}
@@ -329,13 +329,13 @@ class session
 	/**
 	 * is Valid Session
 	 *
-	 * @version	21st April 2016
+	 * @version	28th September 2016
 	 * @since	21st April 2016
 	 * @return	boolean		Valid Session
 	 */
 	public function isValid()
 	{
-		if (PHP_SESSION_ACTIVE === session_status())
+		if (PHP_SESSION_ACTIVE == session_status())
 			return true ;
 		return false ;
 
@@ -344,7 +344,7 @@ class session
 	/**
 	 * is Empty
 	 *
-	 * @version	24th April 2016
+	 * @version	29th September 2016
 	 * @since	21st April 2016
 	 * @param	string		Name
 	 * @return	boolean		is the value empty.
@@ -352,11 +352,15 @@ class session
 	public function isEmpty($name)
 	{
 		$value = $this->get($name);
-		if ($value === NULL)
+		if (empty($value))
+			return true;
+		if ($value === null)
 			return true;
 		if ($value === "")
 			return true;
 		if ($value === array())
+			return true;
+		if ($value === 0)
 			return true;
 		return false;
 	}
@@ -444,7 +448,7 @@ class session
 	 * @param	mixed	$value		Value to push to the array
 	 * @return	object	Gibbon\session
 	 */
-	public function push($name, $value, $v)
+	public function push($name, $value)
 	{
 		$x = $this->get($name);
 		$x = ! empty($x) && is_array($x) ? $x : array();

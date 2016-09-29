@@ -38,8 +38,7 @@ use Gibbon\core\fileManager ;
  */
 abstract class record implements recordInterface
 {
-	use \Gibbon\core\functions\developmentFunctions,
-		\Gibbon\core\functions\dateFunctions ;
+	use \Gibbon\core\functions\developmentFunctions ;
 	/**
 	 * @var	sqlConnection	$pdo	Gibbon SQL
 	 */
@@ -247,7 +246,7 @@ abstract class record implements recordInterface
 			switch ($type) {
 				case "date":
 					if (! empty($w))
-						$this->record->$q = helper::dateConvert($w) ;
+						$this->record->$q = $this->dateConvert($w) ;
 					else
 						$this->record->$q = null ;
 					break ;

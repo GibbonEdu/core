@@ -69,7 +69,7 @@ class minorLinks extends menu
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='./index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='./index.php?q=/modules/User Admin/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
+				$return.="<a href='".GIBBON_URL."/index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='".GIBBON_URL."/index.php?q=/modules/User Admin/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" .$this->view->__('Email') . "</a>" ;
 				}
