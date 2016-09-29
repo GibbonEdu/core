@@ -152,49 +152,90 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             } else {
                 //Get last 5 school days from currentDate within the last 100
                 $timestamp = dateConvertToTimestamp($currentDate);
-                $count = 0;
-                $spin = 1;
-                $last5SchoolDays = array();
-                while ($count < 5 and $spin <= 100) {
-                    $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
-                    if (isSchoolOpen($guid, $date, $connection2)) {
-                        $last5SchoolDays[$count] = $date;
-                        ++$count;
-                    }
-                    ++$spin;
-                }
-                $last5SchoolDaysCount = $count;
 
                 $lastType = '';
                 $lastReason = '';
                 $lastComment = '';
 
                 //Show attendance log for the current day
-                try {
-                    $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$currentDate%");
-                    $sqlLog = 'SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID';
-                    $resultLog = $connection2->prepare($sqlLog);
-                    $resultLog->execute($dataLog);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultLog->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'There is currently no attendance data today for the selected student.');
-                    echo '</div>';
-                } else {
-                    echo "<div class='success'>";
-                    echo __($guid, 'The following attendance log has been recorded for the selected student today:');
-                    echo '<ul>';
-                    while ($rowLog = $resultLog->fetch()) {
-                        echo '<li><b>'.$rowLog['direction'].'</b> ('.$rowLog['type'].') | '.sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
-                        $lastType = $rowLog['type'];
-                        $lastReason = $rowLog['reason'];
-                        $lastComment = $rowLog['comment'];
-                    }
-                    echo '</ul>';
-                    echo '</div>';
-                }
+			    try {
+			        $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$currentDate%");
+			        $sqlLog = 'SELECT gibbonAttendanceLogPersonID, direction, type, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE  gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID';
+			        $resultLog = $connection2->prepare($sqlLog);
+			        $resultLog->execute($dataLog);
+			    } catch (PDOException $e) {
+			        echo "<div class='error'>".$e->getMessage().'</div>';
+			    }
+			    if ($resultLog->rowCount() < 1) {
+			        echo "<div class='error'>";
+			        echo __($guid, 'There is currently no attendance data today for the selected student.');
+			        echo '</div>';
+			    } else {
+			    	echo '<h4>';
+			    		echo __($guid, 'Attendance Log');
+			    	echo '</h4>';
+
+			        echo "<p><span class='emphasis small'>";
+			        	echo __($guid, 'The following attendance log has been recorded for the selected student today:');
+			        echo '</span></p>';
+
+			        echo '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+			        echo '<tr class="head">';
+			        	echo '<th>'.__($guid, 'Time').'</th>';
+			        	echo '<th>'.__($guid, 'Attendance').'</th>';
+			        	echo '<th>'.__($guid, 'Where').'</th>';
+			        	echo '<th>'.__($guid, 'Recorded By').'</th>';
+
+			        	if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {
+			        		echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
+			        	}
+			        echo '</tr>';
+			        while ($rowLog = $resultLog->fetch()) {
+			        	$logTimestamp = strtotime($rowLog['timestampTaken']); 
+
+			            echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
+
+			            if (  $currentDate != substr($rowLog['timestampTaken'], 0, 10) ) {
+			            	echo '<td>'.date("g:i a, M j", $logTimestamp ).'</td>';
+			            } else {
+							echo '<td>'.date("g:i a", $logTimestamp ).'</td>';
+						}
+
+						echo '<td>';
+			            echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
+
+			            if ( !empty($rowLog['comment']) ) { 
+			            	echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
+			        	}
+			            echo '</td>';
+			            
+
+			            if ( empty($rowLog['gibbonCourseClassID']) || $rowLog['gibbonCourseClassID'] == 0 ) {
+			            	echo '<td>'.__($guid, 'Roll Group').'</td>';
+			            } else {
+			            	echo '<td>'.$rowLog['courseName'].'.'.$rowLog['className'].'</td>';
+			        	}
+
+			            echo '<td>';
+			            	echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
+			            echo '</td>';
+
+			            if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {
+			            	echo '<td>';
+					            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_edit.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+				            echo '</td>';
+			            }
+	                    
+
+			            $lastType = $rowLog['type'];
+			            $lastReason = $rowLog['reason'];
+			            $lastComment = $rowLog['comment'];
+			            echo '</tr>';
+			        }
+			        echo '</table><br/>';
+			    }
+
+
 
                 //Show student form
                 echo "<script type='text/javascript'>
