@@ -35,6 +35,8 @@ use Gibbon\trans ;
  */
 class schoolYearSpecialDay extends record
 {
+	use \Gibbon\core\functions\dateFunctions ;
+
 	/** 
 	 * @var	string	$table	Table Name
 	 */

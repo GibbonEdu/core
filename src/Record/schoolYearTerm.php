@@ -31,6 +31,8 @@ namespace Gibbon\Record ;
  */
 class schoolYearTerm extends record
 {
+	use \Gibbon\core\functions\dateFunctions ;
+
 	/** 
 	 * @var	string	$table	Table Name
 	 */
