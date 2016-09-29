@@ -26,6 +26,7 @@ use Gibbon\Record\theme ;
 if (! $this instanceof view) die();
 
 $URL = GIBBON_URL . 'index.php' ;
+if ($_GET['q'] === '/modules/Security/logout.php') $this->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 
 $this->session->clear('googleAPIAccessToken');
 $this->session->clear('gplusuer');

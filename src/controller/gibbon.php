@@ -69,6 +69,7 @@ use Gibbon\Record\theme ;
 
 
 $config = new config();
+if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $config->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 $session = new session();
 $session->set('rustart',getrusage());
 $session->set('absoluteURL', rtrim(GIBBON_URL, '/'));
@@ -104,6 +105,7 @@ else
 	$session->set('timezone', $tz);
 	new post($pdo, $session, $config);
 }
+if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $config->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 
 include __DIR__.'/start.php';
 

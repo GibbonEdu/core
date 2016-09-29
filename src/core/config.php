@@ -37,6 +37,8 @@ use stdClass ;
  */
 class config
 {
+	use functions\developmentFunctions ;
+	
 	private $dbHost;
 	private $dbName;
 	private $dbUser;
