@@ -50,6 +50,7 @@ $v13 = array
 		'/modules/School Admin/space',
 		'/modules/School Admin/financeSettings',
 		'/modules/School Admin/alertLevelSettings',
+		'/modules/School Admin/behaviourSettings',
 		'/core/scripts/',
 	);
 
