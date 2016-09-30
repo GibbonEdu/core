@@ -319,7 +319,7 @@ class session
 	 */
 	public function destroy()
 	{
-		if ($this->isValid())
+		if ($this->isValid())   
 		{
 			$_SESSION = array();	//removes session variables
 			session_unset(); 		//removes session variables

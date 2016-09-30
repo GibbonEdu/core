@@ -38,7 +38,7 @@ use stdClass ;
 class config
 {
 	use functions\developmentFunctions ;
-
+	
 	private $dbHost;
 	private $dbName;
 	private $dbUser;
@@ -102,7 +102,7 @@ class config
 
 	/**
 	 * get
-	 *
+	 * 
 	 * @version	6th July 2016
 	 * @since	8th April 2016
 	 * @param	string	$name	Configuration Name
@@ -125,14 +125,14 @@ class config
 
 	/**
 	 * get Currency List
-	 *
+	 * 
 	 * @version	16th May 2016
 	 * @since	12th April 2016
 	 * @return	array	Currencies
 	 */
 	public function getCurrencyList()
 	{
-		if ( empty ($this->currencies) AND file_exists( GIBBON_ROOT . 'config/local' . "/currency.yml" ) )
+		if ( empty ($this->currencies) AND file_exists( GIBBON_ROOT . 'config/local' . "/currency.yml" ) )	
 		{
 			$x = Yaml::parse( file_get_contents( GIBBON_ROOT . 'config/local' . "/currency.yml" ) ) ;
 			$this->currencies = $x['currencies'] ;
@@ -144,7 +144,7 @@ class config
 	 * upgrade Config
 	 *
 	 * Create yml format from existing php config
-	 *
+	 * 
 	 * @version	6th September 2016
 	 * @since	14th April 2016
 	 * @return	void
@@ -159,11 +159,11 @@ class config
 			{
 				$dir = GIBBON_ROOT . 'config' ;
 				if (is_dir($dir)) {
-					foreach (glob($dir.'/*.yml') as $file)
-					{
+					foreach (glob($dir.'/*.yml') as $file)   
+					{  
 						$fileName = basename($file);
 						if (! file_exists(GIBBON_ROOT . 'config/local' . '/' . $fileName))
-							copy($file, GIBBON_ROOT . 'config/local' . '/' . $fileName) ;
+							copy($file, GIBBON_ROOT . 'config/local' . '/' . $fileName) ; 
 					}
 				}
 			}
@@ -178,15 +178,15 @@ class config
 
 		include GIBBON_ROOT . 'config.php';
 
-		if (is_dir(GIBBON_ROOT . 'config/local') && ! file_exists(GIBBON_ROOT . 'config/local/config.php'))
+		if (is_dir(GIBBON_ROOT . 'config/local') && ! file_exists(GIBBON_ROOT . 'config/local/config.php')) 
 		{
 			$config = array();
 			$config['database']['dbHost'] = $databaseServer ;
 			$config['database']['dbUser'] = $databaseUsername ;
 			$config['database']['dbPWord'] = $databasePassword ;
 			$config['database']['dbName'] = $databaseName ;
-			$config['guid'] = $guid;
-			$config['caching'] = $caching ;
+			$config['guid'] = $guid; 
+			$config['caching'] = $caching ; 
 
 			if (! file_put_contents(GIBBON_ROOT . 'config/local/config.php', "<?php\ndie();\n" . Yaml::dump($config)))
 				throw new \Exception('Not able to generate Configuration files.', 28000 + intval(__LINE__));
@@ -195,7 +195,7 @@ class config
 				$this->pdo = new sqlConnection(true, null, $this);
 				$this->pdo->executeQuery(array(), "UPDATE `gibbonTheme` SET `active` = 'N'");
 				$this->pdo->executeQuery(array(), "INSERT INTO `gibbonTheme` (`gibbonThemeID`, `name`, `description`, `active`, `version`, `author`, `url`) VALUES
-(0001, 'Bootstrap', 'Gibbon\'s 2016 look and feel.', 'Y', '1.0.00', 'Craig Rayner', 'http://www.craigrayner.com')");
+(0001, 'Bootstrap', 'Gibbon\'s 2016 look and feel.', 'Y', '1.0.00', 'Craig Rayner', 'http://www.craigrayner.com')");			
 
 			}
 		}
@@ -222,16 +222,16 @@ class config
 			$this->system->$scope = new \stdClass();
 		if ( isset($this->system->$scope->$name) )
 			return $this->system->$scope->$name ;
-
+	
 		$this->system->$scope->$name = false ;
 		$pdo = $this->getPDO();
 		$data = array("scope"=>$scope, "name"=>$name);
 		$sql = "SELECT `value`, `type`
-			FROM `gibbonSetting`
-			WHERE `scope`=:scope
+			FROM `gibbonSetting` 
+			WHERE `scope`=:scope 
 				AND `name`=:name" ;
 		$result = $pdo->executeQuery($data, $sql);
-		if ($pdo->getQuerySuccess() && $result->rowCount() === 1)
+		if ($pdo->getQuerySuccess() && $result->rowCount() === 1) 
 			return $this->system->$scope->$name = $this->databaseToValue($result->fetchObject()) ;
 		else
 		{
@@ -312,7 +312,7 @@ class config
 	 */
 	public function getLanguages( )
 	{
-		if ( empty ($this->languages) && file_exists(GIBBON_ROOT . 'config/local' . "/languages.yml"))
+		if ( empty ($this->languages) && file_exists(GIBBON_ROOT . 'config/local' . "/languages.yml"))	
 		{
 			$this->languages = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/languages.yml") );
@@ -378,7 +378,7 @@ class config
 		else
 			return NULL;
 	}
-
+	
 	/**
 	 * Update Config Yaml
 	 *
@@ -407,7 +407,7 @@ class config
 	 */
 	public function getDatabase()
 	{
-		if ( ! empty ($this->database))
+		if ( ! empty ($this->database))	
 		{
 			foreach($this->database as $name=>$value)
 				$this->$name = $value ;
@@ -417,7 +417,7 @@ class config
 
 	/**
 	 * update SQL
-	 *
+	 * 
 	 * @version	21st June 2016
 	 * @since	21st June 2016
 	 * @param	Gibbon\view		$view
@@ -425,7 +425,7 @@ class config
 	 */
 	public function upgradeSQL(view $view)
 	{
-		if (intval($view->session->get('gibbonRoleIDCurrent')) === 1 )
+		if (intval($view->session->get('gibbonRoleIDCurrent')) === 1 ) 
 		{
 			$versionDB = $this->getSettingByScope("System", "version" ) ;
 			$versionCode = $this->get('version') ;
@@ -438,7 +438,7 @@ class config
 
 	/**
 	 * get PDO
-	 *
+	 * 
 	 * @version	22nd June 2016
 	 * @since	22nd June 2016
 	 * @param	Gibbon\sqlConnection
@@ -456,7 +456,7 @@ class config
 			throw new \Exception('No sql Connection class defined.  You may need to inject the view.', intval(22000 + __LINE__));
 		return $this->pdo;
 	}
-
+	
 	/**
 	 * inject View
 	 *
@@ -481,7 +481,7 @@ class config
 	 */
 	public function getRelationships()
 	{
-		if ( empty ($this->relationships) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))
+		if ( empty ($this->relationships) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
 		{
 			$this->relationships = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
@@ -499,7 +499,7 @@ class config
 	 */
 	public function getTitles()
 	{
-		if ( empty ($this->titles) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))
+		if ( empty ($this->titles) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
 		{
 			$this->titles = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
@@ -517,7 +517,7 @@ class config
 	 */
 	public function getStaff()
 	{
-		if ( empty ($this->staff) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))
+		if ( empty ($this->staff) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
 		{
 			$this->staff = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
@@ -535,7 +535,7 @@ class config
 	 */
 	public function getFamily()
 	{
-		if ( empty ($this->family) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))
+		if ( empty ($this->family) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
 		{
 			$this->family = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
@@ -553,7 +553,7 @@ class config
 	 */
 	public function getPhoneTypes()
 	{
-		if ( empty ($this->phoneTypes) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))
+		if ( empty ($this->phoneTypes) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
 		{
 			$this->phoneTypes = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
@@ -571,7 +571,7 @@ class config
 	 */
 	public function getCountries()
 	{
-		if ( empty ($this->countries) && file_exists(GIBBON_ROOT . 'config/local' . "/country.yml"))
+		if ( empty ($this->countries) && file_exists(GIBBON_ROOT . 'config/local' . "/country.yml"))	
 		{
 			$this->countries = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/country.yml") );
 		}
@@ -587,7 +587,7 @@ class config
 	 */
 	public function getMailSettings()
 	{
-		if ( empty ($this->mailSettings) && file_exists(GIBBON_ROOT . 'config/local' . "/mailer.yml"))
+		if ( empty ($this->mailSettings) && file_exists(GIBBON_ROOT . 'config/local' . "/mailer.yml"))	
 		{
 			$this->mailSettings = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/mailer.yml") );
 		}
@@ -603,7 +603,7 @@ class config
 	 */
 	public function getMedicalConditions()
 	{
-		if ( empty ($this->medConditions) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))
+		if ( empty ($this->medConditions) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
 		{
 			$this->medConditions = array();
 			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
@@ -621,7 +621,7 @@ class config
 	 */
 	public function getDistricts()
 	{
-		if ( empty ($this->districts))
+		if ( empty ($this->districts))	
 		{
 			$this->districts = array();
 			$obj = new \Gibbon\Record\district($this->view);
@@ -641,7 +641,7 @@ class config
 	 */
 	public function getLanguageList()
 	{
-		if ( empty ($this->languageList))
+		if ( empty ($this->languageList))	
 		{
 			$this->languageList = array();
 			$obj = new \Gibbon\Record\language($this->view);
@@ -661,7 +661,7 @@ class config
 	 */
 	public function getVersion()
 	{
-		if ( empty ($this->version) && file_exists(GIBBON_ROOT . 'config' . "/version.yml"))
+		if ( empty ($this->version) && file_exists(GIBBON_ROOT . 'config' . "/version.yml"))	
 		{
 			$version = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config' . "/version.yml") );
 			$this->version = $version['version'] ;
@@ -671,7 +671,7 @@ class config
 
 	/**
 	 * is Empty
-	 *
+	 * 
 	 * @version	6th September 2016
 	 * @since	6th September 2016
 	 * @param	string	$name	Configuration Name
@@ -686,7 +686,7 @@ class config
 
 	/**
 	 * get View
-	 *
+	 * 
 	 * @version	9th September 2016
 	 * @since	9th September 2016
 	 * @return	boolean
@@ -704,7 +704,7 @@ class config
 	 * @version	29th September 2016
 	 * @since	24th September 2016
 	 * @todo	Date management not implemented.
-	 * @param	stdClass	$data
+	 * @param	stdClass	$data	
 	 * @return	mixed	Value
 	 */
 	private function databaseToValue($data)
@@ -746,7 +746,7 @@ class config
 	 *
 	 * @version	24th September 2016
 	 * @since	24th September 2016
-	 * @param	stdClass	$record
+	 * @param	stdClass	$record	
 	 * @param	mixed		$value
 	 * @return	mixed	Value
 	 */
@@ -758,7 +758,7 @@ class config
 				$x = explode(',', filter_var($value));
 				foreach($x as $q=>$w)
 					if (empty($w)) unset($x[$q]);
-				return json_encode($x);
+				return json_encode($x); 
 				break ;
 			default:
 				return filter_var($value);
@@ -766,3 +766,4 @@ class config
 		$this->view->dump(array($record, $value), true);
 	}
 }
+
