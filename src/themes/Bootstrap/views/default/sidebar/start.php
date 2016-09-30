@@ -1,1 +1,1 @@
-<div id="sidebar" class="col-md-3 col-lg-3">
+<div id="sidebar" class="col-lg-3 hidden-sm hidden-md hidden-xs">

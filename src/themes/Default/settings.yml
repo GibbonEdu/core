@@ -419,6 +419,9 @@ links:
     install:
         title: Install
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new.png'/>"
+    upload:
+        title: Upload
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/upload.png'/>"
     add:
         title: Add
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new.png'/>"
