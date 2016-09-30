@@ -1087,3 +1087,16 @@ div#slideout .glyphicons {
 	margin-top: 3px;
 	margin-bottom: -1px
 }
+.in {
+	z-index: 999;
+	position: absolute;
+	right: 15px;
+	width: 200px;
+	background-color: #F4F4F9;
+	height: auto!important ;
+}
+.in .dropdown-menu{
+	position: relative;
+	left: 45px;
+	top: -25px;
+}
