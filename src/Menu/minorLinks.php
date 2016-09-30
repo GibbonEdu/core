@@ -64,12 +64,12 @@ class minorLinks extends menu
 					if ($this->session->get("gibbonRoleIDCurrentCategory")=="Student") {
 						$highestAction = $this->view->getSecurity()->getHighestGroupedAction("/modules/Students/student_view_details.php") ;
 						if ($highestAction == "View Student Profile_brief") {
-							$name = "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $this->session->get("gibbonPersonID") . "'>" . $name . "</a>";
+							$name = "<a href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $this->session->get("gibbonPersonID") . "'>" . $name . "</a>";
 						}
 					}
 				}
 				$return.= $name . " . ";
-				$return.="<a href='".GIBBON_URL."/index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='".GIBBON_URL."/index.php?q=/modules/User Admin/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
+				$return.="<a href='" . GIBBON_URL . "index.php?q=/modules/Security/logout.php&divert=true'>" .$this->view->__("Logout") . "</a> . <a href='" . GIBBON_URL . "index.php?q=/modules/User Admin/preferences.php'>" .$this->view->__('Preferences') . "</a>" ;
 				if ($this->session->get("emailLink")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("emailLink") . "'>" .$this->view->__('Email') . "</a>" ;
 				}

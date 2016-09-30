@@ -34,7 +34,6 @@ use stdClass ;
 $view = new view('default.blank', array(), $session, $config, $pdo);
 
 $config->injectView($view);
-if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $view->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 
 $version = $config->get('version');
 $caching = $config->get('caching');
@@ -63,7 +62,7 @@ elseif ($caching > 0 && is_numeric($caching) && $session->get("pageLoads") > $ca
 }
 if ($session->get('installType') === 'Development')
 	$refreshCache = true ;
-if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $view->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
+
 $session->set('refreshCache', $refreshCache);
 
 $session->set("cuttingEdgeCode", $config->getSettingByScope("System", "cuttingEdgeCode" )) ;
@@ -113,7 +112,6 @@ if ($session->isEmpty("address") && ! $sidebar) {
 	if ($pdo->getQuerySuccess() && $resultSidebar->rowCount( )> 0) 
 		$sidebar = false ;
 }
-if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $view->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 
 $session->set('sidebar', $sidebar);
 
@@ -132,10 +130,8 @@ else
 	{
 		$params = new stdClass();
 		$params->action = $session->get('absolutePath') . $session->get("address");
-if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $view->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 		$view->render('post.inject', $params);
 	} else
     	$view->render('home.html');
 }
-if (isset($_GET['q']) && $_GET['q'] === '/modules/Security/logout.php') $view->fileAnObject(array(__FILE__,__LINE__,$_GET), 'logout'.basename(__FILE__).__LINE__);
 die();  // Stop here, or run into old scripts
