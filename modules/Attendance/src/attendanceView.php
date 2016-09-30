@@ -125,6 +125,14 @@ class attendanceView
         $this->last5SchoolDays = getLastNSchoolDays($this->guid, $this->pdo->getConnection(), $currentDate, 5);
     }
 
+    public function getAttendanceTypes() {
+        return $this->attendanceTypes;
+    }
+
+    public function getAttendanceReasons() {
+        return $this->attendanceReasons;
+    }
+
     public function getAttendanceCodeByType( $type ) {
     	if ( isset($this->attendanceTypes[$type]) == false ) return '';
     	return $this->attendanceTypes[$type];
