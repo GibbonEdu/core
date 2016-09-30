@@ -1,4 +1,4 @@
-<?php if ($this->session->notEmpty('pageAnchors')) { 
+<?php if ($this->session->notEmpty('pageAnchors') && $this->config->getSettingByScope('System', 'pageAnchorDisplay', 'Y') == 'Y') { 
 	
 	$anchors = $this->session->get('pageAnchors');
 	if (! empty($anchors)) {
@@ -15,5 +15,5 @@
 		$list->addListElement('%1$s', $x);
 		$list->renderList($this);
 	}
-	$this->session->clear('pageAnchors');
 }
+$this->session->clear('pageAnchors');

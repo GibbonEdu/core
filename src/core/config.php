@@ -712,7 +712,11 @@ class config
 				return $value ;
 				break;
 			case 'date':
-			die('Need to work on dates');
+				die('Need to work on dates in '.__FILE__.' on line '.__LINE__);
+				break;
+			case 'yesno':
+				$data->value = in_array($data->value, array('Y', 'N')) ? $data->value : 'N' ;
+				return $data->value ;
 				break;
 			case 'text':
 				return $data->value ;
@@ -741,6 +745,11 @@ class config
 					if (empty($w)) unset($x[$q]);
 				return json_encode($x); 
 				break ;
+			case 'yesno':
+				$value = filter_var($value);
+				$value = in_array($value, array('Y', 'N')) ? $value : 'N' ;
+				return $value ;
+				break;
 			default:
 				return filter_var($value);
 		}
