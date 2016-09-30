@@ -352,7 +352,7 @@ else {
 											}
 
 											// List partial absences
-		                                    if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID && $rowLog['type'] == 'Absent') {
+		                                    if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID && $attendance->isTypeAbsent($rowLog["type"]) ) {
 		                                        printf( '<br/>'.__($guid, 'Recorded absence for this class'), $resultLog->rowCount() );
 		                                    }
 										}
@@ -364,7 +364,7 @@ else {
 
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
 								
-									if ($rowLog["type"]=="Present" OR $rowLog["type"]=="Present - Late") {
+									if ( $attendance->isTypePresent($rowLog["type"]) ) {
 										$countPresent++ ;
 									}	
 								

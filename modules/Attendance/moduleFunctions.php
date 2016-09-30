@@ -22,6 +22,9 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 {
     $queryFail = false;
 
+    require_once './modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -55,7 +58,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
             //Scan though all of the end of days records, counting up days ending in absent
             if (count($endOfDays) >= 0) {
                 foreach ($endOfDays as $endOfDay) {
-                    if ($endOfDay == 'Absent') {
+                    if ( $attendance->isTypeAbsent($endOfDay) ) {
                         ++$absentCount;
                     }
                 }
@@ -96,7 +99,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-        $sql = "SELECT * FROM gibbonAttendanceLogPerson WHERE type='Present - Late' AND gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd";
+        $sql = "SELECT count(*) FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c WHERE c.scope='Onsite - Late' AND p.gibbonPersonID=:gibbonPersonID AND p.date>=:dateStart AND p.date<=:dateEnd AND p.type=c.name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -333,9 +336,11 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                         if ( $attendance->isTypeAbsent($log[0][0])) {
                                             ++$countAbsent;
                                             $class = 'dayAbsent';
+                                            $textClass = 'highlightAbsent';
                                         } else {
                                             ++$countPresent;
                                             $class = 'dayPresent';
+                                            $textClass = 'highlightPresent';
                                         }
                                         if ($log[0][1] != '') {
                                             $title = "title='".$log[0][1]."'";
@@ -347,9 +352,13 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
                                     if (count($log) > 0) {
                                         $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
+
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {
+                                                $textClass = $attendance->isTypePresent($log[$x][0])? 'highlightPresent' : 'highlightAbsent';
+                                                $output .= '<span class="'.$textClass.'">';
                                                 $output .= $attendance->getAttendanceCodeByType( $log[$x][0] )['nameShort'];
+                                                $output .= '</span>';
                                             }
                                             if ($x != 0 and $x != count($log)) {
                                                 $output .= ' : ';

@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     }
 
                                     // List partial absences
-                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0 && $rowLog['type'] == 'Absent') {
+                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0 && $attendance->isTypeAbsent($rowLog["type"]) ) {
                                         printf( '<br/>'.__($guid, '%s Classes Absent'), $resultLog->rowCount() );
                                     }
                                 }
@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                                 echo "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
 
-                                if ($rowLog['type'] == 'Present' or $rowLog['type'] == 'Present - Late') {
+                                if ( $attendance->isTypePresent($rowLog["type"]) ) {
                                     ++$countPresent;
                                 }
 

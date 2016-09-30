@@ -348,11 +348,11 @@ else {
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Present") ;
+							print _("In") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Absent") ;
+							print _("Out") ;
 						print "</th>" ;
 
 						if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {

@@ -38,6 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
 
+    require_once './modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
+
     //Proceed!
     echo '<h2>';
     echo __($guid, 'Students Not Onsite').', '.dateConvertBack($guid, $currentDate);
@@ -63,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $lastStudent = '';
         while ($row = $result->fetch()) {
             $currentStudent = $row['gibbonPersonID'];
-            if (($row['type'] == 'Present' or $row['type'] == 'Present - Late') and $currentStudent != $lastStudent) {
+            if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
                 $log[$row['gibbonPersonID']] = true;
             }
             $lastStudent = $currentStudent;
