@@ -151,6 +151,10 @@ div.minorLinks {
 	font-size: 13px;
 	padding-top: 20px;
 }
+div.minorLinksTopGap {
+	margin-bottom: 45px;
+	margin-top: -10px;
+}
 .minorLinksContent {
 	vertical-align: middle ;
 	display: inline-block ;
