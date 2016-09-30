@@ -32,7 +32,7 @@ else {
 	//Proceed!
 	$post = $_POST ;
 
-	$required = array( 'mainMenuCategories' ) ;
+	$required = array( 'mainMenuCategories', 'pageAnchorDisplay' ) ;
 	foreach($required as $name)
 		if (empty($post[$name]))
 		{
@@ -46,6 +46,8 @@ else {
 		
 		$this->config->setScope('System');
 		if (! $this->config->setSettingByScope('mainMenuCategories', $post['mainMenuCategories']) ) $fail = true;
+		if (! $this->config->setSettingByScope('pageAnchorDisplay', $post['pageAnchorDisplay']) ) $fail = true;
+		if (! $this->config->setSettingByScope("pagination", $post['pagination']) ) $fail = true;
 		
 		if ( $fail ) {
 			//Fail 2

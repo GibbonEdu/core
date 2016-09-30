@@ -1,3 +1,3 @@
 <div id="slideout">
-    <span class="glyphicons glyphicons-menu-hamburger" style="font-size: 28px; color: #419641; "></span>
+    <span class="glyphicons glyphicons-menu-hamburger"></span>
     <div id="slideout_inner">

@@ -27,12 +27,12 @@ if (! $this instanceof view) die();
 if ($this->getSecurity()->isActionAccessible()) {
 	//Proceed!
 	$trail = $this->initiateTrail();
-	$trail->trailEnd = 'Main Menu Settings';
+	$trail->trailEnd = 'Display Settings';
 	$trail->render($this);
 		
 	$this->render('default.flash');
 	
-	$this->h2('Main Menu Settings');
+	$this->h2('Display Settings');
 
 	$form = $this->getForm(null, array('q'=> "/modules/System Admin/menu_manageProcess.php"), true);
 	
@@ -45,9 +45,16 @@ if ($this->getSecurity()->isActionAccessible()) {
 		$cats = $mObj->getCategories();
 		$el->value = trim(implode(',', $cats), ',');
 		$this->config->setSettingByScope('mainMenuCategories', $cats, 'System');
-	} else
-		$el->value = trim(implode(',', $el->value), ',');
+	} 
 	
+	$el = $form->addElement('yesno', null);
+	$el->injectRecord($this->config->getSetting('pageAnchorDisplay', 'System'));
+	
+	$el = $form->addElement('number', null);
+	$el->injectRecord($this->config->getSetting('pagination', 'System'));
+	$el->setRequired();
+	$el->setNumericality(null, 10, 100, true);
+
 	$form->addElement('submitBtn', null);
 	
 	$form->render();

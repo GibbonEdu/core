@@ -525,5 +525,9 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 UPDATE `gibbonSetting` SET value='en_GB' WHERE `scope`='System'  AND `name`='defaultLanguage';end
 UPDATE `gibbonSetting` SET `type` = 'array' WHERE `gibbonSetting`.`name` = 'facilityTypes' AND `scope` = 'School Admin';end
 ALTER TABLE `gibbonSchoolYearTerm` DROP INDEX `sequenceNumber`, ADD UNIQUE `sequenceNumber` (`sequenceNumber`, `gibbonSchoolYearID`);end
+UPDATE `gibbonAction` SET `name` = 'Display Settings' WHERE `gibbonAction`.`name` = 'Main Menu Settings';end
+UPDATE `gibbonAction` SET `name` = 'Display Settings' WHERE `gibbonAction`.`name` = 'Main Menu Settings';end
+ALTER TABLE `gibbonSetting` CHANGE `type` `type` ENUM('text','array','number','date','yesno') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'text';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'pageAnchorDisplay', 'Display Page Anchors', 'Allows the school to turn off display of the Page Anchors in the menu.', 'Y', 'yesno');end
 
 ";

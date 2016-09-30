@@ -37,7 +37,7 @@ else {
 	$post = $_POST ;
 
 	$required = array( 'absoluteURL', 'systemName', 'organisationLogo', 'indexText', 'organisationName', 'organisationNameShort', 
-		'organisationAdministrator', 'organisationDBA', 'organisationHR', 'organisationAdmissions', 'pagination', 'timezone', 
+		'organisationAdministrator', 'organisationDBA', 'organisationHR', 'organisationAdmissions',  'timezone', 
 		'installType', 'statsCollection', 'passwordPolicyMinLength', 'passwordPolicyAlpha', 'passwordPolicyNumeric', 'passwordPolicyNonAlphaNumeric', 
 		'currency' ) ;
 	foreach($required as $name)
@@ -49,7 +49,7 @@ else {
 	
 	
 	//Validate Inputs
-	if (! is_numeric($post['pagination']) || ! in_array($post['firstDayOfTheWeek'], array("Monday", "Sunday"))) {
+	if (! in_array($post['firstDayOfTheWeek'], array("Monday", "Sunday"))) {
 		$this->insertMessage('Your request failed because some inputs did not meet a requirement for uniqueness.') ;
 		$this->redirect($URL);
 	}
@@ -100,7 +100,6 @@ else {
 		}
 		
 		
-		if (! $this->config->setSettingByScope("pagination", $post['pagination']) ) $fail = true;
 		if (! $this->config->setSettingByScope("country", $post['country']) ) $fail = true;
 		if (! $this->config->setSettingByScope("firstDayOfTheWeek", $post['firstDayOfTheWeek']) ) $fail = true;
 		

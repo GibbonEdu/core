@@ -249,11 +249,6 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($sysSettings['webLink']->returnRecord());
 	$el->setURL("Must start with http:// or https://");
 
-	$el = $form->addElement('text', null);
-	$el->injectRecord($sysSettings['pagination']->returnRecord());
-	$el->setRequired();
-	$el->setNumericality(null, 10, 100, true);
-
 	$el = $form->addElement('textArea', null);
 	$el->injectRecord($sysSettings['analytics']->returnRecord());
 	$el->validateOff() ;
