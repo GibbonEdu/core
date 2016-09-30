@@ -62,7 +62,7 @@ elseif ($caching > 0 && is_numeric($caching) && $session->get("pageLoads") > $ca
 }
 if ($session->get('installType') === 'Development')
 	$refreshCache = true ;
-	
+
 $session->set('refreshCache', $refreshCache);
 
 $session->set("cuttingEdgeCode", $config->getSettingByScope("System", "cuttingEdgeCode" )) ;
