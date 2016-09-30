@@ -1074,3 +1074,12 @@ div.gibbon-container div.row {
 	margin-top: -1px;
 	border: 1px solid #ccc;
 }
+div#slideout .glyphicons {
+	font-size: 28px;
+	color: #7D56A1; 
+}
+.collapsed {
+	padding: 6px;
+	margin-top: 3px;
+	margin-bottom: -1px
+}
