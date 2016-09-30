@@ -103,8 +103,8 @@ class theme extends record
 			$this->session->set("theme.Author.URL", $this->record->url) ;
 			$this->session->set("theme.path", GIBBON_ROOT.'src/themes/'.$this->record->name.'/') ;
 			$this->session->set("theme.url", GIBBON_URL.'src/themes/'.$this->record->name.'/') ;
-			$this->session->set("theme.defaultPath", GIBBON_ROOT.'src/themes/Default/') ;
-			$this->session->set("theme.defaultURL", GIBBON_URL.'src/themes/Default/') ;
+			$this->session->set("theme.defaultPath", GIBBON_ROOT.'src/themes/Bootstrap/') ;
+			$this->session->set("theme.defaultURL", GIBBON_URL.'src/themes/Bootstrap/') ;
 			$this->session->clear('theme.settings');
 			if (file_exists($this->session->get('theme.path').'settings.yml'))
 				$this->session->set('theme.settings', Yaml::parse(file_get_contents($this->session->get('theme.path').'settings.yml')));

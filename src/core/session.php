@@ -321,8 +321,10 @@ class session
 	{
 		if ($this->isValid())   
 		{
-			session_unset(); 	//removes session variables
-			session_destroy();  //removes the session
+			$_SESSION = array();	//removes session variables
+			session_unset(); 		//removes session variables
+			session_destroy();  	//removes the session
+			session_write_close();	//write the session file NOW
 		}
 	}
 

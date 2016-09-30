@@ -32,7 +32,7 @@ use Gibbon\Record\person ;
 /**
  * view Manager
  *
- * @version	23rd September 2016
+ * @version	30th September 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -505,16 +505,16 @@ class view
 	/**
 	 * redirect
 	 *
-	 * @version	25th July 2016
+	 * @version	30th September 2016
 	 * @since	9th June 2016
 	 * @param	string/array		$URL	Target url
 	 * @return	string
 	 */
 	public function redirect($URL) 
 	{
-		header('http/1.1 302 Redirect');
+		header('http/1.1 303 Redirect');
 		header('Location: '.$this->convertGetArraytoURL($URL));
-		die(__FILE__.': '.__LINE__);
+		die();
 	}
 
 	/**
@@ -858,7 +858,7 @@ class view
 		if (empty($link)) $link = array();
 		foreach($link as $name=>$value)
 			$get .= $name . '=' . $value . '&' ;
-		$w .= '?'. rtrim($get, '&');
+		$w .= str_replace(' ', '+', '?'. rtrim($get, '&'));
 		return $w ;
 	}
 
@@ -1034,5 +1034,27 @@ class view
 		if (! $this->trans instanceof trans)
 			$this->trans = new trans();
 		return $this->trans;
+	}
+
+	/**
+	 * display Image
+	 *
+	 * @version	30th September 2016
+	 * @since	30th September 2016
+	 * @param	string		$fileName	Basename 
+	 * @param	string		$alt	Image Alternate
+	 * @param	integer		$width
+	 * @param	integer		$height
+	 * @param	string		$class
+	 * @return	void
+	 */
+	public function displayImage($fileName, $alt, $width = null, $height = null, $class = null)
+	{
+		$fileName = file_exists($this->session->get('theme.path').'img/'.$fileName) ? " src='".$this->session->get('theme.url').'img/'.$fileName."'" : " src='".$this->session->get('theme.defaultURL').'img/'.$fileName."'" ;
+		$alt = " alt='".$alt."'";
+		$width = ! is_null($width) ? " width='".intval($width)."'" : '' ;
+		$height = ! is_null($height) ? " height='".intval($height)."'" : '' ;
+		$class = ! is_null($class) ? "  class='".$class."'" : '' ;
+		echo "<img".$fileName.$alt.$width.$height.$class." />" ;
 	}
 }
