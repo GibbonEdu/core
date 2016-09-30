@@ -66,6 +66,7 @@ class config
 	private $countries = array();
 	private $medConditions = array();
 	private $districts = array();
+	private $schoolData = array();
 
 	/**
 	 * Construct
@@ -391,10 +392,10 @@ class config
 	 */
 	private function updateConfigYaml($name, $value)
 	{
-		$config = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/config.yml") );
+		$config = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local/config.yml') );
 		$this->setting[$this->scope][$name] = $value;
 		$config['setting'][$this->scope][$name] = $value;
-		file_put_contents( GIBBON_ROOT . 'config/local' . "/config.yml", Yaml::dump($config));
+		file_put_contents(GIBBON_ROOT . 'config/loca/config.yml', Yaml::dump($config));
 		return ;
 	}
 
@@ -475,105 +476,87 @@ class config
 	/**
 	 * get Relationships
 	 *
-	 * @version	2nd July 2016
+	 * @version	30th September 2016
 	 * @since	2nd July 2016
 	 * @return	array	Relationships
 	 */
 	public function getRelationships()
 	{
-		if ( empty ($this->relationships) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
-		{
-			$this->relationships = array();
-			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
-			if (! empty($x['relationships'])) $this->relationships = $x['relationships'];
-		}
+		if ( empty ($this->relationships))
+			$this->relationships = $this->getSchoolData('relationships');	
 		return $this->relationships ;
 	}
 
 	/**
 	 * get Titles
 	 *
-	 * @version	7th July 2016
+	 * @version	30th September 2016
 	 * @since	7th July 2016
 	 * @return	array	Titles
 	 */
 	public function getTitles()
 	{
-		if ( empty ($this->titles) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
-		{
-			$this->titles = array();
-			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
-			if (! empty($x['titles'])) $this->titles = $x['titles'];
-		}
+		if ( empty ($this->titles))
+			$this->titles = $this->getSchoolData('titles');
 		return $this->titles ;
 	}
 
 	/**
 	 * get Staff (Details)
 	 *
-	 * @version	13th July 2016
+	 * @version	30th September 2016
 	 * @since	13th July 2016
 	 * @return	array	Staff
 	 */
 	public function getStaff()
 	{
-		if ( empty ($this->staff) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
-		{
-			$this->staff = array();
-			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
-			if (! empty($x['staff'])) $this->staff = $x['staff'];
-		}
+		if ( empty ($this->staff))
+			$this->staff = $this->getSchoolData('staff');	
 		return $this->staff ;
 	}
 
 	/**
 	 * get Family
 	 *
-	 * @version	23th July 2016
+	 * @version	30th September 2016
 	 * @since	23th July 2016
 	 * @return	array	Family
 	 */
 	public function getFamily()
 	{
-		if ( empty ($this->family) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
-		{
-			$this->family = array();
-			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
-			if (! empty($x['family'])) $this->family = $x['family'];
-		}
+		if ( empty ($this->family))
+			$this->family =  $this->getSchoolData('family');
 		return $this->family ;
 	}
 
 	/**
 	 * get Phone Types
 	 *
-	 * @version	5th August 2016
+	 * @version	30th September 2016
 	 * @since	3rd August 2016
 	 * @return	array	Phone Types
 	 */
 	public function getPhoneTypes()
 	{
-		if ( empty ($this->phoneTypes) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
-		{
-			$this->phoneTypes = array();
-			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
-			if (! empty($x['Phone Types'])) $this->phoneTypes = $x['Phone Types'];
-		}
+		if ( empty ($this->phoneTypes))
+			$this->phoneTypes = $this->getSchoolData('Phone Types');
 		return $this->phoneTypes ;
 	}
 
 	/**
 	 * get Countries
 	 *
-	 * @version	3rd August 2016
+	 * @version	30th September 2016
 	 * @since	3rd August 2016
 	 * @return	array	Countries
 	 */
 	public function getCountries()
 	{
-		if ( empty ($this->countries) && file_exists(GIBBON_ROOT . 'config/local' . "/country.yml"))	
+		if ( empty ($this->countries) && file_exists(GIBBON_ROOT . 'config/country.yml'))	
 		{
-			$this->countries = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/country.yml") );
+			$this->countries = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/country.yml'));
+			if (file_exists(GIBBON_ROOT . 'config/local/country.yml'))
+				$this->countries = array_merge($this->countries, Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local/country.yml')));
 		}
 		return $this->countries ;
 	}
@@ -581,15 +564,17 @@ class config
 	/**
 	 * get Mail Settings
 	 *
-	 * @version	4th August 2016
+	 * @version	30th September 2016
 	 * @since	4th August 2016
 	 * @return	array	Mail Settings
 	 */
 	public function getMailSettings()
 	{
-		if ( empty ($this->mailSettings) && file_exists(GIBBON_ROOT . 'config/local' . "/mailer.yml"))	
+		if ( empty ($this->mailSettings) && file_exists(GIBBON_ROOT . 'config/mailer.yml'))	
 		{
-			$this->mailSettings = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/mailer.yml") );
+			$this->mailSettings = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/mailer.yml') );
+			if (file_exists(GIBBON_ROOT . 'config/local/mailer.yml'))
+				$this->mailSettings = array_merge($this->mailSettings, Yaml::parse(file_get_contents(GIBBON_ROOT . 'config/local/mailer.yml')));
 		}
 		return $this->mailSettings ;
 	}
@@ -597,18 +582,14 @@ class config
 	/**
 	 * get Medical Conditions
 	 *
-	 * @version	5th August 2016
+	 * @version	30th September 2016
 	 * @since	5th August 2016
 	 * @return	array	Phone Types
 	 */
 	public function getMedicalConditions()
-	{
-		if ( empty ($this->medConditions) && file_exists(GIBBON_ROOT . 'config/local' . "/schoolData.yml"))	
-		{
-			$this->medConditions = array();
-			$x = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local' . "/schoolData.yml") );
-			if (! empty($x['Medical Conditions'])) $this->medConditions = $x['Medical Conditions'];
-		}
+	{		
+		if (empty ($this->medConditions))
+			$this->medConditions = $this->getSchoolData('Medical Conditions');
 		return $this->medConditions ;
 	}
 
@@ -764,6 +745,34 @@ class config
 				return filter_var($value);
 		}
 		$this->view->dump(array($record, $value), true);
+	}
+
+	/**
+	 * get School Data
+	 *
+	 * @version	30th September 2016
+	 * @since	30th September 2016
+	 * @param	mixed		$dataKey
+	 * @return	mixed
+	 */
+	public function getSchoolData($dataKey)
+	{
+		if ( ! empty ($this->schoolData) && isset($this->schoolData[$dataKey]))
+			return $this->schoolData[$dataKey] ;
+		if ( ! empty($this->schoolData))
+			return null;
+		
+		if (file_exists(GIBBON_ROOT . 'config/schoolData.yml'))	
+		{
+			$this->schoolData = Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/schoolData.yml') );
+		}
+		if (file_exists(GIBBON_ROOT . 'config/local/schoolData.yml'))	
+		{
+			$this->schoolData = array_merge($this->schoolData, Yaml::parse( file_get_contents(GIBBON_ROOT . 'config/local/schoolData.yml')));
+		}
+		if (isset($this->schoolData[$dataKey]))
+			return $this->schoolData[$dataKey];
+		return null ;
 	}
 }
 

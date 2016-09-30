@@ -449,6 +449,9 @@ links:
     change password: 
         prompt: '<span class="glyphicons glyphicons-user-lock"></span>'
         title: Change Password
+    upload:
+        prompt: "<span class='glyphicons glyphicons-upload'></span>"
+        title: Upload
     action:
         title: Action
         prompt: '<span class="glyphicons glyphicons-zoom-in"></span>'

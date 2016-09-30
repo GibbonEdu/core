@@ -1067,3 +1067,10 @@ a,#adminmenu a,a.edButtonPreview,a.edButtonHTML,#the-comment-list p.comment-auth
 	padding-top: 0px!important;
 	padding-bottom: 0px!important;
 }
+div.gibbon-container div.row {
+	height: 45px;
+	line-height: 25px;
+	padding: 8px 0 8px 0;
+	margin-top: -1px;
+	border: 1px solid #ccc;
+}

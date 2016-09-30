@@ -15,7 +15,7 @@ if ($el->output)
 
 	$action = '/core/scripts/findRedirect.php';
 	?>
-    <div class="container-fluid">
+    <div class="container-fluid hidden-md hidden-sm hidden-xs">
         <form role="search" method="post" id="finderForm" action="<?php echo $this->convertGetArraytoURL(array('q' => '/core/scripts/findRedirect.php')); ?>">
             <div class="right">
             	<h2><?php echo $head; ?></h2>
