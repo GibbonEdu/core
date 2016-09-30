@@ -39,14 +39,14 @@ class minorLinks extends menu
 {
 	/**
 	 * set Menu
-	 * 
+	 *
 	 * was getMinorLinks
 	 * @version	27th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
 	public function setMenu() {
-		
+
 		$el = $this->session->get('display.menu.minorLinks', array());
 		if (empty($el['refresh']) || $el['refresh'] < 1 || empty($el['content']) || (isset($el['theme']) && $el['theme'] != $this->session->get('theme.Name')) || empty($el['content']))
 		{
@@ -79,19 +79,19 @@ class minorLinks extends menu
 				if ($this->session->get("website")!="") {
 					$return.=" . <a target='_blank' href='" . $this->session->get("website") . "'>" .$this->view->__('My Website') . "</a>" ;
 				}
-				
+
 				$return .= $this->showLikes();
-				
+
 				$return .= $this->showNotifications();
-				
+
 				$return .= $this->messageWall();
 
 				$return .= $this->view->renderReturn('default.minorLinks.endLinks');
-				
+
 			}
 
 			$this->session->set('display.menu.minorLinks.refresh', $this->view->getConfig()->get('caching', 15));
-			if (empty($return)) 
+			if (empty($return))
 				$this->session->set('display.menu.minorLinks.refresh', 0);
 			$this->session->set('display.menu.minorLinks.content', $return);
 			$this->session->set('display.menu.minorLinks.theme', $this->session->get('theme.Name'));
@@ -107,12 +107,12 @@ class minorLinks extends menu
 
 	/**
 	 * message Wall
-	 * 
+	 *
 	 * @version	18th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
-	public function messageWall()	
+	public function messageWall()
 	{
 		//MESSAGE WALL!
 
@@ -124,18 +124,18 @@ class minorLinks extends menu
 			$updateReturn = isset($_GET["updateReturn"]) ? $_GET["updateReturn"] : null ;
 
 			$deleteReturn = isset($_GET["deleteReturn"]) ? $_GET["deleteReturn"] : null;
-				
+
 			$return = '<div id="messageLink">';
-			
+
 			$el = new stdClass;
-			
+
 			$q = isset($_GET["q"]) ? $_GET["q"] : null ;
 
-			if ($this->session->get('refreshCache') 
-				|| ($q == "/modules/Messenger/messenger_post.php" && $addReturn=="success0") 
-				|| ($q == "/modules/Messenger/messenger_postQuickWall.php" && $addReturn=="success0") 
-				|| ($q == "/modules/Messenger/messenger_manage_edit.php" && $updateReturn=="success0") 
-				|| ($q == "/modules/Messenger/messenger_manage.php" && $deleteReturn=="success0")) 
+			if ($this->session->get('refreshCache')
+				|| ($q == "/modules/Messenger/messenger_post.php" && $addReturn=="success0")
+				|| ($q == "/modules/Messenger/messenger_postQuickWall.php" && $addReturn=="success0")
+				|| ($q == "/modules/Messenger/messenger_manage_edit.php" && $updateReturn=="success0")
+				|| ($q == "/modules/Messenger/messenger_manage.php" && $deleteReturn=="success0"))
 			{
 				$messages = $messenger->getMessages("result") ;
 				$messages = unserialize($messages) ;
@@ -186,7 +186,7 @@ class minorLinks extends menu
 				}
 				else {
 					$return .= " . <a href='".$el->URL."'>".$this->session->get("messageWallCount")." x ".$this->view->renderReturn('default.minorLinks.messageWall')."</a>" ;
-					if ($this->session->isEmpty('messenger.lastShowBubble')) 
+					if ($this->session->isEmpty('messenger.lastShowBubble'))
 						$this->session->set('messenger.lastShowBubble', 0);
 					if ($this->session->get('messenger.lastShowBubble') <= (time() - $this->config->getSettingByScope("Messenger", "messageRepeatTime")) && ($this->session->isEmpty("messengerLastBubble") || $this->session->get("messengerLastBubble") < date("Y-m-d")))
 					{
@@ -228,12 +228,12 @@ class minorLinks extends menu
 
 	/**
 	 * show Likes
-	 * 
+	 *
 	 * @version	18th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
-	public function showLikes()	
+	public function showLikes()
 	{
 		$pObj = new person($this->view);
 		$return = '<div id="likeLink">';
@@ -250,12 +250,12 @@ class minorLinks extends menu
 
 	/**
 	 * show Notifications
-	 * 
+	 *
 	 * @version	20th September 2016
 	 * @since	moved from functions.php
 	 * @return	HTML String
 	 */
-	public function showNotifications()	
+	public function showNotifications()
 	{
 		return $this->view->renderReturn('default.minorLinks.notification');
 	}

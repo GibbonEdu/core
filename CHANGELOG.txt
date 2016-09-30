@@ -38,7 +38,7 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev and Namibian Dollar as currency
-		System: added Bulgarian and Korean as development languages
+		System: added Bulgarian, Korean and Finnish as development languages
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken
@@ -66,6 +66,7 @@ v13.0.00
 		Planner: fixed lesson plan duplicate return bug, when not in current year
 		Planner: improved readability of Unit Overview in lesson plan view, by removing chat section where no messages exist
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
+		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
 		Resources: improved usability of tag entry interface
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards

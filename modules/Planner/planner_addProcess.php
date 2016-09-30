@@ -73,6 +73,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
             $name = $_POST['name'];
             $summary = $_POST['summary'];
+            if ($summary == '') {
+                $summary = trim(strip_tags($_POST['description'])) ;
+                if (strlen($summary) > 252) {
+                    $summary = substr($summary, 0, 252).'...' ;
+                }
+            }
             $description = $_POST['description'];
             $teachersNotes = $_POST['teachersNotes'];
             $homework = $_POST['homework'];
@@ -206,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $rowAI = $resultAI->fetch();
             $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
 
-            if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $summary == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
+            if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                 $URL .= "&return=error1$params";
                 header("Location: {$URL}");
             } else {

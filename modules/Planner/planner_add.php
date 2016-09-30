@@ -325,14 +325,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					</tr>
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Summary') ?> *</b><br/>
+							<b><?php echo __($guid, 'Summary') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="summary" id="summary" maxlength=255 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var summary=new LiveValidation('summary');
-								summary.add(Validate.Presence);
-							</script>
 						</td>
 					</tr>
 
