@@ -32,7 +32,7 @@ use Gibbon\Record\person ;
 /**
  * view Manager
  *
- * @version	30th September 2016
+ * @version	1st October 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -378,19 +378,19 @@ class view
 	/**
 	 * linkTop
 	 *
-	 * @version	5th August 2016
+	 * @version	1st October 2016
 	 * @since	29th April 2016
 	 * @param	string		$links
 	 * $name=>$link<br />
 	 * Link Starts after q=
-	 * @param	boolean		$add  Include an Add Button Image
+	 * @param	string		$class
 	 * @return	void
 	 */
-	public function linkTop( array $links)
+	public function linkTop( array $links, $class = 'linkTop newLinkTop')
 	{
 		if (empty($links)) return ;
 		$linksDefined = $this->session->get('theme.settings.linkTop') ;
-		?><div class='linkTop newLinkTop'><?php
+		?><div class='<?php echo $class;?>'><?php
         do {
 			reset($links) ;
 			$el = (object) $linksDefined ;
@@ -408,6 +408,11 @@ class view
 				$el->onclick = $link['onclick'];
 				unset($link['onclick']);
 			}
+			if (isset($link['prompt']))
+			{
+				$el->prompt = $link['prompt'];
+				unset($link['prompt']);
+			}
 			if (isset($link['href']))
 				$link = $link['href'];
 			$el->link = $this->convertGetArraytoURL($link);
@@ -416,6 +421,27 @@ class view
 				echo '&nbsp;|&nbsp;';
 		} while (! empty($links)); ?>
 		</div><?php
+	}
+
+	/**
+	 * linkTop Return
+	 *
+	 * @version	1st October 2016
+	 * @since	1st October 2016
+	 * @param	string		$links
+	 * $name=>$link<br />
+	 * Link Starts after q=
+	 * @param	string		$class
+	 * @return	void
+	 */
+	public function linkTopReturn( array $links, $class = 'linkTop newLinkTop')
+	{
+		ob_start();
+		$this->linkTop($links, $class);
+		$out2 = ob_get_contents();
+		if (! empty($out2))
+			ob_end_clean();
+		return $out2 ;
 	}
 
 	/**
@@ -661,6 +687,7 @@ class view
 	 */
 	public function getLink($type, $href, $prompt = '', $imgParameters = '')
 	{
+if (is_array($type)) $this->dump($type, true, true);
 		$type = mb_strtolower($type);
 		if ($type === '') 
 		{
@@ -685,6 +712,11 @@ class view
 		{
 			$link->class = $href['class'];
 			unset($href['class']);
+		}
+		if (isset($href['title']))
+		{
+			$link->title = $href['title'];
+			unset($href['title']);
 		}
 		if (isset($href['href']))
 			$href = $href['href'];
@@ -1039,22 +1071,38 @@ class view
 	/**
 	 * display Image
 	 *
-	 * @version	30th September 2016
+	 * @version	1st October 2016
 	 * @since	30th September 2016
 	 * @param	string		$fileName	Basename 
 	 * @param	string		$alt	Image Alternate
 	 * @param	integer		$width
 	 * @param	integer		$height
 	 * @param	string		$class
+	 * @param	string		$onclick
 	 * @return	void
 	 */
-	public function displayImage($fileName, $alt, $width = null, $height = null, $class = null)
+	public function displayImage($fileName, $alt, $width = null, $height = null, $class = null, $onclick = null)
 	{
 		$fileName = file_exists($this->session->get('theme.path').'img/'.$fileName) ? " src='".$this->session->get('theme.url').'img/'.$fileName."'" : " src='".$this->session->get('theme.defaultURL').'img/'.$fileName."'" ;
 		$alt = " alt='".$alt."'";
 		$width = ! is_null($width) ? " width='".intval($width)."'" : '' ;
 		$height = ! is_null($height) ? " height='".intval($height)."'" : '' ;
 		$class = ! is_null($class) ? "  class='".$class."'" : '' ;
-		echo "<img".$fileName.$alt.$width.$height.$class." />" ;
+		$onclick = ! is_null($onclick) ? "  onClick='".$onclick."'" : '' ;
+		echo "<img".$fileName.$alt.$width.$height.$class.$onclick." />" ;
+	}
+
+	/**
+	 * get Record
+	 *
+	 * @version	1st October 2016
+	 * @since	1st October 2016
+	 * @param	string		$recordName	
+	 * @return	Gibbon\Record\$recordName
+	 */
+	public function getRecord($recordName)
+	{
+		$recordName = "\\Gibbon\\Record\\".$recordName ;
+		return new $recordName($this);
 	}
 }

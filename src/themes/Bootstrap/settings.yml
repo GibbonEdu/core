@@ -452,6 +452,9 @@ links:
     upload:
         prompt: "<span class='glyphicons glyphicons-upload'></span>"
         title: Upload
+    download:
+        prompt: "<span class='glyphicons glyphicons-download'></span>"
+        title: Download
     action:
         title: Action
         prompt: '<span class="glyphicons glyphicons-zoom-in"></span>'
@@ -464,6 +467,15 @@ links:
     quick add:
         title: 'Quick Add'
         prompt: '<span class="halflings halflings-plus-sign"></span>'
+    like off:
+        title: 'Like Off'
+        prompt: '<span class="glyphicons glyphicons-star-empty"></span>'
+    like on:
+        title: 'Like On'
+        prompt: '<span class="glyphicons glyphicons-star"></span>'
+    attendance:
+        title: 'Attendance'
+        prompt: '<span class="glyphicons glyphicons-group"></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:

@@ -1,7 +1,7 @@
-<div class="col-lg-3 col-md-3">
+<div class="col-lg-3 col-md-3 col-sm-10 col-xs-10">
      <?php echo $el->name.'.yml' ; ?>
 </div>      
-<div class="col-lg-7 col-md-7">
+<div class="col-lg-7 col-md-7 hidden-sm hidden-xs">
      <?php echo $el->status  ; ?>
 </div>      
 <div class="col-lg-2 col-md-2 centre border">

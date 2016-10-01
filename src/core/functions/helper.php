@@ -154,39 +154,6 @@ class helper
 	}
 
 	/**
-	 * date Convert to Timestamp
-	 *
-	 * Converts a specified date (YYYY-MM-DD) into a UNIX timestamp
-	 * @version	21st April 2016
-	 * @since	21st April 2016
-	 * @param	string		$date Date
-	 * @return	mixed		Timestamp or false
-	 */
-	static public function dateConvertToTimestamp($date) {
-		
-		list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-		$timestamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
-	
-		return $timestamp ;
-	}
-
-	/**
-	 * is School Open
-	 *
-	 * Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
-	 * @version	21st April 2016
-	 * @since	21st April 2016
-	 * @param	string		$date Date
-	 * @param	boolean		$allYears allYears
-	 * @return	boolean
-	 */
-	static public function isSchoolOpen($date, $allYears = false ) {
-		
-		$obj = new \Gibbon\Record\schoolYear(self::getView());
-		return $obj->isSchoolOpen($date, $allYears);
-	}
-
-	/**
 	 * set Current School Year
 	 *
 	 * GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE

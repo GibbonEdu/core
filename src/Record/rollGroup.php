@@ -21,7 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Record ;
 
 use Gibbon\Record\space ;
-use Gibbon\People\staff ;
+use Gibbon\People\employee ;
+
 /**
  * Roll Group Record
  *
@@ -49,17 +50,17 @@ class rollGroup extends record
 	protected	$tutor1 ;
 	
 	/**
-	 * @var	Gibbon\People\staff	
+	 * @var	Gibbon\People\employee	
 	 */
 	protected	$tutor2 ;
 	
 	/**
-	 * @var	Gibbon\People\staff	
+	 * @var	Gibbon\People\employee	
 	 */
 	protected	$tutor3 ;
 	
 	/**
-	 * @var	array of Gibbon\People\staff	
+	 * @var	array of Gibbon\People\employee	
 	 */
 	protected	$tutors ;
 	
@@ -141,13 +142,13 @@ class rollGroup extends record
 	 *
 	 * @version	24th May 2016
 	 * @since	24th May 2016
-	 * @return	Gibbon\People\staff
+	 * @return	Gibbon\People\employee
 	 */
 	public function getTutor1()
 	{
-		if ($this->tutor1 instanceof staff)
+		if ($this->tutor1 instanceof employee)
 			return $this->tutor1 ;
-		return $this->tutor1 = new staff($this->view, $this->record->gibbonPersonIDTutor);
+		return $this->tutor1 = new employee($this->view, $this->record->gibbonPersonIDTutor);
 	}
 	
 	/**
@@ -155,13 +156,13 @@ class rollGroup extends record
 	 *
 	 * @version	24th May 2016
 	 * @since	24th May 2016
-	 * @return	Gibbon\People\staff
+	 * @return	Gibbon\People\employee
 	 */
 	public function getTutor2()
 	{
-		if ($this->tutor2 instanceof staff)
+		if ($this->tutor2 instanceof employee)
 			return $this->tutor2 ;
-		return $this->tutor2 = new staff($this->view, $this->record->gibbonPersonIDTutor2);
+		return $this->tutor2 = new employee($this->view, $this->record->gibbonPersonIDTutor2);
 	}
 	
 	/**
@@ -169,13 +170,13 @@ class rollGroup extends record
 	 *
 	 * @version	24th May 2016
 	 * @since	24th May 2016
-	 * @return	Gibbon\People\staff
+	 * @return	Gibbon\People\employee
 	 */
 	public function getTutor3()
 	{
-		if ($this->tutor3 instanceof staff)
+		if ($this->tutor3 instanceof employee)
 			return $this->tutor3 ;
-		return $this->tutor3 = new staff($this->view, $this->record->gibbonPersonIDTutor3);
+		return $this->tutor3 = new employee($this->view, $this->record->gibbonPersonIDTutor3);
 	}
 	
 	/**

@@ -394,7 +394,7 @@ class schoolYear extends record
 		$isSchoolOpen = false ;
 		$session = new session();
 		//Turn $date into UNIX timestamp and extract day of week
-		$timestamp = helper::dateConvertToTimestamp($date) ;
+		$timestamp = $this->dateConvertToTimestamp($date) ;
 		$dayOfWeek = date("D",$timestamp) ;
 	
 		//See if date falls into a school term
@@ -418,7 +418,7 @@ class schoolYear extends record
 		//See if date's day of week is a school day
 		if ($isInTerm) {
 			$data = array("nameShort"=>$dayOfWeek);
-			$sql = "SELECT * FROM gibbonDaysOfWeek WHERE nameShort=:nameShort AND schoolDay='Y'" ;
+			$sql = "SELECT * FROM `gibbonDaysOfWeek` WHERE `nameShort` = :nameShort AND `schoolDay` = 'Y'" ;
 			$result = $this->executeQuery($data, $sql);
 			if ($result->rowCount()>0) {
 				$isSchoolDay = true ;
@@ -428,7 +428,7 @@ class schoolYear extends record
 		//See if there is a special day
 		if ($isInTerm && $isSchoolDay) {
 			$data = array("date"=>$date);
-			$sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE type='School Closure' AND date=:date" ;
+			$sql = "SELECT * FROM `gibbonSchoolYearSpecialDay` WHERE `type` = 'School Closure' AND `date` = :date" ;
 			$result = $this->executeQuery($data, $sql);
 			if ($result->rowCount()<1) {
 				$isSchoolOpen = true ;
