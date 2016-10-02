@@ -1,8 +1,4 @@
-version: 0.1.00
+version: 1.0.00
 security:
     cost: 12
-    passwordPolicy:
-        MinLength: 8
-        Numeric: Yes
-        NonAlphaNumeric: No
-        Alpha: Yes 
+    passwordPolicy: { MinLength: 8, Numeric: 'Yes', NonAlphaNumeric: 'No', Alpha: 'Yes' }
