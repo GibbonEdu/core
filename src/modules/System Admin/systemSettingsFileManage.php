@@ -62,14 +62,16 @@ if ($this->getSecurity()->isActionAccessible()) {
 
 	$this->h3('Local Setting Variance');
 	$this->paragraph('Report on any differences found between the standard configuration supplied by Gibbon and your local settings.  Local settings can be different from the standard configuration, due to local variations.');
+	$this->displayMessage('You can download and upload local copies of your settings files, so that you can edit them.  When uploading, the file is chaecked to ensure that the correct YAML formatting is applied, and that all of the required values exist in the file. Changing values can significantly alter the way your Gibbon Site works.  Please ensure you get a copy of the original downloaded version before editing.', 'info');
 	foreach($fileCheckList as $name)
 	{
-		$this->h4($name);
+		$form = $this->getForm(null, array('q' => '/modules/System Admin/systemSettingsFileManageLocalProcess.php'), true, $name.'Form', true);
+		$form->addElement('h4', null, $name);
 		$ok = true ;
 		$merge = false;
 		if (! file_exists($standard($name)))
 		{
-			$this->displayMessage('The standard configuration file is not available!'); 	
+			$form->addElement('error', null, 'The standard configuration file is not available!'); 	
 			$ok = false;
 		}
 		if (! file_exists($local($name)))
@@ -80,12 +82,12 @@ if ($this->getSecurity()->isActionAccessible()) {
 			}
 			if (! file_exists($local($name)))
 			{
-				$this->displayMessage('The local configuration file is not available!'); 	
+				$form->addElement('error', null, 'The local configuration file is not available!'); 	
 				$ok = false;
 			}
 			else
 			{
-				$this->displayMessage('The local configuration file was successfully created.', 'info'); 	
+				$form->addElement('info', null, 'The local configuration file was successfully created.'); 	
 				$ok = false;
 			}
 		}
@@ -102,13 +104,13 @@ if ($this->getSecurity()->isActionAccessible()) {
 				{
 					if (! isset($l[$key]))
 					{
-						$this->displayMessage(array('The key "%1$s" is not available in your local configurations, and has been merged to your local configuration.', array($key)), 'warning');
+						$form->addElement('warning', null, array('The key "%1$s" is not available in your local configurations, and has been merged to your local configuration.', array($key)));
 						$merge = true;
 						$l[$key] = $value;
 					} 
 					elseif ($l[$key] != $value)
 					{
-						$this->displayMessage(array('The key "%1$s" has a different value in your local configurations.', array($key)), 'warning');
+						$form->addElement('warning', null, array('The key "%1$s" has a different value in your local configurations.', array($key)));
 						$ok = false;
 					}
 					elseif ($l[$key] == $value)
@@ -121,10 +123,31 @@ if ($this->getSecurity()->isActionAccessible()) {
 				if ($merge) 
 					file_put_contents($local($name), Yaml::dump($l));
 			}
+
+			$el = $form->addElement('button', 'Restore', 'Restore');
+			$el->nameDisplay = 'Restore';
+			$el->setButtonColour('blue');
+			$el->onClickSubmit();
+			$el->description = array('Restore the local %1$s configuration to Gibbon standard.', array($name));
+			
+			$el = $form->addElement('button', 'Download', 'Download');
+			$el->nameDisplay = 'Download';
+			$el->setButtonColour('green');
+			$el->additional = ' onClick=\'window.open("'.$this->convertGetArraytoURL(array('q'=>'/modules/System Admin/systemSettingsFileManageLocalProcess.php', 'divert'=>true, 'Download' => 'Download', 'fileName' => $name)).'", "_self");\'';
+			$el->description = array('Download the current local version of your %1$s file for editing.', array($name));
+			
+			$form->addElement('hidden', 'fileName', $name);
+			$el = $form->addElement('file', 'file', 'Upload');	
+			$el->onChangeSubmit();
+			$el->nameDisplay = array('Upload %1$s', array($name));
+			$el->description = array('Upload, test and save a new version of the %1$s local settings file.', array($name));
+			$el->setFile('Must be a valid YAML File', 'yml');
+
 		}
 		if ($ok)
-			$this->displayMessage(array('No problems where identified in the %1$s configuration file', array($name)), 'success');
+			$form->addElement('success', null, array('No problems where identified in the %1$s configuration file', array($name)));
 
+		$form->render();
 	}
 
 }

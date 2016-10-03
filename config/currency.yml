@@ -1,4 +1,5 @@
 version: 1.0.01
+fileName: currency
 currencies:
     'PAYPAL SUPPORTED':
         'AUD $': 'Australian Dollar (A$)'

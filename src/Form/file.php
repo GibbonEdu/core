@@ -88,4 +88,16 @@ class file extends element
 		$this->validate->mimeType = implode(',', $mimeType);
 		$this->validate->inclusionWithin = $within;
 	}
+	
+	/**
+	 * On Change Submit
+	 *
+	 * @version	3rd October 2016
+	 * @since	3rd October 2016
+	 * @return 	void
+	 */
+	public function onChangeSubmit()
+	{
+		$this->additional .= ' onChange="this.form.submit()"';
+	}
 }

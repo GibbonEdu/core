@@ -1,5 +1,6 @@
 # Relationship List for students and staff
 version: 1.0.00
+fileName: schoolData
 relationships:
     1: 'Parent'
     2: 'Spouse'

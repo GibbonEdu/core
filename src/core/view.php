@@ -28,11 +28,12 @@ use Gibbon\core\session;
 use Gibbon\core\config;
 use Gibbon\Record\theme;
 use Gibbon\Record\person ;
+use stdClass ;
 
 /**
  * view Manager
  *
- * @version	1st October 2016
+ * @version	2nd October 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -99,6 +100,11 @@ class view
 	 * @var Gibbon\core\trans
 	 */
 	private $trans ;
+
+	/**
+	 * @var	stdClass
+	 */
+	private $records ;
 
 	/**
 	 * Constructor
@@ -1095,14 +1101,21 @@ if (is_array($type)) $this->dump($type, true, true);
 	/**
 	 * get Record
 	 *
-	 * @version	1st October 2016
+	 * @version	2nd October 2016
 	 * @since	1st October 2016
 	 * @param	string		$recordName	
 	 * @return	Gibbon\Record\$recordName
 	 */
 	public function getRecord($recordName)
 	{
-		$recordName = "\\Gibbon\\Record\\".$recordName ;
-		return new $recordName($this);
+		if (! $this->records instanceof stdClass)
+			$this->records = new stdClass();
+		$fullName = "\\Gibbon\\Record\\".$recordName ;
+		if (isset($this->records->$recordName) && $this->records->$recordName instanceof $fullName)
+			return $this->records->$recordName;
+		if (! class_exists($fullName))
+			$this->dump($fullName, true, true);
+		$this->records->$recordName = new $fullName($this);
+		return $this->records->$recordName ;
 	}
 }

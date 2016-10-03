@@ -1,4 +1,5 @@
 version: 0.1.00
+fileName: security
 security:
     cost: 12
     passwordPolicy:
