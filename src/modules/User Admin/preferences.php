@@ -31,7 +31,7 @@ define('NO_SIDEBAR_MENU', true);
 $trail = $this->initiateTrail();
 $trail->trailEnd = 'Preferences';
 $trail->render($this);
-	
+
 if ($this->session->isEmpty("gibbonPersonID"))
 {
 	$this->displayMessage('No account information was found.');
@@ -39,31 +39,31 @@ if ($this->session->isEmpty("gibbonPersonID"))
 
 	//Deal with force reset notification
 	$forceReset = isset($_GET["forceReset"]) ? $_GET["forceReset"] : null ;
-	
+
 	if ($forceReset=="Y") {
 		$this->displayMessage("Your account has been flagged for a password reset. You cannot continue into the system until you change your password.");
 	}
-	
+
 
 	$this->render('default.flash');
-	
+
 	$pObj = new person($this, $this->session->get("gibbonPersonID"));
-	
+
 	$form = $this->getForm(null, array('q' => '/modules/User Admin/preferencesPasswordProcess.php', 'gibbonPersonID' => $pObj->getField('gibbonPersonID')), true);
-	
+
 	$el = $form->addElement('h3', '', "Reset Password");
-	
+
 	if ($w = $this->getSecurity()->getPasswordPolicy())
 	{
 		$form->addElement('info', '', $w);
 	}
-	
+
 	$el = $form->addElement('password', "password", '');
 	$el->placeholder = 'Current Password';
 	$el->setRequired();
 	$el->setLength(null, intval($this->config->getSettingByScope('System', 'passwordPolicyMinLength')), 20);
 	$el->nameDisplay = "Current Password";
-	
+
 	$el = $form->addElement('password', "passwordNew", '');
 	$el->setLength(null, null, 20);
 	$el->placeholder = 'New Password';
@@ -80,11 +80,11 @@ if ($this->session->isEmpty("gibbonPersonID"))
 	$format .= ".*)$";
 	$el->setFormat($format, 'Does not meet password policy.');
 	$el->nameDisplay = "New Password";
-	
+
 	$el2 = new \Gibbon\Form\button('generate', $this->__("Generate Password"), $this);
 	$el2->element->class = "generatePassword small";
 	$el->description = $this->renderReturn('form.button', $el2);
-	
+
 	$this->addScript('
 	<script type="text/javascript">
 		$(".generatePassword").click(function(){
@@ -107,28 +107,28 @@ if ($this->session->isEmpty("gibbonPersonID"))
 		});
 	</script>
 	');
-	
+
 	$el = $form->addElement('password', "passwordConfirm", '');
 	$el->setLength(null, null, 20);
 	$el->placeholder = 'Confirm New Password';
 	$el->setRequired();
 	$el->setConfirmation('Match the New Password', 'passwordNew');
 	$el->nameDisplay = "Confirm New Password";
-	
+
 	$el = $form->addElement('submitBtn', null);
-	
+
 	$form->render();
-	
+
 	$form = $this->getForm(null, array('q' => '/modules/User Admin/preferencesProcess.php', 'gibbonPersonID' => $pObj->getField('gibbonPersonID')), true);
-	
+
 	$el = $form->addElement('h3', '', "Settings");
-	
+
 	$el = $form->addElement('text', "calendarFeedPersonal", $pObj->getField("calendarFeedPersonal"));
 	$el->setLength(null, null, 100);
 	$el->placeholder = "Personal Google Calendar ID";
 	$el->nameDisplay = "Personal Google Calendar ID";
 	$el->description = "Google Calendar ID for your personal calendar. <br/>Only enables timetable integration when logging in via Google.";
-	
+
 	if ($this->config->getSettingByScope("User Admin", "personalBackground") == "Y")
 	{
 		$el = $form->addElement('text', "personalBackground", $pObj->getField("personalBackground"));
@@ -137,7 +137,7 @@ if ($this->session->isEmpty("gibbonPersonID"))
 		$el->nameDisplay = "Personal Background";
 		$el->description = "Set your own custom background image.<br/>Please provide URL to image.";
 	}
-	
+
 	$el = $form->addElement('select', "gibbonThemeIDPersonal", $this->session->get("theme.IDPersonal"));
 	$el->nameDisplay = "Personal Theme";
 	$el->description = "Override the system theme.";
@@ -145,7 +145,7 @@ if ($this->session->isEmpty("gibbonPersonID"))
 	$el->addOption($this->__('Select your theme!'), 0);
 	foreach($tObj->findAll("SELECT * FROM `gibbonTheme` ORDER BY `name`") as $theme)
 		$el->addOption($theme->getField("active") == 'Y' ? $theme->getField("name")." (".$this->__("System Default").")" : $theme->getField("name"), $theme->getField("gibbonThemeID"));
-	
+
 	if ($this->session->notEmpty('i18n.overRideCode'))
 		$form->addElement('info', null, array('A login language over-ride is being applied, so changing the language here will not be reflected until you logout and login again without the over-ride.', array('<br />')));
 	$el = $form->addElement('select', "personalLanguageCode", $pObj->getField('personalLanguageCode'));
@@ -163,8 +163,8 @@ if ($this->session->isEmpty("gibbonPersonID"))
 	$el = $form->addElement('yesno', "receiveNotificationEmails", $this->session->get("receiveNotificationEmails"));
 	$el->nameDisplay = "Receive Email Notifications?";
 	$el->description = "Notifications can always be viewed on screen.";
-	
+
 	$el = $form->addElement('submitBtn', null);
-	
+
 	$form->render();
 }

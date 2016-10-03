@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
             echo __($guid, $row['jobTitle']);
             echo '</td>';
             echo '<td>';
-            echo __($guid, $row['dateOpen']);
+            echo dateConvertBack($guid, $row['dateOpen']);
             echo '</td>';
             echo '<td>';
             echo __($guid, $row['active']);

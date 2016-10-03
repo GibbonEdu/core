@@ -76,6 +76,7 @@ v13.0.00
 		School Admin: added ability to link Educational Assistances to Form/Roll Groups
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
+		Staff: fixed date display in Job Openings manage page
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		Students: tweaked student accept to remove - from names
 		Students: fixed broken link from Family in student profile to sibling, when sibling is not enroled in the year
