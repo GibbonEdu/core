@@ -28,6 +28,7 @@ v13.0.00
 
 	Significant Changes
 		System: Changed Primary Assessment Scale to Default Assessment Scale
+		System: custom main menu categories will be lost on upgrade, with items placed in category Other
 		Markbook: added ability to copy columns to other classes
 
 	Security

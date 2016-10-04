@@ -529,5 +529,6 @@ UPDATE `gibbonAction` SET `name` = 'Display Settings' WHERE `gibbonAction`.`name
 UPDATE `gibbonAction` SET `name` = 'Display Settings' WHERE `gibbonAction`.`name` = 'Main Menu Settings';end
 ALTER TABLE `gibbonSetting` CHANGE `type` `type` ENUM('text','array','number','date','yesno') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'text';end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'pageAnchorDisplay', 'Display Page Anchors', 'Allows the school to turn off display of the Page Anchors in the menu.', 'Y', 'yesno');end
+UPDATE gibbonModule SET category='Other' WHERE category='';end
 
 ";
