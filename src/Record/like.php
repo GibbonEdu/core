@@ -24,7 +24,7 @@ use Giboon\
 /**
  * Like Record
  *
- * @version	8th September 2016
+ * @version	4th October 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -143,11 +143,11 @@ class like extends record
 
 		$data=array("personIDRecipient"=>$personIDRecipient, "schoolYearID"=>$schoolYearID);
 		$v = clone $this;
-		if ($mode=="count") {
+		if ($mode == "count") {
 			$sql="SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike`
 				WHERE `gibbonPersonIDRecipient` = :personIDRecipient
 					AND `gibbonSchoolYearID` = :schoolYearID" ;
-			$return = $v->findOneBy($sql, $data);
+			$return = $v->findAll($sql, $data);
 		}
 		else {
 			$sql = "SELECT `gibbonLike`.*, `gibbonPersonID`, `image_240`, `gibbonRoleIDPrimary`, `preferredName`, `surname`
@@ -162,8 +162,8 @@ class like extends record
 		if (! $v->getSuccess()) $return = false ;
 
 		if ($mode == "count") {
-			$x = $return->getFields('likes');
-			$return = $x ;
+			$x = reset($return);
+			$return = $x->getField('likes') ;
 		}
 
 		return $return ;
