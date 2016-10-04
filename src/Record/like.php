@@ -20,11 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Record ;
 
-use Giboon\
 /**
  * Like Record
  *
- * @version	8th September 2016
+ * @version	4th October 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -32,16 +31,16 @@ use Giboon\
  */
 class like extends record
 {
-	/** 
+	/**
 	 * @var	string	$table	Table Name
 	 */
 	protected $table = 'gibbonLike';
-	
+
 	/**
 	 * @var	string	$identifier	Table Identifier Name
 	 */
 	protected $identifier = 'gibbonLikeID';
-	
+
 	/**
 	 * Unique Test
 	 *
@@ -53,7 +52,7 @@ class like extends record
 	{
 		return false ;
 	}
-	
+
 	/**
 	 * count Likes By Context
 	 *
@@ -62,7 +61,7 @@ class like extends record
 	 * @param	string		$moduleName
 	 * @param	string		$contextKeyName
 	 * @param	string		$contextKeyValue
-	 * @return	boolean		
+	 * @return	boolean
 	 */
 	function countLikesByContext($moduleName, $contextKeyName, $contextKeyValue)
 	{
@@ -79,7 +78,7 @@ class like extends record
 	 *
 	 * @version	24th August 2016
 	 * @since	24th August 2016
-	 * @return	boolean		
+	 * @return	boolean
 	 */
 	public function canDelete()
 	{
@@ -99,30 +98,30 @@ class like extends record
 	 * @return	mixed		Count or false
 	 */
 	public function countLikesByContextAndGiver($moduleName, $contextKeyName, $contextKeyValue, $personIDGiver, $personIDRecipient = null) {
-	
+
 		if (is_null($personIDRecipient)) {
 			$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDGiver"=>$personIDGiver);
-			$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue 
-				FROM gibbonLike 
-				WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) 
-					AND contextKeyName=:contextKeyName 
-					AND contextKeyValue=:contextKeyValue 
+			$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue
+				FROM gibbonLike
+				WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName)
+					AND contextKeyName=:contextKeyName
+					AND contextKeyValue=:contextKeyValue
 					AND gibbonPersonIDGiver=:gibbonPersonIDGiver" ;
 		}
 		else {
 			$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDGiver"=>$personIDGiver, "gibbonPersonIDRecipient"=>$personIDRecipient);
-			$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue 
-				FROM gibbonLike 
-				WHERE gibbonModuleID = ( SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) 
-					AND contextKeyName = :contextKeyName 
-					AND contextKeyValue = :contextKeyValue 
-					AND gibbonPersonIDGiver = :gibbonPersonIDGiver 
+			$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue
+				FROM gibbonLike
+				WHERE gibbonModuleID = ( SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName)
+					AND contextKeyName = :contextKeyName
+					AND contextKeyValue = :contextKeyValue
+					AND gibbonPersonIDGiver = :gibbonPersonIDGiver
 					AND gibbonPersonIDRecipient = :gibbonPersonIDRecipient" ;
 		}
 		$result = $this->executeQuery($data, $sql);
 		if ( ! $this->getQuerySuccess())
 			return false ;
-	
+
 		return $result->rowCount() ;
 	}
 
@@ -143,11 +142,11 @@ class like extends record
 
 		$data=array("personIDRecipient"=>$personIDRecipient, "schoolYearID"=>$schoolYearID);
 		$v = clone $this;
-		if ($mode=="count") {
+		if ($mode == "count") {
 			$sql="SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike`
 				WHERE `gibbonPersonIDRecipient` = :personIDRecipient
 					AND `gibbonSchoolYearID` = :schoolYearID" ;
-			$return = $v->findOneBy($sql, $data);
+			$return = $v->findAll($sql, $data);
 		}
 		else {
 			$sql = "SELECT `gibbonLike`.*, `gibbonPersonID`, `image_240`, `gibbonRoleIDPrimary`, `preferredName`, `surname`
@@ -162,8 +161,8 @@ class like extends record
 		if (! $v->getSuccess()) $return = false ;
 
 		if ($mode == "count") {
-			$x = $return->getFields('likes');
-			$return = $x ;
+			$x = reset($return);
+			$return = $x->getField('likes') ;
 		}
 
 		return $return ;
