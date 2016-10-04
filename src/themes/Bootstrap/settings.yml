@@ -196,37 +196,37 @@ form:
             oneColumn: 1
         note:
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+                class: col-md-12 col-lg-12
             span:
                 class: help-block default
             oneColumn: 1
         rawElement:
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+                class: col-md-12 col-lg-12
             span:
                 class: help-block default
             oneColumn: 1
         warning:
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+                class: col-md-12 col-lg-12
             span:
                 class: warning help-block
             oneColumn: 1
         success:
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+                class: col-md-12 col-lg-12
             span:
                 class: success help-block
             oneColumn: 1
         info:
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+                class: col-md-12 col-lg-12
             span:
                 class: info help-block
             oneColumn: 1
         error:
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+                class: col-md-12 col-lg-12
             span: 
                 class: error help-block
             oneColumn: 1
