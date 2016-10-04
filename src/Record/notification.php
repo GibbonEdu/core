@@ -132,8 +132,8 @@ class notification extends record
 		
 				//Attempt email send
 				$subject = $this->view->__(array('You have received a notification on %1$s at %2$s (%3$s %4$s)', array($this->view->session->get("systemName"), $this->view->session->get("organisationNameShort"), date("H:i"), $this->view->dateConvertBack(date("Y-m-d"))))) ;
-				$body = $this->view->__( 'Notification') . ": " . $this->view->__($text) . "<br/><br/>" ;
-				$body .= $this->view->__(array('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=/modules/Notifications/notifications.php'>", "</a>"))) ;
+				$body = $this->view->__('Notification') . ": " . $this->view->__($text) . "<br/><br/>" ;
+				$body .= $this->view->__(array('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.', array($this->view->session->get("systemName"), "<a href='" . GIBBON_URL . "index.php?q=notifications.php'>", "</a>"))) ;
 				$body .= "<br/><br/>" ;
 				$body .= "<hr/>" ;
 				$body .= "<p style='font-style: italic; font-size: 85%'>" ;

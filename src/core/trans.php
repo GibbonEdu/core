@@ -129,12 +129,7 @@ C: __('plural.apples', array(3), 3) will return 'I have 3 apples.'<br />
 		$text = getText($this->source) ;
 
 		if (! empty($options)) {
-			try {
-				$text = vsprintf($text, $options);
-			} catch(\Exception $e)
-			{
-				throw new \Exception('Incorrect translation parameter count: '.$text.': '. implode(', ', $options), 30000 + __LINE__);
-			}
+			$text = vsprintf($text, $options);
 		}
 		
 		$session = new session();

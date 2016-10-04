@@ -1,8 +1,10 @@
-<!-- //Roll group table -->
-<div class='linkTop' style='margin-top: 0px'>
-	<?php
-	$this->getLink('attendance', array('q' => '/modules/Attendance/attendance_take_byRollGroup.php', 'gibbonRollGroupID'=>$el->gibbonRollGroupID), 'Take Attendance');
-	$this->getLink('download', array('q' => '/indexExport.php', 'gibbonRollGroupID'=>$el->gibbonRollGroupID), 'Export to Excel');
-	?>
-</div>
-<?php $this->getRecord('studentEnrolment')->getRollGroupTable($el->gibbonRollGroupID, 5);
+<?php
+ //Roll group table
+$links = array();
+$links['attendance'] = array('q' => '/modules/Attendance/attendance_take_byRollGroup.php', 'gibbonRollGroupID' => $el->gibbonRollGroupID, 'prompt' => 'Take Attendance');
+$links['download'] = array('q' => '/indexExport.php', 'gibbonRollGroupID'=>$el->gibbonRollGroupID, 'prompt' => 'Download Excel');
+
+$this->linkTop($links);
+$this->h4('Attendance');
+
+echo $this->getRecord('studentEnrolment')->getRollGroupTable($el->gibbonRollGroupID, 5);

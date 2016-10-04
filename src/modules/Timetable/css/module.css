@@ -1,0 +1,118 @@
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+/* Timetable styles */
+th.ttCalendarBar {
+	vertical-align: top; 
+	width: 100%; 
+	text-align: right!important; 
+	background-image: none!important; 
+	background-color: #f2f2f2!important
+}
+span.ttSchoolCalendar {
+	color: #fff;
+	font-weight: bold; 
+	margin: 0px -2px 0px 5px; 
+	background-color: rgb(51,153,0); 
+	padding: 5px 7px; 
+	border: 1px solid #555
+}
+div.ttSchoolCalendar {
+	background-color: rgb(51,153,0) ;
+	color: #fff; 
+	font-weight: bold ;
+}
+span.ttPersonalCalendar {
+	color: #fff;
+	font-weight: bold; 
+	margin: 0px -2px 0px 5px; 
+	background-color: rgb(103,153,207); 
+	padding: 5px 7px; 
+	border: 1px solid #555;
+}
+
+div.ttPersonalCalendar {
+	background-color: rgb(103,153,207); 
+	color: #fff; 
+	font-weight: bold ;
+}
+
+span.ttSpaceBookingCalendar {
+	color: #fff;
+	font-weight: bold; 
+	margin: 0px -2px 0px 5px; 
+	background-color: #E5760D; 
+	padding: 5px 7px; 
+	border: 1px solid #555;
+}
+
+div.ttSpaceBookingCalendar {
+	background-color: #E5760D; 
+	color: #fff; 
+	font-weight: bold ;
+}
+
+div.ttClosure {
+	border: 1px solid rgb(136,136,136);
+	background-color: rgb(255,196,202);
+	color: rgb(255,0,0); 
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttGeneric {
+	background-color: rgb(238,238,238); 
+	color: rgb(0,0,0); 
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttCurrent {
+	background-color: rgb(179,239,194) ;
+	color: rgb(0,0,0); 
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttLesson {
+	background-color: rgb(238,238,238);
+	color: rgb(136,136,136) ;
+	border: 1px solid rgb(136,136,136) ;
+}
+div.ttPeriod {
+	color: rgb(0,0,0);
+	border: 1px solid rgb(136,136,136) ;
+	background-color: rgb(150,190,234) ;
+}
+div.ttPeriodCurrent {
+	color: rgb(0,0,0);
+	border: 1px solid rgb(136,136,136) ;
+	background-color: rgb(179, 239, 194) ;
+}
+table.mini td {
+	padding: 5px!important ;
+}
+table.mini tr.head th {
+	padding: 5px!important ;
+}
+table.noIntBorder td {
+	border: none!important ;
+	padding: 5px!important ;
+	background:#EDF7FF ;
+}
+table.noIntBorder td:last-child {
+	text-align: left;
+}
+.mini div div {
+	overflow: hidden ;
+}

@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Record ;
 
 use stdClass ;
+use Gibbon\Record\person ;
+
 /**
  * Student Enrolment Record
  *
@@ -32,6 +34,8 @@ use stdClass ;
  */
 class studentEnrolment extends record
 {
+	use \Gibbon\People\user ;
+
 	/** 
 	 * @var	string	$table	Table Name
 	 */
@@ -46,6 +50,11 @@ class studentEnrolment extends record
 	 * @var	stdClass
 	 */
 	protected $rollGroupTable ;
+	
+	/**
+	 * @var	Gibbon\Record\person
+	 */
+	protected $person ;
 	
 	/**
 	 * Unique Test
@@ -105,32 +114,33 @@ class studentEnrolment extends record
 			$sqlRollGroup .= "ORDER BY `rollOrder`, `surname`, `preferredName`";
 		}
 	
-		$return .= "<table class='noIntBorder' cellspacing='0' style='width:100%'>";
+		$return = "<table class='noIntBorder' cellspacing='0' style='width:100%'>";
 		$count = 0;
 		$el = new stdClass ;
 		$el->columns = $columns ;
 		$el->rollGroupID = $rollGroupID ;
 		
 		if ($confidential) 
-			$return .= $this->renderReturn('student.rollGroups.confidential', $el);
+			$return .= $this->view->renderReturn('student.rollGroups.confidential', $el);
 	
-		foreach($this->findAll($sqlRollGroup, $dataRollGroup) as $rowRollGroup)  {
+		foreach($this->findAll($sqlRollGroup, $dataRollGroup) as $w)  {
 			if ($count % $columns == 0) {
 				$return .= '<tr>';
 			}
+			$rowRollGroup = $w->returnRecord();
 			$return .= "<td style='width:20%; text-align: center; vertical-align: top'>";
 	
 			//Alerts, if permission allows
 			if ($confidential) 
-				$return .= $this->view->getRecord('alert')->getAlertBar($rowRollGroup->gibbonPersonID, $rowRollGroup->privacy, "id='confidential".$rollGroupID.'-'.$count."'");
+				$return .= $this->view->getRecord('alertLevel')->getAlertBar($rowRollGroup->gibbonPersonID, $rowRollGroup->privacy, "id='confidential".$rollGroupID.'-'.$count."'");
 	
 			//User photo
-			$return .= getUserPhoto($guid, $rowRollGroup->image_240, 75);
+			$return .= $this->getUserPhoto($rowRollGroup->image_240, 75);
 	
 			//HEY SHORTY IT'S YOUR BIRTHDAY!
-			$daysUntilNextBirthday = daysUntilNextBirthday($rowRollGroup->dob);
+			$daysUntilNextBirthday = $this->daysUntilNextBirthday($rowRollGroup->dob);
 			if ($daysUntilNextBirthday == 0) {
-				$return .= "<img title='".sprintf(__($guid, '%1$s  birthday today!'), $rowRollGroup->preferredName.'&#39;s')."' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".GIBBON_URL.'src/themes/'.$_SESSION[$guid]['gibbonThemeName."/img/gift_pink.png'/>";
+				$return .= $this->view->returnIcon('pink gift', array('%1$s birthday today!', array($rowRollGroup->preferredName.'&#39;s')));
 			} elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
 				$return .= "<img title='";
 				if ($daysUntilNextBirthday != 1) {
@@ -138,10 +148,9 @@ class studentEnrolment extends record
 				} else {
 					$return .= sprintf(__($guid, '%1$s day until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup->preferredName.'&#39;s');
 				}
-				$return .= "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL.'/themes/'.$_SESSION[$guid]['gibbonThemeName."/img/gift.png'/>";
+				$return .= "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".GIBBON_URL.'themes/'.$this->session->get('theme.Name')."/img/gift.png'/>";
 			}
-	
-			$return .= "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup->gibbonPersonID."'>".formatName('', $rowRollGroup->preferredName, $rowRollGroup->surname, 'Student').'</a><br/><br/></div>';
+			$return .= "<div style='padding-top: 5px'><b><a href='".GIBBON_URL."index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup->gibbonPersonID."'>".$this->getPerson($rowRollGroup->gibbonPersonID)->formatName().'</a><br/><br/></div>';
 			$return .= '</td>';
 	
 			if ($count % $columns == ($columns - 1)) {
@@ -160,24 +169,41 @@ class studentEnrolment extends record
 	
 		$return .= '</table>';
 	
-		$return .= '<script type="text/javascript">
+		$script = '<script type="text/javascript">
 			/* Confidential Control */
 			$(document).ready(function(){
 				$("#confidential'.$rollGroupID."\").click(function(){
 					if ($('input[id=confidential".$rollGroupID."]:checked').val()==\"Yes\" ) {";
 		for ($i = 0; $i < $count; ++$i) {
-			$return .= '$("#confidential'.$rollGroupID.'-'.$i.'").slideDown("fast", $("#confidential'.$i."\").css(\"{'display' : 'table-row', 'border' : 'right'}\"));";
+			$script .= '$("#confidential'.$rollGroupID.'-'.$i.'").slideDown("fast", $("#confidential'.$i."\").css(\"{'display' : 'table-row', 'border' : 'right'}\"));";
 		}
-		$return .= '}
+		$script .= '}
 					else {';
 		for ($i = 0; $i < $count; ++$i) {
-			$return .= '$("#confidential'.$rollGroupID.'-'.$i.'").slideUp("fast");';
+			$script .= '$("#confidential'.$rollGroupID.'-'.$i.'").slideUp("fast");';
 		}
-		$return .= '}
+		$script .= '}
 				 });
 			});
 		</script>';
+		$this->view->addScript($script);
 	
 		return $return;
+	}
+
+	/**
+	 * get Person 
+	 *
+	 * with the current student record set.
+	 * @version	3rd October 2016
+	 * @since	2nd October 2016
+	 * @param	integer		$personID
+	 * @return	Gibbon\Record\person 
+	 */
+	protected function getPerson($personID = null)
+	{
+		$this->person = $this->view->getRecord('person');
+		$this->person->find($personID);
+		return $this->person ;
 	}
 }

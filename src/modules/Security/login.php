@@ -21,15 +21,13 @@ namespace Module\Security ;
 
 use Gibbon\core\logger ;
 use Gibbon\core\post ;
-use Gibbon\Record\schoolYear ;
 use Gibbon\core\trans ;
-use Gibbon\Record\theme ;
 
 if (! $this instanceof post ) die();
 
 $security = $this->getSecurity();
 
-$syObj = new schoolYear($this);
+$syObj = $this->getRecord('schoolYear');
 
 $syObj->setCurrentSchoolYear() ;
 
@@ -49,7 +47,7 @@ if (empty($_POST['username']) || empty($_POST['password'])) {
 }
 //VALIDATE LOGIN INFORMATION
 else {	
-	$pObj = new \Gibbon\Record\person($this);
+	$pObj = $this->getRecord('person');
 	$person = $pObj->findOneBy(array('username' => $_POST['username'], 'status'=>'Full', 'canLogin'=>'Y'));		
 	if (! $pObj->getSuccess() || $pObj->rowCount() !== 1) {
 		logger::__("Incorrect username or password.", 'Warning', 'Security', array("username" => $_POST['username'])) ;
@@ -97,14 +95,16 @@ else {
 				}
 				else {
 					//Allow for non-current school years to be specified
+					$_POST["gibbonSchoolYearID"] = ! empty($_POST["gibbonSchoolYearID"]) ? $_POST["gibbonSchoolYearID"] : $this->session->get('gibbonSchoolYearID');
 					if (isset($_POST["gibbonSchoolYearID"]) && $_POST["gibbonSchoolYearID"] != $this->session->get("gibbonSchoolYearID")) {
 						if ($pObj->getRole()->getField('futureYearsLogin') != "Y" && $pObj->getRole()->getField('pastYearsLogin') != "Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
 							logger::__('Your primary role does not support the ability to log into the specified year.', 'Warning', 'Security') ;
 							$this->insertMessage('Your primary role does not support the ability to log into the specified year.', 'error', false, 'login.flash');
 							$this->redirect($URL);
 						}
-						else {
-							$syObj = new schoolYear($this, $_POST["gibbonSchoolYearID"]);
+						else
+						{
+							$syObj->find($_POST["gibbonSchoolYearID"]);
 			
 							//Check number of rows returned.
 							//If it is not 1, show error
@@ -183,7 +183,7 @@ else {
 						}
 					}
 					
-					$tObj = new theme($this);
+					$tObj = $this->getRecord('theme');
 					$tObj->setDefaultTheme();
 					
 					//Make best effort to set IP address and other details, but no need to error check etc.
@@ -192,16 +192,16 @@ else {
 					$pObj->setField("failCount", 0);
 					$pObj->setField("username", $_POST['username']);
 					$pObj->writeRecord() ;
-					if (isset($_GET["q"])) {
-						if ($_GET["q"]=="/publicRegistration.php") {
-							GIBBON_URL."index.php";
+					if (isset($_GET["calledPage"])) {
+						if (! in_array($_GET["calledPage"], array('/modules/Security/login.php', "/publicRegistration.php"))) {
+							$URL = GIBBON_URL."index.php";
 						}
 						else {
-							GIBBON_URL."index.php?q=" . $_GET["q"] ;
+							$URL = GIBBON_URL."index.php?q=" . $_GET["calledPage"] ;
 						}
 					}
 					else {
-						GIBBON_URL."index.php";
+						$URL = GIBBON_URL."index.php";
 					}	
 					$security->clearTokens($pObj->getField('gibbonPersonID'));	
 					logger::__("Login - Success", 'Info', 'Security', array("username"=>$_POST['username'])) ;

@@ -50,17 +50,13 @@ class button extends element
 			$this->name = $name;
 		if ($value !== NULL)
 			$this->value = $value;
-		$this->row = new \stdClass();
-		$this->col1 = new \stdClass();
-		$this->col2 = new \stdClass();
-		$this->span = new \stdClass();
 		$this->validate = false;  // or false
 		$this->required = false;
 		$this->readOnly = false;
 		$this->setID();
 		$this->colour = 'grey';
-		$this->element->type = 'button' ;
-		$this->element->name = $this->element->type = 'button';
+		$this->element->name = 'button';
+		$this->element->type = 'button';
 	}
 	
 	/**

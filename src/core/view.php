@@ -27,7 +27,6 @@ use Gibbon\core\sqlConnection as PDO;
 use Gibbon\core\session;
 use Gibbon\core\config;
 use Gibbon\Record\theme;
-use Gibbon\Record\person ;
 use stdClass ;
 
 /**
@@ -537,13 +536,15 @@ class view
 	/**
 	 * redirect
 	 *
-	 * @version	30th September 2016
+	 * @version	4th October 2016
 	 * @since	9th June 2016
 	 * @param	string/array		$URL	Target url
 	 * @return	string
 	 */
 	public function redirect($URL) 
 	{
+		if (headers_sent())
+			$this->dump('Headers already Sent<br />', true, true);
 		header('http/1.1 303 Redirect');
 		header('Location: '.$this->convertGetArraytoURL($URL));
 		die();
@@ -646,14 +647,14 @@ class view
 	/**
 	 * set Theme
 	 *
-	 * @version	6th July 2016
+	 * @version	4th October 2016
 	 * @since	23rd June 2016
-	 * @return	Gibbon\sqlConnection
+	 * @return	void
 	 */
 	public function setTheme()
 	{
 		if ($this->config->isInstall()) return ;
-		$tObj = new theme($this, $this->getSession()->get('theme.ID'));
+		$tObj = $this->getRecord('theme');
 		$tObj->setDefaultTheme();
 	}
 
@@ -693,7 +694,6 @@ class view
 	 */
 	public function getLink($type, $href, $prompt = '', $imgParameters = '')
 	{
-if (is_array($type)) $this->dump($type, true, true);
 		$type = mb_strtolower($type);
 		if ($type === '') 
 		{
@@ -1118,4 +1118,52 @@ if (is_array($type)) $this->dump($type, true, true);
 		$this->records->$recordName = new $fullName($this);
 		return $this->records->$recordName ;
 	}
+
+	/**
+	 * get Icon
+	 *
+	 * @version	18th August 2016
+	 * @since	25th June 2016
+	 * @param	string		$type
+	 * @param	string/array		$prompt
+	 * @param	string		$imgParameters  (dump anything that would be in a link.
+	 * @return	void
+	 */
+	public function getIcon($type, $title = '', $imgParameters = '')
+	{
+		$type = mb_strtolower($type);
+		if ($type === '') 
+		{
+			$prompt = empty($prompt) ? '' :  $this->__($prompt) ;
+			echo "<a href='".$this->convertGetArraytoURL($href)."'>".$imgParameters.$prompt."</a> ";
+			return ;
+		}
+		$links = $this->session->get('theme.settings.links');
+		$link = (object) $links[$type];
+		$link->imgParameters = $imgParameters;
+		$link->title = $title;
+		$this->render('content.icon', $link);
+		return ;
+	}
+
+	/**
+	 * return Icon
+	 *
+	 * @version	30th June 2016
+	 * @since	30th June 2016
+	 * @param	string		$type
+	 * @param	string		$prompt
+	 * @param	string		$imgParameters  (dump anything that would be in a link.
+	 * @return	string
+	 */
+	public function returnIcon($type, $title = '', $imgParameters = '')
+	{
+		ob_start();
+		$this->getIcon($type, $title, $imgParameters);
+		$out2 = ob_get_contents();
+		if (! empty($out2))
+			ob_end_clean();
+		return $out2 ;
+	}
+
 }

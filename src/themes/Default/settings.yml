@@ -73,6 +73,24 @@ form:
             col1: 
             col2: 
                 class: right 
+        button:
+            type: button
+            name: button
+            row:
+            span:
+                class: emphasis small
+            col1: 
+            col2: 
+                class: right 
+            element:
+                style: background-color: #F9F9F9 ;
+                colour:
+                    red: 'background-color: #D14844 ;'
+                    green: 'background-color: #57B257 ;'
+                    grey: 'background-color: #F9F9F9 ;'
+                    blue: 'background-color: #3C82BF ;'
+                    aqua: 'background-color: #52BCDB ;'
+                    orange: 'background-color: #EEA640 ;'
         deleteBtn:
             row:
             span:
@@ -464,6 +482,9 @@ links:
     attendance:
         title: Attendance
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/attendance.png'  onclick='return false;' />"
+    pink gift:
+        title: Birthday
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift_pink.png'  onclick='return false;' />"
 linkTop:
     add:
         imageName: page_new.png

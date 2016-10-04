@@ -83,6 +83,7 @@ if ($this->session->isEmpty("gibbonPersonID"))
 	
 	$el2 = new \Gibbon\Form\button('generate', $this->__("Generate Password"), $this);
 	$el2->element->class = "generatePassword small";
+	$el2->colour = 'default';
 	$el->description = $this->renderReturn('form.button', $el2);
 	
 	$this->addScript('

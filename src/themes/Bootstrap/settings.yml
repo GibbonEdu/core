@@ -161,12 +161,28 @@ form:
                 class: form-control
         submit:
             col1:
-                class: col-md-8 col-lg-8
+                class: col-md-5 col-lg-5
             col2: 
-                class: col-md-offset-1 col-lg-offset-1 col-md-3 col-lg-3 right
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
             element:
                 class: btn btn-success form-control
             description: "* denotes a required field."
+        button:
+            type: button
+            name: button
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+            element:
+                class: btn btn-default form-control
+                colour:
+                    red: btn btn-danger form-control
+                    green: btn btn-success form-control
+                    blue: btn btn-primary form-control
+                    aqua: btn btn-info form-control
+                    grey: btn btn-default form-control
+                    orange: btn btn-warning form-control
         deleteBtn:
             col1:
                 class: col-md-8 col-lg-8
@@ -455,6 +471,9 @@ links:
     download:
         prompt: "<span class='glyphicons glyphicons-download'></span>"
         title: Download
+    change password: 
+        prompt: '<span class="glyphicons glyphicons-user-lock"></span>'
+        title: Change Password
     action:
         title: Action
         prompt: '<span class="glyphicons glyphicons-zoom-in"></span>'
@@ -476,6 +495,9 @@ links:
     attendance:
         title: 'Attendance'
         prompt: '<span class="glyphicons glyphicons-group"></span>'
+    pink gift:
+        title: 'Birthday'
+        prompt: '<span class="glyphicons glyphicons-birthday-cake"></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:
@@ -505,6 +527,12 @@ linkTop:
     close:
         spanClass: "glyphicons glyphicons-remove-circle"
         name: Close
+    attendance:
+        name: 'Attendance'
+        spanClass: glyphicons glyphicons-group
+    download:
+        spanClass: glyphicons glyphicons-download
+        name: Download
 script:
     display: block
 tokeninput:

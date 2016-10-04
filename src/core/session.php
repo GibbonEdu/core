@@ -346,7 +346,7 @@ class session
 	/**
 	 * is Empty
 	 *
-	 * @version	29th September 2016
+	 * @version	4th October 2016
 	 * @since	21st April 2016
 	 * @param	string		Name
 	 * @return	boolean		is the value empty.
@@ -355,15 +355,20 @@ class session
 	{
 		$value = $this->get($name);
 		if (empty($value))
-			return true;
+			return true ;
 		if ($value === null)
-			return true;
+			return true ;
 		if ($value === "")
-			return true;
+			return true ;
 		if ($value === array())
-			return true;
+			return true ;
+		if (is_array($value))
+			return false ;
 		if ($value === 0)
-			return true;
+			return true ;
+		$value = ltrim($value, '0');
+		if (empty($value))
+			return true ;
 		return false;
 	}
 

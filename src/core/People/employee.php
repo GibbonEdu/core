@@ -22,20 +22,21 @@ namespace Gibbon\People;
 use Gibbon\Record\person ;
 use Gibbon\Record\staff ;
 use Gibbon\Record\schoolYear ;
-use Gibbon\People\user ;
 use stdClass ;
 
 /**
  * Employee
  *
- * @version	1st October 2016
+ * @version	3rd October 2016
  * @since	26th September 2016
  * @author	Craig Rayner
  * @package	Gibbon
  * @subpackage	People
  */
-class employee extends user
+class employee extends person
 {
+	use \Gibbon\People\user ;
+	
 	/**
 	 * @var		Gibbon\Record\staff
 	 */
@@ -55,6 +56,11 @@ class employee extends user
 	 * @var		stdClass
 	 */
 	protected $rollGroups ;
+
+	/**
+	 * @var		stdClass
+	 */
+	protected $hooks ;
 	
 	/**
 	 * all Staff
@@ -228,7 +234,7 @@ class employee extends user
 	 * get Staff Dashboard Contents
 	 *
 	 * Gets the contents of the staff dashboard for the member of staff specified
-	 * @version	1st October 2016
+	 * @version	3rd October 2016
 	 * @since	Copied from functions
 	 * @param	integer		$personID
 	 * @return	void
@@ -243,36 +249,10 @@ class employee extends user
 			
 		$this->getRollGroups($personID);
 	
-	
-		//GET HOOKS INTO DASHBOARD
-		$hooks = array();
-		$resultHooks = $this->view->getRecord('hook')->findAllByType('Staff Dashboard');
-		if (count($resultHooks) > 0) {
-			$count = 0;
-			foreach ($resultHooks  as $rowHooks ) {
-				$options = unserialize($rowHooks['options']);
-				//Check for permission to hook
-				try {
-					$dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
-					$sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonModule.name='".$options['sourceModuleName']."' ORDER BY name";
-					$resultHook = $connection2->prepare($sqlHook);
-					$resultHook->execute($dataHook);
-				} catch (PDOException $e) {
-				}
-				if ($resultHook->rowCount() == 1) {
-					$rowHook = $resultHook->fetch();
-					$hooks[$count]['name'] = $rowHooks['name'];
-					$hooks[$count]['sourceModuleName'] = $rowHook['module'];
-					$hooks[$count]['sourceModuleInclude'] = $options['sourceModuleInclude'];
-					++$count;
-				}
-			}
-		}
-	
+		$this->getHooks($personID);
+		
 		if (! $this->planner->status && ! $this->timetable->status && count($hooks) < 1) {
-			$return .= "<div class='warning'>";
-			$return .= $this->view->__('There are no records to display.');
-			$return .= '</div>';
+			$return .= $this->view->returnMessage('There are no records to display.');
 		} else {
 			$staffDashboardDefaultTab = $this->config->getSettingByScope('School Admin', 'staffDashboardDefaultTab');
 			$staffDashboardDefaultTabCount = null;
@@ -286,18 +266,17 @@ class employee extends user
 					$staffDashboardDefaultTabCount = $tabCount;
 				++$tabCount;
 			}
-			if (count($rollGroups) > 0) {
-				foreach ($rollGroups as $rollGroup) {
-					$return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].'</a></li>';
+			
+			foreach ($this->rollGroups->content as $rollGroup) {
+				$return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup['nameShort'].'</a></li>';
+				++$tabCount;
+				if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) {
+					$return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup['nameShort'].' '.$this->view->__('Behaviour').'</a></li>';
 					++$tabCount;
-					if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) {
-						$return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].' '.$this->view->__('Behaviour').'</a></li>';
-						++$tabCount;
-					}
 				}
 			}
 	
-			foreach ($hooks as $hook) {
+			foreach ($this->hooks->content as $hook) {
 				$return .= "<li><a href='#tabs".$tabCount."'>".$this->view->__($hook['name']).'</a></li>';
 				if ($staffDashboardDefaultTab == $hook['name'])
 					$staffDashboardDefaultTabCount = $tabCount;
@@ -313,22 +292,21 @@ class employee extends user
 				$return .= '</div>';
 				++$tabCount;
 			}
-			if (count($rollGroups) > 0) {
-				foreach ($rollGroups as $rollGroup) {
+
+			foreach ($this->rollGroups->content as $rollGroup) {
+				$return .= "<div id='tabs".$tabCount."'>";
+				$return .= $rollGroup['table'];
+				$return .= '</div>';
+				++$tabCount;
+
+				if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) {
 					$return .= "<div id='tabs".$tabCount."'>";
-					$return .= $rollGroup[2];
+					$return .= $rollGroup['behaviour'];
 					$return .= '</div>';
 					++$tabCount;
-	
-					if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) {
-						$return .= "<div id='tabs".$tabCount."'>";
-						$return .= $rollGroup[3];
-						$return .= '</div>';
-						++$tabCount;
-					}
 				}
 			}
-			foreach ($hooks as $hook) {
+			foreach ($this->hooks->content as $hook) {
 				$return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
 				$include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
 				if (!file_exists($include)) {
@@ -389,16 +367,16 @@ class employee extends user
 		
 		$planner = false;
 		$date = date('Y-m-d');
-		if ($this->view->getRecord('schoolYear')->isSchoolOpen($date) && $this->view->isActionAccessible('/modules/Planner/planner.php') && $this->session->notEmpty('username')) {
+		if ($this->view->getRecord('schoolYear')->isSchoolOpen($date) && $this->view->getSecurity()->isActionAccessible('/modules/Planner/planner.php') && $this->session->notEmpty('username')) {
 			$data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
 			$sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class";
 
 			$result = $this->view->getRecord('plannerEntry')->findAll($sql, $data, '_');
-			$planner .= $this->h2("Today's Lessons", array(), false);
+			$planner .= $this->view->h2("Today's Lessons", array(), false);
 			if (count($result) < 1) {
-				$planner .= $this->returnMessage('There are no records to display.', 'warning');
+				$planner .= $this->view->returnMessage('There are no records to display.', 'warning');
 			} else {
-				$planner .= $this->renderReturn('staff.planner.start');
+				$planner .= $this->view->renderReturn('staff.planner.start');
 	
 				foreach($result as $row) {
 					if (!($row->role == 'Student' and $row->viewableStudents == 'N')) {
@@ -466,11 +444,11 @@ class employee extends user
 	 */
 	public function getRollGroups($personID)
 	{
-		if (! empty($this->rollGroups)) return ;
+		if (! empty($this->rollGroups) && ! $this->rollGroups->status) return ;
 		//GET ROLL GROUPS
 		$this->rollGroups = new stdClass();
 		$this->rollGroups->status = false;
-		$this->rollGroups->content = '';
+		$this->rollGroups->content = array();
 
 		$rollGroups = array();
 		$dataRollGroups = array('gibbonPersonIDTutor' => $this->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $this->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
@@ -494,10 +472,10 @@ class employee extends user
 				//Behaviour
 				$bh = '';
 				$plural = 's';
-				if ($resultRollGroups->rowCount() == 1) 
+				if (count($resultRollGroups) == 1) 
 					$plural = '';
 
-				$dataBehaviour = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'gibbonRollGroupID' => $rollGroups[$count][0]);
+				$dataBehaviour = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'gibbonRollGroupID' => $rollGroup[$id]['id']);
 				$sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, 
 						student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, 
 						creator.preferredName AS preferredNameCreator, creator.title 
@@ -514,11 +492,11 @@ class employee extends user
 	
 				if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_manage_add.php')) {
 					$links = array();
-					$links[] = array('add' => array('q'=>'/modules/Behaviour/behaviour_manage_add.php', 'gibbonPersonID'=>null, 'gibbonRollGroupID'=>null, 'gibbonYearGroupID'=>null, 'type'=>null));
+					$links['add'] = array('q'=>'/modules/Behaviour/behaviour_manage_add.php', 'gibbonPersonID'=>null, 'gibbonRollGroupID'=>null, 'gibbonYearGroupID'=>null, 'type'=>null);
 
 					$policyLink = $this->view->config->getSettingByScope('Behaviour', 'policyLink');
 					if ($policyLink != '') {
-						$links[] = array('' => array('q' => $policyLink, 'prompt' => 'View Behaviour Policy'));
+						$links['policy'] = array('q' => $policyLink, 'prompt' => 'View Behaviour Policy');
 					}
 					$bh .= $this->view->linkTopReturn($links);
 				}
@@ -538,6 +516,59 @@ class employee extends user
 				}
 				$rollGroup[$id]['behaviour'] = $bh;
 			}
+		}
+		$this->rollGroups->status = true;
+		$this->rollGroups->content = $rollGroup;
+	}
+
+	/**
+	 * get Hooks
+	 *
+	 * @version	3rd October 2016
+	 * @since	3rd October 2016
+	 * @param	integer		$personID
+	 * @return	void
+	 */
+	public function getHooks($personID)
+	{
+		if (! empty($this->hooks) && ! $this->hooks->status) return ;
+		//GET HOOKS INTO DASHBOARD
+		$this->hooks = new stdClass();
+		$this->hooks->status = false;
+		$this->hooks->content = array();
+
+		$hooks = array();
+		$resultHooks = $this->view->getRecord('hook')->findAllByType('Staff Dashboard');
+		if (count($resultHooks) > 0) {
+			$count = 0;
+			foreach ($resultHooks  as $rowHooks ) {
+				$options = unserialize($rowHooks['options']);
+				//Check for permission to hook
+				$dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName']);
+				$sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action 
+					FROM gibbonHook 
+						JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) 
+						JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+						JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+					WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID 
+						FROM gibbonModule 
+						WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent 
+							AND name=:sourceModuleName) 
+						AND gibbonHook.type='Staff Dashboard'  
+						AND gibbonAction.name='".$options['sourceModuleAction']."' 
+						AND gibbonModule.name='".$options['sourceModuleName']."' 
+					ORDER BY name";
+				$resultHook = $this->view->getRecord('hook')->findAll($dataHook, $sqlHook);
+				if ($resultHook->rowCount() == 1) {
+					$rowHook = $resultHook->fetch();
+					$hooks[$count]['name'] = $rowHooks['name'];
+					$hooks[$count]['sourceModuleName'] = $rowHook['module'];
+					$hooks[$count]['sourceModuleInclude'] = $options['sourceModuleInclude'];
+					++$count;
+				}
+			}
+		$this->hooks->status = true;
+		$this->hooks->content = $hooks;
 		}
 	}
 }

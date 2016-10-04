@@ -2835,9 +2835,7 @@ function sidebar($connection2, $guid)
 			<h2>
 				<?php echo __($guid, 'Login'); ?>
 			</h2>
-			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q'];
-}
-                ?>">
+			<form name="loginForm" method="post" action="./index.php?q=/modules/Security/login.php&<?php if (isset($_GET['q'])) echo 'calledPage='.$_GET['q']; ?>">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
 					<tr>
 						<td>
@@ -2939,14 +2937,17 @@ function sidebar($connection2, $guid)
 					</tr>
 					<tr>
 						<td class="right" colspan=2>
+                        	
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+							<input type="hidden" name="action" value="/modules/Security/login.php">
+							<input type="hidden" name="divert" value="1">
+							<input type="hidden" name="_token" value="<?php echo md5($guid.$_SESSION[$guid]['absolutePath'].'/src/modules/Security/login.php'); ?>">
 							<input type="submit" value="Login">
 						</td>
 					</tr>
 				</table>
 			</form>
 			<?php
-
             }
     }
 

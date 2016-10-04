@@ -30,7 +30,7 @@ use Gibbon\Record\module ;
 /**
  * Main Menu Class
  *
- * @version	27th September 2016
+ * @version	4th October 2016
  * @since	22nd April 2016
  * @author	Ross Parker
  * @package	Gibbon
@@ -41,7 +41,7 @@ class main extends menu
 	/**
 	 * Construct and store main menu in session
 	 *
-	 * @version 27th September 2016
+	 * @version 4th October 2016
 	 * @since	Moved from /functions.php
 	 * @return	HTML	Menu
 	 */
@@ -57,7 +57,7 @@ class main extends menu
 				$menu .= $this->view->renderReturn('menu.main.start');
 			}
 			else {
-				$mObj = new module($this->view);
+				$mObj = $this->view->getRecord('module') ;
 				$data=array("gibbonRoleID"=>$this->session->get("gibbonRoleIDCurrent"));
 				$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL 
 					FROM `gibbonModule`, gibbonAction, gibbonPermission 
@@ -118,7 +118,7 @@ class main extends menu
 									AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) 
 									AND gibbonModule.name=:name 
 								ORDER BY gibbonAction.name";
-							$resultEntry = $this->pdo->executeQuery($dataEntry, $sqlEntry);
+							$resultEntry = $mObj->executeQuery($dataEntry, $sqlEntry);
 							if ($resultEntry->rowCount()>0) {
 								$el->entryURL = $resultEntry->fetchColumn() ;
 							}
@@ -131,6 +131,8 @@ class main extends menu
 				}
 			}
 			$this->session->set('display.menu.main.refresh', $this->view->getConfig()->get('caching', 15));
+			if (empty($el->count) || $el->count < 1)
+				$this->session->set('display.menu.main.refresh', 0);
 			$this->session->set('display.menu.main.content', $menu);
 			$this->session->set('display.menu.main.theme', $this->session->get('theme.Name'));
 			$this->menu = $menu ;
