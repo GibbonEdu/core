@@ -309,7 +309,18 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
             //Get results
             try {
                 $dataResults = array('gibbonPersonID' => $gibbonPersonID, 'gibbonExternalAssessmentStudentID' => $rowAssessments['gibbonExternalAssessmentStudentID']);
-                $sqlResults = "SELECT gibbonExternalAssessmentField.name, gibbonExternalAssessmentField.category, resultGrade.value, resultGrade.descriptor, result.usage, result.lowestAcceptable, resultGrade.sequenceNumber, gibbonScaleGradeIDPrimaryAssessmentScale, resultGradePrimary.value AS valuePrimary, resultGradePrimary.descriptor AS descriptorPrimary, resultPrimary.usage AS usagePrimary, resultPrimary.lowestAcceptable AS lowestAcceptablePrimary, resultGradePrimary.sequenceNumber AS sequenceNumberPrimary FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonExternalAssessment ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID) JOIN gibbonScaleGrade AS resultGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=resultGrade.gibbonScaleGradeID) JOIN gibbonScale AS result ON (result.gibbonScaleID=resultGrade.gibbonScaleID) LEFT JOIN gibbonScaleGrade AS resultGradePrimary ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale=resultGradePrimary.gibbonScaleGradeID) LEFT JOIN gibbonScale AS resultPrimary ON (resultPrimary.gibbonScaleID=resultGradePrimary.gibbonScaleID) WHERE gibbonPersonID=:gibbonPersonID AND result.active='Y' AND gibbonExternalAssessment.active='Y' AND gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order";
+                $sqlResults = "SELECT gibbonExternalAssessmentField.name, gibbonExternalAssessmentField.category, resultGrade.value, resultGrade.descriptor, result.usage, result.lowestAcceptable, resultGrade.sequenceNumber
+                    FROM gibbonExternalAssessmentStudentEntry
+                        JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID)
+                        JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID)
+                        JOIN gibbonExternalAssessment ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID)
+                        JOIN gibbonScaleGrade AS resultGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=resultGrade.gibbonScaleGradeID)
+                        JOIN gibbonScale AS result ON (result.gibbonScaleID=resultGrade.gibbonScaleID)
+                    WHERE gibbonPersonID=:gibbonPersonID
+                        AND result.active='Y'
+                        AND gibbonExternalAssessment.active='Y'
+                        AND gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID
+                    ORDER BY category, gibbonExternalAssessmentField.order";
                 $resultResults = $connection2->prepare($sqlResults);
                 $resultResults->execute($dataResults);
             } catch (PDOException $e) {
@@ -345,15 +356,6 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                         echo "<th style='width:15%'>";
                         echo __($guid, 'Result');
                         echo '</th>';
-                        echo "<th style='width:15%'>";
-                        echo "<span title='".__($guid, 'Primary assessment scale equivalent')."'>".__($guid, 'PAS Equivalent').'</span>';
-                        echo '</th>';
-                        echo "<th style='width:15%'>";
-                        echo "<span title='".__($guid, 'Weighted average from subject-related markbook grades in the current year')."'>".__($guid, 'Markbook<br/>Average').'</span>';
-                        echo '</th>';
-                        echo "<th style='width:15%'>";
-                        echo "<span title='".__($guid, 'Plus/Minus Value Added')."'>".__($guid, '+/-').'</span>';
-                        echo '</th>';
                         echo '</tr>';
                     }
 
@@ -374,75 +376,6 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                         $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
                     }
                     echo "<span $style title='".__($guid, $rowResults['usage'])."'>".__($guid, $rowResults['value']).'</span>';
-                    echo '</td>';
-                    echo '<td>';
-                    if ($rowResults['valuePrimary'] != '' and $rowResults['usagePrimary'] != '') {
-                        if (!is_null($rowResults['gibbonScaleGradeIDPrimaryAssessmentScale']) and !is_null($_SESSION[$guid]['primaryAssessmentScale'])) {
-                            $style = '';
-                            if ($rowResults['lowestAcceptablePrimary'] != '' and $rowResults['sequenceNumberPrimary'] > $rowResults['lowestAcceptablePrimary']) {
-                                $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                            }
-                            echo "<span $style title='".__($guid, $rowResults['usagePrimary'])."'>".__($guid, $rowResults['valuePrimary']).'</span>';
-                        }
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    $av = false;
-                    if (!is_null($rowResults['gibbonScaleGradeIDPrimaryAssessmentScale']) and !is_null($_SESSION[$guid]['primaryAssessmentScale'])) {
-                        try {
-                            $dataMB3 = array('name' => '%'.$rowResults['name'].'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (60 * 60 * 24 * 90))));
-                            $sqlMB3 = "SELECT attainmentValue FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonMarkbookEntry ON (gibbonMarkbookColumn.gibbonMarkbookColumnID=gibbonMarkbookEntry.gibbonMarkbookColumnID) WHERE gibbonCourse.name LIKE :name AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonMarkbookEntry.gibbonPersonIDStudent=$gibbonPersonID AND gibbonScaleIDAttainment=".$_SESSION[$guid]['primaryAssessmentScale'].' AND completeDate>=:date';
-                            $resultMB3 = $connection2->prepare($sqlMB3);
-                            $resultMB3->execute($dataMB3);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-
-                        $countMB3 = $resultMB3->rowCount();
-                        $sumMB3 = 0;
-                        while ($rowMB3 = $resultMB3->fetch()) {
-                            $sumMB3 += $rowMB3['attainmentValue'];
-                        }
-
-                        try {
-                            $dataMB12 = array('name' => '%'.$rowResults['name'].'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (60 * 60 * 24 * 90))));
-                            $sqlMB12 = "SELECT attainmentValue FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonMarkbookEntry ON (gibbonMarkbookColumn.gibbonMarkbookColumnID=gibbonMarkbookEntry.gibbonMarkbookColumnID) WHERE gibbonCourse.name LIKE :name AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonMarkbookEntry.gibbonPersonIDStudent=$gibbonPersonID AND gibbonScaleIDAttainment=".$_SESSION[$guid]['primaryAssessmentScale'].' AND completeDate>=:date';
-                            $resultMB12 = $connection2->prepare($sqlMB12);
-                            $resultMB12->execute($dataMB12);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-
-                        $countMB12 = $resultMB12->rowCount();
-                        $sumMB12 = 0;
-                        while ($rowMB12 = $resultMB12->fetch()) {
-                            $sumMB12 += $rowMB12['attainmentValue'];
-                        }
-
-                        if ($countMB3 > 2 and $countMB12 <= 2) {
-                            $av = round($sumMB3 / $countMB3, 2);
-                        } elseif ($countMB3 <= 2 and $countMB12 > 2) {
-                            $av = round($sumMB12 / $countMB12, 2);
-                        } elseif ($countMB3 > 2 and $countMB12 > 2) {
-                            $av = round((($sumMB3 / $countMB3) * 0.7) + (($sumMB12 / $countMB12) * 0.3), 2);
-                        }
-
-                        if ($av == false) {
-                            echo '<i>'.__($guid, 'Insufficient data').'</i>';
-                        } else {
-                            echo "<span title='".$rowResults['usagePrimary']."'>".$av.'</span>';
-                        }
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    if ($av != false) {
-                        $va = $av - $rowResults['valuePrimary'];
-                        $style = '';
-                        if ($va < 0) {
-                            $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                        }
-                        echo "<span $style>$va</span>";
-                    }
                     echo '</td>';
                     echo '</tr>';
 

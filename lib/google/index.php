@@ -1,37 +1,58 @@
 <?php
-session_start() ;
-include "../../functions.php" ;
-include "../../config.php" ;
+/**
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection(false, '');
-$connection2 = $pdo->getConnection();
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-setCurrentSchoolYear($guid, $connection2) ;
+if (! isset($this) || ! $this instanceof Gibbon\core\view) {
+	$_POST['_token'] = '';
+	$dr = dirname(dirname(dirname(__FILE__)));
+	$path = rtrim( str_replace("\\", '/', $dr), '/' ) .'/';
+	$_POST['action'] = $path . 'lib/google/index.php';
+	$_POST['address'] = '/lib/google/index.php';
+	$_POST['divert'] = true ;
+	$_POST['absoluteAction'] = true ;
+	include $path. 'config.php';
+	$_POST['_token'] = md5($guid . $_POST['action']);
+	if (! class_exists('gibbon'))
+		include_once $path.'src/controller/gibbon.php';
+}
+
+use Gibbon\core\logger ;
+use Gibbon\Record\schoolYear ;
+use Gibbon\Record\theme ;
+
+$syObj = new schoolYear($this);
+$syObj->setCurrentSchoolYear() ;
 
 //The current/actual school year info, just in case we are working in a different year
-$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]=$_SESSION[$guid]["gibbonSchoolYearID"] ;
-$_SESSION[$guid]["gibbonSchoolYearNameCurrent"]=$_SESSION[$guid]["gibbonSchoolYearName"] ;
-$_SESSION[$guid]["gibbonSchoolYearSequenceNumberCurrent"]=$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"] ;
+$this->session->set("gibbonSchoolYearIDCurrent", $this->session->get("gibbonSchoolYearID")) ;
+$this->session->set("gibbonSchoolYearNameCurrent", $this->session->get("gibbonSchoolYearName")) ;
+$this->session->set("gibbonSchoolYearSequenceNumberCurrent", $this->session->get("gibbonSchoolYearSequenceNumber")) ;
 
-$_SESSION[$guid]["pageLoads"]=NULL ;
+$this->session->set("pageLoads", -1);
 
-$URL="index.php" ;
-
-require_once ('google-api-php-client/src/Google/autoload.php');
+$URL = "index.php" ;
 
 //Cleint ID and Secret
-$client_id = getSettingByScope($connection2, "System", "googleClientID" ) ;
-$client_secret = getSettingByScope($connection2, "System", "googleClientSecret" ) ;
-$redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" ) ;
+$client_id = $this->config->getSettingByScope("System", "googleClientID" ) ;
+$client_secret = $this->config->getSettingByScope("System", "googleClientSecret" ) ;
+$redirect_uri = $this->config->getSettingByScope("System", "googleRedirectUri" ) ;
 
 //incase of logout request, just unset the session var
-
-
 
 /************************************************
   Make an API request on behalf of a user. In
@@ -40,6 +61,7 @@ $redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" ) 
   through a login flow. To do this we need some
   information from our API console project.
  ************************************************/
+require GIBBON_ROOT . 'vendor/autoload.php';  
 $client = new Google_Client();
 $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
@@ -64,22 +86,25 @@ $service = new Google_Service_Oauth2($client);
 */
 
 if (isset($_GET['code'])) {
-  $client->authenticate($_GET['code']);
-  $_SESSION[$guid]['googleAPIAccessToken']  = $client->getAccessToken();
-  header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
-  exit;
+	$client->authenticate($_GET['code']);
+	$this->session->set('googleAPIAccessToken', $client->getAccessToken());
+	$this->redirect(filter_var($redirect_uri, FILTER_SANITIZE_URL));
 }
 
 /************************************************
   If we have an access token, we can make
   requests, else we generate an authentication URL.
  ************************************************/
-@$refreshToken=json_decode($_SESSION[$guid]['googleAPIAccessToken'] )->refresh_token ;
+@$refreshToken=json_decode($this->session->get('googleAPIAccessToken') )->refresh_token ;
 
-if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['googleAPIAccessToken'] ) {
-  $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken'] );
+if ($this->session->notEmpty('googleAPIAccessToken')  && $this->session->get('googleAPIAccessToken') ) {
+	$client->setAccessToken($this->session->get('googleAPIAccessToken') );
 } else {
-  $authUrl = $client->createAuthUrl();
+	$authUrl = $client->createAuthUrl();
+	if (isset($_GET['q']))
+		$this->session->set('calledPage',$_GET['q']);
+	else 
+		$this->session->clear('calledPage');
 }
 
 
@@ -87,182 +112,175 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 
 if (isset($authUrl)){
 	//show login url
-	print '<div style="margin:20px">';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img style=\'width: 260px; height: 55px; margin: -20px 0 0 -24px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
-	print '</div>';
+	print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img src="src/themes/' . $this->session->get("theme.Name") . '/img/g_login_btn.png" /></a>';
 } else {
 	$user = $service->userinfo->get(); //get user info
 	$email = $user->email;
-	$_SESSION[$guid]['gplusuer']=$user;
+	$this->session->set('gplusuer', $user);
 
-	try {
-		$data=array("email"=>$email);
-		$sql="SELECT * FROM gibbonPerson WHERE (email=:email)" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) {}
+	$data=array("email"=>$email);
+	$sql="SELECT * FROM gibbonPerson WHERE (email=:email)" ;
+	$result=$this->pdo->executeQuery($data, $sql);
 
 	//Test to see if email exists in logintable
 	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['googleAPIAccessToken'] );
-		unset($_SESSION[$guid]['gplusuer']);
- 		session_destroy();
-		$_SESSION[$guid]=NULL ;
-		$URL="../../index.php?loginReturn=fail8" ;
-		header("Location: {$URL}");
+		$URL = $this->session->get('absoluteURL');
+		$this->session->clear('googleAPIAccessToken');
+		$this->session->clear('gplusuer');
+ 		$this->session->destroy();
+ 		$this->session->start();
+		$URL .= "/index.php?loginReturn=fail8" ;
+		$this->redirect($URL);
 	}
 	//Start to collect User Info and test
-	try {
-		$data=array("email"=>$email);
-		$sql="SELECT * FROM gibbonPerson WHERE ((email=:email) AND (status='Full') AND (canLogin='Y'))" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
+	$data=array("email"=>$email);
+	$sql="SELECT * FROM gibbonPerson WHERE ((email=:email) AND (status='Full') AND (canLogin='Y'))" ;
+	$result=$this->pdo->executeQuery($data, $sql);
 
 	//Test to see if gmail matches email in gibbon
 	if ($result->rowCount()!=1) {
-		unset($_SESSION[$guid]['googleAPIAccessToken'] );
-		unset($_SESSION[$guid]['gplusuer']);
-		@session_destroy();
-		$_SESSION[$guid]=NULL ;
+		$URL = GIBBON_URL ;
+		$URL .= "index.php?loginReturn=fail8" ;
+		$this->session->clear('googleAPIAccessToken');
+		$this->session->clear('gplusuer');
+		$this->session->destroy();
+		$this->session->start();
 	}
 	else {
 		$row=$result->fetch() ;
 
 		$username=$row['username'];
 		if ($row["failCount"]>=3) {
-			try {
-				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username);
-				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
-				$resultSecure=$connection2->prepare($sqlSecure);
-				$resultSecure->execute($data);
-			}
-			catch(PDOException $e) { }
+			$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username);
+			$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
+			$resultSecure=$this->pdo->executeQuery($data, $sqlSecure);
 
 			if ($row["failCount"]==3) {
-				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
-				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
+				$to = $this->getSecurity()->getSettingByScope("System", "organisationAdministratorEmail") ;
+				$subject=$this->session->get("organisationNameShort") . " Failed Login Notification";
+				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $this->session->get("systemName") . " Administrator";
 				$headers="From: " . $to ;
 				mail($to, $subject, $body, $headers) ;
 			}
 
 			$URL.="?loginReturn=fail6" ;
-			header("Location: {$URL}");
+			$this->redirect($URL);
 		}
 		if ($row["passwordForceReset"]=="Y") {
-			$salt=getSalt() ;
-			$password=randomPassword(8);
-			$passwordStrong=hash("sha256", $salt.$password) ;
-
-			try {
-				$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username);
-				$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
+			$salt=$this->getSecurity()->getSalt() ;
+			$password=$this->getSecurity()->randomPassword(8);
+			$passwordStrong=$this->getSecurity()->getPasswordHash($password, $salt) ;
+			$this->session->set('username', $username);
+			$this->getSecurity()->updatePassword($passwordStrong, $salt);
+			$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username);
+			$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
+			$result=$this->pdo->executeQuery($data, $sql);
 
 			$row["passwordForceReset"]="N" ;
 
 			$to=$row["email"];
-			$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
-			$body="Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-			$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+			$subject=$this->session->get("organisationNameShort") . " Gibbon Password Reset";
+			$body="Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $this->session->get("systemName") . " Administrator";
+			$headers="From: " . $this->session->get("organisationAdministratorEmail") ;
 			mail($to, $subject, $body, $headers) ;
 		}
 
 
-		if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
+		if ($row["gibbonRoleIDPrimary"]=="" || count($this->getSecurity()->getRoleList($row["gibbonRoleIDAll"]))==0) {
 			//FAILED TO SET ROLES
 			$URL.="?loginReturn=fail2" ;
-			header("Location: {$URL}");
+			$this->redirect($URL);
 		}
-		$_SESSION[$guid]["username"]=$username ;
-		$_SESSION[$guid]["email"]=$email ;
-		$_SESSION[$guid]["passwordStrong"]=$row["passwordStrong"] ;
-		$_SESSION[$guid]["passwordStrongSalt"]=$row["passwordStrongSalt"] ;
-		$_SESSION[$guid]["passwordForceReset"]=$row["passwordForceReset"] ;
-		$_SESSION[$guid]["gibbonPersonID"]=$row["gibbonPersonID"] ;
-		$_SESSION[$guid]["surname"]=$row["surname"] ;
-		$_SESSION[$guid]["firstName"]=$row["firstName"] ;
-		$_SESSION[$guid]["preferredName"]=$row["preferredName"] ;
-		$_SESSION[$guid]["officialName"]=$row["officialName"] ;
-		$_SESSION[$guid]["email"]=$row["email"] ;
-		$_SESSION[$guid]["emailAlternate"]=$row["emailAlternate"] ;
-		$_SESSION[$guid]["website"]=$row["website"] ;
-		$_SESSION[$guid]["gender"]=$row["gender"] ;
-		$_SESSION[$guid]["status"]=$row["status"] ;
-		$_SESSION[$guid]["gibbonRoleIDPrimary"]=$row["gibbonRoleIDPrimary"] ;
-		$_SESSION[$guid]["gibbonRoleIDCurrent"]=$row["gibbonRoleIDPrimary"] ;
-		$_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2)  ;
-		$_SESSION[$guid]["gibbonRoleIDAll"]=getRoleList($row["gibbonRoleIDAll"], $connection2) ;
-		$_SESSION[$guid]["image_240"]=$row["image_240"] ;
-		$_SESSION[$guid]["lastTimestamp"]=$row["lastTimestamp"] ;
-		$_SESSION[$guid]["calendarFeedPersonal"]=$row["calendarFeedPersonal"] ;
-		$_SESSION[$guid]["viewCalendarSchool"]=$row["viewCalendarSchool"] ;
-		$_SESSION[$guid]["viewCalendarPersonal"]=$row["viewCalendarPersonal"] ;
-		$_SESSION[$guid]["viewCalendarSpaceBooking"]=$row["viewCalendarSpaceBooking"] ;
-		$_SESSION[$guid]["dateStart"]=$row["dateStart"] ;
-		$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
-		$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
-		$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
-		$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
-		$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
-		$_SESSION[$guid]['receiveNotificationEmails']=$row["receiveNotificationEmails"] ;
-		$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
-
-
+		$this->session->set("username", $username) ;
+		$this->session->set("email", $email) ;
+		$this->session->set("passwordStrong", $row["passwordStrong"]) ;
+		$this->session->set("passwordStrongSalt", $row["passwordStrongSalt"]) ;
+		$this->session->set("passwordForceReset", $row["passwordForceReset"]) ;
+		$this->session->set("gibbonPersonID", $row["gibbonPersonID"]) ;
+		$this->session->set("surname", $row["surname"]) ;
+		$this->session->set("firstName", $row["firstName"]) ;
+		$this->session->set("preferredName", $row["preferredName"]) ;
+		$this->session->set("officialName", $row["officialName"]) ;
+		$this->session->set("email", $row["email"]) ;
+		$this->session->set("emailAlternate", $row["emailAlternate"]) ;
+		$this->session->set("website", $row["website"]) ;
+		$this->session->set("gender", $row["gender"]) ;
+		$this->session->set("status", $row["status"]) ;
+		$this->session->set("gibbonRoleIDPrimary", $row["gibbonRoleIDPrimary"]) ;
+		$this->session->set("gibbonRoleIDCurrent", $row["gibbonRoleIDPrimary"]) ;
+		$this->session->set("gibbonRoleIDCurrentCategory", $this->getSecurity()->getRoleCategory($row["gibbonRoleIDPrimary"]) ) ;
+		$this->session->set("gibbonRoleIDAll", $this->getSecurity()->getRoleList($row["gibbonRoleIDAll"])) ;
+		$this->session->set("image_240", $row["image_240"]) ;
+		$this->session->set("lastTimestamp", $row["lastTimestamp"]) ;
+		$this->session->set("calendarFeedPersonal", $row["calendarFeedPersonal"]) ;
+		$this->session->set("viewCalendarSchool", $row["viewCalendarSchool"]) ;
+		$this->session->set("viewCalendarPersonal", $row["viewCalendarPersonal"]) ;
+		$this->session->set("viewCalendarSpaceBooking", $row["viewCalendarSpaceBooking"]) ;
+		$this->session->set("dateStart", $row["dateStart"]) ;
+		$this->session->set("personalBackground", $row["personalBackground"]) ;
+		$this->session->set("messengerLastBubble", $row["messengerLastBubble"]) ;
+		$this->session->set("gibbonThemeIDPersonal", $row["gibbonThemeIDPersonal"]) ;
+		$this->session->set("theme.IDPersonal", $row["gibbonThemeIDPersonal"]) ;
+		$this->session->set("personalLanguageCode", $row["personalLanguageCode"]) ;
+		$this->session->set("googleAPIRefreshToken", $row["googleAPIRefreshToken"]) ;
+		$this->session->set('receiveNotificationEmails', $row["receiveNotificationEmails"]) ;
+		$this->session->set('gibbonHouseID', $row["gibbonHouseID"]) ;
+		$this->session->set('lastPageTime', strtotime('now'));
+		$this->session->set('sessionDuration', $this->config->getSettingByScope('System', 'sessionDuration'));					
+		
 		//If user has personal language set, load it to session variable.
-		if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
-			try {
-				$dataLanguage=array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]);
-				$sqlLanguage="SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID" ;
-				$resultLanguage=$connection2->prepare($sqlLanguage);
-				$resultLanguage->execute($dataLanguage);
-			}
-			catch(PDOException $e) { }
-			if ($resultLanguage->rowCount()==1) {
-				$rowLanguage=$resultLanguage->fetch() ;
-				setLanguageSession($guid, $rowLanguage) ;
-			}
-		}
-		try {
-			$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username );
-			$sql="UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { }
+		//Allow for non-system default language to be specified from login form
+		if (isset($_POST["gibboni18nCode"]))
+			$this->session->setLanguageSession($_POST["gibboni18nCode"]) ;
+		elseif ($this->session->notEmpty("personalLanguage")) 
+			$this->session->setLanguageSession($this->session->get("personalLanguage")) ;
+		elseif ($this->config->getSettingByScope('System', 'defaultLangauge') !== NULL) 
+			$this->session->setLanguageSession($this->config->getSettingByScope('System', 'defaultLangauge')) ;
+
+		$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username );
+		$sql="UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username" ;
+		$result=$this->pdo->executeQuery($data, $sql);
 		//Set Goolge API refresh token where appropriate, and update user
-		if ($refreshToken!="") {
-			$_SESSION[$guid]["googleAPIRefreshToken"]=$refreshToken ;
-			try {
-				$data=array( "googleAPIRefreshToken"=> $_SESSION[$guid]["googleAPIRefreshToken"], "username"=> $username );
-				$sql="UPDATE gibbonPerson SET googleAPIRefreshToken=:googleAPIRefreshToken WHERE username=:username" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
+		if (! empty($refreshToken)) {
+			$this->session->set("googleAPIRefreshToken", $refreshToken) ;
+			
+			$data=array( "googleAPIRefreshToken"=> $this->session->get("googleAPIRefreshToken"), "username"=> $username );
+			$sql="UPDATE gibbonPerson SET googleAPIRefreshToken=:googleAPIRefreshToken WHERE username=:username" ;
+			$result=$this->pdo->executeQuery($data, $sql);
 		}
-		if (isset($_SESSION[$guid]["username"])) {
-			$URL="../../index.php" ;
-			//$access_token = $_SESSION[$guid]['googleAPIAccessToken'] ;
-			//$_SESSION[$guid]['googleAPIAccessToken']   = $access_token;
+		if ($this->session->notEmpty("username")) {
+			$URL = GIBBON_URL."index.php" ;
 		}
 		else {
-			unset($_SESSION[$guid]['googleAPIAccessToken'] );
-			unset($_SESSION[$guid]['gplusuer']);
-			session_destroy();
-			$_SESSION[$guid]=NULL ;
-			$URL="../../index.php?loginReturn=fail8" ;
+			$URL = $this->session->get('absoluteURL')."/index.php?loginReturn=fail8" ;
+			$this->session->clear('googleAPIAccessToken');
+			$this->session->clear('gplusuer');
+			$this->session->destroy();
+			$this->session->start();
 		}
-		header("Location: {$URL}");
-
-
+		if ($this->session->get("gibbonThemeIDPersonal") != $this->session->get("gibbonThemeID") && $this->session->notEmpty("gibbonThemeIDPersonal"))
+		{
+			$tObj = new theme($this);
+			$tObj->setDefaultTheme();
+		} else {
+			$tObj = new theme($this, $this->session->get("gibbonThemeID"));
+			$tObj->setDefaultTheme();
 		}
+		logger::__("Login - Success - Google API ", 'Info', 'Security', array("username"=>$username), $this->pdo) ;
+		if ($this->session->notEmpty('calledPage')) {
+			if ($this->session->get('calledPage') == "/publicRegistration.php") {
+				$URL = GIBBON_URL."index.php";
+			}
+			else {
+				$URL = GIBBON_URL."index.php?q=" . $this->session->get('calledPage') ;
+			}
+			$this->session->clear('calledPage');
+		}
+		else {
+			$URL = GIBBON_URL."index.php";
+		}	
+		$this->redirect($URL);
+	}
 
 
 
@@ -270,17 +288,14 @@ if (isset($authUrl)){
 
 
 	//print user details
-
-if (isset($_GET['logout'])) {
-  unset($_SESSION[$guid]['googleAPIAccessToken'] );
-  unset($_SESSION[$guid]['gplusuer']);
-
-  session_destroy();
-  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before
-  //NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function
+	
+	if (isset($_GET['logout'])) {
+		$URL = $this->session->get('absoluteURL')."/index.php" ;
+		$this->session->clear('googleAPIAccessToken' );
+		$this->session->clear('gplusuer');
+		$this->session->destroy();  //Clear the Session
+		$this->session->start();	// and start again . 
+		$this->redirect($URL); // it will simply destroy the current seesion which you started before
+		//NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function
+	}
 }
-}
-
-
-
-?>

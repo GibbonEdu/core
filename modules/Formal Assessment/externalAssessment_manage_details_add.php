@@ -253,14 +253,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             $rowCopy = $resultCopy->fetch();
                             try {
                                 $dataCopy2 = array('category' => '%GCSE Target Grades', 'gibbonExternalAssessmentStudentID' => $rowCopy['gibbonExternalAssessmentStudentID']);
-                                $sqlCopy2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) WHERE category LIKE :category AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonScaleGradeID IS NULL AND gibbonScaleGradeIDPrimaryAssessmentScale IS NULL) ORDER BY name';
+                                $sqlCopy2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) WHERE category LIKE :category AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonScaleGradeID IS NULL) ORDER BY name';
                                 $resultCopy2 = $connection2->prepare($sqlCopy2);
                                 $resultCopy2->execute($dataCopy2);
                             } catch (PDOException $e) {
                             }
                             while ($rowCopy2 = $resultCopy2->fetch()) {
                                 $grades[$rowCopy2['name']][0] = $rowCopy2['gibbonScaleGradeID'];
-                                $grades[$rowCopy2['name']][1] = $rowCopy2['gibbonScaleGradeIDPrimaryAssessmentScale'];
                             }
                         }
                     }
@@ -323,8 +322,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                 ++$count;
                             }
 
-                            //Calculate GCSE numeri mean
-                            $mean = $total / $countWeighted;
+                            //Calculate GCSE numeric mean
+                            if ($countWeighted != 0)
+                                $mean = $total / $countWeighted;
+                            else
+                                $mean = 0;
 
                             //Apply regression
                             $regression = array();
@@ -555,9 +557,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                 echo "<td class='right'>";
                                 echo "<span style='font-weight: bold'>".__($guid, 'Grade').'</span>';
                                 echo '</td>';
-                                echo "<td class='right'>";
-                                echo "<span style='font-weight: bold' title='".__($guid, 'Primary Assessment Scale Grade')."'>".__($guid, 'PAS Grade').'</span>';
-                                echo '</td>';
                                 echo '</tr>';
                             }
                             ?>
@@ -569,9 +568,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 									<input name="<?php echo $count?>-gibbonExternalAssessmentFieldID" id="<?php echo $count?>-gibbonExternalAssessmentFieldID" value="<?php echo $rowField['gibbonExternalAssessmentFieldID'] ?>" type="hidden">
 									<?php
 										$preselectValue = null;
-										if ($copyToGCSECheck == 'on' and $rowField['category'] == '0_Target Grade') {
-											$preselectValue = $grades[$rowField['name']][0];
-										}
+                                        $mode = 'id';
+                                        if ($copyToGCSECheck == 'on' and $rowField['category'] == '0_Target Grade') {
+                                            if (isset($grades[$rowField['name']][0]))
+                                                $preselectValue = $grades[$rowField['name']][0];
+                                            else
+                                                $preselectValue = '';
+                                        }
 										if (($copyToIBCheck == 'Target' or $copyToIBCheck == 'Final') and $rowField['category'] == '0_Target Grade') {
 											//Compare subject name to $regression and find entry for current subject
 											foreach ($regression as $subject) {
@@ -594,20 +597,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 													$preselectValue = $subject[4];
 												}
 											}
+                                            $mode = 'value';
 										}
 
-										echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'value', $preselectValue);
+                                        echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', $mode, $preselectValue);
 										?>
-													</td>
-													<td class="right">
-														<?php
-															echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150');
-										?>
-													</td>
-												</tr>
-												<?php
+									</td>
+								</tr>
+								<?php
 
-												$lastCategory = $rowField['category'];
+									    $lastCategory = $rowField['category'];
 										++$count;
 									}
 								}

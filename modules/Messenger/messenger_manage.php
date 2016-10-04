@@ -428,20 +428,20 @@ else {
 							print "<td style='background-color: #fff' colspan=8>" ;
 								if ($row["emailReport"]!="") {
 									print "<b><u>Email Report</u></b><br/>" ;
-									$emails=explode(",",$row["emailReport"]) ;
+									$emails=explode("),",$row["emailReport"]) ;
 									$emails=array_unique($emails) ;
 									$emails=msort($emails) ;
 									foreach ($emails AS $email) {
-										print $email . "<br/>" ;
+										print $email . ")<br/>" ;
 									}
 								}
 								if ($row["smsReport"]!="") {
 									print "<b><u>SMS Report</u></b><br/>" ;
-									$smss=explode(",",$row["smsReport"]) ;
+									$smss=explode("),",$row["smsReport"]) ;
 									$smss=array_unique($smss) ;
 									$smss=msort($smss) ;
 									foreach ($smss AS $sms) {
-										print $sms . "<br/>" ;
+										print $sms . ")<br/>" ;
 									}
 								}
 							print "</td>" ;

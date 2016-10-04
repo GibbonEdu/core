@@ -27,6 +27,9 @@ use Library\Yaml\Yaml ;
  * @version	13th April 2016
  * @since	8th April 2016
  * @author	Craig Rayner
+ * @package	Gibbon
+ * @subpackage	Old
+ * @deprecated
  */
 class config
 {

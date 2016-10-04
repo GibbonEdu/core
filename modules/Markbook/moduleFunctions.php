@@ -116,7 +116,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     // More than one rollOrder means there are orders assigned to each student, otherwise skip the sort filter
     if ( $resultSelect->rowCount() > 0) {
-        if ($resultSelect->fetchColumn(0) > 0) { 
+        if ($resultSelect->fetchColumn(0) > 0) {
 
             $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
             $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;

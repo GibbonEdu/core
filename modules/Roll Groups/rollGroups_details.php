@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonRollGroupID' => $gibbonRollGroupID);
-            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name';
+            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -92,6 +92,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             }
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Educational Assistants').'</span><br/>';
+            try {
+                $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDEA'], 'gibbonPersonID2' => $row['gibbonPersonIDEA2'], 'gibbonPersonID3' => $row['gibbonPersonIDEA3']);
+                $sqlTutor = 'SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
+                $resultTutor = $connection2->prepare($sqlTutor);
+                $resultTutor->execute($dataTutor);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            $primaryTutor240 = '';
+            while ($rowTutor = $resultTutor->fetch()) {
+                if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
+                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
+                } else {
+                    echo '<i>'.formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
+                }
+                echo '</i><br/>';
+            }
+            echo '</td>';
+            echo '</tr>';
+            echo "<td style='width: 33%; vertical-align: top' colspan=3>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Location').'</span><br/>';
             echo '<i>'.$row['space'].'</i>';
             echo '</td>';
@@ -116,10 +137,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             }
             ?>
 			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='noIntBorder' cellspacing='0' style="width: 100%">
 					<tr><td style="width: 30%"></td><td></td></tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Order By') ?></b><br/>
 						</td>
 						<td class="right">
@@ -139,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 								if ($orderBy == 'preferredName') {
 									echo 'selected ';
 								}
-								echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>			
+								echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>
 							</select>
 						</td>
 					</tr>

@@ -1,0 +1,540 @@
+# Default Settings for Bootstrap Theme.
+name: Bootstrap
+form:
+    standard: 
+        class: form-horizontal standardForm
+        additional: ' data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh" data-fv-err-container="popover"'
+        role: form 
+        well:
+            start: "<div class='well container-fluid'>"
+            end: </div>
+        text:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            span:
+                class: help-block
+            element:
+                class: form-control
+        photo:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            span:
+                class: help-block
+            element:
+                class: form-control
+        file:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            span:
+                class: help-block
+            element:
+                class: form-control
+        spreadsheet:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            span:
+                class: help-block
+            element:
+                class: form-control
+        zipFile:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            span:
+                class: help-block
+            element:
+                class: form-control
+        audio:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            span:
+                class: help-block
+            element:
+                class: form-control
+        free:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            element:
+                class: form-control
+        date:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            element:
+                class: form-control
+        time:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            hour:
+                element: 
+                    class: form-control
+                    style: 'width: 125px; float: right; '
+            minute:
+                element:
+                    class: form-control 
+                    style: 'width: 125px; float: right; '
+        checkbox:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            element:
+                class: form-control input-sm
+        url:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            element:
+                class: form-control
+        password:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            element:
+                class: form-control
+        textArea:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            element:
+                class: form-control
+        editor:
+            oneColumn: 1
+            col2: 
+                class: col-md-12 col-lg-12
+            element:
+                class: form-control
+        select:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 
+            element:
+                class: form-control
+        radio:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            element:
+                class: form-control input-sm
+        yesno:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+        truefalse:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+        onoff:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+        optGroup:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 right
+            element:
+                class: form-control
+        submit:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+            element:
+                class: btn btn-success form-control
+            description: "* denotes a required field."
+        button:
+            type: button
+            name: button
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+            element:
+                class: btn btn-default form-control
+                colour:
+                    red: btn btn-danger form-control
+                    green: btn btn-success form-control
+                    blue: btn btn-primary form-control
+                    aqua: btn btn-info form-control
+                    grey: btn btn-default form-control
+                    orange: btn btn-warning form-control
+        deleteBtn:
+            col1:
+                class: col-md-8 col-lg-8
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-3 col-lg-3 right
+            element:
+                class: btn btn-danger form-control
+        h3:
+            col2: 
+                class: col-md-12 col-lg-12
+            oneColumn: 1
+        note:
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+            span:
+                class: help-block default
+            oneColumn: 1
+        rawElement:
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+            span:
+                class: help-block default
+            oneColumn: 1
+        warning:
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+            span:
+                class: warning help-block
+            oneColumn: 1
+        success:
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+            span:
+                class: success help-block
+            oneColumn: 1
+        info:
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+            span:
+                class: info help-block
+            oneColumn: 1
+        error:
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-10 col-lg-10 
+            span: 
+                class: error help-block
+            oneColumn: 1
+        combo:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            span:
+                class: help-block
+        multiple:
+            col2: 
+                class:  col-md-12 col-lg-12
+            span:
+                class: help-block
+            oneColumn: 1
+        phone:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            span:
+                class: help-block
+        colour:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            span:
+                class: help-block
+            element:
+                class: form-control
+        rgba:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            span:
+                class: help-block
+            element:
+                class: form-control
+        buttons:
+            oneColumn: 1
+            col2:
+                class: right col-md-12 col-lg-12
+            success: btn btn-success form-control
+            info: btn btn-info form-control
+            default: btn btn-default form-control
+            warning: btn btn-warning form-control
+    noIntBorder:
+        class: form-horizontal noIntBorder
+        additional: ' data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh" data-fv-err-container="popover"'
+        role: form 
+        text:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            span:
+                class: help-block
+            element:
+                class: form-control
+        submit:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-5 col-lg-offset-5 col-md-2 col-lg-2
+            element:
+                class:  btn btn-success form-control
+        select:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6 
+            element:
+                class: form-control
+        reset: 
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-1 col-lg-offset-1 col-md-6 col-lg-6
+            element:
+                class: btn btn-info form-control
+        buttons:
+            oneColumn: 1
+            col2:
+                class: right col-md-12 col-lg-12
+        yesno:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+    login:
+        class: form-horizontal
+        additional: ' data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh" data-fv-err-container="popover"'
+        role: form 
+        text:
+            row: 
+                class: container-fluid form-group
+            col1:
+                class: col-md-4 col-lg-4
+            col2: 
+                class: col-md-8 col-lg-8
+            element:
+                class: form-control input-sm
+                style: 'width: 120px; '
+        password:
+            row: 
+                class: container-fluid form-group
+            col1:
+                class: col-md-4 col-lg-4
+            col2: 
+                class: col-md-8 col-lg-8
+            element:
+                class: form-control input-sm
+                style: 'width: 120px; '
+        select:
+            row: 
+                class: container-fluid form-group
+            col1:
+                class: col-md-4 col-lg-4
+            col2: 
+                class: col-md-8 col-lg-8
+            element:
+                class: form-control  input-sm
+                style: 'width: 120px; '
+        submit:
+            row: 
+                class: container-fluid form-group
+            col1:
+                class: col-md-4 col-lg-4
+            col2: 
+                class: col-md-8 col-lg-8
+            element:
+                class: btn btn-default form-control
+                style: 'width: 120px;'
+        note:
+            col2:
+                class: right col-md-12 col-lg-12
+            span: 
+                style: 'margin-right: 12px; font-size: 10px; '
+    nothing: 
+        role: form
+validation:
+    asScript: 0
+    Email: ' data-fv-emailaddress="true" data-fv-emailaddress-message="{{message}}"' 
+    Format: ' data-fv-regexp="true" data-fv-regexp-regexp="{{pattern}}"  data-fv-regexp-message="{{message}}"' 
+    Presence: ' data-fv-notempty="true" data-fv-notempty-message="{{message}}"' 
+    Length: ' data-fv-stringlength="true" data-fv-stringlength-utf8bytes data-fv-stringlength-message="{{message}}" minLength="{{minLength}}"' 
+    Numericality: ' data-fv-numeric="true" data-fv-numeric-message="{{message}}"' 
+    greaterThan: ' data-fv-greaterthan="true" data-fv-greaterthan-inclusive="true" data-fv-greaterthan-value="{{minValue}}" data-fv-greaterthan-message="{{message}}"' 
+    lessThan: ' data-fv-lessthan="true" data-fv-lessthan-inclusive="true" data-fv-lessthan-value="{{maxValue}}" data-fv-lessthan-message="{{message}}"' 
+    Integer: ' data-fv-integer="true" data-fv-integer-message="{{message}}"' 
+    Confirmation: ' data-fv-identical="true" data-fv-identical-field="{{confirm}}" data-fv-identical-message="{{message}}"'
+    URL: ' data-fv-uri="true" data-fv-uri-protocol="{{protocols}}" data-fv-uri-message="{{message}}" data-fv-uri-allowlocal="true"'
+    Date: ' data-fv-date="true" data-fv-date-format="{{format}}" data-fv-date-message="{{message}}" data-fv-date-min="{{after}}" data-fv-date-max="{{before}}"'
+    Phone: ' data-fv-phone="true" data-fv-phone-country="{{countryCode}}" data-fv-phone-message="{{message}}"'
+    PleaseSelect: ' data-fv-remote="true" data-fv-remote-type="POST" data-fv-remote-url="./src/Form/Validator/pleaseSelect.php" data-fv-remote-message="{{message}}" data-fv-remote-name="testMe"'
+    File: ' data-fv-file="true" data-fv-file-message="{{message}}" data-fv-file-extension="{{within}}" data-fv-file-type="{{mimeType}}"'
+
+css:
+    - /lib/jquery-ui/css/blitzer/jquery-ui.css
+    - /lib/thickbox/thickbox.css
+    - /vendor/twbs/bootstrap/dist/css/bootstrap.min.css
+    - /vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css
+    - /src/themes/Bootstrap/css/glyphicons.css
+    - /src/themes/Bootstrap/css/glyphicons-halflings.css
+    - /src/themes/Bootstrap/css/formValidation.min.css
+    - /src/themes/Bootstrap/css/main.css
+    - /vendor/nostalgiaz/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css
+
+table: 
+    class: table
+    additional: to do 
+js:
+    - /vendor/components/jquery/jquery.min.js
+    - /lib/jquery/jquery-migrate.min.js
+    - /vendor/components/jqueryui/jquery-ui.min.js
+    - /lib/jquery-autosize/jquery.autosize.min.js
+    - /vendor/twbs/bootstrap/dist/js/bootstrap.min.js
+    - /src/themes/Bootstrap/js/formValidation.min.js
+    - /src/themes/Bootstrap/js/framework/bootstrap.min.js
+    - /lib/jquery-jslatex/jquery.jslatex.js
+    - /lib/jquery-form/jquery.form.js
+    - /lib/chained/jquery.chained.mini.js
+    - /lib/thickbox/thickbox-compressed.js
+    - /vendor/tinymce/tinymce/tinymce.min.js  
+    - /src/themes/Bootstrap/js/common.js
+    - /vendor/nostalgiaz/bootstrap-switch/dist/js/bootstrap-switch.min.js
+    - /src/themes/Bootstrap/js/bootstrap-tokenfield.js
+    - /src/themes/Bootstrap/js/bootstrap-session-timeout.min.js
+
+datepicker: 1
+# Bootstrap
+# links keys need to be lowercase
+links:
+    delete:
+        title: Delete
+        prompt: '<span class="glyphicons glyphicons-dustbin"></span>'
+    uninstall:
+        title: Uninstall
+        prompt: '<span class="glyphicons glyphicons-dustbin"></span>'
+    edit: 
+        title: Edit
+        prompt: '<span class="glyphicons glyphicons-edit"></span>'
+    view details: 
+        title: Edit
+        prompt: '<span class="glyphicons glyphicons-binoculars"></span>'
+    update:
+        title: Update
+        prompt: '<span class="glyphicons glyphicons-file-import"></span>'
+    install:
+        title: Install
+        prompt: "<span class='glyphicons glyphicons-plus-sign'></span>"
+    add:
+        title: Add
+        prompt: "<span class='glyphicons glyphicons-plus-sign'></span>"
+    insert:
+        title: Insert
+        prompt: "<span class='glyphicons glyphicons-plus-sign'></span>"
+    duplicate:
+        title: Duplicate
+        prompt: "<span class='glyphicons glyphicons-copy'></span>"
+    next:
+        title: Next
+        prompt: "<span class='glyphicons glyphicons-forward'></span>"
+    last:
+        title: Last
+        prompt: "<span class='glyphicons glyphicons-step-forward'></span>"
+    first:
+        title: First
+        prompt: "<span class='glyphicons glyphicons-step-backward'></span>"
+    previous:
+        title: Previous
+        prompt: "<span class='glyphicons glyphicons-rewind'></span>"
+    change password: 
+        prompt: '<span class="glyphicons glyphicons-user-lock"></span>'
+        title: Change Password
+    upload:
+        prompt: "<span class='glyphicons glyphicons-upload'></span>"
+        title: Upload
+    download:
+        prompt: "<span class='glyphicons glyphicons-download'></span>"
+        title: Download
+    change password: 
+        prompt: '<span class="glyphicons glyphicons-user-lock"></span>'
+        title: Change Password
+    action:
+        title: Action
+        prompt: '<span class="glyphicons glyphicons-zoom-in"></span>'
+    insert existing resource:
+        title: Insert Existing Resource
+        prompt: '<span class="halflings halflings-search"></span>'
+    create insert new resource:
+        title: 'Create & Insert New Resource'
+        prompt: '<span class="halflings halflings-cloud-upload"></span>'
+    quick add:
+        title: 'Quick Add'
+        prompt: '<span class="halflings halflings-plus-sign"></span>'
+    like off:
+        title: 'Like Off'
+        prompt: '<span class="glyphicons glyphicons-star-empty"></span>'
+    like on:
+        title: 'Like On'
+        prompt: '<span class="glyphicons glyphicons-star"></span>'
+    attendance:
+        title: 'Attendance'
+        prompt: '<span class="glyphicons glyphicons-group"></span>'
+    pink gift:
+        title: 'Birthday'
+        prompt: '<span class="glyphicons glyphicons-birthday-cake"></span>'
+# linkTop keys need to be LOWERCASE
+linkTop:
+    add:
+        spanClass: 'glyphicons glyphicons-plus-sign'
+        name: Add
+    copy all to next year:
+        spanClass: glyphicons glyphicons-copy
+        name: Copy All To Next Year
+    previous year:
+        spanClass: glyphicons glyphicons-circle-arrow-left
+        rightName: Previous Year
+    next year:
+        spanClass: glyphicons glyphicons-circle-arrow-right
+        leftName: Next Year
+    repeat:
+        spanClass: "glyphicons glyphicons-repeat" 
+        name: Repeat 
+    back to search results:
+        spanClass: "glyphicons glyphicons-repeat" 
+        name: Back to Search Results
+    edit: 
+        name: Edit
+        spanClass: "glyphicons glyphicons-edit" 
+    delete all:
+        spanClass: "glyphicons glyphicons-bin"
+        name: Delete All
+    close:
+        spanClass: "glyphicons glyphicons-remove-circle"
+        name: Close
+    attendance:
+        name: 'Attendance'
+        spanClass: glyphicons glyphicons-group
+    download:
+        spanClass: glyphicons glyphicons-download
+        name: Download
+script:
+    display: block
+tokeninput:
+    id: value
+    name: label

@@ -81,10 +81,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/resources_manage_editProcess.php?gibbonResourceID=$gibbonResourceID&search=".$_GET['search'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<input type="hidden" name="type" value="<?php echo $row['type'] ?>">
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Resource Contents') ?></h3>
 							</td>
 						</tr>
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         if ($row['type'] == 'File') {
                             ?>
 							<tr id="resourceFile">
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'File') ?></b><br/>
 									<?php if ($row['content'] != '') { ?>
 									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 										?>
 										var file=new LiveValidation('file');
 										file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-									</script>	
+									</script>
 									<?php
                                     echo getMaxUpload($guid);
                             		?>
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         } elseif ($row['type'] == 'HTML') {
                             ?>
 							<tr id="resourceHTML">
-								<td colspan=2> 
+								<td colspan=2>
 									<b><?php echo __($guid, 'HTML') ?> *</b>
 									<?php echo getEditor($guid,  true, 'html', $row['content'], 20, true, true, false, false) ?>
 								</td>
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         } elseif ($row['type'] == 'Link') {
                             ?>
 							<tr id="resourceLink">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Link') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -152,21 +152,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 										var link=new LiveValidation('link');
 										link.add(Validate.Presence);
 										link.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-									</script>	
+									</script>
 								</td>
 							</tr>
 							<?php
 
                         }
                 		?>
-						
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Resource Details') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Name') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								$options = explode(',', $options);
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Category') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								$options = explode(',', $options);
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Purpose') ?></b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -275,14 +275,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
 								}
 							}
-							?>
+						?>
 						<tr>
-							<td> 
+							<td class='long' colspan=2>
 								<b><?php echo __($guid, 'Tags') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span>
-							</td>
-							<td class="right">
-								<?php
+								<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span><br/>
+                                <?php
                                 //Get tag list
                                 try {
                                     $dataList = array();
@@ -299,8 +297,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								}
 								?>
 								<style>
-									td.right ul.token-input-list-facebook { width: 302px; float: right } 
-									td.right div.token-input-dropdown-facebook { width: 120px } 
+                                    td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
+                                    td.long div.token-input-dropdown-facebook { width: 120px }
 								</style>
 								<input type="text" id="tags" name="tags" class='standardWidth' />
 								<?php
@@ -315,7 +313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 									$(document).ready(function() {
 										 $("#tags").tokenInput([
 												<?php echo substr($list, 0, -1) ?>
-											], 
+											],
 											{theme: "facebook",
 											hintText: "Start typing a tag...",
 											allowCreation: true,
@@ -334,7 +332,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 							</td>
 							<td class="right">
@@ -371,7 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Description') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -379,7 +377,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								<textarea name="description" id="description" rows=8 class="standardWidth"><?php echo $row['description'] ?></textarea>
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
