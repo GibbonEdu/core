@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Record ;
 
-use Giboon\
 /**
  * Like Record
  *
@@ -140,16 +139,16 @@ class like extends record
 	public function countLikesByRecipient($personIDRecipient, $mode="count", $schoolYearID)
 	{
 		$return = false ;
-
-		$data=array("personIDRecipient"=>$personIDRecipient, "schoolYearID"=>$schoolYearID);
+		$data = array("personIDRecipient"=>$personIDRecipient, "schoolYearID"=>$schoolYearID);
 		$v = clone $this;
 		if ($mode=="count") {
-			$sql="SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike`
+			$sql = "SELECT COUNT(`gibbonLikeID`) AS `likes` FROM `gibbonLike`
 				WHERE `gibbonPersonIDRecipient` = :personIDRecipient
 					AND `gibbonSchoolYearID` = :schoolYearID" ;
-			$return = $v->findOneBy($sql, $data);
+			$return = $v->findAll($sql, $data);
 		}
-		else {
+		else
+		{
 			$sql = "SELECT `gibbonLike`.*, `gibbonPersonID`, `image_240`, `gibbonRoleIDPrimary`, `preferredName`, `surname`
 				FROM `gibbonLike`
 					JOIN `gibbonPerson` ON `gibbonLike`.`gibbonPersonIDGiver` = `gibbonPerson`.`gibbonPersonID`
@@ -162,8 +161,8 @@ class like extends record
 		if (! $v->getSuccess()) $return = false ;
 
 		if ($mode == "count") {
-			$x = $return->getFields('likes');
-			$return = $x ;
+			$x = reset($return);
+			$return = $x->getField('likes');
 		}
 
 		return $return ;
