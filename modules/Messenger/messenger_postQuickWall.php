@@ -52,14 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postQuickWallProcess.php?address='.$_GET['q'] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Delivery Mode') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Message Wall') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Place this message on user\'s message wall?') ?><br/></span>
 				</td>
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 				</td>
 			</tr>
 			<tr id="messageWallRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Publication Dates') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Select up to three individual dates.') ?></br><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -143,19 +143,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 					</script>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Message Details') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Subject') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="subject" id="subject" maxlength=30 value="" type="text" class="standardWidth">
+					<input name="subject" id="subject" maxlength=60 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var subject=new LiveValidation('subject');
 						subject.add(Validate.Presence);
@@ -163,13 +163,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<b><?php echo __($guid, 'Body') ?> *</b>
-					<?php 
+					<?php
                     echo getEditor($guid,  true, 'body', '', 20, true, true, false, true); ?>
 				</td>
 			</tr>
-			
+
 			<select name="roleCategories[]" id="roleCategories[]" multiple style="display: none">
 				<?php
                 try {
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 				}
 				?>
 			</select>
-						
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
