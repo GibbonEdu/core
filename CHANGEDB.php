@@ -451,7 +451,7 @@ UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, mar
 UPDATE gibbonAction SET precedence=0 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook') AND name='Manage Weightings_singleClass';end
 UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php,markbook_edit_addMulti.php' WHERE (name='Edit Markbook_multipleClassesInDepartment' OR name='Edit Markbook_multipleClassesAcrossSchool') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
 INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('0', 'Security', 'Security scripts for Gibbon', 'index.php', 'Core', 'N', 'Admin', '', 'Craig Rayner', 'http://www.craigrayner.com');end
-ALTER TABLE `gibbonModule` CHANGE `category` `category` ENUM('Home','Admin','Assess','Learn','People','Other') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
+SELECT gibbonModuleID FROM gibbonModule;end
 INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('0', 'Notifications', 'Notification Scripts for Gibbon', 'index.php', 'Core', 'N', 'Admin', '', 'Craig Rayner', 'http://www.craigrayner.com');end
 UPDATE `gibbonSetting` SET `name` = 'browseBGColour', `nameDisplay` = 'Browse Library BG Colour' WHERE `gibbonSetting`.`name` = 'browseBGColor' AND `scope` = 'Library';end
 UPDATE `gibbonSetting` SET `name` = 'messageBubbleBGColour', `nameDisplay` = 'Message Bubble Background Colour' WHERE `gibbonSetting`.`name` = 'messageBubbleBGColor' AND `scope` = 'Messenger';end
@@ -510,7 +510,7 @@ UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-aac' WHERE `extension` = 
 ALTER TABLE `gibbonUnit` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this unit be included in curriculum maps and other summaries?' AFTER `tags`;end
 ALTER TABLE `gibbonCourseClass` ADD `gibbonScaleIDTarget` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `reportable`;end
 ALTER TABLE `gibbonRollGroup` ADD `gibbonPersonIDEA` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDTutor3`, ADD `gibbonPersonIDEA2` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA`, ADD `gibbonPersonIDEA3` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA2`;end
-ALTER TABLE `gibbonModule` CHANGE `category` `category` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
+SELECT gibbonModuleID FROM gibbonModule;end
 UPDATE gibbonSetting SET nameDisplay='Password - Alpha Requirement' WHERE name='passwordPolicyAlpha' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='Password - Numeric Requirement' WHERE name='passwordPolicyNumeric' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='Password - Non-Alphanumeric Requirement' WHERE name='passwordPolicyNonAlphaNumeric' AND scope='System';end
