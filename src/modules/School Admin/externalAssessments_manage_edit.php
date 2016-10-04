@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Module\School_Admin ;
 
-if (! $this instanceof \Gibbon\core\view) die();
+use Gibbon\core\view ;
+
+if (! $this instanceof view) die();
 
 use Gibbon\core\trans ;
 use Gibbon\core\helper ;
@@ -35,7 +37,8 @@ if ($this->getSecurity()->isActionAccessible()) {
 	
 	$this->render('default.flash');
 	
-	if ($header !== 'Add External Assessments') $this->linkTop(array('add' => array('q' => '/modules/School Admin/externalAssessments_manage_edit.php', 'gibbonExternalAssessmentID'=>'Add')));	
+	if ($header !== 'Add External Assessments') 
+		$this->linkTop(array('add' => array('q' => '/modules/School Admin/externalAssessments_manage_edit.php', 'gibbonExternalAssessmentID'=>'Add')));	
 	$this->h2($header);	
 
 	

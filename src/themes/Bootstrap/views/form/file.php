@@ -1,12 +1,13 @@
 <?php
-$input = '<input type="file" name="'.$params->name.'" id="'. ($id = isset($params->id) ? $params->id : $params->name) . '"';
-$input .= $id = isset($params->maxLength) ? ' maxlength="'.$params->maxLength . '"' : '';
-$input .= isset($params->readOnly) && $params->readOnly ? ' readonly' : '' ;
-$input .= ' value="'. $this->htmlPrep($params->value). '"';
-$input .= $id = isset($params->element->class) ? ' class="'.$params->element->class.'"' : '' ;
-$input .= $id = isset($params->element->style) ? ' style="' . $params->element->style.'"' : '' ;
-$input .= $id = (isset($params->required) AND $params->required) ? ' required' : "" ; 
-$input .= $id = (isset($params->placeholder) AND $params->placeholder) ? ' placeholder="'.$params->placeholder.'"' : "" ;
+$input = '<input type="file" name="'.$el->name.'" id="'. ($id = isset($el->id) ? $el->id : $el->name) . '"';
+$input .= $id = isset($el->maxLength) ? ' maxlength="'.$el->maxLength . '"' : '';
+$input .= isset($el->readOnly) && $el->readOnly ? ' readonly' : '' ;
+$input .= ' value="'. $this->htmlPrep($el->value). '"';
+$input .= $id = isset($el->element->class) ? ' class="'.$el->element->class.'"' : '' ;
+$input .= $id = isset($el->element->style) ? ' style="' . $el->element->style.'"' : '' ;
+$input .= $id = (isset($el->required) AND $el->required) ? ' required' : "" ; 
+$input .= $id = (isset($el->placeholder) AND $el->placeholder) ? ' placeholder="'.$el->placeholder.'"' : "" ;
+$input .= $id = isset($el->additional) ? $el->additional : "" ;
 $input .= $el->insertValidation($el);
 $input .= ' />';
 echo $input;?><!-- form.file -->

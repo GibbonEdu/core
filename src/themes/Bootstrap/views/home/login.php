@@ -15,14 +15,14 @@ if ($this->session->isEmpty("username") && $this->session->isEmpty("email")) {
 	
 	if ($this->session->isEmpty("username")){ // If Google Auth set to No make sure login screen not visible when logged in
 		$link = array();
-		if (isset($_GET["q"])) $link['q'] = $_GET['q'];
+		if (isset($_GET["q"])) $link['calledPage'] = $_GET['q'];
 		$this->h2($this->__("Login"));
 
 		$el =  new stdClass();
 		$el->target = 'loginFlash';
 		$this->render('default.flash', $el);
 		
-		$form = $this->getForm(null, array('q'=>'/modules/Security/login.php'), true);
+		$form = $this->getForm(null, array_merge(array('q'=>'/modules/Security/login.php'), $link), true);
 		$form->setName('login');
 		$form->setStyle('login');
 			

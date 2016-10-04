@@ -25,7 +25,7 @@ use Gibbon\core\view ;
 /**
  * button Element
  *
- * @version	17th September 2016
+ * @version	3rd October 2016
  * @since	27th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -36,7 +36,7 @@ class button extends element
 	/**
 	 * Constructor
 	 *
-	 * @version	17th September 2016
+	 * @version	3rd October 2016
 	 * @since	27th April 2016
 	 * @param	string		$name
 	 * @param	mixed		$value
@@ -50,15 +50,13 @@ class button extends element
 			$this->name = $name;
 		if ($value !== NULL)
 			$this->value = $value;
-		$this->row = new \stdClass();
-		$this->col1 = new \stdClass();
-		$this->col2 = new \stdClass();
-		$this->span = new \stdClass();
 		$this->validate = false;  // or false
 		$this->required = false;
 		$this->readOnly = false;
 		$this->setID();
-		$this->element->name = $this->element->type = 'button';
+		$this->colour = 'grey';
+		$this->element->name = 'button';
+		$this->element->type = 'button';
 	}
 	
 	/**
@@ -71,6 +69,7 @@ class button extends element
 	public function onClickSubmit()
 	{
 		$this->additional .= ' onClick="this.form.submit()"';
+		$this->element->type = 'submit' ;
 	}
 	
 	/**
@@ -83,5 +82,20 @@ class button extends element
 	public function onClickReset()
 	{
 		$this->additional .= ' onClick="this.form.reset()"';
+		$this->element->type = 'reset' ;
+	}
+	
+	/**
+	 * set Button Colour
+	 *
+	 * @version	3rd October 2016
+	 * @since	3rd October 2016
+	 * @return 	void
+	 */
+	public function setButtonColour($colour)
+	{
+		$this->colour = 'grey';
+		if (in_array($colour, array('red', 'green', 'blue', 'aqua', 'grey', 'orange')))
+			$this->colour = $colour ;
 	}
 }

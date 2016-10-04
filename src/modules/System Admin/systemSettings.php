@@ -22,7 +22,7 @@ namespace Module\System_Admin ;
 use Gibbon\core\view ;
 use Symfony\Component\Yaml\Yaml ;
 use Module\System_Admin\Functions\functions ;
-use Gibbon\People\staff ;
+use Gibbon\People\employee as staff ;
 use Gibbon\Record\setting ;
 use Gibbon\Record\scale ;
 

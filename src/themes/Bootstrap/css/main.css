@@ -780,6 +780,25 @@ td.right {
 .centre {
 	text-align: center!important;
 }
+
+/* MESSAGES */
+div.message {
+	border: 1px solid #3B73AF;
+	color: #3B73AF; 
+	background-color: #D0EAFD;
+	font-size: 12px;
+	padding: 5px;
+	margin: 10px 0px 5px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.05);
+}
+div.message a {
+	color: #3B73AF; 
+}
+div.message a:hover {
+	color: #c00 ;
+}
+
+
 td.centre {
 	vertical-align: middle!important;
 	text-align: center!important;
@@ -909,12 +928,6 @@ img.user {
 .gibbon-container .row {
 	margin: 0;
 	padding: 0 ;
-}
-button[type="submit"] {
-	max-width: 125px;
-}
-button[type="reset"] {
-	max-width: 125px;
 }
 .intNoBorder .row, .intNoBorder .well{
 	background: #edf7ff!important;
@@ -1099,4 +1112,9 @@ div#slideout .glyphicons {
 	position: relative;
 	left: 45px;
 	top: -25px;
+}
+button.generatePassword {
+	height: 20px ;
+	width: 125px ;
+	font-size: 11px ;
 }

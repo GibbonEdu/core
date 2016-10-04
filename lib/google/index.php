@@ -101,6 +101,10 @@ if ($this->session->notEmpty('googleAPIAccessToken')  && $this->session->get('go
 	$client->setAccessToken($this->session->get('googleAPIAccessToken') );
 } else {
 	$authUrl = $client->createAuthUrl();
+	if (isset($_GET['q']))
+		$this->session->set('calledPage',$_GET['q']);
+	else 
+		$this->session->clear('calledPage');
 }
 
 
@@ -216,6 +220,7 @@ if (isset($authUrl)){
 		$this->session->set("personalBackground", $row["personalBackground"]) ;
 		$this->session->set("messengerLastBubble", $row["messengerLastBubble"]) ;
 		$this->session->set("gibbonThemeIDPersonal", $row["gibbonThemeIDPersonal"]) ;
+		$this->session->set("theme.IDPersonal", $row["gibbonThemeIDPersonal"]) ;
 		$this->session->set("personalLanguageCode", $row["personalLanguageCode"]) ;
 		$this->session->set("googleAPIRefreshToken", $row["googleAPIRefreshToken"]) ;
 		$this->session->set('receiveNotificationEmails', $row["receiveNotificationEmails"]) ;
@@ -262,6 +267,18 @@ if (isset($authUrl)){
 			$tObj->setDefaultTheme();
 		}
 		logger::__("Login - Success - Google API ", 'Info', 'Security', array("username"=>$username), $this->pdo) ;
+		if ($this->session->notEmpty('calledPage')) {
+			if ($this->session->get('calledPage') == "/publicRegistration.php") {
+				$URL = GIBBON_URL."index.php";
+			}
+			else {
+				$URL = GIBBON_URL."index.php?q=" . $this->session->get('calledPage') ;
+			}
+			$this->session->clear('calledPage');
+		}
+		else {
+			$URL = GIBBON_URL."index.php";
+		}	
 		$this->redirect($URL);
 	}
 

@@ -744,11 +744,11 @@ input[type="button"]:hover.buttonAsLink {
 	border-bottom: 1px solid #c00 ;
 }
 
-input[type="submit"], input[type="reset"] {
+input[type="submit"], input[type="reset"], input[type="button"] {
 	border: 1px solid #222222;
 	background-color: #444444;
 	height: 28px;
-	min-width: 55px;
+	min-width: 125px;
 	color: #ffffff;
 	font-weight: bold;
 	margin: 2px ;

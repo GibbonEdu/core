@@ -73,6 +73,24 @@ form:
             col1: 
             col2: 
                 class: right 
+        button:
+            type: button
+            name: button
+            row:
+            span:
+                class: emphasis small
+            col1: 
+            col2: 
+                class: right 
+            element:
+                style: background-color: #F9F9F9 ;
+                colour:
+                    red: 'background-color: #D14844 ;'
+                    green: 'background-color: #57B257 ;'
+                    grey: 'background-color: #F9F9F9 ;'
+                    blue: 'background-color: #3C82BF ;'
+                    aqua: 'background-color: #52BCDB ;'
+                    orange: 'background-color: #EEA640 ;'
         deleteBtn:
             row:
             span:
@@ -422,6 +440,9 @@ links:
     upload:
         title: Upload
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/upload.png'/>"
+    download:
+        title: Download
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/download.png'/>"
     add:
         title: Add
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new.png'/>"
@@ -443,6 +464,12 @@ links:
     action:
         title: Action
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/plus.png'/>"
+    like off:
+        title: Like Off
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/like_off.png'/>"
+    like on:
+        title: Like On
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/like_on.png'/>"
     insert existing resource:
         title: Insert Existing Resource
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/search_mini.png'  onclick='return false;' />"
@@ -452,6 +479,12 @@ links:
     quick add:
         title: Quick Add
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new_mini.png'  onclick='return false;' />"
+    attendance:
+        title: Attendance
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/attendance.png'  onclick='return false;' />"
+    pink gift:
+        title: Birthday
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift_pink.png'  onclick='return false;' />"
 linkTop:
     add:
         imageName: page_new.png

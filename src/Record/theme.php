@@ -111,8 +111,8 @@ class theme extends record
 			elseif (file_exists($this->session->get('theme.defaultPath').'settings.yml'))
 			{
 				$this->session->set('theme.settings', Yaml::parse(file_get_contents($this->session->get('theme.defaultPath').'settings.yml')));
-				$this->session->set("theme.path", GIBBON_ROOT.'src/themes/Default/') ;
-				$this->session->set("theme.url", GIBBON_URL.'src/themes/Default/') ;
+				$this->session->set("theme.path", GIBBON_ROOT.'src/themes/Bootstrap/') ;
+				$this->session->set("theme.url", GIBBON_URL.'src/themes/Bootstrap/') ;
 			}
 		}
 		else
@@ -152,7 +152,7 @@ class theme extends record
 	 */
 	public function setDefaultTheme()
 	{
-		$this->findOneBy(array('active' => 'Y'));
+		$this->findBy(array('active' => 'Y'));
 		if ($this->session->notEmpty('theme.IDPersonal') && $this->record->gibbonThemeID != $this->session->get('theme.IDPersonal'))
 		{
 			$this->find($this->session->get('theme.IDPersonal'));

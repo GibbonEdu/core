@@ -46,7 +46,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 		$this->displayMessage("You have not specified one or more required parameters.") ;
 	}
 	else {
-		$dObj = new department($this, $departmentID);
+		$dObj = $this->getRecord('department', $departmentID);
 
 		if ($dObj->rowCount() != 1 && $departmentID !== 'Add') {
 			$this->displayMessage("The selected record does not exist, or you do not have access to it.") ;

@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\Record ;
 
-use Gibbon\People\staff ;
+use Gibbon\People\employee ;
 /**
  * Space Record
  *
@@ -95,7 +95,7 @@ class space extends record
 			WHERE `gibbonSpaceID`=:gibbonSpaceID
 				AND `status` = 'Full' 
 		ORDER BY `surname`, `preferredName`";
-		$pObj = new staff($this->view);
+		$pObj = new employee($this->view);
 		$this->people = $pObj->findAll($sql, $data, '_');
 		unset($pObj);
 		if (! is_array($this->people)) $this->people = array();

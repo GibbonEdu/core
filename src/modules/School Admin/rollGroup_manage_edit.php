@@ -23,7 +23,7 @@ use Gibbon\core\view ;
 use Gibbon\Record\schoolYear ;
 use Gibbon\Record\space ;
 use Gibbon\Record\rollGroup ;
-use Gibbon\People\staff ;
+use Gibbon\People\employee as staff;
 
 if (! $this instanceof view) die();
 

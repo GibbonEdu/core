@@ -235,9 +235,9 @@ class minorLinks extends menu
 	 */
 	public function showLikes()
 	{
-		$pObj = new person($this->view);
+		$lObj = $this->view->getRecord('like');
 		$return = '<div id="likeLink">';
-		$this->session->set("likesCount", $pObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
+		$this->session->set("likesCount", $lObj->countLikesByRecipient($this->session->get("gibbonPersonID"), "count", $this->session->get("gibbonSchoolYearID"))) ;
 		//Show likes
 		if (! $this->session->isEmpty("likesCount") && $this->session->get("likesCount") > 0) {
 			$return .= " . <a title='" .$this->view->__('Likes') . "' href='" . $this->session->get("absoluteURL") . "/index.php?q=likes.php'>" . $this->session->get("likesCount") . " x " . $this->view->renderReturn('default.minorLinks.like_on'). "</a>" ;

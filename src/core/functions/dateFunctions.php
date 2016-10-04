@@ -82,4 +82,20 @@ trait dateFunctions
 		}
 		return $output ;
 	}
+
+	/**
+	 * date Convert to Timestamp
+	 *
+	 * Converts a specified date (YYYY-MM-DD) into a UNIX timestamp
+	 * @version	1st October 2016
+	 * @since	21st April 2016
+	 * @param	string		$date Date
+	 * @return	mixed		Timestamp or false
+	 */
+	public function dateConvertToTimestamp($date) {
+		
+		list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
+		$timestamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
+		return $timestamp ;
+	}
 }

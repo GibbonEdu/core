@@ -111,6 +111,7 @@ class post extends view
 		{
 			if ($installType !== 'Production') {
 				$this->dump('Token validation failed');
+				$this->dump($this->action);
 				$this->dump(array(md5($this->config->get('guid') . $this->action), $this->config->get('guid')));
 				$this->dump($_POST);
 				$this->dump($_SERVER, true, true);

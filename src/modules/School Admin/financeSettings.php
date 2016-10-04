@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\School_Admin ;
 
 use Gibbon\core\view ;
-use Gibbon\People\staff ;
+use Gibbon\People\employee as staff;
 
 if (! $this instanceof view) die();
 
@@ -131,7 +131,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	$el->injectRecord($this->config->getSetting('purchasingOfficer', 'Finance'));
 	$el->validateOff();
 	$pObj = new staff($this);
-	$people = $pObj->findAllStaffByType();
+	$people = $pObj->findAllStaffByStatus();
 	$el->addOption('');
 	foreach ($people as $person)
 		$el->addOption($this->htmlPrep($person->formatName(true, true)), $person->getField('gibbonPersonID'));

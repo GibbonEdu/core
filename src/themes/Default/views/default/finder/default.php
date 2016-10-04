@@ -48,7 +48,7 @@ use Gibbon\core\trans ;
 							 "); ?>
                         </td>
                         <td class='right' style='vertical-align: top; border: none'>
-                            <input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='<?php echo $this->__( 'Go') ?>'>
+                            <input style='height: 27px; width: 60px; min-width: 60px; margin-top: 0px;' type='submit' value='<?php echo $this->__( 'Go') ?>'>
                         </td>
                     </tr>
                     <?php if ($this->getSecurity()->getRoleCategory($this->session->get("gibbonRoleIDCurrent"))=="Staff") { ?>
