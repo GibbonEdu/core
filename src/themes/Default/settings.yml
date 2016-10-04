@@ -485,6 +485,9 @@ links:
     pink gift:
         title: Birthday
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift_pink.png'  onclick='return false;' />"
+    gift:
+        title: Birthday
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift.png'  onclick='return false;' />"
 linkTop:
     add:
         imageName: page_new.png

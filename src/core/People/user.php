@@ -84,6 +84,7 @@ trait user
 	 */
 	public function daysUntilNextBirthday($birthday)
 	{
+		if (empty($birthday)) return false ;
 		$dtz = new \DateTimeZone('UTC');
 		$today = new \DateTime(date('Y-m-d', strtotime('now')), $dtz);
 		$birthday = new \DateTime($birthday, $dtz);
@@ -95,6 +96,6 @@ trait user
 		$birthday->add($interval);
 		$d = $today->diff($birthday);
 		
-		return $d->days;
+		return intval($d->days);
 	}
 }

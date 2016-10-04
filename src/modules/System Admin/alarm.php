@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\System_Admin ;
 
 use Gibbon\core\view ;
-use Gibbon\core\trans ;
 
 if (! $this instanceof view) die();
 

@@ -1,1 +1,2 @@
-<?php echo str_replace(array('title'), array(' title="'.$this->__($el->title).'"'), $el->prompt);
+<?php 
+echo str_replace(array('{{title}}', 'glyphicons '), array($el->title, $el->class.' glyphicons '), $el->prompt);

@@ -695,10 +695,36 @@ class view
 	public function getLink($type, $href, $prompt = '', $imgParameters = '')
 	{
 		$type = mb_strtolower($type);
+		$prompt = empty($prompt) ? '' :  $this->__($prompt) ;
 		if ($type === '') 
 		{
-			$prompt = empty($prompt) ? '' :  $this->__($prompt) ;
-			echo "<a href='".$this->convertGetArraytoURL($href)."'>".$imgParameters.$prompt."</a> ";
+			$link = new stdClass();
+			if (isset($href['onclick']))
+			{
+				$link->onclick = $href['onclick'];
+				unset($href['onclick']);
+			}
+			if (isset($href['style']))
+			{
+				$link->style = $href['style'];
+				unset($href['style']);
+			}
+			if (isset($href['class']))
+			{
+				$link->class = $href['class'];
+				unset($href['class']);
+			}
+			if (isset($href['title']))
+			{
+				$link->title = $href['title'];
+				unset($href['title']);
+			}
+			if (isset($href['href']))
+				$href = $href['href'];
+			$link->href = $this->convertGetArraytoURL($href);
+			$link->imgParameters = $imgParameters;
+			$link->prompt = $prompt;
+			$this->render('content.link', $link);
 			return ;
 		}
 		$links = $this->session->get('theme.settings.links');
@@ -728,7 +754,7 @@ class view
 			$href = $href['href'];
 		$link->href = $this->convertGetArraytoURL($href);
 		$link->imgParameters = $imgParameters;
-		$link->prompt = isset($link->prompt) ? $link->prompt : $prompt;
+		$link->prompt = $prompt;
 		$this->render('content.link', $link);
 		return ;
 	}
@@ -1129,19 +1155,16 @@ class view
 	 * @param	string		$imgParameters  (dump anything that would be in a link.
 	 * @return	void
 	 */
-	public function getIcon($type, $title = '', $imgParameters = '')
+	public function getIcon($type, $title = '', $class = '')
 	{
 		$type = mb_strtolower($type);
-		if ($type === '') 
-		{
-			$prompt = empty($prompt) ? '' :  $this->__($prompt) ;
-			echo "<a href='".$this->convertGetArraytoURL($href)."'>".$imgParameters.$prompt."</a> ";
-			return ;
-		}
 		$links = $this->session->get('theme.settings.links');
 		$link = (object) $links[$type];
-		$link->imgParameters = $imgParameters;
-		$link->title = $title;
+		$link->title = ' title="'.$this->__($title).'"';
+		$link->oldTitle = $this->__($title);
+		$link->class = $class;
+		$link->oldClass = ! empty($class) ? ' class="'.$class.'"' : '';
+		
 		$this->render('content.icon', $link);
 		return ;
 	}
