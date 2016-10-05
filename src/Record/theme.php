@@ -155,7 +155,7 @@ class theme extends record
 		$this->findBy(array('active' => 'Y'));
 		if (empty($this->getField('gibbonThemeID')) && $this->getSuccess())
 		{
-			$this->executeQuery('UPDATE `gibbonTheme` SET `active` = :active', array('active' => 'N'));
+			$this->executeQuery(array('active' => 'N'), 'UPDATE `gibbonTheme` SET `active` = :active');
 			$this->findOneBy(array('name'=>'Bootstrap'));
 			$this->setField('active', 'Y');
 			$this->writeRecord(array('active'));
