@@ -38,6 +38,7 @@ $v13 = array
 		'/modules/School Admin/',
 		'/core/scripts/',
 		'/modules/Staff/index_SmartWorkflowHelpAjax.php',
+		'/modules/Roll Groups/indexExport.php',
 	);
 
 if (isset($_GET['testme']))
