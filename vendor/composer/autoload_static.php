@@ -30,6 +30,7 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         ),
         'M' => 
         array (
+            'MySQLHandler\\' => 13,
             'Monolog\\' => 8,
             'Module\\User_Admin\\' => 18,
             'Module\\System_Admin\\' => 20,
@@ -80,6 +81,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'MySQLHandler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/wazaari/monolog-mysql/src/MySQLHandler',
         ),
         'Monolog\\' => 
         array (

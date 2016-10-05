@@ -11,6 +11,7 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
+    'MySQLHandler\\' => array($vendorDir . '/wazaari/monolog-mysql/src/MySQLHandler'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Module\\User_Admin\\' => array($baseDir . '/src/modules/User Admin'),
     'Module\\System_Admin\\' => array($baseDir . '/src/modules/System Admin'),

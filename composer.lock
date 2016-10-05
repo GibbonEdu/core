@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6f34a61c5020ceb665119bb1517c8e2c",
-    "content-hash": "a5263d30ba8b040dbb17d468e9b7f3da",
+    "hash": "b9a9a5846dfeb8e8f4726ae5b13af18c",
+    "content-hash": "933dad4c28e0b2f20b69aefec2625ded",
     "packages": [
         {
             "name": "components/jquery",
@@ -678,16 +678,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.3",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "41f85e9c2582b3f6d1b7d20395fb40c687ad5370"
+                "reference": "ab8028c93c03cc8d9c824efa75dc94f1db2369bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/41f85e9c2582b3f6d1b7d20395fb40c687ad5370",
-                "reference": "41f85e9c2582b3f6d1b7d20395fb40c687ad5370",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/ab8028c93c03cc8d9c824efa75dc94f1db2369bf",
+                "reference": "ab8028c93c03cc8d9c824efa75dc94f1db2369bf",
                 "shasum": ""
             },
             "require": {
@@ -766,7 +766,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2016-08-18 18:49:14"
+            "time": "2016-10-04 00:57:04"
         },
         {
             "name": "psr/cache",
@@ -913,16 +913,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.1.4",
+            "version": "v3.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "f291ed25eb1435bddbe8a96caaef16469c2a092d"
+                "reference": "368b9738d4033c8b93454cb0dbd45d305135a6d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/f291ed25eb1435bddbe8a96caaef16469c2a092d",
-                "reference": "f291ed25eb1435bddbe8a96caaef16469c2a092d",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/368b9738d4033c8b93454cb0dbd45d305135a6d3",
+                "reference": "368b9738d4033c8b93454cb0dbd45d305135a6d3",
                 "shasum": ""
             },
             "require": {
@@ -958,7 +958,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-09-02 02:12:52"
+            "time": "2016-09-25 08:27:07"
         },
         {
             "name": "tinymce/tinymce",
@@ -1056,6 +1056,50 @@
                 "web"
             ],
             "time": "2016-07-25 15:51:55"
+        },
+        {
+            "name": "wazaari/monolog-mysql",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/waza-ari/monolog-mysql.git",
+                "reference": "540c7b92245db3e54d6493056ba3a84da2d49b24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/waza-ari/monolog-mysql/zipball/540c7b92245db3e54d6493056ba3a84da2d49b24",
+                "reference": "540c7b92245db3e54d6493056ba3a84da2d49b24",
+                "shasum": ""
+            },
+            "require": {
+                "monolog/monolog": ">1.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MySQLHandler\\": "src/MySQLHandler"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Herrmann",
+                    "email": "daniel.herrmann1@gmail.com"
+                }
+            ],
+            "description": "A handler for Monolog that sends messages to MySQL",
+            "homepage": "https://github.com/waza-ari/monolog-mysql",
+            "keywords": [
+                "database",
+                "log",
+                "logging",
+                "monolog",
+                "mysql"
+            ],
+            "time": "2015-07-12 22:25:23"
         }
     ],
     "packages-dev": [],
