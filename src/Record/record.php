@@ -539,14 +539,15 @@ abstract class record implements recordInterface
 	}
 
     /**
+     * find By
+	 * 
      * Finds entities by a set of criteria.
-     *
 	 * @version	13th August 2016
 	 * @version	8th May 2016
-     * @param	array|string     $criteria
-     * @param	array|null $orderBy
-     * @param	int|null   $limit
-     * @param	int|null   $offset
+     * @param	array|string	$criteria
+     * @param	array|null		$orderBy
+     * @param	int|null		$limit
+     * @param	int|null		$offset
      * @return	object	
      */
     public function findBy($criteria, $orderBy = null, $limit = null, $offset = null)
@@ -609,8 +610,9 @@ abstract class record implements recordInterface
     }
 
     /**
+     * find One By
+	 * 
      * Finds One Entity by a set of criteria.
-     *
 	 * @version	11th May 2016
 	 * @version	11th May 2016
      * @param	array|string      $criteria
@@ -1063,8 +1065,9 @@ abstract class record implements recordInterface
 	}
 
     /**
+     * find All By
+	 * 
      * Finds All Entities by a set of criteria.
-     *
 	 * @version	20th August 2016
 	 * @version	18th August 2016
      * @param	array|string      $criteria

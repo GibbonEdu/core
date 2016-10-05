@@ -501,6 +501,15 @@ links:
     gift:
         title: 'Birthday'
         prompt: '<span class="glyphicons glyphicons-birthday-cake"{{title}}></span>'
+    cross:
+        title: 'Cross'
+        prompt: '<span class="glyphicons glyphicons-remove"{{title}} style="color: red;"></span>'
+    tick:
+        title: 'Tick'
+        prompt: '<span class="glyphicons glyphicons-tick"{{title}} style="color: green;"></span>'
+    page down:
+        title: 'Page Down'
+        prompt: '<span class="glyphicons glyphicons-download"></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:

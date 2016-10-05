@@ -463,31 +463,40 @@ links:
         prompt: ''
     action:
         title: Action
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/plus.png'/>"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/plus.png' />"
     like off:
         title: Like Off
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/like_off.png'/>"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/like_off.png' />"
     like on:
         title: Like On
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/like_on.png'/>"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/like_on.png' />"
     insert existing resource:
         title: Insert Existing Resource
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/search_mini.png'  onclick='return false;' />"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/search_mini.png' />"
     create insert new resource:
         title: 'Create & Insert New Resource'
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/upload_mini.png'  onclick='return false;' />"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/upload_mini.png' />"
     quick add:
         title: Quick Add
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new_mini.png'  onclick='return false;' />"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_new_mini.png' />"
     attendance:
         title: Attendance
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/attendance.png'  onclick='return false;' />"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/attendance.png' />"
     pink gift:
         title: Birthday
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift_pink.png'  onclick='return false;' />"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift_pink.png' />"
     gift:
         title: Birthday
-        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift.png'  onclick='return false;' />"
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/gift.png' />"
+    cross:
+        title: Cross
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/iconCross.png' />"
+    tick:
+        title: Tick
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/iconTick.png' />"
+    page down:
+        title: Page Down
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_down.png' />"
 linkTop:
     add:
         imageName: page_new.png
