@@ -35,6 +35,7 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
             'Module\\User_Admin\\' => 18,
             'Module\\System_Admin\\' => 20,
             'Module\\School_Admin\\' => 20,
+            'Module\\Roll_Groups\\' => 19,
             'Module\\' => 7,
         ),
         'L' => 
@@ -102,6 +103,10 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
         array (
             0 => __DIR__ . '/../..' . '/src/modules/School Admin',
         ),
+        'Module\\Roll_Groups\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/modules/Roll Groups',
+        ),
         'Module\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/modules',
@@ -161,6 +166,13 @@ class ComposerStaticInit2b4416c73ce6b244e6fb026ef3bf4edb
     );
 
     public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
         'G' => 
         array (
             'Google_Service_' => 
