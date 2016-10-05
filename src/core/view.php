@@ -32,7 +32,7 @@ use stdClass ;
 /**
  * view Manager
  *
- * @version	2nd October 2016
+ * @version	5th October 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -684,12 +684,12 @@ class view
 	/**
 	 * get Link
 	 *
-	 * @version	18th August 2016
+	 * @version	5th October 2016
 	 * @since	25th June 2016
 	 * @param	string		$type
-	 * @param	string/array		$href
-	 * @param	string/array		$prompt
-	 * @param	string		$imgParameters  (dump anything that would be in a link.
+	 * @param	string or array		$href
+	 * @param	string or array		$prompt
+	 * @param	string		$imgParameters  (dump anything that would be in a link between the <a></a>.)
 	 * @return	void
 	 */
 	public function getLink($type, $href, $prompt = '', $imgParameters = '')
@@ -754,7 +754,8 @@ class view
 			$href = $href['href'];
 		$link->href = $this->convertGetArraytoURL($href);
 		$link->imgParameters = $imgParameters;
-		$link->prompt = $prompt;
+		if (! empty($prompt))
+			$link->prompt = $prompt;
 		$this->render('content.link', $link);
 		return ;
 	}

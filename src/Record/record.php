@@ -540,8 +540,8 @@ abstract class record implements recordInterface
 
     /**
      * find By
-	 * Finds entities by a set of criteria.
-     *
+	 * 
+     * Finds entities by a set of criteria.
 	 * @version	13th August 2016
 	 * @version	8th May 2016
      * @param	array|string	$criteria
@@ -611,8 +611,8 @@ abstract class record implements recordInterface
 
     /**
      * find One By
-	 * Finds One Entity by a set of criteria.
-     *
+	 * 
+     * Finds One Entity by a set of criteria.
 	 * @version	11th May 2016
 	 * @version	11th May 2016
      * @param	array|string      $criteria
@@ -1066,8 +1066,8 @@ abstract class record implements recordInterface
 
     /**
      * find All By
-	 * Finds All Entities by a set of criteria.
-     *
+	 * 
+     * Finds All Entities by a set of criteria.
 	 * @version	20th August 2016
 	 * @version	18th August 2016
      * @param	array|string      $criteria

@@ -499,6 +499,7 @@ class employee extends person
 						$links['policy'] = array('q' => $policyLink, 'prompt' => 'View Behaviour Policy');
 					}
 					$bh .= $this->view->linkTopReturn($links);
+					$bh .= $this->view->h4('Behaviour', array(), true);
 				}
 	
 				if (count($rBh) < 1) {
