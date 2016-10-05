@@ -177,7 +177,7 @@ if ($sidebar)
 	}
 
 	//Show upcoming deadlines
-	if ($this->session->get("address")=="" AND $this->getSecurity()->isActionAccessible("/modules/Planner/planner.php", null, '')) {
+	if ($this->session->isEmpty("address") && $this->getSecurity()->isActionAccessible("/modules/Planner/planner.php")) {
 		$highestAction = $security->getHighestGroupedAction("/modules/Planner/planner.php") ;
 		if ($highestAction=="Lesson Planner_viewMyClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses" OR $highestAction=="Lesson Planner_viewEditAllClasses") {
 			$postSideBar .= $this->h2("Homework & Deadlines", array(), true) ;
@@ -267,7 +267,7 @@ if ($sidebar)
 	}
 
 	//Show recent results
-	if ($this->session->get("address")=="" AND $this->getSecurity()->isActionAccessible("/modules/Markbook/markbook_view.php", null, '')) {
+	if ($this->session->isEmpty("address") && $this->getSecurity()->isActionAccessible("/modules/Markbook/markbook_view.php")) {
 		$highestAction = $security->getHighestGroupedAction("/modules/Markbook/markbook_view.php") ;
 		if ($highestAction=="View Markbook_myMarks") {
 			$dataEntry=array("gibbonSchoolYearID"=>$this->session->get("gibbonSchoolYearID"), "gibbonPersonID"=>$this->session->get("gibbonPersonID"));
@@ -293,11 +293,11 @@ if ($sidebar)
 	$postSideBar .= $this->renderReturn('default.sidebar.myClasses');
 
 	//Show tag cloud
-	if ($this->session->get("address")=="" AND $this->getSecurity()->isActionAccessible("/modules/Resources/resources_view.php", null, '')) {
+	if ($this->session->isEmpty("address") && $this->getSecurity()->isActionAccessible("/modules/Resources/resources_view.php")) {
 		$resource = new Module\Resources\Functions\functions($this);
 		$postSideBar .= $this->h2("Resource Tags", array(), true) ;
 		$postSideBar .= $resource->getTagCloud(20) ;
-		$postSideBar .= "<p style='margin-bototm: 20px; text-align: right'>" ;
+		$postSideBar .= "<p style='margin-bottom: 20px; text-align: right'>" ;
 		$postSideBar .= "<a href='" . $this->session->get("absoluteURL") . "/index.php?q=/modules/Resources/resources_view.php'>" . $this->__('View Resources') . "</a>" ;
 		$postSideBar .= "</p>" ;
 	}

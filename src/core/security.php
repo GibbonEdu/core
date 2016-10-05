@@ -227,11 +227,19 @@ class security
 					logger::__('The Module has not been set correctly.', 'Debug', 'Security', array('username' => $session->get("username"), 'address' => $address, 'moduleID' => $moduleID), $pdo);
 				}
 			} else {
-				logger::__('The has not set a Current Role', 'Debug', 'Security', array('username' => $session->get("username")), $pdo);
+				logger::__('The has not set a Current Role', 'Debug', 'Security', array('username' => $session->get("username"), 'address'=>$address), $pdo);
 			}
 		} else {
-			logger::__('The Username was not set correctly', 'Debug', 'Security', array('username' => $session->get("username")), $pdo);
-			$this->getView()->insertMessage('You need to be authenticated to access the page requested.', 'warning', false, 'loginFlash') ;
+			$x = debug_backtrace();
+			$data = array();
+			foreach($x as $q=>$w)
+			{
+				$data[$q]['file'] =$w['file'];
+				$data[$q]['line'] =$w['line'];
+			}
+			$data = array('username' => $session->get("username"), 'address'=>$address, 'message'=>$message, 'data'=>$data);
+			logger::__('The Username was not set correctly', 'Debug', 'Security', $data, $pdo);
+			if (! is_null($message)) $this->getView()->insertMessage('You need to be authenticated to access the page requested.', 'warning', false, 'loginFlash') ;
 		}
 		// If successfully, then this section of code is not reached.
 		if (! empty($message)) $this->getView()->displayMessage($message) ;

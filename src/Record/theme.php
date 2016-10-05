@@ -26,7 +26,7 @@ use Gibbon\core\view ;
 /**
  * Theme Record
  *
- * @version	23rd September 2016
+ * @version	5th October 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -146,13 +146,24 @@ class theme extends record
 	/**
 	 * set Default Theme
 	 *
-	 * @version	28th September 2016
+	 * @version	5th October 2016
 	 * @since	2nd June 2016
 	 * @return	void		
 	 */
 	public function setDefaultTheme()
 	{
 		$this->findBy(array('active' => 'Y'));
+		if (empty($this->getField('gibbonThemeID')) && $this->getSuccess())
+		{
+			$this->executeQuery('UPDATE `gibbonTheme` SET `active` = :active', array('active' => 'N'));
+			$this->findOneBy(array('name'=>'Bootstrap'));
+			$this->setField('active', 'Y');
+			$this->writeRecord(array('active'));
+		} elseif (! $this->getSuccess())
+		{
+			$this->view->displayMessage('return.error.0');
+			die();
+		}
 		if ($this->session->notEmpty('theme.IDPersonal') && $this->record->gibbonThemeID != $this->session->get('theme.IDPersonal'))
 		{
 			$this->find($this->session->get('theme.IDPersonal'));
@@ -200,7 +211,7 @@ class theme extends record
 				$this->setField('gibbonThemeID', 1);
 				$this->setField('name', 'Bootstrap');
 				$this->setField('description', "Gibbon's 2016 look and feel.");
-				$this->setField('active', 'N');
+				$this->setField('active', 'Y');
 				$this->setField('version', '1.0.00');
 				$this->setField('author', 'Craig Rayner');
 				$this->setField('url', 'http://www.craigrayner.com');
@@ -213,7 +224,7 @@ class theme extends record
 				$this->setField('gibbonThemeID', 13);
 				$this->setField('name', 'Default');
 				$this->setField('description', "Gibbon's 2015 look and feel.");
-				$this->setField('active', 'Y');
+				$this->setField('active', 'N');
 				$this->setField('version', '1.0.00');
 				$this->setField('author', 'Ross Parker');
 				$this->setField('url', 'http://rossparker.org');

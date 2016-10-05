@@ -90,11 +90,11 @@ class finder
 			if (empty($this->el)) $this->el = new \stdClass();
 				
 	
-			$this->el->studentIsAccessible = $security->isActionAccessible("/modules/students/student_view.php", null, '') ;
-			$this->el->staffIsAccessible = $security->isActionAccessible("/modules/Staff/staff_view.php", null, '') ;
+			$this->el->studentIsAccessible = $security->isActionAccessible("/modules/students/student_view.php") ;
+			$this->el->staffIsAccessible = $security->isActionAccessible("/modules/Staff/staff_view.php") ;
 			$this->el->classIsAccessible = false ;
 			$this->el->highestActionClass = $security->getHighestGroupedAction("/modules/Planner/planner.php") ;
-			if ($this->view->getSecurity()->isActionAccessible("/modules/Planner/planner.php", null, '') AND $this->el->highestActionClass!="Lesson Planner_viewMyChildrensClasses") 
+			if ($this->view->getSecurity()->isActionAccessible("/modules/Planner/planner.php") AND $this->el->highestActionClass!="Lesson Planner_viewMyChildrensClasses") 
 				$this->el->classIsAccessible = true ;
 	
 			//Get list

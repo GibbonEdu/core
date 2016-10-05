@@ -48,7 +48,7 @@ trait developmentFunctions
 		echo $caller[0]['line'].': '.$caller[0]['file'];
 		echo "\n</pre>\n";
 		echo "<pre>\n";
-		print_r($object);
+		var_dump($object);
 		if ($full) 
 			print_r($caller);
 		echo "\n</pre>\n";
