@@ -138,17 +138,15 @@ class studentEnrolment extends record
 			$return .= $this->getUserPhoto($rowRollGroup->image_240, 75);
 	
 			//HEY SHORTY IT'S YOUR BIRTHDAY!
-			$daysUntilNextBirthday = $this->daysUntilNextBirthday($rowRollGroup->dob);
-			if ($daysUntilNextBirthday == 0) {
-				$return .= $this->view->returnIcon('pink gift', array('%1$s birthday today!', array($rowRollGroup->preferredName.'&#39;s')));
+		$daysUntilNextBirthday = $this->daysUntilNextBirthday($rowRollGroup->dob);
+			if ($daysUntilNextBirthday === 0) {
+				$return .= $this->view->returnIcon('pink gift', array('%1$s birthday today!', array($rowRollGroup->preferredName.'&#39;s')), 'birthdayGift');
 			} elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
-				$return .= "<img title='";
 				if ($daysUntilNextBirthday != 1) {
-					$return .= sprintf(__($guid, '%1$s days until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup->preferredName.'&#39;s');
+					$return .= $this->view->returnIcon('gift', array('%1$s days until %2$s birthday!', array($daysUntilNextBirthday, $rowRollGroup->preferredName.'&#39;s')), 'birthdayGift');
 				} else {
-					$return .= sprintf(__($guid, '%1$s day until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup->preferredName.'&#39;s');
+					$return .= $this->view->returnIcon('gift', array('%1$s day until %2$s birthday!', array($daysUntilNextBirthday, $rowRollGroup->preferredName.'&#39;s')), 'birthdayGift');
 				}
-				$return .= "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".GIBBON_URL.'themes/'.$this->session->get('theme.Name')."/img/gift.png'/>";
 			}
 			$return .= "<div style='padding-top: 5px'><b><a href='".GIBBON_URL."index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup->gibbonPersonID."'>".$this->getPerson($rowRollGroup->gibbonPersonID)->formatName().'</a><br/><br/></div>';
 			$return .= '</td>';

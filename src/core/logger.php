@@ -67,20 +67,17 @@ class logger
 	{
 
 		$session = new session();
-		
-		if ($session->get('version') < '13.0.00')
-			return ;
 
 		if ($level == 'Debug' && $session->get('installType') !== 'Development')
 			return ;
 
 		$pdo = self::getPDO($pdo);
-		
+
 		if (self::sqlFail($pdo)) return ;
 
 		$ip = $_SERVER['REMOTE_ADDR'];
 		if (empty($additional)) $additional = array();
-		$serialisedArray = serialize($additional);
+		$serialisedArray = json_encode($additional);
 
 		switch (strtoupper($level))
 		{

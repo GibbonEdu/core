@@ -1,0 +1,19 @@
+{
+    "name": "wazaari/monolog-mysql",
+    "description": "A handler for Monolog that sends messages to MySQL",
+    "keywords": ["log", "logging", "monolog", "mysql", "database"],
+    "homepage": "https://github.com/waza-ari/monolog-mysql",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Herrmann",
+            "email": "daniel.herrmann1@gmail.com"
+        }
+    ],
+    "require": {
+        "monolog/monolog": ">1.4.0"
+    },
+    "autoload": {
+        "psr-4": {"MySQLHandler\\": "src/MySQLHandler"}
+    }
+}

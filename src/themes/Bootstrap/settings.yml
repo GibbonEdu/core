@@ -497,7 +497,10 @@ links:
         prompt: '<span class="glyphicons glyphicons-group"></span>'
     pink gift:
         title: 'Birthday'
-        prompt: '<span class="glyphicons glyphicons-birthday-cake"></span>'
+        prompt: '<span class="glyphicons glyphicons-birthday-cake"{{title}} style="color: #EA92E3;"></span>'
+    gift:
+        title: 'Birthday'
+        prompt: '<span class="glyphicons glyphicons-birthday-cake"{{title}}></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:

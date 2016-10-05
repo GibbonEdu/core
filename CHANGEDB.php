@@ -531,4 +531,8 @@ ALTER TABLE `gibbonSetting` CHANGE `type` `type` ENUM('text','array','number','d
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'pageAnchorDisplay', 'Display Page Anchors', 'Allows the school to turn off display of the Page Anchors in the menu.', 'Y', 'yesno');end
 UPDATE gibbonModule SET category='Other' WHERE category='';end
 ALTER TABLE `gibbonMessenger` CHANGE `subject` `subject` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonLog` ADD `channel` VARCHAR(255) NOT NULL AFTER `gibbonLogID`, ADD `level` INT NOT NULL AFTER `channel`, ADD `message` LONGTEXT NOT NULL AFTER `level`;end
+ALTER TABLE `gibbonLog` DROP `title`;end
+ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `module` VARCHAR(50) NULL DEFAULT NULL, CHANGE `timestamp` `time` INT NOT NULL, CHANGE `gibbonPersonID` `person` VARCHAR(111) NULL DEFAULT NULL, CHANGE `gibbonSchoolYearID` `schoolYear` VARCHAR(50) NULL DEFAULT NULL;end
+
 ";

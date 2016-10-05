@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\System_Admin ;
 
 use Gibbon\core\view ;
-use Gibbon\core\trans ;
 use Gibbon\Record\alarm ;
 
 if (! $this instanceof view) die();
@@ -49,7 +48,8 @@ if (! $this->getSecurity()->isActionAccessible('/modules/System Admin/alarm.php'
         if (! $this->config->setSettingByScope('alarm', 'None', 'System')) $fail = true;
 
         //Deal with alarm record
-		$aObj = new alarm($this, $alarmID);
+		$aObj = $this->getRecord('alarm');
+		$aObj->find($alarmID);
 		$aObj->setField('timestampEnd', date('Y-m-d H:i:s'));
 		$aObj->setField('status', 'Past');
         if (! $aObj->writeRecord()) $fail = true;

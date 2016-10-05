@@ -1234,3 +1234,9 @@ table.well tr:nth-child(even) td {
 	float: left ;
 	margin-left: 100px;
 }
+.birthdayGift {
+	margin: -20px 0 0 74px;
+	z-index: 99;
+	width: 25px;
+	height: 25px;
+}

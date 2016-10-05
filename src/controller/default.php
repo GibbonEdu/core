@@ -37,6 +37,7 @@ $v13 = array
 		'/modules/User Admin/preferences',
 		'/modules/School Admin/',
 		'/core/scripts/',
+		'/modules/Staff/index_SmartWorkflowHelpAjax.php',
 	);
 
 if (isset($_GET['testme']))

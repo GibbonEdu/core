@@ -206,7 +206,7 @@ class employee extends person
 
 				?></table>
                 <div style='text-align: right; font-size: 90%; padding: 0 7px'>
-                	<?php $this->view->getLink('', array('href'=>'#', 'title'=> $this->view->__('Dismiss Smart Workflow Help'), 'onclick'=>'$("#smartWorkflowHelp").fadeOut(1000); $.ajax({ url: "' . GIBBON_URL . 'index_SmartWorkflowHelpAjax.php"})'), 'Dismiss Smart Workflow Help'); ?>
+                	<?php $this->view->getLink('', array('href'=>'#', 'title'=> $this->view->__('Dismiss Smart Workflow Help'), 'onclick'=>"$('#smartWorkflowHelp').fadeOut(1000); $.ajax({ url: '" . GIBBON_URL . "index.php?q=/modules/Staff/index_SmartWorkflowHelpAjax.php&divert=1'})"), 'Dismiss Smart Workflow Help'); ?>
                 </div>
 				</div><?php
 			}
