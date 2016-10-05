@@ -510,7 +510,6 @@ UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-aac' WHERE `extension` = 
 ALTER TABLE `gibbonUnit` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this unit be included in curriculum maps and other summaries?' AFTER `tags`;end
 ALTER TABLE `gibbonCourseClass` ADD `gibbonScaleIDTarget` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `reportable`;end
 ALTER TABLE `gibbonRollGroup` ADD `gibbonPersonIDEA` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDTutor3`, ADD `gibbonPersonIDEA2` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA`, ADD `gibbonPersonIDEA3` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA2`;end
-SELECT gibbonModuleID FROM gibbonModule;end
 UPDATE gibbonSetting SET nameDisplay='Password - Alpha Requirement' WHERE name='passwordPolicyAlpha' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='Password - Numeric Requirement' WHERE name='passwordPolicyNumeric' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='Password - Non-Alphanumeric Requirement' WHERE name='passwordPolicyNonAlphaNumeric' AND scope='System';end
@@ -531,4 +530,8 @@ ALTER TABLE `gibbonSetting` CHANGE `type` `type` ENUM('text','array','number','d
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'pageAnchorDisplay', 'Display Page Anchors', 'Allows the school to turn off display of the Page Anchors in the menu.', 'Y', 'yesno');end
 UPDATE gibbonModule SET category='Other' WHERE category='';end
 ALTER TABLE `gibbonMessenger` CHANGE `subject` `subject` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonLog` ADD `channel` VARCHAR(255) NOT NULL AFTER `gibbonLogID`, ADD `level` INT NOT NULL AFTER `channel`, ADD `message` LONGTEXT NOT NULL AFTER `level`;end
+ALTER TABLE `gibbonLog` DROP `title`;end
+ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `module` VARCHAR(50) NULL DEFAULT NULL, CHANGE `timestamp` `time` INT NOT NULL, CHANGE `gibbonPersonID` `person` VARCHAR(111) NULL DEFAULT NULL, CHANGE `gibbonSchoolYearID` `schoolYear` VARCHAR(50) NULL DEFAULT NULL;end
+
 ";
