@@ -40,7 +40,7 @@ class functions extends mFBase
 	private $installPath = GIBBON_ROOT ;
 	
 	//Sets the sequence numbers appropriately for a given first day of the week (either Sunday or Monday)
-	function setFirstDayOfTheWeek($fdotw)
+	function setfirstDayOfTheWeek($fdotw)
 	{
 		$return= true ;
 	

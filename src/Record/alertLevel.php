@@ -217,6 +217,7 @@ class alertLevel extends record
 					AND type = 'Negative' 
 					AND date > :date" ;
 			$resultAlert = $this->view->getRecord('behaviour')->findAll($sqlAlert, $dataAlert);
+
 			if (count($resultAlert) > 0) 
 				$alertLevelID = 3 ;
 			if (count($resultAlert) > 4)

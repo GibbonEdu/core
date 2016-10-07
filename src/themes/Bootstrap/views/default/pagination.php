@@ -8,7 +8,10 @@
 			if ($i == ($el->getPage()-1)) 
 				echo $el->getPage().' ';
 			else
-				$this->getLink('', GIBBON_URL . 'index.php?q=' . $this->session->get("address") . '&page=' . ($i+1) . $el->getString, ($i+1));
+			{
+				$this->getLink('', array('q'=>$this->session->get("address"), 'page' => ($i+1) . $el->getString), ($i+1));
+				echo ' ';
+			}
 		}
 	}
 	else {
@@ -22,7 +25,10 @@
 			if ($i == ($el->getPage()-1))
 				echo $el->getPage(). ' ' ;
 			elseif ($i > ($el->getPage()-(($spread/2)+2)) && $i < ($el->getPage()+(($spread/2)))) 
+			{
 				$this->getLink('', array('q'=> $this->session->get("address"), 'page' => ($i+1) . $el->getString), ($i+1));
+				echo ' ';
+			}
 		}
 
 		if ($el->getPage() < $el->get('totalPages')) {

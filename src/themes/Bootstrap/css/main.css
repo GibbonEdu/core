@@ -886,6 +886,11 @@ table.ui-datepicker-calendar tr:last-child th:last-child {
 .noIntBorder .container-fluid .well .row {
 	background: #EDF7FF;
 }
+table.noIntBorder td {
+	border: none!important ;
+	padding: 5px!important ;
+	background-color: #EDF7FF!important ;
+}
 .form-group label{
 	margin-bottom:0;
 }
@@ -1122,7 +1127,7 @@ button.generatePassword {
 	margin: -20px 0 0 74px;
 	z-index: 99;
 	font-size: 25px;
-	background-color: #f0f0f0;
+	background-color: transparent ;
 }
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
 	vertical-align: middle ;

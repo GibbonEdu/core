@@ -507,6 +507,9 @@ links:
     tick:
         title: 'Tick'
         prompt: '<span class="glyphicons glyphicons-tick"{{title}} style="color: green;"></span>'
+    error:
+        title: 'Error'
+        prompt: '<span class="glyphicons glyphicons-exclamation-sign"{{title}} style="color: red;"></span>'
     page down:
         title: 'Page Down'
         prompt: '<span class="glyphicons glyphicons-download"></span>'

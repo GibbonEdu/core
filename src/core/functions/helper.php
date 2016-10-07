@@ -114,46 +114,6 @@ class helper
 	}
 
 	/**
-	 * get Week Number
-	 *
-	 * @version	21st April 2016
-	 * @since	21st April 2016
-	 * @param	string		Date
-	 * @return	mixed		ModuleID or false
-	 */
-	public static function getWeekNumber($date) {
-		$week=0 ;
-		$session = new session();
-		$pdo = self::getPDO();
-		
-		$dataWeek=array("gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"));
-		$sqlWeek="SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
-		$resultWeek=$pdo->executeQuery($dataWeek, $sqlWeek);
-		while ($rowWeek=$resultWeek->fetch()) {
-			$firstDayStamp = strtotime($rowWeek["firstDay"]) ;
-			$lastDayStamp = strtotime($rowWeek["lastDay"]) ;
-			while (date("D",$firstDayStamp)!="Mon") {
-				$firstDayStamp=$firstDayStamp-86400 ;
-			}
-			$head=$firstDayStamp ;
-			while ($head<=($date) AND $head<($lastDayStamp+86399)) {
-				$head=$head+(86400*7) ;
-				$week++ ;
-			}
-			if ($head<($lastDayStamp+86399)) {
-				break ;
-			}
-		}
-	
-		if ($week<=0) {
-			return false ;
-		}
-		else {
-			return $week ;
-		}
-	}
-
-	/**
 	 * format Name
 	 *
 	 * @version	22nd April 2016

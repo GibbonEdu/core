@@ -477,6 +477,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
 
             //Count back to first dayOfWeek before specified calendar date
+			$dateCorrectionOffSet = $days[0]['sequenceNumber'];
             while (date('D', $startDayStamp) != $days[0]['nameShort']) {
                 $startDayStamp = $startDayStamp - 86400;
             }
@@ -740,7 +741,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</th>';
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    $dateCorrection = ($day['sequenceNumber'] - $dateCorrectionOffSet);
 
                     $output .= "<th style='vertical-align: top; text-align: center; width: ";
                     if ($narrow == 'trim') {
@@ -806,7 +807,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     //Run through days of the week
                     foreach ($days as $day) {
                         if ($day['schoolDay'] == 'Y') {
-                            $dateCorrection = ($day['sequenceNumber'] - 1);
+                            $dateCorrection = ($day['sequenceNumber'] - $dateCorrectionOffSet);
 
                             //Check to see if day is term time
                             $isDayInTerm = false;
@@ -1765,7 +1766,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 			foreach ($days as $day) {
 				$dayOut = '';
 				if ($day['schoolDay'] == 'Y') {
-					$dateCorrection = ($day['sequenceNumber'] - 1);
+					$dateCorrection = ($day['sequenceNumber'] - $dateCorrectionOffset);
 
 					//Check to see if day is term time
 					$isDayInTerm = false;

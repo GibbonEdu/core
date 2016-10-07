@@ -494,6 +494,9 @@ links:
     tick:
         title: Tick
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/iconTick.png' />"
+    error:
+        title: Error
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/error.png' />"
     page down:
         title: Page Down
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_down.png' />"

@@ -23,7 +23,7 @@ namespace Gibbon\Record ;
 /**
  * Days of Week Record
  *
- * @version	29th September 2016
+ * @version	6th October 2016
  * @since	4th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -85,40 +85,23 @@ class daysOfWeek extends record
 	/**
 	 * get School Days
 	 *
-	 * @version	19th May 2016
+	 * @version	6th October 2016
 	 * @since	19th May 2016
+	 * @param	boolean		$schoolDays
 	 * @return	array	School OPen/Closed in the Week.
 	 */
-	public function getSchoolDays()
+	public function getSchoolDays($schoolDays = false)
 	{
 		//Check which days are school days
 		$days = array();
-		$days['Mon'] = 'Y';
-		$days['Tue'] = 'Y';
-		$days['Wed'] = 'Y';
-		$days['Thu'] = 'Y';
-		$days['Fri'] = 'Y';
-		$days['Sat'] = 'Y';
-		$days['Sun'] = 'Y';
-		$rowDays = $this->findAll("SELECT * 
+		$rowDays = $this->findAll("SELECT *
 			FROM `gibbonDaysOfWeek` 
-			WHERE `schoolDay` = 'N'", array(), '_');
+			ORDER BY `sequenceNumber`", array(), '_');
 		foreach($rowDays as $row) {
-			if ($row->getField('nameShort') == 'Mon') {
-				$days['Mon'] = 'N';
-			} elseif ($row->getField('nameShort') == 'Tue') {
-				$days['Tue'] = 'N';
-			} elseif ($row->getField('nameShort') == 'Wed') {
-				$days['Wed'] = 'N';
-			} elseif ($row->getField('nameShort') == 'Thu') {
-				$days['Thu'] = 'N';
-			} elseif ($row->getField('nameShort') == 'Fri') {
-				$days['Fri'] = 'N';
-			} elseif ($row->getField('nameShort') == 'Sat') {
-				$days['Sat'] = 'N';
-			} elseif ($row->getField('nameShort') == 'Sun') {
-				$days['Sun'] = 'N';
-			}
+			if ($schoolDays && $row->getField('schoolDay') == 'Y')
+				$days[$row->getField('nameShort')] = (array) $row->returnRecord();
+			elseif (! $schoolDays)
+				$days[$row->getField('nameShort')] = (array) $row->returnRecord();
 		}
 		return $days ;
 	}

@@ -32,7 +32,7 @@ use stdClass ;
 /**
  * view Manager
  *
- * @version	5th October 2016
+ * @version	7th October 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -43,6 +43,7 @@ class view
 
 	use functions\stringFunctions , 
 		functions\developmentFunctions ,
+		functions\dateFunctions ,
 		functions\moduleFunctions ;
 	
 	/**
@@ -191,7 +192,7 @@ class view
 			foreach($name as $w)
 				$this->address .= '/' . trim($w) ;
 			$this->address .= '.php';
-			if (file_exists($this->address))
+		if (file_exists($this->address))
 				return ;
 			
 		}
@@ -1010,8 +1011,7 @@ class view
 	 * Inject Module CSS
 	 * 
 	 * Inject Module CSS into page Header
-	 *
-	 * @version	6th September 2016
+	 * @version	7th October 2016
 	 * @since	6th September 2016
 	 * @param	string		$module
 	 * @return	stdOut
@@ -1024,20 +1024,25 @@ class view
 		$theme = $this->session->get('theme.Name', 'Bootstrap');
 		$cssURL = '';
 		
-		// Look in the Template Directory of the Module CSS
-		// or defualt to the 
-		if (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/'.$theme.'/module.css'))
-			$cssURL = GIBBON_URL . 'src/modules/'.$module.'/css/'.$theme.'/module.css';
-		elseif (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/module.css'))
+		
+		// Load the Default Module CSS
+		if (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/module.css')) {
 			$cssURL = GIBBON_URL . 'src/modules/'.$module.'/css/module.css';
-		if (! empty($cssURL)) {
 			$this->addScript('
 <script type="application/javascript" language="javascript">
-
-	var cssURL = "'.$cssURL.'";
-	
-	$("head").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"\'+cssURL+\'\" media=\"screen\" />");
-
+	$("head").append(\'<link rel="stylesheet" type="text/css" href="'.$cssURL.'" media="screen" />\');
+</script>
+');
+		}
+		
+		
+		// Load the Theme Module CSS 
+		if (file_exists(GIBBON_ROOT . 'src/modules/'.$module.'/css/'.$theme.'/module.css'))
+		{
+			$cssURL = GIBBON_URL . 'src/modules/'.$module.'/css/'.$theme.'/module.css';
+			$this->addScript('
+<script type="application/javascript" language="javascript">
+	$("head").append(\'<link rel="stylesheet" type="text/css" href="'.$cssURL.'" media="screen" />\');
 </script>
 ');
 		}
@@ -1190,4 +1195,22 @@ class view
 		return $out2 ;
 	}
 
+	/**
+	 * display Scripts
+	 *
+	 * @version	8th October 2016
+	 * @since	8th October 2016
+	 * @return	string
+	 */
+	public function displayScripts()
+	{
+		foreach($this->session->get('scripts') as $script)
+		{ ?>
+<script type="text/javascript">
+<?php echo $script; ?>
+</script>
+		<?php
+		}
+		$this->session->clear('scripts');
+	}
 }
