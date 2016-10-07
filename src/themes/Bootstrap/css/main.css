@@ -608,10 +608,16 @@ ul.moduleMenu h4 {
 	color: #757B81;
 	line-height: 15px ;
 	display: block;
-}
-.mini .glyphicon, .mini .glyphicons {
 	margin-top: 1px;
-	margin-left: -4px;
+	margin-left: -6px;
+}
+.mini .glyphicons-list-alt .halflings-check {
+	color: #757B81;
+    font-size: 10px;
+    float: right;
+    margin-top: -15px;
+	margin-right: -2px;
+    background: white;
 }
 .mini a .glyphicon, .mini a .glyphicons {
 	text-decoration: none!important ;

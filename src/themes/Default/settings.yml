@@ -500,6 +500,15 @@ links:
     page down:
         title: Page Down
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_down.png' />"
+    planner:
+        title: Planner
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/planner.png' />"
+    markbook:
+        title: Markbook
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/markbook.png' />"
+    homework:
+        title: homework
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/homework.png' />"
 linkTop:
     add:
         imageName: page_new.png

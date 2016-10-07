@@ -513,6 +513,15 @@ links:
     page down:
         title: 'Page Down'
         prompt: '<span class="glyphicons glyphicons-download"></span>'
+    planner:
+        title: 'Planner'
+        prompt: '<span class="glyphicons glyphicons-calendar"></span>'
+    markbook:
+        title: 'Markbook'
+        prompt: '<span class="glyphicons glyphicons-table"></span>'
+    homework:
+        title: 'Homework'
+        prompt: '<span class="glyphicons glyphicons-list-alt"><span class="halflings halflings-check"></span></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:
