@@ -1632,7 +1632,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                             }
                             $count = 0;
                             while ($rowSlots = $resultSlots->fetch()) {
-                                $activitiesOutput .= '<b>'.__($guid, $rowSlots['name']).'</b><br/>';
+                                $activitiesOutput .= '<b>'.$rowSlots['name'].'</b><br/>';
                                 $activitiesOutput .= '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                                 if ($rowSlots['gibbonSpaceID'] != '') {
                                     $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['name'];
@@ -2937,7 +2937,7 @@ function sidebar($connection2, $guid)
 					</tr>
 					<tr>
 						<td class="right" colspan=2>
-                        	
+
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<input type="hidden" name="action" value="/modules/Security/login.php">
 							<input type="hidden" name="divert" value="1">
