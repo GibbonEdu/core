@@ -270,23 +270,6 @@ class helper
 	}
 
 	/**
-	 * get Unit
-	 * 
-	 * Get information on a unit of work, inlcuding the possibility that it is a hooked unit
-	 * @version	8th September 2016
-	 * @since	copied from functions.php
-	 * @param	integer		$unitID  Unit ID
-	 * @param	integer		$hookID  Hook ID
-	 * @param	integer		$courseClassID  Course Class ID
-	 * @return	string		HTML Output
-	 */
-	static public function getUnit($unitID, $hookID, $courseClassID) {
-		
-		$obj = new \Gibbon\Record\unit($this->view);
-		return $obj->getUnit($unitID, $hookID, $courseClassID);
-	}
-
-	/**
 	 * count Likes By Context
 	 *
 	 * @version	3rd May 2016

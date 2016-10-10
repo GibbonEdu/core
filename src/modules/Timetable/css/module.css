@@ -158,3 +158,13 @@ a.staffPlannerLink-70px {
 	float: right;
 	pointer-events: auto;
 }
+a.otherPlannerLink-70px {
+	margin: 43px 2px 0 0;
+	float: right;
+	pointer-events: auto;
+}
+a.attendanceLink-70px {
+	margin: 43px 2px 0 0;
+	float: right;
+	pointer-events: auto;
+}

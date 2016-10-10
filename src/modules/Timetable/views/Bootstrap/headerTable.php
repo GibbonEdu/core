@@ -11,7 +11,7 @@ else
         <tr class="info">
             <td style='vertical-align: top'>
             	<?php
-				$form = $this->getForm(null, array('q'=>! empty($q) ? $q : '', 'gibbonTTID'=>$el->record->gibbonTTID.$el->params), false);
+				$form = $this->getForm(null, array('q'=>! empty($q) ? $q : '', 'gibbonTTID'=>$el->record->gibbonTTID.$el->params, 'testme' => true), false);
 				$form->setStyle('nothing');
 				$form->setName('lastWeek');
 				
@@ -29,7 +29,7 @@ else
 				$form->render('nothing');
 				?>
             	<?php
-				$form = $this->getForm(null, array('q'=>! empty($q) ? $q : '', 'gibbonTTID'=>$el->record->gibbonTTID.$el->params), false);
+				$form = $this->getForm(null, array('q'=>! empty($q) ? $q : '', 'gibbonTTID'=>$el->record->gibbonTTID.$el->params, 'testme' => true), false);
 				$form->setStyle('nothing');
 				$form->setName('nextWeek');
 				
@@ -50,7 +50,7 @@ else
             </td>
             <td style='vertical-align: top; text-align: right'>
             	<?php
-				$form = $this->getForm(null, array('q'=>! empty($q) ? $q : '', 'gibbonTTID'=>$el->record->gibbonTTID.$el->params), false);
+				$form = $this->getForm(null, array('q'=>! empty($q) ? $q : '', 'gibbonTTID'=>$el->record->gibbonTTID.$el->params, 'testme' => true), false);
 				$form->setStyle('nothing');
 				$form->setName('ttDateForm');
 				

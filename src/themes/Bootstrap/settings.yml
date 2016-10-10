@@ -521,7 +521,10 @@ links:
         prompt: '<span class="glyphicons glyphicons-table"></span>'
     homework:
         title: 'Homework'
-        prompt: '<span class="glyphicons glyphicons-list-alt"><span class="halflings halflings-check"></span></span>'
+        prompt: '<div class="homework"><span class="glyphicons glyphicons-list-alt"></span><span class="halflings halflings-check"></span></div>'
+    rubric:
+        title: 'Rubric'
+        prompt: '<span class="glyphicons glyphicons-table></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:
@@ -557,6 +560,9 @@ linkTop:
     download:
         spanClass: glyphicons glyphicons-download
         name: Download
+    view:
+        spanClass: glyphicons glyphicons-search
+        name: View
 script:
     display: block
 tokeninput:

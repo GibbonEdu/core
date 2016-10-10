@@ -26,7 +26,7 @@ use Gibbon\core\session ;
 /**
  * Date Functions
  *
- * @version	6th October 2016
+ * @version	10th October 2016
  * @since	19th September 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -44,10 +44,10 @@ trait dateFunctions
 	 * @param	string		$date Date
 	 * @return	mixed		Date or false
 	 */
-	public static function dateConvert($date) {
+	public function dateConvert($date) {
 
 		$output = false ;
-		$session = new session();
+		$session = $this->getSession();
 		if (! empty($date)) {
 			if ($session->get("i18n.dateFormat") == "mm/dd/yyyy") {
 				$firstSlashPosition = 2 ;
@@ -74,7 +74,7 @@ trait dateFunctions
 	{
 		$output = false; ;
 		if (! empty($date)) {
-			$session = new session();
+			$session = $this->getSession();
 			$timestamp = strtotime($date) ;
 			if (! $session->isEmpty("i18n.dateFormatPHP") ) 
 				$output = date($session->get("i18n.dateFormatPHP"), $timestamp) ;
@@ -111,7 +111,7 @@ trait dateFunctions
 	public function getWeekNumber($date)
 	{
 		$week=0 ;
-		$session = new session();
+		$session = $this->getSession();
 		
 		$data=array("gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"));
 		$sql="SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
@@ -138,5 +138,22 @@ trait dateFunctions
 		else {
 			return $week ;
 		}
+	}
+
+	/**
+	 * get Session
+	 *
+	 * @version	10th October 2016
+	 * @since	10th April 2016
+	 * @return	Gibbon\core\session
+	 */
+	protected function getSession()
+	{
+		if (isset($this->session) && $this->session instanceof session)
+			return $this->session;
+		if (isset($this->view ) && isset($this->view->session) && $this->view->session instanceof session)
+			return $this->view->session;
+		$this->session = new session();
+		return $this->session ;
 	}
 }

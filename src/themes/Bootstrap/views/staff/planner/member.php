@@ -37,11 +37,16 @@
     </td>
     <td>
 		<?php
-        if ($el->likesGiven != 1) {
-			echo $this->getLink('like off', array('q'=>'/modules/Planner/plannerProcess.php', 'gibbonPlannerEntryID' => $el->gibbonPlannerEntryID, 'address'=>'/modules/Planner/planner.php', 'viewBy'=>'Class', 'gibbonCourseClassID'=> $el->gibbonCourseClassID, 'date'=>'', 'returnToIndex'=>'Y')); 
-        } else {
-			echo $this->getLink('like on', array('q'=>'/modules/Planner/plannerProcess.php', 'gibbonPlannerEntryID' => $el->gibbonPlannerEntryID, 'address'=>'/modules/Planner/planner.php', 'viewBy'=>'Class', 'gibbonCourseClassID'=> $el->gibbonCourseClassID, 'date'=>'', 'returnToIndex'=>'Y')); 
-        } ?>
+ 		if ($row->role == 'Teacher')
+			echo $el->likesGiven ;
+		else 
+		{
+		    if ($el->likesGiven != 1) {
+				echo $this->getLink('like off', array('q'=>'/modules/Planner/plannerProcess.php', 'gibbonPlannerEntryID' => $el->gibbonPlannerEntryID, 'address'=>'/modules/Planner/planner.php', 'viewBy'=>'Class', 'gibbonCourseClassID'=> $el->gibbonCourseClassID, 'date'=>'', 'returnToIndex'=>'Y')); 
+			} else {
+				echo $this->getLink('like on', array('q'=>'/modules/Planner/plannerProcess.php', 'gibbonPlannerEntryID' => $el->gibbonPlannerEntryID, 'address'=>'/modules/Planner/planner.php', 'viewBy'=>'Class', 'gibbonCourseClassID'=> $el->gibbonCourseClassID, 'date'=>'', 'returnToIndex'=>'Y')); 
+			}
+		}?>
     </td>
     <td>
 		<?php echo $this->getLink('view details', array('q'=>'/modules/Planner/planner_view_full.php', 'gibbonPlannerEntryID' => $el->gibbonPlannerEntryID, 'viewBy'=>'Class', 'gibbonCourseClassID'=> $el->gibbonCourseClassID)); ?> 

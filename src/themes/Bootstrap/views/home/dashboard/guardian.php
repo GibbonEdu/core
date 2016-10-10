@@ -26,7 +26,7 @@ for ($i=0; $i<$count; $i++) {
 		<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>
         <?php $dashboardContents = $el->getParentDashboardContents($students[$i][4]) ;
         if (! $dashboardContents ) {
-            $this->displayMessage("There are no records to display.") ;
+            $this->displayMessage("There are no records to display. " . __LINE__) ;
         }
         else {
             print $dashboardContents ;

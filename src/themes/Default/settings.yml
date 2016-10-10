@@ -509,6 +509,9 @@ links:
     homework:
         title: homework
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/homework.png' />"
+    rubric:
+        title: Rubric
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/rubric.png' />"
 linkTop:
     add:
         imageName: page_new.png

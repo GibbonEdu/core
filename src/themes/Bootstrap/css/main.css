@@ -1138,3 +1138,14 @@ button.generatePassword {
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
 	vertical-align: middle ;
 }
+.homework {
+	display: block;
+	max-height: 25px;
+	max-width: 25px;
+}
+.homework .halflings {
+    top: -15px;
+    left: 12px;
+	color: #757B81;
+    background: white;
+}

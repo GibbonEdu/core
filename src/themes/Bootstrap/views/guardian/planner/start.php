@@ -1,10 +1,4 @@
-<?php
-$links['view'] = array('q' => '/modules/Planner/planner.php', 'prompt'=>'View Planner');
-$this->linkTop($links, 'linkTop');
-$this->view->h3("Today's Lessons", array(), false);
-?>
-	
-<table cellspacing='0' style='width: 100%' class='table-striped'>
+<table cellspacing='0' style='margin: 3px 0px; width: 100%' class='table-striped'>
     <thead>
         <tr class='head'>
             <th>
@@ -12,13 +6,10 @@ $this->view->h3("Today's Lessons", array(), false);
             </th>
             <th>
             <?php echo $this->__('Lesson'); ?></br>
-            <span style='font-size: 85%; font-style: italic'>".<?php echo $this->__('Unit'); ?></span>
+            <span style='font-size: 85%; font-style: italic'>".<?php echo $this->__('Summary'); ?></span>
             </th>
             <th>
             <?php echo $this->__('Homework'); ?>
-            </th>
-            <th>
-            <?php echo $this->__('Summary');?>
             </th>
             <th>
             <?php echo $this->__('Like');?>
@@ -29,3 +20,4 @@ $this->view->h3("Today's Lessons", array(), false);
         </tr>
     </thead>
     <tbody>
+

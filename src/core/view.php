@@ -1204,6 +1204,11 @@ class view
 	 */
 	public function displayScripts()
 	{
+		if (! is_array($this->session->get('scripts')))
+		{
+			$this->session->clear('scripts');
+			return ;
+		}
 		foreach($this->session->get('scripts') as $script)
 		{ ?>
 <script type="text/javascript">

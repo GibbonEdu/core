@@ -23,7 +23,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @package	Gibbon
  * @subpackage	Controller
  */
-  
+
+opcache_reset();
+ 
 if ( ! defined( 'GIBBON_ROOT' ) )
 {
 	$path = pathinfo($_SERVER['PHP_SELF']);

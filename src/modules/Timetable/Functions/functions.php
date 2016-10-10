@@ -411,7 +411,7 @@ class functions extends mfBase
 				$this->view->render('Timetable.calendarWeekDetailsStart', $this->td);
 				
 				//Run through days of the week
-			foreach ($this->td->days as $day) {
+				foreach ($this->td->days as $day) {
 					if ($day['schoolDay'] == 'Y') {
 						$dateCorrection = ($day['sequenceNumber'] - $this->td->dateCorrectionOffSet);
 
@@ -443,7 +443,7 @@ class functions extends mfBase
 								$this->displayMessage($this->view->getRecord('schoolYearSpecialDay')->getError());
 
 							if (count($resultClosure) == 1) {
-								$xx = reset($rowClosure);
+								$xx = reset($resultClosure);
 								$rowClosure = (array) $xx->returnRecord();
 								if ($rowClosure['type'] == 'School Closure') {
 									$this->renderTTDay($row->getField('gibbonTTID'), false, $this->td->startDayStamp, $dateCorrection, $this->td->daysInWeek, $personID, $this->td->timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $this->td->diffTime, $this->td->maxAllDays, $this->td->narrow, '', '', $this->td->edit);
@@ -844,36 +844,29 @@ class functions extends mfBase
 										}
 										//Add planner link icons for any one else's TT
 										else {
-											$output .= "<div $this->td->title style='z-index: $this->td->zCount; position: absolute; top: $this->td->top; width: $this->td->width ; border: 1px solid rgba(136,136,136, $this->td->ttAlpha); height: $this->td->height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
 											//Check for lesson plan
 											$bgImg = 'none';
 	
-											try {
-												$dataPlan = array('gibbonCourseClassID' => $rowPeriods->getField('gibbonCourseClassID'), 'date' => $this->td->date, 'timeStart' => $rowPeriods->getField('timeStart'), 'timeEnd' => $rowPeriods->getField('timeEnd'));
-												$sqlPlan = 'SELECT name, gibbonPlannerEntryID 
-													FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd GROUP BY name';
-												$resultPlan = $connection2->prepare($sqlPlan);
-												$resultPlan->execute($dataPlan);
-											} catch (PDOException $e) {
-												$output .= "<div class='error'>".$e->getMessage().'</div>';
-											}
-											if ($resultPlan->rowCount() == 1) {
-												$rowPlan = $resultPlan->fetch();
-												$output .= "<a style='pointer-events: auto' href='".GIBBON_URL.'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods->getField('gibbonCourseClassID').'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."&search=$personID'><img style='float: right; margin: ".(substr($this->td->height, 0, -2) - 27)."px 2px 0 0' title='".$this->view->__('View lesson:').' '.htmlPrep($rowPlan['name'])."' src='".GIBBON_URL.'/themes/'.$this->view->session->get('theme.Name')."/img/plus.png'/></a>";
-											} elseif ($resultPlan->rowCount() > 1) {
-												$output .= "<div style='float: right; margin: ".(substr($this->td->height, 0, -2) - 17)."px 5px 0 0'>".$this->view->__('Error').'</div>';
-											}
-											$output .= '</div>';
+											$dataPlan = array('gibbonCourseClassID' => $rowPeriods->getField('gibbonCourseClassID'), 'date' => $this->td->date, 
+												'timeStart' => $rowPeriods->getField('timeStart'), 'timeEnd' => $rowPeriods->getField('timeEnd'));
+											$sqlPlan = 'SELECT name, gibbonPlannerEntryID 
+												FROM gibbonPlannerEntry 
+												WHERE gibbonCourseClassID = :gibbonCourseClassID 
+													AND date = :date 
+													AND timeStart = :timeStart 
+													AND timeEnd = :timeEnd 
+												GROUP BY name';
+											$resultPlan = $this->view->getRecord('plannerEntry')->findAll($sqlPlan, $dataPlan);
+											if (! $this->view->getRecord('plannerEntry')->getSuccess())
+												$this->view->displayMessage($this->view->getRecord('plannerEntry')->getError());
+											$this->td->plan = $resultPlan ;
+											$this->view->render('Timetable.dayColumn.otherPlannerLinks', $this->td);
 											++$this->td->zCount;
 										}
 								}
 								//Show exception editing
 								elseif ($this->td->edit) {
-									$output .= "<div $this->td->title style='z-index: $this->td->zCount; position: absolute; top: $this->td->top; width: $this->td->width ; border: 1px solid rgba(136,136,136, $this->td->ttAlpha); height: $this->td->height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
-										//Check for lesson plan
-										$bgImg = 'none';
-									$output .= "<a style='pointer-events: auto' href='".GIBBON_URL.'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$TTID&gibbonSchoolYearID=".$this->view->session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods->getField('gibbonTTDayRowClassID').'&gibbonCourseClassID='.$rowPeriods->getField('gibbonCourseClassID')."'><img style='float: right; margin: ".(substr($this->td->height, 0, -2) - 27)."px 2px 0 0' title='".$this->view->__('Manage Exceptions')."' src='".GIBBON_URL.'/themes/'.$this->view->session->get('theme.Name')."/img/attendance.png'/></a>";
-									$output .= '</div>';
+									$this->view->render('Timetable.dayColumn.attendanceLinks', $this->td);
 									++$this->td->zCount;
 								}
 							}
@@ -1119,5 +1112,83 @@ class functions extends mfBase
 	
 		return $eventsSchool;
 	}
+
+	/**
+	 * get Space Booking Events
+	 *
+	 * Returns space bookings for the specified user for the 7 days on/after $startDayStamp, or for all users for the 7 days on/after $startDayStamp if no user specified
+	 * @version	8th Ocyober 2016
+	 * @since	8th Ocyober 2016
+	 * @param	integer		$startDayStamp
+	 * @param	integer		$personID
+	 * @return	array / false
+	 */
+	public function getSpaceBookingEvents($startDayStamp, $personID = 0)
+	{
+		$return = false;
 	
+		if (! empty($personID)) {
+			$dataSpaceBooking = array('gibbonPersonID1' => $personID, 'gibbonPersonID2' => $personID, 
+				'foreignKey'=>'gibbonSpaceID', 'foreignKey2' => 'gibbonLibraryItemID', 'date1' => date('Y-m-d', $startDayStamp), 
+				'date2' => date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60))), 'date3' => date('Y-m-d', $startDayStamp), 
+				'date4' => date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60))));
+			$sqlSpaceBooking = "(SELECT gibbonTTSpaceBooking.*, name
+				FROM gibbonTTSpaceBooking 
+					JOIN gibbonSpace ON gibbonTTSpaceBooking.foreignKeyID = gibbonSpace.gibbonSpaceID
+					JOIN gibbonPerson ON gibbonTTSpaceBooking.gibbonPersonID = gibbonPerson.gibbonPersonID
+				WHERE foreignKey = :foreignKey
+					AND gibbonTTSpaceBooking.gibbonPersonID = :gibbonPersonID1 
+					AND date >= :date1 
+					AND date <= :date2
+				UNION (SELECT gibbonTTSpaceBooking.*, name
+					FROM gibbonTTSpaceBooking 
+						JOIN gibbonLibraryItem ON gibbonTTSpaceBooking.foreignKeyID = gibbonLibraryItem.gibbonLibraryItemID
+						JOIN gibbonPerson ON gibbonTTSpaceBooking.gibbonPersonID = gibbonPerson.gibbonPersonID
+					WHERE foreignKey = :foreignKey2
+						AND gibbonTTSpaceBooking.gibbonPersonID = :gibbonPersonID2 
+						AND date >= :date3
+						AND date <= :date4
+				ORDER BY date, timeStart, name";
+		} else {
+			$dataSpaceBooking = array('gibbonPersonID1' => $personID, 'gibbonPersonID2' => $personID, 
+				'foreignKey'=>'gibbonSpaceID', 'foreignKey2' => 'gibbonLibraryItemID', 'date1' => date('Y-m-d', $startDayStamp), 
+				'date2' => date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60))), 'date3' => date('Y-m-d', $startDayStamp), 
+				'date4' => date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60))));
+			$sqlSpaceBooking = "(SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName 
+				FROM gibbonTTSpaceBooking 
+					JOIN gibbonSpace ON gibbonTTSpaceBooking.foreignKeyID = gibbonSpace.gibbonSpaceID
+					JOIN gibbonPerson ON gibbonTTSpaceBooking.gibbonPersonID = gibbonPerson.gibbonPersonID
+				WHERE foreignKey = :foreignKey 
+					AND date >= :date1 
+					AND date <= :date2
+				UNION (SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName 
+					FROM gibbonTTSpaceBooking 
+						JOIN gibbonLibraryItem ON gibbonTTSpaceBooking.foreignKeyID = gibbonLibraryItem.gibbonLibraryItemID
+						JOIN gibbonPerson ON gibbonTTSpaceBooking.gibbonPersonID = gibbonPerson.gibbonPersonID
+					WHERE foreignKey = :foreignKey2 
+						AND date >= :date3
+						AND date <= :date4
+					ORDER BY date, timeStart, name";
+		}
+		$resultSpaceBooking = $this->view->getRecord('TTSpaceBooking')->findAll($sqlSpaceBooking);
+
+		if (count($resultSpaceBooking) > 0) {
+			$return = array();
+			$count = 0;
+			foreach ($resultSpaceBooking as $rowSpaceBooking) {
+				$return[$count][0] = $rowSpaceBooking->gibbonTTSpaceBookingID;
+				$return[$count][1] = $rowSpaceBooking->name;
+				$return[$count][2] = $rowSpaceBooking->gibbonPersonID;
+				$return[$count][3] = $rowSpaceBooking->date;
+				$return[$count][4] = $rowSpaceBooking->timeStart;
+				$return[$count][5] = $rowSpaceBooking->timeEnd;
+				$this->view->getRecord('person');
+				$this->view->getRecord('person')->find($rowSpaceBooking->gibbonPersonID);
+				$return[$count][6] = $this->view->getRecord('person')->formatName();
+				++$count;
+			}
+		}
+	
+		return $return;
+	}
 }

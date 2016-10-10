@@ -23,7 +23,7 @@ namespace Gibbon\Record ;
 /**
  * Hook Record
  *
- * @version	27th May 2016
+ * @version	9th October 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -155,5 +155,24 @@ class hook extends record
 	public function findAllByType($type)
 	{
 		return $this->findAllBy(array('type' => $type), array('name'=>'ASC'));
+	}
+	
+	/**
+	 * include Hook
+	 *
+	 * @version	9th October 2016
+	 * @since	9th October 2016
+	 * @param	string		$q
+	 * @param	boolean		$errorDisplay
+	 * @return	string
+	 */
+	public function includeHook($q, $errorDisplay = true)
+	{
+		if (file_exists(GIBBON_ROOT . 'src' . $q))
+			return include GIBBON_ROOT . 'src' . $q ;
+		elseif (file_exists(GIBBON_ROOT . ltrim($q, '/')))
+			return include GIBBON_ROOT . ltrim($q, '/') ;
+		if ($errorDisplay)
+			return $this->view->returnMessage('The selected page cannot be displayed due to a hook error.');
 	}
 }
