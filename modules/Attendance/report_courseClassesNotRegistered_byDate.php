@@ -130,7 +130,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 	</form>
 	<?php
 
-    if ($dateStart != '') {
+    if ( count($lastNSchoolDays) == 0 ) {
+        echo "<div class='error'>";
+        echo __($guid, 'School is closed on the specified date, and so attendance information cannot be recorded.');
+        echo '</div>';
+    }
+    else if ($dateStart != '') {
         echo '<h2>';
         echo __($guid, 'Report Data');
         echo '</h2>';

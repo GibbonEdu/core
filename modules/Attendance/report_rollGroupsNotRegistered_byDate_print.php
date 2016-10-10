@@ -76,7 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    if ($result->rowCount() < 1) {
+    if ( count($lastNSchoolDays) == 0 ) {
+        echo "<div class='error'>";
+        echo __($guid, 'School is closed on the specified date, and so attendance information cannot be recorded.');
+        echo '</div>';
+    } else if ($result->rowCount() < 1) {
         echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
         echo '</div>';
