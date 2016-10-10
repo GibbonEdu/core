@@ -29,6 +29,9 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
@@ -112,14 +115,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     }
                 }
             }
-            if ($_POST['gibbonRubricIDAttainment'] == '') {
+            if ($enableRubrics != 'Y') {
                 $gibbonRubricIDAttainment = null;
-            } else {
-                $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'];
+            }
+            else {
+                if ($_POST['gibbonRubricIDAttainment'] == '') {
+                    $gibbonRubricIDAttainment = null;
+                } else {
+                    $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'];
+                }
             }
         }
         //Sort out effort
-        $effort = $_POST['effort'];
+        if ($enableEffort != 'Y') {
+            $effort = 'N';
+        }
+        else {
+            $effort = $_POST['effort'];
+        }
         if ($effort == 'N') {
             $gibbonScaleIDEffort = null;
             $gibbonRubricIDEffort = null;
@@ -129,10 +142,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             } else {
                 $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'];
             }
-            if ($_POST['gibbonRubricIDEffort'] == '') {
+            if ($enableRubrics != 'Y') {
                 $gibbonRubricIDEffort = null;
-            } else {
-                $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'];
+            }
+            else {
+                if ($_POST['gibbonRubricIDEffort'] == '') {
+                    $gibbonRubricIDEffort = null;
+                } else {
+                    $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'];
+                }
             }
         }
         $comment = $_POST['comment'];

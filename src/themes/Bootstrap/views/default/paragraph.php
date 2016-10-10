@@ -1,0 +1,1 @@
+<p><?php echo $this->__($params->message, isset($params->messageDetails) ? $params->messageDetails : array()); ?></p><!-- default.paragraph -->

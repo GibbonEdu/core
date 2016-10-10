@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Field Values') ?></h3>
 				</td>
 			</tr>
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -142,9 +142,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Privacy Options') ?></h3>
 				</td>
 			</tr>
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -209,9 +209,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'User Interface Options') ?></h3>
 				</td>
 			</tr>
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -236,9 +236,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Day-Type Options') ?></h3>
 					<p><?php echo __($guid, 'Allows for choice of different day-types (e.g. full-day, half-day).') ?></p>
 				</td>
@@ -253,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -271,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -279,8 +279,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

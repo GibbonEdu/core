@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
             echo "<div class='error'>";
             echo __($guid, 'Your request failed because you do not have access to this action.');
             echo '</div>';
+            return;
         }
 
         //Get class variable
@@ -120,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                if ($teaching) {
+                if ($teaching || $highestAction == 'Manage Weightings_everything') {
                     echo "<div class='linkTop'>";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                     echo '</div>';
@@ -268,12 +269,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     }
 
 
-                    echo '<br/>&nbsp;<br/>';
                 }
-                
-                
-                
+
+                echo '<br/>&nbsp;<br/>';
+
+                echo '<h3>';
+                echo __($guid, 'Copy Weightings');
+                echo '</h1>';
+
+                echo "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
+                echo '<tr>';
+                echo "<td style='vertical-align: top'>";
+
+                echo '</td>';
+                echo "<td style='vertical-align: top; text-align: right'>";
+                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/weighting_manage_copyProcess.php?gibbonCourseClassID=$gibbonCourseClassID'>";
+
+                echo "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Copy from')." ".__($guid, 'Class').": </span>";
+                echo "<select name='gibbonWeightingCopyClassID' id='gibbonWeightingCopyClassID' style='width:193px; float: none;'>";
+                echo "<option value=''></option>";
+                try {
+                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sqlSelect = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonMarkbookWeight ON (gibbonMarkbookWeight.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
+                    $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+                } catch (PDOException $e) {
+                }
+                $selectCount = 0;
+
+                echo "<optgroup label='--".__($guid, 'My Classes')."--'>";
+                while ($rowSelect = $resultSelect->fetch()) {
+                    if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) continue; // Skip the current class
+                    echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+                }
+                echo '</optgroup>';
+                try {
+                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sqlSelect = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonMarkbookWeight ON (gibbonMarkbookWeight.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
+                    $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+                } catch (PDOException $e) {
+                }
+                echo "<optgroup label='--".__($guid, 'All Classes')."--'>";
+                while ($rowSelect = $resultSelect->fetch()) {
+                    if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) continue; // Skip the current class
+                    echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+                }
+                echo '</optgroup>';
+                echo '</select>';
+                echo "<input type='submit' value='".__($guid, 'Go')."'>";
+                echo '</form>';
+                echo '</td>';
+                echo '</tr>';
+                echo '</table>';
+                  
             }
         }
+
+        
+
     }
 }

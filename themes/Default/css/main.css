@@ -166,6 +166,7 @@ div.trailEnd {
 }
 div.trailHead {
 	float: left;
+	white-space: nowrap;
 }
 div.trailHead a {
 	text-decoration: underline;
@@ -608,11 +609,6 @@ tr.dull, tr.dull td, div.dull, td.dull {
 
 
 /* ALT TABLE STYLES */
-table.noIntBorder td {
-	border: none!important ;
-	padding: 5px!important ;
-	background: #EDF7FF ;
-}
 table.noIntBorder td:last-child {
 	text-align: left;
 }
@@ -664,6 +660,12 @@ table.mceToolbar {
 }
 td.mceIframeContainer {
 	background-color: white!important ;
+}
+table.noIntBorder td {
+	border: none!important ;
+	padding: 5px!important ;
+	background: none ;
+	background-color: #EDF7FF!important ;
 }
 
 
@@ -1223,4 +1225,8 @@ div.blockOuter {
 }
 h1.bigTop, h2.bigTop, h3.bigTop, h4.bigTop, h5.bigTop, h6.bigTop {
 	margin-top: 50px!important;
+}
+#siteloader img {
+	width: 260px;
+	margin: -5px 0 0 -5px;
 }

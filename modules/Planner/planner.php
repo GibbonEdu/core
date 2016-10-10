@@ -140,17 +140,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     echo __($guid, 'Choose');
                     echo '</h2>'; ?>
 					<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-						<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='noIntBorder' cellspacing='0' style="width: 100%">
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Search For') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
 								</td>
 								<td class="right">
 									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
-										<?php echo $options; ?> 
+										<?php echo $options; ?>
 									</select>
 								</td>
 							</tr>
@@ -818,24 +818,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         }
                                         ++$count;
 
-                                            //Highlight class in progress
-                                            if ((date('Y-m-d') == $row['date']) and (date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd'])) {
-                                                $rowNum = 'current';
-                                            }
+                                        //Highlight class in progress
+                                        if ((date('Y-m-d') == $row['date']) and (date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd'])) {
+                                            $rowNum = 'current';
+                                        }
 
-                                            //Dull out past classes
-                                            if ((($row['date']) == date('Y-m-d') and (date('H:i:s') > $row['timeEnd'])) or ($row['date']) < date('Y-m-d')) {
-                                                $rowNum = 'past';
-                                                if ($pastCount == 0) {
-                                                    echo "<tr style='padding: 0px; height: 2px; background-color: #000'>";
-                                                    echo "<td style='padding: 0px' colspan=8>";
-                                                    echo '</tr>';
-                                                }
-                                                ++$pastCount;
+                                        //Dull out past classes
+                                        if ((($row['date']) == date('Y-m-d') and (date('H:i:s') > $row['timeEnd'])) or ($row['date']) < date('Y-m-d')) {
+                                            $rowNum = 'past';
+                                            if ($pastCount == 0) {
+                                                echo "<tr style='padding: 0px; height: 2px; background-color: #000'>";
+                                                echo "<td style='padding: 0px' colspan=8>";
+                                                echo '</tr>';
                                             }
+                                            ++$pastCount;
+                                        }
 
-                                            //COLOR ROW BY STATUS!
-                                            echo "<tr class=$rowNum>";
+                                        //COLOR ROW BY STATUS!
+                                        echo "<tr class=$rowNum>";
                                         echo '<td>';
                                         if (!(is_null($row['date']))) {
                                             echo '<b>'.dateConvertBack($guid, $row['date']).'</b><br/>';
@@ -908,6 +908,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_edit.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_bump.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__($guid, 'Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_delete.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                                        }
+                                        if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_duplicate.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
                                         }
                                         echo '</td>';

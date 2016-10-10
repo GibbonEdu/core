@@ -115,7 +115,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>

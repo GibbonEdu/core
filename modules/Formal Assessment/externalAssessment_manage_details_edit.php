@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
 					try {
 						$dataField = array('gibbonExternalAssessmentID' => $row['gibbonExternalAssessmentID'], 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-						$sqlField = 'SELECT gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
+						$sqlField = 'SELECT gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
 						$resultField = $connection2->prepare($sqlField);
 						$resultField->execute($dataField);
 					} catch (PDOException $e) {
@@ -228,9 +228,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								echo "<td class='right'>";
 								echo "<span style='font-weight: bold'>".__($guid, 'Grade').'</span>';
 								echo '</td>';
-								echo "<td class='right'>";
-								echo "<span style='font-weight: bold' title='".__($guid, 'Primary Assessment Scale Grade')."'>".__($guid, 'PAS Grade').'</span>';
-								echo '</td>';
 								echo '</tr>';
 							}
 							?>
@@ -242,10 +239,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 									<input name="<?php echo $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php echo $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php echo $rowField['gibbonExternalAssessmentStudentEntryID'] ?>" type="hidden">
 									<?php
                                         echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'id', $rowField['gibbonScaleGradeID']); ?>
-								</td>
-								<td class="right">
-									<?php
-                                        echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150', 'id', $rowField['gibbonScaleGradeIDPrimaryAssessmentScale']); ?>
 								</td>
 							</tr>
 							<?php
