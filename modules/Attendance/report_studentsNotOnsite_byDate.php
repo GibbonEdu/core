@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                             echo $row['rollGroupName'];
                         echo '</td>';
                         echo '<td>';
-                            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                            echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                         echo '</td>';
                         echo '<td>';
                         $rowRollAttendance = null;
