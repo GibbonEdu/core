@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         try {
             $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$today-0-0-0"); //"$today-23-59-59"
-            $sqlLog = "SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND type='Absent' AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
+            $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
             $resultLog = $connection2->prepare($sqlLog);
             $resultLog->execute($dataLog);
         } catch (PDOException $e) {
@@ -186,14 +186,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         }
 
         if ($resultLog->rowCount() > 0) {
-            echo "<div class='success'>";
-            echo __($guid, 'The following future absences have been set for the selected student.');
-            echo '<ul>';
-            while ($rowLog = $resultLog->fetch()) {
-                echo "<li style='line-height: 250%'><b>".dateConvertBack($guid, substr($rowLog['date'], 0, 10)).'</b> | '.sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), formatName($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true))." <a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&date=".$rowLog['date']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a></li>";
-            }
-            echo '</ul>';
-            echo '</div>';
+        	echo '<h4>';
+	    		echo __($guid, 'Attendance Log');
+	    	echo '</h4>';
+			    	
+            echo "<p><span class='emphasis small'>";
+            	echo __($guid, 'The following future absences have been set for the selected student.');
+            echo '</span></p>';
+
+            echo '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+	        echo '<tr class="head">';
+	        	echo '<th>'.__($guid, 'Date').'</th>';
+	        	echo '<th>'.__($guid, 'Attendance').'</th>';
+	        	echo '<th>'.__($guid, 'Where').'</th>';
+	        	echo '<th>'.__($guid, 'Recorded By').'</th>';
+	        	echo '<th>'.__($guid, 'On').'</th>';
+	        	echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
+	        	
+	        echo '</tr>';
+	        while ($rowLog = $resultLog->fetch()) {
+
+	            echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
+
+	            echo '<td>'.date("M j", strtotime($rowLog['date']) ).'</td>';
+	  
+
+				echo '<td>';
+	            echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
+
+	            if ( !empty($rowLog['comment']) ) { 
+	            	echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
+	        	}
+	            echo '</td>';
+	            
+
+	            if ( empty($rowLog['gibbonCourseClassID']) || $rowLog['gibbonCourseClassID'] == 0 ) {
+	            	echo '<td>'.__($guid, 'Roll Group').'</td>';
+	            } else {
+	            	echo '<td>'.$rowLog['courseName'].'.'.$rowLog['className'].'</td>';
+	        	}
+
+	            echo '<td>';
+	            	echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
+	            echo '</td>';
+
+	            echo '<td>'.date("g:i a, M j", strtotime($rowLog['timestampTaken']) ).'</td>';
+
+
+            	echo '<td>';
+		            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&gibbonAttendanceLogPersonID=".$rowLog['gibbonAttendanceLogPersonID']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+	            echo '</td>';
+
+	            echo '</tr>';
+	        }
+	        echo '</table><br/>';
         }
 
        

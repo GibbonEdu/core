@@ -34,7 +34,7 @@ $connection2 = $pdo->getConnection();
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
-$date = $_GET['date'];
+$gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
@@ -43,14 +43,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 } else {
     //Proceed!
     //Check if planner specified
-    if ($gibbonPersonID == '' or $date == '') {
+    if ($gibbonPersonID == '' or $gibbonAttendanceLogPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         //UPDATE
         try {
-            $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $date);
-            $sql = 'DELETE FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date';
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID);
+            $sql = 'DELETE FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
