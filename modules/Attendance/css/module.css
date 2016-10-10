@@ -17,6 +17,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+.verticalHeader {
+	padding: 4px !important;
+	width: 40px;
+	min-width: 40px;
+	max-width: 40px;
+	height: 80px;
+}
+
+.verticalText {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	/*transform-origin: 14px 0;*/
+	white-space: nowrap;
+	/*padding-left: 15px;*/
+	margin-top: 18px;
+}
+
+th span.small {
+	font-weight: normal;
+}
+
+td.center {
+	text-align: center;
+}
 
 .historyCalendar td,
 .historyCalendar td:first-child {

@@ -39,7 +39,7 @@ function getDateRange($guid, $connection2, $first, $last, $step = '+1 day', $out
     return $dates;
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentsNotOnsite_byDate.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_byType.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Attendance Trends by Type').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Attendance Trends').'</div>';
     echo '</div>';
 
     echo '<h2>';
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Date') ?> *</b><br/>
+					<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 						echo 'dd/mm/yyyy';
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
             foreach ($rows as $row) {
                 if ( isset($data[ $row['reason'] ][ $row['date'] ]) ) {
-                    $data[ $row['reason'] ][ $row['date'] ] = $row['count'];
+                    $data[ $row['reason'] ][ $row['date'] ] += $row['count'];
                 }  
                 
             }
