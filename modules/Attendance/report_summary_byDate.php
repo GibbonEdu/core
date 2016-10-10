@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
-    $group = !empty($_POST['group'])? $_POST['group'] : 'all';
+    $group = !empty($_POST['group'])? $_POST['group'] : '';
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
     $gibbonCourseClassID = (isset($_POST["gibbonCourseClassID"]))? $_POST["gibbonCourseClassID"] : 0;
@@ -124,6 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 </td>
                 <td class="right">
                     <select id="group" name="group" class="standardWidth">
+                    <option value="" <?php if ($group == '') { echo 'selected'; } ?>><?php echo __($guid, 'Please select...'); ?></option>
                         <option value="all" <?php if ($group == 'all') { echo 'selected'; } ?>><?php echo __($guid, 'All Students'); ?></option>
                         <?php if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
                         <option value="class" <?php if ($group == 'class') { echo 'selected'; } ?>><?php echo __($guid, 'Class'); ?></option>
@@ -159,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 <td class="right">
                     <select style="width: 302px" name="gibbonCourseClassID">
                         <?php
-                        print "<option value=''>" . _('Please select...') . "</option>" ;
+                        echo "<option value=''>" . __($guid, 'Please select...') . "</option>" ;
 
                         try {
                             $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -193,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 <td class="right">
                     <select class="standardWidth" name="gibbonRollGroupID">
                         <?php
-                        echo "<option value=''></option>";
+                        echo "<option value=''>" . __($guid, 'Please select...') . "</option>" ;
                         try {
                             $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                             $sqlSelect = "SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y' ORDER BY LENGTH(name), name";
@@ -236,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 	</form>
 	<?php
 
-    if ($dateStart != '') {
+    if ($dateStart != '' && $group != '') {
         echo '<h2>';
         echo __($guid, 'Report Data');
         echo '</h2>';
