@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input readonly name="teacher" id="teacher" value="<? echo substr($row["timestampTaken"],11).' '.dateConvertBack($guid, substr($row["timestampTaken"],0,10)); ?>" type="text" class="standardWidth">
+								<input readonly name="teacher" id="teacher" value="<?php echo substr($row["timestampTaken"],11).' '.dateConvertBack($guid, substr($row["timestampTaken"],0,10)); ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input readonly name="teacher" id="teacher" value="<? echo ($row['gibbonCourseClassID'] == 0)? __($guid, 'Roll Group') : $row['courseName'].'.'.$row['className']; ?>" type="text" class="standardWidth">
+								<input readonly name="teacher" id="teacher" value="<?php echo ($row['gibbonCourseClassID'] == 0)? __($guid, 'Roll Group') : $row['courseName'].'.'.$row['className']; ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 

@@ -295,7 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                         ?>  
                         ],
                     },
-                    <? 
+                    <?php 
                     $datasetCount++;
                     endforeach;
                     ?>
