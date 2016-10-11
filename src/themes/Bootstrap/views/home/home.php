@@ -42,7 +42,7 @@ if ($this->session->isEmpty("username")) {
 	}
 	
 	//Get any elements hooked into public home page, checking if they are turned on
-	$resultHook = $this->view->getRecord('hook')->findAllByType('Public Home Page');
+	$resultHook = $this->getRecord('hook')->findAllByType('Public Home Page');
 
 	while (! empty($resultHook) && $rowHook=$resultHook->fetch()) {
 		$options = unserialize(str_replace("'", "\'", $rowHook["options"])) ;

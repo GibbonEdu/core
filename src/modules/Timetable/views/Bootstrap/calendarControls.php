@@ -1,13 +1,13 @@
 <tr class='head' style='height: 37px;'>
     <th class='ttCalendarBar' colspan='<?php echo $el->daysInWeek + 1?>'>
     	<?php
-		$form = $this->getForm(null, array('q' => ! empty($el->q) ? '?q='.$el->q : ''), false, 'calendarView');
+		$form = $this->getForm(null, array('q' => (! empty($el->q) ? '?q='.$el->q : '')), false, 'calendarView');
 		$form->setStyle('nothing');
 		$form->setName('calendarView');
 		
 		if ($this->session->notEmpty('calendarFeed') && $this->session->notEmpty('googleAPIAccessToken')) {
-			$w = $form->addElement('checkbox', 'schoolCalendar', null);
-			if ($this->session->get('viewCalendarSchool') == 'Y')
+			$w = $form->addElement('checkbox', 'schoolCalendar', 'Y');
+			if ($this->session->get('viewCalendar.School'))
 				$w->setChecked();
 			$w->span->class = 'ttSchoolCalendar';
 			$w->span->style = 'opacity: ' . $el->schoolCalendarAlpha;
@@ -17,8 +17,8 @@
 		}
 		
 		if ($this->session->notEmpty('calendarFeedPersonal') && $this->session->notEmpty('googleAPIAccessToken')) {
-			$w = $form->addElement('checkbox', 'personalCalendar', null);
-			if ($this->session->get('viewCalendarPersonal') == 'Y')
+			$w = $form->addElement('checkbox', 'personalCalendar', 'Y');
+			if ($this->session->get('viewCalendar.Personal'))
 				$w->setChecked();
 			$w->span->class = 'ttPersonalCalendar';
 			$w->span->style = 'opacity: ' . $el->schoolCalendarAlpha;
@@ -27,9 +27,9 @@
 			$w->onClickSubmit();
 		}
 
-		if ($el->spaceBookingAvailable && $this->session->notEmpty('viewCalendarSpaceBooking')) {
-			$w = $form->addElement('checkbox', 'spaceBookingCalendar', null);
-			if ($this->session->get('viewCalendarSpaceBooking') == 'Y')
+		if ($el->spaceBookingAvailable) {
+			$w = $form->addElement('checkbox', 'spaceBookingCalendar', 'Y');
+			if ($this->session->get('viewCalendar.SpaceBooking'))
 				$w->setChecked();
 			$w->span->class = 'ttSpaceBookingCalendar';
 			$w->span->style = 'opacity: ' . $el->schoolCalendarAlpha;

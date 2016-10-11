@@ -79,7 +79,7 @@ class functions extends mfBase
 		if ($this->view->getSecurity()->isActionAccessible('/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
 			$proceed = true;
 		} else {
-			if ($this->view->session->get('gibbonSchoolYearIDCurrent') == $this->view->session->get('gibbonSchoolYearID')) {
+			if ($this->session->get('gibbonSchoolYearIDCurrent') == $this->session->get('gibbonSchoolYearID')) {
 				$proceed = true;
 			}
 		}
@@ -88,18 +88,17 @@ class functions extends mfBase
 			$this->displayMessage('You do not have permission to access this timetable at this time.');
 		} else {
 			$self = false;
-			if ($personID == $this->view->session->get('gibbonPersonID') && ! $this->td->edit) {
+			if ($personID == $this->session->get('gibbonPersonID') && ! $this->td->edit) {
 				$self = true;
+
 				//Update display choices
-				if ($this->view->session->get('viewCalendarSchool') !== false || $this->view->session->get('viewCalendarPersonal') !== false && $this->view->session->get('viewCalendarSpaceBooking') !== false) {
-					$person = $this->view->getRecord('person');
-					$person->find($this->view->session->get('gibbonPersonID'));
-					$person->setField('viewCalendarSchool', $this->view->session->get('viewCalendarSchool'));
-					$person->setField('viewCalendarPersonal', $this->view->session->get('viewCalendarPersonal'));
-					$person->setField('viewCalendarSpaceBooking', $this->view->session->get('viewCalendarSpaceBooking'));
-					if (!$person->writeRecord(array('viewCalendarSchool', 'viewCalendarPersonal', 'viewCalendarSpaceBooking')))
-						$this->displayMessage($person->getEWrror());
-				}
+				$person = $this->view->getRecord('person');
+				$person->find($this->session->get('gibbonPersonID'));
+				$person->setField('viewCalendarSchool', ($this->session->get('viewCalendar.School') ? 'Y' : 'N'));
+				$person->setField('viewCalendarPersonal', ($this->session->get('viewCalendar.Personal') ? 'Y' : 'N'));
+				$person->setField('viewCalendarSpaceBooking', ($this->session->get('viewCalendar.SpaceBooking') ? 'Y' : 'N'));
+				if (! $person->writeRecord(array('viewCalendarSchool', 'viewCalendarPersonal', 'viewCalendarSpaceBooking')))
+					$this->view->displayMessage($person->getError());
 			}
 	
 			$blank = true;
@@ -107,7 +106,7 @@ class functions extends mfBase
 	
 			$ttObj = $this->view->getRecord("TT");
 			//Find out which timetables I am involved in this year
-			$data = array('gibbonSchoolYearID' => $this->view->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $personID);
+			$data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $personID);
 			$sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name 
 				FROM gibbonTT 
 					JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) 
@@ -123,7 +122,7 @@ class functions extends mfBase
 	
 			//If I am not involved in any timetables display all within the year
 			if (count($result) == 0) {
-				$data = array('gibbonSchoolYearID' => $this->view->session->get('gibbonSchoolYearID'));
+				$data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'));
 				$sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name 
 					FROM gibbonTT 
 					WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
@@ -140,7 +139,7 @@ class functions extends mfBase
 			if (count($result) > 1) {
 				$this->view->render('Timetable.otherTT', $this->td);
 				if (! empty($TTID)) {
-					$data = array('schoolYearID' => $this->view->session->get('gibbonSchoolYearID'), 'gibbonTTID' => $TTID, 'personID' => $personID);
+					$data = array('schoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonTTID' => $TTID, 'personID' => $personID);
 					$sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name 
 						FROM gibbonTT 
 						JOIN gibbonTTDay ON gibbonTT.gibbonTTID = gibbonTTDay.gibbonTTID
@@ -197,16 +196,16 @@ class functions extends mfBase
 				$this->td->schoolCalendarAlpha = 0.85;
 				$this->td->ttAlpha = 1.0;
 	
-				if ($this->view->session->get('viewCalendarSchool') != 'N' || $this->view->session->get('viewCalendarPersonal') != 'N' || $this->view->session->get('viewCalendarSpaceBooking') != 'N') {
+				if ($this->session->get('viewCalendar.School') || $this->session->get('viewCalendar.Personal') || $this->session->get('viewCalendar.SpaceBooking')) {
 					$this->td->ttAlpha = 0.75;
 				}
 	
 				//Get school calendar array
 				$allDay = false;
 				$eventsSchool = false;
-				if ($self && $this->view->session->get('viewCalendarSchool') == 'Y') {
-					if ($this->view->session->notEmpty('calendarFeed')) {
-						$eventsSchool = $this->getCalendarEvents($this->view->session->get('calendarFeed'), $this->td->startDayStamp, $this->td->endDayStamp);
+				if ($self && $this->session->get('viewCalendar.School')) {
+					if ($this->session->notEmpty('calendarFeed')) {
+						$eventsSchool = $this->getCalendarEvents($this->session->get('calendarFeed'), $this->td->startDayStamp, $this->td->endDayStamp);
 					}
 					//Any all days?
 					if ($eventsSchool != false) {
@@ -220,9 +219,9 @@ class functions extends mfBase
 	
 				//Get personal calendar array
 				$eventsPersonal = false;
-				if ($self && $this->view->session->get('viewCalendarPersonal') == 'Y') {
-					if ($this->view->session->notEmpty('calendarFeedPersonal') != '') {
-						$eventsPersonal = $this->getCalendarEvents($this->view->session->get('calendarFeedPersonal'), $this->td->startDayStamp, $this->td->endDayStamp);
+				if ($self && $this->session->get('viewCalendar.Personal')) {
+					if ($this->session->notEmpty('calendarFeedPersonal') != '') {
+						$eventsPersonal = $this->getCalendarEvents($this->session->get('calendarFeedPersonal'), $this->td->startDayStamp, $this->td->endDayStamp);
 					}
 					//Any all days?
 					if ($eventsPersonal != false) {
@@ -238,8 +237,8 @@ class functions extends mfBase
 				$eventsSpaceBooking = false;
 				if ($this->td->spaceBookingAvailable) {
 					//Get space booking array
-					if ($self && $this->view->session->get('viewCalendarSpaceBooking') == 'Y') {
-						$eventsSpaceBooking = $this->getSpaceBookingEvents($this->td->startDayStamp, $this->view->session->get('gibbonPersonID'));
+					if ($self && $this->session->get('viewCalendar.SpaceBooking')) {
+						$eventsSpaceBooking = $this->getSpaceBookingEvents($this->td->startDayStamp, $this->session->get('gibbonPersonID'));
 					}
 				}
 	
@@ -417,7 +416,7 @@ class functions extends mfBase
 
 						//Check to see if day is term time
 						$isDayInTerm = false;
-						$dataTerm = array('schoolYearID' => $this->view->session->get('gibbonSchoolYearID'));
+						$dataTerm = array('schoolYearID' => $this->session->get('gibbonSchoolYearID'));
 						$sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay 
 							FROM gibbonSchoolYearTerm, gibbonSchoolYear 
 							WHERE gibbonSchoolYearTerm.gibbonSchoolYearID = gibbonSchoolYear.gibbonSchoolYearID 
@@ -500,14 +499,14 @@ class functions extends mfBase
 		$this->td->validDay = false;
 		$this->td->diffTime = $diffTime ;
 	
-		if ($this->view->session->get('viewCalendarSchool') != 'N' or $this->view->session->get('viewCalendarPersonal') != 'N' or $this->view->session->get('viewCalendarSpaceBooking') != 'N') 
+		if ($this->session->get('viewCalendar.School') || $this->session->get('viewCalendar.Personal') || $this->session->get('viewCalendar.SpaceBooking')) 
 			$this->td->ttAlpha = 0.75;
 	
 		$this->td->date = date('Y-m-d', ($this->td->startDayStamp + (86400 * $count)));
 		$self = false;
-		if ($personID == $this->view->session->get('gibbonPersonID') && ! $this->td->edit) {
+		if ($personID == $this->session->get('gibbonPersonID') && ! $this->td->edit) {
 			$self = true;
-			$roleCategory = $this->view->getSecurity()->getRoleCategory($this->view->session->get('gibbonRoleIDCurrent'));
+			$roleCategory = $this->view->getSecurity()->getRoleCategory($this->session->get('gibbonRoleIDCurrent'));
 		}
 	
 		if ($this->td->narrow == 'trim') {
@@ -997,7 +996,7 @@ class functions extends mfBase
 	{
 		$googleOAuth = $this->view->config->getSettingByScope('System', 'googleOAuth');
 	
-		if ($googleOAuth == 'Y' && $this->view->session->notEmpty('googleAPIAccessToken')) {
+		if ($googleOAuth == 'Y' && $this->session->notEmpty('googleAPIAccessToken')) {
 			$eventsSchool = array();
 			$start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
 			$end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
@@ -1005,7 +1004,7 @@ class functions extends mfBase
 			require_once GIBBON_ROOT. 'vendor/autoload.php';  //new autoloader..
 	
 			$client = new \Google_Client();
-			$client->setAccessToken($this->view->session->get('googleAPIAccessToken'));
+			$client->setAccessToken($this->session->get('googleAPIAccessToken'));
 	
 			if ($client->isAccessTokenExpired()) { //Need to refresh the token
 				//Get API details
@@ -1023,12 +1022,14 @@ class functions extends mfBase
 				$client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
 				$client->setDeveloperKey($googleDeveloperKey); // Developer key
 				$client->setAccessType('offline');
-				if ($this->view->session->isEmpty('googleAPIRefreshToken')) {
-					$this->view->displayMessage('Your request failed due to a database error.');
+				if ($this->session->isEmpty('googleAPIRefreshToken')) {
+					$this->view->displayMessage('Your request failed to authenticate with Google.');
+					return false;
 				}
-				else {
-					$client->refreshToken($this->view->session->get('googleAPIRefreshToken'));
-					$this->view->session->set('googleAPIAccessToken', $client->getAccessToken());
+				else
+				{
+					$client->refreshToken($this->session->get('googleAPIRefreshToken'));
+					$this->session->set('googleAPIAccessToken', $client->getAccessToken());
 				}
 			}
 	

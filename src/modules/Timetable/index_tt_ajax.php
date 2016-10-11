@@ -34,18 +34,19 @@ if (! $this->getSecurity()->isActionAccessible('/modules/Timetable/tt.php')) {
 } else {
    	$mf = new functions($this);
     $ttDate = '';
-    if (! empty($_POST['ttDate'])) {
+    if (! empty($_POST['ttDate'])) 
         $ttDate = $mf->dateConvertToTimestamp($mf->dateConvert($_POST['ttDate']));
-    }
+
 	$_POST['fromTT'] = ! empty($_POST['fromTT']) ? $_POST['fromTT'] : 'N';
 	
     if ($_POST['fromTT'] == 'Y') {
-        $this->session->set('viewCalendarSchool', ($_POST['schoolCalendar'] == 'on' || $_POST['schoolCalendar'] == 'Y' ? 'Y' : 'N'));
+        $this->session->set('viewCalendar.School', ($_POST['schoolCalendar'] == 'on' || $_POST['schoolCalendar'] == 'Y' ? true : false));
 
-        $this->session->set('viewCalendarPersonal', ($_POST['personalCalendar'] == 'on' or $_POST['personalCalendar'] == 'Y' ? 'Y' : 'N'));
+        $this->session->set('viewCalendar.Personal', ($_POST['personalCalendar'] == 'on' || $_POST['personalCalendar'] == 'Y' ? true : false));
 
-        $this->session->set('viewCalendarSpaceBooking', ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y' ? 'Y' : 'N'));
+        $this->session->set('viewCalendar.SpaceBooking', ($_POST['spaceBookingCalendar'] == 'on' || $_POST['spaceBookingCalendar'] == 'Y' ? true : false));
     }
+
     $tt = $mf->renderTT($this->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
     if ($tt !== false) {
         $output .= $tt;
