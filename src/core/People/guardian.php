@@ -110,6 +110,7 @@ class guardian extends person
 		$this->getActivities($personID);
 		
 		$this->getHooks($personID);
+		
 		if (! $this->planner->status && ! $this->grades->status && ! $this->deadlines->status && ! $this->timetable->status && ! $this->activities->status && count($this->hooks->content) < 1) {
 			$return .= $this->view->returnMessage('There are no records to display.', 'warning');
 		} else {
@@ -128,7 +129,7 @@ class guardian extends person
 			foreach ($this->hooks->content as $hook)
 				$tabs->addTab($this->view->getRecord('hook')->includeHook('/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude']), $this->view->__($hook['name']));
 
-			$return .= $tabs->renderTabs($personID, '');
+			$return .= $tabs->renderTabs($personID, $this->view->__('Timetable'));
 		}
 	
 		return $return;
@@ -220,7 +221,6 @@ class guardian extends person
 	
 		$this->planner = new stdClass();
 		$this->planner->status = false;
-		$this->planner->classes = false;
 		$this->planner->content = '';
 		$this->planner->personID = $personID ;
 		
@@ -279,8 +279,7 @@ class guardian extends person
 		if (! $classes) {
 			$plannerOutput .= $this->view->returnMessage('There are no records to display.');
 		}
-		$this->planner->status = true ;
-		$this->planner->classes = $classes ;
+		$this->planner->status = $classes ;
 		$this->planner->content = $plannerOutput ;
 	}
 
@@ -492,7 +491,8 @@ class guardian extends person
 		} else {
 			$this->activities->status = true;
 
-			$activitiesOutput .= $this->view->linkTopReturn(array('', array('q' => '/modules/Activities/activities_view.php', 'prompt' => 'View Available Activities')));
+			$link['view'] = array('q' => '/modules/Activities/activities_view.php', 'prompt' => 'View Available Activities');
+			$activitiesOutput .= $this->view->linkTopReturn($link);
 			$activitiesOutput .= $this->view->h4('Activities', array(), true);
 	
 			$dateType = $this->config->getSettingByScope('Activities', 'dateType');
@@ -536,6 +536,9 @@ class guardian extends person
 					}
 				}
 			}
+			if ($yearCount > 0)
+				$this->activities->status = true;
+			$this->activities->content = $activitiesOutput;
 		}
 	}
 

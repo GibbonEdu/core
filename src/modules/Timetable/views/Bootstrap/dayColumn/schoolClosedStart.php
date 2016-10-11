@@ -3,4 +3,6 @@
             <div style='position: relative; top: 50%'>
                 <span style='color: rgba(255,0,0,<?php echo $el->ttAlpha ?>);'><?php echo $this->__('School Closed')?></span>
             </div>
-        </div><!-- day.schoolClosedStart -->
+        </div>
+        <!-- day.schoolClosedStart -->
+        

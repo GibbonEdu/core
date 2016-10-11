@@ -370,6 +370,27 @@ form:
                 style: 'margin-right: 12px; font-size: 10px; '
     nothing: 
         role: form
+    smallIntBorder: 
+        class: form-horizontal smallIntBorderForm
+        additional: ' data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh" data-fv-err-container="popover"'
+        role: form 
+        photo:
+            oneColumn: 1
+            col2: 
+                class: col-md-12 col-lg-12
+            element:
+                class: form-control small
+        submit:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+            element:
+                class: btn btn-success form-control btn-sm
+        paragraph:
+            col2: 
+                class: col-md-12 col-lg-12
+            oneColumn: 1
 validation:
     asScript: 0
     Email: ' data-fv-emailaddress="true" data-fv-emailaddress-message="{{message}}"' 

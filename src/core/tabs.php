@@ -69,7 +69,7 @@ class tabs
 	 */
 	private function startTab($id)
 	{
-		$return .= "<div id='".$id."tabs' style='margin: 0 0'>";
+		$return = "<div id='".$id."tabs' style='margin: 0 0'>\n";
 		$return .= "<ul>\n";
 		return $return ;
 	}
@@ -113,12 +113,13 @@ class tabs
 	{
 		$return = $this->startTab($id);
 		$this->tabCount = 0;
+		$defaultTab = 0;
 		foreach($this->tabDetails as $name=>$content)
 		{
 			$this->tabCount++ ;
 			$return .= $this->tabHeader($name);
 			if ($name == $tabName)
-				$defaultTab = $this->tabCount ;
+				$defaultTab = $this->tabCount - 1 ;
 		}
 		$return .= "</ul>\n";
 		$this->tabCount = 0;
@@ -134,18 +135,17 @@ class tabs
 $script = '
 <script type="text/javascript">
 	$(function() {
-		$( "#'.$id.'tabs" ).tabs({
-			active: '.$defaultTab.'
+		$("#'.$id.'tabs").tabs( {
+			active: '.$defaultTab.',
 			ajaxOptions: {
 				error: function( xhr, status, index, anchor ) {
-					$(anchor.hash).html(
-						"Couldn\'t load this tab.");
+					$(anchor.hash).html("Couldn\'t load this tab.");
 				}
 			}
 		});
 	});
 </script>
-');
+';
 		$return .= $script ;		
 
 		return $return ;

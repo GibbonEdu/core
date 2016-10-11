@@ -5,4 +5,5 @@
 		echo $el->name.'<br/>';
 		echo '<em>'.substr($el->effectiveStart, 0, 5).'-'.substr($el->effectiveEnd, 0, 5).'</em><br/>';
     } ?>
-</div><!-- dayColumn.content -->
+</div>
+<!-- dayColumn.content -->

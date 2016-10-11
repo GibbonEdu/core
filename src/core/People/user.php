@@ -24,7 +24,7 @@ use Gibbon\core\session ;
 /**
  * Employee
  *
- * @version	2nd October 2016
+ * @version	11th October 2016
  * @since	1st October 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -37,21 +37,27 @@ trait user
 	 * get User Photo
 	 *
 	 * Gets a given user photo, or a blank if not available
-	 * @version	12th August 2016
+	 * @version	11th October 2016
 	 * @since	copied from functions.php
 	 * @param	string		$path	Photo Path
 	 * @param	string		$size	
 	 * @return	string		HTML
 	 */
 	public function getUserPhoto($path, $size) {
-		$output = "" ;
-		
-		$sizeStyle = $size == 240 ? "style='width: 240px;'" : "style='width: 75px;'" ;
 
-		if (empty($path) || ! file_exists(GIBBON_ROOT . $path)) 
-			$output = "<img $sizeStyle class='user' src='" . GIBBON_URL . "src/themes/" . $this->getSession()->get("theme.Name") . "/img/anonymous_" . $size . ".jpg'/><br/>" ;
-		else 
-			$output = "<img $sizeStyle class='user' src='" . GIBBON_URL . $path . "'/><br/>" ;
+		$output = "" ;
+
+		$width = $size > '240' ? '240' : $size ;
+		$size = $size != '75' ? '240' : '75' ;
+		
+		$path = empty($path) ? ltrim($this->getField('image_240'), '/') : $path ;
+		$path = ! is_file(GIBBON_ROOT.$path) ? "src/themes/" . $this->getSession()->get("theme.Name") . "/img/anonymous_".$size.".jpg" : $path ;
+		
+		$sizeStyle = $size == '240' ? "style='width: 240px;'" : "style='width: 75px;'" ;
+		if (! in_array($width, array('240', '75')))
+			$sizeStyle = "style='width: ".$width."px;'" ;
+
+		$output = "<img ".$sizeStyle." class='user' src='" . GIBBON_URL . $path . "'/>" ;
 
 		return $output ;
 	}

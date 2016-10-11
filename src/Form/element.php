@@ -23,11 +23,12 @@ namespace Gibbon\Form;
 use Gibbon\core\view ;
 use Symfony\Component\Yaml\Yaml ;
 use Gibbon\Form\elementInterface ;
+use stdClass ;
 
 /**
  * Element Base
  *
- * @version	29th September 2016
+ * @version	11th October 2016
  * @since	10th May 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -602,5 +603,26 @@ $(function() {
 				$value[$q] = trim($w);
 		}
 		return implode(',', $value);
+	}
+	
+	/**
+	 * add Button
+	 *
+	 * @version	11th October 2016
+	 * @since	11th October 2016
+	 * @param	string		$value
+	 * @param	string		$type
+	 * @param	string		$position
+	 * @return 	void	
+	 */
+	public function addButton($value, $type = 'button', $position = 'right')
+	{
+		$this->button = new stdClass();
+		$position = strtolower($position) == 'left' ? 'left' : 'right';
+		$this->button->position = $position;
+		if (! in_array($type, array('button','submit','reset'))) $type = 'button';
+		$this->button->type = $type;
+		$this->button->value = $value ;
+		$this->button->class = 'btn btn-default' ;
 	}
 }

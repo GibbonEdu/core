@@ -11,4 +11,4 @@ if (count($el->plan) == 1) {
 	$this->getLink('error', array('class' => 'staffPlannerLink-'.$el->height,  'href' => array('q' => '/modules/Planner/planner.php', 'viewBy' => 'class', 'gibbonCourseClassID' => $el->gibbonCourseClassID, 'date' => $el->date, 'timeStart' => $el->timeStart, 'timeEnd' => $el->effectiveEnd)));
 } ?>
 </div>
-
+<!-- dayColumn.staffPlannerLinks -->

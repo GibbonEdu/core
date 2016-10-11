@@ -5,9 +5,7 @@ if (isset($el->button))
 	if ($el->button->position == 'left') 
 	{
 		?>
-<span class="input-group-btn">
-	<button class="<?php echo $el->button->class; ?>" type="<?php echo $el->button->type; ?>"><?php echo $el->button->value; ?></button>
-</span>
+	<input class="<?php echo $el->button->class; ?>" type="<?php echo $el->button->type; ?>" value="<?php echo $el->button->value; ?>" />
         <?php
 	}
 }
@@ -28,9 +26,7 @@ if (isset($el->button))
 	if ($el->button->position != 'left') 
 	{
 		?>
-<span class="input-group-btn">
-	<button class="<?php echo $el->button->class; ?>" type="<?php echo $el->button->type; ?>"><?php echo $el->button->value; ?></button>
-</span>
+	<input class="<?php echo $el->button->class; ?>" type="<?php echo $el->button->type; ?>" value="<?php echo $el->button->value; ?>" />
         <?php
 	}
 	?></div><?php

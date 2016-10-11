@@ -74,7 +74,7 @@ class functions extends mfBase
 
 		$proceed = false;
 
-//		ob_start();
+		ob_start();
 	
 		if ($this->view->getSecurity()->isActionAccessible('/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
 			$proceed = true;
@@ -977,7 +977,6 @@ class functions extends mfBase
 			?></div><?php
 			}
 		}
-		?></td><?php
 		$this->td->timeStart = $gridTimeStart;
 		if ($this->td->zCount > 0) $this->td->validDay = true;
 		return ;
@@ -1126,7 +1125,7 @@ class functions extends mfBase
 	public function getSpaceBookingEvents($startDayStamp, $personID = 0)
 	{
 		$return = false;
-	
+
 		if (! empty($personID)) {
 			$dataSpaceBooking = array('gibbonPersonID1' => $personID, 'gibbonPersonID2' => $personID, 
 				'foreignKey'=>'gibbonSpaceID', 'foreignKey2' => 'gibbonLibraryItemID', 'date1' => date('Y-m-d', $startDayStamp), 
@@ -1139,7 +1138,7 @@ class functions extends mfBase
 				WHERE foreignKey = :foreignKey
 					AND gibbonTTSpaceBooking.gibbonPersonID = :gibbonPersonID1 
 					AND date >= :date1 
-					AND date <= :date2
+					AND date <= :date2)
 				UNION (SELECT gibbonTTSpaceBooking.*, name
 					FROM gibbonTTSpaceBooking 
 						JOIN gibbonLibraryItem ON gibbonTTSpaceBooking.foreignKeyID = gibbonLibraryItem.gibbonLibraryItemID
@@ -1147,7 +1146,7 @@ class functions extends mfBase
 					WHERE foreignKey = :foreignKey2
 						AND gibbonTTSpaceBooking.gibbonPersonID = :gibbonPersonID2 
 						AND date >= :date3
-						AND date <= :date4
+						AND date <= :date4)
 				ORDER BY date, timeStart, name";
 		} else {
 			$dataSpaceBooking = array('gibbonPersonID1' => $personID, 'gibbonPersonID2' => $personID, 
@@ -1160,22 +1159,23 @@ class functions extends mfBase
 					JOIN gibbonPerson ON gibbonTTSpaceBooking.gibbonPersonID = gibbonPerson.gibbonPersonID
 				WHERE foreignKey = :foreignKey 
 					AND date >= :date1 
-					AND date <= :date2
+					AND date <= :date2)
 				UNION (SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName 
 					FROM gibbonTTSpaceBooking 
 						JOIN gibbonLibraryItem ON gibbonTTSpaceBooking.foreignKeyID = gibbonLibraryItem.gibbonLibraryItemID
 						JOIN gibbonPerson ON gibbonTTSpaceBooking.gibbonPersonID = gibbonPerson.gibbonPersonID
 					WHERE foreignKey = :foreignKey2 
 						AND date >= :date3
-						AND date <= :date4
+						AND date <= :date4)
 					ORDER BY date, timeStart, name";
 		}
-		$resultSpaceBooking = $this->view->getRecord('TTSpaceBooking')->findAll($sqlSpaceBooking);
+		$resultSpaceBooking = $this->view->getRecord('TTSpaceBooking')->findAll($sqlSpaceBooking, $dataSpaceBooking);
 
 		if (count($resultSpaceBooking) > 0) {
 			$return = array();
-			$count = 0;
-			foreach ($resultSpaceBooking as $rowSpaceBooking) {
+			foreach ($resultSpaceBooking as $w) {
+				$rowSpaceBooking = $w->returnRecord();
+				$count = $rowSpaceBooking->gibbonTTSpaceBookingID;
 				$return[$count][0] = $rowSpaceBooking->gibbonTTSpaceBookingID;
 				$return[$count][1] = $rowSpaceBooking->name;
 				$return[$count][2] = $rowSpaceBooking->gibbonPersonID;
@@ -1185,7 +1185,6 @@ class functions extends mfBase
 				$this->view->getRecord('person');
 				$this->view->getRecord('person')->find($rowSpaceBooking->gibbonPersonID);
 				$return[$count][6] = $this->view->getRecord('person')->formatName();
-				++$count;
 			}
 		}
 	

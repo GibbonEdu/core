@@ -531,5 +531,8 @@ linkTop:
     close:
         imageName: iconCross.png
         name: Close
+    view: 
+        name: View Details
+        imageName: plus.png
 script:
     display: table-row

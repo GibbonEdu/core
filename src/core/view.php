@@ -27,12 +27,13 @@ use Gibbon\core\sqlConnection as PDO;
 use Gibbon\core\session;
 use Gibbon\core\config;
 use Gibbon\Record\theme;
+use Gibbon\Record\person;
 use stdClass ;
 
 /**
  * view Manager
  *
- * @version	7th October 2016
+ * @version	11th October 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -398,10 +399,10 @@ class view
 		$linksDefined = $this->session->get('theme.settings.linkTop') ;
 		?><div class='<?php echo $class;?>'><?php
         do {
-			reset($links) ;
+			$link = reset($links) ;
 			$el = (object) $linksDefined ;
 			$name = key($links) ;
-			$link = array_shift($links);
+			array_shift($links);
 			if (isset($linksDefined[mb_strtolower($name)]))
 				$el = (object) $linksDefined[mb_strtolower($name)] ;
 			else
@@ -1051,7 +1052,7 @@ class view
 	/**
 	 * get Person
 	 * 
-	 * @version	6th September 2016
+	 * @version	11th October 2016
 	 * @since	6th September 2016
 	 * @param	integer	$id	PersonID
 	 * @return	boolean
@@ -1059,8 +1060,8 @@ class view
 	public function getPerson($id = null)
 	{
 		if (! $this->person instanceof person)
-			$this->person = new person($this, $id);
-		elseif (! empty($id))
+			$this->person = $this->getRecord('person');
+		if (! empty($id))
 			$this->person->find($id);
 		return $this->person ;
 	}
