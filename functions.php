@@ -4806,6 +4806,10 @@ function getGibbonMailer($guid) {
             $mail->Port       = $port;      // set the SMTP port for the GMAIL server
             $mail->Username   = $username;  // SMTP account username example
             $mail->Password   = $password;  // SMTP account password example
+
+            if (!empty($auth)) {
+                $mail->SMTPSecure = 'tls';
+            }
         }
     }
 

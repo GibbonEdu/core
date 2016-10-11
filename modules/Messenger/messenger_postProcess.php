@@ -1870,14 +1870,17 @@ else {
 
 				$mail=getGibbonMailer($guid);
 				$mail->IsSMTP();
-				if ($emailReplyTo!="") {
-					$mail->AddReplyTo($emailReplyTo, '');
+				if ( empty($emailReplyTo) ) {
+					$emailReplyTo = $from;
 				}
+
 				if ($from!=$_SESSION[$guid]["email"]) {	//If sender is using school-wide address, send from school
 					$mail->SetFrom($from, $_SESSION[$guid]["organisationName"]);
+					$mail->AddReplyTo($emailReplyTo, $_SESSION[$guid]["organisationName"] );
 				}
 				else { //Else, send from individual
 					$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
+					$mail->AddReplyTo($emailReplyTo, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
 				}
 				foreach ($emails AS $address) {
 					$mail->AddBCC($address);
