@@ -336,7 +336,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 $attachment1 = '';
                                 $imageFail = true;
                             }
+                        } else {
+                            // Set a default image location
+                            $attachment1 = "uploads/photos/". $username .".jpg";
                         }
+                        
                         if ($nationalIDCardScan != '') {
                             $size3 = getimagesize($path.'/'.$nationalIDCardScan);
                             $width3 = $size3[0];
