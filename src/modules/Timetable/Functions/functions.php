@@ -94,9 +94,9 @@ class functions extends mfBase
 				//Update display choices
 				$person = $this->view->getRecord('person');
 				$person->find($this->session->get('gibbonPersonID'));
-				$person->setField('viewCalendarSchool', ($this->session->get('viewCalendar.School') ? 'Y' : 'N'));
-				$person->setField('viewCalendarPersonal', ($this->session->get('viewCalendar.Personal') ? 'Y' : 'N'));
-				$person->setField('viewCalendarSpaceBooking', ($this->session->get('viewCalendar.SpaceBooking') ? 'Y' : 'N'));
+				$person->setField('viewCalendarSchool', $this->session->get('viewCalendar.School'));
+				$person->setField('viewCalendarPersonal', $this->session->get('viewCalendar.Personal'));
+				$person->setField('viewCalendarSpaceBooking', $this->session->get('viewCalendar.SpaceBooking'));
 				if (! $person->writeRecord(array('viewCalendarSchool', 'viewCalendarPersonal', 'viewCalendarSpaceBooking')))
 					$this->view->displayMessage($person->getError());
 			}

@@ -173,7 +173,8 @@ class security
 	public function getPerson($id = null)
 	{
 		if (! $this->person instanceof person)
-			$this->person = new person($this->getView(), $id);
+			$this->person = $this->getView()->getRecord('person');
+		if (! is_null($id)) $this->person->find($id);
 		return $this->person;
 	}
 

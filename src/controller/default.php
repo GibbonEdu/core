@@ -41,6 +41,7 @@ $v13 = array
 		'/modules/Roll Groups/indexExport.php',
 		'/modules/Timetable/index_tt_ajax.php',
 		'/modules/User Admin/index_parentPhoto',
+		'/modules/Students/student_view_details.php',
 	);
 
 if (isset($_GET['testme']))

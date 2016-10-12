@@ -28,7 +28,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\core;
 
 use Symfony\Component\Yaml\Yaml ;
-use Gibbon\core\helper;
 
 require GIBBON_ROOT. 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 
