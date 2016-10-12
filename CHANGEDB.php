@@ -559,6 +559,6 @@ ALTER TABLE `gibbonLog` CHANGE `module` `gibbonModuleID` INT(4) UNSIGNED ZEROFIL
 ALTER TABLE `gibbonLog` CHANGE `time` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;end
 ALTER TABLE `gibbonLog` CHANGE `person` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonLog` CHANGE `schoolYear` `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
-ALTER TABLE `gibbonLog` DROP `levelName`;end
+SELECT gibbonLogID FROM `gibbonLog` LIMIT 1;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('fi_FI', 'Suomen Kieli - Suomi', 'N', 'N', 'Pia Kontiainen', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ";
