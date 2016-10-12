@@ -33,8 +33,7 @@ $trail->render($this);
 
 if ($this->session->isEmpty("gibbonPersonID"))
 {
-	$this->displayMessage(array('No account information was found. %d', array($this->session->get("gibbonPersonID"))));
-	
+	$this->displayMessage('No account information was found.');
 } 
 else 
 {
@@ -145,7 +144,7 @@ else
 	$el->nameDisplay = "Personal Theme";
 	$el->description = "Override the system theme.";
 	$tObj = new theme($this);
-	$el->addOption('', 0);
+	$el->addOption($this->__("Personal Theme"), 0);
 	foreach($tObj->findAll("SELECT * FROM `gibbonTheme` ORDER BY `name`") as $theme)
 		$el->addOption($theme->getField("active") == 'Y' ? $theme->getField("name")." (".$this->__("System Default").")" : $theme->getField("name"), $theme->getField("gibbonThemeID"));
 
@@ -155,7 +154,7 @@ else
 	$el->nameDisplay = "Personal Language" ;
 	$el->description = "Override the system default language.";
 	$el->validateOff();
-	$el->addOption('');
+	$el->addOption($this->__('Personal Language'), '');
 	if ($pObj->getField('personalLanguageCode') != '')
 		$el->value = $pObj->getField('personalLanguageCode');
 	foreach ($this->config->getLanguages() as $code=>$name )
