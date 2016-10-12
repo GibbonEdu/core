@@ -383,11 +383,15 @@ class employee extends person
 		if ($this->view->getSecurity()->isActionAccessible('/modules/Timetable/tt.php') && $this->session->notEmpty('username') && $this->view->getSecurity()->getRoleCategory($this->session->get('gibbonRoleIDCurrent')) == 'Staff') {
 			$tok = new token('/modules/Timetable/index_tt_ajax.php', null, $this->view);
 			
+			$school = isset($_POST['fromTT'])? (isset($_POST['schoolCalendar']) && $_POST['schoolCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.School') ;
+			$personal = isset($_POST['fromTT'])? (isset($_POST['personalCalendar']) && $_POST['personalCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.Personal') ;
+			$space = isset($_POST['fromTT'])? (isset($_POST['spaceBookingCalendar']) && $_POST['spaceBookingCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.SpaceBookinf') ;
+			
 			echo '
 <script type="text/javascript">
 // employee
 	$(document).ready(function(){
-		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
+		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.$personal.'", "schoolCalendar": "'.$school.'", "spaceBookingCalendar": "'.$space.'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
 	});
 </script>
 			';?>
@@ -505,8 +509,8 @@ class employee extends person
 		$resultHooks = $this->view->getRecord('hook')->findAllByType('Staff Dashboard');
 		if (count($resultHooks) > 0) {
 			$count = 0;
-			foreach ($resultHooks  as $rowHooks ) {
-				$options = unserialize($rowHooks['options']);
+			foreach ($resultHooks as $rowHooks ) {
+				$options = unserialize($rowHooks->options);
 				//Check for permission to hook
 				$dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName']);
 				$sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action 
@@ -523,16 +527,17 @@ class employee extends person
 						AND gibbonModule.name='".$options['sourceModuleName']."' 
 					ORDER BY name";
 				$resultHook = $this->view->getRecord('hook')->findAll($dataHook, $sqlHook);
-				if ($resultHook->rowCount() == 1) {
-					$rowHook = $resultHook->fetch();
+				if (count($resultHook) == 1) {
+					$x = reset($resultHook);
+					$rowHooks = (array) $x->returnRecord() ;
 					$hooks[$count]['name'] = $rowHooks['name'];
 					$hooks[$count]['sourceModuleName'] = $rowHook['module'];
 					$hooks[$count]['sourceModuleInclude'] = $options['sourceModuleInclude'];
 					++$count;
 				}
 			}
-		$this->hooks->status = true;
-		$this->hooks->content = $hooks;
+			$this->hooks->status = true;
+			$this->hooks->content = $hooks;
 		}
 	}
 }

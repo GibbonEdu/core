@@ -262,4 +262,17 @@ class module extends record
 		$cats[] = 'Other';
 		return $cats;
 	}
+
+	/**
+	 * get Categories
+	 *
+	 * @version	11th October 2016
+	 * @since	11th October 2016
+	 * @return	array	Modules
+	 */
+	public function findAllActive()
+	{
+		$cats = array();
+		return $this->findAll("SELECT * FROM `gibbonModule` WHERE `active` = 'Y' ORDER BY `category`, `name`");
+	}
 }

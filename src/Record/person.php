@@ -25,11 +25,12 @@ use Gibbon\core\module as helper ;
 use Gibbon\core\trans ;
 use Gibbon\Record\personField ;
 use Gibbon\core\fileManager ;
+use Gibbon\core\mailer ;
 
 /**
  * Person Record
  *
- * @version	15th September 2016
+ * @version	12th October 2016
  * @since	5th May 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -644,5 +645,92 @@ class person extends record
 		if (! $v->getSuccess())
 			$total = 0;
 		return $total;
+	}
+
+	/**
+	 * record Login Failure
+	 *
+	 * @version	12th October 2016
+	 * @since	12th October 2016
+	 * @return	void
+	 */
+	public function recordLoginFailure()
+	{
+		if (empty($this->record->username)) return ;
+		$failCount = intval($this->record->failCount);
+		$this->setField('lastFailIPAddress', $_SERVER["REMOTE_ADDR"]);
+		$this->setField('lastFailTimestamp', date("Y-m-d H:i:s"));
+		$this->setField('failCount', ($failCount + 1));
+		$this->writeRecord(array('lastFailIPAddress', 'lastFailTimestamp', 'failCount'));
+		if ($failCount == 3)
+		{
+			if ($row["failCount"]==3) {
+				$mail = new mailer();
+				$mail->setFrom($this->view->config->getSettingByScope("System", "organisationAdministratorEmail"), $this->view->config->getSettingByScope("System", "organisationAdministrator"));
+				$mail->addAddress($this->view->config->getSettingByScope("System", "organisationAdministratorEmail"), $this->view->config->getSettingByScope("System", "organisationAdministrator"));
+				$mail->subject = $this->session->get("organisationNameShort") . " Failed Login Notification";
+				$mail->body = "Please note that someone has failed to login to account \"" . $this->record->username . "\" 3 times in a row.\n\n" . $this->session->get("systemName") . " Administrator";
+				$mail->send();
+			}
+		}
+	}
+
+	/**
+	 * force Password Reset
+	 *
+	 * @version	12th October 2016
+	 * @since	12th October 2016
+	 * @return	void
+	 */
+	public function forcePasswordReset()
+	{
+		if (empty($this->record->username)) return ;
+		
+		
+		return ; // Never reset a users password.  
+		$salt = $this->view->getSecurity()->getSalt() ;
+		$password = $this->view->getSecurity()->randomPassword(8);
+		$passwordStrong = $this->view->getSecurity()->getPasswordHash($password, $salt) ;
+		$this->session->set('username', $username);
+		$this->view->getSecurity()->updatePassword($passwordStrong, $salt);
+
+		$this->setField("passwordForceReset", "N");
+		$this->writeRecord(array("passwordForceReset"));
+		
+		$mail = new mailer();
+		$mail->setFrom($this->view->config->getSettingByScope("System", "organisationAdministratorEmail"), $this->view->config->getSettingByScope("System", "organisationAdministrator"));
+		$mail->addAddress($this->record->email, $this->formatName());
+		$mail->subject = $this->session->get("organisationNameShort") . " Gibbon Password Reset";
+		$mail->body = "Your new password for account $username is as follows:\n\n".$password."\n\nPlease log in an change your password as soon as possible.\n\n" . $this->session->get("systemName") . " Administrator";
+		$mail->send();
+
+	}
+
+	/**
+	 * record Login Success
+	 *
+	 * @version	12th October 2016
+	 * @since	12th October 2016
+	 * @return	void
+	 */
+	public function recordLoginSuccess()
+	{
+		if (empty($this->record->username)) return ;
+		$failCount = intval($this->record->failCount);
+		$this->setField('lastFailIPAddress', $_SERVER["REMOTE_ADDR"]);
+		$this->setField('lastFailTimestamp', date("Y-m-d H:i:s"));
+		$this->setField('failCount', 0);
+		$this->writeRecord(array('lastFailIPAddress', 'lastFailTimestamp', 'failCount'));
+		if ($failCount == 3)
+		{
+			if ($row["failCount"]==3) {
+				$mail = new mailer();
+				$mail->setFrom($this->view->config->getSettingByScope("System", "organisationAdministratorEmail"), $this->view->config->getSettingByScope("System", "organisationAdministrator"));
+				$mail->addAddress($this->view->config->getSettingByScope("System", "organisationAdministratorEmail"), $this->view->config->getSettingByScope("System", "organisationAdministrator"));
+				$mail->subject = $this->session->get("organisationNameShort") . " Failed Login Notification";
+				$mail->body = "Please note that someone has failed to login to account \"" . $this->record->username . "\" 3 times in a row.\n\n" . $this->session->get("systemName") . " Administrator";
+				$mail->send();
+			}
+		}
 	}
 }

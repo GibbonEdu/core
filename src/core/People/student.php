@@ -17,8 +17,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
- * @version	7th September 2016
- * @since	13th August 2016
  * @author	Craig Rayner
  * @package	Gibbon
  * @subpackage Person
@@ -30,13 +28,14 @@ namespace Gibbon\People;
 use Gibbon\core\view ;
 use Gibbon\core\tabs ;
 use Gibbon\Record\person ;
+use Gibbon\Record\family ;
 use Gibbon\Form\token ;
 use stdClass ;
 
 /**
  * Student 
  *
- * @version	9th September 2016
+ * @version	11th October 2016
  * @since	13th August 2016
  * @author	Craig Rayner
  */
@@ -134,7 +133,7 @@ class student extends person
 	/**
 	 * get Student Enrolment
 	 *
-	 * @version	13th August 2016
+	 * @version	11th October 2016
 	 * @since	13th August 2016
 	 * @return	Gibbon\Record\studentEnrolment
 	 */
@@ -143,7 +142,7 @@ class student extends person
 		if (isset($this->validEnrolment) && $this->validEnrolment)
 			return $this->enrolment;
 		$schoolYearID = is_null($schoolYearID) ? $this->session->get('gibbonSchoolYearID') : $schoolYearID ;
-		$this->enrolment = new enrolment($this->view);
+		$this->enrolment = $this->view->getRecord('studentEnrolment');
 		$this->validEnrolment = false;
 		if ($this->record->status == 'Full' && (is_null($this->record->dateStart) || $this->record->dateStart <= date('Y-m-d')) && (is_null($this->record->dateEnd) || $this->record->dateEnd <= date('Y-m-d')) )
 		{
@@ -157,7 +156,7 @@ class student extends person
 	/**
 	 * get Year Group
 	 *
-	 * @version	13th August 2016
+	 * @version	11th October 2016
 	 * @since	13th August 2016
 	 * @param	string		$name
 	 * @return	mixed		Gibbon\Record\yearGroup | field Value
@@ -172,7 +171,7 @@ class student extends person
 				
 		$this->getEnrolment();
 		$this->validYearGroup = false ;
-		$this->yearGroup = new yearGroup($this->view);
+		$this->yearGroup = $this->view->getRecord('yearGroup');
 		if ($this->validEnrolment)
 			$this->yearGroup->find($this->enrolment->getField('gibbonYearGroupID'));
 		if ($this->yearGroup->getSuccess() && $this->yearGroup->rowCount() === 1)
@@ -186,7 +185,7 @@ class student extends person
 	/**
 	 * get Roll Group
 	 *
-	 * @version	13th August 2016
+	 * @version	11th October 2016
 	 * @since	13th August 2016
 	 * @param	string		$name
 	 * @return	mixed		Gibbon\Record\rollGroup | field Value
@@ -201,7 +200,7 @@ class student extends person
 				
 		$this->getEnrolment();
 		$this->validRollGroup = false ;
-		$this->rollGroup = new rollGroup($this->view);
+		$this->rollGroup = $this->view->getRecord('rollGroup');
 		if ($this->validEnrolment)
 			$this->rollGroup->find($this->enrolment->getField('gibbonRollGroupID'));
 		if ($this->rollGroup->getSuccess() && $this->rollGroup->rowCount() === 1)
@@ -260,7 +259,7 @@ class student extends person
 		$this->validFamilyAdults = false ;
 
 		$this->getFamily();
-		$adult = new familyAdult($this->view);
+		$adult = $this->view->getRecord('familyAdult');
 		$sql = 'SELECT * 
 			FROM `gibbonFamilyAdult` 
 				JOIN `gibbonPerson` ON `gibbonFamilyAdult`.`gibbonPersonID` = `gibbonPerson`.`gibbonPersonID` 
@@ -294,7 +293,7 @@ class student extends person
 	public function checkChildDataAccess()
 	{
 		$this->getEnrolment();
-		$this->getFamilyAdults();
+		$this->getFamilyAdults($this->view->getRecord('family'));
 		
 		if ($this->validEnrolment && $this->validFamilyAdults && $this->childDataAccess == 'Y')
 			return true ;
@@ -439,7 +438,7 @@ class student extends person
 	/**
 	 * get Medical
 	 *
-	 * @version	15th August 2016
+	 * @version	11th October 2016
 	 * @since	15th August 2016
 	 * @return	Gibbon\Record\personMedical
 	 */
@@ -448,14 +447,14 @@ class student extends person
 		if (isset($this->validMedical) && $this->validMedical)
 			return $this->medical ;
 		$this->validMedical = false;
-		$this->medical = new personMedical($this->view);
+		$this->medical = $this->view->getRecord('personMedical');
 		$this->medical->startQuery();
 		$this->medical->startWhere('gibbonPersonID', $this->record->gibbonPersonID);
 		$this->medical->findOneBy($this->medical->getWhere());
 		if ($this->medical->getSuccess() && $this->medical->rowCount() == 1)
 			$this->validMedical = true;
 		else
-			$this->medical = new personMedical($this->view);
+			$this->medical = $this->view->getRecord('personMedical');
 		return $this->medical;
 	}
 	
@@ -640,12 +639,16 @@ class student extends person
 
 		if ($this->view->getSecurity()->isActionAccessible('/modules/Timetable/tt.php') && $this->session->notEmpty('username') && $this->view->getSecurity()->getRoleCategory($this->session->get('gibbonRoleIDCurrent')) == 'Student') {
 			$tok = new token('/modules/Timetable/index_tt_ajax.php', null, $this->view);
+
+			$school = isset($_POST['fromTT'])? (isset($_POST['schoolCalendar']) && $_POST['schoolCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.School') ;
+			$personal = isset($_POST['fromTT'])? (isset($_POST['personalCalendar']) && $_POST['personalCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.Personal') ;
+			$space = isset($_POST['fromTT'])? (isset($_POST['spaceBookingCalendar']) && $_POST['spaceBookingCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.SpaceBookinf') ;
 			
 			echo '
 <script type="text/javascript">
 // Student
 	$(document).ready(function(){
-		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
+		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.$personal.'", "schoolCalendar": "'.$school.'", "spaceBookingCalendar": "'.$space.'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
 	});
 </script>
 			';?>
@@ -795,5 +798,17 @@ class student extends person
 		}
 		$this->hooks->content = $hooks;
 		if (! empty($hooks)) $this->hooks->status = true ;
+	}
+	
+	/**
+	 * get View
+	 *
+	 * @version	11th October 2016
+	 * @since	11th October 2016
+	 * @return	Gibbon\core\view 
+	 */
+	public function getView()
+	{
+		return $this->view ;
 	}
 }

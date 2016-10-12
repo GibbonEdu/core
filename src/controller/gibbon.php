@@ -25,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 if (function_exists('opcache_reset')) opcache_reset();
-
+ 
 if ( ! defined( 'GIBBON_ROOT' ) )
 {
 	$path = pathinfo($_SERVER['PHP_SELF']);
@@ -34,7 +34,7 @@ if ( ! defined( 'GIBBON_ROOT' ) )
 /**
  * @const	Calculated Root path of the Site.
  */
- 	define("GIBBON_ROOT", $dr . '/');
+ 	define("GIBBON_ROOT", $dr . '/'); 
 /**
  * @const	Calculated Config path of the Site.
  */
@@ -43,7 +43,7 @@ if ( ! defined( 'GIBBON_ROOT' ) )
 	$pageURL = 'http';
 	if (isset($_SERVER["HTTPS"])) $pageURL .= "s";
 	$pageURL .= "://";
-	if ($_SERVER["SERVER_PORT"] != "80")
+	if ($_SERVER["SERVER_PORT"] != "80") 
 		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].(! empty($path['dirname']) ? $path['dirname'] : '');
 	else
 		$pageURL .= $_SERVER["SERVER_NAME"].(! empty($path['dirname']) ? $path['dirname'] : '');
