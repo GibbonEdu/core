@@ -26,7 +26,7 @@ use Gibbon\core\session ;
 /**
  * Date Functions
  *
- * @version	19th September 2016
+ * @version	10th October 2016
  * @since	19th September 2016
  * @author	Craig Rayner
  * @package		Gibbon
@@ -44,10 +44,10 @@ trait dateFunctions
 	 * @param	string		$date Date
 	 * @return	mixed		Date or false
 	 */
-	public static function dateConvert($date) {
+	public function dateConvert($date) {
 
 		$output = false ;
-		$session = new session();
+		$session = $this->getSession();
 		if (! empty($date)) {
 			if ($session->get("i18n.dateFormat") == "mm/dd/yyyy") {
 				$firstSlashPosition = 2 ;
@@ -70,10 +70,11 @@ trait dateFunctions
 	 * @param	string		$date Date
 	 * @return	string
 	 */
-	public function dateConvertBack($date) {
+	public function dateConvertBack($date)
+	{
 		$output = false; ;
 		if (! empty($date)) {
-			$session = new session();
+			$session = $this->getSession();
 			$timestamp = strtotime($date) ;
 			if (! $session->isEmpty("i18n.dateFormatPHP") ) 
 				$output = date($session->get("i18n.dateFormatPHP"), $timestamp) ;
@@ -92,10 +93,67 @@ trait dateFunctions
 	 * @param	string		$date Date
 	 * @return	mixed		Timestamp or false
 	 */
-	public function dateConvertToTimestamp($date) {
-		
+	public function dateConvertToTimestamp($date)
+	{
 		list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
 		$timestamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
 		return $timestamp ;
+	}
+
+	/**
+	 * get Week Number
+	 *
+	 * @version	6th October 2016
+	 * @since	21st April 2016
+	 * @param	string		$date
+	 * @return	mixed		ModuleID or false
+	 */
+	public function getWeekNumber($date)
+	{
+		$week=0 ;
+		$session = $this->getSession();
+		
+		$data=array("gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"));
+		$sql="SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
+		$weeks = $this->getRecord('schoolYearTerm')->findAll($sql, $data);
+		foreach($weeks as $rowWeek) {
+			$firstDayStamp = strtotime($rowWeek->getField('firstDay')) ;
+			$lastDayStamp = strtotime($rowWeek->getField('lastDay')) ;
+			while (date("D",$firstDayStamp) != "Mon") {
+				$firstDayStamp = $firstDayStamp  -86400 ;
+			}
+			$head = $firstDayStamp ;
+			while ($head <= ($date) && $head < ($lastDayStamp+86399)) {
+				$head = $head + (86400 * 7) ;
+				$week++ ;
+			}
+			if ($head < ($lastDayStamp + 86399)) {
+				break ;
+			}
+		}
+	
+		if ($week <= 0) {
+			return false ;
+		}
+		else {
+			return $week ;
+		}
+	}
+
+	/**
+	 * get Session
+	 *
+	 * @version	10th October 2016
+	 * @since	10th April 2016
+	 * @return	Gibbon\core\session
+	 */
+	protected function getSession()
+	{
+		if (isset($this->session) && $this->session instanceof session)
+			return $this->session;
+		if (isset($this->view ) && isset($this->view->session) && $this->view->session instanceof session)
+			return $this->view->session;
+		$this->session = new session();
+		return $this->session ;
 	}
 }

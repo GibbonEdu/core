@@ -155,9 +155,9 @@ else {
 					$this->session->set("image_240", $person->image_240) ;
 					$this->session->set("lastTimestamp", $person->lastTimestamp) ;
 					$this->session->set("calendarFeedPersonal", $person->calendarFeedPersonal) ;
-					$this->session->set("viewCalendarSchool", $person->viewCalendarSchool) ;
-					$this->session->set("viewCalendarPersonal", $person->viewCalendarPersonal) ;
-					$this->session->set("viewCalendarSpaceBooking", $person->viewCalendarSpaceBooking) ;
+					$this->session->set("viewCalendar.School", $person->viewCalendarSchool) ;
+					$this->session->set("viewCalendar.Personal", $person->viewCalendarPersonal) ;
+					$this->session->set("viewCalendar.SpaceBooking", $person->viewCalendarSpaceBooking) ;
 					$this->session->set("dateStart", $person->dateStart) ;
 					$this->session->set("personalBackground", $person->personalBackground );
 					$this->session->set("messengerLastBubble", $person->messengerLastBubble) ;

@@ -72,7 +72,7 @@ div.ttClosure {
 	border: 1px solid rgb(136,136,136);
 	background-color: rgb(255,196,202);
 	color: rgb(255,0,0); 
-	border: 1px solid rgb(136,136,136) ;
+	border: 1px solid rgb(136,136,136);
 }
 div.ttGeneric {
 	background-color: rgb(238,238,238); 
@@ -115,4 +115,56 @@ table.noIntBorder td:last-child {
 }
 .mini div div {
 	overflow: hidden ;
+}
+table.mini {
+	margin: 0px 0px 30px 0px;
+	width: 750px;
+}
+table.timeTable-trim {
+	width: 700px;
+}
+table.timeTable-narrow {
+	width: 525px;
+}
+th.mini-header {
+	vertical-align: top; 
+	width: 70px; 
+	text-align: center ;
+}
+th.calendarDay {
+	vertical-align: top; 
+	text-align: center; 
+}
+td.allDayEvent {
+	vertical-align: top; 
+	width: 70px; 
+	text-align: center; 
+	border-top: 1px solid #888; 
+	border-bottom: 1px solid #888;
+}
+td.ttTime {
+	height: 300px; 
+	width: 75px; 
+	text-align: center; 
+	vertical-align: top;
+}
+td.dayStart {
+	text-align: center; 
+	vertical-align: top; 
+	font-size: 11px;
+}
+a.staffPlannerLink-70px {
+	margin: 43px 2px 0 0;
+	float: right;
+	pointer-events: auto;
+}
+a.otherPlannerLink-70px {
+	margin: 43px 2px 0 0;
+	float: right;
+	pointer-events: auto;
+}
+a.attendanceLink-70px {
+	margin: 43px 2px 0 0;
+	float: right;
+	pointer-events: auto;
 }

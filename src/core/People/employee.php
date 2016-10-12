@@ -23,6 +23,8 @@ use Gibbon\Record\person ;
 use Gibbon\Record\staff ;
 use Gibbon\Record\schoolYear ;
 use stdClass ;
+use Gibbon\Form\token ;
+use Gibbon\core\tabs ;
 
 /**
  * Employee
@@ -206,7 +208,7 @@ class employee extends person
 
 				?></table>
                 <div style='text-align: right; font-size: 90%; padding: 0 7px'>
-                	<?php $this->view->getLink('', array('href'=>'#', 'title'=> $this->view->__('Dismiss Smart Workflow Help'), 'onclick'=>"$('#smartWorkflowHelp').fadeOut(1000); $.ajax({ url: '" . GIBBON_URL . "index.php?q=/modules/Staff/index_SmartWorkflowHelpAjax.php&divert=1'})"), 'Dismiss Smart Workflow Help'); ?>
+                	<?php $this->view->getLink('view', array('href'=>'#', 'title'=> $this->view->__('Dismiss Smart Workflow Help'), 'onclick'=>"$('#smartWorkflowHelp').fadeOut(1000); $.ajax({ url: '" . GIBBON_URL . "index.php?q=/modules/Staff/index_SmartWorkflowHelpAjax.php&divert=1'})"), 'Dismiss Smart Workflow Help'); ?>
                 </div>
 				</div><?php
 			}
@@ -256,93 +258,23 @@ class employee extends person
 		} else {
 			$staffDashboardDefaultTab = $this->config->getSettingByScope('School Admin', 'staffDashboardDefaultTab');
 			$staffDashboardDefaultTabCount = null;
+			
+			$tabs = new tabs($this->view);
 	
-			$return .= "<div id='".$personID."tabs' style='margin: 0 0'>";
-			$return .= '<ul>';
-			$tabCount = 1;
-			if ($this->planner->status || $this->timetable->status) {
-				$return .= "<li><a href='#tabs".$tabCount."'>".$this->view->__('Planner').'</a></li>';
-				if ($staffDashboardDefaultTab == 'Planner')
-					$staffDashboardDefaultTabCount = $tabCount;
-				++$tabCount;
-			}
+			if ($this->planner->status || $this->timetable->status) 
+				$tabs->addTab($this->planner->content.$this->timetable->content, $this->view->__('Planner'));
 			
 			foreach ($this->rollGroups->content as $rollGroup) {
-				$return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup['nameShort'].'</a></li>';
-				++$tabCount;
-				if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) {
-					$return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup['nameShort'].' '.$this->view->__('Behaviour').'</a></li>';
-					++$tabCount;
-				}
+				$tabs->addTab($rollGroup['table'], $rollGroup['nameShort']);
+				if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) 
+					$tabs->addTab($rollGroup['behaviour'], $rollGroup['nameShort'].' '.$this->view->__('Behaviour'));
 			}
 	
-			foreach ($this->hooks->content as $hook) {
-				$return .= "<li><a href='#tabs".$tabCount."'>".$this->view->__($hook['name']).'</a></li>';
-				if ($staffDashboardDefaultTab == $hook['name'])
-					$staffDashboardDefaultTabCount = $tabCount;
-				++$tabCount;
-			}
-			$return .= '</ul>';
-	
-			$tabCount = 1;
-			if ($this->planner->status || $this->timetable->status) {
-				$return .= "<div id='tabs".$tabCount."'>";
-				$return .= $this->planner->content;
-				$return .= $this->timetable->content;
-				$return .= '</div>';
-				++$tabCount;
-			}
+			foreach ($this->hooks->content as $hook)
+				$tabs->addTab($this->view->getRecord('hook')->includeHookFile('/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude']), $this->view->__($hook['name']));
 
-			foreach ($this->rollGroups->content as $rollGroup) {
-				$return .= "<div id='tabs".$tabCount."'>";
-				$return .= $rollGroup['table'];
-				$return .= '</div>';
-				++$tabCount;
-
-				if ($this->view->getSecurity()->isActionAccessible('/modules/Behaviour/behaviour_view.php')) {
-					$return .= "<div id='tabs".$tabCount."'>";
-					$return .= $rollGroup['behaviour'];
-					$return .= '</div>';
-					++$tabCount;
-				}
-			}
-			foreach ($this->hooks->content as $hook) {
-				$return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
-				$include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
-				if (!file_exists($include)) {
-					$return .= "<div class='error'>";
-					$return .= $this->view->__('The selected page cannot be displayed due to a hook error.');
-					$return .= '</div>';
-				} else {
-					$return .= include $include;
-				}
-				++$tabCount;
-				$return .= '</div>';
-			}
-			$return .= '</div>';
+			$return .= $tabs->renderTabs($personID, $staffDashboardDefaultTab);
 		}
-	
-		$defaultTab = 0;
-		if (isset($_GET['tab'])) {
-			$defaultTab = $_GET['tab'];
-		}
-		else if (!is_null($staffDashboardDefaultTabCount)) {
-			$defaultTab = $staffDashboardDefaultTabCount-1;
-		}
-	
-		$return .= "<script type='text/javascript'>";
-		$return .= '$(function() {';
-		$return .= '$( "#'.$personID.'tabs" ).tabs({';
-		$return .= 'active: '.$defaultTab.',';
-		$return .= 'ajaxOptions: {';
-		$return .= 'error: function( xhr, status, index, anchor ) {';
-		$return .= '$( anchor.hash ).html(';
-		$return .= "\"Couldn't load this tab.\" );";
-		$return .= '}';
-		$return .= '}';
-		$return .= '});';
-		$return .= '});';
-		$return .= '</script>';
 	
 		return $return;
 	}
@@ -368,11 +300,38 @@ class employee extends person
 		$planner = false;
 		$date = date('Y-m-d');
 		if ($this->view->getRecord('schoolYear')->isSchoolOpen($date) && $this->view->getSecurity()->isActionAccessible('/modules/Planner/planner.php') && $this->session->notEmpty('username')) {
-			$data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
-			$sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class";
+			$data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 
+				'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 
+				'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'), 'role1' => 'Student - Left', 'role2' => 'Teacher - Left');
+			$sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, 
+					gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class,
+					gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, 
+					homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime 
+				FROM gibbonPlannerEntry 
+					JOIN gibbonCourseClass ON gibbonPlannerEntry.gibbonCourseClassID = gibbonCourseClass.gibbonCourseClassID 
+					JOIN gibbonCourseClassPerson ON gibbonCourseClass.gibbonCourseClassID = gibbonCourseClassPerson.gibbonCourseClassID
+					JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID = gibbonCourseClass.gibbonCourseID) 
+					LEFT JOIN gibbonPlannerEntryStudentHomework ON gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID = gibbonPlannerEntry.gibbonPlannerEntryID 
+						AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID
+				WHERE gibbonSchoolYearID = :gibbonSchoolYearID 
+					AND date = :date 
+					AND gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID 
+					AND NOT role = :role1 
+					AND NOT role = :role2) 
+				UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, 
+						gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, 
+						timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, 
+						summary, NULL AS myHomeworkDueDateTime 
+					FROM gibbonPlannerEntry 
+						JOIN gibbonCourseClass ON gibbonPlannerEntry.gibbonCourseClassID = gibbonCourseClass.gibbonCourseClassID) 
+						JOIN gibbonPlannerEntryGuest ON gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID
+						JOIN gibbonCourse ON gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID
+					WHERE gibbonSchoolYearID = :gibbonSchoolYearID2 
+						AND date = :date2 
+						AND gibbonPlannerEntryGuest.gibbonPersonID = :gibbonPersonID2) 
+				ORDER BY date, timeStart, course, class";
 
 			$result = $this->view->getRecord('plannerEntry')->findAll($sql, $data, '_');
-			$planner .= $this->view->h2("Today's Lessons", array(), false);
 			if (count($result) < 1) {
 				$planner .= $this->view->returnMessage('There are no records to display.', 'warning');
 			} else {
@@ -397,7 +356,8 @@ class employee extends person
 				$planner .= '</tbody>
 				</table>';
 			}
-			$this->planner->status = true;
+			if ($planner !== false)
+				$this->planner->status = true;
 			$this->planner->content = $planner ;
 		}
 	}
@@ -421,13 +381,16 @@ class employee extends person
 		$this->timetable->content = '';
 
 		if ($this->view->getSecurity()->isActionAccessible('/modules/Timetable/tt.php') && $this->session->notEmpty('username') && $this->view->getSecurity()->getRoleCategory($this->session->get('gibbonRoleIDCurrent')) == 'Staff') {
-			$this->view->addScript('
+			$tok = new token('/modules/Timetable/index_tt_ajax.php', null, $this->view);
+			
+			echo '
 <script type="text/javascript">
+// employee
 	$(document).ready(function(){
-		$("#tt").load("'.GIBBON_URL.'index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
+		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
 	});
 </script>
-			');?>
+			';?>
 			<?php
 			$this->timetable->content = $this->view->renderReturn('staff.timetable.loading');
 			$this->timetable->status = true ;

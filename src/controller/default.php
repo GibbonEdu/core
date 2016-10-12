@@ -38,6 +38,9 @@ $v13 = array
 		'/modules/School Admin/',
 		'/core/scripts/',
 		'/modules/Staff/index_SmartWorkflowHelpAjax.php',
+		'/modules/Roll Groups/indexExport.php',
+		'/modules/Timetable/index_tt_ajax.php',
+		'/modules/User Admin/index_parentPhoto',
 	);
 
 if (isset($_GET['testme']))
@@ -46,16 +49,14 @@ if (isset($_GET['testme']))
 	die(__FILE__.': '.__LINE__);  // if it dies here there is an issue
 }
 
-/*
 if ($q === '')   //  This will render the home page..
 {
-	$path = pathinfo($_SERVER['SCRIPT_FILENAME']);
-	if ($path['basename'] === 'index.php')
+	if (basename($_SERVER['SCRIPT_FILENAME']) === 'index.php')
 	{
 		require __DIR__.'/gibbon.php';
 		die(__FILE__.': '.__LINE__);  // if it dies here there is an issue
 	}
-}  */
+} 
 
 if (in_array($q, $v13))
 {

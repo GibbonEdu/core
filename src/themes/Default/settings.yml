@@ -494,9 +494,24 @@ links:
     tick:
         title: Tick
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/iconTick.png' />"
+    error:
+        title: Error
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/error.png' />"
     page down:
         title: Page Down
         prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/page_down.png' />"
+    planner:
+        title: Planner
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/planner.png' />"
+    markbook:
+        title: Markbook
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/markbook.png' />"
+    homework:
+        title: homework
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/homework.png' />"
+    rubric:
+        title: Rubric
+        prompt: "<img title='{{title}}' src='./themes/{{gibbonThemeName}}/img/rubric.png' />"
 linkTop:
     add:
         imageName: page_new.png
@@ -516,5 +531,8 @@ linkTop:
     close:
         imageName: iconCross.png
         name: Close
+    view: 
+        name: View Details
+        imageName: plus.png
 script:
     display: table-row

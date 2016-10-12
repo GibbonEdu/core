@@ -75,7 +75,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 			$el->setRequired();
 			$el->setNumericality();
 	
-			$el = $form->addElement('date', 'firstDay', isset($record->firstDay) ? $record->firstDay : null );
+			$el = $form->addElement('date', 'firstDay', isset($record->dateCorrectionOffSet) ? $record->dateCorrectionOffSet : null );
 			$el->nameDisplay = 'First Day';
 			$el->description = $this->session->get("i18n.dateFormat");
 			$el->setMaxLength(10);

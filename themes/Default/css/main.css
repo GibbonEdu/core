@@ -609,11 +609,6 @@ tr.dull, tr.dull td, div.dull, td.dull {
 
 
 /* ALT TABLE STYLES */
-table.noIntBorder td {
-	border: none!important ;
-	padding: 5px!important ;
-	background: #EDF7FF ;
-}
 table.noIntBorder td:last-child {
 	text-align: left;
 }
@@ -665,6 +660,12 @@ table.mceToolbar {
 }
 td.mceIframeContainer {
 	background-color: white!important ;
+}
+table.noIntBorder td {
+	border: none!important ;
+	padding: 5px!important ;
+	background: none ;
+	background-color: #EDF7FF!important ;
 }
 
 

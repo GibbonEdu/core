@@ -53,6 +53,11 @@ class fileManager
 	public $content;
 
 	/**
+	 * @var	string
+	 */
+	public $flash;
+
+	/**
 	 * Constructor
 	 *
      * @version	4th July 2016
@@ -65,6 +70,7 @@ class fileManager
 		$this->view = $view;
 		$this->ok = false;
 		$this->fileName = '';
+		$this->flash = 'flash';
 		return ;
 	}
 
@@ -92,7 +98,7 @@ class fileManager
 			} while (! $unique && $count < 100);
 			if (! move_uploaded_file($_FILES[$sourceName]['tmp_name'], GIBBON_ROOT .  ltrim($this->fileName, '/'))) {
 				$this->fileName = '';
-				$this->view->insertMessage(array('The file %1$s was not saved successfully.', array($_FILES[$sourceName]['name'])), 'warning');
+				$this->view->insertMessage(array('The file %1$s was not saved successfully.', array($_FILES[$sourceName]['name'])), 'warning', false, $this->flash);
 				return $this->ok = false;
 			}
 		}
@@ -109,9 +115,9 @@ class fileManager
 	public function generatePath()
 	{
 		$time = strtotime('now');
-		if (! is_dir(GIBBON_ROOT.'/uploads/'.date('Y', $time).'/'.date('m', $time))) {
-			mkdir(GIBBON_ROOT.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0644, true);
-		}
+		if (! is_dir(GIBBON_ROOT.'/uploads/'.date('Y', $time).'/'.date('m', $time))) 
+			mkdir(GIBBON_ROOT.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0775, true);
+
 		return '/uploads/'.date('Y', $time).'/'.date('m', $time).'/';
 	}
 
@@ -141,12 +147,12 @@ class fileManager
 			$size1 = getimagesize(GIBBON_ROOT .  ltrim($this->fileName, '/'));
 			$this->width = $size1[0];
 			$this->height = $size1[1];
-			$this->ratio = $this->height / $this->width;
+			$this->ratio = $this->width / $this->height ;
 			if ($this->width > $width || $this->height > $height || $this->ratio < $minRatio || $this->ratio > $maxRatio) {
 				unlink(GIBBON_ROOT .  ltrim($this->fileName, '/'));
 				$this->fileName = '';
 				$c = $name = pathinfo($this->fileName);
-				$this->view->insertMessage(array('The image %1$s was not saved as it failed to meet size requirements.', array($c['filename'])), 'warning');
+				$this->view->insertMessage(array('The image %1$s was not saved as it failed to meet size requirements.', array(basename($this->fileName))), 'warning', false, $this->flash);
 				return $this->ok = false;
 			}
 		}
@@ -178,7 +184,7 @@ class fileManager
 		} while (! $unique && $count < 100);
         if (! copy('zip://'.$zipFile.'#'.$sourceName, GIBBON_ROOT . ltrim($this->fileName, '/'))) {
 			$this->fileName = '';
-			$this->view->insertMessage(array('The file %1$s was not saved successfully.', array($sourceName)), 'warning');
+			$this->view->insertMessage(array('The file %1$s was not saved successfully.', array($sourceName)), 'warning', false, $this->flash);
 			return $this->ok = false;
 		}
 		return $this->ok = true ;

@@ -608,10 +608,16 @@ ul.moduleMenu h4 {
 	color: #757B81;
 	line-height: 15px ;
 	display: block;
-}
-.mini .glyphicon, .mini .glyphicons {
 	margin-top: 1px;
-	margin-left: -4px;
+	margin-left: -6px;
+}
+.mini .glyphicons-list-alt .halflings-check {
+	color: #757B81;
+    font-size: 10px;
+    float: right;
+    margin-top: -15px;
+	margin-right: -2px;
+    background: white;
 }
 .mini a .glyphicon, .mini a .glyphicons {
 	text-decoration: none!important ;
@@ -886,6 +892,11 @@ table.ui-datepicker-calendar tr:last-child th:last-child {
 .noIntBorder .container-fluid .well .row {
 	background: #EDF7FF;
 }
+table.noIntBorder td {
+	border: none!important ;
+	padding: 5px!important ;
+	background-color: #EDF7FF!important ;
+}
 .form-group label{
 	margin-bottom:0;
 }
@@ -1122,8 +1133,19 @@ button.generatePassword {
 	margin: -20px 0 0 74px;
 	z-index: 99;
 	font-size: 25px;
-	background-color: #f0f0f0;
+	background-color: transparent ;
 }
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
 	vertical-align: middle ;
+}
+.homework {
+	display: block;
+	max-height: 25px;
+	max-width: 25px;
+}
+.homework .halflings {
+    top: -15px;
+    left: 12px;
+	color: #757B81;
+    background: white;
 }

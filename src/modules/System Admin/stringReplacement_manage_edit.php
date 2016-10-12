@@ -42,7 +42,7 @@ if ($this->getSecurity()->isActionAccessible()) {
 	if ($stringID !== 'Add') 
 		$links['add'] = array('q' => '/modules/System Admin/stringReplacement_manage_edit.php', 'search' =>$search, 'gibbonStringID' => 'Add');
 	if (! empty($search)) 
-		$links['Back to Search Results'] = array('q' => '/modules/System Admin/stringReplacement_manage.php', 'search' =>$search);
+		$links['Back to Search Results'] = array('q' => '/modules/System Admin/stringReplacement_manage.php', 'search' => $search);
 	$this->linkTop($links);
 	$this->h2($header);
 	

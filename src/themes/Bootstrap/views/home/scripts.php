@@ -32,6 +32,20 @@ if ($this->session->notEmpty("username")) {
 	}
 	if ($sessionDuration < 1200)
 		$sessionDuration = 1200 ;
+	?>
+<script type='text/javascript'>
+	// Keep all submit buttons from working
+	$('input:submit').live('click', function () {
+		return false;
+	});
+
+	// After everything loads, remove the restriction on submit buttons.
+	$(window).load(function(){
+		$('input:submit').die();
+	});
+</script>
+
+    <?php
 	$this->addScript("
 <script type='text/javascript'>
 	$(document).ready(function(){
@@ -44,15 +58,6 @@ if ($this->session->notEmpty("username")) {
 			redirAfter: ".(($sessionDuration * 1000) + 600000)."
 		});
 	});
-   // Keep all submit buttons from working
-   $('input:submit').live('click', function () {
-      return false;
-   });
-
-   // After everything loads, remove the restriction
-   $(window).load(function(){
-       $('input:submit').die();
-   });
 </script>
 ");
 }

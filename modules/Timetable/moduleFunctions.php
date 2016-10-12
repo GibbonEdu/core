@@ -311,9 +311,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
         if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID'] and $edit == false) {
             $self = true;
             //Update display choices
-            if ($_SESSION[$guid]['viewCalendarSchool'] != false and $_SESSION[$guid]['viewCalendarPersonal'] != false and $_SESSION[$guid]['viewCalendarSpaceBooking'] != false) {
+            if ($_SESSION[$guid]['viewCalendar']['School'] != false and $_SESSION[$guid]['viewCalendar']['Personal'] != false and $_SESSION[$guid]['viewCalendar']['SpaceBooking'] != false) {
                 try {
-                    $dataDisplay = array('viewCalendarSchool' => $_SESSION[$guid]['viewCalendarSchool'], 'viewCalendarPersonal' => $_SESSION[$guid]['viewCalendarPersonal'], 'viewCalendarSpaceBooking' => $_SESSION[$guid]['viewCalendarSpaceBooking'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataDisplay = array('viewCalendarSchool' => $_SESSION[$guid]['viewCalendar']['School'], 'viewCalendarPersonal' => $_SESSION[$guid]['viewCalendar']['Personal'], 'viewCalendarSpaceBooking' => $_SESSION[$guid]['viewCalendar']['SpaceBooking'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlDisplay = 'UPDATE gibbonPerson SET viewCalendarSchool=:viewCalendarSchool, viewCalendarPersonal=:viewCalendarPersonal, viewCalendarSpaceBooking=:viewCalendarSpaceBooking WHERE gibbonPersonID=:gibbonPersonID';
                     $resultDisplay = $connection2->prepare($sqlDisplay);
                     $resultDisplay->execute($dataDisplay);
@@ -359,9 +359,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             while ($row = $result->fetch()) {
                 $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
                 $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
-                $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-                $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-                $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+                $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+                $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+                $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
                 $output .= "<input name='fromTT' value='Y' type='hidden'>";
                 $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
                 $output .= '</form>';
@@ -400,17 +400,17 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<td style='vertical-align: top'>";
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Last Week')."'>";
             $output .= '</form>';
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Next Week')."'>";
             $output .= '</form>';
@@ -438,9 +438,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</script>';
 
             $output .= "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='".__($guid, 'Go')."'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= '</form>';
             $output .= '</td>';
@@ -477,6 +477,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
 
             //Count back to first dayOfWeek before specified calendar date
+			$dateCorrectionOffSet = $days[0]['sequenceNumber'];
             while (date('D', $startDayStamp) != $days[0]['nameShort']) {
                 $startDayStamp = $startDayStamp - 86400;
             }
@@ -487,14 +488,14 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $schoolCalendarAlpha = 0.85;
             $ttAlpha = 1.0;
 
-            if ($_SESSION[$guid]['viewCalendarSchool'] != 'N' or $_SESSION[$guid]['viewCalendarPersonal'] != 'N' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+            if ($_SESSION[$guid]['viewCalendar']['School'] != 'N' or $_SESSION[$guid]['viewCalendar']['Personal'] != 'N' or $_SESSION[$guid]['viewCalendar']['SpaceBooking'] != 'N') {
                 $ttAlpha = 0.75;
             }
 
             //Get school calendar array
             $allDay = false;
             $eventsSchool = false;
-            if ($self == true and $_SESSION[$guid]['viewCalendarSchool'] == 'Y') {
+            if ($self == true and $_SESSION[$guid]['viewCalendar']['School'] == 'Y') {
                 if ($_SESSION[$guid]['calendarFeed'] != '') {
                     $eventsSchool = getCalendarEvents($connection2, $guid,  $_SESSION[$guid]['calendarFeed'], $startDayStamp, $endDayStamp);
                 }
@@ -510,7 +511,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             //Get personal calendar array
             $eventsPersonal = false;
-            if ($self == true and $_SESSION[$guid]['viewCalendarPersonal'] == 'Y') {
+            if ($self == true and $_SESSION[$guid]['viewCalendar']['Personal'] == 'Y') {
                 if ($_SESSION[$guid]['calendarFeedPersonal'] != '') {
                     $eventsPersonal = getCalendarEvents($connection2, $guid,  $_SESSION[$guid]['calendarFeedPersonal'], $startDayStamp, $endDayStamp);
                 }
@@ -528,7 +529,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $eventsSpaceBooking = false;
             if ($spaceBookingAvailable) {
                 //Get space booking array
-                if ($self == true and $_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                if ($self == true and $_SESSION[$guid]['viewCalendar']['SpaceBooking'] == 'Y') {
                     $eventsSpaceBooking = getSpaceBookingEvents($guid, $connection2, $startDayStamp, $_SESSION[$guid]['gibbonPersonID']);
                 }
             }
@@ -688,13 +689,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= "; margin: 0px 0px 30px 0px;'>";
                 //Spit out controls for displaying calendars
-                if ($self == true and ($_SESSION[$guid]['calendarFeed'] != '' or $_SESSION[$guid]['calendarFeedPersonal'] != '' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != '')) {
+                if ($self == true and ($_SESSION[$guid]['calendarFeed'] != '' or $_SESSION[$guid]['calendarFeedPersonal'] != '' or $_SESSION[$guid]['viewCalendar']['SpaceBooking'] != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
                     $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
                     if ($_SESSION[$guid]['calendarFeed'] != '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
                         $checked = '';
-                        if ($_SESSION[$guid]['viewCalendarSchool'] == 'Y') {
+                        if ($_SESSION[$guid]['viewCalendar']['School'] == 'Y') {
                             $checked = 'checked';
                         }
                         $output .= "<span class='ttSchoolCalendar' style='opacity: $schoolCalendarAlpha'>".__($guid, 'School Calendar');
@@ -703,7 +704,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
                     if ($_SESSION[$guid]['calendarFeedPersonal'] != '' and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
                         $checked = '';
-                        if ($_SESSION[$guid]['viewCalendarPersonal'] == 'Y') {
+                        if ($_SESSION[$guid]['viewCalendar']['Personal'] == 'Y') {
                             $checked = 'checked';
                         }
                         $output .= "<span class='ttPersonalCalendar' style='opacity: $schoolCalendarAlpha'>".__($guid, 'Personal Calendar');
@@ -711,9 +712,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= '</span>';
                     }
                     if ($spaceBookingAvailable) {
-                        if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+                        if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] != '') {
                             $checked = '';
-                            if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                            if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] == 'Y') {
                                 $checked = 'checked';
                             }
                             $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__($guid, 'Bookings').'</a> ';
@@ -740,7 +741,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</th>';
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    $dateCorrection = ($day['sequenceNumber'] - $dateCorrectionOffSet);
 
                     $output .= "<th style='vertical-align: top; text-align: center; width: ";
                     if ($narrow == 'trim') {
@@ -806,7 +807,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     //Run through days of the week
                     foreach ($days as $day) {
                         if ($day['schoolDay'] == 'Y') {
-                            $dateCorrection = ($day['sequenceNumber'] - 1);
+                            $dateCorrection = ($day['sequenceNumber'] - $dateCorrectionOffSet);
 
                             //Check to see if day is term time
                             $isDayInTerm = false;
@@ -868,7 +869,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $schoolCalendarAlpha = 0.85;
     $ttAlpha = 1.0;
 
-    if ($_SESSION[$guid]['viewCalendarSchool'] != 'N' or $_SESSION[$guid]['viewCalendarPersonal'] != 'N' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+    if ($_SESSION[$guid]['viewCalendar']['School'] != 'N' or $_SESSION[$guid]['viewCalendar']['Personal'] != 'N' or $_SESSION[$guid]['viewCalendar']['SpaceBooking'] != 'N') {
         $ttAlpha = 0.75;
     }
 
@@ -1447,9 +1448,9 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         while ($row = $result->fetch()) {
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
             $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
             $output .= '</form>';
@@ -1478,7 +1479,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
     //Get space booking array
     $eventsSpaceBooking = false;
-    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+    if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] == 'Y') {
         $eventsSpaceBooking = getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbonSpaceID);
     }
 
@@ -1495,17 +1496,17 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= "<td style='vertical-align: top'>";
         $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
         $output .= "<input name='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
-        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
         $output .= "<input name='fromTT' value='Y' type='hidden'>";
         $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Last Week')."'>";
         $output .= '</form>';
         $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
         $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
-        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
         $output .= "<input name='fromTT' value='Y' type='hidden'>";
         $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Next Week')."'>";
         $output .= '</form>';
@@ -1536,9 +1537,9 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '});';
         $output .= '</script>';
         $output .= "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='".__($guid, 'Go')."'>";
-        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendar']['School']."' type='hidden'>";
+        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendar']['Personal']."' type='hidden'>";
+        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendar']['SpaceBooking']."' type='hidden'>";
         $output .= "<input name='fromTT' value='Y' type='hidden'>";
         $output .= '</form>';
         $output .= '</td>';
@@ -1585,7 +1586,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $schoolCalendarAlpha = 0.85;
         $ttAlpha = 1.0;
 
-        if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+        if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] != 'N') {
             $ttAlpha = 0.75;
         }
 
@@ -1658,13 +1659,13 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
         $output .= "<table cellspacing='0' class='mini' cellspacing='0' style='width: 750px; margin: 0px 0px 30px 0px;'>";
             //Spit out controls for displaying calendars
-            if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+            if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] != '') {
                 $output .= "<tr class='head' style='height: 37px;'>";
                 $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
                 $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
-                if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+                if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] != '') {
                     $checked = '';
-                    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                    if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] == 'Y') {
                         $checked = 'checked';
                     }
                     $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__($guid, 'Bookings').'</a> ';
@@ -1765,7 +1766,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 			foreach ($days as $day) {
 				$dayOut = '';
 				if ($day['schoolDay'] == 'Y') {
-					$dateCorrection = ($day['sequenceNumber'] - 1);
+					$dateCorrection = ($day['sequenceNumber'] - $dateCorrectionOffset);
 
 					//Check to see if day is term time
 					$isDayInTerm = false;
@@ -1841,7 +1842,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
     $schoolCalendarAlpha = 0.85;
     $ttAlpha = 1.0;
 
-    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+    if ($_SESSION[$guid]['viewCalendar']['SpaceBooking'] != 'N') {
         $ttAlpha = 0.75;
     }
 

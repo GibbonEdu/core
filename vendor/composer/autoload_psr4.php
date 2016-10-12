@@ -16,6 +16,7 @@ return array(
     'Module\\User_Admin\\' => array($baseDir . '/src/modules/User Admin'),
     'Module\\System_Admin\\' => array($baseDir . '/src/modules/System Admin'),
     'Module\\School_Admin\\' => array($baseDir . '/src/modules/School Admin'),
+    'Module\\Roll_Groups\\' => array($baseDir . '/src/modules/Roll Groups'),
     'Module\\' => array($baseDir . '/src/modules'),
     'Library\\' => array($baseDir . '/src/Library'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),

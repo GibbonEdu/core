@@ -370,6 +370,27 @@ form:
                 style: 'margin-right: 12px; font-size: 10px; '
     nothing: 
         role: form
+    smallIntBorder: 
+        class: form-horizontal smallIntBorderForm
+        additional: ' data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh" data-fv-err-container="popover"'
+        role: form 
+        photo:
+            oneColumn: 1
+            col2: 
+                class: col-md-12 col-lg-12
+            element:
+                class: form-control small
+        submit:
+            col1:
+                class: col-md-5 col-lg-5
+            col2: 
+                class: col-md-offset-4 col-lg-offset-4 col-md-3 col-lg-3 right
+            element:
+                class: btn btn-success form-control btn-sm
+        paragraph:
+            col2: 
+                class: col-md-12 col-lg-12
+            oneColumn: 1
 validation:
     asScript: 0
     Email: ' data-fv-emailaddress="true" data-fv-emailaddress-message="{{message}}"' 
@@ -507,9 +528,24 @@ links:
     tick:
         title: 'Tick'
         prompt: '<span class="glyphicons glyphicons-tick"{{title}} style="color: green;"></span>'
+    error:
+        title: 'Error'
+        prompt: '<span class="glyphicons glyphicons-exclamation-sign"{{title}} style="color: red;"></span>'
     page down:
         title: 'Page Down'
         prompt: '<span class="glyphicons glyphicons-download"></span>'
+    planner:
+        title: 'Planner'
+        prompt: '<span class="glyphicons glyphicons-calendar"></span>'
+    markbook:
+        title: 'Markbook'
+        prompt: '<span class="glyphicons glyphicons-table"></span>'
+    homework:
+        title: 'Homework'
+        prompt: '<div class="homework"><span class="glyphicons glyphicons-list-alt"></span><span class="halflings halflings-check"></span></div>'
+    rubric:
+        title: 'Rubric'
+        prompt: '<span class="glyphicons glyphicons-table></span>'
 # linkTop keys need to be LOWERCASE
 linkTop:
     add:
@@ -545,6 +581,9 @@ linkTop:
     download:
         spanClass: glyphicons glyphicons-download
         name: Download
+    view:
+        spanClass: glyphicons glyphicons-search
+        name: View
 script:
     display: block
 tokeninput:

@@ -182,7 +182,7 @@ class alertLevel extends record
 			}
 	
 			//Academic
-			$alertLevelID="" ;
+			$alertLevelID = 0;
 			$dataAlert=array("gibbonPersonIDStudent"=>$personID, "gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"));
 			$sqlAlert="SELECT * 
 				FROM gibbonMarkbookEntry 
@@ -194,45 +194,39 @@ class alertLevel extends record
 					AND complete='Y' 
 					AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
 			$resultAlert = $this->view->getRecord('markbookEntry')->findAll($sqlAlert, $dataAlert);
-			if (count($resultAlert) > 1 && $count($resultAlert) <= 4) {
-				$alertLevelID = 003 ;
-			}
-			elseif (count($resultAlert) <= 8) {
-				$alertLevelID = 002 ;
-			}
-			elseif (count($resultAlert) > 8) {
-				$alertLevelID = 001 ;
-			}
-			if (! empty($alertLevelID)) {
+			if (count($resultAlert) > 0) 
+				$alertLevelID = 3 ;
+			if (count($resultAlert) > 4)
+				$alertLevelID = 2 ;
+			if (count($resultAlert) > 8)
+				$alertLevelID = 1 ;
+			if (intval($alertLevelID) > 0) {
 				$alert = $this->getAlert($alertLevelID) ;
-				if ($alert) {
+				if ($alert !== false) {
 					$title =  $this->view->__(array('Student has a %1$s alert for academic concern in the current academic year.', array($this->view->__($alert["name"])))) ;
 					$output .= "<a style='font-size: " . $fontSize . "px; color: #" . $alert["colour"] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Markbook&filter=" . $session->get("gibbonSchoolYearID") . "'><div title='$title' class='alertBar' style='max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 2px solid #" . $alert["colour"] . "; background-color: #" . $alert["colourBG"] . "'>" .  $this->view->__('A') . "</div></a>" ;
 				}
 			}
 	
 			//Behaviour
-			$alertLevelID = "" ;
-			$dataAlert=array("gibbonPersonID"=>$personID);
+			$alertLevelID = 0 ;
+			$dataAlert=array("gibbonPersonID"=>$personID, 'date'=>date("Y-m-d", (time()-(24*60*60*60))));
 			$sqlAlert="SELECT * 
 				FROM gibbonBehaviour 
 				WHERE gibbonPersonID=:gibbonPersonID 
-					AND type='Negative' 
-					AND date>'" . date("Y-m-d", (time()-(24*60*60*60))) . "'" ;
+					AND type = 'Negative' 
+					AND date > :date" ;
 			$resultAlert = $this->view->getRecord('behaviour')->findAll($sqlAlert, $dataAlert);
 
-			if (count($resultAlert) > 1 && count($resultAlert) <= 4) {
-				$alertLevelID = 003 ;
-			}
-			elseif (count($resultAlert) <= 8) {
-				$alertLevelID = 002 ;
-			}
-			elseif (count($resultAlert) > 8) {
-				$alertLevelID = 001 ;
-			}
-			if ($alertLevelID!="") {
+			if (count($resultAlert) > 0) 
+				$alertLevelID = 3 ;
+			if (count($resultAlert) > 4)
+				$alertLevelID = 2 ;
+			if (count($resultAlert) > 8)
+				$alertLevelID = 1 ;
+			if (intval($alertLevelID) > 0) {
 				$alert = $this->getAlert($alertLevelID) ;
-				if ($alert) {
+				if ($alert !== false) {
 					$title =  $this->view->__(array('Student has a %1$s alert for behaviour over the past 60 days.', array($this->view->__($alert["name"])))) ;
 					$output .= "<a style='font-size: " . $fontSize . "px; color: #" . $alert["colour"] . "; text-decoration: none' href='" . GIBBON_URL . "index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $personID . "&subpage=Behaviour'><div title='$title' class='alertBar' style='float: right; text-align: center; vertical-align: middle; max-height: " . $height . "px; height: " . $height . "px; width: " . $width . "px; border-top: 2px solid #" . $alert["colour"] . ";  background-color: #" . $alert["colourBG"] . "'>" .  $this->view->__('B') . "</div></a>" ;
 				}

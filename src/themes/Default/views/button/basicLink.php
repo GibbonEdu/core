@@ -1,18 +1,15 @@
-<?php
-use Gibbon\core\trans ;
-?>
-<a href="<?php echo $params->link; ?>"<?php 
-echo ! empty($params->title) ? ' title="'.$this->__($params->title).'"' : ''; 
+<a href="<?php echo $el->link; ?>"<?php 
+echo ! empty($el->title) ? ' alt="'.$this->__($el->title).'"' : ''; 
 echo ! empty($el->onclick) ? ' onclick="'.str_replace('"', "'", $el->onclick).'"' : ''; 
-echo ! empty($params->linkStyle) ? ' style="'.$params->linkStyle.'"' : ''; 
-echo ! empty($params->linkClass) ? ' style="'.$params->linkClass.'"' : ''; ?>><?php
-echo ! empty($params->leftName) ? $this->__($params->leftName) : ''; 
-echo ! empty($params->name) ? $this->__($params->name) : ''; 
-if ( ! empty($params->imageName)) {
+echo ! empty($el->linkStyle) ? ' style="'.$el->linkStyle.'"' : ''; 
+echo ! empty($el->linkClass) ? ' style="'.$el->linkClass.'"' : ''; ?>><?php
+echo ! empty($el->leftName) ? $this->__($el->leftName) : ''; 
+echo ! empty($el->name) ? $this->__($el->name) : ''; 
+if ( ! empty($el->imageName)) {
 ?><img<?php
-	echo isset($params->imageStyle) ? ' style="'.$params->imageStyle.'"' : ' style="margin-left: 5px"' ; 
-	echo isset($params->imageClass) ? ' style="'.$params->imageClass.'"' : NULL ;
-	echo isset($params->title) ? ' title="'.$this->__($params->title).'"': '' ; ?> src="<?php echo $this->session->get("theme.url"); ?>/img/<?php echo $params->imageName; ?>" /><?php  
+	echo isset($el->imageStyle) ? ' style="'.$el->imageStyle.'"' : ' style="margin-left: 5px"' ; 
+	echo isset($el->imageClass) ? ' class="'.$el->imageClass.'"' : NULL ;
+	echo (isset($el->title) ? $this->__($el->title): ''); ?> src="<?php echo $this->session->get("theme.url"); ?>/img/<?php echo $el->imageName; ?>" /><?php  
 }
-echo ! empty($params->rightName) ? $this->__($params->rightName) : ''; ?>
+echo ! empty($el->rightName) ? $this->__($el->rightName) : ''; ?>
 </a>

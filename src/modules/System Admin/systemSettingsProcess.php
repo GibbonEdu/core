@@ -103,7 +103,7 @@ else {
 		if (! $this->config->setSettingByScope("country", $post['country']) ) $fail = true;
 		if (! $this->config->setSettingByScope("firstDayOfTheWeek", $post['firstDayOfTheWeek']) ) $fail = true;
 		
-		if (! $mf->setFirstDayOfTheWeek($post['firstDayOfTheWeek'])) $fail = true ;
+		if (! $mf->setfirstDayOfTheWeek($post['firstDayOfTheWeek'])) $fail = true ;
 		
 		if (! $this->config->setSettingByScope("currency", $post['currency']) ) $fail = true;
 		if (! $this->config->setSettingByScope("gibboneduComOrganisationName", $post['gibboneduComOrganisationName']) ) $fail = true;

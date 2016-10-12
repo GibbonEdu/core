@@ -143,7 +143,7 @@ if ($this->session->isEmpty("gibbonPersonID"))
 	$el->nameDisplay = "Personal Theme";
 	$el->description = "Override the system theme.";
 	$tObj = new theme($this);
-	$el->addOption($this->__('Select your theme!'), 0);
+	$el->addOption('', 0);
 	foreach($tObj->findAll("SELECT * FROM `gibbonTheme` ORDER BY `name`") as $theme)
 		$el->addOption($theme->getField("active") == 'Y' ? $theme->getField("name")." (".$this->__("System Default").")" : $theme->getField("name"), $theme->getField("gibbonThemeID"));
 
@@ -153,7 +153,7 @@ if ($this->session->isEmpty("gibbonPersonID"))
 	$el->nameDisplay = "Personal Language" ;
 	$el->description = "Override the system default language.";
 	$el->validateOff();
-	$el->addOption($this->__('Select Personal Language'),'');
+	$el->addOption('');
 	if ($pObj->getField('personalLanguageCode') != '')
 		$el->value = $pObj->getField('personalLanguageCode');
 	foreach ($this->config->getLanguages() as $code=>$name )

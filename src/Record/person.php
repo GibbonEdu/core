@@ -274,32 +274,6 @@ class person extends record
 	}
 
 	/**
-	 * get User Photo
-	 *
-	 * Gets a given user photo, or a blank if not available
-	 * @version	30th June 2016
-	 * @since	copied from functions.php
-	 * @param	string		$path	Photo Path
-	 * @param	string		$size
-	 * @return	string		HTML
-	 */
-	public function getUserPhoto($path, $size) {
-		$output = "" ;
-
-		$sizeStyle="style='width: 75px; height: 100px'" ;
-		if ($size==240) {
-			$sizeStyle="style='width: 240px; height: 320px'" ;
-		}
-		if ($path=="" OR ! file_exists($this->session->get("absolutePath") . "/" . $path)) {
-			$output="<img $sizeStyle class='user' src='" . $this->session->get("absoluteURL") . "/themes/" . $this->session->get("theme.Name") . "/img/anonymous_" . $size . ".jpg'/><br/>" ;
-		}
-		else {
-			$output="<img $sizeStyle class='user' src='" . $this->session->get("absoluteURL") . "/$path'/><br/>" ;
-		}
-		return $output ;
-	}
-
-	/**
 	 * inject Post
 	 *
 	 * @version	7th September 2016

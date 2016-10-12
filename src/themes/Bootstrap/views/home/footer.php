@@ -1,13 +1,10 @@
-<?php
-use Gibbon\core\trans ;
-?>
 <div id="footer">
     <?php print $this->__( "Powered by") ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php print $this->config->get('version') ?><?php if ($this->session->get("cuttingEdgeCode")=="Y") { print "-dev" ; }?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
     <span style='font-size: 90%; '>
         <?php print $this->__( "Created under the") ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php print $this->__( "Credits") ; ?></a><br/>
         <?php
-            $seperator=FALSE ;
-            $thirdLine=FALSE ;
+            $seperator = false ;
+            $thirdLine = false ;
             if ($this->session->notEmpty("i18n.maintainerName") AND $this->session->get("i18n.maintainerName")!="Gibbon") {
                 if ($this->session->notEmpty("i18n.maintainerWebsite")) {
                     echo $this->__('Translation led by %1$s', array(" <a target='_blank' href='" . $this->session->get("i18n.maintainerWebsite") . "'>" . $this->session->get("i18n.maintainerName") . "</a>")) ;
@@ -15,8 +12,8 @@ use Gibbon\core\trans ;
                 else {
                     echo $this->__('Translation led by %1$s', array(" " . $this->session->get("i18n.maintainerName"))) ;
                 }
-                $seperator=TRUE ;
-                $thirdLine=TRUE ;
+                $seperator = true ;
+                $thirdLine = true ;
             }
             if ($this->session->get("theme.Name") != "Default" AND $this->session->notEmpty("theme.Author.name")) {
                 if ($seperator) {
@@ -28,9 +25,9 @@ use Gibbon\core\trans ;
                 else {
                     print $this->__('%1$s Theme by %2$s', array($this->session->get("theme.Name"), $this->session->get("theme.Author.name"))) ;
                 }
-                $thirdLine=TRUE ;
+                $thirdLine = true ;
             }
-            if ($thirdLine==FALSE) {
+            if (! $thirdLine) {
                 print "<br/>" ; 
             }
         ?>

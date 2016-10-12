@@ -138,7 +138,7 @@ class studentEnrolment extends record
 			$return .= $this->getUserPhoto($rowRollGroup->image_240, 75);
 	
 			//HEY SHORTY IT'S YOUR BIRTHDAY!
-		$daysUntilNextBirthday = $this->daysUntilNextBirthday($rowRollGroup->dob);
+			$daysUntilNextBirthday = $this->daysUntilNextBirthday($rowRollGroup->dob);
 			if ($daysUntilNextBirthday === 0) {
 				$return .= $this->view->returnIcon('pink gift', array('%1$s birthday today!', array($rowRollGroup->preferredName.'&#39;s')), 'birthdayGift');
 			} elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {

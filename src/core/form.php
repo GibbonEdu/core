@@ -210,7 +210,6 @@ class form
 		
 		if ($this->view instanceof view)
 			$this->view->render('form.style.'.$style, $this);
-		flush();
 	}
 
 	/**
@@ -445,5 +444,24 @@ class form
 		$x = $this->get($name);
 		if (empty($x)) return true ;
 		return false ;
+	}
+
+	/**
+	 * render Return Form
+	 *
+	 * @version	11th October 2016
+	 * @since	11th October 2016
+	 * @param	string		$style	Style with which to render the form
+	 * @param	boolean		$insertSignOff	Insert the Sign Off
+	 * @return	void
+	 */
+	public function renderReturn($style = 'standard', $insertSignOff = true)
+	{
+		ob_start();
+		$this->render($style, $insertSignOff);
+		$out2 = ob_get_contents();
+		if (! empty($out2))
+			ob_end_clean();
+		return $out2 ;
 	}
 }

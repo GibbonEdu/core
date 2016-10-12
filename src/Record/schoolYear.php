@@ -371,7 +371,7 @@ class schoolYear extends record
 			$this->session->set("gibbonSchoolYearID", $year->gibbonSchoolYearID) ;
 			$this->session->set("gibbonSchoolYearName", $year->name) ;
 			$this->session->set("gibbonSchoolYearSequenceNumber", $year->sequenceNumber) ;
-			$this->session->set("gibbonSchoolYearFirstDay", $year->firstDay) ;
+			$this->session->set("gibbonSchoolYearfirstDay", $year->firstDay) ;
 			$this->session->set("gibbonSchoolYearLastDay", $year->lastDay) ;
 		}
 	}

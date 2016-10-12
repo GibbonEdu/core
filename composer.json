@@ -31,6 +31,7 @@
 			"Module\\": "src/modules/",
 			"Module\\System_Admin\\": "src/modules/System Admin/",
 			"Module\\User_Admin\\": "src/modules/User Admin/",
+			"Module\\Roll_Groups\\": "src/modules/Roll Groups/",
 			"Module\\School_Admin\\": "src/modules/School Admin/"
         }
     },
@@ -48,7 +49,8 @@
 		"twbs/bootstrap": "3.3.*",
         "phpmailer/phpmailer": "5.2.*",
 		"google/apiclient": "2.0.*",
-		"nostalgiaz/bootstrap-switch": "3.3.*"
+		"nostalgiaz/bootstrap-switch": "3.3.*",
+        "phpoffice/phpexcel": "1.8.*"
 	},
     "require-dev": {
     }
