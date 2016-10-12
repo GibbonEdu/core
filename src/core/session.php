@@ -81,7 +81,7 @@ class session
 	/**
 	 * get Value
 	 *
-	 * @version	5th May 2016
+	 * @version	12th October 2016
 	 * @since	15th April 2016
 	 * @param	string	$name	Session Value Name
 	 * @param	mixed	$default	if variable does not exist, then return this value.
@@ -91,7 +91,7 @@ class session
 	 */
 	public function get($name, $default = NULL)
 	{
-		if (strpos(',', $name))
+		if (strpos($name, ','))  
 			throw new Exception( $this->__('Session Name cannot contain a comma. '.$name));
 		if (strpos($name, $this->guid) === false) $name = $this->guid.'.'.$name;
 		$steps = explode('.', $name);
@@ -123,7 +123,7 @@ class session
 	public function set($name, $value)
 	{
 		$this->base = NULL;
-		if (strpos(',', $name))
+		if (strpos($name, ','))
 			throw new Exception( $this->__('Session Name cannot contain a comma. '.$name));
 		if (strpos($name, $this->guid) === false) $name = $this->guid.'.'.$name;
 		$steps = explode('.', $name);

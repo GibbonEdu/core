@@ -31,7 +31,6 @@ $syObj = $this->getRecord('schoolYear');
 
 $syObj->setCurrentSchoolYear() ;
 
-
 //The current/actual school year info, just in case we are working in a different year
 $this->session->set("gibbonSchoolYearIDCurrent", $this->session->get("gibbonSchoolYearID")) ;
 $this->session->set("gibbonSchoolYearNameCurrent", $this->session->get("gibbonSchoolYearName") );

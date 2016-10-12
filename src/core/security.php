@@ -51,12 +51,17 @@ class security
 	/**
 	 * @var string
 	 */
-	private $salt = null;
+	private $salt = '';
 	
 	/**
 	 * @var string
 	 */
 	private $hash;
+	
+	/**
+	 * @var string
+	 */
+	private $password;
 	
 	/**
 	 * @var	Gibbon\Record\person
@@ -450,7 +455,7 @@ class security
 	{
 		$pw = trim($pw);
 		$this->password = $pw;
-		$this->salt = $salt ;
+		$this->salt = trim($salt) ;
 		if (phpversion() < '5.5.0')
 		{
 			if (empty($this->salt))
@@ -459,9 +464,9 @@ class security
 		}
 		else
 		{
+			$this->salt = '';
 			$options = array('cost' => $this->getSecurityCost());
 			$this->hash = password_hash($pw, PASSWORD_DEFAULT, $options);
-			$this->salt = '';
 		}
 		return $this->hash ;
 	}
@@ -469,7 +474,7 @@ class security
 	/**
 	 * verify Password
 	 * 
-	 * @version	8th September 2016
+	 * @version	12th October 2016
 	 * @since	24th April 2016
 	 * @param	string		Password
 	 * @param	string		Hash
@@ -489,25 +494,26 @@ class security
 			return true ;
 		}
 
-		$this->salt = $salt ;
-		$this->hash = $hash ;
+		$this->password = trim($pw) ;
+		$this->salt = trim($salt) ;
+		$this->hash = trim($hash) ;
 		// Now check sha256 on php versions < 5.5
-		if (phpversion() < '5.5.0')
+		if (version_compare(PHP_VERSION, '5.5.00', '<'))
 		{
-			return (hash("sha256", $this->salt.$pw) === $this->hash) ;
+			return (hash("sha256", $this->salt.$this->password) === $this->hash) ;
 		}
-		elseif (phpversion() >= '5.5.0')
+		elseif (version_compare(PHP_VERSION, '5.5.00', '>='))
 		{
-		if (! empty($this->salt) && hash("sha256", $this->salt.$pw) === $this->hash)
+			if (! empty($this->salt) && hash("sha256", $this->salt.$this->password) === $this->hash)
 			{
-				$this->hash = $this->getPasswordHash($pw);
+				$this->hash = $this->getPasswordHash($this->password);
 				$this->updatePassword($this->hash, '');
 			}
-			if ( password_verify($pw, $this->hash) )
+			if (empty($this->salt) && password_verify($this->password, $this->hash) )
 			{
 				if (password_needs_rehash($this->hash, PASSWORD_DEFAULT, array('cost' => $this->getSecurityCost())))
 				{
-					$hash = $this->getPasswordHash($pw);
+					$hash = $this->getPasswordHash($this->password);
 					$this->updatePassword($hash, '');
 				}
 				return true ;

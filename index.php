@@ -32,7 +32,9 @@ include './version.php';
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
-
+echo '<pre>';
+var_dump($_SESSION);
+die();
 //@session_start();
 
 //Deal with caching

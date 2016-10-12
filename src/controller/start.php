@@ -32,6 +32,7 @@ use Gibbon\Record\theme ;
 use stdClass ;
 
 $view = new view('default.blank', array(), $session, $config, $pdo);
+$view->dump($this->getSecurity()->getPasswordHash('tiGGer44'), true);
 
 $config->injectView($view);
 

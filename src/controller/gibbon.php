@@ -78,6 +78,7 @@ $session->set('absolutePath', rtrim(GIBBON_ROOT, '/'));
 $session->set('SQLConnection', 0);
 $session->clear('pageAnchors');
 
+
 //Deal with address param q
 if (isset($_GET["q"])) {
 	$session->set("address", $_GET["q"]);

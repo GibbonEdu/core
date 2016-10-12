@@ -49,7 +49,7 @@ if (isset($_GET['testme']))
 	require __DIR__.'/gibbon.php';
 	die(__FILE__.': '.__LINE__);  // if it dies here there is an issue
 }
-
+/*
 if ($q === '')   //  This will render the home page..
 {
 	if (basename($_SERVER['SCRIPT_FILENAME']) === 'index.php')
@@ -57,7 +57,7 @@ if ($q === '')   //  This will render the home page..
 		require __DIR__.'/gibbon.php';
 		die(__FILE__.': '.__LINE__);  // if it dies here there is an issue
 	}
-} 
+}  */
 
 if (in_array($q, $v13))
 {
