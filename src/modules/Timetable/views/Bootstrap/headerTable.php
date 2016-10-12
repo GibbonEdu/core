@@ -17,9 +17,9 @@ else
 				
 				$w = $form->addElement('hidden', 'ttDate', date($this->session->get('i18n.dateFormatPHP'), ($el->startDayStamp - (7 * 24 * 60 * 60))));
 				$w->setID('lastWeekTTDate');
-				$form->addElement('hidden', 'schoolCalendar', ($this->session->get('viewCalendar.School') ? 'Y' : 'N'));
-				$form->addElement('hidden', 'personalCalendar', ($this->session->get('viewCalendar.Personal') ? 'Y' : 'N'));
-				$form->addElement('hidden', 'spaceBookingCalendar', ($this->session->get('viewCalendar.SpaceBooking') ? 'Y' : 'N'));
+				$form->addElement('hidden', 'schoolCalendar', $this->session->get('viewCalendar.School'));
+				$form->addElement('hidden', 'personalCalendar', $this->session->get('viewCalendar.Personal'));
+				$form->addElement('hidden', 'spaceBookingCalendar', $this->session->get('viewCalendar.SpaceBooking'));
 				$form->addElement('hidden', 'fromTT', 'Y');
 				
 				$w = $form->addElement('submitBtn', null, 'Last Week');
@@ -35,9 +35,9 @@ else
 				
 				$w = $form->addElement('hidden', 'ttDate', date($this->session->get('i18n.dateFormatPHP'), ($el->startDayStamp + (7 * 24 * 60 * 60))));
 				$w->setID('nextWeekTTDate');
-				$form->addElement('hidden', 'schoolCalendar', ($this->session->get('viewCalendar.School') ? 'Y' : 'N'));
-				$form->addElement('hidden', 'personalCalendar', ($this->session->get('viewCalendar.Personal') ? 'Y' : 'N'));
-				$form->addElement('hidden', 'spaceBookingCalendar', ($this->session->get('viewCalendar.SpaceBooking') ? 'Y' : 'N'));
+				$form->addElement('hidden', 'schoolCalendar', $this->session->get('viewCalendar.School'));
+				$form->addElement('hidden', 'personalCalendar', $this->session->get('viewCalendar.Personal'));
+				$form->addElement('hidden', 'spaceBookingCalendar', $this->session->get('viewCalendar.SpaceBooking'));
 				$form->addElement('hidden', 'fromTT', 'Y');
 				
 				$w = $form->addElement('submitBtn', null, 'Next Week');
@@ -59,9 +59,9 @@ else
 				$w->element->style = 'height: 22px; width:100px; margin-right: 0px; float: none;';
 				$w->setFormID('ttDateForm');
 				
-				$form->addElement('hidden', 'schoolCalendar', ($this->session->get('viewCalendar.School') ? 'Y' : 'N'));
-				$form->addElement('hidden', 'personalCalendar', ($this->session->get('viewCalendar.Personal') ? 'Y' : 'N'));
-				$form->addElement('hidden', 'spaceBookingCalendar', ($this->session->get('viewCalendar.SpaceBooking') ? 'Y' : 'N'));
+				$form->addElement('hidden', 'schoolCalendar', $this->session->get('viewCalendar.School'));
+				$form->addElement('hidden', 'personalCalendar', $this->session->get('viewCalendar.Personal'));
+				$form->addElement('hidden', 'spaceBookingCalendar', $this->session->get('viewCalendar.SpaceBooking'));
 				$form->addElement('hidden', 'fromTT', 'Y');
 				
 				$w = $form->addElement('submitBtn', null, 'Go');

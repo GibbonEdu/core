@@ -26,6 +26,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Gibbon\controller ;
 
+if (function_exists('opcache_reset')) opcache_reset();
+
 $v13 = array();
 $q = isset($_GET['q']) ? $_GET['q'] : '' ;
 $v13 = array
@@ -49,15 +51,17 @@ if (isset($_GET['testme']))
 	require __DIR__.'/gibbon.php';
 	die(__FILE__.': '.__LINE__);  // if it dies here there is an issue
 }
-/*
+
+
 if ($q === '')   //  This will render the home page..
 {
+die(basename($_SERVER['SCRIPT_FILENAME']));
 	if (basename($_SERVER['SCRIPT_FILENAME']) === 'index.php')
 	{
 		require __DIR__.'/gibbon.php';
 		die(__FILE__.': '.__LINE__);  // if it dies here there is an issue
 	}
-}  */
+}  
 
 if (in_array($q, $v13))
 {

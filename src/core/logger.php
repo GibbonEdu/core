@@ -22,6 +22,7 @@ namespace Gibbon\core;
 
 use Monolog\Logger as monoLogger ;
 use MySQLHandler\MySQLHandler ;
+use Monolog\Handler\StreamHandler;
 use Gibbon\core\sqlConnection AS PDO;
 use Gibbon\core\session ;
 use Gibbon\core\trans ;
@@ -109,11 +110,11 @@ class logger
 				return ;
 		}
 		//Create MysqlHandler
-		$mySQLHandler = new MySQLHandler($pdo->getConnection(), "gibbonLog", array('gibbonLogID', 'module', 'person', 'schoolYear', 'levelName', 'serialisedArray', 'ip'), $levelCode);
+//		$mySQLHandler = new MySQLHandler($pdo->getConnection(), "gibbonLog", array('gibbonLogID', 'module', 'person', 'schoolYear', 'levelName', 'serialisedArray', 'ip'), $levelCode);
 		
 		//Create logger
 		$logger = new monoLogger($channel);
-		$logger->pushHandler($mySQLHandler);
+		$logger->pushHandler(new StreamHandler(GIBBON_ROOT.'config/local/error.log', $levelCode));
 
 		//Now you can use the logger, and further attach additional information
 		$details = array('gibbonLogID'=>null, 'module' => $session->get("module"), 'person' => $session->get("officialName"), 

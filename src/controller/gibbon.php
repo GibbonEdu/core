@@ -23,8 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @package	Gibbon
  * @subpackage	Controller
  */
-
-if (function_exists('opcache_reset')) opcache_reset();
  
 if ( ! defined( 'GIBBON_ROOT' ) )
 {
