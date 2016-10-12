@@ -427,6 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             header("Location: {$URL}");
         } else {
             getSystemSettings($guid, $connection2);
+            $_SESSION[$guid]['pageLoads'] = null;
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }
