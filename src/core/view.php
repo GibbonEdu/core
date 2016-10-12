@@ -33,7 +33,7 @@ use stdClass ;
 /**
  * view Manager
  *
- * @version	11th October 2016
+ * @version	12th October 2016
  * @since	19th April 2016
  * @author	Craig Rayner
  * @package	Gibbon
@@ -538,7 +538,7 @@ class view
 	/**
 	 * redirect
 	 *
-	 * @version	4th October 2016
+	 * @version	12th October 2016
 	 * @since	9th June 2016
 	 * @param	string/array		$URL	Target url
 	 * @return	string
@@ -546,10 +546,16 @@ class view
 	public function redirect($URL) 
 	{
 		if (headers_sent())
-			$this->dump('Headers already Sent<br />Not able to redirect to new page.', true, true);
+			$this->dump('Headers already Sent<br />Not able to redirect to new page.<br />', true, true);
 		header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
 		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // past date to encourage expiring immediately
 		header('HTTP/1.1 303 Redirect');
+		if (is_array($URL))
+			$URL['uniqueKey'] = uniqid();
+		if (is_string($URL) && strpos($URL, '?') !== false)
+			$URL .= '&uniqueKey='.uniqid();
+		elseif (is_string($URL))
+			$URL .= '?uniqueKey='.uniqid();
 		header('Location: '.$this->convertGetArraytoURL($URL));
 		die();
 	}

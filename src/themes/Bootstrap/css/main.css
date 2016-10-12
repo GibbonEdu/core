@@ -1149,3 +1149,13 @@ button.generatePassword {
 	color: #757B81;
     background: white;
 }
+.smallIntBorderForm .smallIntBorder {
+	padding: 0;
+}
+.smallIntBorder {
+	margin: 20px 0 0 0;
+}
+.smallIntBorder .row, .smallIntBorder .row .col-lg-12, .smallIntBorder .row .col-md-12 {
+	padding: 0;
+	margin: 0;
+}
