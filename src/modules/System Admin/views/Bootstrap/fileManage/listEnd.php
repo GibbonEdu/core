@@ -1,1 +1,0 @@
-</div><!-- close gibbon-container -->

@@ -19,12 +19,12 @@ CHANGELOG
 v13.0.00
 --------
 	Headlines
-		Transition to object oriented code base
-		New, Bootstrap-based theme
+		...
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
 		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
+		Personal preference for language is reset (sorry!)
 
 	Significant Changes
 		System: Changed Primary Assessment Scale to Default Assessment Scale
@@ -69,7 +69,7 @@ v13.0.00
 		Planner: improved readability of Unit Overview in lesson plan view, by removing chat section where no messages exist
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
-		Resources: improved usability of tag entry interface
+ 		Resources: improved usability of tag entry interface
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days

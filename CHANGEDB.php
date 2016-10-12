@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*
 Gibbon, Flexible & Open School System
@@ -534,5 +534,31 @@ ALTER TABLE `gibbonMessenger` CHANGE `subject` `subject` VARCHAR(60) CHARACTER S
 ALTER TABLE `gibbonLog` ADD `channel` VARCHAR(255) NOT NULL AFTER `gibbonLogID`, ADD `level` INT NOT NULL AFTER `channel`, ADD `message` LONGTEXT NOT NULL AFTER `level`;end
 ALTER TABLE `gibbonLog` DROP `title`;end
 ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `module` VARCHAR(50) NULL DEFAULT NULL, CHANGE `timestamp` `time` INT NOT NULL, CHANGE `gibbonPersonID` `person` VARCHAR(111) NULL DEFAULT NULL, CHANGE `gibbonSchoolYearID` `schoolYear` VARCHAR(50) NULL DEFAULT NULL;end
-
+DELETE FROM gibbonModule WHERE name='Security';end
+DELETE FROM gibbonModule WHERE name='Notifications';end
+UPDATE `gibbonSetting` SET `name` = 'browseBGColor', `nameDisplay` = 'Browse Library BG Color' WHERE `gibbonSetting`.`name` = 'browseBGColour' AND `scope` = 'Library';end
+UPDATE `gibbonSetting` SET `name` = 'messageBubbleBGColor', `nameDisplay` = 'Message Bubble Background Color' WHERE `gibbonSetting`.`name` = 'messageBubbleBGColour' AND `scope` = 'Messenger';end
+DELETE FROM `gibbonSetting` WHERE scope='Messenger' AND name='messageRepeatTime';end
+DELETE FROM gibbonAction WHERE name='System File Management' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerFrom';end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerFromName';end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerSMTPSecure';end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='defaultLanguage';end
+DROP TABLE gibbonPasswordReset;end
+ALTER TABLE `gibbonFileExtension` DROP `mimeType`;end
+ALTER TABLE `gibbonPerson` DROP `personalLanguageCode`;end
+ALTER TABLE `gibbonPerson` ADD `gibboni18nIDPersonal` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonThemeIDPersonal`;end
+ALTER TABLE `gibbonSetting` DROP `type`;end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='pageAnchorDisplay';end
+ALTER TABLE `gibbonLog` DROP `channel`;end
+ALTER TABLE `gibbonLog` DROP `level`;end
+ALTER TABLE `gibbonLog` DROP `message`;end
+ALTER TABLE `gibbonLog` ADD `title` VARCHAR(50) NOT NULL AFTER `time`;end
+UPDATE gibbonLog SET module=(SELECT gibbonModuleID FROM gibbonModule WHERE name=module) WHERE module IS NOT NULL;end
+ALTER TABLE `gibbonLog` CHANGE `module` `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonLog` CHANGE `time` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;end
+ALTER TABLE `gibbonLog` CHANGE `person` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonLog` CHANGE `schoolYear` `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonLog` DROP `levelName`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('fi_FI', 'Suomen Kieli - Suomi', 'N', 'N', 'Pia Kontiainen', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ";

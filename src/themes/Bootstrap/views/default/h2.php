@@ -1,1 +1,0 @@
-<h2><?php echo $this->__($el->title, isset($el->titleDetails) ? $el->titleDetails : array()); ?></h2><!-- default.h2 -->

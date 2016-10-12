@@ -108,6 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 								status2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 							</script>
 						</td>
+						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'>

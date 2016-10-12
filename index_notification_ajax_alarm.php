@@ -58,7 +58,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                 //Allow alarm sounder to terminate alarm
                 $output .= "<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>";
         if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
-            $output .= "<p style='padding-right: 20px'><a style='color: #fff' target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/alarm_cancelProcess.php&divert=true&gibbonAlarmID='.$row['gibbonAlarmID']."'>".__($guid, 'Turn Alarm Off').'</a></p>';
+            $output .= "<p style='padding-right: 20px'><a style='color: #fff' target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__($guid, 'Turn Alarm Off').'</a></p>';
         }
         $output .= '</div>';
 

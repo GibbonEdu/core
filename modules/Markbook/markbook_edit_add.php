@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                         if ($rowSelect['gibbonUnitID'] == $gibbonUnitID)
                                             $selected = 'selected';
                                         echo "<option $selected class='".$rowSelect['gibbonCourseClassID']."' value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										$lastType = $currentType;
+ 										$lastType = $currentType;
 									}
 
 									//List any hooked units
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                                 if ($rowSelect['gibbonUnitID'] == $gibbonUnitID)
                                                     $selected = 'selected';
                                                 echo "<option class='".$rowHookUnits[$hookOptions['classLinkIDField']]."' value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
-												$lastType = $currentType;
+                                                $lastType = $currentType;
 											}
 										}
 									}
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								<b><?php echo __($guid, 'Lesson') ?></b><br/>
 							</td>
 							<td class="right">
-                                <select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" class="standardWidth">
+								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" class="standardWidth">
 									<?php
                                     try {
                                         $dataSelect = array();
@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-									echo "<option value=''></option>";
+                                    echo "<option value=''></option>";
 									while ($rowSelect = $resultSelect->fetch()) {
                                         $selected = '';
                                         if ($rowSelect['gibbonPlannerEntryID'] == $gibbonPlannerEntryID)
@@ -218,7 +218,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 										}
 									}
 									?>
-								</select>
 								<script type="text/javascript">
 									$("#gibbonPlannerEntryID").chainedTo("#gibbonUnitID");
 								</script>
@@ -241,8 +240,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								<b><?php echo __($guid, 'Description') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<input name="description" id="description" maxlength=1000 value="<?php echo $summary?>" type="text" class="standardWidth">
-								<script type="text/javascript">
+                                <input name="description" id="description" maxlength=1000 value="<?php echo $summary?>" type="text" class="standardWidth">
+ 								<script type="text/javascript">
 									var description=new LiveValidation('description');
 									description.add(Validate.Presence);
 								</script>

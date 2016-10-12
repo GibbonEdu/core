@@ -141,7 +141,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             }
         }
         $return .= $name.' . ';
-        $return .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Security/logout.php&divert=true'>".__($guid, 'Logout')."</a> . <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/preferences.php'>".__($guid, 'Preferences').'</a>';
+        $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
         }
@@ -299,10 +299,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
                 } else {
                     $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                     if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
-                        echo $messageBubbleBGColour = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColour');
+                        echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
-                        if ($messageBubbleBGColour != '') {
-                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColour.')!important';
+                        if ($messageBubbleBGColor != '') {
+                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
                             $return .= '<style>';
                             $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
                             $return .= '</style>';
@@ -1863,7 +1863,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= '<br/><br/>';
         $body .= '<hr/>';
         $body .= "<p style='font-style: italic; font-size: 85%'>";
-        $body .= sprintf(__($guid, 'If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/preferences.php'>", '</a>');
+        $body .= sprintf(__($guid, 'If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php'>", '</a>');
         $body .= '<br/><br/>';
         $body .= sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
         $body .= '</p>';
@@ -2835,7 +2835,9 @@ function sidebar($connection2, $guid)
 			<h2>
 				<?php echo __($guid, 'Login'); ?>
 			</h2>
-			<form name="loginForm" method="post" action="./index.php?q=/modules/Security/login.php&<?php if (isset($_GET['q'])) echo 'calledPage='.$_GET['q']; ?>">
+			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q'];
+}
+                ?>">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
 					<tr>
 						<td>
@@ -2867,7 +2869,6 @@ function sidebar($connection2, $guid)
 						</td>
 						<td class="right">
 							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
-                            	<option value=''></option>
 								<?php
                                 try {
                                     $dataSelect = array();
@@ -2877,14 +2878,14 @@ function sidebar($connection2, $guid)
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['status'] == 'Current') {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                }
-                                ?>
+                while ($rowSelect = $resultSelect->fetch()) {
+                    $selected = '';
+                    if ($rowSelect['status'] == 'Current') {
+                        $selected = 'selected';
+                    }
+                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                }
+                ?>
 							</select>
 						</td>
 					</tr>
@@ -2893,8 +2894,7 @@ function sidebar($connection2, $guid)
 							<b><?php echo __($guid, 'Language'); ?></b>
 						</td>
 						<td class="right">
-							<select name="gibboni18nCode" id="gibboni18nCode" style="width: 120px">
-                            	<option value=''></option>
+							<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
 								<?php
                                 try {
                                     $dataSelect = array();
@@ -2904,14 +2904,14 @@ function sidebar($connection2, $guid)
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['systemDefault'] == 'Y') {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['code']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                }
-                                ?>
+                while ($rowSelect = $resultSelect->fetch()) {
+                    $selected = '';
+                    if ($rowSelect['systemDefault'] == 'Y') {
+                        $selected = 'selected';
+                    }
+                    echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                }
+                ?>
 							</select>
 						</td>
 					</tr>
@@ -2919,35 +2919,31 @@ function sidebar($connection2, $guid)
 						<td>
 						</td>
 						<td class="right">
-                            <script type='text/javascript'>
-                            	$(document).ready(function(){
-                            		$(".schoolYear").hide();
-                            		$(".language").hide();
-                            		$("#gibboni18nCode").val("");
-                            		$("#gibbonSchoolYearID").val("");
-                            		$(".show_hide").fadeIn(1000);
-                            		$(".show_hide").click(function(){
-                            			$(".schoolYear").fadeToggle(1000);
-                            			$(".language").fadeToggle(1000);
-                            		});
-                            	});
-                            </script>
+							<?php
+                            echo "<script type='text/javascript'>";
+                echo '$(document).ready(function(){';
+                echo '$(".schoolYear").hide();';
+                echo '$(".language").hide();';
+                echo '$(".show_hide").fadeIn(1000);';
+                echo '$(".show_hide").click(function(){';
+                echo '$(".schoolYear").fadeToggle(1000);';
+                echo '$(".language").fadeToggle(1000);';
+                echo '});';
+                echo '});';
+                echo '</script>'; ?>
 							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
 						</td>
 					</tr>
 					<tr>
 						<td class="right" colspan=2>
-
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="hidden" name="action" value="/modules/Security/login.php">
-							<input type="hidden" name="divert" value="1">
-							<input type="hidden" name="_token" value="<?php echo md5($guid.$_SESSION[$guid]['absolutePath'].'/src/modules/Security/login.php'); ?>">
 							<input type="submit" value="Login">
 						</td>
 					</tr>
 				</table>
 			</form>
 			<?php
+
             }
     }
 

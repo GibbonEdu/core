@@ -63,21 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
     if ($_POST['fromTT'] == 'Y') {
         if ($_POST['schoolCalendar'] == 'on' or $_POST['schoolCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendar']['School'] = 'Y';
+            $_SESSION[$guid]['viewCalendarSchool'] = 'Y';
         } else {
-            $_SESSION[$guid]['viewCalendar']['School'] = 'N';
+            $_SESSION[$guid]['viewCalendarSchool'] = 'N';
         }
 
         if ($_POST['personalCalendar'] == 'on' or $_POST['personalCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendar']['Personal'] = 'Y';
+            $_SESSION[$guid]['viewCalendarPersonal'] = 'Y';
         } else {
-            $_SESSION[$guid]['viewCalendar']['Personal'] = 'N';
+            $_SESSION[$guid]['viewCalendarPersonal'] = 'N';
         }
 
         if ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendar']['SpaceBooking'] = 'Y';
+            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
         } else {
-            $_SESSION[$guid]['viewCalendar']['SpaceBooking'] = 'N';
+            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
         }
     }
     $tt = renderTT($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], $id, false, $ttDate, '', '', 'trim');

@@ -1,1 +1,0 @@
-<span class="glyphicons glyphicons-newspaper x2"></span>

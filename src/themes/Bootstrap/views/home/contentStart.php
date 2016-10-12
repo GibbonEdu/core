@@ -1,1 +1,0 @@
-<div id='content' class='col-lg-9 col-md-12'>

@@ -1,2 +1,0 @@
-<?php echo $this->__($el=>details) ?><br/>
-<div style='font-size: 75%; font-style: italic; margin-top: 10px'><?php echo $this->__(array('%1$sNote%2$s', array('<strong>', '</strong>'))) ?>: <?php echo $this->__($el->note) ?> <?php echo $this->__(array('Please contact %1$s for help.', array("<a href='mailto:" . $session->get("organisationAdministratorEmail") . "'>" . $session->get("organisationAdministratorName") . "</a>")))?></div>

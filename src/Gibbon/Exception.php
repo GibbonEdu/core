@@ -33,9 +33,6 @@ namespace Gibbon;
  * @category   Gibbon
  * @package    Gibbon
  * @copyright  Copyright (c) 2006 - 2014 
- * @package	Gibbon
- * @subpackage	Old
- * @deprecated
  */
 class Exception extends \Exception {
     /**

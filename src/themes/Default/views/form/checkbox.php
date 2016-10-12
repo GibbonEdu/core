@@ -1,3 +1,0 @@
-<?php echo isset($el->label) ? $el->label.'&nbsp;' : '' ; ?><input name="<?php print $el->name ?>" id="<?php echo isset($el->id) ? $el->id : $el->name ; ?>" value="<?php print $this->htmlPrep($el->value) ?>" type="checkbox" <?php echo isset($el->element->class) ?  ' class="'.$el->element->class . '"' : '' ; ?>
-<?php echo isset($el->style->input) ? ' style="' . $el->style->input . '"' : '' ; ?>
-<?php echo isset($el->checked) && $el->checked ? ' checked' : '' ; ?> /><!-- form.checkbox -->

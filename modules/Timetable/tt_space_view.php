@@ -82,12 +82,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 if ($_POST['fromTT'] == 'Y') {
                     if (isset($_POST['spaceBookingCalendar'])) {
                         if ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y') {
-                            $_SESSION[$guid]['viewCalendar']['SpaceBooking'] = 'Y';
+                            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
                         } else {
-                            $_SESSION[$guid]['viewCalendar']['SpaceBooking'] = 'N';
+                            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
                         }
                     } else {
-                        $_SESSION[$guid]['viewCalendar']['SpaceBooking'] = 'N';
+                        $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
                     }
                 }
             }

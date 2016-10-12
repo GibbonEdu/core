@@ -7,9 +7,6 @@
 	License: GNU GPL
 */
 /**
- * @package	Gibbon
- * @subpackage	Old
- * @deprecated
  */
 namespace Gibbon;
 

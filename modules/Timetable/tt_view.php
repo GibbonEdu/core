@@ -122,15 +122,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if (isset($_POST['fromTT'])) {
                 if ($_POST['fromTT'] == 'Y') {
                     if (@$_POST['schoolCalendar'] == 'on' or @$_POST['schoolCalendar'] == 'Y') {
-                        $_SESSION[$guid]['viewCalendar']['School'] = 'Y';
+                        $_SESSION[$guid]['viewCalendarSchool'] = 'Y';
                     } else {
-                        $_SESSION[$guid]['viewCalendar']['School'] = 'N';
+                        $_SESSION[$guid]['viewCalendarSchool'] = 'N';
                     }
 
                     if (@$_POST['personalCalendar'] == 'on' or @$_POST['personalCalendar'] == 'Y') {
-                        $_SESSION[$guid]['viewCalendar']['Personal'] = 'Y';
+                        $_SESSION[$guid]['viewCalendarPersonal'] = 'Y';
                     } else {
-                        $_SESSION[$guid]['viewCalendar']['Personal'] = 'N';
+                        $_SESSION[$guid]['viewCalendarPersonal'] = 'N';
                     }
                 }
             }

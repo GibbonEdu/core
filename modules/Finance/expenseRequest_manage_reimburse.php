@@ -351,6 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 											file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 											file.add(Validate.Presence);
 										</script>
+									</td>
 								</td>
 							</tr>
 							
