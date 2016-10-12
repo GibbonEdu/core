@@ -603,6 +603,9 @@ ul.moduleMenu h4 {
 #loginForm .container-fluid .form-element {
 	background: #edf7ff ;
 }
+#loginForm {
+	border: #ccc 1px solid;
+}
 
 .mini .glyphicons, .mini .glyphicon {
 	color: #757B81;
@@ -790,7 +793,7 @@ td.right {
 /* MESSAGES */
 div.message {
 	border: 1px solid #3B73AF;
-	color: #3B73AF; 
+	color: #3B73AF;
 	background-color: #D0EAFD;
 	font-size: 12px;
 	padding: 5px;
@@ -798,7 +801,7 @@ div.message {
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.05);
 }
 div.message a {
-	color: #3B73AF; 
+	color: #3B73AF;
 }
 div.message a:hover {
 	color: #c00 ;
@@ -1104,7 +1107,7 @@ div.gibbon-container div.row {
 }
 div#slideout .glyphicons {
 	font-size: 28px;
-	color: #7D56A1; 
+	color: #7D56A1;
 }
 .collapsed {
 	padding: 6px;

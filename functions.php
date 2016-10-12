@@ -2877,14 +2877,14 @@ function sidebar($connection2, $guid)
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['status'] == 'Current') {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    $selected = '';
+                                    if ($rowSelect['status'] == 'Current') {
+                                        $selected = 'selected';
+                                    }
+                                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                                }
+                                ?>
 							</select>
 						</td>
 					</tr>
@@ -2904,14 +2904,14 @@ function sidebar($connection2, $guid)
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['systemDefault'] == 'Y') {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['code']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    $selected = '';
+                                    if ($rowSelect['systemDefault'] == 'Y') {
+                                        $selected = 'selected';
+                                    }
+                                    echo "<option $selected value='".$rowSelect['code']."'>".htmlPrep($rowSelect['name']).'</option>';
+                                }
+                                ?>
 							</select>
 						</td>
 					</tr>
@@ -2919,19 +2919,19 @@ function sidebar($connection2, $guid)
 						<td>
 						</td>
 						<td class="right">
-<script type='text/javascript'>
-	$(document).ready(function(){
-		$(".schoolYear").hide();
-		$(".language").hide();
-		$("#gibboni18nCode").val("");
-		$("#gibbonSchoolYearID").val("");
-		$(".show_hide").fadeIn(1000);
-		$(".show_hide").click(function(){
-			$(".schoolYear").fadeToggle(1000);
-			$(".language").fadeToggle(1000);
-		});
-	});
-</script>
+                            <script type='text/javascript'>
+                            	$(document).ready(function(){
+                            		$(".schoolYear").hide();
+                            		$(".language").hide();
+                            		$("#gibboni18nCode").val("");
+                            		$("#gibbonSchoolYearID").val("");
+                            		$(".show_hide").fadeIn(1000);
+                            		$(".show_hide").click(function(){
+                            			$(".schoolYear").fadeToggle(1000);
+                            			$(".language").fadeToggle(1000);
+                            		});
+                            	});
+                            </script>
 							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
 						</td>
 					</tr>
