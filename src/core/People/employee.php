@@ -383,11 +383,15 @@ class employee extends person
 		if ($this->view->getSecurity()->isActionAccessible('/modules/Timetable/tt.php') && $this->session->notEmpty('username') && $this->view->getSecurity()->getRoleCategory($this->session->get('gibbonRoleIDCurrent')) == 'Staff') {
 			$tok = new token('/modules/Timetable/index_tt_ajax.php', null, $this->view);
 			
+			$school = isset($_POST['fromTT'])? (isset($_POST['schoolCalendar']) && $_POST['schoolCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.School') ;
+			$personal = isset($_POST['fromTT'])? (isset($_POST['personalCalendar']) && $_POST['personalCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.Personal') ;
+			$space = isset($_POST['fromTT'])? (isset($_POST['spaceBookingCalendar']) && $_POST['spaceBookingCalendar'] == 'Y' ? 'Y' : 'N') : $this->view->session->get('viewCalendar.SpaceBookinf') ;
+			
 			echo '
 <script type="text/javascript">
 // employee
 	$(document).ready(function(){
-		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
+		$("#tt").load("'.GIBBON_URL.'index.php?q=/modules/Timetable/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'. @$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.$personal.'", "schoolCalendar": "'.$school.'", "spaceBookingCalendar": "'.$space.'", "divert": "true", "action": "'.$tok->generateAction('/modules/Timetable/index_tt_ajax.php').'", "_token": "'.$tok->generateToken('/modules/Timetable/index_tt_ajax.php').'"});
 	});
 </script>
 			';?>

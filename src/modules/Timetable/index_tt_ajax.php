@@ -40,11 +40,14 @@ if (! $this->getSecurity()->isActionAccessible('/modules/Timetable/tt.php')) {
 	$_POST['fromTT'] = ! empty($_POST['fromTT']) ? $_POST['fromTT'] : 'N';
 	
     if ($_POST['fromTT'] == 'Y') {
-        $this->session->set('viewCalendar.School', ($_POST['schoolCalendar'] == 'on' || $_POST['schoolCalendar'] == 'Y' ? true : false));
+		if (isset($_POST['schoolCalendar']))
+        	$this->session->set('viewCalendar.School', ($_POST['schoolCalendar'] == 'Y' ? 'Y' : 'N'));
 
-        $this->session->set('viewCalendar.Personal', ($_POST['personalCalendar'] == 'on' || $_POST['personalCalendar'] == 'Y' ? true : false));
+		if (isset($_POST['personalCalendar']))
+    	    $this->session->set('viewCalendar.Personal', ($_POST['personalCalendar'] == 'Y' ? 'Y' : 'N'));
 
-        $this->session->set('viewCalendar.SpaceBooking', ($_POST['spaceBookingCalendar'] == 'on' || $_POST['spaceBookingCalendar'] == 'Y' ? true : false));
+		if (isset($_POST['spaceBookingCalendar']))
+	        $this->session->set('viewCalendar.SpaceBooking', ($_POST['spaceBookingCalendar'] == 'Y' ? 'Y' : 'N'));
     }
 
     $tt = $mf->renderTT($this->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');

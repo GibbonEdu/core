@@ -27,15 +27,16 @@ if (! $this instanceof view) die();
 
 define('NO_SIDEBAR_MENU', true);
 
-
 $trail = $this->initiateTrail();
 $trail->trailEnd = 'Preferences';
 $trail->render($this);
 
 if ($this->session->isEmpty("gibbonPersonID"))
 {
-	$this->displayMessage('No account information was found.');
-} else {
+	$this->displayMessage(array('No account information was found. %d', array($this->session->get("gibbonPersonID"))));
+} 
+else 
+{
 
 	//Deal with force reset notification
 	$forceReset = isset($_GET["forceReset"]) ? $_GET["forceReset"] : null ;
