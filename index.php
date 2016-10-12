@@ -27,6 +27,7 @@ if (file_exists('./config.php')) {
 } else { //no config, so go to installer
     $URL = './installer/install.php';
     header("Location: {$URL}");
+    exit();
 }
 include './functions.php';
 include './version.php';
