@@ -34,6 +34,7 @@ $trail->render($this);
 if ($this->session->isEmpty("gibbonPersonID"))
 {
 	$this->displayMessage(array('No account information was found. %d', array($this->session->get("gibbonPersonID"))));
+	
 } 
 else 
 {
