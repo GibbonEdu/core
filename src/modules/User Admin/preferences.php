@@ -34,9 +34,9 @@ $trail->render($this);
 if ($this->session->isEmpty("gibbonPersonID"))
 {
 	$this->displayMessage(array('No account information was found. %d', array($this->session->get("gibbonPersonID"))));
-	
-} 
-else 
+
+}
+else
 {
 
 	//Deal with force reset notification
@@ -61,14 +61,12 @@ else
 	}
 
 	$el = $form->addElement('password', "password", '');
-	$el->placeholder = 'Current Password';
 	$el->setRequired();
 	$el->setLength(null, intval($this->config->getSettingByScope('System', 'passwordPolicyMinLength')), 20);
 	$el->nameDisplay = "Current Password";
 
 	$el = $form->addElement('password', "passwordNew", '');
 	$el->setLength(null, null, 20);
-	$el->placeholder = 'New Password';
 	$el->setRequired();
 	if (intval($this->config->getSettingByScope( "System", "passwordPolicyMinLength" )) > 0 )
 		$el->setLength(null, intval($this->config->getSettingByScope('System', 'passwordPolicyMinLength')));
@@ -113,7 +111,6 @@ else
 
 	$el = $form->addElement('password', "passwordConfirm", '');
 	$el->setLength(null, null, 20);
-	$el->placeholder = 'Confirm New Password';
 	$el->setRequired();
 	$el->setConfirmation('Match the New Password', 'passwordNew');
 	$el->nameDisplay = "Confirm New Password";
@@ -128,7 +125,6 @@ else
 
 	$el = $form->addElement('text', "calendarFeedPersonal", $pObj->getField("calendarFeedPersonal"));
 	$el->setLength(null, null, 100);
-	$el->placeholder = "Personal Google Calendar ID";
 	$el->nameDisplay = "Personal Google Calendar ID";
 	$el->description = "Google Calendar ID for your personal calendar. <br/>Only enables timetable integration when logging in via Google.";
 
@@ -136,7 +132,6 @@ else
 	{
 		$el = $form->addElement('text', "personalBackground", $pObj->getField("personalBackground"));
 		$el->setLength(null, null, 255);
-		$el->placeholder = "Personal Background";
 		$el->nameDisplay = "Personal Background";
 		$el->description = "Set your own custom background image.<br/>Please provide URL to image.";
 	}
