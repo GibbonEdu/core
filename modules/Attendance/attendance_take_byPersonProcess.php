@@ -74,14 +74,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     header("Location: {$URL}");
                 } else {
                     //Write to database
+                    require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+                    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+
                     $fail = false;
-                    $direction = 'In';
-                    if ($_POST['type'] == 'Absent' or $_POST['type'] == 'Left' or $_POST['type'] == 'Left - Early') {
-                        $direction = 'Out';
-                    }
                     $type = $_POST['type'];
                     $reason = $_POST['reason'];
                     $comment = $_POST['comment'];
+
+                    $attendanceCode = $attendance->getAttendanceCodeByType($type);
+                    $direction = $attendanceCode['direction'];
 
                     //Check for last record on same day
                     try {

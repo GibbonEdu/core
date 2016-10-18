@@ -107,6 +107,8 @@ else {
 				}
 				else {
 					//Write to database
+					require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+					$attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
 
 					try {
 						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate); 
@@ -147,13 +149,13 @@ else {
 					
 					for ($i=0; $i<$count; $i++) {
 						$gibbonPersonID=$_POST[$i . "-gibbonPersonID"] ;
-						$direction="In" ;
-						if ($_POST[$i . "-type"]=="Absent" OR $_POST[$i . "-type"]=="Left" OR $_POST[$i . "-type"]=="Left - Early") {
-							$direction="Out" ;
-						}
+
 						$type=$_POST[$i . "-type"] ;
 						$reason=$_POST[$i . "-reason"] ;
 						$comment=$_POST[$i . "-comment"] ;
+
+						$attendanceCode = $attendance->getAttendanceCodeByType($type);
+						$direction = $attendanceCode['direction'];
 						
 						//Check for last record on same day
 						try {

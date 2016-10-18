@@ -62,12 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             header("Location: {$URL}");
         } else {
             //Write to database
+            require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+            $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+
             $fail = false;
-            $direction = 'Out';
             $type = $_POST['type'];
             $reason = $_POST['reason'];
             $comment = $_POST['comment'];
+
+            $attendanceCode = $attendance->getAttendanceCodeByType($type);
+            $direction = $attendanceCode['direction'];
+
             $absenceType = (isset($_POST['absenceType']))? $_POST['absenceType'] : 'full';
+
             $dateStart = '';
             if ($_POST['dateStart'] != '') {
                 $dateStart = dateConvert($guid, $_POST['dateStart']);

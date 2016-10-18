@@ -74,6 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     header("Location: {$URL}");
                 } else {
                     //Write to database
+                    require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+                    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+
                     try {
                         $data = array('gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
                         $sql = 'INSERT INTO gibbonAttendanceLogRollGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonRollGroupID=:gibbonRollGroupID, date=:date, timestampTaken=:timestampTaken';
@@ -90,13 +93,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                     for ($i = 0; $i < $count; ++$i) {
                         $gibbonPersonID = $_POST[$i.'-gibbonPersonID'];
-                        $direction = 'In';
-                        if ($_POST[$i.'-type'] == 'Absent' or $_POST[$i.'-type'] == 'Left' or $_POST[$i.'-type'] == 'Left - Early') {
-                            $direction = 'Out';
-                        }
                         $type = $_POST[$i.'-type'];
                         $reason = $_POST[$i.'-reason'];
                         $comment = $_POST[$i.'-comment'];
+
+                        $attendanceCode = $attendance->getAttendanceCodeByType($type);
+                        $direction = $attendanceCode['direction'];
 
                         //Check for last record on same day
                         try {
