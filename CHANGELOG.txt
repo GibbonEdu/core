@@ -24,8 +24,6 @@ v13.0.00
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
 		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
-		Personal preference for language is reset on upgrade (sorry!)
-		Some log details are lost on upgrade (sorry!)
 
 	Significant Changes
 		System: Changed Primary Assessment Scale to Default Assessment Scale

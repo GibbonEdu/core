@@ -515,9 +515,9 @@ UPDATE gibbonSetting SET nameDisplay='Password - Alpha Requirement' WHERE name='
 UPDATE gibbonSetting SET nameDisplay='Password - Numeric Requirement' WHERE name='passwordPolicyNumeric' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='Password - Non-Alphanumeric Requirement' WHERE name='passwordPolicyNonAlphaNumeric' AND scope='System';end
 UPDATE gibbonSetting SET nameDisplay='Password - Minimum Length' WHERE name='passwordPolicyMinLength' AND scope='System';end
-ALTER TABLE `gibbonPerson` ADD `personalLanguageCode` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'en_GB' AFTER `gibboni18nIDPersonal`;end
-UPDATE `gibbonPerson`, `gibboni18n` SET `gibbonPerson`.`personalLanguageCode` = `gibboni18n`.`code` WHERE `gibboni18n`.`gibboni18nID` = `gibbonPerson`.`gibboni18nIDPersonal` AND `gibbonPerson`.`gibboni18nIDPersonal` > 0;end
-ALTER TABLE `gibbonPerson` DROP `gibboni18nIDPersonal`;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
 ALTER TABLE `gibbonSetting` ADD `type` ENUM('text','array','number','date') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'text' AFTER `value`, ADD INDEX `type` (`type`);end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'mainMenuCategories', 'Main Menu Categories', 'A list of menu categories and the order in which they are displayed. Provide a comma separated list of categories in the order you wish them displayed.', '[]', 'array');end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Main Menu Settings', 0, 'Settings', 'Allows administrators to configure the main menu Categories and the order they are displayed.', 'menu_manage.php', 'menu_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
@@ -531,9 +531,9 @@ ALTER TABLE `gibbonSetting` CHANGE `type` `type` ENUM('text','array','number','d
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'pageAnchorDisplay', 'Display Page Anchors', 'Allows the school to turn off display of the Page Anchors in the menu.', 'Y', 'yesno');end
 UPDATE gibbonModule SET category='Other' WHERE category='';end
 ALTER TABLE `gibbonMessenger` CHANGE `subject` `subject` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
-ALTER TABLE `gibbonLog` ADD `channel` VARCHAR(255) NOT NULL AFTER `gibbonLogID`, ADD `level` INT NOT NULL AFTER `channel`, ADD `message` LONGTEXT NOT NULL AFTER `level`;end
-ALTER TABLE `gibbonLog` DROP `title`;end
-ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `module` VARCHAR(50) NULL DEFAULT NULL, CHANGE `timestamp` `time` INT NOT NULL, CHANGE `gibbonPersonID` `person` VARCHAR(111) NULL DEFAULT NULL, CHANGE `gibbonSchoolYearID` `schoolYear` VARCHAR(50) NULL DEFAULT NULL;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
 DELETE FROM gibbonModule WHERE name='Security';end
 DELETE FROM gibbonModule WHERE name='Notifications';end
 UPDATE `gibbonSetting` SET `name` = 'browseBGColor', `nameDisplay` = 'Browse Library BG Color' WHERE `gibbonSetting`.`name` = 'browseBGColour' AND `scope` = 'Library';end
@@ -546,19 +546,19 @@ DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerSMTPSecure';end
 DELETE FROM `gibbonSetting` WHERE scope='System' AND name='defaultLanguage';end
 DROP TABLE gibbonPasswordReset;end
 ALTER TABLE `gibbonFileExtension` DROP `mimeType`;end
-ALTER TABLE `gibbonPerson` DROP `personalLanguageCode`;end
-ALTER TABLE `gibbonPerson` ADD `gibboni18nIDPersonal` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonThemeIDPersonal`;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
 ALTER TABLE `gibbonSetting` DROP `type`;end
 DELETE FROM `gibbonSetting` WHERE scope='System' AND name='pageAnchorDisplay';end
-ALTER TABLE `gibbonLog` DROP `channel`;end
-ALTER TABLE `gibbonLog` DROP `level`;end
-ALTER TABLE `gibbonLog` DROP `message`;end
-ALTER TABLE `gibbonLog` ADD `title` VARCHAR(50) NOT NULL AFTER `time`;end
-UPDATE gibbonLog SET module=(SELECT gibbonModuleID FROM gibbonModule WHERE name=module) WHERE module IS NOT NULL;end
-ALTER TABLE `gibbonLog` CHANGE `module` `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
-ALTER TABLE `gibbonLog` CHANGE `time` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;end
-ALTER TABLE `gibbonLog` CHANGE `person` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
-ALTER TABLE `gibbonLog` CHANGE `schoolYear` `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
 SELECT gibbonLogID FROM `gibbonLog` LIMIT 1;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('fi_FI', 'Suomen Kieli - Suomi', 'N', 'N', 'Pia Kontiainen', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 UPDATE `gibbonAction` SET `description` = 'Allows administrators to configure the system display settings.', `URLList` = 'displaySettings.php', `entryURL` = 'displaySettings.php' WHERE `name`='Display Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
