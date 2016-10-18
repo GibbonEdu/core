@@ -154,6 +154,16 @@ class attendanceView
 	    return ($this->attendanceTypes[$type]['direction'] == 'Out');
 	}
 
+    public function isTypeOnsite( $type ) {
+        if ( isset($this->attendanceTypes[$type]) == false ) return false;
+        return ( stristr($this->attendanceTypes[$type]['scope'], 'Onsite') !== false );
+    }
+
+    public function isTypeOffsite( $type ) {
+        if ( isset($this->attendanceTypes[$type]) == false ) return false;
+        return ( stristr($this->attendanceTypes[$type]['scope'], 'Offsite') !== false );
+    }
+
 	public function isReasonExcused( $type ) {
 	    return in_array( $type, $this->excusedReasons, true ) || in_array( $type, $this->medicalReasons, true );
 	}

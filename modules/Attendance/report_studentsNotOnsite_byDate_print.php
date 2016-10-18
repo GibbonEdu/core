@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $lastStudent = '';
         while ($row = $result->fetch()) {
             $currentStudent = $row['gibbonPersonID'];
-            if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
+            if ( $attendance->isTypeOnsite($row['type']) and $currentStudent != $lastStudent) {
                 $log[$row['gibbonPersonID']] = true;
             }
             $lastStudent = $currentStudent;
