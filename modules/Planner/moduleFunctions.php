@@ -914,7 +914,7 @@ function getTagCloud($guid, $connection2, $gibbonSchoolYearID = null) {
             $tag = $tags[$i][1];
             $count = $tags[$i][2];
             $size = $min_font_size + ($count - $min_count) * ($max_font_size - $min_font_size) / $spread;
-            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/conceptExplorer.php&tag='.str_replace('&', '%26', $tag)."' title='$count resources'>".htmlspecialchars(stripslashes($tag)).'</a>';
+            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/conceptExplorer.php&tag='.str_replace('&', '%26', $tag)."' title='$count units'>".htmlspecialchars(stripslashes($tag)).'</a>';
         }
         $output .= "<p style='margin-top: 10px; line-height: 130%'>";
         $output .= implode("\n", $cloud_tags)."\n";

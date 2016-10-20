@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
             $count = 0;
             foreach ($tags as $tag) {
                 $data["tag$count"] = "%,$tag,%";
-                $sqlWhere .= "tags LIKE :"."tag$count"." OR ";
+                $sqlWhere .= "concat(',',tags,',') LIKE :"."tag$count"." OR ";
                 $count ++;
             }
             if ($sqlWhere == ' AND (')
