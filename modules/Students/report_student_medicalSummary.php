@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
-					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
+					<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
 						<optgroup label='--<?php echo __($guid, 'Students by Roll Group') ?>--'>
 							<?php
                             try {

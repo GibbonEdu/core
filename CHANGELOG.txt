@@ -19,7 +19,8 @@ CHANGELOG
 v13.0.00
 --------
 	Headlines
-		...
+		Automated Scope & Sequence documentation in Planner, based on Unit Planner
+		Concept Explorer in Planner, based on Unit Planner concepts & keywords
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
