@@ -447,6 +447,18 @@ class markbookView
     }
 
     /**
+     * Get the overall Final Grade for all marks (from pre-calculated values)
+     * @version 7th May 2016
+     * @since   7th May 2016
+     * @param   string $gibbonPersonID
+     * @return  int|string
+     */
+    public function getExamAverage( $gibbonPersonID ) {
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
+        return (isset($this->weightedAverages[$gibbonPersonID]['final']))? $this->weightedAverages[$gibbonPersonID]['final'] : '';
+    }
+
+    /**
      * Get the calculated Final Grade average (from pre-calculated values)
      * @version 7th May 2016
      * @since   7th May 2016
