@@ -58,8 +58,7 @@ class attendanceView
 	 * @var array
 	 */
 	protected $attendanceReasons = array();
-	protected $unexcusedReasons = array();
-	protected $excusedReasons = array();
+	protected $genericReasons = array();
 	protected $medicalReasons = array();
 
 	protected $currentDate;
@@ -115,11 +114,10 @@ class attendanceView
 
 
     	// Get attendance reasons
-        $this->unexcusedReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceUnexcusedReasons') );
-        $this->excusedReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceExcusedReasons') );
+        $this->genericReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceReasons') );
         $this->medicalReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceMedicalReasons') );
 
-        $this->attendanceReasons = array_merge( array(''), $this->unexcusedReasons, $this->medicalReasons, $this->excusedReasons);
+        $this->attendanceReasons = array_merge( array(''), $this->genericReasons, $this->medicalReasons );
 
         //Get last 5 school days from currentDate within the last 100
         $this->last5SchoolDays = getLastNSchoolDays($this->guid, $this->pdo->getConnection(), $currentDate, 5);
@@ -163,14 +161,6 @@ class attendanceView
         if ( isset($this->attendanceTypes[$type]) == false ) return false;
         return ( stristr($this->attendanceTypes[$type]['scope'], 'Offsite') !== false );
     }
-
-	public function isReasonExcused( $type ) {
-	    return in_array( $type, $this->excusedReasons, true ) || in_array( $type, $this->medicalReasons, true );
-	}
-
-	public function isReasonUnexcused( $type ) {
-	    return in_array( $type, $this->unexcusedReasons, true );
-	}
 
 	public function renderMiniHistory( $gibbonPersonID, $width = '134px' ) {
 

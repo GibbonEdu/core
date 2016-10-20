@@ -159,29 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceExcusedReasons'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceUnexcusedReasons'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceReasons'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {}
@@ -200,6 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 				</td>
 			</tr>
 
+            <?php /*
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Medical'); ?></h3>
@@ -284,6 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 					</script> 
 				</td>
 			</tr>
+            */ ?>
 			
 			<tr>
 				<td>
