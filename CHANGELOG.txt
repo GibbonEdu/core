@@ -78,6 +78,7 @@ v13.0.00
 		School Admin: fixed PHP notice issue when adding special days
 		School Admin: fixed PHP warning caused by empty arrays in Tracking Settings
 		School Admin: added ability to link Educational Assistances to Form/Roll Groups
+		School Admin: fixed leap year error in Manage Special Days
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
 		Staff: fixed date display in Job Openings manage page
