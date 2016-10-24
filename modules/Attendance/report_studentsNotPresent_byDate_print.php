@@ -33,6 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     } else {
         $currentDate = dateConvert($guid, $_GET['currentDate']);
     }
+    $sort = 'student';
+    if (isset($_GET['sort'])) {
+        if ($sort == 'student' or $sort == 'rollGroup')
+            $sort = $_GET['sort'];
+    }
 
     //Proceed!
     echo '<h2>';
@@ -66,8 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         }
 
         try {
+            $orderBy = 'ORDER BY surname, preferredName, rollGroup';
+            if ($sort == 'rollGroup')
+                $orderBy = 'ORDER BY rollGroup, surname, preferredName';
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroupID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $orderBy";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -118,21 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    try {
-                        $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                        $sqlRollGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                        $resultRollGroup = $connection2->prepare($sqlRollGroup);
-                        $resultRollGroup->execute($dataRollGroup);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultRollGroup->rowCount() < 1) {
-                        echo '<i>'.__($guid, 'Unknown').'</i>';
-                    } else {
-                        $rowRollGroup = $resultRollGroup->fetch();
-                        echo $rowRollGroup['name'];
-                    }
-
+                    echo $row['rollGroup'];
                     echo '</td>';
                     echo '<td>';
                     echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);

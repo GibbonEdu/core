@@ -42,12 +42,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     } else {
         $currentDate = dateConvert($guid, $_GET['currentDate']);
     }
+    $sort = 'student';
+    if (isset($_GET['sort'])) {
+        if ($sort == 'student' or $sort == 'rollGroup')
+            $sort = $_GET['sort'];
+    }
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -71,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-							?>." } ); 
+							?>." } );
 						date.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -81,6 +86,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 					</script>
 				</td>
 			</tr>
+            <tr>
+                <td>
+                    <b><?php echo __($guid, 'Sort By') ?></b><br/>
+                </td>
+                <td class="right">
+                    <select name="sort" class="standardWidth">
+                        <option value="student" <?php if ($sort == 'student') { echo 'selected'; } ?>><?php echo __($guid, 'Student'); ?></option>
+                        <option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
+                    </select>
+                </td>
+            </tr>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_studentsNotPresent_byDate.php">
@@ -123,8 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             }
 
             try {
+                $orderBy = 'ORDER BY surname, preferredName, rollGroup';
+                if ($sort == 'rollGroup')
+                    $orderBy = 'ORDER BY rollGroup, surname, preferredName';
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroupID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $orderBy";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -137,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 echo '</div>';
             } else {
                 echo "<div class='linkTop'>";
-                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&sort=$sort'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                 echo '</div>';
 
                 $lastPerson = '';
@@ -175,21 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         //COLOR ROW BY STATUS!
                         echo "<tr class=$rowNum>";
                         echo '<td>';
-                        try {
-                            $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                            $sqlRollGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                            $resultRollGroup = $connection2->prepare($sqlRollGroup);
-                            $resultRollGroup->execute($dataRollGroup);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultRollGroup->rowCount() < 1) {
-                            echo '<i>'.__($guid, 'Unknown').'</i>';
-                        } else {
-                            $rowRollGroup = $resultRollGroup->fetch();
-                            echo $rowRollGroup['name'];
-                        }
-
+                        echo $row['rollGroup'];
                         echo '</td>';
                         echo '<td>';
                         echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
