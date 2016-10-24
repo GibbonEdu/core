@@ -236,7 +236,7 @@ else {
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input name="subject" id="subject" maxlength=30 value="<?php print htmlPrep($row["subject"]) ?>" type="text" class="standardWidth">
+								<input name="subject" id="subject" maxlength=60 value="<?php print htmlPrep($row["subject"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var subject=new LiveValidation('subject');
 									subject.add(Validate.Presence);

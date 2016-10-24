@@ -366,7 +366,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<input name="subject" id="subject" maxlength=30 value="" type="text" style="width: 300px">
+						<input name="subject" id="subject" maxlength=60 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var subject=new LiveValidation('subject');
 							subject.add(Validate.Presence);

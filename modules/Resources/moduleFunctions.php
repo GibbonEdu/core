@@ -73,7 +73,7 @@ function getTagCloud($guid, $connection2, $tagCount = 50) {
         $output .= '</p>';
     } else {
         $output .= "<div class='warning'>";
-        $output .= 'There are no resources in the system.';
+        $output .= __($guid, 'There are no resources in the system.');
         $output .= '</div>';
     }
 

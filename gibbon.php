@@ -31,8 +31,14 @@ if (!defined('GIBBON_ROOT')) {
     define('GIBBON_ROOT', str_replace(array('/src', '\\src'), '', dirname(__FILE__)).'/');
 }
 
+require_once GIBBON_ROOT.'src/Autoloader.php';
 
-require GIBBON_ROOT.'vendor/autoload.php';
+$loader = new Autoloader();
+
+$loader->addNameSpace('Gibbon\\', 'src/Gibbon');
+$loader->addNameSpace('Library\\', 'src/Library');
+
+$loader->register();
 
 if (file_exists(GIBBON_ROOT.'config.php')) {
     include GIBBON_ROOT.'config.php';

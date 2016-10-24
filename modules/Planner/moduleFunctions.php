@@ -818,27 +818,114 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
     }
 }
 
-function getTagList($connection2) {
+//Returns all tags, in the specified school year if one is specified
+function getTagList($connection2, $gibbonSchoolYearID = null) {
     $tags = array();
+    $tagsTemp = array();
 
-    //Get tag list
+    $tagCount = 0 ;
+    //Get all tags
     try {
-        $dataList = array();
-        $sqlList = 'SELECT tags FROM gibbonUnit';
+        if (is_null($gibbonSchoolYearID)) {
+            $dataList = array();
+            $sqlList = 'SELECT tags FROM gibbonUnit';
+        }
+        else {
+            $dataList = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sqlList = "SELECT tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND map='Y' AND NOT tags=''";
+        }
         $resultList = $connection2->prepare($sqlList);
         $resultList->execute($dataList);
     } catch (PDOException $e) {}
-    $list = '';
+
+    //First pass through of tags to create a raw array, ordered alphabetically
     while ($rowList = $resultList->fetch()) {
         $tagsInner = explode(',', $rowList['tags']);
         foreach ($tagsInner AS $tagInner) {
-            array_push($tags, strtolower(trim($tagInner)));
+            $tagInner = strtolower(trim($tagInner));
+            $tagsTemp[$tagCount] = $tagInner ;
+            $tagCount ++;
         }
     }
-    $tags = array_unique($tags);
-    sort($tags, SORT_STRING) ;
+    sort($tagsTemp, SORT_STRING) ;
+
+    //Second pass through, to remove uniques, calculate counts, etc
+    $tagCount = 0 ;
+
+    foreach ($tagsTemp AS $tagInner) {
+        $unique = true ;
+        $nonUniqueTagCount = null;
+        foreach ($tags as $tag) {
+            if ($tag[1] == $tagInner) {
+                $unique = false ;
+                $nonUniqueTagCount = $tag[0];
+            }
+        }
+
+        if ($unique) { //If unique so far, then add it
+            $tags[$tagCount][0] = $tagCount;
+            $tags[$tagCount][1] = $tagInner;
+            $tags[$tagCount][2] = 1;
+            $tagCount ++;
+        }
+        else { //If not unique so far, then increment count
+            $tags[$nonUniqueTagCount][2] ++ ;
+        }
+    }
 
     return $tags;
+}
+
+function getTagCloud($guid, $connection2, $gibbonSchoolYearID = null) {
+    $output = '';
+
+    $tags = getTagList($connection2, $gibbonSchoolYearID);
+
+    if (count($tags) > 0) {
+        $max_count = 0;
+        $min_count = null;
+        foreach ($tags as $tag) {
+            if (is_null($min_count)) {
+                $min_count = $tag[2];
+            }
+            else {
+                if ($tag[2] < $min_count) {
+                    $min_count = $tag[2];
+                }
+            }
+
+            if ($tag[2] > $max_count) {
+                $max_count = $tag[2];
+            }
+        }
+
+
+        $min_font_size = 16;
+        $max_font_size = 30;
+
+        $spread = $max_count - $min_count;
+        if ($spread == 0) {
+            $spread = 1;
+        }
+
+        $cloud_html = '';
+        $cloud_tags = array();
+        for ($i = 0; $i < count($tags); ++$i) {
+            $tag = $tags[$i][1];
+            $count = $tags[$i][2];
+            $size = $min_font_size + ($count - $min_count) * ($max_font_size - $min_font_size) / $spread;
+            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/conceptExplorer.php&tag='.str_replace('&', '%26', $tag)."' title='$count units'>".htmlspecialchars(stripslashes($tag)).'</a>';
+        }
+        $output .= "<p style='margin-top: 10px; line-height: 130%'>";
+        $output .= implode("\n", $cloud_tags)."\n";
+        $output .= '</p>';
+    } else {
+        $output .= "<div class='warning'>";
+        $output .= __($guid, 'There are no concepts in the system.');
+        $output .= '</div>';
+    }
+
+    return $output;
 }
 
 ?>

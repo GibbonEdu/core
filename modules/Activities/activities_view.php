@@ -148,18 +148,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Child') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Choose the child you are registering for.') ?></span>
 							</td>
 							<td class="right">
 								<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-									<?php 
+									<?php
                                     if ($countChild > 1) {
                                         echo "<option value=''></value>";
                                     }
-                        echo $options;
-                        ?> 
+                                    echo $options;
+                                    ?> 
 								</select>
 							</td>
 						</tr>
@@ -167,9 +167,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     }
                     ?>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Search For Activity') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Activity name.') ?></span>
 						</td>

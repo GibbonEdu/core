@@ -1,10 +1,21 @@
 uploads/*
+!uploads/index.php
 /config.php
-modules/IB PYP
-modules/Query Builder
+/config/local/*
+!/config/local/index.php
+src/modules/IB PYP
+src/modules/Query Builder
+src/modules/Translation
 missing.yml
 Thumbs.db
 themes/*
 !themes/Default
+!themes/Bootstrap
+src/themes/*
+!src/themes/Default
+!src/themes/Bootstrap
 .DS_Store
 _notes
+merge.yml
+src/i18n/en_GB/gibbon.yml
+phpinfo.php

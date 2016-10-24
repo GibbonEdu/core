@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 								<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 							</td>
 							<td class="right">
-								<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
+								<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
 									<?php
                                     try {
                                         $dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID);

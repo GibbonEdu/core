@@ -53,7 +53,7 @@
     $_SESSION[$guid]['markbookClass'] = $gibbonCourseClassID;
 
     //Check existence of and access to this class.
-    $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction2 );
+    $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction );
 
     if ($class == NULL) {
         echo "<div class='trail'>";
@@ -107,7 +107,7 @@
 
     //Get teacher list
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-    $canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything');
+	$canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything');
 
     // Build the markbook object for this class
     $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
@@ -172,7 +172,7 @@
         // Print table header info
         echo '<p>';
             if (!empty($teacherList)) {
-                echo sprintf(__($guid, 'Class taught by %1$s'), implode(',', $teacherList) ).'. ';
+                echo '<b>'.sprintf(__($guid, 'Class taught by %1$s'), implode(',', $teacherList) ).'</b>. ';
             }
             echo __($guid, 'To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, using the Newer and Older links.');
             if ($markbook->hasExternalAssessments() == true) {

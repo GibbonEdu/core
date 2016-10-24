@@ -1634,7 +1634,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                             }
                             $count = 0;
                             while ($rowSlots = $resultSlots->fetch()) {
-                                $activitiesOutput .= '<b>'.__($guid, $rowSlots['name']).'</b><br/>';
+                                $activitiesOutput .= '<b>'.$rowSlots['name'].'</b><br/>';
                                 $activitiesOutput .= '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                                 if ($rowSlots['gibbonSpaceID'] != '') {
                                     $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['name'];

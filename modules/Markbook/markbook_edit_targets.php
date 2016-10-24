@@ -44,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
             try {
                 if ($highestAction == 'Edit Markbook_everything') {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList, gibbonScaleIDTarget FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } else {
                     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList, gibbonScaleIDTarget FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -73,7 +73,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 
                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targetsProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_SESSION[$guid]['address']."'>";
 				echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-					echo "<tr class='head'>";
+                    ?>
+                    <tr>
+                        <td>
+                            <b><?php echo __($guid, 'Target Scale'); ?></b><br/>
+                        </td>
+                        <td class="right">
+                            <select name="gibbonScaleIDTarget" id="gibbonScaleIDTarget" class="standardWidth">
+                                <?php
+                                try {
+                                    $dataSelect = array();
+                                    $sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
+                                    $resultSelect = $connection2->prepare($sqlSelect);
+                                    $resultSelect->execute($dataSelect);
+                                } catch (PDOException $e) {
+                                }
+                                echo "<option value=''></option>";
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    $selected = '' ;
+                                    if ($row['gibbonScaleIDTarget'] != '') {
+                                        if ($row['gibbonScaleIDTarget'] == $rowSelect['gibbonScaleID']) {
+                                            $selected = 'selected' ;
+                                        }
+                                    }
+                                    else {
+                                        if ($_SESSION[$guid]['defaultAssessmentScale'] == $rowSelect['gibbonScaleID']) {
+                                            $selected = 'selected' ;
+                                        }
+                                    }
+                                    echo "<option $selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php
+                    echo "<tr class='head'>";
 						echo '<th>';
 						echo __($guid, 'Student');
 						echo '</th>';
@@ -100,7 +135,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 							echo '</td>';
 							echo '</tr>';
 						} else {
-							$PAS = getSettingByScope($connection2, 'System', 'defaultAssessmentScale');
+							try {
+                                $dataSelect = array();
+                                $sqlSelect = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScale.active=\'Y\' ORDER BY gibbonScale.gibbonScaleID, sequenceNumber';
+                                $resultSelect = $connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            } catch (PDOException $e) {
+                            }
+                            $scales = $resultSelect->fetchAll() ;
 
 							while ($rowStudents = $resultStudents->fetch()) {
 								if ($count % 2 == 0) {
@@ -133,26 +175,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 								echo '<td>';
 								//Create attainment grade select
 								echo "<select name='$count-gibbonScaleGradeID' id='$count-gibbonScaleGradeID' style='width:302px'>";
-									try {
-										$dataSelect = array('gibbonScaleID' => $PAS);
-										$sqlSelect = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
-										$resultSelect = $connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									} catch (PDOException $e) {
-									}
-									echo "<option value=''></option>";
+                                    echo "<option value=''></option>";
 									$sequence = '';
 									$descriptor = '';
-									while ($rowSelect = $resultSelect->fetch()) {
+									foreach ($scales as $rowSelect) {
 										$selected = '';
 										if (!(is_null($rowEntry))) {
-											if ($rowEntry['value'] == $rowSelect['value']) {
+											if ($rowEntry['value'] == $rowSelect['value'] AND $row['gibbonScaleIDTarget'] == $rowSelect['gibbonScaleID']) {
 												$selected = 'selected';
 											}
 										}
-									echo "<option $selected value='".$rowSelect['gibbonScaleGradeID']."'>".htmlPrep(__($guid, $rowSelect['value'])).'</option>';
+									echo "<option $selected class='".$rowSelect['gibbonScaleID']."' value='".$rowSelect['gibbonScaleGradeID']."'>".htmlPrep(__($guid, $rowSelect['value'])).'</option>';
 									}
 								echo '</select>';
+                                echo '<script type="text/javascript">
+                                    $("#'.$count.'-gibbonScaleGradeID").chainedTo("#gibbonScaleIDTarget");
+                                </script>' ;
 								echo '</td>';
 							}
 						}

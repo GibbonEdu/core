@@ -3114,29 +3114,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     }
 
+                    //Menu ordering categories
+                    $mainMenuCategoryOrder = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder');
+                    $orders = explode(',', $mainMenuCategoryOrder);
+
                     //Sort array
-                    array_multisort($studentMenuCategory, $studentMenuName, $studentMenuLink);
+                    array_multisort($orders, $studentMenuCategory, $studentMenuName, $studentMenuLink);
 
-                    //Spit out array
+                    //Spit out array whilt sorting by $mainMenuCategoryOrder
                     if (count($studentMenuCategory) > 0) {
-                        $categoryCurrent = '';
-                        $categoryLast = '';
-                        for ($i = 0; $i < count($studentMenuCategory); ++$i) {
-                            $categoryCurrent = __($guid, $studentMenuCategory[$i]);
+                        foreach ($orders AS $order) {
+                            //Check for entries
+                            $countEntries = 0;
+                            for ($i = 0; $i < count($studentMenuCategory); ++$i) {
+                                if ($studentMenuCategory[$i] == $order)
+                                    $countEntries ++;
+                            }
 
-                            if ($categoryCurrent != $categoryLast and $categoryLast != '') {
+                            if ($countEntries > 0) {
+                                $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__($guid, $order).'</h4>';
+                                $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
+                                for ($i = 0; $i < count($studentMenuCategory); ++$i) {
+                                    if ($studentMenuCategory[$i] == $order)
+                                    $_SESSION[$guid]['sidebarExtra'] .= $studentMenuLink[$i];
+                                }
+
                                 $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                             }
-                            if ($categoryCurrent != $categoryLast) {
-                                $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__($guid, $studentMenuCategory[$i]).'</h4>';
-                                $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
-                            }
-
-                            $_SESSION[$guid]['sidebarExtra'] .= $studentMenuLink[$i];
-
-                            $categoryLast = __($guid, $studentMenuCategory[$i]);
                         }
-                        $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                     }
                 }
             }

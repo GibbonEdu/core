@@ -447,6 +447,132 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'mailerSMTPUsername', 'SMTP Username', 'Username to use for SMTP authentication. Leave blank for no authentication.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'mailerSMTPPassword', 'SMTP Password', 'Password to use for SMTP authentication. Leave blank for no authentication.', '');end
 ALTER TABLE `gibbonUnit` ADD `tags` TEXT NOT NULL AFTER `description`;end
+UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php' WHERE (name='Edit Markbook_singleClass' OR name='Edit Markbook_multipleClassesInDepartment' OR name='Edit Markbook_multipleClassesAcrossSchool' OR name='Edit Markbook_everything') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+UPDATE gibbonAction SET precedence=0 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook') AND name='Manage Weightings_singleClass';end
+UPDATE gibbonAction SET URLList = 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php,markbook_edit_addMulti.php' WHERE (name='Edit Markbook_multipleClassesInDepartment' OR name='Edit Markbook_multipleClassesAcrossSchool') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('0', 'Security', 'Security scripts for Gibbon', 'index.php', 'Core', 'N', 'Admin', '', 'Craig Rayner', 'http://www.craigrayner.com');end
+SELECT gibbonModuleID FROM gibbonModule;end
+INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('0', 'Notifications', 'Notification Scripts for Gibbon', 'index.php', 'Core', 'N', 'Admin', '', 'Craig Rayner', 'http://www.craigrayner.com');end
+UPDATE `gibbonSetting` SET `name` = 'browseBGColour', `nameDisplay` = 'Browse Library BG Colour' WHERE `gibbonSetting`.`name` = 'browseBGColor' AND `scope` = 'Library';end
+UPDATE `gibbonSetting` SET `name` = 'messageBubbleBGColour', `nameDisplay` = 'Message Bubble Background Colour' WHERE `gibbonSetting`.`name` = 'messageBubbleBGColor' AND `scope` = 'Messenger';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Messenger', 'messageRepeatTime', 'Message Repeat Time', 'Time in seconds to repeat the message bubble notification.', '300');end
+INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES (NULL, '0003', 'System File Management', '0', 'Settings', 'System settings set by File', 'systemSettingsFileManage.php', 'systemSettingsFileManage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT `gibbonActionID` FROM `gibbonAction` JOIN `gibbonModule` ON (`gibbonAction`.`gibbonModuleID` = `gibbonModule`.`gibbonModuleID`) WHERE `gibbonModule`.`name` = 'System Admin' AND `gibbonAction`.`name` = 'System File Management'));end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'System', 'mailerFrom', 'From EMail', 'Email address to set as the from address.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'System', 'mailerFromName', 'From Name', 'The name of the person or organisation from which the email is sent.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES (NULL , 'System', 'mailerSMTPSecure', 'Secure Transport Protocol', '', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'defaultLanguage', 'Default Language', 'Sets the default system Language.  This default can be over-ridden by individual users.', 'en_GB');end
+CREATE TABLE IF NOT EXISTS `gibbonPasswordReset` (`gibbonPasswordResetID` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL, `token` varchar(64) COLLATE utf8_unicode_ci NOT NULL, `requestTime` int(16) NOT NULL, PRIMARY KEY (`gibbonPasswordResetID`),UNIQUE KEY `personID` (`gibbonPersonID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Store Password Reset Requests';end
+ALTER TABLE `gibbonFileExtension` ADD `mimeType` TINYTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL AFTER `name`;end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/msword' WHERE `extension` = 'doc';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' WHERE `extension` = 'docx';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/x-iwork-pages-sffpages' WHERE `extension` = 'pages';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.oasis.opendocument.text' WHERE `extension` = 'odt';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'text/plain' WHERE `extension` = 'txt';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/rtf' WHERE `extension` = 'rtf';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/excel' WHERE `extension` = 'xls';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' WHERE `extension` = 'xlsx';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.oasis.opendocument.spreadsheet' WHERE `extension` = 'ods';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/x-iwork-numbers-sffnumbers' WHERE `extension` = 'numbers';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'text/csv,text/plain,application/octet-stream' WHERE `extension` = 'csv';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/mspowerpoint' WHERE `extension` = 'ppt';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.openxmlformats-officedocument.presentationml.presentation' WHERE `extension` = 'pptx';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/x-iwork-keynote-sffkey' WHERE `extension` = 'key';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/mpeg3' WHERE `extension` = 'mp3';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/mp4' WHERE `extension` = 'mp4';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/mp4' WHERE `extension` = 'm4a';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-ms-wma' WHERE `extension` = 'wma';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/ogg' WHERE `extension` = 'ogg';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/png' WHERE `extension` = 'png';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/jpeg' WHERE `extension` = 'jpg';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/gif' WHERE `extension` = 'gif';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/postscript' WHERE `extension` = 'ai';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/vnd.adobe.photoshop' WHERE `extension` = 'psd';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/svg+xml' WHERE `extension` = 'svg';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/xcf' WHERE `extension` = 'xcf';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/x-msvideo' WHERE `extension` = 'avi';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/x-ms-wmv' WHERE `extension` = 'wmv';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/mpeg' WHERE `extension` = 'mpg';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/quicktime' WHERE `extension` = 'mov';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/x-flv' WHERE `extension` = 'flv';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.adobe.flash-movie' WHERE `extension` = 'fla';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/x-shockwave-flash' WHERE `extension` = 'swf';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/vnd.sketchup.skp' WHERE `extension` = 'skp';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/pdf' WHERE `extension` = 'pdf';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'image/jpeg' WHERE `extension` = 'jpeg';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/mpeg' WHERE `extension` = 'mpeg';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/x-m4v' WHERE `extension` = 'm4v';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'application/zip,application/x-zip,application/octet-stream,application/x-zip-compressed' WHERE `extension` = 'zip';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'text/html' WHERE `extension` = 'htm';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'text/html' WHERE `extension` = 'html';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'video/3gpp' WHERE `extension` = '3gp';end
+UPDATE `gibbonFileExtension` SET `mimeType` = 'audio/x-aac' WHERE `extension` = 'aac';end
+ALTER TABLE `gibbonUnit` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this unit be included in curriculum maps and other summaries?' AFTER `tags`;end
+ALTER TABLE `gibbonCourseClass` ADD `gibbonScaleIDTarget` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `reportable`;end
+ALTER TABLE `gibbonRollGroup` ADD `gibbonPersonIDEA` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDTutor3`, ADD `gibbonPersonIDEA2` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA`, ADD `gibbonPersonIDEA3` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonIDEA2`;end
+SELECT `gibbonModuleID` FROM `gibbonModule` LIMIT 1;end
+UPDATE gibbonSetting SET nameDisplay='Password - Alpha Requirement' WHERE name='passwordPolicyAlpha' AND scope='System';end
+UPDATE gibbonSetting SET nameDisplay='Password - Numeric Requirement' WHERE name='passwordPolicyNumeric' AND scope='System';end
+UPDATE gibbonSetting SET nameDisplay='Password - Non-Alphanumeric Requirement' WHERE name='passwordPolicyNonAlphaNumeric' AND scope='System';end
+UPDATE gibbonSetting SET nameDisplay='Password - Minimum Length' WHERE name='passwordPolicyMinLength' AND scope='System';end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+ALTER TABLE `gibbonSetting` ADD `type` ENUM('text','array','number','date') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'text' AFTER `value`, ADD INDEX `type` (`type`);end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'mainMenuCategories', 'Main Menu Categories', 'A list of menu categories and the order in which they are displayed. Provide a comma separated list of categories in the order you wish them displayed.', '[]', 'array');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Main Menu Settings', 0, 'Settings', 'Allows administrators to configure the main menu Categories and the order they are displayed.', 'menu_manage.php', 'menu_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Main Menu Settings'));end
+UPDATE `gibbonSetting` SET value='en_GB' WHERE `scope`='System'  AND `name`='defaultLanguage';end
+UPDATE `gibbonSetting` SET `type` = 'array' WHERE `gibbonSetting`.`name` = 'facilityTypes' AND `scope` = 'School Admin';end
+ALTER TABLE `gibbonSchoolYearTerm` DROP INDEX `sequenceNumber`, ADD UNIQUE `sequenceNumber` (`sequenceNumber`, `gibbonSchoolYearID`);end
+UPDATE `gibbonAction` SET `name` = 'Display Settings' WHERE `gibbonAction`.`name` = 'Main Menu Settings';end
+UPDATE `gibbonAction` SET `name` = 'Display Settings' WHERE `gibbonAction`.`name` = 'Main Menu Settings';end
+ALTER TABLE `gibbonSetting` CHANGE `type` `type` ENUM('text','array','number','date','yesno') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'text';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`, `type`) VALUES (NULL , 'System', 'pageAnchorDisplay', 'Display Page Anchors', 'Allows the school to turn off display of the Page Anchors in the menu.', 'Y', 'yesno');end
+UPDATE gibbonModule SET category='Other' WHERE category='';end
+ALTER TABLE `gibbonMessenger` CHANGE `subject` `subject` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+DELETE FROM gibbonModule WHERE name='Security';end
+DELETE FROM gibbonModule WHERE name='Notifications';end
+UPDATE `gibbonSetting` SET `name` = 'browseBGColor', `nameDisplay` = 'Browse Library BG Color' WHERE `gibbonSetting`.`name` = 'browseBGColour' AND `scope` = 'Library';end
+UPDATE `gibbonSetting` SET `name` = 'messageBubbleBGColor', `nameDisplay` = 'Message Bubble Background Color' WHERE `gibbonSetting`.`name` = 'messageBubbleBGColour' AND `scope` = 'Messenger';end
+DELETE FROM `gibbonSetting` WHERE scope='Messenger' AND name='messageRepeatTime';end
+DELETE FROM gibbonAction WHERE name='System File Management' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerFrom';end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerFromName';end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='mailerSMTPSecure';end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='defaultLanguage';end
+DROP TABLE gibbonPasswordReset;end
+ALTER TABLE `gibbonFileExtension` DROP `mimeType`;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+SELECT gibbonPersonID FROM gibbonPerson LIMIT 1;end
+ALTER TABLE `gibbonSetting` DROP `type`;end
+DELETE FROM `gibbonSetting` WHERE scope='System' AND name='pageAnchorDisplay';end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM gibbonLog LIMIT 1;end
+SELECT gibbonLogID FROM `gibbonLog` LIMIT 1;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('fi_FI', 'Suomen Kieli - Suomi', 'N', 'N', 'Pia Kontiainen', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
+UPDATE `gibbonAction` SET `description` = 'Allows administrators to configure the system display settings.', `URLList` = 'displaySettings.php', `entryURL` = 'displaySettings.php' WHERE `name`='Display Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE `gibbonSetting` SET `value` = 'Admin,Assess,Learn,People,Other', name='mainMenuCategoryOrder',`nameDisplay` = 'Main Menu Category Order', description='A comma separated list of module categories in display order.' WHERE `gibbonSetting`.`name` = 'mainMenuCategories' AND `scope` = 'System';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner'), 'Scope & Sequence', 0, 'Curriculum Mapping', 'Allows users to generate scope and sequence documentation for individual courses, based on the Unit Planner.', 'scopeAndSequence.php', 'scopeAndSequence.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Planner' AND gibbonAction.name='Scope & Sequence'));end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Planner' AND gibbonAction.name='Scope & Sequence'));end
+UPDATE gibbonAction SET category='Outcomes' WHERE name LIKE '%outcome%' AND category='Curriculum Mapping' AND (SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+UPDATE gibbonAction SET category='Curriculum Overview' WHERE category='Curriculum Mapping' AND (SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner'), 'Concept Explorer', 0, 'Curriculum Overview', 'Allows users to browse and explore concepts and keywords, based on the Unit Planner.', 'conceptExplorer.php', 'conceptExplorer.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Planner' AND gibbonAction.name='Concept Explorer'));end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Planner' AND gibbonAction.name='Concept Explorer'));end
+ALTER TABLE `gibbonLibraryType` ADD FULLTEXT(`fields`);end
+ALTER TABLE `gibbonLibraryItem` ADD FULLTEXT(`fields`);end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Attendance By Class', 0, 'Take Attendance', 'Take attendance, one class at a time', 'attendance_take_byCourseClass.php', 'attendance_take_byCourseClass.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Attendance' AND gibbonAction.name='Attendance By Class'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Attendance' AND gibbonAction.name='Attendance By Class'));end

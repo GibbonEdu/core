@@ -326,15 +326,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 						</tr>
 						<tr>
 							<td>
-								<b><?php echo __($guid, 'Summary') ?> *</b><br/>
+								<b><?php echo __($guid, 'Summary') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Will be overwritten by Smart Block titles.') ?><br/></span>
 							</td>
 							<td class="right">
 								<input name="summary" id="summary" maxlength=255 value="<?php echo htmlPrep($row['summary']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var summary=new LiveValidation('summary');
-									summary.add(Validate.Presence);
-								</script>
 							</td>
 						</tr>
 						<tr>
@@ -1348,7 +1344,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
-							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
+							<select name="guests[]" id="guests[]" multiple class='standardWidth' style="height: 150px">
 								<?php
                                 try {
                                     $dataSelect = array();
