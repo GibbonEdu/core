@@ -39,12 +39,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $gibbonRollGroupID = (isset($_GET["gibbonRollGroupID"]))? $_GET["gibbonRollGroupID"] : 0;
 
     
-    require_once './modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
+    // Get attendance codes
+    try {
+        $dataCodes = array();
+        $sqlCodes = "SELECT * FROM gibbonAttendanceCode WHERE active = 'Y' AND reportable='Y' ORDER BY sequenceNumber ASC, name";
+        $resultCodes = $pdo->executeQuery($dataCodes, $sqlCodes);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
 
-    if ($dateStart != '' && $group != '') {
+    if ($resultCodes->rowCount() == 0) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no attendance codes defined.');
+        echo '</div>';
+    }
+    else if ( empty($dateStart) || empty($group)) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __($guid, 'Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
         echo '</h2>';
 
         try {
@@ -63,20 +78,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo __($guid, 'Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
         echo '</p>';
 
+
+        $sqlPieces = array();
+        $attendanceCodes = array();
+
+        while( $type = $resultCodes->fetch() ) {
+            $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.name='".$type['name']."' THEN date END) AS ".$type['nameShort'];
+            $attendanceCodes[ $type['direction'] ][] = $type;
+        }
+
+        $sqlSelect = implode( ',', $sqlPieces );
+
         //Produce array of attendance data
         try {
             $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd);
 
             if ($group == 'all') {
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.direction='In' THEN date END) AS present, COUNT(CASE WHEN gibbonAttendanceCode.direction='Out' AND gibbonAttendanceCode.name='Absent - Excused' THEN date END) AS excused, COUNT(CASE WHEN gibbonAttendanceCode.direction='Out' AND gibbonAttendanceCode.name='Absent - Unexcused' THEN date END) AS unexcused, COUNT(CASE WHEN gibbonAttendanceCode.direction='In' AND scope='Offsite' THEN date END) AS offsite, COUNT(CASE WHEN scope='Onsite - Late' THEN date END) AS late, COUNT(CASE WHEN scope='Offsite - Left' THEN date END) AS 'left' FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE firstDay<=:dateEnd AND lastDay>=:dateStart) GROUP BY gibbonAttendanceLogPerson.gibbonPersonID";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE firstDay<=:dateEnd AND lastDay>=:dateStart) GROUP BY gibbonAttendanceLogPerson.gibbonPersonID";
             }
             else if ($group == 'class') {
                 $data['gibbonCourseClassID'] = $gibbonCourseClassID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.direction='In' THEN date END) AS present, COUNT(CASE WHEN gibbonAttendanceCode.direction='Out' AND gibbonAttendanceCode.name='Absent - Excused' THEN date END) AS excused, COUNT(CASE WHEN gibbonAttendanceCode.direction='Out' AND gibbonAttendanceCode.name='Absent - Unexcused' THEN date END) AS unexcused, COUNT(CASE WHEN gibbonAttendanceCode.direction='In' AND scope='Offsite' THEN date END) AS offsite, COUNT(CASE WHEN scope='Onsite - Late' THEN date END) AS late, COUNT(CASE WHEN scope='Offsite - Left' THEN date END) AS 'left' FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE firstDay<=:dateEnd AND lastDay>=:dateStart) AND gibbonAttendanceLogPerson.gibbonCourseClassID=:gibbonCourseClassID GROUP BY gibbonAttendanceLogPerson.gibbonPersonID";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE firstDay<=:dateEnd AND lastDay>=:dateStart) AND gibbonAttendanceLogPerson.gibbonCourseClassID=:gibbonCourseClassID GROUP BY gibbonAttendanceLogPerson.gibbonPersonID";
             }
             else if ($group == 'rollGroup') {
                 $data['gibbonRollGroupID'] = $gibbonRollGroupID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.direction='In' THEN date END) AS present, COUNT(CASE WHEN gibbonAttendanceCode.direction='Out' AND gibbonAttendanceCode.name='Absent - Excused' THEN date END) AS excused, COUNT(CASE WHEN gibbonAttendanceCode.direction='Out' AND gibbonAttendanceCode.name='Absent - Unexcused' THEN date END) AS unexcused, COUNT(CASE WHEN gibbonAttendanceCode.direction='In' AND scope='Offsite' THEN date END) AS offsite, COUNT(CASE WHEN scope='Onsite - Late' THEN date END) AS late, COUNT(CASE WHEN scope='Offsite - Left' THEN date END) AS 'left' FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE firstDay<=:dateEnd AND lastDay>=:dateStart) AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID AND gibbonAttendanceLogPerson.gibbonCourseClassID=0 GROUP BY gibbonAttendanceLogPerson.gibbonPersonID";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE firstDay<=:dateEnd AND lastDay>=:dateStart) AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID AND gibbonAttendanceLogPerson.gibbonCourseClassID=0 GROUP BY gibbonAttendanceLogPerson.gibbonPersonID";
             }
 
             if ( empty($sort) ) {
@@ -102,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         } else {
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart)."&sort=" . $sort . "'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&group=' . $group . '&sort=' . $sort . "'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
@@ -114,51 +140,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo '<th rowspan=2>';
             echo __($guid, 'Name');
             echo '</th>';
-            echo '<th colspan=3 style="border-left: 1px solid #666;text-align:center;">';
+            echo '<th colspan='.count($attendanceCodes['In']).' class="columnDivider" style="text-align:center;">';
             echo __($guid, 'IN');
             echo '</th>';
-            echo '<th colspan=3 style="border-left: 1px solid #666;text-align:center;">';
+            echo '<th colspan='.count($attendanceCodes['Out']).' class="columnDivider" style="text-align:center;">';
             echo __($guid, 'OUT');
             echo '</th>';
             echo '</tr>';
 
 
-            echo "<tr class='head'>";
-            echo '<th class="verticalHeader" style="border-left: 1px solid #666;">';
-                echo '<div class="verticalText">';
-                echo __($guid, 'Present');
-                echo '</div>';
-            echo '</th>';
-            echo '<th class="verticalHeader">';
-                echo '<div class="verticalText">';
-                echo __($guid, 'Late');
-                echo '</div>';
-            echo '</th>';
-            echo '<th class="verticalHeader">';
-                echo '<div class="verticalText">';
-                echo __($guid, 'Offsite');
-                echo '</div>';
-            echo '</th>';
-            echo '<th class="verticalHeader" style="border-left: 1px solid #666;">';
-                echo '<div class="verticalText">';
-                echo __($guid, 'Absent').'<br/><span class="small emphasis">'.__($guid, 'Excused').'</span>';
-                echo '</div>';
-            echo '</th>';
-            echo '<th class="verticalHeader">';
-                echo '<div class="verticalText">';
-                echo __($guid, 'Absent').'<br/><span class="small emphasis">'.__($guid, 'Unexcused').'</span>';
-                echo '</div>';
-            echo '</th>';
-            echo '<th class="verticalHeader">';
-                echo '<div class="verticalText">';
-                echo __($guid, 'Left');
-                echo '</div>';
-            echo '</th>';
+            echo '<tr class="head" style="min-height:80px;">';
+
+            for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
+                echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['In'][$i]['scope'].'">';
+                    echo '<div class="verticalText">';
+                    echo $attendanceCodes['In'][$i]['name'];
+                    echo '</div>';
+                echo '</th>';
+            }
+
+            for( $i = 0; $i < count($attendanceCodes['Out']); $i++ ) {
+                echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['Out'][$i]['scope'].'">';
+                    echo '<div class="verticalText">';
+                    echo $attendanceCodes['Out'][$i]['name'];
+                    echo '</div>';
+                echo '</th>';
+            }
             echo '</tr>';
 
 
             while ($row = $result->fetch()) {
-
 
                 // ROW
                 echo "<tr>";
@@ -171,24 +182,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                     echo '</a>';
                 echo '</td>';
 
-                echo '<td class="center" style="border-left: 1px solid #666;">';
-                    echo $row['present'];
-                echo '</td>';
-                echo '<td class="center">';
-                    echo $row['late'];
-                echo '</td>';
-                echo '<td class="center">';
-                    echo $row['offsite'];
-                echo '</td>';
-                echo '<td class="center" style="border-left: 1px solid #666;">';
-                    echo $row['excused'];
-                echo '</td>';
-                echo '<td class="center">';
-                    echo $row['unexcused'];
-                echo '</td>';
-                echo '<td class="center">';
-                    echo $row['left'];
-                echo '</td>';
+                for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
+                    echo '<td class="center '.( $i == 0? 'columnDivider' : '').'">';
+                        echo $row[ $attendanceCodes['In'][$i]['nameShort'] ];
+                    echo '</td>';
+                }
+
+                for( $i = 0; $i < count($attendanceCodes['Out']); $i++ ) {
+                    echo '<td class="center '.( $i == 0? 'columnDivider' : '').'">';
+                        echo $row[ $attendanceCodes['Out'][$i]['nameShort'] ];
+                    echo '</td>';
+                }
                 echo '</tr>';
                 
             }

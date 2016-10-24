@@ -18,23 +18,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 .verticalHeader {
+	overflow: hidden;
 	padding: 4px !important;
 	width: 40px;
 	min-width: 40px;
 	max-width: 40px;
-	height: 80px;
+	line-height: 40px;
+	vertical-align: bottom;
 }
 
+
 .verticalText {
+	display: inline-block;
 	-webkit-transform: rotate(-90deg);
 	-moz-transform: rotate(-90deg);
 	-ms-transform: rotate(-90deg);
 	-o-transform: rotate(-90deg);
 	transform: rotate(-90deg);
-	/*transform-origin: 14px 0;*/
 	white-space: nowrap;
-	/*padding-left: 15px;*/
-	margin-top: 18px;
+	margin: 8px 0px;
+	min-width: 40px;
+}
+
+.verticalText:before{ 
+	content:''; 
+	float: left;
+	margin-top: 100%;
+}
+
+.columnDivider {
+	border-left: 1px solid #666;
 }
 
 th span.small {
