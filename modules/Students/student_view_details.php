@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 //Get adults
                                 try {
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status=\'Full\' ORDER BY contactPriority, surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
                                     $resultMember->execute($dataMember);
                                 } catch (PDOException $e) {
@@ -1158,7 +1158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 //Get adults
                                 try {
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status=\'Full\' ORDER BY contactPriority, surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
                                     $resultMember->execute($dataMember);
                                 } catch (PDOException $e) {
