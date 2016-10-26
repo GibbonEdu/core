@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         if ($gibbonDepartmentID != '') {
             try {
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                $sql = 'SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         } else {
             try {
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                $sql = 'SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -101,101 +101,119 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
             echo '</div>';
 
+            $subpage = null;
+            if (isset($_GET['subpage'])) {
+                $subpage = $_GET['subpage'];
+            }
+            if ($subpage == '' or isset($_SESSION[$guid]['username']) == false) {
+                $subpage = __($guid, 'Home');
+            }
+
             echo '<h2>';
-            echo $row['course'].'.'.$row['class'];
-            echo "<br/>";
-            echo '<span style=\'font-size: 70%; text-transform: none\'>'.$row["courseLong"].'</span>';
+            echo $row['course'].'.'.$row['class'].' '.__($guid, $subpage);
+            echo '<br/><small><em>'.__($guid, 'Course').': '.$row['courseLong'].'</em></small>';
             echo '</h2>';
 
-            //CHECK & STORE WHAT TO DISPLAY
-            $menu = array();
-            $menuCount = 0;
+            if ($subpage == 'Home') {
+                //CHECK & STORE WHAT TO DISPLAY
+                $menu = array();
+                $menuCount = 0;
 
-            //Planner
-            if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
-                $menu[$menuCount][0] = 'Planner';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner_large.png'/><br/><b>".__($guid, 'Planner').'</b></a>';
+                //Participants
+                $menu[$menuCount][0] = 'Participants';
+                $menu[$menuCount][1] = "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&subpage=Participants'><img style='margin-bottom: 10px' title='".__($guid, 'Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance_large.png'/><br/><b>".__($guid, 'Participants').'</b></a>';
                 ++$menuCount;
-            }
-            //Markbook
-            if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
-                $menu[$menuCount][0] = 'Markbook';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook_large.png'/><br/><b>".__($guid, 'Markbook').'</b></a>';
-                ++$menuCount;
-            }
 
-            //Homework
-            if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
-                $menu[$menuCount][0] = 'Homework';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework_large.png'/><br/><b>".__($guid, 'Homework').'</b></a>';
-                ++$menuCount;
-            }
+                // Attendance
+                if ($row['attendance'] == 'Y' && isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+                    $menu[$menuCount][0]="Attendance" ;
+                    $menu[$menuCount][1]="<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px' title='" . _('Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance_large.png'/><br/><b>" . _('Attendance') . "</b></a>" ;
+                    $menuCount++ ;
+                }
 
-            //Internal Assessment
-            if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php')) {
-                $menu[$menuCount][0] = 'Internal Assessment';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Internal Assessment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/internalAssessment_large.png'/><br/><b>".__($guid, 'Internal Assessment').'</b></a>';
-                ++$menuCount;
-            }
+                //Planner
+                if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
+                    $menu[$menuCount][0] = 'Planner';
+                    $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner_large.png'/><br/><b>".__($guid, 'Planner').'</b></a>';
+                    ++$menuCount;
+                }
+                //Markbook
+                if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
+                    $menu[$menuCount][0] = 'Markbook';
+                    $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook_large.png'/><br/><b>".__($guid, 'Markbook').'</b></a>';
+                    ++$menuCount;
+                }
 
-            if ($menuCount < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
-                $count = 0;
-                $columns = 4;
+                //Homework
+                if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
+                    $menu[$menuCount][0] = 'Homework';
+                    $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework_large.png'/><br/><b>".__($guid, 'Homework').'</b></a>';
+                    ++$menuCount;
+                }
 
-                foreach ($menu as $menuEntry) {
-                    if ($count % $columns == 0) {
-                        echo '<tr>';
+                //Internal Assessment
+                if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php')) {
+                    $menu[$menuCount][0] = 'Internal Assessment';
+                    $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Internal Assessment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/internalAssessment_large.png'/><br/><b>".__($guid, 'Internal Assessment').'</b></a>';
+                    ++$menuCount;
+                }
+
+                if ($menuCount < 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'There are no records to display.');
+                    echo '</div>';
+                } else {
+                    echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
+                    $count = 0;
+                    $columns = 3;
+
+                    foreach ($menu as $menuEntry) {
+                        if ($count % $columns == 0) {
+                            echo '<tr>';
+                        }
+                        echo "<td style='padding-top: 15px!important; padding-bottom: 15px!important; width:30%; text-align: center; vertical-align: top'>";
+                        echo $menuEntry[1];
+                        echo '</td>';
+
+                        if ($count % $columns == ($columns - 1)) {
+                            echo '</tr>';
+                        }
+                        ++$count;
                     }
-                    echo "<td style='padding-top: 15px!important; padding-bottom: 15px!important; width:25%; text-align: center; vertical-align: top'>";
-                    echo $menuEntry[1];
-                    echo '</td>';
 
-                    if ($count % $columns == ($columns - 1)) {
+                    if ($count % $columns != 0) {
+                        for ($i = 0;$i < $columns - ($count % $columns);++$i) {
+                            echo '<td></td>';
+                        }
                         echo '</tr>';
                     }
-                    ++$count;
+
+                    echo '</table>';
                 }
-
-                if ($count % $columns != 0) {
-                    for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                        echo '<td></td>';
-                    }
-                    echo '</tr>';
-                }
-
-                echo '</table>';
-            }
-
-            //PARTICIPANTS
-            echo '<a name=\'participants\'>';
-            echo '<h3 class=\'bigTop\'>';
-                echo __($guid, 'Participants');
-            echo '</h3>';
-            if (getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) == 'View Student Profile_full') {
+            } elseif ($subpage == 'Participants') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."'>".__($guid, 'Export')." <img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&subpage=Home'>".$row['course'].'.'.$row['class'].' '.__($guid, 'Home').'</b></a>';
+                if (getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) == 'View Student Profile_full') {
+                    echo ' | ';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."'>".__($guid, 'Export')." <img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                }
                 echo '</div>';
-            }
 
-            try {
-                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.name, gibbonCourseClass.name';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
-                echo '</div>';
-            } else {
-                printClassGroupTable($guid, $gibbonCourseClassID, 4, $connection2);
+                try {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.name, gibbonCourseClass.name';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                if ($result->rowCount() < 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'The specified record does not exist.');
+                    echo '</div>';
+                } else {
+                    printClassGroupTable($guid, $gibbonCourseClassID, 4, $connection2);
+                }
             }
 
             //Print sidebar

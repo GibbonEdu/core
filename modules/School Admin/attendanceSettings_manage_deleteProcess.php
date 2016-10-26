@@ -29,29 +29,23 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$reportable = $_POST['reportable'];
-$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
+$gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$gibbonAttendanceCodeID;
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
-
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Validate Inputs
-    if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $name == '' or $nameShort == '') {
+    //Check if school year specified
+    if ($gibbonAttendanceCodeID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT * FROM gibbonCourseClass WHERE ((name=:name) OR (nameShort=:nameShort)) AND gibbonCourseID=:gibbonCourseID';
+            $data = array('gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);
+            $sql = 'SELECT type FROM gibbonAttendanceCode WHERE gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -60,14 +54,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             exit();
         }
 
-        if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
+        $row = $result->fetch();
+
+        if ($result->rowCount() != 1 || $row['type'] == 'Core') {
+            $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
             //Write to database
             try {
-                $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance);
-                $sql = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance';
+                $data = array('gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);
+                $sql = 'DELETE FROM gibbonAttendanceCode WHERE gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -76,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 exit();
             }
 
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+            $URLDelete = $URLDelete.'&return=success0';
+            header("Location: {$URLDelete}");
         }
     }
 }

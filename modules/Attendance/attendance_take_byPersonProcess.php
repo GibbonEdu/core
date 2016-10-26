@@ -74,14 +74,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     header("Location: {$URL}");
                 } else {
                     //Write to database
+                    require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+                    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+
                     $fail = false;
-                    $direction = 'In';
-                    if ($_POST['type'] == 'Absent' or $_POST['type'] == 'Left' or $_POST['type'] == 'Left - Early') {
-                        $direction = 'Out';
-                    }
                     $type = $_POST['type'];
                     $reason = $_POST['reason'];
                     $comment = $_POST['comment'];
+
+                    $attendanceCode = $attendance->getAttendanceCodeByType($type);
+                    $direction = $attendanceCode['direction'];
 
                     //Check for last record on same day
                     try {
@@ -99,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         //If no records then create one
                         try {
                             $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                            $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
+                            $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
                             $resultUpdate = $connection2->prepare($sqlUpdate);
                             $resultUpdate->execute($dataUpdate);
                         } catch (PDOException $e) {
@@ -109,10 +111,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $row = $result->fetch();
 
                         //If direction same then update
-                        if ($row['direction'] == $direction) {
+                        if ($row['direction'] == $direction && $row['gibbonCourseClassID'] == 0) {
                             try {
                                 $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'), 'gibbonAttendanceLogPersonID' => $row['gibbonAttendanceLogPersonID']);
-                                $sqlUpdate = 'UPDATE gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
+                                $sqlUpdate = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
                                 $resultUpdate = $connection2->prepare($sqlUpdate);
                                 $resultUpdate->execute($dataUpdate);
                             } catch (PDOException $e) {
@@ -123,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         else {
                             try {
                                 $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
+                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
                                 $resultUpdate = $connection2->prepare($sqlUpdate);
                                 $resultUpdate->execute($dataUpdate);
                             } catch (PDOException $e) {

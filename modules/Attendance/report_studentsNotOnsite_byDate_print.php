@@ -33,11 +33,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     } else {
         $currentDate = dateConvert($guid, $_GET['currentDate']);
     }
-    $sort = 'student';
-    if (isset($_GET['sort'])) {
-        if ($sort == 'student' or $sort == 'rollGroup')
-            $sort = $_GET['sort'];
-    }
+
+    $allStudents = !empty($_GET["allStudents"])? 1 : 0;
+
+    $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
+
+    require_once './modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
 
     //Proceed!
     echo '<h2>';
@@ -64,18 +66,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $lastStudent = '';
         while ($row = $result->fetch()) {
             $currentStudent = $row['gibbonPersonID'];
-            if (($row['type'] == 'Present' or $row['type'] == 'Present - Late') and $currentStudent != $lastStudent) {
+            if ( $attendance->isTypeOnsite($row['type']) and $currentStudent != $lastStudent) {
                 $log[$row['gibbonPersonID']] = true;
-            }
+            } 
             $lastStudent = $currentStudent;
         }
 
         try {
-            $orderBy = 'ORDER BY surname, preferredName, rollGroup';
+            $orderBy = 'ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup';
+            if ($sort == 'preferredName')
+                $orderBy = 'ORDER BY preferredName, surname, LENGTH(rollGroup), rollGroup';
             if ($sort == 'rollGroup')
-                $orderBy = 'ORDER BY rollGroup, surname, preferredName';
+                $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
+
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $orderBy";
+
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
+            
+            $sql .= $orderBy;
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -95,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
             echo "<table class='mini' cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
-            echo '<th>';
+            echo '<th style="width:80px">';
             echo __($guid, 'Roll Group');
             echo '</th>';
             echo '<th>';
@@ -123,16 +132,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     }
                     ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['rollGroup'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-                    echo '</td>';
-                    echo '<td>';
-                    $rowRollAttendance = null;
                     try {
                         $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
                         $sqlAttendance = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
@@ -141,6 +140,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
+
+                    // Skip rows with no record if we're not displaying all students
+                    if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
+                        continue;
+                    }
+
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
+                    echo '<td>';
+                        echo $row['rollGroupName'];
+                    echo '</td>';
+                    echo '<td>';
+                        echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo '</td>';
+                    echo '<td>';
+                    $rowRollAttendance = null;
+                    
                     if ($resultAttendance->rowCount() < 1) {
                         echo '<i>Not registered</i>';
                     } else {
@@ -149,10 +165,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     }
                     echo '</td>';
                     echo '<td>';
-                    echo $rowRollAttendance['reason'];
+                        echo $rowRollAttendance['reason'];
                     echo '</td>';
                     echo '<td>';
-                    echo $rowRollAttendance['comment'];
+                        echo $rowRollAttendance['comment'];
                     echo '</td>';
                     echo '</tr>';
 

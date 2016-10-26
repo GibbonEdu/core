@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate_print.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseClassesNotRegistered_byDate_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 } else {
 
     $today = date('Y-m-d');
-    
+
     $dateEnd = (isset($_GET['dateEnd']))? dateConvert($guid, $_GET['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_GET['dateStart']))? dateConvert($guid, $_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
 
@@ -47,16 +47,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     //Proceed!
     echo '<h2>';
     if ($dateStart != $dateEnd) {
-        echo __($guid, 'Roll Groups Not Registered').', '.dateConvertBack($guid, $dateStart).'-'.dateConvertBack($guid, $dateEnd);
+        echo __($guid, 'Classes Not Registered').', '.dateConvertBack($guid, $dateStart).'-'.dateConvertBack($guid, $dateEnd);
     } else {
-        echo __($guid, 'Roll Groups Not Registered').', '.dateConvertBack($guid, $dateStart);
+        echo __($guid, 'Classes Not Registered').', '.dateConvertBack($guid, $dateStart);
     }
     echo '</h2>';
 
     //Produce array of attendance data
     try {
-        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = 'SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
+        $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
+
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -64,12 +65,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     }
     $log = array();
     while ($row = $result->fetch()) {
-        $log[$row['gibbonRollGroupID']][$row['date']] = true;
+        $log[$row['gibbonCourseClassID']][$row['date']] = true;
     }
 
+    // Produce an array of scheduled classes
     try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonRollGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
+        $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+        $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
+
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+    $tt = array();
+    while ($row = $result->fetch()) {
+        $tt[$row['gibbonCourseClassID']][$row['date']] = true;
+    }
+
+
+    try {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -84,24 +101,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
         echo '</div>';
-    } else if ($dateStart > $today || $dateEnd > $today) {
+    }
+    else if ($dateEnd > $today) {
         echo "<div class='error'>";
         echo __($guid, 'The specified date is in the future: it must be today or earlier.');
         echo '</div>';
     } else {
         //Produce array of roll groups
-        $rollGroups = $result->fetchAll();
+        $classes = $result->fetchAll();
 
-        echo "<div class='linkTop'>";
-        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_rollGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-        echo '</div>';
-
-        echo "<table cellspacing='0' style='width: 100%'>";
+        echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
         echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Roll Group');
+        echo '<th width="140px">';
+        echo __($guid, 'Class');
         echo '</th>';
-        echo '<th >';
+        echo '<th>';
         echo __($guid, 'Date');
         echo '</th>';
         echo '<th width="164px">';
@@ -117,42 +131,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         $timestampStart = dateConvertToTimestamp($dateStart);
         $timestampEnd = dateConvertToTimestamp($dateEnd);
 
-        foreach ($rollGroups as $row) {
+        //Loop through each roll group
+        foreach ($classes as $row) {
 
-            //Output row only if not registered on specified date
-            if ( isset($log[$row['gibbonRollGroupID']]) == false || count($log[$row['gibbonRollGroupID']]) < count($lastNSchoolDays) ) {
+            // Skip classes with no students
+            if ($row['studentCount'] <= 0) continue;
+
+            //Output row only if not registered on specified date, and timetabled for that day
+            if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false || 
+                count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
                 ++$count;
 
                 //COLOR ROW BY STATUS!
                 echo "<tr>";
                 echo '<td>';
-                echo $row['name'];
+                echo $row['courseShort'].'.'.$row['class'];
                 echo '</td>';
                 echo '<td>';
                 echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
                 echo '</td>';
                 echo '<td style="padding: 0;">';
-        
+                
                     echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
                     echo '<tr>';
                     $historyCount = 0;
                     for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
-
                         $link = '';
                         if ($i > ( count($lastNSchoolDays) - 1)) {
                             echo "<td class='highlightNoData'>";
                             echo '<i>'.__($guid, 'NA').'</i>';
                             echo '</td>';
                         } else {
-
                             $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
+                            
+                            $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
 
-                            if (isset($log[$row['gibbonRollGroupID']][$lastNSchoolDays[$i]]) == false) {
-                                //$class = 'highlightNoData';
-                                $class = 'highlightAbsent';
-                            } else {
-                                $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.$lastNSchoolDays[$i];
+                            if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
                                 $class = 'highlightPresent';
+                            } else {
+                                if (isset($tt[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
+                                    $class = 'highlightAbsent';
+                                } else {
+                                    $class = 'highlightNoData';
+                                    $link = '';
+                                }
                             }
 
                             echo "<td class='$class' style='padding: 12px !important;'>";
@@ -166,14 +188,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                                 echo "<span>".date('M', $currentDayTimestamp).'</span>';
                             }
                             echo '</td>';
-                        }
 
-                        // Wrap to a new line every 10 dates
-                        if (  ($historyCount+1) % 10 == 0 ) {
-                            echo '</tr><tr>';
-                        }
+                            // Wrap to a new line every 10 dates
+                            if (  ($historyCount+1) % 10 == 0 ) {
+                                echo '</tr><tr>';
+                            }
 
-                        $historyCount++;
+                            $historyCount++;
+                        }
                     }
 
                     echo '</tr>';
@@ -181,31 +203,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 
                 echo '</td>';
                 echo '<td>';
-                if ($row['gibbonPersonIDTutor'] == '' and $row['gibbonPersonIDTutor2'] == '' and $row['gibbonPersonIDTutor3'] == '') {
-                    echo '<i>Not set</i>';
-                } else {
-                    try {
-                        $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
-                        $sqlTutor = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
-                        $resultTutor = $connection2->prepare($sqlTutor);
-                        $resultTutor->execute($dataTutor);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
+                try {
+                    $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
+                    $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
+                    $resultTutor = $connection2->prepare($sqlTutor);
+                    $resultTutor->execute($dataTutor);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+
+                if ($resultTutor->rowCount() > 0) {
                     while ($rowTutor = $resultTutor->fetch()) {
                         echo formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
                     }
                 }
+                
                 echo '</td>';
                 echo '</tr>';
             }
         }
+        
+        
 
         if ($count == 0) {
-            echo "<tr class=$rowNum>";
+            echo "<tr";
             echo '<td colspan=3>';
-            echo __($guid, 'All roll groups have been registered.');
+            echo __($guid, 'All classes have been registered.');
             echo '</td>';
             echo '</tr>';
         }

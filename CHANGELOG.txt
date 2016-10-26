@@ -21,6 +21,7 @@ v13.0.00
 	Headlines
 		Automated Scope & Sequence documentation in Planner, based on Unit Planner
 		Concept Explorer in Planner, based on Unit Planner concepts & keywords
+		Take Attendance by Class, and generate student attendance reports
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
@@ -29,6 +30,8 @@ v13.0.00
 	Significant Changes
 		System: Changed Primary Assessment Scale to Default Assessment Scale
 		Markbook: added ability to copy columns to other classes
+		School Admin: added ability to edit and create attendance codes
+		Attendance: added landing page for teacher's daily attendance taking
 
 	Security
 		...
@@ -52,6 +55,10 @@ v13.0.00
 		Activities: fixed bug which cut one student off print view of attendance print out
 		Activities: fixed translation of blank string in Parent Dashboard Activity view
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
+		Attendance: added ability to set partial per-class future absence
+		Attendance: added visual graphing for school-wide Attendance Trends
+		Attendance: improved the display of Classes/Roll Groups Not Registered to include visual overview
+		Attendance: updated Daily Incomplete Email CLI script to include attendance by class
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
@@ -98,6 +105,9 @@ v13.0.00
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
+
+	Depreciated
+		Planner: replaced original planner-based attendance with attendance by class
 
 v12.0.00
 --------
