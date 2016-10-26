@@ -68,23 +68,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $currentStudent = $row['gibbonPersonID'];
             if ( $attendance->isTypeOnsite($row['type']) and $currentStudent != $lastStudent) {
                 $log[$row['gibbonPersonID']] = true;
-            }
+            } 
             $lastStudent = $currentStudent;
         }
 
         try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+            $orderBy = 'ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup';
+            if ($sort == 'preferredName')
+                $orderBy = 'ORDER BY preferredName, surname, LENGTH(rollGroup), rollGroup';
+            if ($sort == 'rollGroup')
+                $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
 
-            if ($sort != 'surname, preferredName' && $sort != 'preferredName' && $sort != 'rollGroup') {
-                $sort = 'surname, preferredName';
-            }
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
             
-            if ($sort == 'rollGroup') {
-                $sql .= ' ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
-            } else {
-                $sql .= ' ORDER BY ' . $sort;
-            }
+            $sql .= $orderBy;
 
             $result = $connection2->prepare($sql);
             $result->execute($data);
