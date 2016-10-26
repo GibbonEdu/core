@@ -327,4 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
         
 
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'weighting_manage.php');
 }

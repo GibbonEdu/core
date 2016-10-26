@@ -123,5 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
             }
         }
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_view.php');
 }
 ?>
