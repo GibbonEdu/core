@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
 								$list = '';
 								while ($rowList = $resultList->fetch()) {
-									$list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
+									$list = $list.'{id: "'.addslashes($rowList['tag']).'", name: "'.addslashes($rowList['tag']).' <i>('.$rowList['count'].')</i>"},';
 								}
 								?>
 								<style>
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                                     $prepopulate = '';
 									$tags = explode(',', $row['tags']);
 									foreach ($tags as $tag) {
-										$prepopulate .= '{id: '.$tag.', name: '.$tag.'}, ';
+                                        $prepopulate .= '{id: \''.addslashes($tag).'\', name: \''.addslashes($tag).'\'}, ';
 									}
 									$prepopulate = substr($prepopulate, 0, -2);
 									?>

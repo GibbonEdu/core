@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
 
     $list = '';
     while ($rowList = $resultList->fetch()) {
-        $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
+        $list = $list.'{id: "'.addslashes($rowList['tag']).'", name: "'.addslashes($rowList['tag']).' <i>('.$rowList['count'].')</i>"},';
     }
     ?>
 	<style>
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
 		$(document).ready(function() {
 			 $("#tag").tokenInput([
 				<?php echo substr($list, 0, -1) ?>
-			], 
+			],
 				{theme: "facebook",
 				hintText: "Type a tag...",
 				allowCreation: false,
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
 				if ($tags != '') {
 					$tagList = explode(',', $tags);
 					foreach ($tagList as $tag) {
-						$tagString .= "{id: '$tag', name: '$tag'},";
+						$tagString .= "{id: '".addslashes($tag)."', name: '".addslashes($tag)."'},";
 					}
 				}
 				echo 'prePopulate: ['.substr($tagString, 0, -1).'],';?>
@@ -331,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             $tags = explode(',', $row['tags']);
             natcasesort($tags);
             foreach ($tags as $tag) {
-                $output .= substr(trim($tag), 1, -1).'<br/>';
+                $output .= trim($tag).'<br/>';
             }
             echo substr($output, 0, -2);
             echo '</td>';
