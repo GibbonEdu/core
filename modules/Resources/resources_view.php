@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             $tagCount = 0;
             $tagArray = explode(',', $tags);
             foreach ($tagArray as $atag) {
-                $data['tag'.$tagCount] = "%".$atag."%";
+                $data['tag'.$tagCount] = "%,".$atag.",%";
                 $sqlWhere .= "concat('\'', tags, '\'') LIKE :tag".$tagCount." AND ";
                 ++$tagCount;
             }
