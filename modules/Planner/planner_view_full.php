@@ -1699,7 +1699,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 								//Check for school attendance
 								try {
 									$dataAtt = array('date' => $row['date'], 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
-									$sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonCourseClassID DESC';
+									$sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY timestampTaken DESC';
 									$resultAtt = $connection2->prepare($sqlAtt);
 									$resultAtt->execute($dataAtt);
 								} catch (PDOException $e) {
