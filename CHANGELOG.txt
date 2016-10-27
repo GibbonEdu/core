@@ -70,6 +70,7 @@ v13.0.00
 		Markbook: fixed return and presetting of fields when landing on add page from Planner
 		Markbook: made target scale selectable (so not constained to Default Assessment Scale)
 		Markbook: fixed issue preventing some staff from seeing Markbook columns from other classes (depending on Edit rights)
+		Markbook: added a class chooser to the sidebar for view, edit and weightings sub-pages
 		Messenger: fixed formatting of Sent From Gibbon tag
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Messenger: disabled Canned Response for any non-staff users
