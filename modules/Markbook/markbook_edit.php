@@ -307,4 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
             }
         }
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit.php');
 }
