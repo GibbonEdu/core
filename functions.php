@@ -2795,9 +2795,9 @@ function sidebar($connection2, $guid)
         } elseif ($loginReturn == 'fail6') {
             $loginReturnMessage = sprintf(__($guid, 'Too many failed logins: please %1$sreset password%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php'>", '</a>');
         } elseif ($loginReturn == 'fail7') {
-            $loginReturnMessage = sprintf(__($guid, 'Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $loginReturnMessage = sprintf(__($guid, 'Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>');
         } elseif ($loginReturn == 'fail8') {
-            $loginReturnMessage = sprintf(__($guid, 'Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $loginReturnMessage = sprintf(__($guid, 'Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>');
         } elseif ($loginReturn == 'fail9') {
             $loginReturnMessage = __($guid, 'Your primary role does not support the ability to log into the specified year.');
         }
