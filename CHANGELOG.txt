@@ -63,6 +63,7 @@ v13.0.00
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
 		Finance: removed thousand separator from invoice bulk export
+		Finance: switched from JS to HTML for fee block placeholders
 		Library: reduced memory usage of Library browse page
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
@@ -81,8 +82,9 @@ v13.0.00
 		Planner: improved readability of Unit Overview in lesson plan view, by removing chat section where no messages exist
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
- 		Resources: improved usability of tag entry interface
-		Resources: fixed breakage of tags including apostrophes 
+		Planner: switched from JS to HTML for Smart Block placeholders
+		Resources: improved usability of tag entry interface
+		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days

@@ -77,37 +77,6 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 					}
 				});
 
-				<?php if ($mode == 'masterAdd') { ?>
-					var titleClick<?php echo $i ?>=false ;
-					$('#title<?php echo $i ?>').focus(function() {
-						if (titleClick<?php echo $i ?>==false) {
-							$('#title<?php echo $i ?>').css("color", "#000") ;
-							$('#title<?php echo $i ?>').val("") ;
-							titleClick<?php echo $i ?>=true ;
-						}
-					});
-
-					var typeClick<?php echo $i ?>=false ;
-					$('#type<?php echo $i ?>').focus(function() {
-						if (typeClick<?php echo $i ?>==false) {
-							$('#type<?php echo $i ?>').css("color", "#000") ;
-							$('#type<?php echo $i ?>').val("") ;
-							typeClick<?php echo $i ?>=true ;
-						}
-					});
-
-					var lengthClick<?php echo $i ?>=false ;
-					$('#length<?php echo $i ?>').focus(function() {
-						if (lengthClick<?php echo $i ?>==false) {
-							$('#length<?php echo $i ?>').css("color", "#000") ;
-							$('#length<?php echo $i ?>').val("") ;
-							lengthClick<?php echo $i ?>=true ;
-						}
-					});
-				<?php
-}
-        ?>
-
 				$('#delete<?php echo $i ?>').unbind('click').click(function() {
 					if (confirm("<?php echo __($guid, 'Are you sure you want to delete this record?') ?>")) {
 						$('#block<?php echo $i ?>').fadeOut(600, function(){ $('#block<?php echo $i ?>').remove(); });
@@ -132,21 +101,9 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 			<tr>
 				<td style='width: 50%'>
 					<input name='order[]' type='hidden' value='<?php echo $i ?>'>
-					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=100 id='title<?php echo $i ?>' name='title<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') { echo 'color: #999;'; } ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode == 'masterAdd') { echo sprintf(__($guid, 'Block %1$s'), $i);
-					} else {
-						echo htmlPrep($title);
-					}
-					?>'><br/>
-					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=50 id='type<?php echo $i ?>' name='type<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') { echo 'color: #999;'; } ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode == 'masterAdd') { echo __($guid, 'type (e.g. discussion, outcome)');
-					} else {
-						echo htmlPrep($type);
-					}
-					?>'>
-					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=3 id='length<?php echo $i ?>' name='length<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') { echo 'color: #999;'; } ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode == 'masterAdd') { echo __($guid, 'length (min)');
-					} else {
-						echo htmlPrep($length);
-					}
-						?>'>
+					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=100 id='title<?php echo $i ?>' name='title<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode != 'masterAdd') { echo htmlPrep($title); }?>' placeholder='<?php echo __($guid, 'Title'); ?>'><br/>
+					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=50 id='type<?php echo $i ?>' name='type<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode != 'masterAdd') { echo htmlPrep($type); }?>' placeholder='<?php echo __($guid, 'Type (e.g. discussion, outcome)'); ?>'>
+					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=3 id='length<?php echo $i ?>' name='length<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode != 'masterAdd') { echo htmlPrep($length); }?>' placeholder='<?php echo __($guid, 'Length (min.)'); ?>'>
 				</td>
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
