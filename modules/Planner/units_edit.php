@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             $tags = getTagList($connection2, $gibbonSchoolYearID);
                                             $list = '';
                                             foreach ($tags AS $tag) {
-                                                $list = $list.'{id: "'.$tag[1].'", name: "'.$tag[1].'"},';
+                                                $list .= '{id: "'.addslashes($tag[1]).'", name: "'.addslashes($tag[1]).'"},';
                                             }
                     						?>
             								<style>
@@ -227,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 sort($tags, SORT_STRING) ;
             									foreach ($tags as $tag) {
                                                     if ($tag != '')
-                                                        $prepopulate .= '{id: \''.$tag.'\', name: \''.$tag.'\'}, ';
+                                                        $prepopulate .= '{id: \''.addslashes($tag).'\', name: \''.addslashes($tag).'\'}, ';
             									}
             									$prepopulate = substr($prepopulate, 0, -2);
             									?>

@@ -614,5 +614,6 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Attendance Trends', '0', 'Reports', 'Display a graph of student attendance types over time', 'report_graph_byType.php', 'report_graph_byType.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Attendance' AND gibbonAction.name='Attendance Trends'));end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonAttendanceCodeID` INT(3) UNSIGNED ZEROFILL NOT NULL AFTER `gibbonAttendanceLogPersonID`;end
-
+UPDATE gibbonResource SET tags = REPLACE (tags, '''', '');end
+UPDATE gibbonResourceTag SET tag = REPLACE (tag, '''', '');end
 ";

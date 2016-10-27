@@ -27,7 +27,7 @@ require_once './modules/Attendance/src/attendanceView.php';
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print _("1You do not have access to this action.") ;
 	print "</div>" ;
 }
 else if ( getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass')  == 'N') {
@@ -47,26 +47,26 @@ else {
     }
 
     $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
-	
+
 	$gibbonCourseClassID="" ;
 	if (isset($_GET["gibbonCourseClassID"])==FALSE) {
 		try {
-			$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-			
-			$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay 
-			FROM gibbonCourse 
-			JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
-			JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
-			JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-			WHERE gibbonPersonID=:gibbonPersonID 
-			AND gibbonCourseClass.attendance='Y' 
+			$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+
+			$sql="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay
+			FROM gibbonCourse
+			JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+			JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+			JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+			WHERE gibbonPersonID=:gibbonPersonID
+			AND gibbonCourseClass.attendance='Y'
 			AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID " ;
 
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			print "<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
 	 	if ($result->rowCount()>0) {
 			$row=$result->fetch() ;
@@ -74,22 +74,22 @@ else {
 		}
 	}
 	else {
-		$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;	 
+		$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 	}
-	
+
 	if (isset($_GET["currentDate"])==FALSE) {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
+		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;
 	}
-	
+
 	$today=date("Y-m-d");
 
 	?>
-	
+
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
@@ -98,7 +98,7 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php print _('Class') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
@@ -108,7 +108,7 @@ else {
 						print "<option value=''>" . _('Please select...') . "</option>" ;
 
 						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
 							$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.attendance='Y' ORDER BY course, class" ;
 							$resultSelect=$connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
@@ -133,15 +133,15 @@ else {
 
 
 						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
 							$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
 							$resultSelect=$connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							print "<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
-						
+
 						print "<optgroup label='--" . _('All Classes') . "--'>" ;
 
 						while ($rowSelect=$resultSelect->fetch()) {
@@ -153,12 +153,12 @@ else {
 							}						}
 
 						print "</optgroup>" ;
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php print _('Date') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
@@ -166,7 +166,7 @@ else {
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 						date.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -185,9 +185,9 @@ else {
 		</table>
 	</form>
 
-	
+
 	<?php
-	
+
 	if ($gibbonCourseClassID!="") {
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
@@ -206,17 +206,17 @@ else {
 				$firstDay=NULL ;
 				$lastDay=NULL ;
 				try {
-					$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-					$sql="SELECT gibbonCourseClass.*, gibbonCourse.gibbonSchoolYearID,firstDay, lastDay, 
-					gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse 
-					JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
-					JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+					$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+					$sql="SELECT gibbonCourseClass.*, gibbonCourse.gibbonSchoolYearID,firstDay, lastDay,
+					gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse
+					JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+					JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
 					WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID" ;
 
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
-				catch(PDOException $e) { 
+				catch(PDOException $e) {
 					$CourseClassFail=TRUE ;
 				}
 				if ($result->rowCount()!=0) {
@@ -227,7 +227,7 @@ else {
 					$gibbonCourseClassName = htmlPrep($row["course"]) . "." . htmlPrep($row["class"]);
 				}
 				if ($CourseClassFail) {
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 				else if ($row["attendance"] == 'N') {
 					print "<div class='error'>" ;
@@ -249,16 +249,16 @@ else {
 						$spin++ ;
 					}
 					$last5SchoolDaysCount=$count ;
-				
+
 					//Show attendance log for the current day
 					try {
-						$dataLog=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate . "%"); 
+						$dataLog=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate . "%");
 						$sqlLog="SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY timestampTaken" ;
 						$resultLog=$connection2->prepare($sqlLog);
 						$resultLog->execute($dataLog);
 					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					catch(PDOException $e) {
+						print "<div class='error'>" . $e->getMessage() . "</div>" ;
 					}
 					if ($resultLog->rowCount()<1) {
 						print "<div class='error'>" ;
@@ -275,18 +275,18 @@ else {
 							print "</ul>" ;
 						print "</div>" ;
 					}
-				
+
 					//Show roll group grid
 					try {
-						$dataCourseClass=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
+						$dataCourseClass=array("gibbonCourseClassID"=>$gibbonCourseClassID);
 						$sqlCourseClass="SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND role='Student' ORDER BY surname, preferredName" ;
 						$resultCourseClass=$connection2->prepare($sqlCourseClass);
 						$resultCourseClass->execute($dataCourseClass);
 					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					catch(PDOException $e) {
+						print "<div class='error'>" . $e->getMessage() . "</div>" ;
 					}
-				
+
 					if ($resultCourseClass->rowCount()<1) {
 						print "<div class='error'>" ;
 							print _("There are no records to display.") ;
@@ -313,18 +313,18 @@ else {
 								}
 								//Get student log data
 								try {
-									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%", 'gibbonCourseClassID' => $gibbonCourseClassID); 
+									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%", 'gibbonCourseClassID' => $gibbonCourseClassID);
 									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=0 OR gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
 									$resultLog=$connection2->prepare($sqlLog);
 									$resultLog->execute($dataLog);
 								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								catch(PDOException $e) {
+									print "<div class='error'>" . $e->getMessage() . "</div>" ;
 								}
-							
+
 								$rowLog=$resultLog->fetch() ;
-							
-							
+
+
 								if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
 									// Orange/warning background for partial absense
 									if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID) {
@@ -336,13 +336,13 @@ else {
 								else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 								}
-								
+
 									//Alerts, if permission allows
         							echo getAlertBar($guid, $connection2, $rowCourseClass['gibbonPersonID'], $rowCourseClass['privacy']);
 
         							//User photo
 									print getUserPhoto($guid, $rowCourseClass["image_240"], 75) ;
-								
+
 									print "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowCourseClass["gibbonPersonID"] . "&subpage=School Attendance'>" . formatName("", htmlPrep($rowCourseClass["preferredName"]), htmlPrep($rowCourseClass["surname"]), "Student", false) . "</a></b></div>" ;
 									print "<div style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 										if ($firstDay!=NULL AND $lastDay!=NULL) {
@@ -363,29 +363,29 @@ else {
                                 	echo $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$count-reason", '130px');
 
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
-								
+
 									if ( $attendance->isTypePresent($rowLog["type"]) ) {
 										$countPresent++ ;
-									}	
-								
+									}
+
 									$attendance->renderMiniHistory( $rowCourseClass['gibbonPersonID'] );
-									
+
 								print "</td>" ;
-							
+
 								if ($count%$columns==($columns-1)) {
 									print "</tr>" ;
 								}
 								$count++ ;
 							}
-						
+
 							for ($i=0;$i<$columns-($count%$columns);$i++) {
 								print "<td></td>" ;
 							}
-						
+
 							if ($count%$columns!=0) {
 								print "</tr>" ;
 							}
-						
+
 							print "<tr>" ;
 								print "<td class='right' colspan=5>" ;
 									print "<div class='success'>" ;
@@ -415,7 +415,7 @@ else {
 									print "<input type='submit' value='Submit'>" ;
 								print "</td>" ;
 							print "</tr>" ;
-							print "</table>" ;	
+							print "</table>" ;
 						print "</form>" ;
 					}
 				}

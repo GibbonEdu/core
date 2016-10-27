@@ -82,6 +82,7 @@ v13.0.00
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
  		Resources: improved usability of tag entry interface
+		Resources: fixed breakage of tags including apostrophes 
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
@@ -106,7 +107,7 @@ v13.0.00
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
 
-	Depreciated
+	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
 
 v12.0.00

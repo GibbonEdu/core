@@ -351,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             $tags = explode(',', $row['tags']);
             natcasesort($tags);
             foreach ($tags as $tag) {
-                $tagoutput .= substr(trim($tag), 1, -1).'<br/>';
+                $tagoutput .= trim($tag).'<br/>';
             }
             $output .= substr($tagoutput, 0, -2);
             $output .= '</td>';
