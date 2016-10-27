@@ -616,4 +616,6 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonAttendanceCodeID` INT(3) UNSIGNED ZEROFILL NOT NULL AFTER `gibbonAttendanceLogPersonID`;end
 UPDATE gibbonResource SET tags = REPLACE (tags, '''', '');end
 UPDATE gibbonResourceTag SET tag = REPLACE (tag, '''', '');end
+ALTER TABLE `gibbonAttendanceCode` ADD UNIQUE(`name`), ADD UNIQUE(`nameShort`);end
+
 ";
