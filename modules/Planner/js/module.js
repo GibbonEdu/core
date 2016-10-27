@@ -15,3 +15,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+jQuery(function($){
+
+	// Show the reason/comment when the attendance dropdown is changed
+	$('select[name$="-type"]').change( function() {
+
+		// Get the data-id from the preceding hidden input
+		var id = $(this).prev('input').data('id');
+
+		// Show/hide the div container
+		$('#'+id+'-hideReasons').show();
+	});
+
+});

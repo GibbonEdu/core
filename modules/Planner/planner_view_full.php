@@ -1781,12 +1781,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($rowClassGroup['role'] == 'Student') {
 
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $status, "$countStudents-type", '84px');
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $reason, "$countStudents-reason", '84px');
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $status, "$countStudents-type", '86px;margin-left:1px;');
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($comment)."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $reason, "$countStudents-reason", '84px');
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($comment)."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= "</div>";
 
                                 }
                             }
