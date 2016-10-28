@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Google Integration') ?></h3>
-					<?php echo sprintf(__($guid, 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/authenticating-with-google-oauth/' target='_blank'>", '</a>') ?>
+					<?php echo sprintf(__($guid, 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>') ?>
 				</td>
 			</tr>
 			<tr>

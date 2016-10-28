@@ -142,6 +142,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     }
                     $name = $_POST['name'];
                     $summary = $_POST['summary'];
+                    if ($summary == '') {
+                        $summary = trim(strip_tags($_POST['description'])) ;
+                        if (strlen($summary) > 252) {
+                            $summary = substr($summary, 0, 252).'...' ;
+                        }
+                    }
                     $summaryBlocks = '';
                     $description = $_POST['description'];
                     $teachersNotes = $_POST['teachersNotes'];
@@ -229,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
                     $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
-                    if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $summary == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
+                    if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                         $URL .= "&return=error3$params";
                         header("Location: {$URL}");
                     } else {

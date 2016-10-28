@@ -108,8 +108,6 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 $demoData = $_POST['demoData'];
                             }
 
-                            echo '<h2>'.sprintf(__($guid, 'Installation - Step %1$s'), ($step + 1)).'</h2>';
-
                             //Set language
                             $code = 'en_GB';
                             if (isset($_POST['code'])) {
@@ -119,6 +117,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             setlocale(LC_ALL, $code);
                             bindtextdomain('gibbon', '../i18n');
                             textdomain('gibbon');
+
+                            echo '<h2>'.sprintf(__($guid, 'Installation - Step %1$s'), ($step + 1)).'</h2>';
 
                             if ($step == 0) { //Choose language
                                 if (file_exists('../config.php')) { //Make sure system is not already installed

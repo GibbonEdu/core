@@ -32,23 +32,23 @@ class menuMain
 	 * Gibbon\sqlConnection
 	 */
 	private $pdo ;
-	
+
 	/**
 	 * Gibbon\session
 	 */
 	private $session ;
-	
+
 	/**
 	 * Gibbon\config
 	 */
 	private $config ;
-	
-	
+
+
 	/**
 	 * Stores the menu whilst it is being constructed, before storage in session
 	 */
 	public $menu = "" ;
-	
+
 	/**
 	 * Construct
 	 *
@@ -81,13 +81,21 @@ class menuMain
 			$menu.="</ul>" ;
 		}
 		else {
+			$mainMenuCategoryOrder = getSettingByScope($this->pdo->getConnection(), 'System', 'mainMenuCategoryOrder');
+			$orders = explode(',', $mainMenuCategoryOrder);
+			$orderBy = '';
+			foreach ($orders AS $order) {
+				$orderBy .= "'".$order."',";
+			}
+			if ($orderBy != '')
+				$orderBy = substr($orderBy, 0, -1);
 			$data=array("gibbonRoleID"=>$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"]);
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY (gibbonModule.category='Other') ASC, category, name";
+			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY FIELD(gibbonModule.category, $orderBy), category, name";
 			$result = $this->pdo->executeQuery($data, $sql);
 			if (! $this->pdo->getQuerySuccess()) {
 				$menu.="<div class='error'>" . $this->pdo->getError() . "</div>" ;
 			}
-			
+
 			if ($result->rowCount()<1) {
 				$menu.="<ul id='nav'>" ;
 				$menu.="<li class='active'><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php'>" . __($this->config->get('guid'), 'Home') . "</a></li>" ;
@@ -113,7 +121,7 @@ class menuMain
 							$entryURL=$rowEntry["entryURL"] ;
 						}
 					}
-					
+
 					if ($currentCategory!=$lastCategory) {
 						if ($count>0) {
 							$menu.="</ul></li>";
@@ -127,8 +135,8 @@ class menuMain
 					}
 					$lastCategory=$currentCategory ;
 					$count++ ;
-					
-					
+
+
 				}
 				if ($count>0) {
 					$menu.="</ul></li>";
@@ -136,7 +144,7 @@ class menuMain
 				$menu.="</ul>" ;
 			}
 		}
-		
+
 		//$this->session->set('mainMenu', $menu) ;
 		$_SESSION[$this->config->get('guid')]["mainMenu"]=$menu ;
 	}

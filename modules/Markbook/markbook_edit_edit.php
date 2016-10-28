@@ -624,23 +624,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
     												}
     												echo "<option $selected value='".$rowSelect['gibbonRubricID']."'>$label</option>";
     											}
-    											if ($row['gibbonDepartmentID'] != '') {
-    												?>
-    												<optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?>--'>
-    												<?php
+                                                if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
+                                                    ?>
+                                                    <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
+                                                    <?php
                                                     try {
                                                         $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                        $sqlSelectWhere = '';
+                                                        $sqlSelectWhere = ' AND (';
                                                         $years = explode(',', $row['gibbonYearGroupIDList']);
                                                         foreach ($years as $year) {
                                                             $dataSelect[$year] = "%$year%";
-                                                            $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
+                                                            $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
                                                         }
+                                                        $sqlSelectWhere = substr($sqlSelectWhere, 0, -4).')';
                                                         $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
                                                         $resultSelect = $connection2->prepare($sqlSelect);
                                                         $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
+                                                    } catch (PDOException $e) { }
+
     												while ($rowSelect = $resultSelect->fetch()) {
     													$label = '';
     													if ($rowSelect['category'] == '') {
@@ -765,23 +766,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
         												}
         												echo "<option $selected value='".$rowSelect['gibbonRubricID']."'>$label</option>";
         											}
-        											if ($row['gibbonDepartmentID'] != '') {
-        												?>
-        												<optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?>--'>
-        												<?php
+                                                    if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
+                                                        ?>
+                                                        <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
+                                                        <?php
                                                         try {
                                                             $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                            $sqlSelectWhere = '';
+                                                            $sqlSelectWhere = ' AND (';
                                                             $years = explode(',', $row['gibbonYearGroupIDList']);
                                                             foreach ($years as $year) {
                                                                 $dataSelect[$year] = "%$year%";
-                                                                $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
+                                                                $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
                                                             }
+                                                            $sqlSelectWhere = substr($sqlSelectWhere, 0, -4).')';
                                                             $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
                                                             $resultSelect = $connection2->prepare($sqlSelect);
                                                             $resultSelect->execute($dataSelect);
-                                                        } catch (PDOException $e) {
-                                                        }
+                                                        } catch (PDOException $e) { }
+                                                        
         												while ($rowSelect = $resultSelect->fetch()) {
         													$label = '';
         													if ($rowSelect['category'] == '') {
@@ -903,5 +905,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
             }
         }
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_view.php');
 }
 ?>

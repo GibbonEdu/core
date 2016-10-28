@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 //Add multiple columns
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-                    
+
                     if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
 
                         //Check highest role in any department
@@ -307,4 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
             }
         }
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit.php');
 }

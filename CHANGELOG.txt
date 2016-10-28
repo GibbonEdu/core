@@ -19,14 +19,19 @@ CHANGELOG
 v13.0.00
 --------
 	Headlines
-		...
+		Automated Scope & Sequence documentation in Planner, based on Unit Planner
+		Concept Explorer in Planner, based on Unit Planner concepts & keywords
+		Take Attendance by Class, and generate student attendance reports
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
 		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
 
 	Significant Changes
-		Changed Primary Assessment Scale to Default Assessment Scale
+		System: Changed Primary Assessment Scale to Default Assessment Scale
+		Markbook: added ability to copy columns to other classes
+		School Admin: added ability to edit and create attendance codes
+		Attendance: added landing page for teacher's daily attendance taking
 
 	Security
 		...
@@ -36,43 +41,79 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev and Namibian Dollar as currency
-		System: added Bulgarian and Korean as development languages
+		System: added Bulgarian, Korean and Finnish as development languages
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken
 		System: updated .gitignore to include .DS_store files
 		System: updated PayPal integration to set localecode based on current Gibbon language
+		System: updated the reincarnate image on Default theme
+		System: removed robots meta tag
+		System: added ability to custom order module categories in main menu
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
+		Activities: fixed bug which cut one student off print view of attendance print out
+		Activities: fixed translation of blank string in Parent Dashboard Activity view
+		Attendance: added new filters to student absence reports to allow sorting by roll group or student
+		Attendance: added ability to set partial per-class future absence
+		Attendance: added visual graphing for school-wide Attendance Trends
+		Attendance: improved the display of Classes/Roll Groups Not Registered to include visual overview
+		Attendance: updated Daily Incomplete Email CLI script to include attendance by class
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
+		Finance: removed thousand separator from invoice bulk export
+		Finance: switched from JS to HTML for fee block placeholders
+		Library: reduced memory usage of Library browse page
 		Markbook: added settings to enable/disable Effort and Rubrics
+		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
+		Markbook: removed Learning Area rubrics from multiple column add
+		Markbook: fixed return and presetting of fields when landing on add page from Planner
+		Markbook: made target scale selectable (so not constained to Default Assessment Scale)
+		Markbook: fixed issue preventing some staff from seeing Markbook columns from other classes (depending on Edit rights)
+		Markbook: added a class chooser to the sidebar for view, edit and weightings sub-pages
 		Messenger: fixed formatting of Sent From Gibbon tag
 		Messenger: fixed display of email/SMS report for recipients with , in their name
+		Messenger: disabled Canned Response for any non-staff users
+		Messenger: doubled character limit on subject field
 		Planner: adjusted permissions to allow teachers to duplicate lessons belonging to other people (to reuse them)
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class
 		Planner: added ability to tag units, in order to help build curriculum maps
 		Planner: fixed lesson plan duplicate return bug, when not in current year
+		Planner: improved readability of Unit Overview in lesson plan view, by removing chat section where no messages exist
+		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
+		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
+		Planner: switched from JS to HTML for Smart Block placeholders
 		Resources: improved usability of tag entry interface
+		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
+		School Admin: fixed PHP warning caused by empty arrays in Tracking Settings
+		School Admin: added ability to link Educational Assistances to Form/Roll Groups
+		School Admin: fixed leap year error in Manage Special Days
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
+		Staff: fixed date display in Job Openings manage page
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		Students: tweaked student accept to remove - from names
 		Students: fixed broken link from Family in student profile to sibling, when sibling is not enroled in the year
 		Students: removed delete function from Notes, added logging for edits
+		Students: adjusted family view of student profile to ensure only adults with status Full show
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
 		Timetable Admin: removed Left users from exception add screen
 		Timetable Admin: narrowed down class participant count in Course edit view to users with status Full
+		Timetable Admin: added search and filters to course enrolment and course management pages
+		Timetable Admin: added bulk action to copy selected students to another class
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
+
+	Deprecated
+		Planner: replaced original planner-based attendance with attendance by class
 
 v12.0.00
 --------

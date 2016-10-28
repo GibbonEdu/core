@@ -62,14 +62,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo __($guid, 'Add Participants');
             echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Participants') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
-							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
+							<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
 								<optgroup label='--<?php echo __($guid, 'Enrolable Students') ?>--'>
 								<?php
                                 try {
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Role') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 				</table>
 			</form>
 
-			<?php	
+			<?php
             echo '<h2>';
             echo __($guid, 'Current Participants');
             echo '</h2>';

@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         echo __($guid, 'Search');
         echo '</h2>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Search For') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Resource name.') ?></span>
 					</td>
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 $tags = explode(',', $row['tags']);
                 natcasesort($tags);
                 foreach ($tags as $tag) {
-                    $output .= substr(trim($tag), 1, -1).', ';
+                    $output .= trim($tag).', ';
                 }
                 echo substr($output, 0, -2);
                 echo '</td>';

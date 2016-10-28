@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
-						<select name="gibbonPersonIDs[]" id="gibbonPersonIDs[]" multiple style="width: 302px; height: 150px">
+						<select name="gibbonPersonIDs[]" id="gibbonPersonIDs[]" multiple class='standardWidth' style="height: 150px">
 							<optgroup label='--<?php echo __($guid, 'Students by Roll Group') ?>--'>
 								<?php
                                 try {

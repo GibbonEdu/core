@@ -123,6 +123,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 							</select>
 						</td>
 					</tr>
+					<?php if ( getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Track Attendance?') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Should this class allow attendance to be taken?') ?></span>
+						</td>
+						<td class="right">
+							<select name="attendance" id="attendance" class="standardWidth">
+								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option value="N"><?php echo __($guid, 'No') ?></option>
+							</select>
+						</td>
+					</tr>
+					<?php endif; ?>
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

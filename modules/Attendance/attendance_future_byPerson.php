@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
+require_once './modules/Attendance/src/attendanceView.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -35,10 +37,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, 
-        	array( 'error7' => __($guid, 'Your request failed because the student has already been marked absent for the full day.'),
+        	array( 'warning2' => __($guid, 'Your request was successful, but some data was not properly saved.') .' '. __($guid, 'The specified date is not in the future, or is not a school day.'),
+        		   'error7' => __($guid, 'Your request failed because the student has already been marked absent for the full day.'),
         		   'error8' => __($guid, 'Your request failed because the selected date is not in the future.'), )
         );
     }
+
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
 
     $gibbonPersonID = null;
     if (isset($_GET['gibbonPersonID'])) {
@@ -94,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</select>
 				</td>
 			</tr>
+			<?php if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'Absence Type') ?></b><br/>
@@ -106,6 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</select>
 				</td>
 			</tr>
+			<?php endif; ?>
 			
 			<tr id="absencePartialDateRow" <?php if ($absenceType == 'full') { echo "style='display: none'"; } ?>>
 				<td> 
@@ -171,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         try {
             $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$today-0-0-0"); //"$today-23-59-59"
-            $sqlLog = "SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND type='Absent' AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
+            $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
             $resultLog = $connection2->prepare($sqlLog);
             $resultLog->execute($dataLog);
         } catch (PDOException $e) {
@@ -179,14 +186,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         }
 
         if ($resultLog->rowCount() > 0) {
-            echo "<div class='success'>";
-            echo __($guid, 'The following future absences have been set for the selected student.');
-            echo '<ul>';
-            while ($rowLog = $resultLog->fetch()) {
-                echo "<li style='line-height: 250%'><b>".dateConvertBack($guid, substr($rowLog['date'], 0, 10)).'</b> | '.sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), formatName($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true))." <a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&date=".$rowLog['date']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a></li>";
-            }
-            echo '</ul>';
-            echo '</div>';
+        	echo '<h4>';
+	    		echo __($guid, 'Attendance Log');
+	    	echo '</h4>';
+			    	
+            echo "<p><span class='emphasis small'>";
+            	echo __($guid, 'The following future absences have been set for the selected student.');
+            echo '</span></p>';
+
+            echo '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+	        echo '<tr class="head">';
+	        	echo '<th>'.__($guid, 'Date').'</th>';
+	        	echo '<th>'.__($guid, 'Attendance').'</th>';
+	        	echo '<th>'.__($guid, 'Where').'</th>';
+	        	echo '<th>'.__($guid, 'Recorded By').'</th>';
+	        	echo '<th>'.__($guid, 'On').'</th>';
+	        	echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
+	        	
+	        echo '</tr>';
+	        while ($rowLog = $resultLog->fetch()) {
+
+	            echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
+
+	            echo '<td>'.date("M j", strtotime($rowLog['date']) ).'</td>';
+	  
+
+				echo '<td>';
+	            echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
+
+	            if ( !empty($rowLog['comment']) ) { 
+	            	echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
+	        	}
+	            echo '</td>';
+	            
+
+	            if ( empty($rowLog['gibbonCourseClassID']) || $rowLog['gibbonCourseClassID'] == 0 ) {
+	            	echo '<td>'.__($guid, 'Roll Group').'</td>';
+	            } else {
+	            	echo '<td>'.$rowLog['courseName'].'.'.$rowLog['className'].'</td>';
+	        	}
+
+	            echo '<td>';
+	            	echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
+	            echo '</td>';
+
+	            echo '<td>'.date("g:i a, M j", strtotime($rowLog['timestampTaken']) ).'</td>';
+
+
+            	echo '<td>';
+		            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&gibbonAttendanceLogPersonID=".$rowLog['gibbonAttendanceLogPersonID']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+	            echo '</td>';
+
+	            echo '</tr>';
+	        }
+	        echo '</table><br/>';
         }
 
        
@@ -222,16 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						</h3>
 					</td>
 				</tr>
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php echo __($guid, 'Type') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-					</td>
-					<td class="right">
-						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" class="standardWidth">
-					</td>
-				</tr>
-
+				
 				<?php 
 				// Full-day Absenses
 				if ($absenceType=="full") : ?>
@@ -325,12 +369,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 				</tr>
 				<?php endif; ?>
 				<tr>
+					<td style='width: 275px'> 
+						<b><?php echo __($guid, 'Type') ?> *</b><br/>
+						<span class="emphasis small"></span>
+					</td>
+					<td class="right">
+						<?php echo $attendance->renderAttendanceTypeSelect('Absent', 'type', '302px', true); ?>
+					</td>
+				</tr>
+				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Reason') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<?php renderAttendanceReasonSelect($guid); ?>
+						<?php echo $attendance->renderAttendanceReasonSelect(); ?>
 					</td>
 				</tr>
 				<tr>

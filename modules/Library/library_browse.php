@@ -45,48 +45,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $browseBGImageStyle = "; background-image: url(\"$browseBGImage\")";
     }
 
+    //Set pagination variable
+    $page = 1;
+    if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+    }
+    if ((!is_numeric($page)) or $page < 1) {
+        $page = 1;
+    }
+
     echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
     echo "<div style='width: 762px; margin: 0 auto'>";
-            //Display filters
-            echo "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>";
+    //Display filters
+    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>";
     echo '<tr>';
     echo "<td style='width: 10px'></td>";
-    echo "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>".__($guid, 'All Time Top 5').'</div>';
-    try {
-        $dataTop = array();
-        $sqlTop = "SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5";
-        $resultTop = $connection2->prepare($sqlTop);
-        $resultTop->execute($dataTop);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    if ($resultTop->rowCount() < 1) {
-        echo "<div class='warning'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        $count = 0;
-        while ($rowTop = $resultTop->fetch()) {
-            ++$count;
-            if ($rowTop['name'] != '') {
-                if (strlen($rowTop['name']) > 35) {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. ".substr($rowTop['name'], 0, 35).'...</div>';
-                } else {
-                    echo "<div style='margin-top: 6px; font-weight: bold'>$count. ".$rowTop['name'].'</div>';
-                }
-                if ($rowTop['producer'] != '') {
-                    if (strlen($rowTop['producer']) > 35) {
-                        echo "<div style='font-style: italic; font-size: 85%'> by ".substr($rowTop['producer'], 0, 35).'...</div>';
-                    } else {
-                        echo "<div style='font-style: italic; font-size: 85%'> by ".$rowTop['producer'].'</div>';
-                    }
-                }
-            }
-        }
-    }
-    echo '</td>';
-    echo "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>";
+    echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
     echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>".__($guid, 'Monthly Top 5').'</div>';
     try {
         $dataTop = array('timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30))));
@@ -121,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         }
     }
     echo '</td>';
-    echo "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>";
+    echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
     echo "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>".__($guid, 'New Titles').'</div>';
     try {
         $dataTop = array();
@@ -160,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</tr>';
     echo '</table>';
 
-	//Get current filter values
+    //Get current filter values
 	$name = null;
     if (isset($_POST['name'])) {
         $name = trim($_POST['name']);
@@ -244,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo "<option value=''></option>";
     try {
         $dataSelect = array();
-        $sqlSelect = "SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+        $sqlSelect = "SELECT gibbonLibraryTypeID, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
         $resultSelect = $connection2->prepare($sqlSelect);
         $resultSelect->execute($dataSelect);
     } catch (PDOException $e) {
@@ -316,90 +290,107 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $page = 1;
     }
 
-            //Search with filters applied
-            try {
-                $data = array();
-                $sqlWhere = 'AND ';
-                if ($name != '') {
-                    $data['name'] = '%'.$name.'%';
-                    $sqlWhere .= 'gibbonLibraryItem.name LIKE :name AND ';
-                }
-                if ($producer != '') {
-                    $data['producer'] = '%'.$producer.'%';
-                    $sqlWhere .= 'producer LIKE :producer AND ';
-                }
-                if ($category != '') {
-                    $data['category'] = $category;
-                    $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryTypeID=:category AND ';
-                    if ($collection != '') {
-                        $data['collection'] = '%s:10:"Collection";s:'.strlen($collection).':"'.$collection.'";%';
-                        $sqlWhere .= 'gibbonLibraryItem.fields LIKE :collection AND ';
-                    }
-                }
-                if ($gibbonLibraryItemID != '') {
-                    $data['gibbonLibraryItemID'] = $gibbonLibraryItemID;
-                    $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID AND ';
-                }
-                if ($sqlWhere == 'AND ') {
-                    $sqlWhere = '';
-                } else {
-                    $sqlWhere = substr($sqlWhere, 0, -5);
-                }
+    //Cache TypeFields
+    try {
+        $dataTypeFields = array() ;
+        $sqlTypeFields = "SELECT gibbonLibraryType.* FROM gibbonLibraryType";
+        $resultTypeFields = $connection2->prepare($sqlTypeFields);
+        $resultTypeFields->execute($dataTypeFields);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+    $typeFieldsTemp = $resultTypeFields->fetchAll();
 
-                //SEARCH ALL FIELDS (a.k.a everything)
-                try {
-                    $dataEverything = array();
-                    $sqlEverything = 'SHOW COLUMNS FROM gibbonLibraryItem';
-                    $resultEverything = $connection2->prepare($sqlEverything);
-                    $resultEverything->execute($dataEverything);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $everythingCount = 0;
-                $everythingTokens = explode(' ', $everything);
-                $everythingSQL = '';
-                while ($rowEverything = $resultEverything->fetch()) {
-                    $tokenCount = 0;
-                    foreach ($everythingTokens as $everythingToken) {
-                        if (count($everythingTokens) == 1) { //Deal with single search token
-                            $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                            $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' OR ';
-                            ++$everythingCount;
-                        } else { //Deal with multiple search token, ANDing them within ORs
-                            if ($tokenCount == 0) { //First in a set of AND within ORs
-                                $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                                $everythingSQL .= '(gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' AND ';
-                                ++$everythingCount;
-                            } elseif (($tokenCount + 1) == count($everythingTokens)) { //Last in a set of AND within ORs
-                                $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                                $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.') OR ';
-                                ++$everythingCount;
-                            } else { //All others in a set of AND within ORs
-                                $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                                $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' AND ';
-                                ++$everythingCount;
-                            }
-                            ++$tokenCount;
-                        }
-                    }
-                }
-                //Find prep for search all fields
-                if (strlen($everythingSQL) > 0) {
-                    if (count($everythingTokens) == 1) {
-                        $everythingSQL = ' AND ('.substr($everythingSQL, 0, -5).')';
-                    } else {
-                        $everythingSQL = ' AND ('.substr($everythingSQL, 0, -4).')';
-                    }
-                    $sqlWhere .= $everythingSQL;
-                }
+    $typeFields = array();
+    foreach ($typeFieldsTemp as $typeField) {
+        $typeFields[$typeField['gibbonLibraryTypeID']] = $typeField;
+    }
 
-                $sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE (status='Available' OR status='On Loan' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere ORDER BY id";
-                $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+    //Search with filters applied
+    try {
+        $data = array();
+        $sqlWhere = 'AND ';
+        if ($name != '') {
+            $data['name'] = '%'.$name.'%';
+            $sqlWhere .= 'gibbonLibraryItem.name LIKE :name AND ';
+        }
+        if ($producer != '') {
+            $data['producer'] = '%'.$producer.'%';
+            $sqlWhere .= 'producer LIKE :producer AND ';
+        }
+        if ($category != '') {
+            $data['category'] = $category;
+            $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryTypeID=:category AND ';
+            if ($collection != '') {
+                $data['collection'] = '%s:10:"Collection";s:'.strlen($collection).':"'.$collection.'";%';
+                $sqlWhere .= 'gibbonLibraryItem.fields LIKE :collection AND ';
             }
+        }
+        if ($gibbonLibraryItemID != '') {
+            $data['gibbonLibraryItemID'] = $gibbonLibraryItemID;
+            $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID AND ';
+        }
+        if ($sqlWhere == 'AND ') {
+            $sqlWhere = '';
+        } else {
+            $sqlWhere = substr($sqlWhere, 0, -5);
+        }
+
+        //SEARCH ALL FIELDS (a.k.a everything)
+        try {
+            $dataEverything = array();
+            $sqlEverything = 'SHOW COLUMNS FROM gibbonLibraryItem';
+            $resultEverything = $connection2->prepare($sqlEverything);
+            $resultEverything->execute($dataEverything);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        $everythingCount = 0;
+        $everythingTokens = explode(' ', $everything);
+        $everythingSQL = '';
+        while ($rowEverything = $resultEverything->fetch()) {
+            $tokenCount = 0;
+            foreach ($everythingTokens as $everythingToken) {
+                if (count($everythingTokens) == 1) { //Deal with single search token
+                    $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
+                    $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' OR ';
+                    ++$everythingCount;
+                } else { //Deal with multiple search token, ANDing them within ORs
+                    if ($tokenCount == 0) { //First in a set of AND within ORs
+                        $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
+                        $everythingSQL .= '(gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' AND ';
+                        ++$everythingCount;
+                    } elseif (($tokenCount + 1) == count($everythingTokens)) { //Last in a set of AND within ORs
+                        $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
+                        $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.') OR ';
+                        ++$everythingCount;
+                    } else { //All others in a set of AND within ORs
+                        $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
+                        $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' AND ';
+                        ++$everythingCount;
+                    }
+                    ++$tokenCount;
+                }
+            }
+        }
+        //Find prep for search all fields
+        if (strlen($everythingSQL) > 0) {
+            if (count($everythingTokens) == 1) {
+                $everythingSQL = ' AND ('.substr($everythingSQL, 0, -5).')';
+            } else {
+                $everythingSQL = ' AND ('.substr($everythingSQL, 0, -4).')';
+            }
+            $sqlWhere .= $everythingSQL;
+        }
+
+        $sql = "SELECT gibbonLibraryItem.* FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE (status='Available' OR status='On Loan' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere ORDER BY id";
+        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
@@ -497,7 +488,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
                 echo "<tr class='description-$count' id='fields-$count' style='background-color: #fff; display: none'>";
                 echo '<td colspan=5>';
                 echo "<table cellspacing='0' style='width: 100%'>";
-                $typeFields = unserialize($row['typeFields']);
+                $typeFields = unserialize($typeFields[$row['gibbonLibraryTypeID']]['fields']);
                 $fields = unserialize($row['fields']);
                 foreach ($typeFields as $typeField) {
                     if ($fields[$typeField['name']] != '') {

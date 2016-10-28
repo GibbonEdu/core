@@ -43,7 +43,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
         header("Location: {$URL}");
     } else {
         $count = $_POST['count'];
+        $gibbonScaleIDTarget = $_POST['gibbonScaleIDTarget'];
+        if ($gibbonScaleIDTarget == '')
+            $gibbonScaleIDTarget = null;
         $partialFail = false;
+
+        //Update target scale
+        try {
+            $data = array('gibbonScaleIDTarget' => $gibbonScaleIDTarget, 'gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = 'UPDATE gibbonCourseClass SET gibbonScaleIDTarget=:gibbonScaleIDTarget WHERE gibbonCourseClassID=:gibbonCourseClassID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $partialFail = true;
+        }
 
         for ($i = 1;$i <= $count;++$i) {
             $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];

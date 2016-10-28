@@ -27,6 +27,7 @@ if (file_exists('./config.php')) {
 } else { //no config, so go to installer
     $URL = './installer/install.php';
     header("Location: {$URL}");
+    exit();
 }
 include './functions.php';
 include './version.php';
@@ -164,7 +165,6 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			</title>
 			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
-			<meta name="robots" content="none"/>
 
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>

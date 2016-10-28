@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         foreach ($tags as $tag) {
                             if (trim($tag) != '') {
                                 try {
-                                    $dataTags = array('tag' => substr(trim($tag), 1, -1));
+                                    $dataTags = array('tag' => trim($tag));
                                     $sqlTags = 'SELECT * FROM gibbonResourceTag WHERE tag=:tag';
                                     $resultTags = $connection2->prepare($sqlTags);
                                     $resultTags->execute($dataTags);
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                                 if ($resultTags->rowCount() == 1) {
                                     $rowTags = $resultTags->fetch();
                                     try {
-                                        $dataTag = array('count' => ($rowTags['count'] - 1), 'tag' => substr(trim($tag), 1, -1));
+                                        $dataTag = array('count' => ($rowTags['count'] - 1), 'tag' => trim($tag));
                                         $sqlTag = 'UPDATE gibbonResourceTag SET count=:count WHERE tag=:tag';
                                         $resultTag = $connection2->prepare($sqlTag);
                                         $resultTag->execute($dataTag);
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         $tagList = '';
                         foreach ($tags as $tag) {
                             if (trim($tag) != '') {
-                                $tagList .= "'".trim($tag)."',";
+                                $tagList .= trim($tag).",";
                                 try {
                                     $dataTags = array('tag' => trim($tag));
                                     $sqlTags = 'SELECT * FROM gibbonResourceTag WHERE tag=:tag';

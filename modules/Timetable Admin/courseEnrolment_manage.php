@@ -79,9 +79,85 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
         echo '</div>';
 
+        $search = (isset($_GET['search']))? $_GET['search'] : '';
+        $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
+
+        echo '<h3>';
+        echo __($guid, 'Filters');
+        echo '</h3>'; ?>
+        <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+            <table class='noIntBorder' cellspacing='0' style="width: 100%"> 
+                <tr>
+                    <td> 
+                        <b><?php echo __($guid, 'Search For') ?></b><br/>
+                    </td>
+                    <td class="right">
+                        <input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b><?php echo __($guid, 'Year Group') ?></b><br/>
+                        <span class="emphasis small"></span>
+                    </td>
+                    <td class="right">
+                        <?php
+                        try {
+                            $dataPurpose = array();
+                            $sqlPurpose = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+                            $resultPurpose = $connection2->prepare($sqlPurpose);
+                            $resultPurpose->execute($dataPurpose);
+                        } catch (PDOException $e) {
+                        }
+
+                        echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
+                        echo "<option value=''></option>";
+                        while ($rowPurpose = $resultPurpose->fetch()) {
+                            $selected = ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID)? 'selected' : '';
+                            echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+                        }
+                        echo '</select>';
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=2 class="right">
+                        <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/courseEnrolment_manage.php">
+                        <input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
+                        <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+                        <?php
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage.php'>".__($guid, 'Clear Filters').'</a>'; ?>
+                        <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <?php
+
         try {
+
+            $sqlFilters = array();
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
+            $sql = 'SELECT gibbonCourseID, name, nameShort FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+
+            if (!empty($search)) {
+                $data['search1'] = "%$search%";
+                $data['search2'] = "%$search%";
+                $sqlFilters[] = '(name LIKE :search1 OR nameShort LIKE :search2)';
+            }
+
+            if (!empty($gibbonYearGroupID)) {
+                $data['gibbonYearGroupID'] = '%'.str_pad($gibbonYearGroupID, 3, '0').'%';
+                $sqlFilters[] = '(gibbonYearGroupIDList LIKE :gibbonYearGroupID)';
+            }
+
+            if (!empty($sqlFilters)) {
+                $sql .= ' AND ('. implode(' AND ', $sqlFilters) .')';
+            }
+
+            $sql .= ' ORDER BY nameShort, name';
+            
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -100,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
                 try {
                     $dataClass = array('gibbonCourseID' => $row['gibbonCourseID']);
-                    $sqlClass = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name';
+                    $sqlClass = 'SELECT gibbonCourseClassID, name, nameShort FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name';
                     $resultClass = $connection2->prepare($sqlClass);
                     $resultClass->execute($dataClass);
                 } catch (PDOException $e) {
@@ -158,39 +234,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         $total = 0;
                         $active = 0;
                         $expected = 0;
-
                         try {
                             $dataClasses = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID']);
-                            $sqlClasses = "SELECT gibbonCourseClassPerson.role, gibbonPerson.status FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID";
+                            $sqlClasses = "SELECT COUNT(CASE WHEN gibbonPerson.status='Full' THEN gibbonPerson.status END) as active, COUNT(CASE WHEN gibbonPerson.status='Expected' THEN gibbonPerson.status END) as expected FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected') AND gibbonCourseClassID=:gibbonCourseClassID AND (NOT role='Student - Left') AND (NOT role='Teacher - Left')";
                             $resultClasses = $connection2->prepare($sqlClasses);
                             $resultClasses->execute($dataClasses);
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-                        if ($resultClasses->rowCount() >= 0) {
-                            while( $participant = $resultClasses->fetch() ) {
-                                if ($participant['role'] != 'Student - Left' && $participant['role'] != 'Teacher - Left') {
-                                    if ($participant['status'] == 'Full') {
-                                        $active++;
-                                    } else if ($participant['status'] == 'Expected') {
-                                        $expected++;
-                                    }
-                                }
+                        $classCounts = $resultClasses->fetch();
 
-                                $total++;
-                            }
-                        }
-
-                        echo $active;
+                        echo $classCounts['active'];
                         echo '</td>';
                         echo '<td>';
-                        echo $expected;
+                        echo $classCounts['expected'];
                         echo '</td>';
                         echo '<td>';
-                        echo '<b>'.$total.'<b/>';
-                        if ( ($active + $expected) < $total ) {
-                            echo ' <span style="font-style: italic; color: #c00" title="'.__($guid, "Includes participants marked as Left").'">*</span>';
-                        }
+                        echo '<b>'.( $classCounts['active'] + $classCounts['expected'] ).'<b/> ';
                         echo '</td>';
                         echo '<td>';
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID'].'&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";

@@ -62,12 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             header("Location: {$URL}");
         } else {
             //Write to database
+            require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+            $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+
             $fail = false;
-            $direction = 'Out';
-            $type = 'Absent';
+            $type = $_POST['type'];
             $reason = $_POST['reason'];
             $comment = $_POST['comment'];
-            $absenceType = $_POST['absenceType'];
+
+            $attendanceCode = $attendance->getAttendanceCodeByType($type);
+            $direction = $attendanceCode['direction'];
+
+            $absenceType = (isset($_POST['absenceType']))? $_POST['absenceType'] : 'full';
+
             $dateStart = '';
             if ($_POST['dateStart'] != '') {
                 $dateStart = dateConvert($guid, $_POST['dateStart']);
@@ -85,6 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             } else {
                 //Scroll through days
                 $partialFail = false;
+                $partialFailSchoolClosed = false;
+
                 $dateStartStamp = dateConvertToTimestamp($dateStart);
                 $dateEndStamp = dateConvertToTimestamp($dateEnd);
                 for ($i = $dateStartStamp; $i <= $dateEndStamp; $i = ($i + 86400)) {
@@ -110,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             if ($absenceType == 'full') {
                                 try {
                                     $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                    $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
+                                    $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
                                     $resultUpdate = $connection2->prepare($sqlUpdate);
                                     $resultUpdate->execute($dataUpdate);
                                 } catch (PDOException $e) {
@@ -134,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                                             try {
                                                 $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
+                                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
                                                 $resultUpdate = $connection2->prepare($sqlUpdate);
                                                 $resultUpdate->execute($dataUpdate);
                                             } catch (PDOException $e) {
@@ -151,11 +160,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             }
                         }
 
+                    } else {
+                        $partialFailSchoolClosed = true;
                     }
                 }
             }
 
-            if ($partialFail == true) {
+            if ($partialFailSchoolClosed == true) {
+                $URL .= '&return=warning2';
+                header("Location: {$URL}");
+            }
+            else if ($partialFail == true) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
             } else {

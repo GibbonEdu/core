@@ -101,6 +101,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							</script>
 						</td>
 					</tr>
+
+                    <?php
+                    //Get and store staff for efficient reuse
+                    $staff = array();
+                    try {
+                        $data = array();
+                        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {}
+                    if ($result->rowCount() > 0)
+                        $staff = $result->fetchAll();
+                    ?>
 					<tr>
 						<td rowspan=3>
 							<b><?php echo __($guid, 'Tutors') ?></b><br/>
@@ -110,14 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select class="standardWidth" name="gibbonPersonIDTutor">
 								<?php
                                 echo "<option value=''></option>";
-								try {
-									$data = array();
-									$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-									$result = $connection2->prepare($sql);
-									$result->execute($data);
-								} catch (PDOException $e) {
-								}
-								while ($row = $result->fetch()) {
+                                foreach ($staff as $row) {
 									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
 								?>
@@ -129,14 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select class="standardWidth" name="gibbonPersonIDTutor2">
 								<?php
                                 echo "<option value=''></option>";
-								try {
-									$data = array();
-									$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-									$result = $connection2->prepare($sql);
-									$result->execute($data);
-								} catch (PDOException $e) {
-								}
-								while ($row = $result->fetch()) {
+								foreach ($staff as $row) {
 									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
 								?>
@@ -148,14 +147,47 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select class="standardWidth" name="gibbonPersonIDTutor3">
 								<?php
                                 echo "<option value=''></option>";
-								try {
-									$data = array();
-									$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-									$result = $connection2->prepare($sql);
-									$result->execute($data);
-								} catch (PDOException $e) {
+								foreach ($staff as $row) {
+									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								while ($row = $result->fetch()) {
+								?>
+							</select>
+						</td>
+					</tr>
+                    <tr>
+						<td rowspan=3>
+							<b><?php echo __($guid, 'Educational Assistants') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Up to 3 per roll group.') ?></span>
+						</td>
+						<td class="right">
+							<select class="standardWidth" name="gibbonPersonIDEA">
+								<?php
+                                echo "<option value=''></option>";
+								foreach ($staff as $row) {
+									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="right">
+							<select class="standardWidth" name="gibbonPersonIDEA2">
+								<?php
+                                echo "<option value=''></option>";
+								foreach ($staff as $row) {
+									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="right">
+							<select class="standardWidth" name="gibbonPersonIDEA3">
+								<?php
+                                echo "<option value=''></option>";
+								foreach ($staff as $row) {
 									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
 								?>
@@ -218,6 +250,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 								echo '</select>';
 							}
 							?>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Track Attendance?') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Should this class allow attendance to be taken?') ?></span>
+						</td>
+						<td class="right">
+							<select name="attendance" id="attendance" class="standardWidth">
+								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option value="N"><?php echo __($guid, 'No') ?></option>
+							</select>
 						</td>
 					</tr>
 					<tr>

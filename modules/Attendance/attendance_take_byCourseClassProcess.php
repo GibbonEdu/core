@@ -42,11 +42,21 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
 $currentDate=$_POST["currentDate"] ;
 $today=date("Y-m-d");
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
+
+$moduleName = getModuleName($_POST["address"]);
+
+if ($moduleName == "Planner") {
+	$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
+} else {
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
+}
+
+//$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 	die();
 }
@@ -55,7 +65,7 @@ else {
 	//Check if school year specified
 	if ($gibbonCourseClassID=="" AND $currentDate=="") {
 		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 		die();
 	}
@@ -68,14 +78,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			die();
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 			die();
 		}
@@ -83,7 +93,7 @@ else {
 			//Check that date is not in the future
 			if ($currentDate>$today) {
 				//Fail 4
-				$URL.="&updateReturn=fail4" ;
+				$URL.="&return=error3" ;
 				header("Location: {$URL}");
 				die();
 			}
@@ -91,12 +101,14 @@ else {
 				//Check that date is a school day
 				if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 					//Fail 5
-					$URL.="&updateReturn=fail5" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 					die();
 				}
 				else {
 					//Write to database
+					require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
+					$attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
 
 					try {
 						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate); 
@@ -106,7 +118,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						die();
 					}
@@ -127,7 +139,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						die();
 					}
@@ -137,13 +149,13 @@ else {
 					
 					for ($i=0; $i<$count; $i++) {
 						$gibbonPersonID=$_POST[$i . "-gibbonPersonID"] ;
-						$direction="In" ;
-						if ($_POST[$i . "-type"]=="Absent" OR $_POST[$i . "-type"]=="Left" OR $_POST[$i . "-type"]=="Left - Early") {
-							$direction="Out" ;
-						}
+
 						$type=$_POST[$i . "-type"] ;
 						$reason=$_POST[$i . "-reason"] ;
 						$comment=$_POST[$i . "-comment"] ;
+
+						$attendanceCode = $attendance->getAttendanceCodeByType($type);
+						$direction = $attendanceCode['direction'];
 						
 						//Check for last record on same day
 						try {
@@ -154,7 +166,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							die();
 						}
@@ -163,7 +175,7 @@ else {
 							//If no records then create one
 							try {
 								$dataUpdate=array("gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s")); 
-								$sqlUpdate="INSERT INTO gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
+								$sqlUpdate="INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
 								$resultUpdate=$connection2->prepare($sqlUpdate);
 								$resultUpdate->execute($dataUpdate);
 							}
@@ -175,7 +187,7 @@ else {
 							$row=$result->fetch() ;
 							try {
 								$dataUpdate=array("gibbonAttendanceLogPersonID"=>$row["gibbonAttendanceLogPersonID"], "gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s")); 
-								$sqlUpdate="UPDATE gibbonAttendanceLogPerson SET gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID" ;
+								$sqlUpdate="UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID" ;
 								$resultUpdate=$connection2->prepare($sqlUpdate);
 								$resultUpdate->execute($dataUpdate);
 							}
@@ -187,13 +199,13 @@ else {
 				
 					if ($partialFail==TRUE) {
 						//Fail 3
-						$URL.="&updateReturn=fail3" ;
+						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 						die();
 					}
 					else {
 						//Success 0
-						$URL.="&updateReturn=success0&time=" . date("H-i-s") ;
+						$URL.="&return=success0&time=" . date("H-i-s") ;
 						header("Location: {$URL}");
 					}
 				}

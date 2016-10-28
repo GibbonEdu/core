@@ -46,12 +46,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $allStudents = !empty($_GET["allStudents"])? 1 : 0;
 
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
+
+    require_once './modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -75,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-							?>." } ); 
+							?>." } );
 						date.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -91,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 </td>
                 <td class="right">
                     <select name="sort" class="standardWidth">
-                        <option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
+                        <option value="surname" <?php if ($sort == 'surname') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
                         <option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
                         <option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
                     </select>
@@ -143,25 +146,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $lastStudent = '';
             while ($row = $result->fetch()) {
                 $currentStudent = $row['gibbonPersonID'];
-                if (($row['type'] == 'Present' or $row['type'] == 'Present - Late' or $row['type'] == 'Present - Offsite') and $currentStudent != $lastStudent) {
+                if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
                     $log[$row['gibbonPersonID']] = true;
                 }
                 $lastStudent = $currentStudent;
             }
 
             try {
+                $orderBy = 'ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup';
+                if ($sort == 'preferredName')
+                    $orderBy = 'ORDER BY preferredName, surname, LENGTH(rollGroup), rollGroup';
+                if ($sort == 'rollGroup')
+                    $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
+
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
                 
-                if ($sort != 'surname, preferredName' && $sort != 'preferredName' && $sort != 'rollGroup') {
-                    $sort = 'surname, preferredName';
-                }
-                
-                if ($sort == 'rollGroup') {
-                    $sql .= ' ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
-                } else {
-                    $sql .= ' ORDER BY ' . $sort;
-                }
+                $sql .= $orderBy;
 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -223,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                             echo $row['rollGroupName'];
                         echo '</td>';
                         echo '<td>';
-                            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                            echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                         echo '</td>';
                         echo '<td>';
                         $rowRollAttendance = null;

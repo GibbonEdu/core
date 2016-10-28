@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $gibbonRubricIDAttainment = null;
             }
             else {
-                if ($_POST['gibbonRubricIDAttainment']) {
+                if ($_POST['gibbonRubricIDAttainment'] == '') {
                     $gibbonRubricIDAttainment = null;
                 } else {
                     $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'];
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $gibbonRubricIDEffort = null;
             }
             else {
-                if ($_POST['gibbonRubricIDEffort']) {
+                if ($_POST['gibbonRubricIDEffort'] == '') {
                     $gibbonRubricIDEffort = null;
                 } else {
                     $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'];

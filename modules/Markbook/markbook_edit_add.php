@@ -36,6 +36,23 @@ $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'a
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
+//Get variables from Planner
+$gibbonUnitID = null;
+if (isset($_GET['gibbonUnitID']))
+    $gibbonUnitID = $_GET['gibbonUnitID'];
+
+$gibbonPlannerEntryID = null;
+if (isset($_GET['gibbonPlannerEntryID']))
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+
+$name = null;
+if (isset($_GET['name']))
+    $name = $_GET['name'];
+
+$summary = null;
+if (isset($_GET['summary']))
+    $summary = $_GET['summary'];
+
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -131,8 +148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 										if ($currentType != $lastType) {
 											echo "<optgroup label='--".$currentType."--'>";
 										}
-										echo "<option class='".$rowSelect['gibbonCourseClassID']."' value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										$lastType = $currentType;
+                                        $selected = '';
+                                        if ($rowSelect['gibbonUnitID'] == $gibbonUnitID)
+                                            $selected = 'selected';
+                                        echo "<option $selected class='".$rowSelect['gibbonCourseClassID']."' value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
+ 										$lastType = $currentType;
 									}
 
 									//List any hooked units
@@ -160,8 +180,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 												if ($currentType != $lastType) {
 													echo "<optgroup label='--".$currentType."--'>";
 												}
-												echo "<option class='".$rowHookUnits[$hookOptions['classLinkIDField']]."' value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
-												$lastType = $currentType;
+                                                $selected = '';
+                                                if ($rowSelect['gibbonUnitID'] == $gibbonUnitID)
+                                                    $selected = 'selected';
+                                                echo "<option class='".$rowHookUnits[$hookOptions['classLinkIDField']]."' value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
+                                                $lastType = $currentType;
 											}
 										}
 									}
@@ -183,16 +206,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-									echo "<option value=''></option>";
+                                    echo "<option value=''></option>";
 									while ($rowSelect = $resultSelect->fetch()) {
-										if ($rowSelect['gibbonHookID'] == '') {
-											echo "<option class='".$rowSelect['gibbonUnitID']."' value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                                        $selected = '';
+                                        if ($rowSelect['gibbonPlannerEntryID'] == $gibbonPlannerEntryID)
+                                            $selected = 'selected';
+                                        if ($rowSelect['gibbonHookID'] == '') {
+											echo "<option $selected class='".$rowSelect['gibbonUnitID']."' value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['name']).'</option>';
 										} else {
-											echo "<option class='".$rowSelect['gibbonUnitID'].'-'.$rowSelect['gibbonHookID']."' value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['name']).'</option>';
+											echo "<option $selected class='".$rowSelect['gibbonUnitID'].'-'.$rowSelect['gibbonHookID']."' value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['name']).'</option>';
 										}
 									}
 									?>
-								</select>
 								<script type="text/javascript">
 									$("#gibbonPlannerEntryID").chainedTo("#gibbonUnitID");
 								</script>
@@ -203,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
+								<input name="name" id="name" maxlength=20 value="<?php echo $name?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var name2=new LiveValidation('name');
 									name2.add(Validate.Presence);
@@ -215,8 +240,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								<b><?php echo __($guid, 'Description') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<input name="description" id="description" maxlength=1000 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
+                                <input name="description" id="description" maxlength=1000 value="<?php echo $summary?>" type="text" class="standardWidth">
+ 								<script type="text/javascript">
 									var description=new LiveValidation('description');
 									description.add(Validate.Presence);
 								</script>
@@ -571,23 +596,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     										}
     										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
     									}
-    									if ($row['gibbonDepartmentID'] != '') {
-    										?>
-    										<optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
-    										<?php
+                                        if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
+                                            ?>
+                                            <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
+                                            <?php
                                             try {
                                                 $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                $sqlSelectWhere = '';
+                                                $sqlSelectWhere = ' AND (';
                                                 $years = explode(',', $row['gibbonYearGroupIDList']);
                                                 foreach ($years as $year) {
                                                     $dataSelect[$year] = "%$year%";
-                                                    $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
+                                                    $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
                                                 }
+                                                $sqlSelectWhere = substr($sqlSelectWhere, 0, -4).')';
                                                 $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
                                                 $resultSelect = $connection2->prepare($sqlSelect);
                                                 $resultSelect->execute($dataSelect);
-                                            } catch (PDOException $e) {
-                                            }
+                                            } catch (PDOException $e) { }
 
     										while ($rowSelect = $resultSelect->fetch()) {
     											$label = '';
@@ -704,23 +729,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         										}
         										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
         									}
-        									if ($row['gibbonDepartmentID'] != '') {
-        										?>
-        										<optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
-        										<?php
+                                            if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
+                                                ?>
+                                                <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
+                                                <?php
                                                 try {
                                                     $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                    $sqlSelectWhere = '';
+                                                    $sqlSelectWhere = ' AND (';
                                                     $years = explode(',', $row['gibbonYearGroupIDList']);
                                                     foreach ($years as $year) {
                                                         $dataSelect[$year] = "%$year%";
-                                                        $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
+                                                        $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
                                                     }
+                                                    $sqlSelectWhere = substr($sqlSelectWhere, 0, -4).')';
                                                     $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
                                                     $resultSelect = $connection2->prepare($sqlSelect);
                                                     $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
-                                                }
+                                                } catch (PDOException $e) { }
 
         										while ($rowSelect = $resultSelect->fetch()) {
         											$label = '';
@@ -835,5 +860,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             }
         }
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit_add.php');
 }
 ?>

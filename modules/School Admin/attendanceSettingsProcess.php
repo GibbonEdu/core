@@ -37,66 +37,60 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 } else {
     $fail = false;
 
-   //DEAL WITH EXTERNAL ASSESSMENT DATA POINTS
-   $externalAssessmentDataPoints = array();
-    $assessmentCount = $_POST['external_gibbonExternalAssessmentID_count'];
-    $yearCount = $_POST['external_year_count'];
-    $count = 0;
-    for ($i = 0; $i < $assessmentCount; ++$i) {
-        $externalAssessmentDataPoints[$count]['gibbonExternalAssessmentID'] = $_POST['external_gibbonExternalAssessmentID_'.$i];
-        $externalAssessmentDataPoints[$count]['category'] = $_POST['external_category_'.$i];
-        $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = '';
-        for ($j = 0; $j < $yearCount; ++$j) {
-            if (isset($_POST['external_gibbonExternalAssessmentID_'.$i.'_gibbonYearGroupID_'.$j])) {
-                $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] .= $_POST['external_gibbonExternalAssessmentID_'.$i.'_gibbonYearGroupID_'.$j].',';
-            }
-        }
-        if ($externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] != '') {
-            $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = substr($externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'], 0, -1);
-        }
-        ++$count;
+    $attendanceEnableByClass = (isset($_POST['attendanceEnableByClass'])) ? $_POST['attendanceEnableByClass'] : NULL;
+    try {
+        $data = array('value' => $attendanceEnableByClass);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceEnableByClass'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
     }
 
-   //Write setting to database
-   try {
-       $data = array('value' => serialize($externalAssessmentDataPoints));
-       $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Tracking' AND name='externalAssessmentDataPoints'";
-       $result = $connection2->prepare($sql);
-       $result->execute($data);
-   } catch (PDOException $e) {
-       $fail = true;
-   }
-
-   //DEAL WITH INTERNAL ASSESSMENT DATA POINTS
-   $internalAssessmentDataPoints = array();
-    $assessmentCount = $_POST['internal_type_count'];
-    $yearCount = $_POST['internal_year_count'];
-    $count = 0;
-    for ($i = 0; $i < $assessmentCount; ++$i) {
-        $internalAssessmentDataPoints[$count]['type'] = null;
-        if (isset($_POST['internal_type_'.$i])) {
-            $internalAssessmentDataPoints[$count]['type'] = $_POST['internal_type_'.$i];
-        }
-        $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = '';
-        for ($j = 0; $j < $yearCount; ++$j) {
-            if (isset($_POST['internal_type_'.$i.'_gibbonYearGroupID_'.$j])) {
-                $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] .= $_POST['internal_type_'.$i.'_gibbonYearGroupID_'.$j].',';
-            }
-        }
-        if ($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] != '') {
-            $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = substr($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'], 0, -1);
-        }
-        ++$count;
+    $attendanceReasons = (isset($_POST['attendanceReasons'])) ? $_POST['attendanceReasons'] : NULL;
+    try {
+        $data = array('value' => $attendanceReasons);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
     }
-   //Write setting to database
-   try {
-       $data = array('value' => serialize($internalAssessmentDataPoints));
-       $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Tracking' AND name='internalAssessmentDataPoints'";
-       $result = $connection2->prepare($sql);
-       $result->execute($data);
-   } catch (PDOException $e) {
-       $fail = true;
-   }
+
+    /*
+    $attendanceMedicalReasons = (isset($_POST['attendanceMedicalReasons'])) ? $_POST['attendanceMedicalReasons'] : NULL;
+    try {
+        $data = array('value' => $attendanceMedicalReasons);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceMedicalReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceEnableMedicalTracking = (isset($_POST['attendanceEnableMedicalTracking'])) ? $_POST['attendanceEnableMedicalTracking'] : NULL;
+    try {
+        $data = array('value' => $attendanceEnableMedicalTracking);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceEnableMedicalTracking'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    // Move this to a Medical Settings page, eventually
+    $medicalIllnessSymptoms = (isset($_POST['medicalIllnessSymptoms'])) ? $_POST['medicalIllnessSymptoms'] : NULL;
+    try {
+        $data = array('value' => $medicalIllnessSymptoms);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='medicalIllnessSymptoms'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    */
+
 
    //RETURN RESULTS
    if ($fail == true) {

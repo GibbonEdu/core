@@ -37,29 +37,11 @@ function getDate() {
 
 jQuery(function($){
 
-	// Update reasons on Attendance type selected
-	$('select[name$="-type"]').change( function() {
-		var reason = $(this).next('select[name$="-reason"]');
-
-		// Auto-select Unexcused for Absent attendance
-		if ( $(this).val() == 'Absent' && reason.val() == ''  ) {
-			reason.val("Unexcused");
-		}
-
-		// Auto-clear reasons for Present attendance
-		else if ( $(this).val() == 'Present' ) {
-			reason.val("");
-		}
-		
-	});
-
-	// Disallow blank reasons for Absent attendance
-	$('select[name$="-reason"]').change( function() {
-		if ( $(this).val() == ''  ) {
-			if ( $(this).prev('select[name$="-type"]').val() == 'Absent' ) {
-				alert('If the reason for an absence is unknown please select Unexcused.\n\nThe attendence may be updated later once the absence has been excused.');
-				$(this).val("Unexcused");
-			}
-		}
+	// Select all tool for Attendance by Class/Roll Group
+	$('#set-all').click( function() {
+		$('select[name$="-type"]').val(  $('select[name="set-all-type"]').val() );
+		$('select[name$="-reason"]').val(  $('select[name="set-all-reason"]').val() );
+		$('input[name$="-comment"]').val(  $('input[name="set-all-comment"]').val() );
+		$('#set-all-note').show();
 	});
 });

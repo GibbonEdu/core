@@ -156,6 +156,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             							</select>
             						</td>
             					</tr>
+            					<tr>
+            						<td>
+            							<b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+            							<span class="emphasis small"></span>
+            						</td>
+            						<td class="right">
+            							<select name="map" id="map" class="standardWidth">
+            								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+            								<option value="N"><?php echo __($guid, 'No') ?></option>
+            							</select>
+            						</td>
+            					</tr>
 								<tr>
 									<td>
 										<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
@@ -172,14 +184,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
                                 <tr>
                                     <td class='long' colspan=2>
-                                        <b><?php echo __($guid, 'Keywords & Concepts') ?></b><br/>
+                                        <b><?php echo __($guid, 'Concepts & Keywords') ?></b><br/>
                                         <span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
                 						<?php
                                         $tags = getTagList($connection2);
-                                        sort($tags, SORT_STRING) ;
                                         $list = '';
                                         foreach ($tags AS $tag) {
-                                            $list = $list.'{id: "'.$tag.'", name: "'.$tag.'"},';
+                                            $list = $list.'{id: "'.$tag[1].'", name: "'.$tag[1].'"},';
                                         }
                 						?>
                 						<style>
