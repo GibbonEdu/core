@@ -20,9 +20,6 @@
 	$API_Password=getSettingByScope($connection2, "System", "paypalAPIPassword") ;
 	$API_Signature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
 
-	//Set LOCALECODE
-	$localecode = _SESSION[$guid]['i18n']['code'] ;
-
 	// BN Code 	is only applicable for partners
 	$sBNCode="PP-ECWizard";
 
@@ -72,7 +69,7 @@
 	'		cancelURL:			the page where buyers return to when they cancel the payment review on PayPal
 	'--------------------------------------------------------------------------------------------------------------------------------------------
 	*/
-	function CallShortcutExpressCheckout( $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $guid)
+	function CallShortcutExpressCheckout( $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $guid, $localecode)
 	{
 		//------------------------------------------------------------------------------------------------------------------------------------
 		// Construct the parameter string that describes the SetExpressCheckout API call in the shortcut implementation

@@ -100,6 +100,8 @@ v13.0.00
 		Students: fixed broken link from Family in student profile to sibling, when sibling is not enroled in the year
 		Students: removed delete function from Notes, added logging for edits
 		Students: adjusted family view of student profile to ensure only adults with status Full show
+		Students: added a confirmation email to parent 1 for external student application forms
+		Students: fixed PayPal locale code to correctly set PayPal language on redirect
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
