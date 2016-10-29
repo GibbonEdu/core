@@ -102,6 +102,8 @@ v13.0.00
 		Students: adjusted family view of student profile to ensure only adults with status Full show
 		Students: added a confirmation email to parent 1 for external student application forms
 		Students: fixed PayPal locale code to correctly set PayPal language on redirect
+		Students: fixed tooltip alignment on alert bar above student profile image
+		Students: fixed colspan issue in Data Update report when no records found
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view

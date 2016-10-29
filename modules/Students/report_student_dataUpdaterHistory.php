@@ -49,11 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
         $date = $_POST['date'];
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_student_dataUpdaterHistory.php'?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Students') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span style="font-size: 85%"><i><?php echo __($guid, 'Earliest acceptable update') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					 	date.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 				</td>
 			</tr>
 			<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Show Only Non-Compliant?') ?></b><br/>
 				<span style="font-size: 85%"><i><?php echo __($guid, 'If not checked, show all. If checked, show only non-compliant students.') ?></i><br/>
 				</span>
@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
         }
         if ($count == 0) {
             echo "<tr class=$rowNum>";
-            echo '<td colspan=5>';
+            echo '<td colspan=6>';
             echo __($guid, 'There are no records to display.');
             echo '</td>';
             echo '</tr>';
