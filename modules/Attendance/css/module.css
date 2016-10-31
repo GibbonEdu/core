@@ -46,6 +46,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	margin-top: 100%;
 }
 
+a.verticalText {
+	text-decoration: none;
+}
+
 .columnDivider {
 	border-left: 1px solid #666;
 }
