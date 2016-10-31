@@ -146,6 +146,9 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
         $countSchoolDays = 0;
         $countAbsent = 0;
         $countPresent = 0;
+        $countTypes = array();
+        $countReasons = array();
+
         while ($row = $result->fetch()) {
             $output .= '<h4>';
             $output .= $row['name'];
@@ -317,7 +320,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     $logCount = 0;
                                     try {
                                         $dataLog = array('date' => date('Y-m-d', $i), 'gibbonPersonID' => $gibbonPersonID);
-                                        $sqlLog = 'SELECT type, reason FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
+                                        $sqlLog = 'SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason FROM gibbonAttendanceLogPerson, gibbonAttendanceCode WHERE gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name AND date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber';
                                         $resultLog = $connection2->prepare($sqlLog);
                                         $resultLog->execute($dataLog);
                                     } catch (PDOException $e) {
@@ -330,6 +333,10 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                         while ($rowLog = $resultLog->fetch()) {
                                             $log[$logCount][0] = $rowLog['type'];
                                             $log[$logCount][1] = $rowLog['reason'];
+
+                                            if ($rowLog['type'] != 'Present') @$countTypes[ $rowLog['type'] ]++;
+                                            if ($rowLog['reason'] != '') @$countReasons[ $rowLog['reason'] ]++;
+
                                             ++$logCount;
                                         }
 
@@ -387,7 +394,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo "<td style='vertical-align: top; width: 410px'>";
     echo '<h3>';
     echo __($guid, 'Summary');
-    echo '</h2>';
+    echo '</h3>';
     echo '<p>';
     if (isset($countSchoolDays) and isset($countPresent) and isset($countAbsent)) {
         if ($countSchoolDays != ($countPresent + $countAbsent)) {
@@ -397,6 +404,20 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
         echo '<b>'.__($guid, 'Total number of school days to date:')." $countSchoolDays</b><br/>";
         echo __($guid, 'Total number of school days attended:')." $countPresent<br/>";
         echo __($guid, 'Total number of school days absent:')." $countAbsent<br/>";
+
+        if ( count($countTypes) > 0 ) {
+            echo '<br/><b>'.__($guid, 'Type').":</b><br/>";
+            foreach ($countTypes as $typeName => $count ) {
+                echo '<span style="width:180px;display:inline-block;">'.__($guid, $typeName)."</span>$count<br/>";
+            }
+        }
+
+        if ( count($countReasons) > 0 ) {
+            echo '<br/><b>'.__($guid, 'Reason').":</b><br/>";
+            foreach ($countReasons as $reasonName => $count ) {
+                echo '<span style="width:180px;display:inline-block;">'.__($guid, $reasonName)."</span>$count<br/>";
+            }
+        }
     } else {
         echo __($guid, 'NA');
     }
