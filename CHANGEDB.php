@@ -617,5 +617,6 @@ ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonAttendanceCodeID` INT(3) UNSI
 UPDATE gibbonResource SET tags = REPLACE (tags, '''', '');end
 UPDATE gibbonResourceTag SET tag = REPLACE (tag, '''', '');end
 ALTER TABLE `gibbonAttendanceCode` ADD UNIQUE(`name`), ADD UNIQUE(`nameShort`);end
+DELETE FROM `gibbonSetting` WHERE `scope`='Attendance' AND `name`='attendanceEnableByClass';end
 
 ";

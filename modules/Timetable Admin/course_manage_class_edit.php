@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 							</select>
 						</td>
 					</tr>
-					<?php if ( getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
+					<?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Track Attendance?') ?></b><br/>

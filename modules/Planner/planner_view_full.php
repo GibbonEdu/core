@@ -1631,7 +1631,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $columns = 2;
 
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
-                        $attendanceEnabled = getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y' && $row['attendance'] == 'Y';
+                        $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
 
                         require_once './modules/Attendance/src/attendanceView.php';
 
@@ -1654,7 +1654,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Participants') . "<br/>";
                         }
                             //Show attendance log for the current day
-                            if ( $attendanceEnabled && ( ($row['role'] == 'Teacher' and $teacher == true) || isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") )) {
+                            if ( $attendanceEnabled && ( ($row['role'] == 'Teacher' and $teacher == true) )) {
                                 try {
                                     $dataLog = array( 'date' => $row['date'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlLog = 'SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND date LIKE :date AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY timestampTaken';

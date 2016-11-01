@@ -27,12 +27,6 @@ require_once './modules/Attendance/src/attendanceView.php';
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("1You do not have access to this action.") ;
-	print "</div>" ;
-}
-else if ( getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass')  == 'N') {
-	//Disabled
-	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
 	print "</div>" ;
 }
