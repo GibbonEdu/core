@@ -120,36 +120,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			
-        	<tr class='break'>
-                <td colspan=2>
-                    <h3><?php echo __($guid, 'Features') ?></h3>
-                </td>
-            </tr>
-            <tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceEnableByClass'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                $enableSymptoms = $row['value'];
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Reasons'); ?></h3>

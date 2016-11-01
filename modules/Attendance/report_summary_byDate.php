@@ -125,8 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                     <select id="group" name="group" class="standardWidth">
                     <option value="" <?php if ($group == '') { echo 'selected'; } ?>><?php echo __($guid, 'Please select...'); ?></option>
                         <option value="all" <?php if ($group == 'all') { echo 'selected'; } ?>><?php echo __($guid, 'All Students'); ?></option>
-                        <?php if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
-                        <option value="class" <?php if ($group == 'class') { echo 'selected'; } ?>><?php echo __($guid, 'Class'); ?></option>
+                        <?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
+                            <option value="class" <?php if ($group == 'class') { echo 'selected'; } ?>><?php echo __($guid, 'Class'); ?></option>
                         <?php endif; ?>
                         <option value="rollGroup" <?php if ($group == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
                     </select>
