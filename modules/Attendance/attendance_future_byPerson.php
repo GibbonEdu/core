@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</select>
 				</td>
 			</tr>
-			<?php if (getSettingByScope($connection2, 'Attendance', 'attendanceEnableByClass') == 'Y') : ?>
+			<?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'Absence Type') ?></b><br/>

@@ -3804,7 +3804,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             } else {
                 $title = $resultAlert->rowCount().' '.sprintf(__($guid, 'Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $rowAlert['name']);
             }
-            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'>".__($guid, 'IN').'</div></a>';
+            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'>".__($guid, 'IN').'</div></a>';
         }
 
         //Academic
@@ -3828,7 +3828,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
                 $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern in the current academic year.'), __($guid, $alert['name']));
-                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'A').'</div></a>';
+                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'A').'</div></a>';
             }
         }
 
@@ -3853,7 +3853,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
                 $title = sprintf(__($guid, 'Student has a %1$s alert for behaviour over the past 60 days.'), __($guid, $alert['name']));
-                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Behaviour'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'B').'</div></a>';
+                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Behaviour'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'B').'</div></a>';
             }
         }
 
@@ -3864,7 +3864,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $highestColour = $alert[3];
             $highestColourBG = $alert[4];
             $title = sprintf(__($guid, 'Medical alerts are set, up to a maximum of %1$s'), $highestLevel);
-            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Medical'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'><b>".__($guid, 'M').'</b></div></a>';
+            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Medical'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'><b>".__($guid, 'M').'</b></div></a>';
         }
 
         //Privacy
@@ -3872,7 +3872,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         if ($privacySetting == 'Y' and $privacy != '') {
             $alert = getAlert($guid, $connection2, 001);
             $title = sprintf(__($guid, 'Privacy is required: %1$s'), $privacy);
-            $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: right; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__($guid, 'P').'</div>';
+            $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: left; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__($guid, 'P').'</div>';
         }
 
         //Boarding Status

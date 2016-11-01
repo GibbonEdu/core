@@ -53,46 +53,61 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         $report = '';
         $reportInner = '';
 
+        $partialFail = false;
+
         $userReport = array();
-        $adminReport = array();
+        $adminReport = array( 'rollGroup' => array(), 'classes' => array() );
 
         //Produce array of attendance data ------------------------------------------------------------------------------------------------------
-        try {
-            $data = array('date' => $currentDate);
-            $sql = 'SELECT gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date=:date';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $report .= __($guid, 'Your request failed due to a database error.');
-        }
-
-        $log = array();
-        while ($row = $result->fetch()) {
-            $log[$row['gibbonRollGroupID']] = true;
-        }
-
+        
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonRollGroupID, gibbonRollGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance = 'Y' ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
+
+            // Looks for roll groups with attendance='Y', also grabs primary tutor name
+            $sql = "SELECT gibbonRollGroupID, gibbonRollGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AS studentCount 
+            FROM gibbonRollGroup 
+            JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID) 
+            WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
+            AND attendance = 'Y' 
+            ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $report .= __($guid, 'Your request failed due to a database error.');
+            $partialFail = true;
         }
 
-        if ($result->rowCount() < 1) {
-            $report .= __($guid, 'There are no records to display.');
-        } else {
-            $countRollGroups = 0;
+        // Proceed if we have attendance-able Roll Groups
+        if ($result->rowCount() > 0) {
+
+            try {
+                $data = array('date' => $currentDate);
+                $sql = 'SELECT gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date=:date';
+                $resultLog = $connection2->prepare($sql);
+                $resultLog->execute($data);
+            } catch (PDOException $e) {
+                $partialFail = true;
+            }
+
+            // Gather the current Roll Group logs for the day
+            $log = array();
+            while ($row = $resultLog->fetch()) {
+                $log[$row['gibbonRollGroupID']] = true;
+            }
 
             while ($row = $result->fetch()) {
+                // Skip roll groups with no students
+                if ($row['studentCount'] <= 0) continue;
+
+                // Check for a current log
                 if (isset($log[$row['gibbonRollGroupID']]) == false) {
-                    ++$countRollGroups;
+
                     $rollGroupInfo = array( 'gibbonRollGroupID' => $row['gibbonRollGroupID'], 'name' => $row['name'] );
 
-                    $reportInner .= $row['name'].'<br/>';
+                    // Compile info for Admin report
                     $adminReport['rollGroup'][] = '<b>'.$row['name'] .'</b> - '. $row['preferredName'].' '.$row['surname'];
 
+                    // Compile info for User reports
                     if ($row['gibbonPersonIDTutor'] != '') {
                         $userReport[ $row['gibbonPersonIDTutor'] ]['rollGroup'][] = $rollGroupInfo;
                     }
@@ -104,117 +119,146 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                     }
                 }
             }
-        }
 
-        if ( $countRollGroups > 0) {
-            $reportInner = implode('<br>', $adminReport['rollGroup']);
-            $report .= '<br/><br/>';
-            $report .= sprintf(__($guid, '%1$s form groups have not been registered today  (%2$s).'), $countRollGroups, dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
-        } else {
-            $report .= '<br/><br/>';
-            $report .= sprintf(__($guid, 'All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
+            // Use the roll group counts to generate a report
+            if ( count($adminReport['rollGroup']) > 0) {
+                $reportInner = implode('<br>', $adminReport['rollGroup']);
+                $report .= '<br/><br/>';
+                $report .= sprintf(__($guid, '%1$s form groups have not been registered today  (%2$s).'), count($adminReport['rollGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
+            } else {
+                $report .= '<br/><br/>';
+                $report .= sprintf(__($guid, 'All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
+            }
         }
 
 
         //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
-        try {
-            $data = array('date' => $currentDate);
-            $sql = 'SELECT gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date=:date';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $report .= __($guid, 'Your request failed due to a database error.');
-        }
-
-        $log = array();
-        while ($row = $result->fetch()) {
-            $log[$row['gibbonCourseClassID']] = true;
-        }
-
+        
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate);
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date =:date AND gibbonCourseClassPerson.role = 'Teacher' AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+
+            // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) AS studentCount 
+            FROM gibbonCourseClass 
+            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+            JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+            JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+            WHERE gibbonTTDayDate.date =:date 
+            AND gibbonCourseClassPerson.role = 'Teacher' 
+            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+            AND gibbonCourseClass.attendance = 'Y' 
+            ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $report .= __($guid, 'Your request failed due to a database error.');
+            $partialFail = true;
         }
 
-        if ($result->rowCount() < 1) {
-            $report .= __($guid, 'There are no records to display.');
-        } else {
-            $countClasses = 0;
+        // Proceed if we have attendance-able Classes
+        if ($result->rowCount() > 0) {
+
+            try {
+                $data = array('date' => $currentDate);
+                $sql = 'SELECT gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date=:date';
+                $resultLog = $connection2->prepare($sql);
+                $resultLog->execute($data);
+            } catch (PDOException $e) {
+                $partialFail = true;
+            }
+
+            // Gather the current Class logs for the day
+            $log = array();
+            while ($row = $resultLog->fetch()) {
+                $log[$row['gibbonCourseClassID']] = true;
+            }
+
             while ($row = $result->fetch()) {
+                // Skip classes with no students
                 if ($row['studentCount'] <= 0) continue;
+
+                // Check for a current log
                 if (isset($log[$row['gibbonCourseClassID']]) == false) {
-                    ++$countClasses;
+
                     $className = $row['course'].' ('.$row['courseShort'].'.'.$row['class'].')';
-                    //$className .= ' - ' . $row['preferredName'].' '.$row['surname'];
                     $classInfo = array( 'gibbonCourseClassID' => $row['gibbonCourseClassID'], 'name' => $className );
 
-                    $reportInner .= $className.'<br/>';
+                    // Compile info for Admin report
                     $adminReport['classes'][ $row['preferredName'].' '.$row['surname'] ][] = $className;
 
+                    // Compile info for User reports
                     if ($row['gibbonPersonID'] != '') {
                         $userReport[ $row['gibbonPersonID'] ]['classes'][] = $classInfo;
-                        ++$countInner;
                     }
                 }
             }
-        }
 
+            // Use the class counts to generate reports
+            if ( count($adminReport['classes']) > 0) {
+                $reportInner = '';
 
-        if ( $countClasses > 0) {
-            $reportInner = '';
-            foreach ($adminReport['classes'] as $teacherName => $classes) {
-                $reportInner .= '<b>' . $teacherName;
-                $reportInner .= (count($classes) > 1)? ' ('.count($classes).')</b><br/>' : '</b><br/>';
-                foreach ($classes as $className) {
-                    $reportInner .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $className .'<br/>';
+                // Output the reports grouped by teacher
+                foreach ($adminReport['classes'] as $teacherName => $classes) {
+                    $reportInner .= '<b>' . $teacherName;
+                    $reportInner .= (count($classes) > 1)? ' ('.count($classes).')</b><br/>' : '</b><br/>';
+                    foreach ($classes as $className) {
+                        $reportInner .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $className .'<br/>';
+                    }
+                    $reportInner .= '<br>';
                 }
-                $reportInner .= '<br>';
+                
+                $report .= '<br/><br/>';
+                $report .= sprintf(__($guid, '%1$s classes have not been registered today (%2$s).'), count($adminReport['classes']), dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
+            } else {
+                $report .= '<br/><br/>';
+                $report .= sprintf(__($guid, 'All classes have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
             }
-            
-            $report .= '<br/><br/>';
-            $report .= sprintf(__($guid, '%1$s classes have not been registered today  (%2$s).'), $countClasses, dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
-        } else {
-            $report .= '<br/><br/>';
-            $report .= sprintf(__($guid, 'All classes have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
         }
 
 
-        echo $report."\n";
+        if ($partialFail == false) {
+            //Notify non-completing tutors
+            foreach ($userReport as $gibbonPersonID => $items ) {
 
-        //Notify non-completing tutors
-        foreach ($userReport as $gibbonPersonID => $items ) {
+                $notificationText = __($guid, 'You have not taken attendance yet today. Please do so as soon as possible.');
+                $id = 0;
 
-            $notificationText = __($guid, 'You have not taken attendance yet today. Please do so as soon as possible.');
-            $id = 0;
-
-            $notificationText .= '<br/><br/>';
-            if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
-                $notificationText .= '<b>'.__($guid, 'Homeroom').':</b><br/>';
-                foreach ($items['rollGroup'] as $rollGroup) {
-                    $id = $rollGroup['gibbonRollGroupID'];
-                    $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
-                }
+                // Output the roll groups the particular user is a part of
                 $notificationText .= '<br/><br/>';
-            }
-            
-            if ( isset($items['classes']) && count($items['classes']) > 0) {
-                $notificationText .= '<b>'.__($guid, 'Classes').':</b><br/>';
-                foreach ($items['classes'] as $class) {
-                    $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $class['name'] .'<br/>'; 
+                if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
+                    $notificationText .= '<b>'.__($guid, 'Roll Group').':</b><br/>';
+                    foreach ($items['rollGroup'] as $rollGroup) {
+                        $id = $rollGroup['gibbonRollGroupID'];
+                        $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
+                    }
+                    $notificationText .= '<br/><br/>';
                 }
-                $notificationText .= '<br/>';
-            }
-            
-            setNotification($connection2, $guid,  $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$id.'&currentDate='.dateConvertBack($guid, date('Y-m-d')));
 
+                // Output the classes the particular user is a part of
+                if ( isset($items['classes']) && count($items['classes']) > 0) {
+                    $notificationText .= '<b>'.__($guid, 'Classes').':</b><br/>';
+                    foreach ($items['classes'] as $class) {
+                        $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $class['name'] .'<br/>'; 
+                    }
+                    $notificationText .= '<br/>';
+                }
+                
+                setNotification($connection2, $guid,  $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$id.'&currentDate='.dateConvertBack($guid, date('Y-m-d')));
+
+            }
+
+        } else {
+            // Only notify admin if there was an error in the report
+            $report = __($guid, 'Your request failed due to a database error.') . '<br/><br/>' . $report;
         }
 
-        //Notify admin {
+        // Notify admin
         $notificationText = __($guid, 'An Attendance CLI script has run.').' '.$report;
         setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+
+        // Output the result to terminal
+        echo $report."\n";
     }
 }

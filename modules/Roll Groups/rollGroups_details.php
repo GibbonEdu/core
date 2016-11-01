@@ -101,7 +101,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
-            $primaryTutor240 = '';
             while ($rowTutor = $resultTutor->fetch()) {
                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
                     echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';

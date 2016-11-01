@@ -617,6 +617,7 @@ ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonAttendanceCodeID` INT(3) UNSI
 UPDATE gibbonResource SET tags = REPLACE (tags, '''', '');end
 UPDATE gibbonResourceTag SET tag = REPLACE (tag, '''', '');end
 ALTER TABLE `gibbonAttendanceCode` ADD UNIQUE(`name`), ADD UNIQUE(`nameShort`);end
+DELETE FROM `gibbonSetting` WHERE `scope`='Attendance' AND `name`='attendanceEnableByClass';end
 SELECT gibbonLogID FROM `gibbonLog` LIMIT 1;end
 ALTER TABLE `gibbonHouse` CHANGE `name` `name` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `nameShort` `nameShort` VARCHAR(6) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonCourse` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `nameShort` `nameShort` VARCHAR(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';end

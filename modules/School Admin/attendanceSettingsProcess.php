@@ -37,16 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 } else {
     $fail = false;
 
-    $attendanceEnableByClass = (isset($_POST['attendanceEnableByClass'])) ? $_POST['attendanceEnableByClass'] : NULL;
-    try {
-        $data = array('value' => $attendanceEnableByClass);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceEnableByClass'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
     $attendanceReasons = (isset($_POST['attendanceReasons'])) ? $_POST['attendanceReasons'] : NULL;
     try {
         $data = array('value' => $attendanceReasons);
