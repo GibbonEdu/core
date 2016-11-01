@@ -16,5 +16,6 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'View Student Profile_my', 2, 'Profiles', 'Allows individuals to view their own information', 'student_view.php, student_view_details.php', 'student_view.php', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y');end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '3', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='View Student Profile_my'));end
 ALTER TABLE `gibbonPerson` ADD `middleName` VARCHAR(60) NOT NULL AFTER `firstName`;end
+ALTER TABLE `gibbonCourse` ADD `credits` DECIMAL(4,2) NULL DEFAULT NULL AFTER `description`, ADD `weight` DECIMAL(4,2) NULL DEFAULT NULL AFTER `credits`;end
 
 ";
