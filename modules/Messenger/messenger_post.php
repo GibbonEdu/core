@@ -43,9 +43,6 @@ else {
 		print "</div>" ;
 	}
 	else {
-		//Get role category for later (we use it to show/hide canned response option)
-		$roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-
 		//Proceed!
 		print "<div class='trail'>" ;
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'New Message') . "</div>" ;
@@ -296,7 +293,8 @@ else {
 					</td>
 				</tr>
 				<?php
-				if ($roleCategory == 'Staff') {
+				$cannedResponse = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", 'New Message_cannedResponse');
+				if ($cannedResponse) {
 					try {
 						$dataSelect=array();
 						$sqlSelect="SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject" ;
