@@ -438,14 +438,25 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                                         echo '</p>';
                                     }
 
-                                    //Public applications permitted?
+                                    //Student public applications permitted?
                                     $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
                                     if ($publicApplications == 'Y') {
                                         echo "<h2 style='margin-top: 30px'>";
-                                        echo __($guid, 'Applications');
+                                        echo __($guid, 'Student Applications');
                                         echo '</h2>';
                                         echo '<p>';
                                         echo sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Students/applicationForm.php'>", '</a>');
+                                        echo '</p>';
+                                    }
+
+                                    //Staff public applications permitted?
+                                    $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+                                    if ($staffApplicationFormPublicApplications == 'Y') {
+                                        echo "<h2 style='margin-top: 30px'>";
+                                        echo __($guid, 'Staff Applications');
+                                        echo '</h2>';
+                                        echo '<p>';
+                                        echo sprintf(__($guid, 'Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>');
                                         echo '</p>';
                                     }
 
