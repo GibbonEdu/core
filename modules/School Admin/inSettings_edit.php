@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/inDescriptors_manage.php'>".__($guid, 'Manage Individual Needs Descriptors')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Descriptor').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/inSettings.php'>".__($guid, 'Manage Individual Needs Settings')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Descriptor').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -57,10 +57,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
         } else {
             //Let's go!
             $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inDescriptors_manage_editProcess.php?gibbonINDescriptorID='.$gibbonINDescriptorID ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inSettings_editProcess.php?gibbonINDescriptorID='.$gibbonINDescriptorID ?>">
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 						</td>
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 						</td>
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 						</td>
@@ -99,11 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Description') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="description" id="description" rows=8 class="standardWidth"><?php echo __($guid, $row['description']) ?></textarea>
+							<textarea name="description" id="description" rows=8 class="standardWidth"><?php echo $row['description'] ?></textarea>
 						</td>
 					</tr>
 					<tr>

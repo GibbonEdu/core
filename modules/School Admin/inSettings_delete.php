@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/inDescriptors_manage.php'>".__($guid, 'Manage Individual Needs Descriptors')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Descriptor').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/inSettings.php'>".__($guid, 'Manage Individual Needs Settings')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Descriptor').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -57,24 +57,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors
         } else {
             //Let's go!
             $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/inDescriptors_manage_deleteProcess.php?gibbonINDescriptorID=$gibbonINDescriptorID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/inSettings_deleteProcess.php?gibbonINDescriptorID=$gibbonINDescriptorID" ?>">
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
 							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 						</td>
 						<td class="right">
-							
+
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>
 						<td class="right">
-							
+
 						</td>
 					</tr>
 				</table>

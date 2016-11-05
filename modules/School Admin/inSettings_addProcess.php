@@ -29,9 +29,9 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inDescriptors_manage_add.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings_add.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -30,10 +30,10 @@ $connection2 = $pdo->getConnection();
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inDescriptors_manage_delete.php&gibbonINDescriptorID='.$gibbonINDescriptorID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inDescriptors_manage.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings_delete.php&gibbonINDescriptorID='.$gibbonINDescriptorID;
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/inDescriptors_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

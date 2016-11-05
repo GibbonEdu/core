@@ -65,6 +65,7 @@ v13.0.00
 		Departments: included participants in Class page, rather than as a subpage.
 		Finance: removed thousand separator from invoice bulk export
 		Finance: switched from JS to HTML for fee block placeholders
+		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Library: reduced memory usage of Library browse page
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
