@@ -40,9 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/space_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Name') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 				</td>
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
     		$types = explode(',', $types); ?>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -81,53 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php echo __($guid, 'User 1') ?></b>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonPersonID1">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$data = array();
-							$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-							$result = $connection2->prepare($sql);
-							$result->execute($data);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
-						while ($row = $result->fetch()) {
-							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'User 2') ?></b>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonPersonID2">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$data = array();
-							$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-							$result = $connection2->prepare($sql);
-							$result->execute($data);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
-						while ($row = $result->fetch()) {
-							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Capacity') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -140,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Teacher\'s Computer') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -151,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Student Computers') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'How many are there') ?></span>
 				</td>
@@ -164,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Projector') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -174,9 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'TV') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -186,9 +140,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'DVD Player') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -198,9 +152,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Hifi') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -210,9 +164,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Speakers') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -222,9 +176,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Interactive White Board') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -235,29 +189,29 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Extension') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Room\'s internal phone number.') ?></span>
 				</td>
 				<td class="right">
-					<input name="phoneInternal" id="phoneInternal" maxlength=5 value="<?php echo $row['phoneInternal'] ?>" type="text" class="standardWidth">
+					<input name="phoneInternal" id="phoneInternal" maxlength=5 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Phone Number') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Room\'s external phone number.') ?></span>
 				</td>
 				<td class="right">
-					<input name="phoneExternal" id="phoneExternal" maxlength=20 value="<?php echo $row['phoneExternal'] ?>" type="text" class="standardWidth">
+					<input name="phoneExternal" id="phoneExternal" maxlength=20 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Comment') ?></b><br/>
 				</td>
 				<td class="right">
-					<textarea name="comment" id="comment" rows=8 class="standardWidth"><?php echo $row['comment'] ?></textarea>
+					<textarea name="comment" id="comment" rows=8 class="standardWidth"></textarea>
 				</td>
 			</tr>
 			<tr>

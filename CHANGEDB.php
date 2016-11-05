@@ -618,5 +618,9 @@ UPDATE gibbonResource SET tags = REPLACE (tags, '''', '');end
 UPDATE gibbonResourceTag SET tag = REPLACE (tag, '''', '');end
 ALTER TABLE `gibbonAttendanceCode` ADD UNIQUE(`name`), ADD UNIQUE(`nameShort`);end
 DELETE FROM `gibbonSetting` WHERE `scope`='Attendance' AND `name`='attendanceEnableByClass';end
+ALTER TABLE `gibbonSpace` DROP `gibbonPersonID1`, DROP `gibbonPersonID2`;end
+CREATE TABLE `gibbonSpacePerson` (`gibbonSpacePersonID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT, `gibbonSpaceID` int(10) unsigned zerofill NOT NULL, `gibbonPersonID` int(10) unsigned zerofill NOT NULL, `usageType` enum('','Teaching','Office','Other') COLLATE utf8_unicode_ci DEFAULT NULL, PRIMARY KEY (`gibbonSpacePersonID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
+UPDATE gibbonAction SET URLList='staff_manage.php, staff_manage_add.php, staff_manage_edit.php, staff_manage_delete.php, staff_manage_edit_contract_add.php, staff_manage_edit_contract_edit.php, staff_manage_edit_facility_add.php, staff_manage_edit_facility_delete.php' WHERE name='Manage Staff_confidential' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff');end
+UPDATE gibbonAction SET URLList='staff_manage.php, staff_manage_add.php, staff_manage_edit.php, staff_manage_delete.php, staff_manage_edit_facility_add.php, staff_manage_edit_facility_delete.php' WHERE name='Manage Staff_general' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff');end
 
 ";

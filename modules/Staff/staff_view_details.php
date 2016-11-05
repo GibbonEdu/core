@@ -458,6 +458,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                             echo '</table>';
                         }
+                    } elseif ($subpage == 'Facilities') {
+                        try {
+                            $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                            $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\' FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
+                            UNION
+                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Roll Group\' AS usageType, NULL AS \'exception\' FROM gibbonRollGroup JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE (gibbonPersonIDTutor=:gibbonPersonID2 OR gibbonPersonIDTutor2=:gibbonPersonID3 OR gibbonPersonIDTutor3=:gibbonPersonID4) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID1)
+                            UNION
+                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Timetable\' AS usageType, gibbonTTDayRowClassException.gibbonPersonID AS \'exception\' FROM gibbonSpace JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND (gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID6 OR gibbonTTDayRowClassException.gibbonPersonID IS NULL)) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID5)
+                            ORDER BY name';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+
+                        if ($result->rowCount() < 1) {
+                            echo "<div class='error'>";
+                            echo __($guid, 'There are no records to display.');
+                            echo '</div>';
+                        } else {
+                            echo "<table cellspacing='0' style='width: 100%'>";
+                            echo "<tr class='head'>";
+                            echo '<th>';
+                            echo __($guid, 'Name');
+                            echo '</th>';
+                            echo '<th>';
+                            echo __($guid, 'Usage').'<br/>';
+                            echo '</th>';
+                            echo '</tr>';
+
+                            $count = 0;
+                            $rowNum = 'odd';
+                            while ($row = $result->fetch()) {
+                                if ($row['exception'] == null) {
+                                    if ($count % 2 == 0) {
+                                        $rowNum = 'even';
+                                    } else {
+                                        $rowNum = 'odd';
+                                    }
+                                    ++$count;
+
+                                    echo "<tr class=$rowNum>";
+                                    echo '<td>';
+                                    echo $row['name'];
+                                    echo '</td>';
+                                    echo '<td>';
+                                    echo $row['usageType'];
+                                    echo '</td>';
+                                    echo '</tr>';
+                                }
+                            }
+                            echo '</table>';
+                        }
                     } elseif ($subpage == 'Emergency Contacts') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
@@ -634,6 +687,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $style = "style='font-weight: bold'";
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Personal'>".__($guid, 'Personal').'</a></li>';
+                    $style = '';
+                    if ($subpage == 'Facilities') {
+                        $style = "style='font-weight: bold'";
+                    }
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Facilities'>".__($guid, 'Facilities').'</a></li>';
                     $style = '';
                     if ($subpage == 'Emergency Contacts') {
                         $style = "style='font-weight: bold'";
