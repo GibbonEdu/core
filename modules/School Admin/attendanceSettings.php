@@ -234,17 +234,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                         while ($rowSelect=$resultSelect->fetch()) {
 
                             $selected = ( in_array($rowSelect['gibbonPersonID'], $users) !== false)? 'selected' : '';
-                            
 
                             if ($roleGroup != $rowSelect["roleName"]) {
                                 if ($roleGroup != '') echo '</optgroup>';
 
                                 $roleGroup = $rowSelect["roleName"];
-                                echo '<optgroup label="-- '.$roleGroup.' --">';
+                                echo '<optgroup label="-- '.__($guid, $roleGroup).' --">';
                             }
 
                             echo '<option '.$selected.' value="' . $rowSelect["gibbonPersonID"] . '">';
-                                echo  formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student", true);
+                                echo  formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
                             echo '</option>' ;
                         }
                         echo '</optgroup>';
