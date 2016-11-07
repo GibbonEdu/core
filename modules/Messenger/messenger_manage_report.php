@@ -43,10 +43,13 @@ else {
 			$search=$_GET["search"] ;
 		}
 
-
 		print "<div class='trail'>" ;
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php&search=$search'>" . __($guid, 'Manage Messages') . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Send Report') . "</div>" ;
 		print "</div>" ;
+
+		$nonConfirm = 0;
+		$noConfirm = 0;
+		$yesConfirm = 0;
 
 		if (!is_null($gibbonMessengerID)) {
 	        echo '<h2>';
@@ -55,77 +58,121 @@ else {
 
 	        try {
 	            $data = array('gibbonMessengerID' => $gibbonMessengerID);
-	            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY surname, preferredName, contactType";
+	            $sql = "SELECT gibbonMessenger.* FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
 	            $result = $connection2->prepare($sql);
 	            $result->execute($data);
 	        } catch (PDOException $e) {
 	            echo "<div class='error'>".$e->getMessage().'</div>';
 	        }
 
-	        echo "<table cellspacing='0' style='width: 100%'>";
-	        echo "<tr class='head'>";
-	        echo '<th>';
+			if ($result->rowCount() < 1) {
+				echo "<div class='error'>";
+	            echo __($guid, 'The specified record cannot be found.');
+	            echo '</div>';
+			}
+			else {
+				$row = $result->fetch();
 
-	        echo '</th>';
-	        echo '<th>';
-	        echo __($guid, 'Recipient');
-	        echo '</th>';
-	        echo '<th>';
-	        echo __($guid, 'Contact Type');
-	        echo '</th>';
-	        echo '<th>';
-	        echo __($guid, 'Contact Detail');
-	        echo '</th>';
-	        echo '<th>';
-	        echo __($guid, 'Receipt Confirmed');
-	        echo '</th>';
-	        echo '</tr>';
-
-	        $count = 0;
-	        $rowNum = 'odd';
-	        while ($row = $result->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo $count;
-                echo '</td>';
-                echo '<td>';
-                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-                echo '</td>';
-                echo '<td>';
-                echo $row['contactType'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['contactDetail'];
-                echo '</td>';
-                echo '<td>';
-                if (is_null($row['key'])) {
-					echo __($guid, 'N/A');
+				if ($row['emailReceiptText'] != '') {
+					echo '<p>';
+			        echo "<b>".__($guid, 'Receipt Confirmation Text') . "</b>: ".$row['emailReceiptText'];
+			        echo '</p>';
 				}
+
+				try {
+		            $data = array('gibbonMessengerID' => $gibbonMessengerID);
+		            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY surname, preferredName, contactType";
+		            $result = $connection2->prepare($sql);
+		            $result->execute($data);
+		        } catch (PDOException $e) {
+		            echo "<div class='error'>".$e->getMessage().'</div>';
+		        }
+
+
+
+		        echo "<table cellspacing='0' style='width: 100%'>";
+		        echo "<tr class='head'>";
+		        echo '<th>';
+
+		        echo '</th>';
+		        echo '<th>';
+		        echo __($guid, 'Recipient');
+		        echo '</th>';
+		        echo '<th>';
+		        echo __($guid, 'Contact Type');
+		        echo '</th>';
+		        echo '<th>';
+		        echo __($guid, 'Contact Detail');
+		        echo '</th>';
+		        echo '<th>';
+		        echo __($guid, 'Receipt Confirmed');
+		        echo '</th>';
+		        echo '</tr>';
+
+		        $count = 0;
+		        $rowNum = 'odd';
+		        while ($row = $result->fetch()) {
+	                if ($count % 2 == 0) {
+	                    $rowNum = 'even';
+	                } else {
+	                    $rowNum = 'odd';
+	                }
+	                ++$count;
+
+	                //COLOR ROW BY STATUS!
+	                echo "<tr class=$rowNum>";
+	                echo '<td>';
+	                echo $count;
+	                echo '</td>';
+	                echo '<td>';
+	                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+	                echo '</td>';
+	                echo '<td>';
+	                echo $row['contactType'];
+	                echo '</td>';
+	                echo '<td>';
+	                echo $row['contactDetail'];
+	                echo '</td>';
+	                echo '<td>';
+	                if (is_null($row['key'])) {
+						echo __($guid, 'N/A');
+						$nonConfirm ++;
+					}
+					else {
+						if ($row['confirmed'] == 'Y') {
+							echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+							$yesConfirm ++;
+						}
+						else {
+							echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+							$noConfirm ++;
+						}
+					}
+
+	                echo '</td>';
+	                echo '</tr>';
+	            }
+		        if ($count < 1) {
+		            echo "<tr class=$rowNum>";
+		            echo '<td colspan=5>';
+		            echo __($guid, 'There are no records to display.');
+		            echo '</td>';
+		            echo '</tr>';
+		        }
 				else {
-					if ($row['confirmed'] == 'Y')
-						echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-					else
-						echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+					echo '<tr>';
+					echo "<td class='right' colspan=5>";
+					echo "<div class='success'>";
+					echo '<b>'.__($guid, 'Total Messages:')." $count</b><br/>";
+					echo "<span>".__($guid, 'Messages not eligible for confirmation of receipt:')." <b>$nonConfirm</b><br/>";
+					echo "<span>".__($guid, 'Messages confirmed:').' <b>'.$yesConfirm.'</b><br/>';
+					echo "<span>".__($guid, 'Messages not yet confirmed:').' <b>'.$noConfirm.'</b><br/>';
+					echo '</div>';
+					echo '</td>';
+					echo '</tr>';
 				}
-                echo '</td>';
-                echo '</tr>';
-            }
-	        if ($count == 0) {
-	            echo "<tr class=$rowNum>";
-	            echo '<td colspan=5>';
-	            echo __($guid, 'There are no records to display.');
-	            echo '</td>';
-	            echo '</tr>';
-	        }
-	        echo '</table>';
+		        echo '</table>';
+			}
 		}
 	}
 }
