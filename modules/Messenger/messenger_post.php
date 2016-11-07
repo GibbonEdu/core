@@ -383,7 +383,10 @@ else {
 				</tr>
 
 				<?php
-				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
+				if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
+					echo '<input type="hidden" name="emailReceipt" value="N"/>';
+				}
+				else{
 					?>
 					<tr class='break'>
 						<td colspan=2>

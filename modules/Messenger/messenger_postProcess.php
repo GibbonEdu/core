@@ -1828,7 +1828,7 @@ else {
 				}
 
 				//Send to each recipient
-				foreach ($report AS $reportEntry) {
+				foreach ($report as $reportEntry) {
 					if ($reportEntry[3] == 'Email') {
 						$emailCount ++;
 						$mail->ClearAddresses();
@@ -1861,11 +1861,14 @@ else {
 
 					if ($smsUsername!="" AND $smsPassword!="" AND $smsURL!="") {
 						$smsCount = 0;
-						if ($reportEntry[3] == 'SMS') {
-							$smsCount ++;
+						foreach ($report as $reportEntry) {
+							if ($reportEntry[3] == 'SMS') {
+								$smsCount ++;
+							}
 						}
+
 						$numbersPerSend=10 ;
-						$sendReps=ceil(($messageCount/$numbersPerSend)) ;
+						$sendReps=ceil(($smsCount/$numbersPerSend)) ;
 						$smsCount=0 ;
 						$smsBatchCount=0 ;
 						for ($i=0; $i<$sendReps; $i++) {

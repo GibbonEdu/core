@@ -81,7 +81,7 @@ else {
 
 				try {
 		            $data = array('gibbonMessengerID' => $gibbonMessengerID);
-		            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY surname, preferredName, contactType";
+		            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY surname, preferredName, contactType";
 		            $result = $connection2->prepare($sql);
 		            $result->execute($data);
 		        } catch (PDOException $e) {
@@ -125,7 +125,10 @@ else {
 	                echo $count;
 	                echo '</td>';
 	                echo '<td>';
-	                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+					if ($row['preferredName'] == '' or $row['surname'] == '')
+						echo __($guid, 'N/A');
+					else
+	                	echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
 	                echo '</td>';
 	                echo '<td>';
 	                echo $row['contactType'];
