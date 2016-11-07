@@ -148,6 +148,110 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 				</td>
 			</tr>
 
+            <tr class='break'>
+                <td colspan=2>
+                    <h3><?php echo __($guid, 'Attendance CLI'); ?></h3>
+                </td>
+            </tr>
+            <tr>
+                <?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceCLINotifyByRollGroup'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+                <td style='width: 275px'> 
+                    <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+                    <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+                </td>
+                <td class="right">
+                    <select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+                        <option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+                        <option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceCLINotifyByClass'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+                <td style='width: 275px'> 
+                    <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+                    <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+                </td>
+                <td class="right">
+                    <select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+                        <option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+                        <option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceCLIAdditionalUsers'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+                <td style='width: 275px'> 
+                    <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+                    <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+                </td>
+                <td class="right">
+                    <select multiple name="<?php echo $row['name'] ?>[]" id="<?php echo $row['name'] ?>[]" style="width: 302px; height: 130px">
+                        <?php
+                        try {
+                            $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
+                            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName 
+                                    FROM gibbonPerson 
+                                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID) 
+                                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+                                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID) 
+                                    WHERE status='Full' 
+                                    AND (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2)
+                                    GROUP BY gibbonPerson.gibbonPersonID 
+                                    ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
+                            $resultSelect=$connection2->prepare($sql);
+                            $resultSelect->execute($data);
+                        }
+                        catch(PDOException $e) { }
+
+                        $roleGroup = '';
+                        $users = explode(',', $row['value'] );
+
+                        while ($rowSelect=$resultSelect->fetch()) {
+
+                            $selected = ( in_array($rowSelect['gibbonPersonID'], $users) !== false)? 'selected' : '';
+
+                            if ($roleGroup != $rowSelect["roleName"]) {
+                                if ($roleGroup != '') echo '</optgroup>';
+
+                                $roleGroup = $rowSelect["roleName"];
+                                echo '<optgroup label="-- '.__($guid, $roleGroup).' --">';
+                            }
+
+                            echo '<option '.$selected.' value="' . $rowSelect["gibbonPersonID"] . '">';
+                                echo  formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+                            echo '</option>' ;
+                        }
+                        echo '</optgroup>';
+                        ?>          
+                    </select>
+                </td>
+            </tr>
+
             <?php /*
 			<tr class='break'>
 				<td colspan=2>
