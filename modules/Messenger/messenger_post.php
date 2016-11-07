@@ -382,6 +382,54 @@ else {
 					</td>
 				</tr>
 
+				<?php
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
+					?>
+					<tr class='break'>
+						<td colspan=2>
+							<h3><?php print __($guid, 'Email Read Receipts') ?></h3>
+						</td>
+					</tr>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$("#receiptRow").css("display","none");
+							emailReceiptText.disable() ;
+							$(".emailReceipt").click(function(){
+								if ($('input[name=emailReceipt]:checked').val()=="Y" ) {
+									$("#receiptRow").slideDown("fast", $("#receiptRow").css("display","table-row"));
+									emailReceiptText.enable() ;
+								} else {
+									$("#receiptRow").css("display","none");
+									emailReceiptText.disable() ;
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td style='width: 275px'>
+							<b><?php print __($guid, 'Enable Read Receipts') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Each email recipient will receive a personalised confirmation link.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="emailReceipt" class="emailReceipt" value="Y"/> <?php print __($guid, 'Yes') ?>
+							<input checked type="radio" name="emailReceipt" class="emailReceipt" value="N"/> <?php print __($guid, 'No') ?>
+						</td>
+					</tr>
+					<tr id="receiptRow">
+						<td>
+							<b><?php print __($guid, 'Link Text') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Confirmation link text to display to recipient.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<textarea name="emailReceiptText" id="emailReceiptText" rows=4 class="standardWidth"><?php echo __($guid, 'By clicking on this link I agree that I have read, and agree to, the text contained within this email.') ?></textarea>
+							<script type="text/javascript">
+								var emailReceiptText=new LiveValidation('emailReceiptText');
+								emailReceiptText.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<?php
+				} ?>
 				<tr class='break'>
 					<td colspan=2>
 						<h3><?php print __($guid, 'Targets') ?></h3>

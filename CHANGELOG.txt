@@ -22,6 +22,7 @@ v13.0.00
 		Automated Scope & Sequence documentation in Planner, based on Unit Planner
 		Concept Explorer in Planner, based on Unit Planner concepts & keywords
 		Take Attendance by Class, and generate student attendance reports
+		Messenger read receipts, in order to confirm receipt of and agreement to emails
 
 	Changes With Important Notices
 		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)

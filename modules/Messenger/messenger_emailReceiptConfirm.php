@@ -20,33 +20,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 //Get variables
-$gibbonSchoolYearID = '';
-if (isset($_GET['gibbonSchoolYearID'])) {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-}
 $key = '';
 if (isset($_GET['key'])) {
     $key = $_GET['key'];
 }
-$gibbonPersonIDStudent = '';
-if (isset($_GET['gibbonPersonIDStudent'])) {
-    $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'];
+$gibbonPersonID = '';
+if (isset($_GET['gibbonPersonID'])) {
+    $gibbonPersonID = $_GET['gibbonPersonID'];
 }
-$gibbonPersonIDParent = '';
-if (isset($_GET['gibbonPersonIDParent'])) {
-    $gibbonPersonIDParent = $_GET['gibbonPersonIDParent'];
+$gibbonMessengerID = '';
+if (isset($_GET['gibbonMessengerID'])) {
+    $gibbonMessengerID = $_GET['gibbonMessengerID'];
 }
 
 //Check variables
-if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $gibbonPersonIDParent == '') { echo "<div class='error'>";
+if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
+    echo "<div class='error'>";
     echo __($guid, 'You have not specified one or more required parameters.');
     echo '</div>';
 } else {
     //Check for record
     $keyReadFail = false;
     try {
-        $dataKeyRead = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDParent' => $gibbonPersonIDParent, 'key' => $key);
-        $sqlKeyRead = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key';
+        $dataKeyRead = array('key' => $key, 'gibbonPersonID' => $gibbonPersonID, 'gibbonMessengerID' => $gibbonMessengerID, 'key' => $key);
+        $sqlKeyRead = 'SELECT * FROM gibbonMessengerReceipt WHERE `key`=:key AND gibbonPersonID=:gibbonPersonID AND gibbonMessengerID=:gibbonMessengerID';
         $resultKeyRead = $connection2->prepare($sqlKeyRead);
         $resultKeyRead->execute($dataKeyRead);
     } catch (PDOException $e) {
@@ -69,11 +66,12 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
         } else { //If not confirmed, confirm
             $keyWriteFail = false;
             try {
-                $dataKeyWrite = array('gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDParent' => $gibbonPersonIDParent, 'key' => $key);
-                $sqlKeyWrite = "UPDATE gibbonPlannerParentWeeklyEmailSummary SET confirmed='Y' WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key";
+                $dataKeyWrite = array('key' => $key, 'gibbonPersonID' => $gibbonPersonID, 'gibbonMessengerID' => $gibbonMessengerID);
+                $sqlKeyWrite = 'UPDATE gibbonMessengerReceipt SET confirmed=\'Y\', confirmedTimestamp=now() WHERE `key`=:key AND gibbonPersonID=:gibbonPersonID AND gibbonMessengerID=:gibbonMessengerID';
                 $resultKeyWrite = $connection2->prepare($sqlKeyWrite);
                 $resultKeyWrite->execute($dataKeyWrite);
             } catch (PDOException $e) {
+                print $e->getMessage();
                 $keyWriteFail = true;
             }
 
