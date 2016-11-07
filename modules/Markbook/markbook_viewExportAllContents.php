@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
     //Count number of columns
 	$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-	$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC';
+	$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY sequenceNumber, date, complete, completeDate DESC';
 	$result = $pdo->executeQuery($data, $sql, '_');
     $columns = $result->rowCount();
     if ($columns < 1) {
