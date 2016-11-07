@@ -265,6 +265,33 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                 setNotification($connection2, $guid,  $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$id.'&currentDate='.dateConvertBack($guid, date('Y-m-d')));
             }
 
+            // Notify Additional Users
+            if (!empty($additionalUsersList)) {
+                $additionalUsers = explode(',', $additionalUsersList );
+
+                if (is_array($additionalUsers) && count($additionalUsers) > 0) {
+                    $notificationText = __($guid, 'An Attendance CLI script has run.').' '.$report;
+                    
+                    foreach ($additionalUsers as $gibbonPersonID) {
+
+                        // Skip duplicates if the Admin is in the Additional Users list
+                        if ($gibbonPersonID == $_SESSION[$guid]['organisationAdministrator']) continue;
+
+                        // Confirm that this user still has permission to access these reports
+                        try {
+                            $data = array( 'gibbonPersonID' => $gibbonPersonID, 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
+                            $sql = "SELECT gibbonAction.name FROM gibbonAction, gibbonPermission, gibbonRole, gibbonPerson WHERE (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) AND (gibbonPerson.gibbonPersonID=:gibbonPersonID) AND (gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'))";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }  catch (PDOException $e) {}
+
+                        if ($result->rowCount() > 0) {
+                            setNotification($connection2, $guid, $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+                        }
+                    }
+                }
+            }
+
         } else {
             // Notify admin if there was an error in the report
             $report = __($guid, 'Your request failed due to a database error.') . '<br/><br/>' . $report;
@@ -273,31 +300,6 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         // Notify admin
         $notificationText = __($guid, 'An Attendance CLI script has run.').' '.$report;
         setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
-
-        // Notify Additional Users
-        if (!empty($additionalUsersList)) {
-            $additionalUsers = explode(',', $additionalUsersList );
-
-            if (is_array($additionalUsers) && count($additionalUsers) > 0) {
-                foreach ($additionalUsers as $gibbonPersonID) {
-
-                    // Skip duplicates if the Admin is in the Additional Users list
-                    if ($gibbonPersonID == $_SESSION[$guid]['organisationAdministrator']) continue;
-
-                    // Confirm that this user still has permission to access these reports
-                    try {
-                        $data = array( 'gibbonPersonID' => $gibbonPersonID, 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
-                        $sql = "SELECT gibbonAction.name FROM gibbonAction, gibbonPermission, gibbonRole, gibbonPerson WHERE (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) AND (gibbonPerson.gibbonPersonID=:gibbonPersonID) AND (gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'))";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    }  catch (PDOException $e) {}
-
-                    if ($result->rowCount() > 0) {
-                        setNotification($connection2, $guid, $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
-                    }
-                }
-            }
-        }
 
         // Output the result to terminal
         echo $report."\n";
