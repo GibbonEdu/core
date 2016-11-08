@@ -113,6 +113,7 @@ v13.0.00
 		Students: fixed tooltip alignment on alert bar above student profile image
 		Students: fixed colspan issue in Data Update report when no records found
 		Students: added student ID to search
+		Students: added student image to privacy report
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
