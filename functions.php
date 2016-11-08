@@ -922,7 +922,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                         }
                     }
                     $planner .= '</td>';
-                    $planner .= '<td>';
+                    $planner .= '<td id="wordWrap">';
                     $planner .= $row['summary'];
                     $planner .= '</td>';
                     $planner .= '<td>';
@@ -1131,7 +1131,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 $plannerOutput .= '<td>';
                 $plannerOutput .= '<b>'.$row['course'].'.'.$row['class'].'</b><br/>';
                 $plannerOutput .= '</td>';
-                $plannerOutput .= '<td>';
+                $plannerOutput .= '<td id="wordWrap">';
                 $plannerOutput .= $row['name'].'<br/>';
                 $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
                 if (isset($unit[0])) {
