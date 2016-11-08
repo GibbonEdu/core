@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Family Data Updates').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Personal Data Updates').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = 'SELECT gibbonFamilyUpdateID, gibbonFamily.name, timestamp, gibbonPersonIDUpdater, gibbonFamilyUpdate.status FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyUpdate.gibbonFamilyID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
+        $sql = 'SELECT gibbonPersonUpdateID, gibbonPerson.surname, gibbonPerson.preferredName, timestamp, gibbonPersonIDUpdater, gibbonPersonUpdate.status FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Target Family');
+        echo __($guid, 'Target User');
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Requesting User');
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo $row['name'];
+            echo formatName('', $row['preferredName'], $row['surname'], 'Student', false);
             echo '</td>';
             echo '<td>';
             try {
@@ -130,8 +130,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family.php
             echo '</td>';
             echo '<td>';
             if ($row['status'] == 'Pending') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_edit.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_delete.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_personal_manage_edit.php&gibbonPersonUpdateID='.$row['gibbonPersonUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_personal_manage_delete.php&gibbonPersonUpdateID='.$row['gibbonPersonUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
             echo '</td>';
             echo '</tr>';

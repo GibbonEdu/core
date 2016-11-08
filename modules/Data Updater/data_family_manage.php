@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.ph
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Medical Data Updates').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Family Data Updates').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.ph
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = 'SELECT gibbonPersonMedicalUpdateID, gibbonPerson.surname, gibbonPerson.preferredName, timestamp, gibbonPersonIDUpdater, gibbonPersonMedicalUpdate.status FROM gibbonPersonMedicalUpdate JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
+        $sql = 'SELECT gibbonFamilyUpdateID, gibbonFamily.name, timestamp, gibbonPersonIDUpdater, gibbonFamilyUpdate.status FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyUpdate.gibbonFamilyID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.ph
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Target User');
+        echo __($guid, 'Target Family');
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Requesting User');
@@ -89,7 +89,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.ph
         } catch (PDOException $e) {
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
-
         while ($row = $resultPage->fetch()) {
             if ($count % 2 == 0) {
                 $rowNum = 'even';
@@ -100,22 +99,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.ph
             if ($row['status'] == 'Complete') {
                 $rowNum = 'current';
             }
+
             ++$count;
 
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+            echo $row['name'];
             echo '</td>';
             echo '<td>';
             try {
-                $dataUpdater = array('gibbonPersonID' => $row['gibbonPersonIDUpdater']);
-                $sqlUpdater = 'SELECT gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+                $dataUpdater = array('gibbonPersonIDUpdater' => $row['gibbonPersonIDUpdater']);
+                $sqlUpdater = 'SELECT gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDUpdater';
                 $resultUpdater = $connection2->prepare($sqlUpdater);
                 $resultUpdater->execute($dataUpdater);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
+
             if ($resultUpdater->rowCount() == 1) {
                 $rowUpdater = $resultUpdater->fetch();
                 echo formatName($rowUpdater['title'], $rowUpdater['preferredName'], $rowUpdater['surname'], 'Parent', false);
@@ -129,8 +130,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical.ph
             echo '</td>';
             echo '<td>';
             if ($row['status'] == 'Pending') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_edit.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_delete.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_edit.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_delete.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
             echo '</td>';
             echo '</tr>';

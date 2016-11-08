@@ -31,9 +31,9 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
 $gibbonFamilyID = $_POST['gibbonFamilyID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family_edit.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family_manage_edit.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID";
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

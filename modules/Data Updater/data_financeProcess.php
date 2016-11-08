@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 //Attempt to notify to DBA
                 if ($_SESSION[$guid]['organisationDBA'] != '') {
                     $notificationText = sprintf(__($guid, 'A finance data update request has been submitted.'));
-                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/User Admin/data_finance.php');
+                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/Data Updater/data_finance_manage.php');
                 }
 
                 //Write to database

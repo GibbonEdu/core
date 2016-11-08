@@ -29,22 +29,22 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPersonMedicalUpdateID = $_POST['gibbonPersonMedicalUpdateID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical_delete.php&gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/data_medical.php';
+$gibbonFamilyUpdateID = $_POST['gibbonFamilyUpdateID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family_managel_delete.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/data_family_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_manage_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    if ($gibbonPersonMedicalUpdateID == '') {
+    if ($gibbonFamilyUpdateID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+            $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
+            $sql = 'SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -59,8 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_de
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-                $sql = 'DELETE FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
+                $sql = 'DELETE FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

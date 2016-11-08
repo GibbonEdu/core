@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_del
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/data_family.php'>".__($guid, 'Family Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Request').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_personal_manage.php'>".__($guid, 'Personal Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Request').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -38,15 +38,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_del
     }
 
     //Check if school year specified
-    $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
-    if ($gibbonFamilyUpdateID == '') {
+    $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
+    if ($gibbonPersonUpdateID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
-            $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-            $sql = 'SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
+            $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
+            $sql = 'SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_del
         } else {
             //Let's go!
             $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_family_deleteProcess.php?gibbonFamilyUpdateID=$gibbonFamilyUpdateID" ?>">
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_personal_manage_deleteProcess.php?gibbonPersonUpdateID=$gibbonPersonUpdateID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_del
 					</tr>
 					<tr>
 						<td> 
-							<input name="gibbonFamilyUpdateID" id="gibbonFamilyUpdateID" value="<?php echo $gibbonFamilyUpdateID ?>" type="hidden">
+							<input name="gibbonPersonUpdateID" id="gibbonPersonUpdateID" value="<?php echo $gibbonPersonUpdateID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>

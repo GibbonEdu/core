@@ -297,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         //Attempt to notify to DBA
                         if ($_SESSION[$guid]['organisationDBA'] != '') {
                             $notificationText = sprintf(__($guid, 'A personal data update request has been submitted.'));
-                            setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/User Admin/data_personal.php');
+                            setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/Data Updater/data_personal_manage.php');
                         }
 
                         //Write to database

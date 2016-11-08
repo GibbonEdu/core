@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_manage_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_de
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/data_medical.php'>".__($guid, 'Medical Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Request').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_finance_manage.php'>".__($guid, 'Finance Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Request').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -38,15 +38,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_de
     }
 
     //Check if school year specified
-    $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
-    if ($gibbonPersonMedicalUpdateID == '') {
+    $gibbonFinanceInvoiceeUpdateID = $_GET['gibbonFinanceInvoiceeUpdateID'];
+    if ($gibbonFinanceInvoiceeUpdateID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
-            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
+            $sql = 'SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_de
         } else {
             //Let's go!
             $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_medical_deleteProcess.php?gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID" ?>">
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_finance_manage_deleteProcess.php?gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_de
 					</tr>
 					<tr>
 						<td> 
-							<input name="gibbonPersonMedicalUpdateID" id="gibbonPersonMedicalUpdateID" value="<?php echo $gibbonPersonMedicalUpdateID ?>" type="hidden">
+							<input name="gibbonFinanceInvoiceeUpdateID" id="gibbonFinanceInvoiceeUpdateID" value="<?php echo $gibbonFinanceInvoiceeUpdateID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>

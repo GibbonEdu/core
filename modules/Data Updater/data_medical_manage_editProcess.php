@@ -31,9 +31,9 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical_edit.php&gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical_manage_edit.php&gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID";
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

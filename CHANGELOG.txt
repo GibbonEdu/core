@@ -25,12 +25,14 @@ v13.0.00
 		Messenger read receipts, in order to confirm receipt of and agreement to emails
 
 	Changes With Important Notices
-		Updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
-		Updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
-		Staff-Facility assignment moved from Manage Facility to Manage Staff (current assignments will be lost)
+		System: updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
+		System: updated TinyMCE library to latest release (might require users to clear browser cache to load WYSIWYG)
+		Staff: moved staff-facility assignment from Manage Facility to Manage Staff (current assignments will be lost)
+		Data Updater: moved Data Updater management tools from User Admin to Data Updater
+		Data Updater: moved Data Updater report from Students to Data Updater
 
 	Significant Changes
-		System: Changed Primary Assessment Scale to Default Assessment Scale
+		System: changed Primary Assessment Scale to Default Assessment Scale
 		Markbook: added ability to copy columns to other classes
 		School Admin: added ability to edit and create attendance codes
 		Attendance: added landing page for teacher's daily attendance taking

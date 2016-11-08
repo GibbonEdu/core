@@ -27,16 +27,16 @@ $connection2 = $pdo->getConnection();
 @session_start();
 
 //Module includes
-include './moduleFunctions.php';
+include '../User Admin/moduleFunctions.php';
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
