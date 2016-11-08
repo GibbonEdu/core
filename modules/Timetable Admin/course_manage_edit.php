@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     } else {
         try {
             $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, credits, weight FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -144,7 +144,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						</script>
 					</td>
 				</tr>
-				<tr>
+                <tr>
+                    <td> 
+                        <b><?php echo __($guid, 'Credits') ?></b><br/>
+                        <span class="emphasis small"><?php echo __($guid, 'For GPA calculations and transcripts.') ?></span>
+                    </td>
+                    <td class="right">
+                        <input name="credits" id="credits" maxlength=5 value="<?php echo htmlPrep($row['credits']) ?>" type="text" class="standardWidth">
+                        <script type="text/javascript">
+                            var credits=new LiveValidation('credits');
+                            credits.add(Validate.Format, {pattern: /^\d+(\.\d{1,2})?$/} );
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td> 
+                        <b><?php echo __($guid, 'Weight') ?></b><br/>
+                        <span class="emphasis small"><?php echo __($guid, 'For GPA calculations and transcripts.') ?></span>
+                    </td>
+                    <td class="right">
+                        <input name="weight" id="weight" maxlength=5 value="<?php echo htmlPrep($row['weight']) ?>" type="text" class="standardWidth">
+                        <script type="text/javascript">
+                            var weight=new LiveValidation('weight');
+                            weight.add(Validate.Format, {pattern: /^\d+(\.\d{1,2})?$/} );
+                        </script>
+                    </td>
+                </tr>
+			<tr>
 					<td>
 						<b><?php echo __($guid, 'Order') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>

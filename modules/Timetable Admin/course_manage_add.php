@@ -129,6 +129,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					</tr>
 					<tr>
 						<td> 
+							<b><?php echo __($guid, 'Credits') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'For GPA calculations and transcripts.') ?></span>
+						</td>
+						<td class="right">
+							<input name="credits" id="credits" maxlength=5 value="" type="text" class="standardWidth">
+							<script type="text/javascript">
+								var credits=new LiveValidation('credits');
+								credits.add(Validate.Format, {pattern: /^\d+(\.\d{1,2})?$/} );
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Weight') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'For GPA calculations and transcripts.') ?></span>
+						</td>
+						<td class="right">
+							<input name="weight" id="weight" maxlength=5 value="" type="text" class="standardWidth">
+							<script type="text/javascript">
+								var weight=new LiveValidation('weight');
+								weight.add(Validate.Format, {pattern: /^\d+(\.\d{1,2})?$/} );
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
 							<b><?php echo __($guid, 'Order') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>
 						</td>
