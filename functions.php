@@ -490,7 +490,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                         }
                     }
                     $planner .= '</td>';
-                    $planner .= '<td>';
+                    $planner .= '<td id="wordWrap">';
                     $planner .= $row['summary'];
                     $planner .= '</td>';
                     $planner .= '<td>';
