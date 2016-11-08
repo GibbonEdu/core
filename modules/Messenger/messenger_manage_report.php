@@ -47,6 +47,10 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php&search=$search'>" . __($guid, 'Manage Messages') . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Send Report') . "</div>" ;
 		print "</div>" ;
 
+		if (isset($_GET['return'])) {
+	        returnProcess($guid, $_GET['return'], null, array('error2' => 'Some elements of your request failed, but others were successful.'));
+	    }
+
 		$nonConfirm = 0;
 		$noConfirm = 0;
 		$yesConfirm = 0;
@@ -73,6 +77,10 @@ else {
 			else {
 				$row = $result->fetch();
 
+				$sender = false;
+				if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])
+					$sender = true;
+
 				if ($row['emailReceiptText'] != '') {
 					echo '<p>';
 			        echo "<b>".__($guid, 'Receipt Confirmation Text') . "</b>: ".$row['emailReceiptText'];
@@ -90,7 +98,23 @@ else {
 
 
 
-		        echo "<table cellspacing='0' style='width: 100%'>";
+				echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_report_processBulk.php?gibbonMessengerID=$gibbonMessengerID&search=$search'>";
+				echo "<fieldset style='border: none'>";
+				echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
+				?>
+				<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+				<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+					<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+					<option value="delete"><?php echo __($guid, 'Resend') ?></option>
+				</select>
+				<script type="text/javascript">
+					var action=new LiveValidation('action');
+					action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+				</script>
+				<?php
+				echo '</div>';
+
+				echo "<table cellspacing='0' style='width: 100%'>";
 		        echo "<tr class='head'>";
 		        echo '<th>';
 
@@ -107,6 +131,20 @@ else {
 		        echo '<th>';
 		        echo __($guid, 'Receipt Confirmed');
 		        echo '</th>';
+				if ($sender == true) {
+					echo '<th style=\'text-align: center\'>';
+					?>
+						<script type="text/javascript">
+							$(function () {
+								$('.checkall').click(function () {
+									$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+								});
+							});
+						</script>
+						<?php
+						echo "<input type='checkbox' class='checkall'>";
+			        echo '</th>';
+				}
 		        echo '</tr>';
 
 		        $count = 0;
@@ -153,18 +191,30 @@ else {
 					}
 
 	                echo '</td>';
+					if ($sender == true) {
+						echo '<td style=\'text-align: center\'>';
+						if ($row['confirmed'] == 'N')
+							echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$row['gibbonMessengerReceiptID']."'>";
+						echo '</td>';
+					}
 	                echo '</tr>';
 	            }
 		        if ($count < 1) {
 		            echo "<tr class=$rowNum>";
-		            echo '<td colspan=5>';
+					if ($sender == true)
+						echo '<td colspan=6>';
+					else
+						echo '<td colspan=5>';
 		            echo __($guid, 'There are no records to display.');
 		            echo '</td>';
 		            echo '</tr>';
 		        }
 				else {
 					echo '<tr>';
-					echo "<td class='right' colspan=5>";
+					if ($sender == true)
+						echo "<td class='right' colspan=6>";
+					else
+						echo "<td class='right' colspan=5>";
 					echo "<div class='success'>";
 					echo '<b>'.__($guid, 'Total Messages:')." $count</b><br/>";
 					echo "<span>".__($guid, 'Messages not eligible for confirmation of receipt:')." <b>$nonConfirm</b><br/>";
@@ -174,6 +224,7 @@ else {
 					echo '</td>';
 					echo '</tr>';
 				}
+				echo '</fieldset>';
 		        echo '</table>';
 			}
 		}
