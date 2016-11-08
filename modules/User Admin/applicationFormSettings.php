@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'General Options') ?></h3>
 				</td>
 			</tr>
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -103,11 +103,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script> 
+					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr>
 				<?php
                 try {
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -180,10 +180,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small">
-						<?php 
+						<?php
                             echo $row['description'];
 							$currency = getSettingByScope($connection2, 'System', 'currency');
 							if ($currency != false and $currency != '') {
@@ -201,7 +201,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					</script>
 				</td>
 			</tr>
-			
 			<tr>
 				<?php
                 try {
@@ -214,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -235,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -253,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -261,9 +260,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Required Documents Options') ?></h3>
 				</td>
 			</tr>
@@ -277,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -295,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -315,7 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -326,15 +325,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					</select>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Language Learning Options') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<p><?php echo __($guid, 'Set values for applicants to specify which language they wish to learn.') ?></p>
 				</td>
 			</tr>
@@ -350,7 +349,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -371,7 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -389,7 +388,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -397,9 +396,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Acceptance Options') ?></h3>
 				</td>
 			</tr>
@@ -415,7 +414,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -435,7 +434,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -455,7 +454,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -478,7 +477,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -498,7 +497,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -521,7 +520,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -541,7 +540,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -561,7 +560,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -572,7 +571,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

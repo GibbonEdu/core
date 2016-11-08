@@ -47,6 +47,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
+    $attendanceCLINotifyByRollGroup = (isset($_POST['attendanceCLINotifyByRollGroup'])) ? $_POST['attendanceCLINotifyByRollGroup'] : NULL;
+    try {
+        $data = array('value' => $attendanceCLINotifyByRollGroup);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceCLINotifyByRollGroup'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceCLINotifyByClass = (isset($_POST['attendanceCLINotifyByClass'])) ? $_POST['attendanceCLINotifyByClass'] : NULL;
+    try {
+        $data = array('value' => $attendanceCLINotifyByClass);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceCLINotifyByClass'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $attendanceCLIAdditionalUsers = (isset($_POST['attendanceCLIAdditionalUsers'])) ? $_POST['attendanceCLIAdditionalUsers'] : NULL;
+    try {
+        $attendanceCLIAdditionalUserList = (is_array($attendanceCLIAdditionalUsers))? implode(',', $attendanceCLIAdditionalUsers) : '';
+        $data = array('value' => $attendanceCLIAdditionalUserList);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceCLIAdditionalUsers'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
     /*
     $attendanceMedicalReasons = (isset($_POST['attendanceMedicalReasons'])) ? $_POST['attendanceMedicalReasons'] : NULL;
     try {

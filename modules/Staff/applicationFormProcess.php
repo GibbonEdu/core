@@ -39,7 +39,11 @@ $proceed = false;
 $public = false;
 if (isset($_SESSION[$guid]['username']) == false) {
     $public = true;
-    $proceed = true;
+    //Get public access
+    $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+    if ($access == 'Y') {
+        $proceed = true;
+    }
 } else {
     if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm.php') != false) {
         $proceed = true;

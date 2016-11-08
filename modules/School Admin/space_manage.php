@@ -75,9 +75,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
         echo __($guid, 'Type');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Staff');
-        echo '</th>';
-        echo '<th>';
         echo __($guid, 'Capacity');
         echo '</th>';
         echo '<th>';
@@ -111,19 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
             echo '</td>';
             echo '<td>';
             echo $row['type'];
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataStaff = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-                $sqlStaff = "SELECT surname, preferredName FROM gibbonPerson JOIN gibbonSpace ON (gibbonPerson.gibbonPersonID=gibbonSpace.gibbonPersonID1 OR gibbonPerson.gibbonPersonID=gibbonSpace.gibbonPersonID2) WHERE gibbonSpaceID=:gibbonSpaceID AND status='Full' ORDER BY surname, preferredName";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowStaff = $resultStaff->fetch()) {
-                echo formatName('', $rowStaff['preferredName'], $rowStaff['surname'], 'Staff', true, true).'<br/>';
-            }
             echo '</td>';
             echo '<td>';
             echo $row['capacity'];

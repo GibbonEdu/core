@@ -17,6 +17,35 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Helps builds report array for setting gibbonMessengerReceipt
+function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail)
+{
+    if ($contactDetail != '' AND is_null($contactDetail) == false) {
+        $unique = true;
+        foreach ($report as $reportEntry) {
+            if ($reportEntry[4] == $contactDetail)
+                $unique = false;
+        }
+
+        if ($unique) {
+            $count = count($report);
+            $report[$count][0] = $gibbonPersonID;
+            $report[$count][1] = $targetType;
+            $report[$count][2] = $targetID;
+            $report[$count][3] = $contactType;
+            $report[$count][4] = $contactDetail;
+            if ($contactType == 'Email' and $emailReceipt == 'Y') {
+                $report[$count][5] = randomPassword(40);
+            }
+            else {
+                $report[$count][5] = null;
+            }
+        }
+    }
+
+    return $report;
+}
+
 //Build an email signautre for the specified user
 function getSignature($guid, $connection2, $gibbonPersonID)
 {
@@ -27,8 +56,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
         $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
+    } catch (PDOException $e) { }
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -47,7 +75,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
     return $return;
 }
 
-//Mode may be "print" (return table of messages), "count" (return message count) or "result" (return database query result) 
+//Mode may be "print" (return table of messages), "count" (return message count) or "result" (return database query result)
 function getMessages($guid, $connection2, $mode = '', $date = '')
 {
     $return = '';
@@ -447,7 +475,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
         }
     }
-    
+
     //SPIT OUT RESULTS
     if ($mode == 'result') {
         $resultReturn = array();

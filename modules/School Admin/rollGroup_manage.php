@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo __($guid, 'Form Tutors');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Space');
+            echo __($guid, 'Location');
             echo '</th>';
             echo '<th>';
             echo __($guid, 'Website');

@@ -1233,3 +1233,10 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
 }
+
+/* V13 NEW CLASSES */
+td.wordWrap {
+	overflow-wrap: break-word;
+  	word-wrap: break-word; 
+  	word-break: break-word;
+}

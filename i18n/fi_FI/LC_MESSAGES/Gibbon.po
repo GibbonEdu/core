@@ -58600,7 +58600,7 @@ msgstr ""
 #: modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php:87
 #: modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php:67
 #: modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php:86
-msgid "Thank you for confirmed receipt and reading of this email."
+msgid "Thank you for confirming receipt and reading of this email."
 msgstr ""
 
 #: modules/Planner/planner_view_full.php:686 modules/Planner/planner_view_full.php:696

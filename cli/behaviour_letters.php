@@ -254,7 +254,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     $gibbonBehaviourLetterID = $connection2->lastInsertID();
 
                                     //Notify tutor(s)
-                                    $notificationText = sprintf(___($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
                                     if ($row['gibbonPersonIDTutor'] != '') {
                                         setNotification($connection2, $guid, $row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
@@ -266,7 +266,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     }
 
                                     //Notify teachers
-                                    $notificationText = sprintf(___($guid, 'A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
                                     try {
                                         $dataTeachers = array('gibbonPersonID' => $row['gibbonPersonID']);
                                         $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";

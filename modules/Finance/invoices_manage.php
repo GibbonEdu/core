@@ -422,62 +422,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 								echo '<option value="reminders">'.__($guid, 'Issue Reminders').'</option>';
 							}
 							echo '<option value="export">'.__($guid, 'Export').'</option>'; ?>
-										</select>
-										<script type="text/javascript">
-											var action=new LiveValidation('action');
-											action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-										<?php
-									echo '</div>';
+						</select>
+						<script type="text/javascript">
+							var action=new LiveValidation('action');
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+						</script>
+						<?php
+						echo '</div>';
 
-								echo "<table cellspacing='0' style='width: 100%'>";
-								echo "<tr class='head'>";
-								echo "<th style='width: 110px'>";
-								echo __($guid, 'Student').'<br/>';
-								echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Invoice To').'</span>';
-								echo '</th>';
-								echo "<th style='width: 110px'>";
-								echo __($guid, 'Roll Group');
-								echo '</th>';
-								echo "<th style='width: 100px'>";
-								echo __($guid, 'Status');
-								echo '</th>';
-								echo "<th style='width: 90px'>";
-								echo __($guid, 'Schedule');
-								echo '</th>';
-								echo "<th style='width: 120px'>";
-								echo __($guid, 'Total')." <span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
-								echo "<span style='font-style: italic; font-size: 75%'>".__($guid, 'Paid').' ('.$_SESSION[$guid]['currency'].')</span>';
-								echo '</th>';
-								echo "<th style='width: 80px'>";
-								echo __($guid, 'Issue Date').'<br/>';
-								echo "<span style='font-style: italic; font-size: 75%'>".__($guid, 'Due Date').'</span>';
-								echo '</th>';
-								echo "<th style='width: 140px'>";
-								echo __($guid, 'Actions');
-								echo '</th>';
-								echo '<th>'; ?>
-									<script type="text/javascript">
-										$(function () {
-											$('.checkall').click(function () {
-												$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-											});
-										});
-									</script>
-								<?php
-								echo "<input type='checkbox' class='checkall'>";
-								echo '</th>';
-								echo '</tr>';
+						echo "<table cellspacing='0' style='width: 100%'>";
+						echo "<tr class='head'>";
+						echo "<th style='width: 110px'>";
+						echo __($guid, 'Student').'<br/>';
+						echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Invoice To').'</span>';
+						echo '</th>';
+						echo "<th style='width: 110px'>";
+						echo __($guid, 'Roll Group');
+						echo '</th>';
+						echo "<th style='width: 100px'>";
+						echo __($guid, 'Status');
+						echo '</th>';
+						echo "<th style='width: 90px'>";
+						echo __($guid, 'Schedule');
+						echo '</th>';
+						echo "<th style='width: 120px'>";
+						echo __($guid, 'Total')." <span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
+						echo "<span style='font-style: italic; font-size: 75%'>".__($guid, 'Paid').' ('.$_SESSION[$guid]['currency'].')</span>';
+						echo '</th>';
+						echo "<th style='width: 80px'>";
+						echo __($guid, 'Issue Date').'<br/>';
+						echo "<span style='font-style: italic; font-size: 75%'>".__($guid, 'Due Date').'</span>';
+						echo '</th>';
+						echo "<th style='width: 140px'>";
+						echo __($guid, 'Actions');
+						echo '</th>';
+						echo '<th>'; ?>
+							<script type="text/javascript">
+								$(function () {
+									$('.checkall').click(function () {
+										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+									});
+								});
+							</script>
+						<?php
+						echo "<input type='checkbox' class='checkall'>";
+						echo '</th>';
+						echo '</tr>';
 
-								$count = 0;
+						$count = 0;
+						$rowNum = 'odd';
+						while ($row = $result->fetch()) {
+							if ($count % 2 == 0) {
+								$rowNum = 'even';
+							} else {
 								$rowNum = 'odd';
-								while ($row = $result->fetch()) {
-									if ($count % 2 == 0) {
-										$rowNum = 'even';
-									} else {
-										$rowNum = 'odd';
-									}
-									++$count;
+							}
+							++$count;
 
                             //Work out extra status information
                             $statusExtra = '';

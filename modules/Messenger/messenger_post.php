@@ -43,9 +43,6 @@ else {
 		print "</div>" ;
 	}
 	else {
-		//Get role category for later (we use it to show/hide canned response option)
-		$roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-
 		//Proceed!
 		print "<div class='trail'>" ;
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'New Message') . "</div>" ;
@@ -296,7 +293,8 @@ else {
 					</td>
 				</tr>
 				<?php
-				if ($roleCategory == 'Staff') {
+				$cannedResponse = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", 'New Message_cannedResponse');
+				if ($cannedResponse) {
 					try {
 						$dataSelect=array();
 						$sqlSelect="SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject" ;
@@ -384,6 +382,57 @@ else {
 					</td>
 				</tr>
 
+				<?php
+				if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
+					echo '<input type="hidden" name="emailReceipt" value="N"/>';
+				}
+				else{
+					?>
+					<tr class='break'>
+						<td colspan=2>
+							<h3><?php print __($guid, 'Email Read Receipts') ?></h3>
+						</td>
+					</tr>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$("#receiptRow").css("display","none");
+							emailReceiptText.disable() ;
+							$(".emailReceipt").click(function(){
+								if ($('input[name=emailReceipt]:checked').val()=="Y" ) {
+									$("#receiptRow").slideDown("fast", $("#receiptRow").css("display","table-row"));
+									emailReceiptText.enable() ;
+								} else {
+									$("#receiptRow").css("display","none");
+									emailReceiptText.disable() ;
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td style='width: 275px'>
+							<b><?php print __($guid, 'Enable Read Receipts') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Each email recipient will receive a personalised confirmation link.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="emailReceipt" class="emailReceipt" value="Y"/> <?php print __($guid, 'Yes') ?>
+							<input checked type="radio" name="emailReceipt" class="emailReceipt" value="N"/> <?php print __($guid, 'No') ?>
+						</td>
+					</tr>
+					<tr id="receiptRow">
+						<td>
+							<b><?php print __($guid, 'Link Text') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Confirmation link text to display to recipient.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<textarea name="emailReceiptText" id="emailReceiptText" rows=4 class="standardWidth"><?php echo __($guid, 'By clicking on this link I agree that I have read, and agree to, the text contained within this email.') ?></textarea>
+							<script type="text/javascript">
+								var emailReceiptText=new LiveValidation('emailReceiptText');
+								emailReceiptText.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<?php
+				} ?>
 				<tr class='break'>
 					<td colspan=2>
 						<h3><?php print __($guid, 'Targets') ?></h3>

@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             } else {
                 //Let's go!
                 $row = $result->fetch();
+                $gibbonPersonID = $row['gibbonPersonID'];
 
                 if ($search != '' or $allStaff != '') {
                     echo "<div class='linkTop'>";
@@ -81,14 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 }
                 echo '<h3>'.__($guid, 'General Information').'</h3>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Basic Information') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Person') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Initials') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Must be unique if set.') ?></span>
 							</td>
@@ -122,9 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								</script>
 							</td>
 						</tr>
-					
+
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Type') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -167,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Job Title') ?></b><br/>
 							</td>
 							<td class="right">
@@ -175,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Start Date') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Users\'s first day at school.') ?><br/> <?php echo __($guid, 'Format:').' ';
 								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -197,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-                					?>." } ); 
+                					?>." } );
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -207,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'End Date') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Users\'s last day at school.') ?><br/> <?php echo __($guid, 'Format:').' ';
                 if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -229,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-                					?>." } ); 
+                					?>." } );
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -238,9 +239,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								</script>
 							</td>
 						</tr>
-					
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'First Aid') ?></h3>
 							</td>
 						</tr>
@@ -249,15 +250,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							$(document).ready(function(){
 								$("#firstAidQualified").change(function(){
 									if ($('select.firstAidQualified option:selected').val()=="Y" ) {
-										$("#firstAidExpiryRow").slideDown("fast", $("#firstAidExpiryRow").css("display","table-row")); 
+										$("#firstAidExpiryRow").slideDown("fast", $("#firstAidExpiryRow").css("display","table-row"));
 									} else {
 										$("#firstAidExpiryRow").css("display","none");
-									} 
+									}
 								 });
 							});
 						</script>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'First Aid Qualified?') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -270,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr id='firstAidExpiryRow' <?php if ($row['firstAidQualified'] != 'Y') { echo "style='display: none'"; } ?>>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'First Aid Expiry') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -289,14 +290,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								</script>
 							</td>
 						</tr>
-					
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Biography') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Country Of Origin') ?></b><br/>
 							</td>
 							<td class="right">
@@ -317,12 +318,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 										}
 										echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Qualifications') ?></b><br/>
 							</td>
 							<td class="right">
@@ -330,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Grouping') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Used to group staff when creating a staff directory.') ?></span>
 							</td>
@@ -339,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Grouping Priority') ?></b><br/>
 								<span style="font-size: 90%"><?php echo __($guid, '<i>Higher numbers move teachers up the order within their grouping.') ?></span>
 							</td>
@@ -352,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Biography') ?></b><br/>
 							</td>
 							<td class="right">
@@ -371,6 +372,72 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 					</table>
 				</form>
 				<?php
+                echo '<h3>'.__($guid, 'Facilities').'</h3>';
+                try {
+                    $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\' FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
+                    UNION
+                    (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Roll Group\' AS usageType, NULL AS \'exception\' FROM gibbonRollGroup JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE (gibbonPersonIDTutor=:gibbonPersonID2 OR gibbonPersonIDTutor2=:gibbonPersonID3 OR gibbonPersonIDTutor3=:gibbonPersonID4) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID1)
+                    UNION
+                    (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Timetable\' AS usageType, gibbonTTDayRowClassException.gibbonPersonID AS \'exception\' FROM gibbonSpace JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND (gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID6 OR gibbonTTDayRowClassException.gibbonPersonID IS NULL)) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID5)
+                    ORDER BY name';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+
+                echo "<div class='linkTop'>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                echo '</div>';
+
+                if ($result->rowCount() < 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'There are no records to display.');
+                    echo '</div>';
+                } else {
+                    echo "<table cellspacing='0' style='width: 100%'>";
+                    echo "<tr class='head'>";
+                    echo '<th>';
+                    echo __($guid, 'Name');
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Usage').'<br/>';
+                    echo '</th>';
+                    echo '<th>';
+                    echo __($guid, 'Actions');
+                    echo '</th>';
+                    echo '</tr>';
+
+                    $count = 0;
+                    $rowNum = 'odd';
+                    while ($row = $result->fetch()) {
+                        if ($row['exception'] == null) {
+                            if ($count % 2 == 0) {
+                                $rowNum = 'even';
+                            } else {
+                                $rowNum = 'odd';
+                            }
+                            ++$count;
+
+                            echo "<tr class=$rowNum>";
+                            echo '<td>';
+                            echo $row['name'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['usageType'];
+                            echo '</td>';
+                            echo '<td>';
+                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable')
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            echo '</td>';
+                            echo '</tr>';
+                        }
+                    }
+                    echo '</table>';
+                }
+
+
                 if ($highestAction == 'Manage Staff_confidential') {
                     echo '<h3>'.__($guid, 'Contracts').'</h3>';
                     try {

@@ -66,9 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     }
 
     $today = date('Y-m-d'); ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Roll Group') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -101,12 +101,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-							?>." } ); 
+							?>." } );
 						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                                
+
                                 $rowLog = $resultLog->fetch();
 
                                 if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 }
 
                                 $attendance->renderMiniHistory( $rowRollGroup['gibbonPersonID'] );
-                                
+
                                 echo '</td>';
 
                                 if ($count % $columns == ($columns - 1)) {

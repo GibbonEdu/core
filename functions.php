@@ -490,7 +490,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                         }
                     }
                     $planner .= '</td>';
-                    $planner .= '<td>';
+                    $planner .= '<td id="wordWrap">';
                     $planner .= $row['summary'];
                     $planner .= '</td>';
                     $planner .= '<td>';
@@ -922,7 +922,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                         }
                     }
                     $planner .= '</td>';
-                    $planner .= '<td>';
+                    $planner .= '<td id="wordWrap">';
                     $planner .= $row['summary'];
                     $planner .= '</td>';
                     $planner .= '<td>';
@@ -1131,7 +1131,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 $plannerOutput .= '<td>';
                 $plannerOutput .= '<b>'.$row['course'].'.'.$row['class'].'</b><br/>';
                 $plannerOutput .= '</td>';
-                $plannerOutput .= '<td>';
+                $plannerOutput .= '<td id="wordWrap">';
                 $plannerOutput .= $row['name'].'<br/>';
                 $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
                 if (isset($unit[0])) {
@@ -2135,48 +2135,6 @@ function getFastFinder($connection2, $guid)
     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
         $classIsAccessible = true;
     }
-        //Get list
-        try {
-            $dataList = array('gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent']);
-            $sqlList = "(SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID)";
-            if ($staffIsAccessible == true) {
-                $sqlList .= " UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."'))";
-            }
-            if ($studentIsAccessible == true) {
-                $dataList['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $sqlList .= " UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') AS name, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID)";
-            }
-            if ($classIsAccessible) {
-                if ($highestActionClass == 'Lesson Planner_viewEditAllClasses' or $highestActionClass == 'Lesson Planner_viewAllEditMyClasses') {
-                    $dataList['gibbonSchoolYearID2'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                    $sqlList .= " UNION (SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, 'Class' AS type FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2)";
-                } else {
-                    $dataList['gibbonSchoolYearID3'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                    $dataList['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
-                    $sqlList .= " UNION (SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, 'Class' AS type FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonPersonID=:gibbonPersonID)";
-                }
-            }
-            $sqlList .= ' ORDER BY type, name';
-
-            $resultList = $connection2->prepare($sqlList);
-            $resultList->execute($dataList);
-        } catch (PDOException $e) {
-            $output .= $e->getMessage();
-        }
-
-    $studentCount = 0;
-    $list = '';
-    while ($rowList = $resultList->fetch()) {
-        $list .= '{id: "'.substr($rowList['type'], 0, 3).'-'.$rowList['id'].'", name: "'.htmlPrep($rowList['type']).' - '.htmlPrep($rowList['name']).'"},';
-        if ($rowList['name'] == 'Sound Alarm') { //Special lockdown entry
-                if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php')) {
-                    $list .= '{id: "'.substr($rowList['type'], 0, 3).'-'.$rowList['id'].'", name: "'.htmlPrep($rowList['type']).' - Lockdown"},';
-                }
-        }
-        if ($rowList['type'] == 'Student') {
-            ++$studentCount;
-        }
-    }
 
     $output .= '<style>';
     $output .= 'ul.token-input-list-facebook { width: 275px; float: left; height: 25px!important; }';
@@ -2205,17 +2163,15 @@ function getFastFinder($connection2, $guid)
     $output .= '<tr>';
     $output .= "<td style='vertical-align: top; border: none'>";
     $output .= "<input class='topFinder' style='width: 275px' type='text' id='id' name='id' />";
-    $output .= "<script type='text/javascript'>";
-    $output .= '$(document).ready(function() {';
-    $output .= '$("#id").tokenInput([';
-    $output .= substr($list, 0, -1);
-    $output .= '],';
-    $output .= '{theme: "facebook",';
-    $output .= 'hintText: "Start typing a name...",';
-    $output .= 'allowCreation: false,';
-    $output .= 'preventDuplicates: true,';
-    $output .= 'tokenLimit: 1});';
-    $output .= '});';
+    $output .= '<script type="text/javascript">';
+        $output .= '$(document).ready(function() {';
+        $output .= '$("#id").tokenInput("'.$_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php",';
+        $output .= '{theme: "facebook",';
+        $output .= 'hintText: "Start typing a name...",';
+        $output .= 'allowCreation: false,';
+        $output .= 'preventDuplicates: true,';
+        $output .= 'tokenLimit: 1});';
+        $output .= '});';
     $output .= '</script>';
     $output .= "<script type='text/javascript'>";
     $output .= "var id=new LiveValidation('id');";
@@ -2227,11 +2183,23 @@ function getFastFinder($connection2, $guid)
     $output .= '</td>';
     $output .= '</tr>';
     if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
-        $output .= '<tr>';
-        $output .= "<td style='vertical-align: top' colspan=2>";
-        $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
-        $output .= '</td>';
-        $output .= '</tr>';
+
+        try {
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
+            $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID) FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
+            $resultStudentCount = $connection2->prepare($sql);
+            $resultStudentCount->execute($data);
+        } catch (PDOException $e) {}
+
+        if ($resultStudentCount->rowCount() > 0) {
+            $studentCount = $resultStudentCount->fetchColumn(0);
+
+            $output .= '<tr>';
+            $output .= "<td style='vertical-align: top' colspan=2>";
+            $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
+            $output .= '</td>';
+            $output .= '</tr>';
+        }
     }
     $output .= '</table>';
     $output .= '</form>';

@@ -38,14 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
     //Proceed!
     $name = $_POST['name'];
     $type = $_POST['type'];
-    $gibbonPersonID1 = $_POST['gibbonPersonID1'];
-    if ($gibbonPersonID1 == '') {
-        $gibbonPersonID1 = 'NULL';
-    }
-    $gibbonPersonID2 = $_POST['gibbonPersonID2'];
-    if ($gibbonPersonID2 == '') {
-        $gibbonPersonID2 = 'NULL';
-    }
     $capacity = $_POST['capacity'];
     $computer = $_POST['computer'];
     $computerStudent = $_POST['computerStudent'];
@@ -82,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'type' => $type, 'gibbonPersonID1' => $gibbonPersonID1, 'gibbonPersonID2' => $gibbonPersonID2, 'capacity' => $capacity, 'computer' => $computer, 'computerStudent' => $computerStudent, 'projector' => $projector, 'tv' => $tv, 'dvd' => $dvd, 'hifi' => $hifi, 'speakers' => $speakers, 'iwb' => $iwb, 'phoneInternal' => $phoneInternal, 'phoneExternal' => $phoneExternal, 'comment' => $comment);
-                $sql = 'INSERT INTO gibbonSpace SET name=:name, type=:type, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, capacity=:capacity, computer=:computer, computerStudent=:computerStudent, projector=:projector, tv=:tv, dvd=:dvd, hifi=:hifi, speakers=:speakers, iwb=:iwb, phoneInternal=:phoneInternal, phoneExternal=:phoneExternal, comment=:comment';
+                $data = array('name' => $name, 'type' => $type, 'capacity' => $capacity, 'computer' => $computer, 'computerStudent' => $computerStudent, 'projector' => $projector, 'tv' => $tv, 'dvd' => $dvd, 'hifi' => $hifi, 'speakers' => $speakers, 'iwb' => $iwb, 'phoneInternal' => $phoneInternal, 'phoneExternal' => $phoneExternal, 'comment' => $comment);
+                $sql = 'INSERT INTO gibbonSpace SET name=:name, type=:type, capacity=:capacity, computer=:computer, computerStudent=:computerStudent, projector=:projector, tv=:tv, dvd=:dvd, hifi=:hifi, speakers=:speakers, iwb=:iwb, phoneInternal=:phoneInternal, phoneExternal=:phoneExternal, comment=:comment';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
