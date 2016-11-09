@@ -65,7 +65,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
     // ACTIONS
     try {
         $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'] );
-        $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type  
+        $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name  
                 FROM gibbonModule 
                 JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
                 JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
@@ -78,14 +78,14 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
         $resultList->execute($data);
     } catch (PDOException $e) { die($resultError); }
 
-    if ($resultList->rowCount() > 0) $resultSet += $resultList->fetchAll();
+    if ($resultList->rowCount() > 0) $resultSet['Action'] = $resultList->fetchAll();
        
     // CLASSES
     if ($classIsAccessible) {
         try { 
             if ($highestActionClass == 'Lesson Planner_viewEditAllClasses' or $highestActionClass == 'Lesson Planner_viewAllEditMyClasses') {
                 $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sql = "SELECT 'Class' AS type, gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name  
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name  
                         FROM gibbonCourseClass 
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
                         WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 
@@ -95,7 +95,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                         ORDER BY name";
             } else {
                 $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID3' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'] );
-                $sql = "SELECT 'Class' AS type, gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name  
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name  
                         FROM gibbonCourseClassPerson 
                         JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
@@ -110,14 +110,14 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
             $resultList->execute($data);
         } catch (PDOException $e) { die($resultError); }
 
-        if ($resultList->rowCount() > 0) $resultSet += $resultList->fetchAll();
+        if ($resultList->rowCount() > 0) $resultSet['Class'] = $resultList->fetchAll();
     }
     
     // STAFF
     if ($staffIsAccessible == true) {
         try {
             $data = array('search' => '%'.$searchTerm.'%', 'today' => date('Y-m-d') );
-            $sql = "SELECT 'Staff' AS type, gibbonPerson.gibbonPersonID AS id, 
+            $sql = "SELECT gibbonPerson.gibbonPersonID AS id, 
                     (CASE WHEN gibbonPerson.username LIKE :search 
                         THEN concat(surname, ', ', preferredName, ' (', gibbonPerson.username, ')') 
                         ELSE concat(surname, ', ', preferredName) END) AS name 
@@ -134,14 +134,14 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
             $resultList->execute($data);
         } catch (PDOException $e) { die($resultError); }
 
-        if ($resultList->rowCount() > 0) $resultSet += $resultList->fetchAll();
+        if ($resultList->rowCount() > 0) $resultSet['Staff'] = $resultList->fetchAll();
     }
 
     // STUDENTS
     if ($studentIsAccessible == true) {
         try {
             $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
-            $sql = "SELECT 'Student' AS type, gibbonPerson.gibbonPersonID AS id, 
+            $sql = "SELECT gibbonPerson.gibbonPersonID AS id, 
                     (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonPerson.username, ')') 
                         WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (ID: ', gibbonPerson.studentID, ')') 
                         WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', preferredName, ' (', gibbonPerson.firstName, ', ', gibbonRollGroup.name, ')') 
@@ -149,9 +149,9 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup 
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
                     AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
-                    AND status='FULL' 
+                    AND status='Full' 
                     AND (dateStart IS NULL OR dateStart<=:today) 
-                    AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                    AND (dateEnd IS NULL OR dateEnd>=:today) 
                     AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
                     AND (gibbonPerson.surname LIKE :search 
                         OR gibbonPerson.firstName LIKE :search 
@@ -164,15 +164,17 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
             $resultList->execute($data);
         } catch (PDOException $e) { die($resultError); }
 
-        if ($resultList->rowCount() > 0) $resultSet += $resultList->fetchAll();
+        if ($resultList->rowCount() > 0) $resultSet['Student'] = $resultList->fetchAll();
     }
     
     $list = '';
-    foreach ($resultSet as $rowList) {
-        $list .= '{"id": "'.substr($rowList['type'], 0, 3).'-'.$rowList['id'].'", "name": "'.htmlPrep($rowList['type']).' - '.htmlPrep($rowList['name']).'"},';
+    foreach ($resultSet as $type => $results) {
+        foreach ($results as $token) {
+            $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep($type).' - '.htmlPrep($token['name']).'"},';
 
-        if ($alarmIsAccessible && $rowList['name'] == 'Sound Alarm') { // Special lockdown entry
-            $list .= '{"id": "'.substr($rowList['type'], 0, 3).'-'.$rowList['id'].'", "name": "'.htmlPrep($rowList['type']).' - Lockdown"},';
+            if ($alarmIsAccessible && $token['name'] == 'Sound Alarm') { // Special lockdown entry
+                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep($type).' - Lockdown"},';
+            }
         }
     }
 
