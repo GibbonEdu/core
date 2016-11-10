@@ -29,6 +29,15 @@ if (ini_get('mbstring.func_overload') & 2) {
 
 class Autoloader // Implements PSR4 Autoloader
 {
+    var $path;
+
+    /**
+     * Construct
+     */
+    public function __construct( $path ) {
+        $this->path = rtrim($path, '/ ');
+    }
+
     /**
      * An associative array where the key is a namespace prefix and the value
      * is an array of base directories for classes in that namespace.
@@ -160,7 +169,7 @@ class Autoloader // Implements PSR4 Autoloader
      */
     protected function requireFile($file)
     {
-		$file = GIBBON_ROOT . $file ;
+		$file = $this->path .'/'. $file ;
         if (file_exists($file)) {
             require $file;
             return true;

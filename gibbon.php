@@ -13,27 +13,18 @@ if (!defined('GIBBON_ROOT')) {
     $dr = rtrim(str_replace('\\', '/', $dr), '/');
     define('GIBBON_ROOT', $dr.'/');
 
-    $pageURL = 'http';
-    if (isset($_SERVER['HTTPS'])) {
-        $pageURL .= 's';
-    }
-    $pageURL .= '://';
-    if ($_SERVER['SERVER_PORT'] != '80') {
-        $pageURL .= $_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].dirname($_SERVER['PHP_SELF']);
-    } else {
-        $pageURL .= $_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']);
-    }
-    $pageURL = rtrim($pageURL, '/ ').'/';
-    define('GIBBON_URL', $pageURL);
-}
+    $http = (isset($_SERVER['HTTPS']))? 'https://' : 'http://';
+    $port = ($_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
 
-if (!defined('GIBBON_ROOT')) {
-    define('GIBBON_ROOT', str_replace(array('/src', '\\src'), '', dirname(__FILE__)).'/');
+    $pageURL = $http . $_SERVER['SERVER_NAME'] . $port . dirname($_SERVER['PHP_SELF']);
+    $pageURL = rtrim($pageURL, '/ ').'/';
+
+    define('GIBBON_URL', $pageURL);
 }
 
 require_once GIBBON_ROOT.'src/Autoloader.php';
 
-$loader = new Autoloader();
+$loader = new Autoloader( GIBBON_ROOT );
 
 $loader->addNameSpace('Gibbon\\', 'src/Gibbon');
 $loader->addNameSpace('Library\\', 'src/Library');
