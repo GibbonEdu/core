@@ -45,8 +45,9 @@ class trans
 	 * @since	16th April 2016
 	 * @return	void
 	 */
-	public function __construct( session $session )
+	public function __construct( sqlConnection $pdo, session $session )
 	{
+		$this->pdo = $pdo;
 		$this->session = $session;
 	}
 
@@ -60,15 +61,16 @@ class trans
 	 */
 	public function setStringReplacementList()
 	{
-		$this->pdo = new sqlConnection();
-		$this->session->set('stringReplacement', array()) ;
+		$data = array();
 		$sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original" ;
-		$result = $this->pdo->executeQuery(array(), $sql);
+		$result = $this->pdo->executeQuery($data, $sql);
 
-		if ($result->rowCount()>0)
+		if ($result->rowCount()>0) {
 			$this->session->set('stringReplacement', $result->fetchAll()) ;
-		else
-			$this->session->set('stringReplacement', false) ;
+		}
+		else {
+			$this->session->set('stringReplacement', array() );
+		}
 	}
 	/**
 	 * Custom translation function to allow custom string replacement
@@ -80,44 +82,47 @@ class trans
 	 * @param	boolean	Use guid.
 	 * @return	string	Translated Text
 	 */
-//Custom translation function to allow custom string replacement
 	public function __($text, $guid = true)
 	{
-		$guid = !empty($guid);
-		$replacements = $this->session->get('stringReplacement', $guid) !== NULL ? $this->session->get('stringReplacement', $guid) : array() ;
+		$replacements = $this->session->get('stringReplacement');
+
+		// Do this once per session, only if the value doesn't exist
+		if ($replacements === null) {
+			$this->setStringReplacementList();
+		}
 
 		$text=_($text) ;
 
-		if (isset($replacements)) {
-			if (is_array($replacements)) {
-				foreach ($replacements AS $replacement) {
-					if ($replacement["mode"]=="Partial") { //Partial match
-						if ($replacement["caseSensitive"]=="Y") {
-							if (strpos($text, $replacement["original"])!==FALSE) {
-								$text=str_replace($replacement["original"], $replacement["replacement"], $text) ;
-							}
-						}
-						else {
-							if (stripos($text, $replacement["original"])!==FALSE) {
-								$text=str_ireplace($replacement["original"], $replacement["replacement"], $text) ;
-							}
-						}
-					}
-					else { //Whole match
-						if ($replacement["caseSensitive"]=="Y") {
-							if ($replacement["original"]==$text) {
-								$text=$replacement["replacement"] ;
-							}
-						}
-						else {
-							if (strtolower($replacement["original"])==strtolower($text)) {
-								$text=$replacement["replacement"] ;
-							}
-						}
-					}
+		if (isset($replacements) && is_array($replacements)) {
 
+			foreach ($replacements AS $replacement) {
+				if ($replacement["mode"]=="Partial") { //Partial match
+					if ($replacement["caseSensitive"]=="Y") {
+						if (strpos($text, $replacement["original"])!==FALSE) {
+							$text=str_replace($replacement["original"], $replacement["replacement"], $text) ;
+						}
+					}
+					else {
+						if (stripos($text, $replacement["original"])!==FALSE) {
+							$text=str_ireplace($replacement["original"], $replacement["replacement"], $text) ;
+						}
+					}
 				}
+				else { //Whole match
+					if ($replacement["caseSensitive"]=="Y") {
+						if ($replacement["original"]==$text) {
+							$text=$replacement["replacement"] ;
+						}
+					}
+					else {
+						if (strtolower($replacement["original"])==strtolower($text)) {
+							$text=$replacement["replacement"] ;
+						}
+					}
+				}
+
 			}
+			
 		}
 
 		return $text ;

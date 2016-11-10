@@ -17,26 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Prevent breakage of back button on POST pages
-ini_set('session.cache_limiter', 'private');
-session_cache_limiter(false);
 
-//Gibbon system-wide includes
-if (file_exists('./config.php')) {
-    include './config.php';
-} else { //no config, so go to installer
-    $URL = './installer/install.php';
-    header("Location: {$URL}");
-    exit();
-}
-include './functions.php';
-include './version.php';
+// Gibbon system-wide include
+include './gibbon.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -95,8 +79,6 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
         bind_textdomain_codeset('gibbon', 'UTF-8');
     }
 }
-
-setStringReplacementList($connection2, $guid);
 
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {

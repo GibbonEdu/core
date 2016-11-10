@@ -39,16 +39,28 @@ class session
 	 * @since	15th April 2016
 	 * @return	void
 	 */
-	public function __construct($guid = null)
+	public function __construct( config $config = null )
 	{
+		//Prevent breakage of back button on POST pages
+		ini_set('session.cache_limiter', 'private');
+		session_cache_limiter(false);
+
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
 
-		if (empty($guid)) include GIBBON_ROOT.'config.php';
+		// Test for config, Backwards compatability
+		if (empty($config)) $config = new config();
 
-		$this->guid = $guid;
+		$this->guid = $config->get('guid');
 	}
 
+	/**
+	 * guid 	Return the guid string
+	 *
+	 * @version	10th November 2016
+	 * @since	10th November 2016
+	 * @return	string
+	 */
 	public function guid() {
 		return $this->guid;
 	}
@@ -79,6 +91,23 @@ class session
 	public function set($name, $value)
 	{
 		$_SESSION[$this->guid][$name] = $value ;
+
+		return $this;
+	}
+
+	/**
+	 * setAll Values
+	 *
+	 * @version	10th November 2016
+	 * @since	10th November 2016
+	 * @param	array	Array of name => value pairs
+	 * @return	object	Gibbon\session
+	 */
+	public function setAll( array $values )
+	{
+		foreach ($values as $name => $value) {
+			$this->set($name, $value);
+		}
 
 		return $this;
 	}

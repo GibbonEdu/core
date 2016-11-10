@@ -30,10 +30,10 @@ use Library\Yaml\Yaml ;
  */
 class config
 {
-	private $dbHost;
-	private $dbName;
-	private $dbUser;
-	private $dbPWord;
+	private $databaseServer;
+	private $databaseName;
+	private $databaseUsername;
+	private $databasePassword;
 	private $guid;
 	private $caching;
 	private $baseDir;
@@ -49,12 +49,13 @@ class config
 	 */
 	public function __construct()
 	{
-		if ( file_exists(GIBBON_ROOT . "config.php"))
-			include GIBBON_ROOT.'config.php';
-		$this->dbHost = $databaseServer ;
-		$this->dbUser = $databaseUsername ;
-		$this->dbPWord = $databasePassword ;
-		$this->dbName = $databaseName ;
+		if ( file_exists(GIBBON_ROOT . "/config.php"))
+			include GIBBON_ROOT.'/config.php';
+		
+		$this->databaseServer = $databaseServer ;
+		$this->databaseUsername = $databaseUsername ;
+		$this->databasePassword = $databasePassword ;
+		$this->databaseName = $databaseName ;
 
 		//Sets globally unique id, to allow multiple installs on the server server.
 		$this->guid = $guid ;
@@ -62,10 +63,10 @@ class config
 		//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.
 		$this->caching = $caching ;
 
-		$this->baseDir = rtrim(GIBBON_ROOT, '/');
+		$this->baseDir = GIBBON_ROOT;
 		$this->baseURL = GIBBON_URL;
 		
-		include GIBBON_ROOT.'version.php';
+		include GIBBON_ROOT.'/version.php';
 		$this->version = $version ;
 	}
 
@@ -95,7 +96,7 @@ class config
 	public function getCurrencyList($name, $value, $style="width: 302px; ")
 	{
 		$yaml = new Yaml();
-		$currencies = $yaml::parse( file_get_contents(GIBBON_ROOT . "config/currency.yml") );
+		$currencies = $yaml::parse( file_get_contents(GIBBON_ROOT . "/config/currency.yml") );
 
 		$output = "<select name='".$name."' id='".$name."' style='".$style."'>\n";
 		foreach ($currencies as $optGroup=>$list)
@@ -125,26 +126,23 @@ class config
 	 */
 	private function upgradeConfig()
 	{
-		include GIBBON_ROOT . 'config.php';
+		include GIBBON_ROOT . '/config.php';
 
 		$config = array();
-		$config['dbHost'] = $databaseServer ;
-		$config['dbUser'] = $databaseUsername ;
-		$config['dbPWord'] = $databasePassword ;
-		$config['dbName'] = $databaseName ;
+		$config['databaseServer'] = $databaseServer ;
+		$config['databaseUsername'] = $databaseUsername ;
+		$config['databasePassword'] = $databasePassword ;
+		$config['databaseName'] = $databaseName ;
 		$config['guid'] = $guid; 
 		$config['caching'] = 10 ; 
 		
-		file_put_contents(GIBBON_ROOT . 'config/config.yml', Yaml::dump($config));
+		file_put_contents(GIBBON_ROOT . '/config/config.yml', Yaml::dump($config));
 
 		foreach($config as $name=>$value)
 			$this->$name = $value ;
-		$this->baseDir	= rtrim(GIBBON_ROOT, '/');
-		$this->baseURL	= rtrim(GIBBON_URL);
-		unlink(GIBBON_ROOT . 'config.php');
-		unlink(GIBBON_ROOT . 'version.php');
+		$this->baseDir	= GIBBON_ROOT;
+		$this->baseURL	= GIBBON_URL;
+		unlink(GIBBON_ROOT . '/config.php');
+		unlink(GIBBON_ROOT . '/version.php');
 	}
 }
-
-
-include GIBBON_ROOT.'config.php';

@@ -6,23 +6,40 @@
  *
  * @since	7th April 2016
  */
-require_once dirname(__FILE__).'/functions.php';
+
+@session_start();
+
+// Handle Gibbon installation
+if (file_exists(dirname(__FILE__).'/config.php') == false) {
+    // test if installer already invoked and ignore.
+    if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
+        $URL = './installer/install.php';
+        header("Location: {$URL}");
+    }
+    exit();
+}
 
 if (!defined('GIBBON_ROOT')) {
-    $dr = dirname(__FILE__);
-    $dr = rtrim(str_replace('\\', '/', $dr), '/');
-    define('GIBBON_ROOT', $dr.'/');
+    $path = dirname(__FILE__);
+    $path = rtrim(str_replace('\\', '/', $path), '/');
+    define('GIBBON_ROOT', $path);
 
     $http = (isset($_SERVER['HTTPS']))? 'https://' : 'http://';
     $port = ($_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
 
     $pageURL = $http . $_SERVER['SERVER_NAME'] . $port . dirname($_SERVER['PHP_SELF']);
-    $pageURL = rtrim($pageURL, '/ ').'/';
+    $pageURL = rtrim($pageURL, '/ ');
 
     define('GIBBON_URL', $pageURL);
 }
 
-require_once GIBBON_ROOT.'src/Autoloader.php';
+// Require the system-wide includes
+require_once GIBBON_ROOT.'/config.php';
+require_once GIBBON_ROOT.'/functions.php';
+require_once GIBBON_ROOT.'/version.php';
+
+// Setup the autoloader
+require_once GIBBON_ROOT.'/src/Autoloader.php';
 
 $loader = new Autoloader( GIBBON_ROOT );
 
@@ -31,18 +48,16 @@ $loader->addNameSpace('Library\\', 'src/Library');
 
 $loader->register();
 
-if (file_exists(GIBBON_ROOT.'config.php')) {
-    include GIBBON_ROOT.'config.php';
-} else {
-    if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
-        // test if installer already invoked and ignore.
+// New configuration object
+$config = new Gibbon\config();
 
-        $URL = GIBBON_URL.'installer/install.php';
-        header("Location: {$URL}");
-    }
-}
+// New PDO DB connection
+$pdo = new Gibbon\sqlConnection( $config );
+$connection2 = $pdo->getConnection();
 
-// Create objects for core classes
-$session = new Gibbon\session( $guid );
-$trans = new Gibbon\trans( $session );
+// Create the core objects
+$session = new Gibbon\session( $config );
+$trans = new Gibbon\trans( $pdo, $session );
 
+
+?>

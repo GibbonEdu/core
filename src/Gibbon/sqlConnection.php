@@ -71,14 +71,12 @@ class sqlConnection
 	 * @param	string	error Message
 	 * @return	Object	PDO Connection
 	 */
-	public function __construct($message = NULL)
+	public function __construct( $config = null, $message = null)
 	{	
-		// Test for Config file. 
-		if (file_exists(dirname(__FILE__). '/../../config.php'))
-			include dirname(__FILE__). '/../../config.php';
-		else
-			return NULL;
-		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message);
+		// Test for config, Backwards compatability
+		if (empty($config)) $config = new config();
+
+		return $this->generateConnection($config->get('databaseServer'), $config->get('databaseName'), $config->get('databaseUsername'), $config->get('databasePassword'), $message);
 	}
 
 	/**
