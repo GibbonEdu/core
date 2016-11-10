@@ -39,12 +39,18 @@ class session
 	 * @since	15th April 2016
 	 * @return	void
 	 */
-	public function __construct($guid)
+	public function __construct($guid = null)
 	{
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
 
+		if (empty($guid)) include GIBBON_ROOT.'config.php';
+
 		$this->guid = $guid;
+	}
+
+	public function guid() {
+		return $this->guid;
 	}
 
 	/**

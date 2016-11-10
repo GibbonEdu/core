@@ -376,14 +376,15 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						</div>
 						<div id="header-menu">
 							<?php
+                                
                                 //Get main menu
+                                $mainMenu = new Gibbon\menuMain($pdo, $session, $trans);
                                 if ($cacheLoad) {
-                                    $mainMenu = new Gibbon\menuMain();
                                     $mainMenu->setMenu();
                                 }
-								if (isset($_SESSION[$guid]['mainMenu'])) {
-									echo $_SESSION[$guid]['mainMenu'];
-								}
+
+                                // Display the main menu
+								echo $mainMenu->getMenu();
 								?>
 						</div>
 					</div>
@@ -392,8 +393,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         //Allow for wide pages (no sidebar)
                         if ($sidebar == 'false') {
                             echo "<div id='content-wide'>";
-                                //Invoke and show Module Menu
-                                $menuModule = new Gibbon\menuModule();
+
+                            //Invoke and show Module Menu
+                            $menuModule = new Gibbon\menuModule($pdo, $session, $trans);
+
+                            // Display the module menu
                             echo $menuModule->getMenu('mini');
 
                             //No closing </div> required here
@@ -654,7 +658,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         if ($sidebar != 'false') {
                             ?>
 							<div id="sidebar">
-								<?php sidebar($connection2, $guid);
+								<?php sidebar($pdo, $session, $trans);
                             ?>
 							</div>
 							<br style="clear: both">

@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 header("Location: {$URL}");
             } else {
                 //Update main menu
-                $mainMenu = new Gibbon\menuMain();
+                $mainMenu = new Gibbon\menuMain($pdo, $session, $trans);
                 $mainMenu->setMenu();
 
                 if ($orphaned != 'true') {

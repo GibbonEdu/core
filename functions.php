@@ -2736,8 +2736,11 @@ function msort($array, $id = 'id', $sort_ascending = true)
 }
 
 //Create the sidebar
-function sidebar($connection2, $guid)
-{
+function sidebar($pdo, $session, $trans)
+{   
+    $connection2 = $pdo->getConnection();
+    $guid = $session->guid();
+    
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
     if (isset($_GET['loginReturn'])) {
         $loginReturn = $_GET['loginReturn'];
@@ -2910,7 +2913,7 @@ function sidebar($connection2, $guid)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\menuModule();
+    $menuModule = new Gibbon\menuModule($pdo, $session, $trans);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users

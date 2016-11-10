@@ -39,9 +39,9 @@ class menuModule
 	private $session ;
 	
 	/**
-	 * Gibbon\config
+	 * Gibbon\trans
 	 */
-	private $config ;
+	private $trans ;
 	
 	/**
 	 * Stores the type of module menu
@@ -49,52 +49,48 @@ class menuModule
 	private $type ;
 	
 	/**
-	 * Stores the menu whilst it is being constructed, before returning
-	 */
-	public $menu = "" ;
-	
-	/**
 	 * Construct
 	 *
-	 * @version 22nd April 2016
+	 * @version 10th November 2016
 	 * @since	22nd April 2016
-	 * @return	void
-	 * $type should be 'full' or 'mini'
 	 */
-	public function __construct()
+	public function __construct( sqlConnection $pdo, session $session, trans $trans )
 	{
-		$this->pdo = new sqlConnection();
-		$this->session = new session();
-		$this->config = new config();
+		$this->pdo = $pdo;
+		$this->session = $session;
+		$this->trans = $trans;
 	}
 
 	/**
-	 * Construct and store main menu in session
+	 * Construct and return the module menu
 	 *
-	 * (Moved from /functions.php)
-	 * @version 19th April 2016
+	 * @version 10th November 2016
 	 * @since	Old
-	 * @return	void
+	 * @return	string
 	 */
 	public function getMenu($type='full')
 	{
-		$this->type=$type ;
+		$menu="" ;
+
+		$address = $this->session->get("address");
+		$absoluteURL = $this->session->get("absoluteURL");
+
 		//Check address to see if we are in the module area
-		if (substr($_SESSION[$this->config->get('guid')]["address"],0,8)=="/modules") {
+		if (substr($address,0,8)=="/modules") {
+			
 			//Get and check the module name
-			$moduleID=checkModuleReady( $_SESSION[$this->config->get('guid')]["address"], $this->pdo->getConnection() );
+			$moduleID=checkModuleReady( $address, $this->pdo->getConnection() );
 			if ($moduleID!=FALSE) {
-				$gibbonRoleIDCurrent=NULL ;
-				if (isset($_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"])) {
-					$gibbonRoleIDCurrent=$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"] ;
-				}
+
+				$gibbonRoleIDCurrent= $this->session->get("gibbonRoleIDCurrent");
+
 				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
 				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
 				$result = $this->pdo->executeQuery($data, $sql);
 
 				if ($result->rowCount()>0) {
-					if ($this->type=="full") {
-						$this->menu.="<ul class='moduleMenu'>" ;
+					if ($type=="full") {
+						$menu.="<ul class='moduleMenu'>" ;
 							$currentCategory="" ;
 							$lastCategory="" ;
 							$currentName="" ;
@@ -107,29 +103,29 @@ class menuModule
 
 								//Set active link class
 								$style="" ;
-								if (strpos($row["URLList"],getActionName($_SESSION[$this->config->get('guid')]["address"]))===0) {
+								if (strpos($row["URLList"],getActionName($address))===0) {
 									$style="class='active'" ;
 								}
 
 								$currentCategory=$row["category"] ;
 								if (strpos($row["name"],"_")>0) {
-									$currentName=__($this->config->get('guid'), substr($row["name"],0,strpos($row["name"],"_"))) ;
+									$currentName=$this->trans->__(substr($row["name"],0,strpos($row["name"],"_"))) ;
 								}
 								else {
-									$currentName=__($this->config->get('guid'), $row["name"]) ;
+									$currentName=$this->trans->__($row["name"]) ;
 								}
 
 								if ($currentName!=$lastName) {
 									if ($currentCategory!=$lastCategory) {
 										if ($count>0) {
-											$this->menu.="</ul></li>";
+											$menu.="</ul></li>";
 										}
-										$this->menu.="<li><h4>" . __($this->config->get('guid'), $currentCategory) . "</h4>" ;
-										$this->menu.="<ul>" ;
-										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($this->config->get('guid'), $currentName) . "</a></li>" ;
+										$menu.="<li><h4>" . $this->trans->__($currentCategory) . "</h4>" ;
+										$menu.="<ul>" ;
+										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . $this->trans->__($currentName) . "</a></li>" ;
 									}
 									else {
-										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($this->config->get('guid'), $currentName) . "</a></li>" ;
+										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . $this->trans->__($currentName) . "</a></li>" ;
 									}
 									$links++ ;
 								}
@@ -138,13 +134,13 @@ class menuModule
 								$count++ ;
 							}
 							if ($count>0) {
-								$this->menu.="</ul></li>";
+								$menu.="</ul></li>";
 							}
-						$this->menu.="</ul>" ;
+						$menu.="</ul>" ;
 					}
-					else if ($this->type=="mini") {
-						$this->menu.="<div class='linkTop'>" ;
-							$this->menu.="<select id='floatingModuleMenu' style='width: 200px'>" ;						
+					else if ($type=="mini") {
+						$menu.="<div class='linkTop'>" ;
+							$menu.="<select id='floatingModuleMenu' style='width: 200px'>" ;						
 								$currentCategory="" ;
 								$lastCategory="" ;
 								$currentName="" ;
@@ -157,21 +153,21 @@ class menuModule
 
 									$currentCategory=$row["category"] ;
 									if (strpos($row["name"],"_")>0) {
-										$currentName=__($this->config->get('guid'), substr($row["name"],0,strpos($row["name"],"_"))) ;
+										$currentName=$this->trans->__(substr($row["name"],0,strpos($row["name"],"_"))) ;
 									}
 									else {
-										$currentName=__($this->config->get('guid'), $row["name"]) ;
+										$currentName=$this->trans->__($row["name"]) ;
 									}
 
 									if ($currentName!=$lastName) {
 										if ($currentCategory!=$lastCategory) {
-											$this->menu.="<optgroup label='--" .  __($this->config->get('guid'), $currentCategory) . "--'/>" ;
+											$menu.="<optgroup label='--" .  $this->trans->__($currentCategory) . "--'/>" ;
 										}
 										$selected="" ;
 										if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
 											$selected="selected" ;
 										}
-										$this->menu.="<option value='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($this->config->get('guid'), $currentName) . "</option>" ;
+										$menu.="<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . $this->trans->__($currentName) . "</option>" ;
 										$links++ ;
 									}
 									$lastCategory=$currentCategory ;
@@ -179,22 +175,22 @@ class menuModule
 									$count++ ;
 								}
 						
-								$this->menu.="<script>
+								$menu.="<script>
 									$(\"#floatingModuleMenu\").change(function() {
 										document.location.href = $(this).val();
 									});
 								</script>" ;
-							$this->menu.="</select>" ;
-							$this->menu.="<div style='float: right; padding-top: 10px'>" ;
-								$this->menu.=__($this->config->get('guid'), "Module Menu") ;
-							$this->menu.="</div>" ;
-						$this->menu.="</div>" ;	
+							$menu.="</select>" ;
+							$menu.="<div style='float: right; padding-top: 10px'>" ;
+								$menu.=$this->trans->__("Module Menu") ;
+							$menu.="</div>" ;
+						$menu.="</div>" ;	
 					}
 				}
 			}
 		}
 	
-		return $this->menu ;
+		return $menu ;
 	}
 }
 ?>

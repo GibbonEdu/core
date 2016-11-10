@@ -39,45 +39,39 @@ class menuMain
 	private $session ;
 
 	/**
-	 * Gibbon\config
+	 * Gibbon\trans
 	 */
-	private $config ;
-
-
-	/**
-	 * Stores the menu whilst it is being constructed, before storage in session
-	 */
-	public $menu = "" ;
+	private $trans ;
 
 	/**
 	 * Construct
 	 *
-	 * @version 22nd April 2016
+	 * @version 10th November 2016
 	 * @since	22nd April 2016
-	 * @return	void
 	 */
-	public function __construct()
+	public function __construct( sqlConnection $pdo, session $session, trans $trans )
 	{
-		$this->pdo = new sqlConnection();
-		$this->session = new session();
-		$this->config = new config();
+		$this->pdo = $pdo;
+		$this->session = $session;
+		$this->trans = $trans;
 	}
 
 	/**
 	 * Construct and store main menu in session
 	 *
-	 * (Moved from /functions.php)
-	 * @version 19th April 2016
+	 * @version 10th November 2016
 	 * @since	Old
-	 * @return	void
 	 */
 	public function setMenu()
 	{
 		$menu="" ;
 
-		if (isset($_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"])==FALSE) {
+		$address = $this->session->get("address");
+		$absoluteURL = $this->session->get("absoluteURL");
+
+		if ($this->session->get("gibbonRoleIDCurrent") == null) {
 			$menu.="<ul id='nav'>" ;
-			$menu.="<li class='active'><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php'>" . __($this->config->get('guid'), 'Home') . "</a></li>" ;
+			$menu.="<li class='active'><a href='" . $absoluteURL . "/index.php'>" . $this->trans->__('Home') . "</a></li>" ;
 			$menu.="</ul>" ;
 		}
 		else {
@@ -89,7 +83,7 @@ class menuMain
 			}
 			if ($orderBy != '')
 				$orderBy = substr($orderBy, 0, -1);
-			$data=array("gibbonRoleID"=>$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"]);
+			$data=array("gibbonRoleID"=> $this->session->get("gibbonRoleIDCurrent") );
 			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY FIELD(gibbonModule.category, $orderBy), category, name";
 			$result = $this->pdo->executeQuery($data, $sql);
 			if (! $this->pdo->getQuerySuccess()) {
@@ -98,12 +92,12 @@ class menuMain
 
 			if ($result->rowCount()<1) {
 				$menu.="<ul id='nav'>" ;
-				$menu.="<li class='active'><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php'>" . __($this->config->get('guid'), 'Home') . "</a></li>" ;
+				$menu.="<li class='active'><a href='" . $absoluteURL . "/index.php'>" . $this->trans->__('Home') . "</a></li>" ;
 				$menu.="</ul>" ;
 			}
 			else {
 				$menu.="<ul id='nav'>" ;
-				$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php'>" . __($this->config->get('guid'), 'Home') . "</a></li>" ;
+				$menu.="<li><a href='" . $absoluteURL . "/index.php'>" . $this->trans->__('Home') . "</a></li>" ;
 
 				$currentCategory="" ;
 				$lastCategory="" ;
@@ -112,8 +106,8 @@ class menuMain
 					$currentCategory=$row["category"] ;
 
 					$entryURL=$row["entryURL"] ;
-					if (isActionAccessible($this->config->get('guid'), $this->pdo->getConnection(), "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
-						$dataEntry=array("gibbonRoleID"=>$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"],"name"=>$row["name"]);
+					if (isActionAccessible($this->session->guid(), $this->pdo->getConnection(), "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
+						$dataEntry=array("gibbonRoleID" => $this->session->get("gibbonRoleIDCurrent") ,"name"=>$row["name"]);
 						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID AND gibbonModule.name=:name ORDER BY gibbonAction.name";
 						$resultEntry = $this->pdo->executeQuery($dataEntry, $sqlEntry);
 						if ($resultEntry->rowCount()>0) {
@@ -126,12 +120,12 @@ class menuMain
 						if ($count>0) {
 							$menu.="</ul></li>";
 						}
-						$menu.="<li><a href='#'>" . __($this->config->get('guid'), $currentCategory) . "</a>" ;
+						$menu.="<li><a href='#'>" . $this->trans->__($currentCategory) . "</a>" ;
 						$menu.="<ul>" ;
-						$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($this->config->get('guid'), $row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $this->trans->__($row["name"]) . "</a></li>" ;
 					}
 					else {
-						$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($this->config->get('guid'), $row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $this->trans->__($row["name"]) . "</a></li>" ;
 					}
 					$lastCategory=$currentCategory ;
 					$count++ ;
@@ -145,8 +139,19 @@ class menuMain
 			}
 		}
 
-		//$this->session->set('mainMenu', $menu) ;
-		$_SESSION[$this->config->get('guid')]["mainMenu"]=$menu ;
+		$this->session->set('mainMenu', $menu);
+	}
+
+	/**
+	 * Return the module menu (stored in session)
+	 *
+	 * @version 10th November 2016
+	 * @since	Old
+	 * @return	string
+	 */
+	public function getMenu()
+	{
+		return $this->session->get('mainMenu');
 	}
 }
 ?>
