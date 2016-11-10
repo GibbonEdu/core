@@ -43,6 +43,6 @@ if (file_exists(GIBBON_ROOT.'config.php')) {
 }
 
 // Create objects for core classes
-$session = new Gibbon\session();
+$session = new Gibbon\session( $guid );
 $trans = new Gibbon\trans( $session );
 
