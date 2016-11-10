@@ -45,9 +45,9 @@ class trans
 	 * @since	16th April 2016
 	 * @return	void
 	 */
-	public function __construct()
+	public function __construct( session $session )
 	{
-		$this->session = new session();
+		$this->session = $session;
 	}
 
 	/**
@@ -62,7 +62,7 @@ class trans
 	{
 		$this->pdo = new sqlConnection();
 		$this->session->set('stringReplacement', array()) ;
-		$sql="SELECT * FROM gibbonString ORDER BY priority DESC, original" ;
+		$sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original" ;
 		$result = $this->pdo->executeQuery(array(), $sql);
 
 		if ($result->rowCount()>0)
@@ -83,7 +83,7 @@ class trans
 //Custom translation function to allow custom string replacement
 	public function __($text, $guid = true)
 	{
-
+		$guid = !empty($guid);
 		$replacements = $this->session->get('stringReplacement', $guid) !== NULL ? $this->session->get('stringReplacement', $guid) : array() ;
 
 		$text=_($text) ;

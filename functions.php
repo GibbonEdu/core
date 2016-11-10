@@ -36,25 +36,17 @@ function emailBodyConvert($body)
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid)
 {
-    //$caller = debug_backtrace();
-    //error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
-    $trans = new Gibbon\trans();
+    global $trans; // For backwards compatibilty
+
     $trans->setStringReplacementList();
 }
 
 //Custom translation function to allow custom string replacement
 function __($guid, $text)
 {
+    global $trans; // For backwards compatibilty
 
-    //$caller = debug_backtrace();
-    //error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
-    $trans = new Gibbon\trans();
-    $x = true;
-    if (empty($guid)) {
-        $x = false;
-    }
-
-    return $trans->__($text, $x);
+    return $trans->__($text, $guid);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
