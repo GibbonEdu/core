@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\Attendance ;
 
 use Gibbon\session;
-use Gibbon\config;
 use Gibbon\sqlConnection;
 
 /**
@@ -41,11 +40,6 @@ class attendanceView
 	 * Gibbon\session
 	 */
 	protected $session ;
-
-	/**
-	 * Gibbon\config
-	 */
-	protected $config ;
 
 	/**
 	 * Attendance Types
@@ -76,24 +70,12 @@ class attendanceView
      * @param    Gibbon\sqlConnection
      * @return   void
      */
-    public function __construct($session = NULL, $config = NULL, $pdo = NULL)
+    public function __construct(\Gibbon\sqlConnection $pdo, \Gibbon\session $session)
     {
-    	if ($session === NULL)
-            $this->session = new session();
-        else
-            $this->session = $session ;
+        $this->session = $session ;
+        $this->pdo = $pdo ;
 
-        if ($config === NULL)
-            $this->config = new config();
-        else
-            $this->config = $config ;
-
-        if ($pdo === NULL)
-            $this->pdo = new sqlConnection();
-        else
-            $this->pdo = $pdo ;
-
-        $this->guid = $this->config->get('guid');
+        $this->guid = $this->session->guid();
 
         // Get attendance codes
         try {

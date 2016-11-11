@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
 	    }
 
-	    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
+	    $attendance = new Module\Attendance\attendanceView($pdo, $session);
 
 	    $today = date('Y-m-d');
 

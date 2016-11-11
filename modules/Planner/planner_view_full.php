@@ -1635,7 +1635,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         require_once './modules/Attendance/src/attendanceView.php';
 
-                        $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo );
+                        $attendance = new Module\Attendance\attendanceView($pdo, $session);
 
                         try {
                             $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);

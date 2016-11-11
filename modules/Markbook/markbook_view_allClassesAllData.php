@@ -110,7 +110,7 @@
 	$canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything');
 
     // Build the markbook object for this class
-    $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
+    $markbook = new Module\Markbook\markbookView($pdo, $session, $gibbonCourseClassID );
 
     // Add a school term filter if one exists
     $gibbonSchoolYearTermID = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $_SESSION[$guid]['markbookTerm'];

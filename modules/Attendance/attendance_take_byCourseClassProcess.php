@@ -106,7 +106,7 @@ else {
 				else {
 					//Write to database
 					require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
-					$attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+					$attendance = new Module\Attendance\attendanceView($pdo, $session);
 
 					try {
 						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate); 

@@ -19,8 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+$basePath = dirname(__FILE__);
+
 // Handle Gibbon installation redirect
-if (file_exists('./config.php') == false) {
+if (file_exists($basePath.'/config.php') == false) {
     // Test if installer already invoked and ignore.
     if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
         $URL = './installer/install.php';
@@ -30,9 +32,9 @@ if (file_exists('./config.php') == false) {
 }
 
 // Setup the autoloader
-require_once dirname(__FILE__).'/src/Autoloader.php';
+require_once $basePath.'/src/Autoloader.php';
 
-$loader = new Autoloader( dirname(__FILE__) );
+$loader = new Autoloader( $basePath );
 
 $loader->addNameSpace('Gibbon\\', 'src/Gibbon');
 $loader->addNameSpace('Library\\', 'src/Library');
