@@ -34,8 +34,9 @@ class Autoloader // Implements PSR4 Autoloader
     /**
      * Construct
      */
-    public function __construct( $path ) {
-        $this->path = rtrim($path, '/ ');
+    public function __construct( $basePath ) {
+
+        $this->path = rtrim(str_replace('\\', '/', $basePath), '/');
     }
 
     /**

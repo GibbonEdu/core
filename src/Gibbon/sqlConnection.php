@@ -74,7 +74,13 @@ class sqlConnection
 	public function __construct( $config = null, $message = null)
 	{	
 		// Test for config, Backwards compatability
-		if (empty($config)) $config = new config();
+		if (empty($config)) {
+			$config = new config();
+		}
+
+		if ($config->isGibbonInstalled() == false) {
+			return;
+		}
 
 		return $this->generateConnection($config->get('databaseServer'), $config->get('databaseName'), $config->get('databaseUsername'), $config->get('databasePassword'), $message);
 	}

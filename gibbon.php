@@ -1,59 +1,65 @@
 <?php
 /**
- * @authur	Craig Rayner
- *
- * @version	13th April 2016
- *
- * @since	7th April 2016
- */
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 @session_start();
 
-// Handle Gibbon installation
-if (file_exists(dirname(__FILE__).'/config.php') == false) {
-    // test if installer already invoked and ignore.
+// Handle Gibbon installation redirect
+if (file_exists('./config.php') == false) {
+    // Test if installer already invoked and ignore.
     if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
         $URL = './installer/install.php';
         header("Location: {$URL}");
+        exit();
     }
-    exit();
 }
-
-if (!defined('GIBBON_ROOT')) {
-    $path = dirname(__FILE__);
-    $path = rtrim(str_replace('\\', '/', $path), '/');
-    define('GIBBON_ROOT', $path);
-
-    $http = (isset($_SERVER['HTTPS']))? 'https://' : 'http://';
-    $port = ($_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
-
-    $pageURL = $http . $_SERVER['SERVER_NAME'] . $port . dirname($_SERVER['PHP_SELF']);
-    $pageURL = rtrim($pageURL, '/ ');
-
-    define('GIBBON_URL', $pageURL);
-}
-
-// Require the system-wide includes
-require_once GIBBON_ROOT.'/config.php';
-require_once GIBBON_ROOT.'/functions.php';
-require_once GIBBON_ROOT.'/version.php';
 
 // Setup the autoloader
-require_once GIBBON_ROOT.'/src/Autoloader.php';
+require_once dirname(__FILE__).'/src/Autoloader.php';
 
-$loader = new Autoloader( GIBBON_ROOT );
+$loader = new Autoloader( dirname(__FILE__) );
 
 $loader->addNameSpace('Gibbon\\', 'src/Gibbon');
 $loader->addNameSpace('Library\\', 'src/Library');
 
 $loader->register();
 
+
 // New configuration object
 $config = new Gibbon\config();
+$guid = $config->get('guid');
+$caching = $config->get('caching');
+$version = $config->get('version');
+
+
+// Define the system-wide constants
+if (!defined('GIBBON_PATH')) define('GIBBON_PATH', $config->get('absolutePath') );
+if (!defined('GIBBON_URL')) define('GIBBON_URL', $config->get('absoluteURL') );
+
+
+// Require the system-wide includes
+require_once GIBBON_PATH.'/functions.php';
+
 
 // New PDO DB connection
-$pdo = new Gibbon\sqlConnection( $config );
+$pdo = new Gibbon\sqlConnection($config);
 $connection2 = $pdo->getConnection();
+
 
 // Create the core objects
 $session = new Gibbon\session( $config );

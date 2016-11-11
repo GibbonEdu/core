@@ -60,17 +60,20 @@ class trans
 	 * @return	void
 	 */
 	public function setStringReplacementList()
-	{
-		$data = array();
-		$sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original" ;
-		$result = $this->pdo->executeQuery($data, $sql);
+	{	
+		$stringReplacements = array();
+		
+		if ($this->pdo->getConnection() != null) {
+			$data = array();
+			$sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original" ;
+			$result = $this->pdo->executeQuery($data, $sql);
 
-		if ($result->rowCount()>0) {
-			$this->session->set('stringReplacement', $result->fetchAll()) ;
+			if ($result->rowCount()>0) {
+				$stringReplacements = $result->fetchAll();
+			}
 		}
-		else {
-			$this->session->set('stringReplacement', array() );
-		}
+
+		$this->session->set('stringReplacement', $stringReplacements );
 	}
 	/**
 	 * Custom translation function to allow custom string replacement
@@ -84,7 +87,7 @@ class trans
 	 */
 	public function __($text, $guid = true)
 	{
-		$replacements = $this->session->get('stringReplacement');
+		$replacements = $this->session->get('stringReplacement', null);
 
 		// Do this once per session, only if the value doesn't exist
 		if ($replacements === null) {

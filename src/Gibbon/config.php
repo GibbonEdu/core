@@ -36,9 +36,9 @@ class config
 	private $databasePassword;
 	private $guid;
 	private $caching;
-	private $baseDir;
-	private $baseURL;
 	private $version;
+	private $absolutePath;
+	private $absoluteURL;
 
 	/**
 	 * Construct
@@ -49,9 +49,45 @@ class config
 	 */
 	public function __construct()
 	{
-		if ( file_exists(GIBBON_ROOT . "/config.php"))
-			include GIBBON_ROOT.'/config.php';
-		
+		// Determine the base Gibbon Path
+		$this->absolutePath = str_replace('src/Gibbon', '', dirname(__FILE__) );
+		$this->absolutePath = rtrim(str_replace('\\', '/', $this->absolutePath), '/');
+
+		// Determine the base Gibbon URL
+		$http = (isset($_SERVER['HTTPS']))? 'https://' : 'http://';
+		$port = ($_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
+		$path = dirname(str_replace('src/Gibbon', '', $_SERVER['PHP_SELF']));
+
+		$this->absoluteURL = $http . $_SERVER['SERVER_NAME'] . $port . $path;
+		$this->absoluteURL = rtrim($this->absoluteURL, '/ ');
+
+		// Set the current version
+		if ( file_exists( $this->absolutePath.'/version.php')) {
+			$this->loadVersionFromFile( $this->absolutePath.'/version.php' );
+		} else {
+			throw new Exception('Gibbon version.php file missing in gibbon root directory: '. $this->absolutePath );
+		}
+
+		// Load the configuration, if installed
+		if ( file_exists( $this->absolutePath.'/config.php')) {
+			$this->loadConfigFromFile( $this->absolutePath.'/config.php' );
+		}
+	}
+
+	public function isGibbonInstalled()
+	{
+		return !empty($this->guid);
+	}
+
+	public function loadVersionFromFile( $versionFilePath ) {
+		include $versionFilePath;
+		$this->version = $version ;
+	}
+
+	public function loadConfigFromFile( $configFilePath ) {
+		// Include the config file
+		include $configFilePath;
+
 		$this->databaseServer = $databaseServer ;
 		$this->databaseUsername = $databaseUsername ;
 		$this->databasePassword = $databasePassword ;
@@ -63,11 +99,15 @@ class config
 		//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.
 		$this->caching = $caching ;
 
-		$this->baseDir = GIBBON_ROOT;
-		$this->baseURL = GIBBON_URL;
-		
-		include GIBBON_ROOT.'/version.php';
-		$this->version = $version ;
+		// Set the absolute Gibbon Path from the session if available
+		if (isset($_SESSION[$guid]['absolutePath'])) {
+			$this->absolutePath = $_SESSION[$guid]['absolutePath'];
+		}
+
+		// Set the absolute Gibbon URL from the session if available
+		if (isset($_SESSION[$guid]['absoluteURL'])) {
+			$this->absoluteURL = $_SESSION[$guid]['absoluteURL'];
+		}
 	}
 
 	/**
@@ -96,7 +136,7 @@ class config
 	public function getCurrencyList($name, $value, $style="width: 302px; ")
 	{
 		$yaml = new Yaml();
-		$currencies = $yaml::parse( file_get_contents(GIBBON_ROOT . "/config/currency.yml") );
+		$currencies = $yaml::parse( file_get_contents($this->absolutePath . "/config/currency.yml") );
 
 		$output = "<select name='".$name."' id='".$name."' style='".$style."'>\n";
 		foreach ($currencies as $optGroup=>$list)
@@ -113,36 +153,5 @@ class config
 		$output .= "</select>";
 		
 		return $output ;			
-	}
-
-	/**
-	 * upgrade Cofig
-	 *
-	 * Create yml format from existing php config
-	 * 
-	 * @version	14th April 2016
-	 * @since	14th April 2016
-	 * @return	void
-	 */
-	private function upgradeConfig()
-	{
-		include GIBBON_ROOT . '/config.php';
-
-		$config = array();
-		$config['databaseServer'] = $databaseServer ;
-		$config['databaseUsername'] = $databaseUsername ;
-		$config['databasePassword'] = $databasePassword ;
-		$config['databaseName'] = $databaseName ;
-		$config['guid'] = $guid; 
-		$config['caching'] = 10 ; 
-		
-		file_put_contents(GIBBON_ROOT . '/config/config.yml', Yaml::dump($config));
-
-		foreach($config as $name=>$value)
-			$this->$name = $value ;
-		$this->baseDir	= GIBBON_ROOT;
-		$this->baseURL	= GIBBON_URL;
-		unlink(GIBBON_ROOT . '/config.php');
-		unlink(GIBBON_ROOT . '/version.php');
 	}
 }
