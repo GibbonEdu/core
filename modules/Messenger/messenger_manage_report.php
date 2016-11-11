@@ -113,30 +113,30 @@ else {
 
 						try {
 				            $data = array('gibbonMessengerID' => $gibbonMessengerID);
-				            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY confirmedTimestamp, surname, preferredName, contactType";
+				            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY FIELD(confirmed, 'Y','N',NULL), confirmedTimestamp, surname, preferredName, contactType";
 				            $result = $connection2->prepare($sql);
 				            $result->execute($data);
 				        } catch (PDOException $e) {
 				            echo "<div class='error'>".$e->getMessage().'</div>';
 				        }
 
-
-
 						echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_report_processBulk.php?gibbonMessengerID=$gibbonMessengerID&search=$search'>";
 						echo "<fieldset style='border: none'>";
-						echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
-						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-							<option value="delete"><?php echo __($guid, 'Resend') ?></option>
-						</select>
-						<script type="text/javascript">
-							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						</script>
-						<?php
-						echo '</div>';
+						if ($sender == true) {
+							echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
+							?>
+							<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+							<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+								<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+								<option value="delete"><?php echo __($guid, 'Resend') ?></option>
+							</select>
+							<script type="text/javascript">
+								var action=new LiveValidation('action');
+								action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+							</script>
+							<?php
+							echo '</div>';
+						}
 
 						echo "<table cellspacing='0' style='width: 100%'>";
 				        echo "<tr class='head'>";
