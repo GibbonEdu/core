@@ -114,6 +114,7 @@ v13.0.00
 		Students: fixed colspan issue in Data Update report when no records found
 		Students: added student ID to search
 		Students: added student image to privacy report
+		Students: added setting to allow student note creation notification to be sent to all teachers
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view

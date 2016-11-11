@@ -646,4 +646,5 @@ UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule 
 UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater'), category='Reports' WHERE name='Student Data Updater History' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 ALTER TABLE `gibbonMessengerReceipt` CHANGE `confirmedTimestamp` `confirmedTimestamp` TIMESTAMP NULL DEFAULT NULL;end
 ALTER TABLE `gibbonFamilyAdult` ADD INDEX `gibbonFamilyID` (`gibbonFamilyID`, `contactPriority`);end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'noteCreationNotification', 'Note Creation Notification', 'Determines who to notify when a new student note is created.', 'Tutors');end
 ";

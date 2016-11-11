@@ -3119,7 +3119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $orders = explode(',', $mainMenuCategoryOrder);
 
                     //Sort array
-                    array_multisort($orders, $studentMenuCategory, $studentMenuName, $studentMenuLink);
+                    @array_multisort($orders, $studentMenuCategory, $studentMenuName, $studentMenuLink);
 
                     //Spit out array whilt sorting by $mainMenuCategoryOrder
                     if (count($studentMenuCategory) > 0) {
