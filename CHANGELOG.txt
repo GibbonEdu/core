@@ -91,6 +91,7 @@ v13.0.00
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
 		Planner: switched from JS to HTML for Smart Block placeholders
+		Planner: added bulk duplicate function to unit planner
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days

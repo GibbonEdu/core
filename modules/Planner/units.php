@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             }
             $gibbonCourseIDNext = '';
             $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-            if ($gibbonSchoolYearIDNext != false) {
+            if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
                 try {
                     $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
                     $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
@@ -171,7 +171,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 				}
             echo '</div>';
 
-            if ($gibbonCourseID != '') {
+
+            if ($gibbonCourseID == '') {
+                echo "<div class='error'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            }
+            else {
                 try {
                     if ($highestAction == 'Unit Planner_all') {
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
@@ -216,12 +222,78 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo __($guid, 'There are no records to display.');
                         echo '</div>';
                     } else {
+                        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
+                        echo "<fieldset style='border: none'>";
+                        echo "<div class='linkTop' style='height: 27px'>"; ?>
+        						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+
+                                <div id="courseClassRow" style="display: none;">
+                                    <select style="width: 182px" name="gibbonCourseIDCopyTo">
+                                        <?php
+                                        print "<option value=''>" . _('Please select...') . "</option>" ;
+
+                                        try {
+                                            $dataSelect['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+                                            $sqlWhere = '';
+                                            if ($gibbonSchoolYearIDNext != false) {
+                                                $dataSelect['gibbonSchoolYearIDNext'] = $gibbonSchoolYearIDNext;
+                                                $sqlWhere = ' OR gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearIDNext';
+                                            }
+                                            if ($highestAction == 'Unit Planner_all') {
+                                                $sqlSelect="SELECT gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$sqlWhere.") ORDER BY sequenceNumber, gibbonCourse.nameShort" ;
+                                            }
+                                            else {
+                                                $dataSelect['gibbonPersonID'] = $_SESSION[$guid]["gibbonPersonID"];
+                                                $sqlSelect="SELECT gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND (gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$sqlWhere.") ORDER BY sequenceNumber, gibbonCourse.nameShort" ;
+                                            }
+                                            $resultSelect=$connection2->prepare($sqlSelect);
+                                            $resultSelect->execute($dataSelect);
+                                        }
+                                        catch(PDOException $e) {
+                                            print "<div class='error'>here" . $e->getMessage() . "</div>" ;
+                                        }
+                                        $yearCurrent = '';
+                                        $yearLast = '';
+                                        while ($rowSelect=$resultSelect->fetch()) {
+                                            $yearCurrent = $rowSelect['year'];
+                                            if ($yearCurrent != $yearLast) {
+                                                echo '<optgroup label=\'--'.$rowSelect['year'].'--\'/>';
+                                            }
+                                            print "<option value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . "</option>" ;
+                                            $yearLast = $yearCurrent;
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+        						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+        							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+                                    <option value="Duplicate"><?php echo __($guid, 'Duplicate') ?></option>
+        						</select>
+        						<script type="text/javascript">
+        							var action=new LiveValidation('action');
+        							action.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Select action') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+
+                                    $(document).ready(function(){
+                                        $('#action').change(function () {
+                                            if ($(this).val() == 'Duplicate') {
+                                                $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","block"));
+                                            } else {
+                                                $("#courseClassRow").css("display","none");
+                                            }
+                                        });
+                                    });
+
+                                </script>
+        						<?php
+                        echo '</div>';
+
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo "<th style='width: 150px'>";
                         echo __($guid, 'Name');
                         echo '</th>';
-                        echo "<th style='width: 450px'>";
+                        echo "<th style='width: 400px'>";
                         echo __($guid, 'Description');
                         echo '</th>';
                         echo '<th>';
@@ -229,6 +301,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo '</th>';
                         echo "<th style='width: 140px'>";
                         echo __($guid, 'Actions');
+                        echo '</th>';
+                        echo '<th style=\'text-align: center\'>'; ?>
+        				<script type="text/javascript">
+        					$(function () {
+        						$('.checkall').click(function () {
+        							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+        						});
+        					});
+        				</script>
+        				<?php
+        				echo "<input type='checkbox' class='checkall'>";
                         echo '</th>';
                         echo '</tr>';
 
@@ -262,11 +345,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID&sidebar=false'><img title='".__($guid, 'Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                             echo '</td>';
+                            echo '<td>';
+                            echo "<input name='gibbonUnitID-$count' value='".$row['gibbonUnitID']."' type='hidden'>";
+                            echo "<input type='checkbox' name='check-$count' id='check-$count'>";
+                            echo '</td>';
                             echo '</tr>';
 
                             ++$count;
                         }
                         echo '</table>';
+                        echo '</fieldset>';
+
+                        echo "<input name='count' value='$count' type='hidden'>";
+                        echo "<input name='gibbonCourseID' value='$gibbonCourseID' type='hidden'>";
+                        echo "<input name='gibbonSchoolYearID' value='$gibbonSchoolYearID' type='hidden'>";
+                        echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
+                        echo '</form>';
                     }
 
                     //List any hooked units
