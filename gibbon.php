@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 $basePath = dirname(__FILE__);
 
 // Handle Gibbon installation redirect
-if (file_exists($basePath.'/config.php') == false) {
+if (file_exists($basePath . '/config.php') == false) {
     // Test if installer already invoked and ignore.
     if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
         $URL = './installer/install.php';
@@ -55,7 +55,7 @@ if (!defined('GIBBON_URL')) define('GIBBON_URL', $config->get('absoluteURL') );
 
 
 // Require the system-wide includes
-require_once GIBBON_PATH.'/functions.php';
+require_once $basePath.'/functions.php';
 
 
 // New PDO DB connection
