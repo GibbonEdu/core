@@ -42,9 +42,15 @@ function setStringReplacementList($connection2, $guid)
 }
 
 //Custom translation function to allow custom string replacement
-function __($guid, $text)
+function __($text)
 {
     global $trans; // For backwards compatibilty
+
+    // Allow use of __() with or without a guid
+    if ( func_num_args() > 1 ) {
+        $guid = func_get_arg(0);
+        $text = func_get_arg(1);
+    }
 
     return $trans->__($text, $guid);
 }
