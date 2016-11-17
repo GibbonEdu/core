@@ -266,7 +266,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     } else {
                         $rowNum = 'odd';
                     }
-                    ++$count;
 
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
@@ -296,6 +295,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     echo "<input type='checkbox' name='check-$count' id='check-$count'>";
                     echo '</td>';
                     echo '</tr>';
+
+                    ++$count;
                 }
                 echo '</table>';
 

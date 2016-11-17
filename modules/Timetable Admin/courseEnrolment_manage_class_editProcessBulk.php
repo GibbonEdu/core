@@ -43,16 +43,15 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID =
         header("Location: {$URL}");
     } else {
         $people = array();
-        $count = 0;
-        for ($i = 1; $i <= $_POST['count']; ++$i) {
+        for ($i = 0; $i < $_POST['count']; ++$i) {
             if (isset($_POST["check-$i"])) {
                 if ($_POST["check-$i"] == 'on') {
-                    $people[$count][0] = $_POST["gibbonPersonID-$i"];
-                    $people[$count][1] = $_POST["role-$i"];
-                    ++$count;
+                    $people[$i][0] = $_POST["gibbonPersonID-$i"];
+                    $people[$i][1] = $_POST["role-$i"];
                 }
             }
         }
+
         //Proceed!
         //Check if person specified
         if (count($people) < 1) {

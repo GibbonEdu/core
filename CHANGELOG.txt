@@ -123,6 +123,7 @@ v13.0.00
 		Timetable Admin: narrowed down class participant count in Course edit view to users with status Full
 		Timetable Admin: added search and filters to course enrolment and course management pages
 		Timetable Admin: added bulk action to copy selected students to another class
+		Timetable Admin: code clean up on bulk actions when managing course enrolment by class
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
