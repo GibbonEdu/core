@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 						</td>
 						<td class="right">
 							<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
-							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
+							<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" class="standardWidth"><br/>
 
 							<script type="text/javascript">
 								var passwordNew=new LiveValidation('passwordNew');
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
+							<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" class="standardWidth">
 							<script type="text/javascript">
 								var passwordConfirm=new LiveValidation('passwordConfirm');
 								passwordConfirm.add(Validate.Presence);

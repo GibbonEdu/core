@@ -38,7 +38,7 @@ v13.0.00
 		Attendance: added landing page for teacher's daily attendance taking
 
 	Security
-		...
+		System: added token-based user confirmation of password reset requests, to prevent unwanted third-party resets
 
 	Tweaks & Bug Fixes
 		System: fixed sql loading issue in trans class

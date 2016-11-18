@@ -402,9 +402,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         }
 
 						if ($_SESSION[$guid]['address'] == '') {
-							if (isset($_GET['return'])) {
-								returnProcess($guid, $_GET['return'], null, null);
-							}
+                            $returns = array();
+                        	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
+                        	if (isset($_GET['return'])) {
+                        	    returnProcess($guid, $_GET['return'], null, $returns);
+                        	}
 						}
 
                         //Show index page Content
