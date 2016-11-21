@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/financeSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'General Settings') ?></h3>
 				</td>
 			</tr>
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($row['value'] == 'N') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -109,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small">
-						<?php 
+						<?php
 						if ($row['description'] != '') {
 							echo __($guid, $row['description']);
 						}
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($currency != false and $currency != '') {
 							echo ' '.sprintf(__($guid, 'In %1$s.'), $currency);
 						}
-						?> 
+						?>
 					</span>
 				</td>
 				<td class="right">
@@ -131,9 +131,42 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 					</script>
 				</td>
 			</tr>
-			
+            <tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='invoiceeNameStyle'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<?php
+                        $selected = '';
+						if ($row['value'] == 'Surname, Preferred Name') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Surname, Preferred Name'>Surname, Preferred Name</option>";
+						$selected = '';
+						if ($row['value'] == 'Official Name') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Official Name'>Official Name</option>";
+                        ?>
+                    </select>
+				</td>
+			</tr>
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Invoices') ?></h3>
 				</td>
 			</tr>
@@ -147,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -165,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -185,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -206,13 +239,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($row['value'] == 'Student ID + Invoice ID') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='Student ID + Invoice ID'>Student ID + Invoice ID</option>"; ?>			
+						echo "<option $selected value='Student ID + Invoice ID'>Student ID + Invoice ID</option>"; ?>
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Receipts') ?></h3>
 				</td>
 			</tr>
@@ -226,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -244,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -264,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -280,13 +313,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($row['value'] == 'N') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Reminders') ?></h3>
 				</td>
 			</tr>
@@ -300,7 +333,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -318,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -336,7 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -344,9 +377,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Expenses') ?></h3>
 				</td>
 			</tr>
@@ -362,14 +395,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small">
-						<?php 
+						<?php
                         if ($row['description'] != '') {
                             echo __($guid, $row['description']);
                         }
-   				 		?> 
+   				 		?>
 					</span>
 				</td>
 				<td class="right">
@@ -392,7 +425,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -413,7 +446,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($row['value'] == 'Chain Of All') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='Chain Of All'>Chain Of All</option>"; ?>			
+						echo "<option $selected value='Chain Of All'>Chain Of All</option>"; ?>
 					</select>
 				</td>
 			</tr>
@@ -429,7 +462,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -445,7 +478,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($row['value'] == 'N') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -459,7 +492,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -479,7 +512,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -495,7 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 						if ($row['value'] == 'N') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -509,7 +542,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -545,7 +578,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -571,7 +604,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
