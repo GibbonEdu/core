@@ -45,14 +45,13 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 			<meta name="robots" content="none"/>
-			
+
 			<?php
             //Set up for i18n via gettext
-            if ($_SESSION[$guid]['i18n']['code'] != null) {
-                putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-                setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-                bindtextdomain('gibbon', './i18n');
-                textdomain('gibbon');
+            if (isset($_SESSION[$guid]['i18n']['code'])) {
+                if ($_SESSION[$guid]['i18n']['code'] != null) {
+                    seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
+                }
             }
 
             //Set theme
@@ -95,10 +94,10 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             //Set timezone from session variable
             date_default_timezone_set($_SESSION[$guid]['timezone']);
    			?>
-			
+
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
-		
+
 			<?php
             if ($_SESSION[$guid]['analytics'] != '') {
                 echo $_SESSION[$guid]['analytics'];
@@ -122,7 +121,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 					</div>
 				</div>
 				<div id="content-wrap-report" style="min-height: 500px">
-					
+
 					<?php
                     $_SESSION[$guid]['address'] = $_GET['q'];
 					$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);

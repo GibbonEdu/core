@@ -88,27 +88,9 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code'])) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', $_SESSION[$guid]['absolutePath'].'/i18n');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
-        //Parse additional modules, adding domains for those
-        try {
-            $data = array();
-            $sql = "SELECT name FROM gibbonModule WHERE active='Y' AND type='Additional'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {}
-        if ($result->rowCount() > 0) {
-            while ($row = $result->fetch()) {
-                bindtextdomain($row['name'], $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/i18n');
-            }
-        }
-        textdomain('gibbon'); //Set default domain
+        seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
     }
 }
-
-setStringReplacementList($connection2, $guid);
 
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {

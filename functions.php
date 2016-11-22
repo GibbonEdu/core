@@ -18,6 +18,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 require_once dirname(__FILE__).'/gibbon.php';
 
+
+//Sets up the required elements for translation
+function seti18n($connection2, $guid, $i18ncode) {
+    putenv('LC_ALL='.$i18ncode);
+    setlocale(LC_ALL, $i18ncode);
+    bindtextdomain('gibbon', $_SESSION[$guid]['absolutePath'].'/i18n');
+    bind_textdomain_codeset('gibbon', 'UTF-8');
+    //Parse additional modules, adding domains for those
+    try {
+        $data = array();
+        $sql = "SELECT name FROM gibbonModule WHERE active='Y' AND type='Additional'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {}
+    if ($result->rowCount() > 0) {
+        while ($row = $result->fetch()) {
+            bindtextdomain($row['name'], $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/i18n');
+        }
+    }
+    textdomain('gibbon'); //Set default domain
+
+    setStringReplacementList($connection2, $guid);
+}
+
 //Convert an HTML email body into a plain text email body
 function emailBodyConvert($body)
 {

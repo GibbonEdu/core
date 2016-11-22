@@ -46,14 +46,13 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 			<meta name="robots" content="none"/>
-			
+
 			<?php
             //Set up for i18n via gettext
-            if ($_SESSION[$guid]['i18n']['code'] != null) {
-                putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-                setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-                bindtextdomain('gibbon', './i18n');
-                textdomain('gibbon');
+            if (isset($_SESSION[$guid]['i18n']['code'])) {
+                if ($_SESSION[$guid]['i18n']['code'] != null) {
+                    seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
+                }
             }
 
             //Set theme
@@ -104,10 +103,10 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 
             //Set timezone from session variable
             date_default_timezone_set($_SESSION[$guid]['timezone']); ?>
-			
+
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
-			
+
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery/jquery.js"></script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery/jquery-migrate.min.js"></script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
@@ -117,7 +116,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			</script>
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.mini.js"></script>
-			
+
 			<?php
             if ($_SESSION[$guid]['analytics'] != '') {
                 echo $_SESSION[$guid]['analytics'];
