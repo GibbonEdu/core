@@ -66,6 +66,7 @@ v13.0.00
 		Attendance: added visual graphing for school-wide Attendance Trends
 		Attendance: improved the display of Classes/Roll Groups Not Registered to include visual overview
 		Attendance: updated Daily Incomplete Email CLI script to include attendance by class
+		Attendance: colspan fix in attendance report for roll groups
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
