@@ -40,6 +40,10 @@ $orderBy = $_POST['orderBy'];
 $description = $_POST['description'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $count = $_POST['count'];
+
+$credits = $_POST['credits'];
+$weight = $_POST['weight'];
+
 $gibbonYearGroupIDList = '';
 for ($i = 0; $i < $count; ++$i) {
     if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
@@ -80,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
-                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList';
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'credits' => $credits, 'weight' => $weight);
+                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, credits=:credits, weight=:weight';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
