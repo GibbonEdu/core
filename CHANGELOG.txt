@@ -55,6 +55,7 @@ v13.0.00
 		System: removed robots meta tag
 		System: added ability to custom order module categories in main menu
 		System: AJAXified Fast Finder
+		System: set tinyMCE default target for new links to New Window
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out

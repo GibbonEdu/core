@@ -301,7 +301,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
-			 	relative_urls: false
+			 	relative_urls: false,
+                default_link_target: "_blank"
 			 });
 			</script>
 			<style>
