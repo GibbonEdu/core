@@ -33,6 +33,7 @@ v13.0.00
 
 	Significant Changes
 		System: changed Primary Assessment Scale to Default Assessment Scale
+		System: added ability to translate additional modules
 		Markbook: added ability to copy columns to other classes
 		School Admin: added ability to edit and create attendance codes
 		Attendance: added landing page for teacher's daily attendance taking

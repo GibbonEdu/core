@@ -90,7 +90,7 @@ class menuMain
 			if ($orderBy != '')
 				$orderBy = substr($orderBy, 0, -1);
 			$data=array("gibbonRoleID"=>$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"]);
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY FIELD(gibbonModule.category, $orderBy), category, name";
+			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL, gibbonModule.type FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY FIELD(gibbonModule.category, $orderBy), category, name";
 			$result = $this->pdo->executeQuery($data, $sql);
 			if (! $this->pdo->getQuerySuccess()) {
 				$menu.="<div class='error'>" . $this->pdo->getError() . "</div>" ;
@@ -122,16 +122,21 @@ class menuMain
 						}
 					}
 
+					if ($row["type"] == 'Core')
+						$moduleName = __($this->config->get('guid'), $row["name"]);
+					else
+						$moduleName = __($this->config->get('guid'), $row["name"], $row["name"]); //Second name sets the domain for translation
+
 					if ($currentCategory!=$lastCategory) {
 						if ($count>0) {
 							$menu.="</ul></li>";
 						}
 						$menu.="<li><a href='#'>" . __($this->config->get('guid'), $currentCategory) . "</a>" ;
 						$menu.="<ul>" ;
-						$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($this->config->get('guid'), $row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $moduleName . "</a></li>" ;
 					}
 					else {
-						$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($this->config->get('guid'), $row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $moduleName . "</a></li>" ;
 					}
 					$lastCategory=$currentCategory ;
 					$count++ ;

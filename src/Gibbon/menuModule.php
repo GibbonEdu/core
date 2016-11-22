@@ -32,27 +32,27 @@ class menuModule
 	 * Gibbon\sqlConnection
 	 */
 	private $pdo ;
-	
+
 	/**
 	 * Gibbon\session
 	 */
 	private $session ;
-	
+
 	/**
 	 * Gibbon\config
 	 */
 	private $config ;
-	
+
 	/**
 	 * Stores the type of module menu
 	 */
 	private $type ;
-	
+
 	/**
 	 * Stores the menu whilst it is being constructed, before returning
 	 */
 	public $menu = "" ;
-	
+
 	/**
 	 * Construct
 	 *
@@ -89,7 +89,7 @@ class menuModule
 					$gibbonRoleIDCurrent=$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"] ;
 				}
 				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
+				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonModule.type, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
 				$result = $this->pdo->executeQuery($data, $sql);
 
 				if ($result->rowCount()>0) {
@@ -119,17 +119,25 @@ class menuModule
 									$currentName=__($this->config->get('guid'), $row["name"]) ;
 								}
 
+								if ($row["type"] == 'Core')
+									$nameOutput = __($this->config->get('guid'), $currentName);
+								else
+									$nameOutput = __($this->config->get('guid'), $currentName, $row["moduleName"]);
+
 								if ($currentName!=$lastName) {
 									if ($currentCategory!=$lastCategory) {
 										if ($count>0) {
 											$this->menu.="</ul></li>";
 										}
-										$this->menu.="<li><h4>" . __($this->config->get('guid'), $currentCategory) . "</h4>" ;
+										if ($row["type"] == 'Core')
+											$this->menu.="<li><h4>" . __($this->config->get('guid'), $currentCategory) . "</h4>" ;
+										else
+											$this->menu.="<li><h4>" . __($this->config->get('guid'), $currentCategory, $row["moduleName"]) . "</h4>" ;
 										$this->menu.="<ul>" ;
-										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($this->config->get('guid'), $currentName) . "</a></li>" ;
+										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . $nameOutput . "</a></li>" ;
 									}
 									else {
-										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($this->config->get('guid'), $currentName) . "</a></li>" ;
+										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . $nameOutput . "</a></li>" ;
 									}
 									$links++ ;
 								}
@@ -144,7 +152,7 @@ class menuModule
 					}
 					else if ($this->type=="mini") {
 						$this->menu.="<div class='linkTop'>" ;
-							$this->menu.="<select id='floatingModuleMenu' style='width: 200px'>" ;						
+							$this->menu.="<select id='floatingModuleMenu' style='width: 200px'>" ;
 								$currentCategory="" ;
 								$lastCategory="" ;
 								$currentName="" ;
@@ -163,22 +171,30 @@ class menuModule
 										$currentName=__($this->config->get('guid'), $row["name"]) ;
 									}
 
+									if ($row["type"] == 'Core')
+										$nameOutput = __($this->config->get('guid'), $currentName);
+									else
+										$nameOutput = __($this->config->get('guid'), $currentName, $row["moduleName"]);
+
 									if ($currentName!=$lastName) {
 										if ($currentCategory!=$lastCategory) {
-											$this->menu.="<optgroup label='--" .  __($this->config->get('guid'), $currentCategory) . "--'/>" ;
+											if ($row["type"] == 'Core')
+												$this->menu.="<optgroup label='--" .  __($this->config->get('guid'), $currentCategory) . "--'/>" ;
+											else
+												$this->menu.="<optgroup label='--" .  __($this->config->get('guid'), $currentCategory, $row["moduleName"]) . "--'/>" ;
 										}
 										$selected="" ;
 										if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
 											$selected="selected" ;
 										}
-										$this->menu.="<option value='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($this->config->get('guid'), $currentName) . "</option>" ;
+										$this->menu.="<option value='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . $nameOutput . "</option>" ;
 										$links++ ;
 									}
 									$lastCategory=$currentCategory ;
 									$lastName=$currentName ;
 									$count++ ;
 								}
-						
+
 								$this->menu.="<script>
 									$(\"#floatingModuleMenu\").change(function() {
 										document.location.href = $(this).val();
@@ -188,12 +204,12 @@ class menuModule
 							$this->menu.="<div style='float: right; padding-top: 10px'>" ;
 								$this->menu.=__($this->config->get('guid'), "Module Menu") ;
 							$this->menu.="</div>" ;
-						$this->menu.="</div>" ;	
+						$this->menu.="</div>" ;
 					}
 				}
 			}
 		}
-	
+
 		return $this->menu ;
 	}
 }

@@ -80,13 +80,16 @@ class trans
 	 * @param	boolean	Use guid.
 	 * @return	string	Translated Text
 	 */
-//Custom translation function to allow custom string replacement
-	public function __($text, $guid = true)
+	 //Custom translation function to allow custom string replacement
+	public function __($text, $guid = true, $domain = null)
 	{
-
 		$replacements = $this->session->get('stringReplacement', $guid) !== NULL ? $this->session->get('stringReplacement', $guid) : array() ;
 
-		$text=_($text) ;
+		if (is_null($domain))
+			$text=_($text) ;
+		else {
+			$text = dgettext($domain, $text) ;
+		}
 
 		if (isset($replacements)) {
 			if (is_array($replacements)) {
@@ -115,7 +118,6 @@ class trans
 							}
 						}
 					}
-
 				}
 			}
 		}
