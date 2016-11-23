@@ -823,6 +823,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					</select>
 				</td>
 			</tr>
+            <tr>
+                <td>
+                    <b><?php echo __($guid, 'Birth Certificate Scan') ?></b><br/>
+                    <span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
+                </td>
+                <td class="right">
+                    <input type="file" name="birthCertificateScan" id="birthCertificateScan"><br/><br/>
+                    <script type="text/javascript">
+                        var birthCertificateScan=new LiveValidation('birthCertificateScan');
+                        birthCertificateScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+                    </script>
+                </td>
+            </tr>
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Ethnicity') ?></b><br/>
@@ -893,7 +906,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Citizenship 1 Passport Scan') ?></b><br/>

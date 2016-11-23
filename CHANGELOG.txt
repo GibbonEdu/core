@@ -134,6 +134,7 @@ v13.0.00
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
 		User Admin: added student ID to search in Manage Users
+		User Admin: added birth certificate scan field in Manage Users
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
