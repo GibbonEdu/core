@@ -28,3 +28,4 @@ v13.0.00
 		User Admin: Added middleName field for query and cross-reference access
 		School Admin: Increased the field length of House name, nameShort
 		Timetable Admin: Increased the field length of Course name, nameShort
+		Activities: Added user permission for activity organisers to manage their activity enrolment
