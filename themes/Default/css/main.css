@@ -1238,5 +1238,5 @@ table.colorOddEven tr:nth-of-type(even) td {
 td.wordWrap {
 	overflow-wrap: break-word;
   	word-wrap: break-word; 
-  	word-break: break-word;
+  	word-break: break-word !important;
 }
