@@ -59,11 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     }
 
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 						dateStart.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'End Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 						dateEnd.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                     echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
                     echo '</td>';
                     echo '<td style="padding: 0;">';
-            
+
                         echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
                         echo '<tr>';
                         $historyCount = 0;
@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 
             if ($count == 0) {
                 echo "<tr class=$rowNum>";
-                echo '<td colspan=3>';
+                echo '<td colspan=4>';
                 echo __($guid, 'All roll groups have been registered.');
                 echo '</td>';
                 echo '</tr>';

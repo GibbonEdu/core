@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 } else {
 
     $today = date('Y-m-d');
-    
+
     $dateEnd = (isset($_GET['dateEnd']))? dateConvert($guid, $_GET['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_GET['dateStart']))? dateConvert($guid, $_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
 
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                 echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
                 echo '</td>';
                 echo '<td style="padding: 0;">';
-        
+
                     echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
                     echo '<tr>';
                     $historyCount = 0;
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 
         if ($count == 0) {
             echo "<tr class=$rowNum>";
-            echo '<td colspan=3>';
+            echo '<td colspan=4>';
             echo __($guid, 'All roll groups have been registered.');
             echo '</td>';
             echo '</tr>';

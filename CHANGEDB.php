@@ -646,4 +646,9 @@ UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule 
 UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater'), category='Reports' WHERE name='Student Data Updater History' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 ALTER TABLE `gibbonMessengerReceipt` CHANGE `confirmedTimestamp` `confirmedTimestamp` TIMESTAMP NULL DEFAULT NULL;end
 ALTER TABLE `gibbonFamilyAdult` ADD INDEX `gibbonFamilyID` (`gibbonFamilyID`, `contactPriority`);end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'noteCreationNotification', 'Note Creation Notification', 'Determines who to notify when a new student note is created.', 'Tutors');end
+CREATE TABLE `gibbonPersonReset` (`gibbonPersonResetID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT, `gibbonPersonID` int(10) unsigned zerofill NOT NULL, `key` varchar(40) COLLATE utf8_unicode_ci NOT NULL, `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonPersonResetID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Finance', 'invoiceeNameStyle', 'Invoicee Name Style', 'Determines how invoicee name appears on invoices and receipts.', 'Surname, Preferred Name');end
+ALTER TABLE `gibbonPerson` ADD `birthCertificateScan` VARCHAR(255) NOT NULL AFTER `countryOfBirth`;end
+
 ";

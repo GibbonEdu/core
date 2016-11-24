@@ -794,7 +794,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<tr>';
                         echo "<td width: 33%; style='vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Country of Birth').'</span><br/>';
-                        echo $row['countryOfBirth'];
+                        if ($row['countryOfBirth'] != '')
+                            echo $row['countryOfBirth']."<br/>";
+                        if ($row['birthCertificateScan'] != '')
+                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['birthCertificateScan']."'>View Birth Certificate</a>";
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Ethnicity').'</span><br/>';
@@ -808,11 +811,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Citizenship 1').'</span><br/>';
-                        echo $row['citizenship1'];
-                        if ($row['citizenship1Passport'] != '') {
-                            echo '<br/>';
-                            echo $row['citizenship1Passport'];
-                        }
+                        if ($row['citizenship1'] != '')
+                            echo $row['citizenship1']."<br/>";
+                        if ($row['citizenship1Passport'] != '')
+                            echo $row['citizenship1Passport']."<br/>";
+                        if ($row['citizenship1PassportScan'] != '')
+                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['citizenship1PassportScan']."'>View Passport</a>";
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Citizenship 2').'</span><br/>';
@@ -828,7 +832,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         } else {
                             echo "<span style='font-size: 115%; font-weight: bold'>".$_SESSION[$guid]['country'].' '.__($guid, 'ID Card').'</span><br/>';
                         }
-                        echo $row['nationalIDCardNumber'];
+                        if ($row['nationalIDCardNumber'] != '')
+                            echo $row['nationalIDCardNumber']."<br/>";
+                        if ($row['nationalIDCardScan'] != '')
+                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['nationalIDCardScan']."'>View ID Card</a>";
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
@@ -3119,7 +3126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $orders = explode(',', $mainMenuCategoryOrder);
 
                     //Sort array
-                    array_multisort($orders, $studentMenuCategory, $studentMenuName, $studentMenuLink);
+                    @array_multisort($orders, $studentMenuCategory, $studentMenuName, $studentMenuLink);
 
                     //Spit out array whilt sorting by $mainMenuCategoryOrder
                     if (count($studentMenuCategory) > 0) {

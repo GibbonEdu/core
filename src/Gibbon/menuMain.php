@@ -78,7 +78,7 @@ class menuMain
 			if ($orderBy != '')
 				$orderBy = substr($orderBy, 0, -1);
 			$data=array("gibbonRoleID"=> $this->session->get("gibbonRoleIDCurrent") );
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY FIELD(gibbonModule.category, $orderBy), category, name";
+			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.type, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY FIELD(gibbonModule.category, $orderBy), category, name";
 			$result = $this->pdo->executeQuery($data, $sql);
 			if (! $this->pdo->getQuerySuccess()) {
 				$menu.="<div class='error'>" . $this->pdo->getError() . "</div>" ;
@@ -97,6 +97,7 @@ class menuMain
 				$lastCategory="" ;
 				$count=0;
 				while ($row=$result->fetch()) {
+					$moduleDomain = ($row['type'] == 'Core')? null : $row['name'];
 					$currentCategory=$row["category"] ;
 
 					$entryURL=$row["entryURL"] ;
@@ -114,12 +115,12 @@ class menuMain
 						if ($count>0) {
 							$menu.="</ul></li>";
 						}
-						$menu.="<li><a href='#'>" . __($currentCategory) . "</a>" ;
+						$menu.="<li><a href='#'>" . __($currentCategory, $moduleDomain) . "</a>" ;
 						$menu.="<ul>" ;
-						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($row["name"], $moduleDomain) . "</a></li>" ;
 					}
 					else {
-						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($row["name"], $moduleDomain) . "</a></li>" ;
 					}
 					$lastCategory=$currentCategory ;
 					$count++ ;

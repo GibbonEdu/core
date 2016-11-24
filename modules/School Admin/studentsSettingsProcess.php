@@ -37,6 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
 } else {
     //Proceed!
     $enableStudentNotes = $_POST['enableStudentNotes'];
+    $noteCreationNotification = 'Tutors';
+    if ($_POST['noteCreationNotification'] == 'Tutors & Teachers')
+        $noteCreationNotification = 'Tutors & Teachers';
     $extendedBriefProfile = $_POST['extendedBriefProfile'];
     $studentAgreementOptions = '';
     foreach (explode(',', $_POST['studentAgreementOptions']) as $agreement) {
@@ -50,6 +53,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     try {
         $data = array('value' => $enableStudentNotes);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='enableStudentNotes'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $noteCreationNotification);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='noteCreationNotification'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

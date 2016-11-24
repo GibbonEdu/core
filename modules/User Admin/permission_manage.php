@@ -117,7 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                 echo '</tr>';
                 while ($rowActions = $resultActions->fetch()) {
                     echo '<tr>';
-                    echo "<td><span title='".htmlPrep(__($guid, $rowActions['description']))."'>".__($guid, $rowActions['name']).'</span></td>';
+                    echo "<td>";
+                        if ($rowModules['type'] == 'Core')
+                            echo "<span title='".htmlPrep(__($guid, $rowActions['description']))."'>".__($guid, $rowActions['name']).'</span>';
+                        else
+                            echo "<span title='".htmlPrep(__($guid, $rowActions['description'], $rowModules['name']))."'>".__($guid, $rowActions['name'], $rowModules['name']).'</span>';
+                    echo '</td>';
                     for ($i = 0;$i < $resultRoles->rowCount();++$i) {
                         echo '<td>';
                         $checked = '';

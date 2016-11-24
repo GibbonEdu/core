@@ -18,6 +18,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 require_once dirname(__FILE__).'/gibbon.php';
 
+
+//Sets up the required elements for translation
+function seti18n($connection2, $guid, $i18ncode) {
+    putenv('LC_ALL='.$i18ncode);
+    setlocale(LC_ALL, $i18ncode);
+    bindtextdomain('gibbon', $_SESSION[$guid]['absolutePath'].'/i18n');
+    bind_textdomain_codeset('gibbon', 'UTF-8');
+    //Parse additional modules, adding domains for those
+    try {
+        $data = array();
+        $sql = "SELECT name FROM gibbonModule WHERE active='Y' AND type='Additional'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {}
+    if ($result->rowCount() > 0) {
+        while ($row = $result->fetch()) {
+            bindtextdomain($row['name'], $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/i18n');
+        }
+    }
+    textdomain('gibbon'); //Set default domain
+
+    setStringReplacementList($connection2, $guid);
+}
+
 //Convert an HTML email body into a plain text email body
 function emailBodyConvert($body)
 {
@@ -42,19 +66,31 @@ function setStringReplacementList($connection2, $guid)
 }
 
 //Custom translation function to allow custom string replacement
-function __($text)
+function __($text, $arg2 = null, $arg3 = null)
 {
     global $gibbon; // For backwards compatibilty
 
-    $guid = '';
-    
-    // Allow use of __() with or without a guid
-    if ( func_num_args() > 1 ) {
-        $guid = func_get_arg(0);
-        $text = func_get_arg(1);
+    if ($arg2 === null && $arg3 === null) {
+        // Handle __($text)
+        return $gibbon->trans->__($text);
     }
 
-    return $gibbon->trans->__($text, $guid);
+    if (isGuid($text) === true) {
+        // Handle __($guid, $text, $domain = null)
+        $text = $arg2;
+        $domain = $arg3;
+    } else {
+        // Handle __($text, $domain)
+        $domain = $arg2;
+    }
+
+    return $gibbon->trans->__($text, $domain);
+}
+
+function isGuid($text) {
+    if (strlen($text) != 36) return false;
+
+    return ($text[9] == '-' && $text[14] == '-' && $text[19] == '-' && $text[24] == '-' );
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field

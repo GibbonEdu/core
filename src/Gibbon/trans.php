@@ -87,9 +87,15 @@ class trans
 	 * @param	boolean	Use guid.
 	 * @return	string	Translated Text
 	 */
-	public function __($text, $guid = true)
-	{
-		$text=_($text) ;
+	public function __($text, $domain = null)
+    {
+    	if ($text === '') return $text; 
+
+        if (empty($domain))
+            $text=_($text) ;
+        else {
+            $text = dgettext($domain, $text) ;
+        }
 
 		if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
 

@@ -1796,8 +1796,8 @@ else {
 				//Prep message
 				$bodyFin = "<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 
-				//Send to sender
-				$emailCount=1 ;
+				//Set up email
+				$emailCount=0 ;
 				$mail=getGibbonMailer($guid);
 				$mail->IsSMTP();
 				if ($emailReplyTo!="")
@@ -1806,24 +1806,47 @@ else {
 					$mail->SetFrom($from, $_SESSION[$guid]["organisationName"]);
 				else //Else, send from individual
 					$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
-				$mail->AddAddress($from);
 				$mail->CharSet="UTF-8";
 				$mail->Encoding="base64" ;
 				$mail->IsHTML(true);
 				$mail->Subject=$subject ;
 				$mail->Body = $body.$bodyFin ;
 				$mail->AltBody = emailBodyConvert($body.$bodyFin) ;
-				if(!$mail->Send()) {
-					$partialFail = TRUE ;
-				}
 
-				//If sender is using school-wide address, send to school-wide address
-				if ($from!=$_SESSION[$guid]["email"]) { //If sender is using school-wide address, add them to recipient list.
-					$emailCount ++;
-					$mail->ClearAddresses();
-					$mail->AddAddress($_SESSION[$guid]["email"]);
+				//Send to sender, if not in recipient list
+				$includeSender = true ;
+				foreach ($report as $reportEntry) {
+					if ($reportEntry[3] == 'Email') {
+						if ($reportEntry[4] == $from) {
+							$includeSender = false ;
+						}
+					}
+				}
+				if ($includeSender) {
+					$emailCount ++ ;
+					$mail->AddAddress($from);
 					if(!$mail->Send()) {
 						$partialFail = TRUE ;
+					}
+				}
+
+				//If sender is using school-wide address, and it is not in recipient list, send to school-wide address
+				if ($from!=$_SESSION[$guid]["email"]) { //If sender is using school-wide address, add them to recipient list.
+					$includeSender = true ;
+					foreach ($report as $reportEntry) {
+						if ($reportEntry[3] == 'Email') {
+							if ($reportEntry[4] == $_SESSION[$guid]["email"]) {
+								$includeSender = false ;
+							}
+						}
+					}
+					if ($includeSender) {
+						$emailCount ++;
+						$mail->ClearAddresses();
+						$mail->AddAddress($_SESSION[$guid]["email"]);
+						if(!$mail->Send()) {
+							$partialFail = TRUE ;
+						}
 					}
 				}
 

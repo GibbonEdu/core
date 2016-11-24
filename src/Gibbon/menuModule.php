@@ -79,7 +79,7 @@ class menuModule
 				$gibbonRoleIDCurrent= $this->session->get("gibbonRoleIDCurrent");
 
 				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
+				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonModule.type, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
 				$result = $this->pdo->executeQuery($data, $sql);
 
 				if ($result->rowCount()>0) {
@@ -94,6 +94,7 @@ class menuModule
 							while ($row=$result->fetch()) {
 								$moduleName=$row["moduleName"] ;
 								$moduleEntry=$row["moduleEntry"] ;
+								$moduleDomain = ($row['type'] == 'Core')? null : $row['moduleName'];
 
 								//Set active link class
 								$style="" ;
@@ -103,10 +104,10 @@ class menuModule
 
 								$currentCategory=$row["category"] ;
 								if (strpos($row["name"],"_")>0) {
-									$currentName=__(substr($row["name"],0,strpos($row["name"],"_"))) ;
+									$currentName=substr($row["name"],0,strpos($row["name"],"_"));
 								}
 								else {
-									$currentName=__($row["name"]) ;
+									$currentName=$row["name"] ;
 								}
 
 								if ($currentName!=$lastName) {
@@ -114,12 +115,12 @@ class menuModule
 										if ($count>0) {
 											$menu.="</ul></li>";
 										}
-										$menu.="<li><h4>" . __($currentCategory) . "</h4>" ;
+										$menu.="<li><h4>" . __($currentCategory, $moduleDomain) . "</h4>" ;
 										$menu.="<ul>" ;
-										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($currentName) . "</a></li>" ;
+										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($currentName, $moduleDomain) . "</a></li>" ;
 									}
 									else {
-										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($currentName) . "</a></li>" ;
+										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($currentName, $moduleDomain) . "</a></li>" ;
 									}
 									$links++ ;
 								}
@@ -144,24 +145,25 @@ class menuModule
 								while ($row=$result->fetch()) {
 									$moduleName=$row["moduleName"] ;
 									$moduleEntry=$row["moduleEntry"] ;
+									$moduleDomain = ($row['type'] == 'Core')? null : $row['moduleName'];
 
 									$currentCategory=$row["category"] ;
 									if (strpos($row["name"],"_")>0) {
-										$currentName=__(substr($row["name"],0,strpos($row["name"],"_"))) ;
+										$currentName=substr($row["name"],0,strpos($row["name"],"_"));
 									}
 									else {
-										$currentName=__($row["name"]) ;
+										$currentName=$row["name"];
 									}
 
 									if ($currentName!=$lastName) {
 										if ($currentCategory!=$lastCategory) {
-											$menu.="<optgroup label='--" .  __($currentCategory) . "--'/>" ;
+											$menu.="<optgroup label='--" .  __($currentCategory, $moduleDomain) . "--'/>" ;
 										}
 										$selected="" ;
 										if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
 											$selected="selected" ;
 										}
-										$menu.="<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($currentName) . "</option>" ;
+										$menu.="<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($currentName, $moduleDomain) . "</option>" ;
 										$links++ ;
 									}
 									$lastCategory=$currentCategory ;

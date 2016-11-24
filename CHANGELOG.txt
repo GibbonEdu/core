@@ -33,12 +33,13 @@ v13.0.00
 
 	Significant Changes
 		System: changed Primary Assessment Scale to Default Assessment Scale
+		System: added ability to translate additional modules
 		Markbook: added ability to copy columns to other classes
 		School Admin: added ability to edit and create attendance codes
 		Attendance: added landing page for teacher's daily attendance taking
 
 	Security
-		...
+		System: added token-based user confirmation of password reset requests, to prevent unwanted third-party resets
 
 	Tweaks & Bug Fixes
 		System: fixed sql loading issue in trans class
@@ -55,6 +56,7 @@ v13.0.00
 		System: removed robots meta tag
 		System: added ability to custom order module categories in main menu
 		System: AJAXified Fast Finder
+		System: set tinyMCE default target for new links to New Window
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
@@ -64,12 +66,15 @@ v13.0.00
 		Attendance: added visual graphing for school-wide Attendance Trends
 		Attendance: improved the display of Classes/Roll Groups Not Registered to include visual overview
 		Attendance: updated Daily Incomplete Email CLI script to include attendance by class
+		Attendance: colspan fix in attendance report for roll groups
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
 		Finance: removed thousand separator from invoice bulk export
 		Finance: switched from JS to HTML for fee block placeholders
+		Finance: added option to output name on invoice/receipt as student official name, rather than preferredName+surname
 		Individual Needs: added template settings for pre-filling fields on new IEPs
+		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
@@ -91,6 +96,7 @@ v13.0.00
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
 		Planner: switched from JS to HTML for Smart Block placeholders
+		Planner: added bulk duplicate function to unit planner
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days
@@ -114,6 +120,7 @@ v13.0.00
 		Students: fixed colspan issue in Data Update report when no records found
 		Students: added student ID to search
 		Students: added student image to privacy report
+		Students: added setting to allow student note creation notification to be sent to all teachers
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
@@ -121,11 +128,13 @@ v13.0.00
 		Timetable Admin: narrowed down class participant count in Course edit view to users with status Full
 		Timetable Admin: added search and filters to course enrolment and course management pages
 		Timetable Admin: added bulk action to copy selected students to another class
+		Timetable Admin: code clean up on bulk actions when managing course enrolment by class
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
 		User Admin: added student ID to search in Manage Users
+		User Admin: added birth certificate scan field in Manage Users
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class

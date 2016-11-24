@@ -72,11 +72,7 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code'])) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', './i18n');
-        textdomain('gibbon');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
+        seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
     }
 }
 
@@ -283,7 +279,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
-			 	relative_urls: false
+			 	relative_urls: false,
+                default_link_target: "_blank"
 			 });
 			</script>
 			<style>
@@ -388,9 +385,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         }
 
 						if ($_SESSION[$guid]['address'] == '') {
-							if (isset($_GET['return'])) {
-								returnProcess($guid, $_GET['return'], null, null);
-							}
+                            $returns = array();
+                        	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
+                        	if (isset($_GET['return'])) {
+                        	    returnProcess($guid, $_GET['return'], null, $returns);
+                        	}
 						}
 
                         //Show index page Content

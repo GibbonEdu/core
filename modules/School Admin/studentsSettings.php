@@ -104,13 +104,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     }
 
     echo '<h3>';
-    echo __($guid, 'Miscellaneous');
+    echo __($guid, 'Settings');
     echo '</h3>';
 
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
+            <tr class='break'>
+                <td colspan=2>
+                    <h3><?php echo __($guid, 'Student Notes'); ?></h3>
+                </td>
+            </tr>
+            <tr>
 				<?php
                 try {
                     $data = array();
@@ -120,18 +125,44 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+                        <option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
 			</tr>
-			<tr>
+            <tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='noteCreationNotification'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+                        <option <?php if ($row['value'] == 'Tutors') { echo 'selected '; } ?>value="Tutors"><?php echo __($guid, 'Tutors') ?></option>
+						<option <?php if ($row['value'] == 'Tutors & Teachers') { echo 'selected '; } ?>value="Tutors & Teachers"><?php echo __($guid, 'Tutors & Teachers') ?></option>
+					</select>
+				</td>
+			</tr>
+            <tr class='break'>
+                <td colspan=2>
+                    <h3><?php echo __($guid, 'Miscellaneous'); ?></h3>
+                </td>
+            </tr>
+            <tr>
 				<?php
                 try {
                     $data = array();
@@ -141,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -162,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
