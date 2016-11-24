@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            if ($modulesSQL[$moduleName][0]['type'] == 'Core')
+            if ($installed && $modulesSQL[$moduleName][0]['type'] == 'Core')
                 echo __($guid, $moduleName);
             else
                 echo __($guid, $moduleName, $moduleName);
