@@ -150,9 +150,9 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
         try {
             $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
-                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonPerson.username, ')')
-                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (ID: ', gibbonPerson.studentID, ')')
-                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', preferredName, ' (', gibbonPerson.firstName, ', ', gibbonRollGroup.name, ')')
+                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
+                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
+                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
                         ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
                     NULL as type
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
@@ -183,7 +183,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                 $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep(__($guid, $token['name'])).'"},';
             }
             else if ($token['type'] == 'Additional') {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep(__($guid, $token['name']), $token['module']).'"},';
+                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep(__($guid, $token['name'], $token['module'])).'"},';
             }
             else {
                 $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep($token['name']).'"},';
