@@ -39,21 +39,15 @@ class menuMain
 	private $session ;
 
 	/**
-	 * Gibbon\trans
-	 */
-	private $trans ;
-
-	/**
 	 * Construct
 	 *
 	 * @version 10th November 2016
 	 * @since	22nd April 2016
 	 */
-	public function __construct( sqlConnection $pdo, session $session, trans $trans )
+	public function __construct( core $gibbon, sqlConnection $pdo )
 	{
 		$this->pdo = $pdo;
-		$this->session = $session;
-		$this->trans = $trans;
+		$this->session = $gibbon->session;
 	}
 
 	/**
@@ -71,7 +65,7 @@ class menuMain
 
 		if ($this->session->get("gibbonRoleIDCurrent") == null) {
 			$menu.="<ul id='nav'>" ;
-			$menu.="<li class='active'><a href='" . $absoluteURL . "/index.php'>" . $this->trans->__('Home') . "</a></li>" ;
+			$menu.="<li class='active'><a href='" . $absoluteURL . "/index.php'>" . __('Home') . "</a></li>" ;
 			$menu.="</ul>" ;
 		}
 		else {
@@ -92,12 +86,12 @@ class menuMain
 
 			if ($result->rowCount()<1) {
 				$menu.="<ul id='nav'>" ;
-				$menu.="<li class='active'><a href='" . $absoluteURL . "/index.php'>" . $this->trans->__('Home') . "</a></li>" ;
+				$menu.="<li class='active'><a href='" . $absoluteURL . "/index.php'>" . __('Home') . "</a></li>" ;
 				$menu.="</ul>" ;
 			}
 			else {
 				$menu.="<ul id='nav'>" ;
-				$menu.="<li><a href='" . $absoluteURL . "/index.php'>" . $this->trans->__('Home') . "</a></li>" ;
+				$menu.="<li><a href='" . $absoluteURL . "/index.php'>" . __('Home') . "</a></li>" ;
 
 				$currentCategory="" ;
 				$lastCategory="" ;
@@ -120,12 +114,12 @@ class menuMain
 						if ($count>0) {
 							$menu.="</ul></li>";
 						}
-						$menu.="<li><a href='#'>" . $this->trans->__($currentCategory) . "</a>" ;
+						$menu.="<li><a href='#'>" . __($currentCategory) . "</a>" ;
 						$menu.="<ul>" ;
-						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $this->trans->__($row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($row["name"]) . "</a></li>" ;
 					}
 					else {
-						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . $this->trans->__($row["name"]) . "</a></li>" ;
+						$menu.="<li><a href='" . $absoluteURL . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($row["name"]) . "</a></li>" ;
 					}
 					$lastCategory=$currentCategory ;
 					$count++ ;

@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     
     require_once './modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($pdo, $session);
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {
         $types = $_POST['types'];

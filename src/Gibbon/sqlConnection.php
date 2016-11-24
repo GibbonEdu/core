@@ -71,18 +71,16 @@ class sqlConnection
 	 * @param	string	error Message
 	 * @return	Object	PDO Connection
 	 */
-	public function __construct( $config = null, $message = null)
+	public function __construct( $message = null )
 	{	
-		// Test for config, Backwards compatability
-		if (empty($config)) {
-			$config = new config();
+		// Test for Config file. 
+		if (file_exists(dirname(__FILE__). '/../../config.php')) {
+			include dirname(__FILE__). '/../../config.php';
+		} else {
+			return NULL;
 		}
 
-		if ($config->isGibbonInstalled() == false) {
-			return;
-		}
-
-		return $this->generateConnection($config->get('databaseServer'), $config->get('databaseName'), $config->get('databaseUsername'), $config->get('databasePassword'), $message);
+		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message);
 	}
 
 	/**

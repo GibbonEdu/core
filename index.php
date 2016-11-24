@@ -360,7 +360,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 							<?php
                                 
                                 //Get main menu
-                                $mainMenu = new Gibbon\menuMain($pdo, $session, $trans);
+                                $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
                                 if ($cacheLoad) {
                                     $mainMenu->setMenu();
                                 }
@@ -377,7 +377,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                             echo "<div id='content-wide'>";
 
                             //Invoke and show Module Menu
-                            $menuModule = new Gibbon\menuModule($pdo, $session, $trans);
+                            $menuModule = new Gibbon\menuModule($gibbon, $pdo);
 
                             // Display the module menu
                             echo $menuModule->getMenu('mini');
@@ -640,7 +640,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         if ($sidebar != 'false') {
                             ?>
 							<div id="sidebar">
-								<?php sidebar($pdo, $session, $trans);
+								<?php sidebar($gibbon, $pdo);
                             ?>
 							</div>
 							<br style="clear: both">

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 $basePath = dirname(__FILE__);
+$basePath = rtrim(str_replace('\\', '/', $basePath), '/');
 
 // Handle Gibbon installation redirect
 if (file_exists($basePath . '/config.php') == false) {
@@ -34,7 +35,7 @@ if (file_exists($basePath . '/config.php') == false) {
 // Setup the autoloader
 require_once $basePath.'/src/Autoloader.php';
 
-$loader = new Autoloader( $basePath );
+$loader = new Autoloader($basePath);
 
 $loader->addNameSpace('Gibbon\\', 'src/Gibbon');
 $loader->addNameSpace('Library\\', 'src/Library');
@@ -43,29 +44,25 @@ $loader->register();
 
 
 // New configuration object
-$config = new Gibbon\config();
-$guid = $config->get('guid');
-$caching = $config->get('caching');
-$version = $config->get('version');
+$gibbon = new Gibbon\core();
 
 
-// Define the system-wide constants
-if (!defined('GIBBON_PATH')) define('GIBBON_PATH', $config->get('absolutePath') );
-if (!defined('GIBBON_URL')) define('GIBBON_URL', $config->get('absoluteURL') );
+// Set global config variables, for backwards compatability
+$guid = $gibbon->guid();
+$caching = $gibbon->getCaching();
+$version = $gibbon->getVersion();
 
 
-// Require the system-wide includes
+// Require the system-wide functions
 require_once $basePath.'/functions.php';
 
 
-// New PDO DB connection
-$pdo = new Gibbon\sqlConnection($config);
-$connection2 = $pdo->getConnection();
+if ($gibbon->isInstalled() == true) {
 
+	// New PDO DB connection
+	$pdo = new Gibbon\sqlConnection();
+	$connection2 = $pdo->getConnection();
 
-// Create the core objects
-$session = new Gibbon\session( $config );
-$trans = new Gibbon\trans( $pdo, $session );
-
-
-?>
+	// Load the string replacements
+	$gibbon->trans->setStringReplacementList($connection2);
+}

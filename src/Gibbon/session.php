@@ -39,7 +39,7 @@ class session
 	 * @since	15th April 2016
 	 * @return	void
 	 */
-	public function __construct( config $config = null )
+	public function __construct( string $guid )
 	{
 		//Prevent breakage of back button on POST pages
 		ini_set('session.cache_limiter', 'private');
@@ -48,10 +48,7 @@ class session
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
 
-		// Test for config, Backwards compatability
-		if (empty($config)) $config = new config();
-
-		$this->guid = $config->get('guid');
+		$this->guid = $guid;
 	}
 
 	/**

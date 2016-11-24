@@ -120,12 +120,12 @@ class markbookView
      * @param    int  gibbonCourseClassID
      * @return   void
      */
-    public function __construct(\Gibbon\sqlConnection $pdo, \Gibbon\session $session, $gibbonCourseClassID)
+    public function __construct( \Gibbon\core $gibbon, \Gibbon\sqlConnection $pdo, $gibbonCourseClassID)
     {
-        $this->session = $session ;
+        $this->session = $gibbon->session ;
         $this->pdo = $pdo ;
 
-        $this->guid = $this->session->guid();
+        $this->guid = $gibbon->guid();
         $this->gibbonCourseClassID = $gibbonCourseClassID;
 
         // Preload Gibbon settings - we check them a lot

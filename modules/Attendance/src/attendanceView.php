@@ -70,12 +70,12 @@ class attendanceView
      * @param    Gibbon\sqlConnection
      * @return   void
      */
-    public function __construct(\Gibbon\sqlConnection $pdo, \Gibbon\session $session)
+    public function __construct(\Gibbon\core $gibbon, \Gibbon\sqlConnection $pdo)
     {
-        $this->session = $session ;
+        $this->session = $gibbon->session ;
         $this->pdo = $pdo ;
 
-        $this->guid = $this->session->guid();
+        $this->guid = $gibbon->guid();
 
         // Get attendance codes
         try {

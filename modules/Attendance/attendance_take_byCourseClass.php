@@ -40,7 +40,7 @@ else {
         returnProcess($guid, $_GET['return'], null, array( 'error3' => __($guid, 'Your request failed because the specified date is not in the future, or is not a school day.')) );
     }
 
-    $attendance = new Module\Attendance\attendanceView($pdo, $session);
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
 	$gibbonCourseClassID="" ;
 	if (isset($_GET["gibbonCourseClassID"])==FALSE) {

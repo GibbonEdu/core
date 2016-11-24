@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 } else {
                     //Write to database
                     require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
-                    $attendance = new Module\Attendance\attendanceView($pdo, $session);
+                    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
                     try {
                         $data = array('gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));

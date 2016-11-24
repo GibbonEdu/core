@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         );
     }
 
-    $attendance = new Module\Attendance\attendanceView($pdo, $session);
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     $gibbonPersonID = null;
     if (isset($_GET['gibbonPersonID'])) {

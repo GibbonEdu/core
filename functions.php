@@ -36,23 +36,25 @@ function emailBodyConvert($body)
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid)
 {
-    global $trans; // For backwards compatibilty
+    global $gibbon; // For backwards compatibilty
 
-    $trans->setStringReplacementList();
+    $gibbon->trans->setStringReplacementList($connection2);
 }
 
 //Custom translation function to allow custom string replacement
 function __($text)
 {
-    global $trans; // For backwards compatibilty
+    global $gibbon; // For backwards compatibilty
 
+    $guid = '';
+    
     // Allow use of __() with or without a guid
     if ( func_num_args() > 1 ) {
         $guid = func_get_arg(0);
         $text = func_get_arg(1);
     }
 
-    return $trans->__($text, $guid);
+    return $gibbon->trans->__($text, $guid);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
@@ -2742,10 +2744,10 @@ function msort($array, $id = 'id', $sort_ascending = true)
 }
 
 //Create the sidebar
-function sidebar($pdo, $session, $trans)
+function sidebar($gibbon, $pdo)
 {   
     $connection2 = $pdo->getConnection();
-    $guid = $session->guid();
+    $guid = $gibbon->guid();
     
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
     if (isset($_GET['loginReturn'])) {
@@ -2919,7 +2921,7 @@ function sidebar($pdo, $session, $trans)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\menuModule($pdo, $session, $trans);
+    $menuModule = new Gibbon\menuModule($gibbon, $pdo);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users

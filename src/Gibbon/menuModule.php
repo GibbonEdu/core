@@ -39,11 +39,6 @@ class menuModule
 	private $session ;
 	
 	/**
-	 * Gibbon\trans
-	 */
-	private $trans ;
-	
-	/**
 	 * Stores the type of module menu
 	 */
 	private $type ;
@@ -54,11 +49,10 @@ class menuModule
 	 * @version 10th November 2016
 	 * @since	22nd April 2016
 	 */
-	public function __construct( sqlConnection $pdo, session $session, trans $trans )
+	public function __construct( core $gibbon, sqlConnection $pdo )
 	{
 		$this->pdo = $pdo;
-		$this->session = $session;
-		$this->trans = $trans;
+		$this->session = $gibbon->session;
 	}
 
 	/**
@@ -109,10 +103,10 @@ class menuModule
 
 								$currentCategory=$row["category"] ;
 								if (strpos($row["name"],"_")>0) {
-									$currentName=$this->trans->__(substr($row["name"],0,strpos($row["name"],"_"))) ;
+									$currentName=__(substr($row["name"],0,strpos($row["name"],"_"))) ;
 								}
 								else {
-									$currentName=$this->trans->__($row["name"]) ;
+									$currentName=__($row["name"]) ;
 								}
 
 								if ($currentName!=$lastName) {
@@ -120,12 +114,12 @@ class menuModule
 										if ($count>0) {
 											$menu.="</ul></li>";
 										}
-										$menu.="<li><h4>" . $this->trans->__($currentCategory) . "</h4>" ;
+										$menu.="<li><h4>" . __($currentCategory) . "</h4>" ;
 										$menu.="<ul>" ;
-										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . $this->trans->__($currentName) . "</a></li>" ;
+										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($currentName) . "</a></li>" ;
 									}
 									else {
-										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . $this->trans->__($currentName) . "</a></li>" ;
+										$menu.="<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($currentName) . "</a></li>" ;
 									}
 									$links++ ;
 								}
@@ -153,21 +147,21 @@ class menuModule
 
 									$currentCategory=$row["category"] ;
 									if (strpos($row["name"],"_")>0) {
-										$currentName=$this->trans->__(substr($row["name"],0,strpos($row["name"],"_"))) ;
+										$currentName=__(substr($row["name"],0,strpos($row["name"],"_"))) ;
 									}
 									else {
-										$currentName=$this->trans->__($row["name"]) ;
+										$currentName=__($row["name"]) ;
 									}
 
 									if ($currentName!=$lastName) {
 										if ($currentCategory!=$lastCategory) {
-											$menu.="<optgroup label='--" .  $this->trans->__($currentCategory) . "--'/>" ;
+											$menu.="<optgroup label='--" .  __($currentCategory) . "--'/>" ;
 										}
 										$selected="" ;
 										if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
 											$selected="selected" ;
 										}
-										$menu.="<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . $this->trans->__($currentName) . "</option>" ;
+										$menu.="<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($currentName) . "</option>" ;
 										$links++ ;
 									}
 									$lastCategory=$currentCategory ;
@@ -182,7 +176,7 @@ class menuModule
 								</script>" ;
 							$menu.="</select>" ;
 							$menu.="<div style='float: right; padding-top: 10px'>" ;
-								$menu.=$this->trans->__("Module Menu") ;
+								$menu.=__("Module Menu") ;
 							$menu.="</div>" ;
 						$menu.="</div>" ;	
 					}

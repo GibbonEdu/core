@@ -28,15 +28,9 @@ namespace Gibbon;
  */
 class trans
 {
-	/**
-	 * Gibbon\sqlConnection
-	 */
-	private $pdo ;
+	protected $session;
 
-	/**
-	 * Gibbon\session
-	 */
-	private $session ;
+	protected $stringReplacements;
 
 	/**
 	 * Construct
@@ -45,9 +39,8 @@ class trans
 	 * @since	16th April 2016
 	 * @return	void
 	 */
-	public function __construct( sqlConnection $pdo, session $session )
+	public function __construct( session $session )
 	{
-		$this->pdo = $pdo;
 		$this->session = $session;
 	}
 
@@ -59,21 +52,30 @@ class trans
 	 * @since	Old
 	 * @return	void
 	 */
-	public function setStringReplacementList()
+	public function setStringReplacementList( $connection2 )
 	{	
-		$stringReplacements = array();
-		
-		if ($this->pdo->getConnection() != null) {
-			$data = array();
-			$sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original" ;
-			$result = $this->pdo->executeQuery($data, $sql);
+		$stringReplacements = $this->session->get('stringReplacement', null);
 
-			if ($result->rowCount()>0) {
-				$stringReplacements = $result->fetchAll();
+		// Do this once per session, only if the value doesn't exist
+		if ($stringReplacements === null) {
+		
+			$stringReplacements = array();
+
+			if ($connection2 != null) {
+				$data = array();
+				$sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original" ;
+				$result = $connection2->prepare($sql);
+				$result->execute($data);
+
+				if ($result->rowCount()>0) {
+					$stringReplacements = $result->fetchAll();
+				}
 			}
+
+			$this->session->set('stringReplacement', $stringReplacements );
 		}
 
-		$this->session->set('stringReplacement', $stringReplacements );
+		$this->stringReplacements = $stringReplacements;
 	}
 	/**
 	 * Custom translation function to allow custom string replacement
@@ -87,18 +89,11 @@ class trans
 	 */
 	public function __($text, $guid = true)
 	{
-		$replacements = $this->session->get('stringReplacement', null);
-
-		// Do this once per session, only if the value doesn't exist
-		if ($replacements === null) {
-			$this->setStringReplacementList();
-		}
-
 		$text=_($text) ;
 
-		if (isset($replacements) && is_array($replacements)) {
+		if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
 
-			foreach ($replacements AS $replacement) {
+			foreach ($this->stringReplacements AS $replacement) {
 				if ($replacement["mode"]=="Partial") { //Partial match
 					if ($replacement["caseSensitive"]=="Y") {
 						if (strpos($text, $replacement["original"])!==FALSE) {
