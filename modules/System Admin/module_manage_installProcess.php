@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                         }
 
                         //Update main menu
-                        $mainMenu = new Gibbon\menuMain($pdo, $session, $trans);
+                        $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
                         $mainMenu->setMenu();
 
                         //We made it!

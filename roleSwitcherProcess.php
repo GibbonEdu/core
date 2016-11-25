@@ -55,7 +55,7 @@ else {
     } else {
         //Make the switch
         $_SESSION[$guid]['gibbonRoleIDCurrent'] = $role;
-        $mainMenu = new Gibbon\menuMain($pdo, $session, $trans);
+        $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
         $mainMenu->setMenu();
         $URL .= '?return=success0';
         header("Location: {$URL}");
