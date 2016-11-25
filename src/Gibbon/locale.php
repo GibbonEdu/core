@@ -122,12 +122,12 @@ class Locale
 	 * @since	Old
 	 * @param   Gibbon/sqlConnection  $pdo
 	 */
-	public function setStringReplacementList($pdo)
+	public function setStringReplacementList($pdo, $forceRefresh = false)
 	{	
 		$stringReplacements = $this->session->get('stringReplacement', null);
 
 		// Do this once per session, only if the value doesn't exist
-		if ($stringReplacements === null) {
+		if (!$forceRefresh && $stringReplacements === null) {
 		
 			$stringReplacements = array();
 
