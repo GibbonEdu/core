@@ -22,7 +22,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 {
     $queryFail = false;
 
-    global $session, $pdo;
+    global $gibbon, $session, $pdo;
     require_once './modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
