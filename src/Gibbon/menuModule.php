@@ -26,7 +26,7 @@ namespace Gibbon;
  * @since	22nd April 2016
  * @author	Ross Parker
  */
-class menuModule
+class MenuModule
 {
 	/**
 	 * Gibbon\sqlConnection
@@ -49,7 +49,7 @@ class menuModule
 	 * @version 23rd November 2016
 	 * @since	22nd April 2016
 	 */
-	public function __construct( core $gibbon, sqlConnection $pdo )
+	public function __construct( Core $gibbon, sqlConnection $pdo )
 	{
 		$this->pdo = $pdo;
 		$this->session = $gibbon->session;
