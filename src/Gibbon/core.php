@@ -34,7 +34,7 @@ use Library\Yaml\Yaml ;
  * @version	v13
  * @since	v13
  */
-class core {
+class Core {
 
 	public $config;
 	public $session;
@@ -58,10 +58,10 @@ class core {
 	 * @version	v13
 	 * @since	v13
 	 */
-	public function __construct()
+	public function __construct($directory, $domain)
 	{
 		// Set the root path
-		$this->locateSystemDirectory();
+		$this->locateSystemDirectory($directory, $domain);
 
 		// Set the current version
 		$this->loadVersionFromFile( $this->basePath.'/version.php' );
@@ -72,8 +72,9 @@ class core {
 		}
 
 		// Create the core objects
-		$this->session = new session($this->guid());
+		$this->session = new Session($this->guid());
 		$this->locale = new Locale($this->session);
+		$this->security = new Security($this->session);
 
 		// Set the absolute Gibbon Path and URL from the session if available, otherwise default to basePath and URL
 		$this->absolutePath = $this->session->get('absolutePath', $this->basePath );
@@ -151,17 +152,16 @@ class core {
 		$this->caching = $caching ;
 	}
 
-	protected function locateSystemDirectory() {
+	protected function locateSystemDirectory($directory, $domain) {
 		// Determine the base Gibbon Path
-		$this->basePath = str_replace('src/Gibbon', '', dirname(__FILE__) );
-		$this->basePath = rtrim(str_replace('\\', '/', $this->basePath), '/');
+		$this->basePath = str_replace('\\', '/', $directory);
+		$this->basePath = rtrim($this->basePath, '/ ');
 
 		// Determine the base Gibbon URL
 		$http = (isset($_SERVER['HTTPS']))? 'https://' : 'http://';
 		$port = ($_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
-		$path = dirname(str_replace('src/Gibbon', '', $_SERVER['PHP_SELF']));
 
-		$this->baseURL = $http . $_SERVER['SERVER_NAME'] . $port . $path;
+		$this->baseURL = $http . $_SERVER['SERVER_NAME'] . $port . dirname($domain);
 		$this->baseURL = rtrim($this->baseURL, '/ ');
 	}
 

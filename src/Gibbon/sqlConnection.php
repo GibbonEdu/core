@@ -20,11 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon ;
 
 /**
- * sql Connection
+ * Database Connection Class
  *
- * @version	18th April 2016
- * @since	8th April 2016
- * @author	Craig Rayner
+ * @version	v13
+ * @since	v12
  */
 class sqlConnection
 {
@@ -66,8 +65,8 @@ class sqlConnection
 	/**
 	 * Construct
 	 *
-	 * @version	12th April 2016
-	 * @since	8th April 2016
+	 * @version	v13
+	 * @since	v12
 	 * @param	string	error Message
 	 * @return	Object	PDO Connection
 	 */
@@ -86,8 +85,8 @@ class sqlConnection
 	/**
 	 * generate Connection
 	 *
-	 * @version	17th April 2016
-	 * @since	17th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @param	string	Server Address:port
 	 * @param	string	Database Name
 	 * @param	string	User Name
@@ -122,8 +121,8 @@ class sqlConnection
 	 * get Connection
 	 *
 	 * Only required for backwards compatibilty in Gibbon.
-	 * @version	8th April 2016
-	 * @since	8th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @return	Object PDO COnnection
 	 */
 	public function getConnection()
@@ -134,8 +133,8 @@ class sqlConnection
 	/**
 	 * get Connection Success
 	 *
-	 * @version	12th April 2016
-	 * @since	12th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @return	Object PDO COnnection
 	 */
 	public function getSuccess()
@@ -146,8 +145,8 @@ class sqlConnection
 	/**
 	 * get Query Success
 	 *
-	 * @version	12th April 2016
-	 * @since	12th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @return	Object PDO COnnection
 	 */
 	public function getQuerySuccess()
@@ -158,8 +157,8 @@ class sqlConnection
 	/**
 	 * Execute Query
 	 *
-	 * @version	14th April 2016
-	 * @since	12th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @param	array	Data Information
 	 * @param	string	SQL Query
 	 * @param	string	Error
@@ -190,8 +189,8 @@ class sqlConnection
 	/**
 	 * get Result
 	 *
-	 * @version	14th April 2016
-	 * @since	14th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @return	Object	PDOStatement 
 	 */
 	public function getResult()
@@ -202,8 +201,8 @@ class sqlConnection
 	/**
 	 * get Version
 	 *
-	 * @version	16th April 2016
-	 * @since	16th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @return	string	Version
 	 */
 	public function getVersion()
@@ -214,8 +213,8 @@ class sqlConnection
 	/**
 	 * Install Bypass
 	 *
-	 * @version	17th April 2016
-	 * @since	17th April 2016
+	 * @version	v12
+	 * @since	v12
 	 * @param	string	Server Address:port
 	 * @param	string	Database Name
 	 * @param	string	User Name
@@ -254,9 +253,8 @@ class sqlConnection
 	/**
 	 * set SQL Mode
 	 *
-	 * @version	18th April 2016
-	 * @since	18th April 2016
-	 * @return	void
+	 * @version	v12
+	 * @since	v12
 	 */
 	private function setSQLMode()
 	{

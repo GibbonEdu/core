@@ -120,7 +120,7 @@ class markbookView
      * @param    int  gibbonCourseClassID
      * @return   void
      */
-    public function __construct( \Gibbon\core $gibbon, \Gibbon\sqlConnection $pdo, $gibbonCourseClassID)
+    public function __construct( \Gibbon\Core $gibbon, \Gibbon\sqlConnection $pdo, $gibbonCourseClassID)
     {
         $this->session = $gibbon->session ;
         $this->pdo = $pdo ;

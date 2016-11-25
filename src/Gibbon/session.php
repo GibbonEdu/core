@@ -22,10 +22,15 @@ namespace Gibbon;
 /**
  * Session Class
  *
- * @version	10th November 2016
- * @since	15th April 2016
+ * Responsibilities:
+ * 		- User session
+ * 		- Persistance ($_SESSION)
+ * 		- Caching
+ *
+ * @version	v13
+ * @since	v12
  */
-class session
+class Session
 {
 	/**
 	 * string
@@ -35,11 +40,10 @@ class session
 	/**
 	 * Construct
 	 *
-	 * @version	10th November 2016
-	 * @since	15th April 2016
-	 * @return	void
+	 * @version	v13
+	 * @since	v12
 	 */
-	public function __construct( string $guid )
+	public function __construct( $guid = null )
 	{
 		//Prevent breakage of back button on POST pages
 		ini_set('session.cache_limiter', 'private');
@@ -54,8 +58,8 @@ class session
 	/**
 	 * guid 	Return the guid string
 	 *
-	 * @version	10th November 2016
-	 * @since	10th November 2016
+	 * @version	v13
+	 * @since	v13
 	 * @return	string
 	 */
 	public function guid() {
@@ -65,8 +69,8 @@ class session
 	/**
 	 * get Value
 	 *
-	 * @version	10th November 2016
-	 * @since	15th April 2016
+	 * @version	v13
+	 * @since	v12
 	 * @param	string	Session Value Name
 	 * @param	mixed	default Define a value to return if the variable is empty
 	 * @return	mixed
@@ -79,8 +83,8 @@ class session
 	/**
 	 * set Value
 	 *
-	 * @version	10th November 2016
-	 * @since	15th April 2016
+	 * @version	v13
+	 * @since	v12
 	 * @param	string	Session Value Name
 	 * @param	mixed	Session Value
 	 * @return	object	Gibbon\session
@@ -95,8 +99,8 @@ class session
 	/**
 	 * setAll Values
 	 *
-	 * @version	10th November 2016
-	 * @since	10th November 2016
+	 * @version	v13
+	 * @since	v13
 	 * @param	array	Array of name => value pairs
 	 * @return	object	Gibbon\session
 	 */
