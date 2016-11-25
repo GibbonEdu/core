@@ -63,6 +63,6 @@ if ($gibbon->isInstalled() == true) {
 	$pdo = new Gibbon\sqlConnection();
 	$connection2 = $pdo->getConnection();
 
-	// Load the string replacements
-	$gibbon->trans->setStringReplacementList($connection2);
+	// Initialize using the database connection
+	$gibbon->initializeCore($pdo);
 }

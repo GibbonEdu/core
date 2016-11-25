@@ -69,13 +69,6 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
 }
 
-//Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
-    }
-}
-
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
     if ($_SESSION[$guid]['calendarFeedPersonal'] == '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {

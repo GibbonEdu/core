@@ -37,13 +37,6 @@ if (isset($_SESSION[$guid]['gibbonThemeName'])) {
     $themeName = $_SESSION[$guid]['gibbonThemeName'];
 }
 
-//Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
-    }
-}
-
 if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
     die( __($guid, 'Your request failed because you do not have access to this action.') );
 } else {

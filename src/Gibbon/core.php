@@ -24,9 +24,15 @@ use Library\Yaml\Yaml ;
 /**
  * Gibbon Core
  *
- * @version	23rd November 2016
- * @since	23rd November 2016
- * @author	Sandra Kuipers
+ * Responsibilities:
+ * 		- Configuration (file & db)
+ * 		- Initialization
+ * 		- System settings
+ * 		- Core classes
+ * 		- System paths
+ *
+ * @version	v13
+ * @since	v13
  */
 class core {
 
@@ -44,16 +50,18 @@ class core {
 	protected $caching;
 	protected $version;
 
+	private $initialized;
+
 	/**
 	 * Construct
 	 *
-	 * @version	23rd November 2016
-	 * @since	23rd November 2016
+	 * @version	v13
+	 * @since	v13
 	 */
 	public function __construct()
 	{
 		// Set the root path
-		$this->findSystemDirectory();
+		$this->locateSystemDirectory();
 
 		// Set the current version
 		$this->loadVersionFromFile( $this->basePath.'/version.php' );
@@ -65,11 +73,31 @@ class core {
 
 		// Create the core objects
 		$this->session = new session($this->guid());
-		$this->trans = new trans($this->session);
+		$this->locale = new Locale($this->session);
 
 		// Set the absolute Gibbon Path and URL from the session if available, otherwise default to basePath and URL
 		$this->absolutePath = $this->session->get('absolutePath', $this->basePath );
 		$this->absoluteURL = $this->session->get('absoluteURL', $this->baseURL );
+	}
+
+	/**
+	 * Setup Gibbon core: Runs once (enforced), if Gibbon is installed & database connection exists
+	 * 
+	 * @version v13
+	 * @since   v13
+	 * @param   Gibbon\sqlConnection  $pdo
+	 */
+	public function initializeCore( sqlConnection $pdo) {
+
+		if ($this->initialized == true) return;
+
+		// Setup the textdomain based on the current locale, if any
+		$this->locale->setTextDomain($pdo);
+
+		// Load the string replacements from db
+		$this->locale->setStringReplacementList($pdo);
+
+		$this->initialized = true;
 	}
 
 	public function isInstalled()
@@ -116,14 +144,14 @@ class core {
 
 		include $configFilePath;
 
-		//Sets globally unique id, to allow multiple installs on the server server.
+		//Sets globally unique id, to allow multiple installs on the server.
 		$this->guid = $guid ;
 
-		//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.
+		//Sets system-wide caching factor, used to balance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.
 		$this->caching = $caching ;
 	}
 
-	protected function findSystemDirectory() {
+	protected function locateSystemDirectory() {
 		// Determine the base Gibbon Path
 		$this->basePath = str_replace('src/Gibbon', '', dirname(__FILE__) );
 		$this->basePath = rtrim(str_replace('\\', '/', $this->basePath), '/');
