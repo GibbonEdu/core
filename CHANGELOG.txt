@@ -34,9 +34,10 @@ v13.0.00
 	Significant Changes
 		System: changed Primary Assessment Scale to Default Assessment Scale
 		System: added ability to translate additional modules
+		Attendance: added landing page for teacher's daily attendance taking
 		Markbook: added ability to copy columns to other classes
 		School Admin: added ability to edit and create attendance codes
-		Attendance: added landing page for teacher's daily attendance taking
+		Students: added First Aid Record action to record medical visits
 
 	Security
 		System: added token-based user confirmation of password reset requests, to prevent unwanted third-party resets
@@ -46,7 +47,7 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev and Namibian Dollar as currency
-		System: added Bulgarian, Korean and Finnish as development languages
+		System: added Bulgarian, Korean, Finnish and German as development languages
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken

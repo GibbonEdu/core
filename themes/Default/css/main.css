@@ -98,7 +98,7 @@ body {
 	top:24px;
 	right:24px;
 	left:auto;
-	width:360px;
+	width:400px;
 }
 #header-finder h2 {
 	text-align: right ;
@@ -1238,5 +1238,5 @@ table.colorOddEven tr:nth-of-type(even) td {
 td.wordWrap {
 	overflow-wrap: break-word;
   	word-wrap: break-word; 
-  	word-break: break-word;
+  	word-break: break-word !important;
 }

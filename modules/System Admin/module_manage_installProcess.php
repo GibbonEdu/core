@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $moduleTables[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
                                 $partialFail = true;
                             }
                         }
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $gibbonSetting[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
                                 $partialFail = true;
                             }
                         }
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $hooks[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
                                 $partialFail = true;
                             }
                         }
