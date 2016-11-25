@@ -36,29 +36,46 @@ use Library\Yaml\Yaml ;
  */
 class Core {
 
-	public $config;
+	/**
+	 * Core classes available to all Gibbon scripts
+	 * @var  object
+	 */
 	public $session;
 	public $trans;
+	public $security;
 
+	/**
+	 * Gibbon path and url, set from Database where available, falls back to system path
+	 * @var  string
+	 */
 	protected $absolutePath;
 	protected $absoluteURL;
 
+	/**
+	 * Gibbon system path and url, only available internally
+	 * @var  string
+	 */
 	protected $basePath;
 	protected $baseURL;
 
+	/**
+	 * Configuration variables
+	 * @var  string
+	 */
 	protected $guid;
 	protected $caching;
 	protected $version;
 
+	/**
+	 * Has gibbon been initialized using a DB connection?
+	 * @var  bool
+	 */
 	private $initialized;
 
 	/**
 	 * Construct
-	 *
-	 * @version	v13
-	 * @since	v13
 	 */
-	public function __construct($directory, $domain)
+	public function __construct(string $directory, string $domain)
 	{
 		// Set the root path
 		$this->locateSystemDirectory($directory, $domain);
@@ -72,9 +89,9 @@ class Core {
 		}
 
 		// Create the core objects
-		$this->session = new Session($this->guid());
-		$this->locale = new Locale($this->session);
-		$this->security = new Security($this->session);
+		$this->session = new Session($this);
+		$this->locale = new Locale($this);
+		$this->security = new Security($this);
 
 		// Set the absolute Gibbon Path and URL from the session if available, otherwise default to basePath and URL
 		$this->absolutePath = $this->session->get('absolutePath', $this->basePath );
@@ -82,17 +99,15 @@ class Core {
 	}
 
 	/**
-	 * Setup Gibbon core: Runs once (enforced), if Gibbon is installed & database connection exists
+	 * Setup the Gibbon core: Runs once (enforced), if Gibbon is installed & database connection exists
 	 * 
-	 * @version v13
-	 * @since   v13
 	 * @param   Gibbon\sqlConnection  $pdo
 	 */
-	public function initializeCore( sqlConnection $pdo) {
+	public function initializeCore(sqlConnection $pdo) {
 
 		if ($this->initialized == true) return;
 
-		// Setup the textdomain based on the current locale, if any
+		// Setup the textdomain based on the current locale  (if any)
 		$this->locale->setTextDomain($pdo);
 
 		// Load the string replacements from db
@@ -101,37 +116,79 @@ class Core {
 		$this->initialized = true;
 	}
 
+	/**
+	 * Is Gibbon Installed? Based on existance of config.php file
+	 * 
+	 * @return   bool
+	 */
 	public function isInstalled()
 	{
 		return file_exists($this->basePath.'/config.php');
 	}
 
+	/**
+	 * Gets the globally unique id, to allow multiple installs on the server
+	 * 
+	 * @return   string|null
+	 */
 	public function guid() {
 		return $this->guid;
 	}
 
+	/**
+	 * Gets the current Gibbon version
+	 * 
+	 * @return   string
+	 */
 	public function getVersion() {
 		return $this->version;
 	}
 
+	/**
+	 * Gets system-wide caching factor, used to balance performance and freshness.
+	 *
+	 * @return   int|null
+	 */
 	public function getCaching() {
 		return $this->caching;
 	}
 
+	/**
+	 * Gets the absolute filesystem path, without a trailing /
+	 * 
+	 * @return   string
+	 */
 	public function getAbsolutePath() {
 		return $this->absolutePath;
 	}
 
+	/**
+	 * Get the absolute url, without a trailing /
+	 * 
+	 * @return   string
+	 */
 	public function getAbsoluteURL() {
 		return $this->absoluteURL;
 	}
 
-	public function loadYamlFromFile( $name ) {
+	/**
+	 * Load a YAML configuration file, filename should include the .yml file extension
+	 * 
+	 * @param    array|mixed
+	 */
+	public function loadYamlConfigFromFile( string $filename ) {
 		$yaml = new Yaml();
-		return $yaml::parse( file_get_contents($this->basePath . '/config/'. $name .'.yml') );
+		return $yaml::parse( file_get_contents($this->basePath . '/config/'. $filename ) );
 	}
 
-	protected function loadVersionFromFile( $versionFilePath ) {
+	/**
+	 * Load the current Gibbon version number
+	 * 
+	 * @param    string  $versionFilePath
+	 *
+	 * @throws   Exception If the version file is not found
+	 */
+	protected function loadVersionFromFile(string $versionFilePath) {
 
 		if (file_exists($versionFilePath) == false) {
 			throw new Exception('Gibbon version.php file missing: '. $versionFilePath );
@@ -141,18 +198,29 @@ class Core {
 		$this->version = $version;
 	}
 
-	protected function loadConfigFromFile( $configFilePath ) {
+	/**
+	 * Load the Gibbon configuration file, contained in this scope to prevent unintended global access
+	 * 
+	 * @param   string  $configFilePath
+	 */
+	protected function loadConfigFromFile(string $configFilePath) {
 
 		include $configFilePath;
 
 		//Sets globally unique id, to allow multiple installs on the server.
 		$this->guid = $guid ;
 
-		//Sets system-wide caching factor, used to balance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.
+		//Sets system-wide caching factor, used to balance performance and freshness.
 		$this->caching = $caching ;
 	}
 
-	protected function locateSystemDirectory($directory, $domain) {
+	/**
+	 * Gets the base filesystem path and domain url
+	 * 
+	 * @param    string  $directory
+	 * @param    string  $domain
+	 */
+	protected function locateSystemDirectory(string $directory, string $domain) {
 		// Determine the base Gibbon Path
 		$this->basePath = str_replace('\\', '/', $directory);
 		$this->basePath = rtrim($this->basePath, '/ ');

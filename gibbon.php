@@ -1,5 +1,5 @@
 <?php
-/**
+/*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
 
@@ -16,8 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
-@session_start();
 
 $basePath = dirname(__FILE__);
 $basePath = rtrim(str_replace('\\', '/', $basePath), '/');

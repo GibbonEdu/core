@@ -46,13 +46,10 @@ class Locale
 
 	/**
 	 * Construct
-	 *
-	 * @version v13
-	 * @since	v13
 	 */
-	public function __construct( session $session )
+	public function __construct( core $gibbon )
 	{
-		$this->session = $session;
+		$this->session = $gibbon->session;
 
 		// Setup the Internationalization code from session
 		$this->i18n = $this->session->get('i18n');
@@ -60,9 +57,8 @@ class Locale
 	}
 
 	/**
-	 * setLocale  Set the current i18n code
-	 * @version v13
-	 * @since   v13
+	 * Set the current i18n code
+	 * 
 	 * @param   string $i18ncode
 	 */
 	public function setLocale($i18ncode)
@@ -77,9 +73,8 @@ class Locale
 	}
 
 	/**
-	 * getLocale  Get the current i18n code
-	 * @version v13
-	 * @since   v13
+	 * Get the current i18n code
+	 * 
 	 * @return  string
 	 */
 	public function getLocale() {
@@ -87,10 +82,8 @@ class Locale
 	}
 
 	/**
-	 * setTextDomain  Set the default domain and load module domains
+	 * Set the default domain and load module domains
 	 * 
-	 * @version v13
-	 * @since   v13
 	 * @param   Gibbon/sqlConnection  $pdo
 	 */
 	public function setTextDomain($pdo) {
@@ -118,8 +111,6 @@ class Locale
 	/**
 	 * Get and store custom string replacements in session
 	 *
-	 * @version v13
-	 * @since	Old
 	 * @param   Gibbon/sqlConnection  $pdo
 	 */
 	public function setStringReplacementList($pdo, $forceRefresh = false)
@@ -151,10 +142,9 @@ class Locale
 	/**
 	 * Custom translation function to allow custom string replacement
 	 *
-	 * @version v13
-	 * @since	Old
 	 * @param	string	Text to Translate
 	 * @param	boolean	Use guid.
+	 * 
 	 * @return	string	Translated Text
 	 */
 	public function translate($text, $domain = null)
@@ -209,4 +199,3 @@ class Locale
 
 	}
 }
-?>

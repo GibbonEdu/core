@@ -65,9 +65,8 @@ class sqlConnection
 	/**
 	 * Construct
 	 *
-	 * @version	v13
-	 * @since	v12
 	 * @param	string	error Message
+	 * 
 	 * @return	Object	PDO Connection
 	 */
 	public function __construct( $message = null )
@@ -85,13 +84,12 @@ class sqlConnection
 	/**
 	 * generate Connection
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @param	string	Server Address:port
 	 * @param	string	Database Name
 	 * @param	string	User Name
 	 * @param	string	Password
 	 * @param	string	error Message
+	 * 
 	 * @return	Object	PDO Connection
 	 */
 	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
@@ -118,11 +116,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Connection
-	 *
-	 * Only required for backwards compatibilty in Gibbon.
-	 * @version	v12
-	 * @since	v12
+	 * Get connection. Required for backwards compatibilty in Gibbon.
+	 * 
 	 * @return	Object PDO COnnection
 	 */
 	public function getConnection()
@@ -131,10 +126,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Connection Success
+	 * Get Connection Success
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @return	Object PDO COnnection
 	 */
 	public function getSuccess()
@@ -143,10 +136,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Query Success
+	 * Get Query Success
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @return	Object PDO COnnection
 	 */
 	public function getQuerySuccess()
@@ -157,11 +148,10 @@ class sqlConnection
 	/**
 	 * Execute Query
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @param	array	Data Information
 	 * @param	string	SQL Query
 	 * @param	string	Error
+	 * 
 	 * @return	Object	PDO Result
 	 */
 	public function executeQuery($data, $query, $error = NULL)
@@ -187,10 +177,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Result
+	 * Get Result
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @return	Object	PDOStatement 
 	 */
 	public function getResult()
@@ -199,10 +187,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Version
+	 * Get Version
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @return	string	Version
 	 */
 	public function getVersion()
@@ -213,13 +199,12 @@ class sqlConnection
 	/**
 	 * Install Bypass
 	 *
-	 * @version	v12
-	 * @since	v12
 	 * @param	string	Server Address:port
 	 * @param	string	Database Name
 	 * @param	string	User Name
 	 * @param	string	Password
 	 * @param	string	error Message
+	 * 
 	 * @return	Object	PDO Connection
 	 */
 	public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
@@ -251,10 +236,7 @@ class sqlConnection
 	}
 	 
 	/**
-	 * set SQL Mode
-	 *
-	 * @version	v12
-	 * @since	v12
+	 * Set SQL Mode
 	 */
 	private function setSQLMode()
 	{

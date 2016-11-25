@@ -39,27 +39,23 @@ class Session
 
 	/**
 	 * Construct
-	 *
-	 * @version	v13
-	 * @since	v12
 	 */
-	public function __construct( $guid = null )
+	public function __construct( core $gibbon = null )
 	{
 		//Prevent breakage of back button on POST pages
 		ini_set('session.cache_limiter', 'private');
 		session_cache_limiter(false);
 
+		// Start the session (this should be the first time called)
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
 
-		$this->guid = $guid;
+		$this->guid = $gibbon->guid();
 	}
 
 	/**
-	 * guid 	Return the guid string
+	 * Return the guid string
 	 *
-	 * @version	v13
-	 * @since	v13
 	 * @return	string
 	 */
 	public function guid() {
@@ -67,12 +63,11 @@ class Session
 	}
 
 	/**
-	 * get Value
+	 * Get Session Value
 	 *
-	 * @version	v13
-	 * @since	v12
 	 * @param	string	Session Value Name
 	 * @param	mixed	default Define a value to return if the variable is empty
+	 * 
 	 * @return	mixed
 	 */
 	public function get($name, $default = null)
@@ -81,12 +76,11 @@ class Session
 	}
 
 	/**
-	 * set Value
+	 * Set Session Value
 	 *
-	 * @version	v13
-	 * @since	v12
 	 * @param	string	Session Value Name
 	 * @param	mixed	Session Value
+	 * 
 	 * @return	object	Gibbon\session
 	 */
 	public function set($name, $value)
@@ -97,11 +91,10 @@ class Session
 	}
 
 	/**
-	 * setAll Values
+	 * Set Multiple Session Values
 	 *
-	 * @version	v13
-	 * @since	v13
 	 * @param	array	Array of name => value pairs
+	 * 
 	 * @return	object	Gibbon\session
 	 */
 	public function setAll( array $values )
@@ -112,5 +105,4 @@ class Session
 
 		return $this;
 	}
-
 }

@@ -33,15 +33,13 @@ function emailBodyConvert($body)
     return $return ;
 }
 
-
 /**
  * @deprecated Deprecated since version v13, to be removed in v14.
- * @since   Old
- * @param   [type] $connection2
- * @param   [type] $guid
  */
 function setStringReplacementList($connection2, $guid)
 {
+    @trigger_error(sprintf('The %s() method is deprecated since version v13 and will be removed in v14. Use $gibbon->locale->setStringReplacementList() instead.', __METHOD__), E_USER_DEPRECATED);
+
     global $gibbon, $pdo; // For backwards compatibilty
 
     $gibbon->locale->setStringReplacementList($pdo);

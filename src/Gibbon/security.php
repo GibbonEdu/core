@@ -31,20 +31,17 @@ namespace Gibbon;
  * 		- System logs
  *
  * @version	v13
- * @since	v12
+ * @since	v13
  */
 class Security
 {
-	protected $session;
+	protected $gibbon;
 
 	/**
 	 * Construct
-	 *
-	 * @version	v13
-	 * @since	v13
 	 */
-	public function __construct( session $session )
+	public function __construct( core $gibbon )
 	{
-		$this->session = $session;
+		$this->gibbon = $gibbon;
 	}
 }
