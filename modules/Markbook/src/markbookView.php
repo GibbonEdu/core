@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\Markbook ;
 
 use Gibbon\session;
-use Gibbon\config;
 use Gibbon\sqlConnection;
 
 /**
@@ -44,9 +43,9 @@ class markbookView
 	protected $session ;
 
 	/**
-	 * Gibbon\config
+	 * guid
 	 */
-	protected $config ;
+	protected $guid ;
 
 	/**
 	 * Gibbon Settings - preloaded
@@ -116,28 +115,17 @@ class markbookView
      *
      * @version  3rd May 2016
      * @since    3rd May 2016
-     * @param    Gibbon\session
-     * @param    Gibbon\config
      * @param    Gibbon\sqlConnection
+     * @param    Gibbon\session
+     * @param    int  gibbonCourseClassID
      * @return   void
      */
-    public function __construct($session = NULL, $config = NULL, $pdo = NULL, $gibbonCourseClassID)
+    public function __construct( \Gibbon\Core $gibbon, \Gibbon\sqlConnection $pdo, $gibbonCourseClassID)
     {
-        if ($session === NULL)
-            $this->session = new session();
-        else
-            $this->session = $session ;
+        $this->session = $gibbon->session ;
+        $this->pdo = $pdo ;
 
-        if ($config === NULL)
-            $this->config = new config();
-        else
-            $this->config = $config ;
-
-        if ($pdo === NULL)
-            $this->pdo = new sqlConnection();
-        else
-            $this->pdo = $pdo ;
-
+        $this->guid = $gibbon->guid();
         $this->gibbonCourseClassID = $gibbonCourseClassID;
 
         // Preload Gibbon settings - we check them a lot
@@ -157,11 +145,11 @@ class markbookView
 		$this->settings['enableEffort'] = (!empty($enableEffort))? $enableEffort : 'N';
 		$this->settings['enableRubrics'] = (!empty($enableRubrics))? $enableRubrics : 'N';
 
-		$this->settings['attainmentName'] = (!empty($attainmentAltName))? $attainmentAltName : __($this->config->get('guid'), 'Attainment');
-		$this->settings['attainmentAbrev'] = (!empty($attainmentAltNameAbrev))? $attainmentAltNameAbrev : __($this->config->get('guid'), 'Att');
+		$this->settings['attainmentName'] = (!empty($attainmentAltName))? $attainmentAltName : __($this->guid, 'Attainment');
+		$this->settings['attainmentAbrev'] = (!empty($attainmentAltNameAbrev))? $attainmentAltNameAbrev : __($this->guid, 'Att');
 
-		$this->settings['effortName'] = (!empty($effortAltName))? $effortAltName : __($this->config->get('guid'), 'Effort');
-		$this->settings['effortAbrev'] = (!empty($effortAltNameAbrev))? $effortAltNameAbrev : __($this->config->get('guid'), 'Eff');
+		$this->settings['effortName'] = (!empty($effortAltName))? $effortAltName : __($this->guid, 'Effort');
+		$this->settings['effortAbrev'] = (!empty($effortAltNameAbrev))? $effortAltNameAbrev : __($this->guid, 'Eff');
     }
 
     /**
@@ -725,7 +713,7 @@ class markbookView
             $this->terms = array();
 
             try {
-                $data=array("gibbonSchoolYearID"=>$_SESSION[$this->config->get('guid')]['gibbonSchoolYearID']);
+                $data=array("gibbonSchoolYearID"=>$_SESSION[$this->guid]['gibbonSchoolYearID']);
                 $sql="SELECT gibbonSchoolYearTermID, name, nameShort FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
                 $resultTerms=$this->pdo->executeQuery($data, $sql);
             }

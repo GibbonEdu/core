@@ -30,6 +30,8 @@ namespace Gibbon;
 /**
  * Gibbon Exception
  *
+ * @version    v13
+ * @since      v13 
  * @category   Gibbon
  * @package    Gibbon
  * @copyright  Copyright (c) 2006 - 2014 

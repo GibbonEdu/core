@@ -20,11 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon ;
 
 /**
- * sql Connection
+ * Database Connection Class
  *
- * @version	18th April 2016
- * @since	8th April 2016
- * @author	Craig Rayner
+ * @version	v13
+ * @since	v12
  */
 class sqlConnection
 {
@@ -66,31 +65,31 @@ class sqlConnection
 	/**
 	 * Construct
 	 *
-	 * @version	12th April 2016
-	 * @since	8th April 2016
 	 * @param	string	error Message
+	 * 
 	 * @return	Object	PDO Connection
 	 */
-	public function __construct($message = NULL)
+	public function __construct( $message = null )
 	{	
 		// Test for Config file. 
-		if (file_exists(dirname(__FILE__). '/../../config.php'))
+		if (file_exists(dirname(__FILE__). '/../../config.php')) {
 			include dirname(__FILE__). '/../../config.php';
-		else
+		} else {
 			return NULL;
+		}
+
 		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message);
 	}
 
 	/**
 	 * generate Connection
 	 *
-	 * @version	17th April 2016
-	 * @since	17th April 2016
 	 * @param	string	Server Address:port
 	 * @param	string	Database Name
 	 * @param	string	User Name
 	 * @param	string	Password
 	 * @param	string	error Message
+	 * 
 	 * @return	Object	PDO Connection
 	 */
 	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
@@ -117,11 +116,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Connection
-	 *
-	 * Only required for backwards compatibilty in Gibbon.
-	 * @version	8th April 2016
-	 * @since	8th April 2016
+	 * Get connection. Required for backwards compatibilty in Gibbon.
+	 * 
 	 * @return	Object PDO COnnection
 	 */
 	public function getConnection()
@@ -130,10 +126,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Connection Success
+	 * Get Connection Success
 	 *
-	 * @version	12th April 2016
-	 * @since	12th April 2016
 	 * @return	Object PDO COnnection
 	 */
 	public function getSuccess()
@@ -142,10 +136,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Query Success
+	 * Get Query Success
 	 *
-	 * @version	12th April 2016
-	 * @since	12th April 2016
 	 * @return	Object PDO COnnection
 	 */
 	public function getQuerySuccess()
@@ -156,11 +148,10 @@ class sqlConnection
 	/**
 	 * Execute Query
 	 *
-	 * @version	14th April 2016
-	 * @since	12th April 2016
 	 * @param	array	Data Information
 	 * @param	string	SQL Query
 	 * @param	string	Error
+	 * 
 	 * @return	Object	PDO Result
 	 */
 	public function executeQuery($data, $query, $error = NULL)
@@ -186,10 +177,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Result
+	 * Get Result
 	 *
-	 * @version	14th April 2016
-	 * @since	14th April 2016
 	 * @return	Object	PDOStatement 
 	 */
 	public function getResult()
@@ -198,10 +187,8 @@ class sqlConnection
 	}
 
 	/**
-	 * get Version
+	 * Get Version
 	 *
-	 * @version	16th April 2016
-	 * @since	16th April 2016
 	 * @return	string	Version
 	 */
 	public function getVersion()
@@ -212,13 +199,12 @@ class sqlConnection
 	/**
 	 * Install Bypass
 	 *
-	 * @version	17th April 2016
-	 * @since	17th April 2016
 	 * @param	string	Server Address:port
 	 * @param	string	Database Name
 	 * @param	string	User Name
 	 * @param	string	Password
 	 * @param	string	error Message
+	 * 
 	 * @return	Object	PDO Connection
 	 */
 	public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
@@ -250,11 +236,7 @@ class sqlConnection
 	}
 	 
 	/**
-	 * set SQL Mode
-	 *
-	 * @version	18th April 2016
-	 * @since	18th April 2016
-	 * @return	void
+	 * Set SQL Mode
 	 */
 	private function setSQLMode()
 	{

@@ -47,13 +47,6 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<meta name="robots" content="none"/>
 
 			<?php
-            //Set up for i18n via gettext
-            if (isset($_SESSION[$guid]['i18n']['code'])) {
-                if ($_SESSION[$guid]['i18n']['code'] != null) {
-                    seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
-                }
-            }
-
             //Set theme
             $themeCSS = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />";
 			if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {

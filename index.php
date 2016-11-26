@@ -17,26 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Prevent breakage of back button on POST pages
-ini_set('session.cache_limiter', 'private');
-session_cache_limiter(false);
 
-//Gibbon system-wide includes
-if (file_exists('./config.php')) {
-    include './config.php';
-} else { //no config, so go to installer
-    $URL = './installer/install.php';
-    header("Location: {$URL}");
-    exit();
-}
-include './functions.php';
-include './version.php';
+// Gibbon system-wide include
+include './gibbon.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -83,13 +67,6 @@ if (isset($_GET['q'])) {
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
-}
-
-//Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        seti18n($connection2, $guid, $_SESSION[$guid]['i18n']['code']);
-    }
 }
 
 //Try to autoset user's calendar feed if not set already
@@ -371,14 +348,15 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						</div>
 						<div id="header-menu">
 							<?php
+                                
                                 //Get main menu
+                                $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
                                 if ($cacheLoad) {
-                                    $mainMenu = new Gibbon\menuMain();
                                     $mainMenu->setMenu();
                                 }
-								if (isset($_SESSION[$guid]['mainMenu'])) {
-									echo $_SESSION[$guid]['mainMenu'];
-								}
+
+                                // Display the main menu
+								echo $mainMenu->getMenu();
 								?>
 						</div>
 					</div>
@@ -387,8 +365,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         //Allow for wide pages (no sidebar)
                         if ($sidebar == 'false') {
                             echo "<div id='content-wide'>";
-                                //Invoke and show Module Menu
-                                $menuModule = new Gibbon\menuModule();
+
+                            //Invoke and show Module Menu
+                            $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
+
+                            // Display the module menu
                             echo $menuModule->getMenu('mini');
 
                             //No closing </div> required here
@@ -651,7 +632,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         if ($sidebar != 'false') {
                             ?>
 							<div id="sidebar">
-								<?php sidebar($connection2, $guid);
+								<?php sidebar($gibbon, $pdo);
                             ?>
 							</div>
 							<br style="clear: both">

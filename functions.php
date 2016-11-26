@@ -19,29 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once dirname(__FILE__).'/gibbon.php';
 
 
-//Sets up the required elements for translation
-function seti18n($connection2, $guid, $i18ncode) {
-    putenv('LC_ALL='.$i18ncode);
-    setlocale(LC_ALL, $i18ncode);
-    bindtextdomain('gibbon', $_SESSION[$guid]['absolutePath'].'/i18n');
-    bind_textdomain_codeset('gibbon', 'UTF-8');
-    //Parse additional modules, adding domains for those
-    try {
-        $data = array();
-        $sql = "SELECT name FROM gibbonModule WHERE active='Y' AND type='Additional'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {}
-    if ($result->rowCount() > 0) {
-        while ($row = $result->fetch()) {
-            bindtextdomain($row['name'], $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/i18n');
-        }
-    }
-    textdomain('gibbon'); //Set default domain
-
-    setStringReplacementList($connection2, $guid);
-}
-
 //Convert an HTML email body into a plain text email body
 function emailBodyConvert($body)
 {
@@ -56,24 +33,45 @@ function emailBodyConvert($body)
     return $return ;
 }
 
-
-//Get and store custom string replacements in session
+/**
+ * @deprecated Deprecated since version v13, to be removed in v14.
+ */
 function setStringReplacementList($connection2, $guid)
 {
-    $trans = new Gibbon\trans();
-    $trans->setStringReplacementList();
+    @trigger_error(sprintf('The %s() method is deprecated since version v13 and will be removed in v14. Use $gibbon->locale->setStringReplacementList() instead.', __METHOD__), E_USER_DEPRECATED);
+
+    global $gibbon, $pdo; // For backwards compatibilty
+
+    $gibbon->locale->setStringReplacementList($pdo);
 }
 
 //Custom translation function to allow custom string replacement
-function __($guid, $text, $domain = null)
+function __($text, $arg2 = null, $arg3 = null)
 {
-    $trans = new Gibbon\trans();
-    $x = true;
-    if (empty($guid)) {
-        $x = false;
+    global $gibbon; // For backwards compatibilty
+
+    if ($arg2 === null && $arg3 === null) {
+        // Handle __($text)
+        return $gibbon->locale->translate($text);
     }
 
-    return $trans->__($text, $x, $domain);
+    if (isGuid($text) === false && $text != '') {
+        // Handle __($text, $domain)
+        $domain = $arg2;
+    } else {
+        // Handle __($guid, $text) and __($guid, $text, $domain)
+        $text = $arg2;
+        $domain = $arg3;
+    }
+
+    return $gibbon->locale->translate($text, $domain);
+}
+
+function isGuid($text) {
+    if (strstr($text, ' ') !== false) return false;
+    if (strlen($text) < 34 || strlen($text)  > 36) return false;
+
+    return (substr_count($text, '-') == 4);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
@@ -2763,8 +2761,11 @@ function msort($array, $id = 'id', $sort_ascending = true)
 }
 
 //Create the sidebar
-function sidebar($connection2, $guid)
-{
+function sidebar($gibbon, $pdo)
+{   
+    $connection2 = $pdo->getConnection();
+    $guid = $gibbon->guid();
+    
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
     if (isset($_GET['loginReturn'])) {
         $loginReturn = $_GET['loginReturn'];
@@ -2937,7 +2938,7 @@ function sidebar($connection2, $guid)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\menuModule();
+    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users
@@ -4760,6 +4761,36 @@ function getGibbonMailer($guid) {
     }
 
     return $mail;
+}
+
+/**
+ * Print an Object Alias (Dump).
+ *
+ * @version 16th February 2015
+ *
+ * @since   OLD
+ *
+ * @param   mixed The object to be printed
+ * @param   bool Stop execution after printing object.
+ * @param   bool Full print the Call Trace Stack
+ */
+function dump($object, $stop = false, $full = false)
+{
+    $caller = debug_backtrace();
+    echo "<pre>\n";
+    echo $caller[0]['line'].': '.$caller[0]['file'];
+    echo "\n</pre>\n";
+    echo "<pre>\n";
+    print_r($object);
+    if ($full) {
+        print_r($caller);
+    }
+    echo "\n</pre>\n";
+    if ($stop) {
+        trigger_error('Object Print Stop', E_USER_ERROR);
+    }
+
+    return;
 }
 
 /*
