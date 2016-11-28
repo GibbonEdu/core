@@ -93,6 +93,7 @@ else {
                         //Get all homework for the past week, ready for email
                         $homework = '';
                         $homework .= '<h2>'.__($guid, 'Homework').'</h2>';
+                        $homework .= '<p>'.__($guid, 'The list below includes all homework assigned during the past week.').'</p>';
                         try {
                             $dataHomework = array('gibbonPersonID1' => $row['gibbonPersonID'], 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $row['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
                             $sqlHomework = "
@@ -237,7 +238,12 @@ else {
                                             } else {
                                                 //Prep email
                                                 $body = sprintf(__($guid, 'Dear %1$s'), $rowMember['preferredName'].' '.$rowMember['surname']).',<br/><br/>';
-                                                $body .= sprintf(__($guid, 'Please find below a summary of homework and behaviour for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
+                                                if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
+                                                    $body .= sprintf(__($guid, 'Please find below a summary of homework and behaviour for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
+                                                }
+                                                else {
+                                                    $body .= sprintf(__($guid, 'Please find below a summary of homework for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
+                                                }
                                                 $body .= $homework;
                                                 $body .= $behaviour;
                                                 $body .= sprintf(__($guid, 'Please %1$sclick here%2$s to confirm that you have received and read this summary email.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$row['gibbonPersonID'].'&gibbonPersonIDParent='.$rowMember['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."'>", '</a>');
