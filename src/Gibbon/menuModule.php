@@ -32,17 +32,17 @@ class MenuModule
 	 * Gibbon\sqlConnection
 	 */
 	private $pdo;
-	
+
 	/**
 	 * Gibbon\session
 	 */
 	private $session;
-	
+
 	/**
 	 * Stores the type of module menu
 	 */
 	private $type;
-	
+
 	/**
 	 * Construct
 	 *
@@ -71,7 +71,7 @@ class MenuModule
 
 		//Check address to see if we are in the module area
 		if (substr($address,0,8)=='/modules') {
-			
+
 			//Get and check the module name
 			$moduleID=checkModuleReady( $address, $this->pdo->getConnection() );
 			if ($moduleID!=FALSE) {
@@ -79,14 +79,14 @@ class MenuModule
 				$gibbonRoleIDCurrent= $this->session->get('gibbonRoleIDCurrent');
 
 				$data = array('gibbonModuleID'=>$moduleID, 'gibbonRoleID'=>$gibbonRoleIDCurrent);
-				$sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList 
-						FROM gibbonModule 
-						JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) 
-						JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) 
-						WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) 
-						AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) 
-						AND NOT gibbonAction.entryURL='' 
-						AND gibbonAction.menuShow='Y' 
+				$sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList
+						FROM gibbonModule
+						JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+						JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+						WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID)
+						AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)
+						AND NOT gibbonAction.entryURL=''
+						AND gibbonAction.menuShow='Y'
 						ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
 
 				$result = $this->pdo->executeQuery($data, $sql);
@@ -97,12 +97,12 @@ class MenuModule
 					$menuData = $result->fetchAll(\PDO::FETCH_GROUP);
 
 					if ($type=='full') {
-						
+
 						$currentName="";
 						$lastName="";
 
 						$menu .= "<ul class='moduleMenu'>";
-						
+
 						foreach ($menuData as $currentCategory => $menuItems) {
 
 							$moduleDomain = ($menuItems[0]['type'] == 'Core')? null : $menuItems[0]['moduleName'];
@@ -141,12 +141,12 @@ class MenuModule
 					}
 					else if ($type=='mini') {
 						$menu .= "<div class='linkTop'>";
-													
+
 							$currentName="";
 							$lastName="";
 
-							$menu .= "<select id='floatingModuleMenu' style='width: 200px'>";	
-							
+							$menu .= "<select id='floatingModuleMenu' style='width: 200px'>";
+
 							foreach ($menuData as $currentCategory => $menuItems) {
 
 								// Wrap categories in optgroup labels
@@ -170,19 +170,19 @@ class MenuModule
 									if ($currentName!=$lastName) {
 										$selected="";
 										if ($_GET['q']=="/modules/" . $row['moduleName'] . "/" . $row['entryURL']) {
-											$selected="selected";
+											$selected=" selected";
 										}
 
-										$menu .= "<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row['moduleName'] . "/" . $row['entryURL'] . "' $selected>" . __($currentName, $moduleDomain) . "</option>";
+										$menu .= "<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row['moduleName'] . "/" . $row['entryURL'] . "'$selected>" . __($currentName, $moduleDomain) . "</option>";
 									}
 
 									$lastName=$currentName;
 								}
 							}
-					
+
 							// TODO: Move this to common.js?
 							$menu .= "<script>
-								$(\"#floatingModuleMenu\').change(function() {
+								$(\"#floatingModuleMenu\").change(function() {
 									document.location.href = $(this).val();
 								});
 							</script>";
@@ -191,12 +191,12 @@ class MenuModule
 							$menu .= "<div style='float: right; padding-top: 10px'>";
 								$menu.=__('Module Menu');
 							$menu .= "</div>";
-						$menu .= "</div>";	
+						$menu .= "</div>";
 					}
 				}
 			}
 		}
-	
+
 		return $menu;
 	}
 }
