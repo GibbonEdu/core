@@ -1856,16 +1856,22 @@ else {
 						$emailCount ++;
 						$mail->ClearAddresses();
 						$mail->AddAddress($reportEntry[4]);
-						//Deal with email receipt
+						//Deal with email receipt and body finalisation
 						if ($emailReceipt == 'Y') {
 							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry[0]."&key=".$reportEntry[5]."'>".$emailReceiptText."</a>";
-							$mail->Body = $body.$bodyReadReceipt.$bodyFin ;
-							$mail->AltBody = emailBodyConvert($body.$bodyReadReceipt.$bodyFin) ;
+							if (is_numeric(strpos($body, '[confirmLink]'))) {
+								$body = str_replace('[confirmLink]', $bodyReadReceipt, $body);
+								$body = $body.$bodyFin;
+							}
+							else {
+								$body = $body.$bodyReadReceipt.$bodyFin;
+							}
 						}
 						else {
-							$mail->Body = $body.$bodyFin ;
-							$mail->AltBody = emailBodyConvert($body.$bodyFin) ;
+							$body = $body.$bodyFin;
 						}
+						$mail->Body = $body ;
+						$mail->AltBody = emailBodyConvert($body);
 						if(!$mail->Send()) {
 							$partialFail = TRUE ;
 						}

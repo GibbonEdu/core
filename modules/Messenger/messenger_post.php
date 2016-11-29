@@ -391,6 +391,7 @@ else {
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php print __($guid, 'Email Read Receipts') ?></h3>
+							<p><?php print __($guid, 'With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.') ?></p>
 						</td>
 					</tr>
 					<script type="text/javascript">
