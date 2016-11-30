@@ -363,7 +363,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
             if ($_SESSION[$guid]['likesCount'] > 0) {
                 $return .= " . <a title='".__($guid, 'Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
             } else {
-                $return .= " . <a class='inactive' title='".__($guid, 'Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'>";
+                $return .= " . <a class='inactive' title='".__($guid, 'Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
             }
         }
     }
