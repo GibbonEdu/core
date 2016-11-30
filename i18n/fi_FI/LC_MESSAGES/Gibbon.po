@@ -64587,7 +64587,7 @@ msgstr ""
 
 #: modules/School Admin/trackingSettings.php:139 Admin/trackingSettings.php:115
 #: Admin/trackingSettings.php:114
-msgid "Interal Assessment"
+msgid "Internal Assessment"
 msgstr ""
 
 #: modules/School Admin/trackingSettings.php:140 Admin/trackingSettings.php:116
@@ -66578,7 +66578,7 @@ msgid "Notes will be displayed on the final invoice and receipt."
 msgstr ""
 
 #: modules/Formal Assessment/import_internal_results.php:56
-msgid "This page allows you to import interal assessment results from a CSV file into existing assessment columns. The system will match assessments by course name, class name and column name, updating any matching results, whilst creating new results not already existing in the system."
+msgid "This page allows you to import internal assessment results from a CSV file into existing assessment columns. The system will match assessments by course name, class name and column name, updating any matching results, whilst creating new results not already existing in the system."
 msgstr ""
 
 #: modules/Formal Assessment/import_internal_results.php:123

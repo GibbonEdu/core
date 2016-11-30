@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
 			<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			<?php echo __($guid, 'This page allows you to import interal assessment results from a CSV file into existing assessment columns. The system will match assessments by course name, class name and column name, updating any matching results, whilst creating new results not already existing in the system.') ?><br/>
+			<?php echo __($guid, 'This page allows you to import internal assessment results from a CSV file into existing assessment columns. The system will match assessments by course name, class name and column name, updating any matching results, whilst creating new results not already existing in the system.') ?><br/>
 		</p>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_internal_results.php&step=2' ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>

@@ -32282,7 +32282,7 @@ msgstr ""
 #: .git/modules/Formal Assessment/import_internal_results.php:56
 #: modules/Formal Assessment/import_internal_results.php:56
 msgid ""
-"This page allows you to import interal assessment results from a CSV file "
+"This page allows you to import internal assessment results from a CSV file "
 "into existing assessment columns. The system will match assessments by "
 "course name, class name and column name, updating any matching results, "
 "whilst creating new results not already existing in the system."
@@ -39880,7 +39880,7 @@ msgstr ""
 
 #: .git/modules/School Admin/trackingSettings.php:115
 #: modules/School Admin/trackingSettings.php:115
-msgid "Interal Assessment"
+msgid "Internal Assessment"
 msgstr ""
 
 #: .git/modules/School Admin/trackingSettings.php:116
