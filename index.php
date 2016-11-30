@@ -348,16 +348,21 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						</div>
 						<div id="header-menu">
 							<?php
-                                
-                                //Get main menu
-                                $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
-                                if ($cacheLoad) {
-                                    $mainMenu->setMenu();
-                                }
+                            //Get main menu
+                            $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
+                            if ($cacheLoad) {
+                                $mainMenu->setMenu();
+                            }
 
-                                // Display the main menu
-								echo $mainMenu->getMenu();
-								?>
+                            // Display the main menu
+							echo $mainMenu->getMenu();
+
+                            //Display notification temp_array
+                            echo "<div class='notificationTray'>";
+                                echo getNotificationTray($connection2, $guid, $cacheLoad);
+                            echo "</div>";
+
+							?>
 						</div>
 					</div>
 					<div id="content-wrap">

@@ -139,65 +139,18 @@ function tinymceStyleStripTags($string, $connection2)
     return $comment;
 }
 
-function getMinorLinks($connection2, $guid, $cacheLoad)
+function getNotificationTray($connection2, $guid, $cacheLoad)
 {
     $return = false;
 
-    if (isset($_SESSION[$guid]['username']) == false) {
-        if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= __($guid, 'Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
-        }
-    } else {
-        $name = $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
-        if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
-            if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Student') {
-                $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-                if ($highestAction == 'View Student Profile_brief') {
-                    $name = "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."'>".$name.'</a>';
-                }
-            }
-        }
-        $return .= $name.' . ';
-        $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
-        if ($_SESSION[$guid]['emailLink'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
-        }
-        if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
-        }
-        if ($_SESSION[$guid]['website'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__($guid, 'My Website').'</a>';
-        }
-
-        //GET AND SHOW LIKES
-        //Get likes
-        $getLikes = false;
-        if ($cacheLoad) {
-            $getLikes = true;
-        } elseif (isset($_GET['q'])) {
-            if ($_GET['q'] == 'likes.php') {
-                $getLikes = true;
-            }
-        }
-        if ($getLikes) {
-            $_SESSION[$guid]['likesCount'] = countLikesByRecipient($connection2, $_SESSION[$guid]['gibbonPersonID'], 'count', $_SESSION[$guid]['gibbonSchoolYearID']);
-        }
-        //Show likes
-        if (isset($_SESSION[$guid]['likesCount'])) {
-            if ($_SESSION[$guid]['likesCount'] > 0) {
-                $return .= " . <a title='".__($guid, 'Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large_on.png'></a>";
-            } else {
-                $return .= ' . '.$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' title='".__($guid, 'Likes')."' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large_off.png'>";
-            }
-        }
-
+    if (isset($_SESSION[$guid]['username']) != false) {
         //GET & SHOW NOTIFICATIONS
         try {
             $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
-			UNION
-			(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
-			ORDER BY timestamp DESC, source, text";
+            UNION
+            (SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
+            ORDER BY timestamp DESC, source, text";
             $resultNotifications = $connection2->prepare($sqlNotifications);
             $resultNotifications->execute($dataNotifications);
         } catch (PDOException $e) {
@@ -210,12 +163,12 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             $interval = 10000;
         }
         $return .= '<script type="text/javascript">
-			$(document).ready(function(){
-				setInterval(function() {
-					$("#notifications").load("index_notification_ajax.php");
-				}, '.$interval.');
-			});
-		</script>';
+            $(document).ready(function(){
+                setInterval(function() {
+                    $("#notifications").load("index_notification_ajax.php");
+                }, '.$interval.');
+            });
+        </script>';
 
         $return .= "<div id='notifications' style='display: inline'>";
             //CHECK FOR SYSTEM ALARM
@@ -230,22 +183,22 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
                             $type = 'custom';
                         }
                         $return .= "<script>
-							if ($('div#TB_window').is(':visible')===false) {
-								var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
-								$(document).ready(function() {
-									tb_show('', url);
-									$('div#TB_window').addClass('alarm') ;
-								}) ;
-							}
-						</script>";
+                            if ($('div#TB_window').is(':visible')===false) {
+                                var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
+                                $(document).ready(function() {
+                                    tb_show('', url);
+                                    $('div#TB_window').addClass('alarm') ;
+                                }) ;
+                            }
+                        </script>";
                     }
                 }
             }
 
         if ($resultNotifications->rowCount() > 0) {
-            $return .= " . <a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications_on.png'></a>";
+            $return .= "<a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         } else {
-            $return .= ' . 0 x '."<img title='".__($guid, 'Notifications')."' class='minorLinkIcon' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications_off.png'>";
+            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         }
         $return .= '</div>';
 
@@ -298,105 +251,160 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
                     $_SESSION[$guid]['messageWallOutput'] = $output;
                 }
             }
+        }
 
-            //Check for house logo (needed to get bubble, below, in right spot)
-            $isHouseLogo = false;
-            if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
-                if ($_SESSION[$guid]['gibbonHouseIDLogo'] != '') {
-                    $isHouseLogo = true;
-                }
-            }
-
-            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
-            if (isset($_SESSION[$guid]['messageWallCount']) == false) {
-                $return .= " . 0 x <img title='".__($guid, 'Message Wall')."' class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall_none.png'>";
+        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
+        if (isset($_SESSION[$guid]['messageWallCount']) == false) {
+            $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+        } else {
+            if ($_SESSION[$guid]['messageWallCount'] < 1) {
+                $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
             } else {
-                if ($_SESSION[$guid]['messageWallCount'] < 1) {
-                    $return .= " . 0 x <img title='".__($guid, 'Message Wall')."' class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall_none.png'>";
-                } else {
-                    $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
-                    if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
-                        echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
-                        $bubbleBG = '';
-                        if ($messageBubbleBGColor != '') {
-                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
-                            $return .= '<style>';
-                            $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
-                            $return .= '</style>';
+                $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
+                    echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
+                    $bubbleBG = '';
+                    if ($messageBubbleBGColor != '') {
+                        $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
+                        $return .= '<style>';
+                        $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
+                        $return .= '</style>';
+                    }
+                    $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
+                    $bubbleWidth = 300;
+                    $bubbleLeft = 670;
+                    if ($messageBubbleWidthType == 'Wide') {
+                        $bubbleWidth = 700;
+                        $bubbleLeft = 370;
+                    }
+                    $isHouseLogo = false;
+                    if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
+                        if ($_SESSION[$guid]['gibbonHouseIDLogo'] != '') {
+                            $isHouseLogo = true;
                         }
-                        $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
-                        $bubbleWidth = 300;
-                        $bubbleLeft = 770;
-                        if ($messageBubbleWidthType == 'Wide') {
-                            $bubbleWidth = 700;
-                            $bubbleLeft = 370;
-                        }
-                        if ($isHouseLogo) { //Spacing with house logo
-                            $bubbleLeft = $bubbleLeft - 70;
-                            $return .= "<div id='messageBubbleArrow' style=\"left: 1019px; top: 58px; z-index: 9999\" class='arrow top'></div>";
-                            $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 74px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
-                        } else { //Spacing without house logo
-                            $return .= "<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>";
-                            $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 54px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
-                        }
-                        $return .= '<div class="ui-tooltip-content">';
-                        $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
-                        $test = count($output);
-                        if ($test > 3) {
-                            $test = 3;
-                        }
-                        for ($i = 0; $i < $test; ++$i) {
-                            $return .= "<span style='font-size: 120%; font-weight: bold'>";
-                            if (strlen($output[$i]['subject']) <= 30) {
-                                $return .= $output[$i]['subject'];
-                            } else {
-                                $return .= substr($output[$i]['subject'], 0, 30).'...';
-                            }
-
-                            $return .= '</span><br/>';
-                            $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
-                        }
-                        if (count($output) > 3) {
-                            $return .= '<i>'.__($guid, 'Plus more').'...</i>';
-                        }
-                        $return .= '</div>';
-                        $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
-                        $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
-                        $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
-                        $return .= '</div>';
-                        $return .= '</div>';
-
-                        $messageBubbleAutoHide = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide');
-                        if ($messageBubbleAutoHide != 'N') {
-                            $return .= '<script type="text/javascript">';
-                            $return .= '$(function() {';
-                            $return .= 'setTimeout(function() {';
-                            $return .= "$(\"#messageBubble\").hide('fade', {}, 3000)";
-                            $return .= '}, 10000);';
-                            $return .= '});';
-                            $return .= '$(function() {';
-                            $return .= 'setTimeout(function() {';
-                            $return .= "$(\"#messageBubbleArrow\").hide('fade', {}, 3000)";
-                            $return .= '}, 10000);';
-                            $return .= '});';
-                            $return .= '</script>';
+                    }
+                    if ($isHouseLogo) { //Spacing with house logo
+                        $bubbleLeft = $bubbleLeft - 70;
+                        $return .= "<div id='messageBubbleArrow' style=\"left: 919px; top: 182px; z-index: 9999\" class='arrow top'></div>";
+                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 198px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
+                    } else { //Spacing without house logo
+                        $return .= "<div id='messageBubbleArrow' style=\"left: 989px; top: 162px; z-index: 9999\" class='arrow top'></div>";
+                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
+                    }
+                    $return .= '<div class="ui-tooltip-content">';
+                    $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
+                    $test = count($output);
+                    if ($test > 3) {
+                        $test = 3;
+                    }
+                    for ($i = 0; $i < $test; ++$i) {
+                        $return .= "<span style='font-size: 120%; font-weight: bold'>";
+                        if (strlen($output[$i]['subject']) <= 30) {
+                            $return .= $output[$i]['subject'];
+                        } else {
+                            $return .= substr($output[$i]['subject'], 0, 30).'...';
                         }
 
-                        try {
-                            $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                            $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
+                        $return .= '</span><br/>';
+                        $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
+                    }
+                    if (count($output) > 3) {
+                        $return .= '<i>'.__($guid, 'Plus more').'...</i>';
+                    }
+                    $return .= '</div>';
+                    $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
+                    $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
+                    $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
+                    $return .= '</div>';
+                    $return .= '</div>';
+
+                    $messageBubbleAutoHide = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide');
+                    if ($messageBubbleAutoHide != 'N') {
+                        $return .= '<script type="text/javascript">';
+                        $return .= '$(function() {';
+                        $return .= 'setTimeout(function() {';
+                        $return .= "$(\"#messageBubble\").hide('fade', {}, 3000)";
+                        $return .= '}, 10000);';
+                        $return .= '});';
+                        $return .= '$(function() {';
+                        $return .= 'setTimeout(function() {';
+                        $return .= "$(\"#messageBubbleArrow\").hide('fade', {}, 3000)";
+                        $return .= '}, 10000);';
+                        $return .= '});';
+                        $return .= '</script>';
+                    }
+
+                    try {
+                        $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
                     }
                 }
             }
         }
 
-        //House logo
-        if (@$isHouseLogo) {
-            $return .= " . <img class='minorLinkIconLarge' title='".$_SESSION[$guid]['gibbonHouseIDName']."' style='vertical-align: -75%; margin-left: 4px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['gibbonHouseIDLogo']."'/>";
+        //GET AND SHOW LIKES
+        //Get likes
+        $getLikes = false;
+        if ($cacheLoad) {
+            $getLikes = true;
+        } elseif (isset($_GET['q'])) {
+            if ($_GET['q'] == 'likes.php') {
+                $getLikes = true;
+            }
+        }
+        if ($getLikes) {
+            $_SESSION[$guid]['likesCount'] = countLikesByRecipient($connection2, $_SESSION[$guid]['gibbonPersonID'], 'count', $_SESSION[$guid]['gibbonSchoolYearID']);
+        }
+        //Show likes
+        if (isset($_SESSION[$guid]['likesCount'])) {
+            if ($_SESSION[$guid]['likesCount'] > 0) {
+                $return .= " . <a title='".__($guid, 'Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
+            } else {
+                $return .= " . <a class='inactive' title='".__($guid, 'Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'>";
+            }
+        }
+    }
+    return $return;
+}
+
+function getMinorLinks($connection2, $guid, $cacheLoad)
+{
+    $return = false;
+
+    if (isset($_SESSION[$guid]['username']) == false) {
+        if ($_SESSION[$guid]['webLink'] != '') {
+            $return .= __($guid, 'Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
+        }
+    } else {
+        $name = $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
+        if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
+            if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Student') {
+                $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+                if ($highestAction == 'View Student Profile_brief') {
+                    $name = "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."'>".$name.'</a>';
+                }
+            }
+        }
+        $return .= $name.' . ';
+        $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
+        if ($_SESSION[$guid]['emailLink'] != '') {
+            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
+        }
+        if ($_SESSION[$guid]['webLink'] != '') {
+            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
+        }
+        if ($_SESSION[$guid]['website'] != '') {
+            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__($guid, 'My Website').'</a>';
+        }
+
+        //Check for house logo (needed to get bubble, below, in right spot)
+        if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
+            if ($_SESSION[$guid]['gibbonHouseIDLogo'] != '') {
+                $return .= " . <img class='minorLinkIconLarge' title='".$_SESSION[$guid]['gibbonHouseIDName']."' style='vertical-align: -75%; margin-left: 4px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['gibbonHouseIDLogo']."'/>";
+            }
         }
     }
 
@@ -2762,10 +2770,10 @@ function msort($array, $id = 'id', $sort_ascending = true)
 
 //Create the sidebar
 function sidebar($gibbon, $pdo)
-{   
+{
     $connection2 = $pdo->getConnection();
     $guid = $gibbon->guid();
-    
+
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
     if (isset($_GET['loginReturn'])) {
         $loginReturn = $_GET['loginReturn'];
