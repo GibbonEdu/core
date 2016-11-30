@@ -35,7 +35,7 @@ if (isset($_SESSION[$guid]['gibbonThemeName'])) {
 }
 
 if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
-    $output .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+    $output .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='./themes/Default/img/notifications.png'></a>";
 } else {
     //CHECK FOR SYSTEM ALARM
     if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {

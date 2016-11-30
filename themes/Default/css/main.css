@@ -1250,6 +1250,7 @@ div.notificationTray {
 	padding-right: 25px;
 	padding-top: 3px;
 	color: #C0C0C0;
+	width: 235px;
 }
 div.notificationTray a {
 	color: #000000;
