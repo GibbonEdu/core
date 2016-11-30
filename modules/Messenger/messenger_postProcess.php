@@ -1860,18 +1860,17 @@ else {
 						if ($emailReceipt == 'Y') {
 							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry[0]."&key=".$reportEntry[5]."'>".$emailReceiptText."</a>";
 							if (is_numeric(strpos($body, '[confirmLink]'))) {
-								$body = str_replace('[confirmLink]', $bodyReadReceipt, $body);
-								$body = $body.$bodyFin;
+								$bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body).$bodyFin;
 							}
 							else {
-								$body = $body.$bodyReadReceipt.$bodyFin;
+								$bodyOut = $body.$bodyReadReceipt.$bodyFin;
 							}
 						}
 						else {
-							$body = $body.$bodyFin;
+							$bodyOut = $body.$bodyFin;
 						}
-						$mail->Body = $body ;
-						$mail->AltBody = emailBodyConvert($body);
+						$mail->Body = $bodyOut ;
+						$mail->AltBody = emailBodyConvert($bodyOut);
 						if(!$mail->Send()) {
 							$partialFail = TRUE ;
 						}
