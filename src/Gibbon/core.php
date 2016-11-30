@@ -89,9 +89,9 @@ class Core {
 		}
 
 		// Create the core objects
-		$this->session = new Session($this);
-		$this->locale = new Locale($this);
-		$this->security = new Security($this);
+		$this->session = new session($this);
+		$this->locale = new locale($this);
+		$this->security = new security($this);
 
 		// Set the absolute Gibbon Path and URL from the session if available, otherwise default to basePath and URL
 		$this->absolutePath = $this->session->get('absolutePath', $this->basePath );
@@ -100,7 +100,7 @@ class Core {
 
 	/**
 	 * Setup the Gibbon core: Runs once (enforced), if Gibbon is installed & database connection exists
-	 * 
+	 *
 	 * @param   Gibbon\sqlConnection  $pdo
 	 */
 	public function initializeCore(sqlConnection $pdo) {
@@ -118,7 +118,7 @@ class Core {
 
 	/**
 	 * Is Gibbon Installed? Based on existance of config.php file
-	 * 
+	 *
 	 * @return   bool
 	 */
 	public function isInstalled()
@@ -128,7 +128,7 @@ class Core {
 
 	/**
 	 * Gets the globally unique id, to allow multiple installs on the server
-	 * 
+	 *
 	 * @return   string|null
 	 */
 	public function guid() {
@@ -137,7 +137,7 @@ class Core {
 
 	/**
 	 * Gets the current Gibbon version
-	 * 
+	 *
 	 * @return   string
 	 */
 	public function getVersion() {
@@ -155,7 +155,7 @@ class Core {
 
 	/**
 	 * Gets the absolute filesystem path, without a trailing /
-	 * 
+	 *
 	 * @return   string
 	 */
 	public function getAbsolutePath() {
@@ -164,7 +164,7 @@ class Core {
 
 	/**
 	 * Get the absolute url, without a trailing /
-	 * 
+	 *
 	 * @return   string
 	 */
 	public function getAbsoluteURL() {
@@ -173,7 +173,7 @@ class Core {
 
 	/**
 	 * Load a YAML configuration file, filename should include the .yml file extension
-	 * 
+	 *
 	 * @param    array|mixed
 	 */
 	public function loadYamlConfigFromFile( string $filename ) {
@@ -183,7 +183,7 @@ class Core {
 
 	/**
 	 * Load the current Gibbon version number
-	 * 
+	 *
 	 * @param    string  $versionFilePath
 	 *
 	 * @throws   Exception If the version file is not found
@@ -200,7 +200,7 @@ class Core {
 
 	/**
 	 * Load the Gibbon configuration file, contained in this scope to prevent unintended global access
-	 * 
+	 *
 	 * @param   string  $configFilePath
 	 */
 	protected function loadConfigFromFile(string $configFilePath) {
@@ -216,7 +216,7 @@ class Core {
 
 	/**
 	 * Gets the base filesystem path and domain url
-	 * 
+	 *
 	 * @param    string  $directory
 	 * @param    string  $domain
 	 */

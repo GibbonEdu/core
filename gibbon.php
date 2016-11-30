@@ -42,7 +42,7 @@ $loader->register();
 
 
 // New configuration object
-$gibbon = new Gibbon\Core($basePath, $_SERVER['PHP_SELF']);
+$gibbon = new Gibbon\core($basePath, $_SERVER['PHP_SELF']);
 
 
 // Set global config variables, for backwards compatability

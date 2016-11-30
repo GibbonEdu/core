@@ -350,7 +350,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 							<?php
                                 
                                 //Get main menu
-                                $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
+                                $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
                                 if ($cacheLoad) {
                                     $mainMenu->setMenu();
                                 }
@@ -367,7 +367,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                             echo "<div id='content-wide'>";
 
                             //Invoke and show Module Menu
-                            $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
+                            $menuModule = new Gibbon\menuModule($gibbon, $pdo);
 
                             // Display the module menu
                             echo $menuModule->getMenu('mini');

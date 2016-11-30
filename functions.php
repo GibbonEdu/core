@@ -2938,7 +2938,7 @@ function sidebar($gibbon, $pdo)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
+    $menuModule = new Gibbon\menuModule($gibbon, $pdo);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users
