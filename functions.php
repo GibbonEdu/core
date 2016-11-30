@@ -284,9 +284,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                         }
                     }
                     if ($isHouseLogo) { //Spacing with house logo
-                        $bubbleLeft = $bubbleLeft - 70;
-                        $return .= "<div id='messageBubbleArrow' style=\"left: 919px; top: 182px; z-index: 9999\" class='arrow top'></div>";
-                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 198px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
+                        $bubbleLeft = $bubbleLeft - 17;
+                        $return .= "<div id='messageBubbleArrow' style=\"left: 972px; top: 161px; z-index: 9999\" class='arrow top'></div>";
+                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 177px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
                     } else { //Spacing without house logo
                         $return .= "<div id='messageBubbleArrow' style=\"left: 989px; top: 162px; z-index: 9999\" class='arrow top'></div>";
                         $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
