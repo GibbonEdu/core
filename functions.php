@@ -143,6 +143,8 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 {
     $return = false;
 
+    $return .= "<div style='float: right'>";
+
     if (isset($_SESSION[$guid]['username']) != false) {
         //GET & SHOW NOTIFICATIONS
         try {
@@ -293,25 +295,13 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                     }
                     $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
                     $bubbleWidth = 300;
-                    $bubbleLeft = 715;
+                    $bubbleLeft = 755;
                     if ($messageBubbleWidthType == 'Wide') {
                         $bubbleWidth = 700;
                         $bubbleLeft = 415;
                     }
-                    $isHouseLogo = false;
-                    if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
-                        if ($_SESSION[$guid]['gibbonHouseIDLogo'] != '') {
-                            $isHouseLogo = true;
-                        }
-                    }
-                    if ($isHouseLogo) { //Spacing with house logo
-                        $bubbleLeft = $bubbleLeft - 17;
-                        $return .= "<div id='messageBubbleArrow' style=\"left: 1017px; top: 161px; z-index: 9999\" class='arrow top'></div>";
-                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 177px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
-                    } else { //Spacing without house logo
-                        $return .= "<div id='messageBubbleArrow' style=\"left: 1034px; top: 162px; z-index: 9999\" class='arrow top'></div>";
-                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
-                    }
+                    $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
+                    $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
                     $return .= '<div class="ui-tooltip-content">';
                     $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
                     $test = count($output);
@@ -366,6 +356,8 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
             }
         }
     }
+
+    $return .= "</div>";
     return $return;
 }
 
