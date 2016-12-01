@@ -76,7 +76,7 @@ function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = fa
 
     $timestamp = dateConvertToTimestamp($date);
     if ($inclusive == true)  $timestamp += 86400;
-    
+
     $count = 0;
     $spin = 1;
     $lastNSchoolDays = array();
@@ -118,7 +118,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
 //$dateStart and $dateEnd refer to the students' first and last day at the school, not the range of dates for the report
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd)
 {
-
+    global $gibbon, $session, $pdo;
     require_once './modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
@@ -475,4 +475,3 @@ function getColourArray()
 
     return $return;
 }
-

@@ -230,12 +230,10 @@ img.minorLinkIcon {
 	height: 38px ;
 	max-height: 38px ;
 }
-
 img.minorLinkIconLarge {
 	height: 65px ;
 	max-height: 65px ;
 }
-
 div.minorLinks a {
 	color: #fff;
 }
