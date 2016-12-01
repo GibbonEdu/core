@@ -143,89 +143,11 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 {
     $return = false;
 
-    $return .= "<div style='float: right'>";
+    $return .= "<div style='width: 250px; float: right'>";
 
     if (isset($_SESSION[$guid]['username']) != false) {
-        //GET & SHOW NOTIFICATIONS
-        try {
-            $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
-            $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
-            UNION
-            (SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
-            ORDER BY timestamp DESC, source, text";
-            $resultNotifications = $connection2->prepare($sqlNotifications);
-            $resultNotifications->execute($dataNotifications);
-        } catch (PDOException $e) {
-            $return .= "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        //Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
-        $interval = 120000;
-        if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
-            $interval = 10000;
-        }
-        $return .= '<script type="text/javascript">
-            $(document).ready(function(){
-                setInterval(function() {
-                    $("#notifications").load("index_notification_ajax.php");
-                }, '.$interval.');
-            });
-        </script>';
-
-        $return .= "<div id='notifications' style='display: inline'>";
-            //CHECK FOR SYSTEM ALARM
-            if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
-                if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
-                    $alarm = getSettingByScope($connection2, 'System', 'alarm');
-                    if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
-                        $type = 'general';
-                        if ($alarm == 'Lockdown') {
-                            $type = 'lockdown';
-                        } elseif ($alarm == 'Custom') {
-                            $type = 'custom';
-                        }
-                        $return .= "<script>
-                            if ($('div#TB_window').is(':visible')===false) {
-                                var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
-                                $(document).ready(function() {
-                                    tb_show('', url);
-                                    $('div#TB_window').addClass('alarm') ;
-                                }) ;
-                            }
-                        </script>";
-                    }
-                }
-            }
-        if ($resultNotifications->rowCount() > 0) {
-            $return .= "<a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
-        } else {
-            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
-        }
-        $return .= '</div>';
-
-        //GET AND SHOW LIKES
-        //Get likes
-        $getLikes = false;
-        if ($cacheLoad) {
-            $getLikes = true;
-        } elseif (isset($_GET['q'])) {
-            if ($_GET['q'] == 'likes.php') {
-                $getLikes = true;
-            }
-        }
-        if ($getLikes) {
-            $_SESSION[$guid]['likesCount'] = countLikesByRecipient($connection2, $_SESSION[$guid]['gibbonPersonID'], 'count', $_SESSION[$guid]['gibbonSchoolYearID']);
-        }
-        //Show likes
-        if (isset($_SESSION[$guid]['likesCount'])) {
-            if ($_SESSION[$guid]['likesCount'] > 0) {
-                $return .= " . <a title='".__($guid, 'Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
-            } else {
-                $return .= " . <a class='inactive' title='".__($guid, 'Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
-            }
-        }
-
         //MESSAGE WALL!
+        $return .= "<div id='messageWall' style='display: inline; float: right'>";
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             include './modules/Messenger/moduleFunctions.php';
 
@@ -355,6 +277,86 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                 }
             }
         }
+        $return .= "</div>";
+
+        //GET AND SHOW LIKES
+        $return .= "<div id='likes' style='display: inline; float: right'>";
+        //Get likes
+        $getLikes = false;
+        if ($cacheLoad) {
+            $getLikes = true;
+        } elseif (isset($_GET['q'])) {
+            if ($_GET['q'] == 'likes.php') {
+                $getLikes = true;
+            }
+        }
+        if ($getLikes) {
+            $_SESSION[$guid]['likesCount'] = countLikesByRecipient($connection2, $_SESSION[$guid]['gibbonPersonID'], 'count', $_SESSION[$guid]['gibbonSchoolYearID']);
+        }
+        //Show likes
+        if (isset($_SESSION[$guid]['likesCount'])) {
+            if ($_SESSION[$guid]['likesCount'] > 0) {
+                $return .= " . <a title='".__($guid, 'Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
+            } else {
+                $return .= " . <a class='inactive' title='".__($guid, 'Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
+            }
+        }
+        $return .= "</div>";
+
+        //GET & SHOW NOTIFICATIONS
+        try {
+            $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+            $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
+            UNION
+            (SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
+            ORDER BY timestamp DESC, source, text";
+            $resultNotifications = $connection2->prepare($sqlNotifications);
+            $resultNotifications->execute($dataNotifications);
+        } catch (PDOException $e) { }
+
+        //Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
+        $interval = 120000;
+        if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+            $interval = 10000;
+        }
+        $return .= '<script type="text/javascript">
+            $(document).ready(function(){
+                setInterval(function() {
+                    $("#notifications").load("index_notification_ajax.php");
+                }, '.$interval.');
+            });
+        </script>';
+
+        $return .= "<div id='notifications' style='display: inline; float: right'>";
+            //CHECK FOR SYSTEM ALARM
+            if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
+                if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+                    $alarm = getSettingByScope($connection2, 'System', 'alarm');
+                    if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
+                        $type = 'general';
+                        if ($alarm == 'Lockdown') {
+                            $type = 'lockdown';
+                        } elseif ($alarm == 'Custom') {
+                            $type = 'custom';
+                        }
+                        $return .= "<script>
+                            if ($('div#TB_window').is(':visible')===false) {
+                                var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
+                                $(document).ready(function() {
+                                    tb_show('', url);
+                                    $('div#TB_window').addClass('alarm') ;
+                                }) ;
+                            }
+                        </script>";
+                    }
+                }
+            }
+        if ($resultNotifications->rowCount() > 0) {
+            $return .= "<a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+        } else {
+            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+        }
+        $return .= '</div>';
     }
 
     $return .= "</div>";
