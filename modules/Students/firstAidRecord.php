@@ -192,16 +192,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             } else {
                 $sqlWhere = substr($sqlWhere, 0, -5);
             }
-            if ($highestAction == 'Manage Behaviour Records_all') {
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $data['gibbonSchoolYearID2'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $sql = "SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 $sqlWhere ORDER BY timestamp DESC";
-            } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $data['gibbonSchoolYearID2'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $data['gibbonPersonID2'] = $_SESSION[$guid]['gibbonPersonID'];
-                $sql = "SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonIDCreator=:gibbonPersonID2 $sqlWhere ORDER BY timestamp DESC";
-            }
+            $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+            $sql = "SELECT gibbonFirstAid.*, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
+                FROM gibbonFirstAid
+                    JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
+                    JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
+                WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -210,12 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__($guid, 'Add')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_addMulti.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__($guid, 'Add Multiple')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Add Multiple')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
-        $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
-        if ($policyLink != '') {
-            echo " | <a target='_blank' href='$policyLink'>".__($guid, 'View Behaviour Policy').'</a>';
-        }
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__($guid, 'Add')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
@@ -233,15 +224,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             echo __($guid, 'Student & Date');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Type');
+            echo __($guid, 'First Aider');
             echo '</th>';
-            if ($enableLevels == 'Y') {
-                echo '<th>';
-                echo __($guid, 'Level');
-                echo '</th>';
-            }
             echo '<th>';
-            echo __($guid, 'Teacher');
+            echo __($guid, 'Time');
             echo '</th>';
             echo "<th style='min-width: 110px'>";
             echo __($guid, 'Actions');
@@ -264,39 +250,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                if ($row['comment'] != '') {
-                    echo '<td>';
-                } else {
-                    echo '<td>';
-                }
-                echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonID']."&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>".formatName('', $row['preferredNameStudent'], $row['surnameStudent'], 'Student', true).'</a><br/></div>';
-                if (substr($row['timestamp'], 0, 10) > $row['date']) {
-                    echo __($guid, 'Updated:').' '.dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'<br/>';
-                    echo __($guid, 'Incident:').' '.dateConvertBack($guid, $row['date']).'<br/>';
-                } else {
-                    echo dateConvertBack($guid, $row['date']).'<br/>';
-                }
-                echo '</td>';
-                echo "<td style='text-align: center'>";
-                if ($row['type'] == 'Negative') {
-                    echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-                } elseif ($row['type'] == 'Positive') {
-                    echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-                }
-                echo '</td>';
-                if ($enableLevels == 'Y') {
-                    echo '<td>';
-                    echo trim($row['level']);
-                    echo '</td>';
-                }
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName($row['title'], $row['preferredNameCreator'], $row['surnameCreator'], 'Staff').'</b><br/>';
+                echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonIDPatient']."&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>".formatName('', $row['preferredNamePatient'], $row['surnamePatient'], 'Student', true).'</a><br/></div>';
+                echo dateConvertBack($guid, $row['date']).'<br/>';
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_edit.php&gibbonBehaviourID='.$row['gibbonBehaviourID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_delete.php&gibbonBehaviourID='.$row['gibbonBehaviourID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo formatName($row['title'], $row['preferredNameFirstAider'], $row['surnameFirstAider'], 'Student').'</b><br/>';
+                echo '</td>';
+                echo '<td>';
+
+                echo '</td>';
+                echo '<td>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_edit.php&gibbonFirstAidID='.$row['gibbonFirstAidID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_delete.php&gibbonFirstAidID='.$row['gibbonFirstAidID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';
                 echo "\$(\".comment-$count\").hide();";
@@ -306,26 +274,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 echo '});';
                 echo '});';
                 echo '</script>';
-                if ($row['comment'] != '' or $row['followup'] != '') {
+                if ($row['actionTaken'] != '' or $row['followUp'] != '') {
                     echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
                 }
                 echo '</td>';
                 echo '</tr>';
-                if ($row['comment'] != '' or $row['followup'] != '') {
-                    if ($row['type'] == 'Positive') {
-                        $bg = 'background-color: #D4F6DC;';
-                    } else {
-                        $bg = 'background-color: #F6CECB;';
-                    }
+                if ($row['actionTaken'] != '' or $row['followUp'] != '') {
                     echo "<tr class='comment-$count' id='comment-$count'>";
-                    echo "<td style='$bg' colspan=6>";
-                    if ($row['comment'] != '') {
-                        echo '<b>'.__($guid, 'Incident').'</b><br/>';
-                        echo nl2brr($row['comment']).'<br/><br/>';
+                    echo "<td colspan=6>";
+                    if ($row['actionTaken'] != '') {
+                        echo '<b>'.__($guid, 'Action Taken').'</b><br/>';
+                        echo nl2brr($row['actionTaken']).'<br/><br/>';
                     }
-                    if ($row['followup'] != '') {
+                    if ($row['followUp'] != '') {
                         echo '<b>'.__($guid, 'Follow Up').'</b><br/>';
-                        echo nl2brr($row['followup']).'<br/><br/>';
+                        echo nl2brr($row['followUp']).'<br/><br/>';
                     }
                     echo '</td>';
                     echo '</tr>';
