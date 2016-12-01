@@ -2155,8 +2155,8 @@ function getFastFinder($connection2, $guid)
     }
 
     $output .= '<style>';
-    $output .= 'ul.token-input-list-facebook { width: 300px; float: left; height: 25px!important; }';
-    $output .= 'div.token-input-dropdown-facebook { width: 300px; z-index: 99999999 }';
+    $output .= 'ul.token-input-list-facebook { width: 320px; float: left; height: 25px!important; margin-right: -5px }';
+    $output .= 'div.token-input-dropdown-facebook { width: 320px; z-index: 99999999 }';
     $output .= '</style>';
     $output .= "<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>";
     $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/indexFindRedirect.php'>";
@@ -2178,8 +2178,8 @@ function getFastFinder($connection2, $guid)
     $output .= '</h2>';
     $output .= '</td>';
     $output .= '</tr>';
-    $output .= '<tr>';
-    $output .= "<td style='vertical-align: top; border: none'>";
+    $output .= '<tr style=\'max-height: 38px!important\'>';
+    $output .= "<td style='vertical-align: top; border: none; padding-left: 0'>";
     $output .= "<input class='topFinder' style='width: 275px' type='text' id='id' name='id' />";
     $output .= '<script type="text/javascript">';
         $output .= '$(document).ready(function() {';
@@ -2193,11 +2193,11 @@ function getFastFinder($connection2, $guid)
     $output .= '</script>';
     $output .= "<script type='text/javascript'>";
     $output .= "var id=new LiveValidation('id');";
-    $output .= 'id.add(Validate.Presence);';
+    $output .= 'id.add(Validate.Presence, { failureMessage: " " } );';
     $output .= '</script>';
     $output .= '</td>';
-    $output .= "<td class='right' style='vertical-align: top; border: none'>";
-    $output .= "<input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='".__($guid, 'Go')."'>";
+    $output .= "<td class='right' style='vertical-align: top; border: none; padding-right: 0'>";
+    $output .= "<input style='height: 27px; width: 50px!important; margin-top: 0;' type='submit' value='".__($guid, 'Go')."'>";
     $output .= '</td>';
     $output .= '</tr>';
     if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
