@@ -105,7 +105,7 @@ class config
 
 	/**
 	 * get
-	 * 
+	 *
 	 * @version	8th April 2016
 	 * @since	8th April 2016
 	 * @param	string	Configuration Name
@@ -120,7 +120,7 @@ class config
 
 	/**
 	 * get Currency List
-	 * 
+	 *
 	 * @version	12th April 2016
 	 * @since	12th April 2016
 	 * @param	string	Configuration Name
@@ -135,7 +135,7 @@ class config
 		foreach ($currencies as $optGroup=>$list)
 		{
 			$output .= "<optgroup label='--" .__($this->get('guid'), $optGroup) ."--'/>\n";
-			foreach ( $list as $key=>$currency) 
+			foreach ( $list as $key=>$currency)
 			{
 				$output .= "<option";
 				if ($key == $value) $output .=  " selected" ;
@@ -144,7 +144,7 @@ class config
 			$output .= "</optgroup>\n";
 		}
 		$output .= "</select>";
-		
-		return $output ;			
+
+		return $output ;
 	}
 }
