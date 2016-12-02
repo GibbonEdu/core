@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
 
     //Validate Inputs
-    if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
+    if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationEmail == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {

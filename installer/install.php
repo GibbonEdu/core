@@ -1199,6 +1199,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 }
 
                                                 try {
+                                                    $data = array('organisationEmail' => $email); //Use user email as organisation email, initially
+                                                    $sql = "UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'";
+                                                    $result = $connection2->prepare($sql);
+                                                    $result->execute($data);
+                                                } catch (PDOException $e) {
+                                                    $settingsFail = true;
+                                                }
+
+                                                try {
                                                     $data = array('currency' => $currency);
                                                     $sql = "UPDATE gibbonSetting SET value=:currency WHERE scope='System' AND name='currency'";
                                                     $result = $connection2->prepare($sql);
