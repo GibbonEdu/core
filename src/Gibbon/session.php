@@ -42,6 +42,8 @@ class Session
 	 */
 	public function __construct( core $gibbon = null )
 	{
+		global $guid;
+
 		//Prevent breakage of back button on POST pages
 		ini_set('session.cache_limiter', 'private');
 		session_cache_limiter(false);
@@ -50,7 +52,7 @@ class Session
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
 
-		$this->guid = $gibbon->guid();
+		$this->guid = (isset($gibbon))? $gibbon->guid() : $guid; // Backwards compatability for external modules
 	}
 
 	/**
