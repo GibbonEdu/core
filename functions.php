@@ -1891,7 +1891,12 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 
         $mail = getGibbonMailer($guid);
         $mail->IsSMTP();
-        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
+        if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
+            $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
+        }
+        else {
+            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
+        }
         $mail->AddAddress($rowSelect['email']);
         $mail->CharSet = 'UTF-8';
         $mail->Encoding = 'base64';
