@@ -72,7 +72,7 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
     if ($_SESSION[$guid]['calendarFeedPersonal'] == '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
-        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/autoload.php';
+        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/vendor/autoload.php';
         $client2 = new Google_Client();
         $client2->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
         $service = new Google_Service_Calendar($client2);

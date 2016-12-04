@@ -22,7 +22,7 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 $URL="index.php" ;
 
-require_once ('google-api-php-client/src/Google/autoload.php');
+require_once ('google-api-php-client/vendor/autoload.php');
 
 //Cleint ID and Secret
 $client_id = getSettingByScope($connection2, "System", "googleClientID" ) ;
