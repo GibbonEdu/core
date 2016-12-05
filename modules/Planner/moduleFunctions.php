@@ -789,7 +789,7 @@ function getTagList($connection2, $gibbonSchoolYearID = null) {
         }
         else {
             $dataList = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sqlList = "SELECT tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND map='Y' AND NOT tags=''";
+            $sqlList = "SELECT tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonUnit.map='Y' AND gibbonCourse.map='Y' AND NOT tags=''";
         }
         $resultList = $connection2->prepare($sqlList);
         $resultList->execute($dataList);

@@ -70,13 +70,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 					<select multiple class="standardWidth" name="tags[]" style="height: 150px">
 						<?php
                         foreach ($tagsAll AS $tagAll) {
-                            $selected = '';
-                            foreach ($tags as $tag) {
-                                if ($tagAll[1] == $tag) {
-                                    $selected = 'selected';
+                            if ($tagAll != '') {
+                                $selected = '';
+                                foreach ($tags as $tag) {
+                                    if ($tagAll[1] == $tag) {
+                                        $selected = 'selected';
+                                    }
                                 }
+                                echo "<option $selected value='".$tagAll[1]."'>".htmlPrep($tagAll[1]).'</option>';
                             }
-                            echo "<option $selected value='".$tagAll[1]."'>".htmlPrep($tagAll[1]).'</option>';
                         }
 						?>
 					</select>
@@ -127,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
             else
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
             $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-            $sql = "SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags, gibbonCourse.name AS course, gibbonDepartmentID, gibbonCourse.gibbonCourseID, gibbonSchoolYearID FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND map='Y' $sqlWhere ORDER BY gibbonUnit.name";
+            $sql = "SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags, gibbonCourse.name AS course, gibbonDepartmentID, gibbonCourse.gibbonCourseID, gibbonSchoolYearID FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonUnit.map='Y' AND gibbonCourse.map='Y' $sqlWhere ORDER BY gibbonUnit.name";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
