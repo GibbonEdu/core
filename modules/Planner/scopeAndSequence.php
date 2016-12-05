@@ -111,6 +111,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
             }
         }
 
+        //Set up stats variables
+        $countCourses = 0 ;
+        $countCoursesNoUnits = 0 ;
+        $coursesNoUnits = '';
+        $countUnits = 0;
+        $countUnitsNoKeywords = 0 ;
+        $unitsNoKeywords = '';
 
         //Cycle through courses
         foreach ($gibbonCourseIDs as $gibbonCourseID) {
@@ -129,6 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
+                $countCourses ++ ;
+
                 $row = $result->fetch();
 
                 //Can this course's units be edited?
@@ -161,6 +170,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     echo "<div class='error'>";
                     echo __($guid, 'There are no records to display.');
                     echo '</div>';
+                    $countCoursesNoUnits ++;
+                    $coursesNoUnits .= $row['nameShort'].', ';
                 }
                 else {
                     echo "<table cellspacing='0' style='width: 100%'>";
@@ -179,7 +190,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     echo '</th>';
                     echo '</tr>';
 
-
                     $count = 0;
                     $rowNum = 'odd';
                     while ($rowUnit = $resultUnit->fetch()) {
@@ -189,6 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                             $rowNum = 'odd';
                         }
                         ++$count;
+                        $countUnits ++;
 
                         //COLOR ROW BY STATUS!
                         echo "<tr class=$rowNum>";
@@ -202,14 +213,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         }
                         echo '</td>';
                         echo '<td>';
-                        $tags = explode(',', $rowUnit['tags']);
-                        $tagsOutput = '' ;
-                        foreach ($tags as $tag) {
-                            $tagsOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
+                        if ($rowUnit['tags'] == '') {
+                            $countUnitsNoKeywords ++;
+                            $unitsNoKeywords .= $row['nameShort'].' ('.$rowUnit['name'].'), ';
                         }
-                        if ($tagsOutput != '')
-                            $tagsOutput = substr($tagsOutput, 0, -2);
-                        echo $tagsOutput;
+                        else {
+                            $tags = explode(',', $rowUnit['tags']);
+                            $tagsOutput = '' ;
+                            foreach ($tags as $tag) {
+                                $tagsOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
+                            }
+                            if ($tagsOutput != '')
+                                $tagsOutput = substr($tagsOutput, 0, -2);
+                            echo $tagsOutput;
+                        }
                         echo '</td>';
                         echo '<td>';
                             if ($canEdit) {
@@ -223,6 +240,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 }
             }
         }
+
+        echo "<div class='success'>";
+            echo '<b>'.__($guid, 'Total Courses').'</b>: '.$countCourses.'<br/>';
+            echo '<b>'.__($guid, 'Courses Without Units').'</b>: '.$countCoursesNoUnits.'<br/>';
+            if ($coursesNoUnits != '') {
+                print '<i>'.substr($coursesNoUnits, 0, -2).'</i><br/>';
+            }
+            echo '<b>'.__($guid, 'Total Units').'</b>: '.$countUnits.'<br/>';
+            echo '<b>'.__($guid, 'Units Without Concepts & Keywords').'</b>: '.$countUnitsNoKeywords.'<br/>';
+            if ($unitsNoKeywords != '') {
+                print '<i>'.substr($unitsNoKeywords, 0, -2).'</i><br/>';
+            }
+        echo "</div>";
+
     }
 }
 ?>
