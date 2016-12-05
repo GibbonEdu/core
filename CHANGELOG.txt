@@ -61,6 +61,7 @@ v13.0.00
 		System: set tinyMCE default target for new links to New Window
 		System: made organisationEmail compulsory: on install, and if blank on update, it defaults to email of gibbonPersonID=1
 		System: notification emails now come from organisation email address, not administrator address
+		System: added interface text to show threshold levels for student alerts
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out

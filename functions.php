@@ -3803,6 +3803,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
         //Academic
         $gibbonAlertLevelID = '';
+        $alertThresholdText = '';
         try {
             $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlAlert = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND (attainmentConcern='Y' OR effortConcern='Y') AND complete='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID";
@@ -3813,21 +3814,25 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
         if ($resultAlert->rowCount() > 1 and $resultAlert->rowCount() <= 4) {
             $gibbonAlertLevelID = 003;
+            $alertThresholdText = __($guid, 'This alert level occurs when there are between 2 and 4 events recorded for a student.');
         } elseif ($resultAlert->rowCount() > 4 and $resultAlert->rowCount() <= 8) {
             $gibbonAlertLevelID = 002;
+            $alertThresholdText = __($guid, 'This alert level occurs when there are between 5 and 8 events recorded for a student.');
         } elseif ($resultAlert->rowCount() > 8) {
             $gibbonAlertLevelID = 001;
+            $alertThresholdText = __($guid, 'This alert level occurs when there are more than 8 events recorded for a student.');
         }
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
-                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern in the current academic year.'), __($guid, $alert['name']));
+                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern in the current academic year.'), __($guid, $alert['name'])).' '.$alertThresholdText;
                 $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'A').'</div></a>';
             }
         }
 
         //Behaviour
         $gibbonAlertLevelID = '';
+        $alertThresholdText = '';
         try {
             $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
             $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>'".date('Y-m-d', (time() - (24 * 60 * 60 * 60)))."'";
@@ -3838,15 +3843,18 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
         if ($resultAlert->rowCount() > 1 and $resultAlert->rowCount() <= 4) {
             $gibbonAlertLevelID = 003;
+            $alertThresholdText = __($guid, 'This alert level occurs when there are between 2 and 4 events recorded for a student.');
         } elseif ($resultAlert->rowCount() > 4 and $resultAlert->rowCount() <= 8) {
             $gibbonAlertLevelID = 002;
+            $alertThresholdText = __($guid, 'This alert level occurs when there are between 5 and 8 events recorded for a student.');
         } elseif ($resultAlert->rowCount() > 8) {
             $gibbonAlertLevelID = 001;
+            $alertThresholdText = __($guid, 'This alert level occurs when there are more than 8 events recorded for a student.');
         }
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
-                $title = sprintf(__($guid, 'Student has a %1$s alert for behaviour over the past 60 days.'), __($guid, $alert['name']));
+                $title = sprintf(__($guid, 'Student has a %1$s alert for behaviour over the past 60 days.'), __($guid, $alert['name'])).' '.$alertThresholdText;
                 $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Behaviour'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'B').'</div></a>';
             }
         }
