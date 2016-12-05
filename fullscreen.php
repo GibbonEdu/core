@@ -108,7 +108,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 				$.datepicker.setDefaults($.datepicker.regional['en-GB']);
 			</script>
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.mini.js"></script>
+			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.min.js"></script>
 
 			<?php
             if ($_SESSION[$guid]['analytics'] != '') {

@@ -159,7 +159,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-form/jquery.form.js"></script>
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.mini.js"></script>
+			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.min.js"></script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox-compressed.js"></script>
 			<script type="text/javascript"> var tb_pathToImage="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/loadingAnimation.gif"</script>
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
