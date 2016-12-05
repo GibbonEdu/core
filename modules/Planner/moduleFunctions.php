@@ -799,7 +799,7 @@ function getTagList($connection2, $gibbonSchoolYearID = null) {
     while ($rowList = $resultList->fetch()) {
         $tagsInner = explode(',', $rowList['tags']);
         foreach ($tagsInner AS $tagInner) {
-            $tagInner = strtolower(trim($tagInner));
+            $tagInner = mb_strtolower(trim($tagInner));
             $tagsTemp[$tagCount] = $tagInner ;
             $tagCount ++;
         }
