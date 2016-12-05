@@ -656,4 +656,5 @@ CREATE TABLE `gibbonFirstAid` ( `gibbonFirstAidID` int(10) unsigned zerofill NOT
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('de_DE', 'Deutsch - Deutschland', 'N', 'N', 'Stefan Goßrau', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ALTER TABLE `gibbonFirstAid` CHANGE `gibbonCourseClassID` `gibbonCourseClassID` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 UPDATE gibbonSetting SET value=(SELECT email FROM gibbonPerson WHERE gibbonPersonID=1) WHERE scope='System' AND name='organisationEmail' AND value='';end
+ALTER TABLE `gibbonCourse` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this course be included in curriculum maps and other summaries?' AFTER `description`;end
 ";

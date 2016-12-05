@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     } else {
         try {
             $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -163,6 +163,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						<?php echo getEditor($guid,  true, 'description', $row['description'], 20) ?>
 					</td>
 				</tr>
+                <tr>
+                    <td>
+                        <b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+                        <span class="emphasis small"></span>
+                    </td>
+                    <td class="right">
+                        <select name="map" id="map" class="standardWidth">
+                            <option <?php if ($row['map'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+                            <option <?php if ($row['map'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+                        </select>
+                    </td>
+                </tr>
 				<tr>
 					<td>
 						<b><?php echo __($guid, 'Year Groups') ?></b><br/>
