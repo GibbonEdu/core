@@ -78,21 +78,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/firstAidRecord.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__($guid, 'Back to Search Results').'</a>';
             }
             echo '</div>'; ?>
-		
+
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?step=1&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Step 1') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Student') ?> *</b><br/>
+						<td style='width: 275px'>
+							<b><?php echo __($guid, 'Patient') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<?php 
+							<?php
                                 $gibbonPersonID = null;
 								if (isset($_GET['gibbonPersonID'])) {
 									$gibbonPersonID = $_GET['gibbonPersonID'];
@@ -116,16 +116,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 									}
 								}
-								?>			
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
 								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>	
+							</script>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 								echo 'dd/mm/yyyy';
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -157,73 +157,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 							</script>
 						</td>
 					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Type') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="type" id="type" class="standardWidth">
-								<option value="Positive"><?php echo __($guid, 'Positive') ?></option>
-								<option value="Negative"><?php echo __($guid, 'Negative') ?></option>
-							</select>
-						</td>
-					</tr>
-					<?php
-                    if ($enableDescriptors == 'Y') {
-                        try {
-                            $sqlPositive = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'";
-                            $resultPositive = $connection2->query($sqlPositive);
-                            $sqlNegative = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'";
-                            $resultNegative = $connection2->query($sqlNegative);
+					  <?php
+                  if ($enableDescriptors == 'Y') {
+                      try {
+                          $sqlPositive = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'";
+                          $resultPositive = $connection2->query($sqlPositive);
+                          $sqlNegative = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'";
+                          $resultNegative = $connection2->query($sqlNegative);
                         } catch (PDOException $e) {
                         }
 
                         if ($resultPositive->rowCount() == 1 and $resultNegative->rowCount() == 1) {
-                            $rowPositive = $resultPositive->fetch();
-                            $rowNegative = $resultNegative->fetch();
+                          $rowPositive = $resultPositive->fetch();
+                          $rowNegative = $resultNegative->fetch();
 
-                            $optionsPositive = $rowPositive['value'];
-                            $optionsNegative = $rowNegative['value'];
+                          $optionsPositive = $rowPositive['value'];
+                          $optionsNegative = $rowNegative['value'];
 
-                            if ($optionsPositive != '' and $optionsNegative != '') {
-                                $optionsPositive = explode(',', $optionsPositive);
-                                $optionsNegative = explode(',', $optionsNegative);
-                                ?>
-								<tr>
-									<td> 
-										<b><?php echo __($guid, 'Descriptor') ?> *</b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<select name="descriptor" id="descriptor" class="standardWidth">
-											<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-											<?php
-                                            for ($i = 0; $i < count($optionsPositive); ++$i) {
-                                                ?>
-												<option class='Positive' value="<?php echo trim($optionsPositive[$i]) ?>"><?php echo trim($optionsPositive[$i]) ?></option>
-											<?php
-
-                                            }
-                               		 		?>
-											<?php
-                                            for ($i = 0; $i < count($optionsNegative); ++$i) {
-                                                ?>
-												<option class='Negative' value="<?php echo trim($optionsNegative[$i]) ?>"><?php echo trim($optionsNegative[$i]) ?></option>
-											<?php
-
-                                            }
-                               		 		?>
-										</select>
-										<script type="text/javascript">
-											var descriptor=new LiveValidation('descriptor');
-											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-										 <script type="text/javascript">
-											$("#descriptor").chainedTo("#type");
-										</script>
-									</td>
-								</tr>
+                          if ($optionsPositive != '' and $optionsNegative != '') {
+                              $optionsPositive = explode(',', $optionsPositive);
+                              $optionsNegative = explode(',', $optionsNegative);
+                              ?>
 								<?php
 
                             }
@@ -234,29 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
                 $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
                 if ($optionsLevels != '') {
                     $optionsLevels = explode(',', $optionsLevels); ?>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Level') ?> *</b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<select name="level" id="level" class="standardWidth">
-										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-										<?php
-                                        for ($i = 0; $i < count($optionsLevels); ++$i) {
-                                            ?>
-											<option value="<?php echo trim($optionsLevels[$i]) ?>"><?php echo trim($optionsLevels[$i]) ?></option>
-										<?php
-
-                                        }
-                    					?>
-									</select>
-									<script type="text/javascript">
-										var level=new LiveValidation('level');
-										level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
-								</td>
-							</tr>
+                    
 							<?php
 
 							}
@@ -267,15 +199,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 							autosize($('textarea'));
 						});
 					</script>
-					
+
 					<tr>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Incident') ?></b><br/>
+						<td colspan=2>
+							<b><?php echo __($guid, 'Action Taken') ?></b><br/>
 							<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<b><?php echo __($guid, 'Follow Up') ?></b><br/>
 							<textarea name="followup" id="followup" rows=8 style="width: 100%"></textarea>
 						</td>
@@ -317,14 +249,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?step=2&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'].'&editID='.$editID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Step 2 (Optional)') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Student') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -334,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Link To Lesson?') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'From last 30 days') ?></span>
 								</td>
@@ -379,11 +311,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 												echo "<option value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(dateConvertBack($guid, $rowSelect['date']), 0, 5)."$submission</option>";
 											}
 										}
-										?>			
+										?>
 									</select>
 								</td>
 							</tr>
-						
+
 							<tr>
 								<td>
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
