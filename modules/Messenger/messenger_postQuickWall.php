@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     }
 
     echo "<div class='warning'>";
-    echo __($guid, 'This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick wal to post to the Message Wall.');
+    echo __($guid, 'This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall.');
     echo '</div>';
 
     ?>
