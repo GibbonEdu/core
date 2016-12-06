@@ -262,7 +262,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 echo formatName($row['title'], $row['preferredNameFirstAider'], $row['surnameFirstAider'], 'Student').'</b><br/>';
                 echo '</td>';
                 echo '<td>';
-
+                echo substr($row['timeIn'], 0, -3);
+                if (!is_null($row['timeOut'])) {
+                  echo ' - '.substr($row['timeOut'], 0, -3);
+                }
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_edit.php&gibbonFirstAidID='.$row['gibbonFirstAidID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
