@@ -321,7 +321,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     $logCount = 0;
                                     try {
                                         $dataLog = array('date' => date('Y-m-d', $i), 'gibbonPersonID' => $gibbonPersonID);
-                                        $sqlLog = 'SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason FROM gibbonAttendanceLogPerson, gibbonAttendanceCode WHERE gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name AND date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber';
+                                        $sqlLog = 'SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason FROM gibbonAttendanceLogPerson, gibbonAttendanceCode WHERE gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name AND date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY timestampTaken DESC';
                                         $resultLog = $connection2->prepare($sqlLog);
                                         $resultLog->execute($dataLog);
                                     } catch (PDOException $e) {
@@ -363,7 +363,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {
-                                                $textClass = $attendance->isTypePresent($log[$x][0])? 'highlightPresent' : 'highlightAbsent';
+                                                $textClass = $attendance->isTypeAbsent($log[$x][0])? 'highlightAbsent' : 'highlightPresent';
                                                 $output .= '<span class="'.$textClass.'">';
                                                 $output .= $attendance->getAttendanceCodeByType( $log[$x][0] )['nameShort'];
                                                 $output .= '</span>';
