@@ -54,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         }
     }
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
 							}
 							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".htmlPrep($rowSelect['TT']).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                             //GET CLASSES
                             try {
                                 $dataClasses = array('gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonTTDayID' => $rowDays['gibbonTTDayID']);
-                                $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonTTDayRowClassID, gibbonSpace.name AS space FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayID=:gibbonTTDayID ORDER BY course, class';
+                                $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonTTDayRowClassID, gibbonSpace.name AS space FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayID=:gibbonTTDayID ORDER BY course, class';
                                 $resultClasses = $connection2->prepare($sqlClasses);
                                 $resultClasses->execute($dataClasses);
                             } catch (PDOException $e) {
