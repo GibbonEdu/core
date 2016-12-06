@@ -60821,7 +60821,7 @@ msgstr ""
 
 #: modules/Messenger/messenger_postQuickWall.php:75
 #: modules/Messenger/messenger_postQuickWall.php:50
-msgid "This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick wal to post to the Message Wall."
+msgid "This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall."
 msgstr ""
 
 #: modules/Planner/moduleFunctions.php:148 modules/Planner/moduleFunctions.php:186
