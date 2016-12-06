@@ -290,7 +290,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 if ($firstDay != null and $lastDay != null) {
                                     $absenceCount = getAbsenceCount($guid, $rowRollGroup['gibbonPersonID'], $connection2, $firstDay, $lastDay);
                                     if ($absenceCount !== false) {
-                                        echo sprintf(__($guid, '%1$s Days Absent'), $absenceCount);
+                                        if ($absenceCount == 1)
+                                            echo sprintf(__($guid, '%1$s Day Absent'), $absenceCount);
+                                        else
+                                            echo sprintf(__($guid, '%1$s Days Absent'), $absenceCount);
                                     }
 
                                     // List partial absences
