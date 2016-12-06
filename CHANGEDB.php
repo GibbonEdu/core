@@ -659,4 +659,5 @@ UPDATE gibbonSetting SET value=(SELECT email FROM gibbonPerson WHERE gibbonPerso
 ALTER TABLE `gibbonCourse` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this course be included in curriculum maps and other summaries?' AFTER `description`;end
 INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Odia');
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('in_OR', 'ଓଡ଼ିଆ - इंडिया', 'N', 'N', 'Saumya Kanta Swain', 'http://www.skswain.in', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
+ALTER TABLE `gibbonFinanceInvoice` ADD `gibbonFinanceFeeCategoryIDList` TEXT NULL DEFAULT NULL AFTER `status`;end
 ";

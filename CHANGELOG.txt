@@ -81,6 +81,7 @@ v13.0.00
 		Finance: switched from JS to HTML for fee block placeholders
 		Finance: added option to output name on invoice/receipt as student official name, rather than preferredName+surname
 		Finance: fixed bug in Paid - Partial filter in invoice manage view
+		Finance: added filter by fee category in invoice manage view
 		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page

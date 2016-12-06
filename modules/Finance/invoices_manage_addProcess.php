@@ -34,10 +34,11 @@ $status = $_GET['status'];
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
 $monthOfIssue = $_GET['monthOfIssue'];
 $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
 if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_add.php') == false) {
         $URL .= '&return=error0';
@@ -101,7 +102,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                     $thisStudentFailed = false;
                     $invoiceTo = '';
                     $companyAll = '';
-                    $gibbonFinanceFeeCategoryIDList = '';
+                    $gibbonFinanceFeeCategoryIDList2 = '';
 
                     //GET INVOICE RECORD, set $invoiceTo and $companyCategories if required
                     try {
@@ -128,9 +129,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                             if ($invoiceTo == 'Company') {
                                 $companyAll = $row['companyAll'];
                                 if ($companyAll == 'N') {
-                                    $gibbonFinanceFeeCategoryIDList = $row['gibbonFinanceFeeCategoryIDList'];
-                                    if ($gibbonFinanceFeeCategoryIDList != '') {
-                                        $gibbonFinanceFeeCategoryIDs = explode(',', $gibbonFinanceFeeCategoryIDList);
+                                    $gibbonFinanceFeeCategoryIDList2 = $row['gibbonFinanceFeeCategoryIDList'];
+                                    if ($gibbonFinanceFeeCategoryIDList2 != '') {
+                                        $gibbonFinanceFeeCategoryIDs = explode(',', $gibbonFinanceFeeCategoryIDList2);
                                     } else {
                                         $gibbonFinanceFeeCategoryIDs = null;
                                     }
@@ -138,14 +139,14 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 
                                 $companyFamily = false; //This holds true when company is set, companyAll=N and there are some fees for the family to pay...
                                 foreach ($fees as $fee) {
-                                    if ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList, $fee['gibbonFinanceFeeCategoryID']) === false) {
+                                    if ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID']) === false) {
                                         $companyFamily = true;
                                     }
                                 }
                                 $companyFamilyCompanyHasCharges = false; //This holds true when company is set, companyAll=N and there are some fees for the company to pay...e.g.  they are not all held by the family
                                 if ($invoiceTo == 'Company' and $companyAll == 'N') {
                                     foreach ($fees as $fee) {
-                                        if ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList, $fee['gibbonFinanceFeeCategoryID']))) {
+                                        if ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID']))) {
                                             $companyFamilyCompanyHasCharges = true;
                                         }
                                     }
@@ -243,7 +244,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                             $count = 0;
                                             foreach ($fees as $fee) {
                                                 ++$count;
-                                                if ($invoiceTo == 'Family' or ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList, $fee['gibbonFinanceFeeCategoryID']) === false)) {
+                                                if ($invoiceTo == 'Family' or ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID']) === false)) {
                                                     try {
                                                         if ($fee['feeType'] == 'Standard') {
                                                             $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
@@ -269,7 +270,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $count = 0;
                                 foreach ($fees as $fee) {
                                     ++$count;
-                                    if ($invoiceTo == 'Family' or ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList, $fee['gibbonFinanceFeeCategoryID']) === false)) {
+                                    if ($invoiceTo == 'Family' or ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID']) === false)) {
                                         try {
                                             if ($fee['feeType'] == 'Standard') {
                                                 $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID'], 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
@@ -397,7 +398,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                             $count = 0;
                                             foreach ($fees as $fee) {
                                                 ++$count;
-                                                if (($invoiceTo == 'Company' and $companyAll == 'Y') or ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList, $fee['gibbonFinanceFeeCategoryID'])))) {
+                                                if (($invoiceTo == 'Company' and $companyAll == 'Y') or ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID'])))) {
                                                     try {
                                                         if ($fee['feeType'] == 'Standard') {
                                                             $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
@@ -423,7 +424,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $count = 0;
                                 foreach ($fees as $fee) {
                                     ++$count;
-                                    if (($invoiceTo == 'Company' and $companyAll == 'Y') or ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList, $fee['gibbonFinanceFeeCategoryID'])))) {
+                                    if (($invoiceTo == 'Company' and $companyAll == 'Y') or ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID'])))) {
                                         try {
                                             if ($fee['feeType'] == 'Standard') {
                                                 $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID'], 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
@@ -455,6 +456,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                     ++$invoiceFailCount;
                                     $thisInvoiceFailed = true;
                                 }
+                                $AI = $rowInvoice['gibbonFinanceInvoiceID'];
                             } else {
                                 if ($thisInvoiceFailed == false) {
                                     ++$invoiceFailCount;
@@ -462,6 +464,35 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 }
                             }
                         }
+                    }
+
+                    $gibbonFinanceInvoiceID = NULL;
+                    if (isset($rowInvoice['gibbonFinanceInvoiceID']))
+                        $gibbonFinanceInvoiceID = $rowInvoice['gibbonFinanceInvoiceID'];
+                    else if (isset($AI))
+                        $gibbonFinanceInvoiceID = $AI;
+
+                    //SET gibbonFinanceFeeCategoryIDList WITH ALL FEES (doing this now due to the complex nature of adding fees above)
+                    try {
+                        $dataTemp = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                        $sqlTemp = 'SELECT gibbonFinanceFeeCategoryID FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                        $resultTemp = $connection2->prepare($sqlTemp);
+                        $resultTemp->execute($dataTemp);
+                    } catch (PDOException $e) {}
+
+                    $gibbonFinanceFeeCategoryIDList = '';
+                    while ($rowTemp = $resultTemp->fetch()) {
+                        $gibbonFinanceFeeCategoryIDList .= $rowTemp['gibbonFinanceFeeCategoryID'].",";
+                    }
+
+                    $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
+                    if ($gibbonFinanceFeeCategoryIDList != '') {
+                        try {
+                            $dataTemp2 = array('gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                            $sqlTemp2 = 'UPDATE gibbonFinanceInvoice SET gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                            $resultTemp2 = $connection2->prepare($sqlTemp2);
+                            $resultTemp2->execute($dataTemp2);
+                        } catch (PDOException $e) {}
                     }
                 }
 
