@@ -101,21 +101,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 echo '<h3>';
                 echo $row['name'];
                 echo '</h3>';
-                list($firstDayYear, $firstDayMonth, $firstDayDay) = explode('-', $row['firstDay']);
-                $firstDayStamp = mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
-                list($lastDayYear, $lastDayMonth, $lastDayDay) = explode('-', $row['lastDay']);
-                $lastDayStamp = mktime(0, 0, 0, $lastDayMonth, $lastDayDay, $lastDayYear);
+                $firstDayStamp = dateConvertToTimestampGM($row['firstDay']);
+                $lastDayStamp = dateConvertToTimestampGM($row['lastDay']);
 
                 //Count back to first Monday before first day
                 $startDayStamp = $firstDayStamp;
                 while (date('D', $startDayStamp) != 'Mon') {
-                    $startDayStamp = $startDayStamp - 86400;
+                    $startDayStamp = strtotime('-1 day', $startDayStamp);
                 }
 
                 //Count forward to first Sunday after last day
                 $endDayStamp = $lastDayStamp;
                 while (date('D', $endDayStamp) != 'Sun') {
-                    $endDayStamp = $endDayStamp + 86400;
+                    $endDayStamp = strtotime('+1 day', $endDayStamp);
                 }
 
                 //Get the special days
@@ -195,15 +193,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 echo '</tr>';
 
                 $specialDayStamp = null;
-                for ($i = $startDayStamp;$i <= $endDayStamp;$i = $i + 86400) {
+                for ($i = $startDayStamp; $i <= $endDayStamp;$i = strtotime('+1 day', $i)) {
                     if (date('D', $i) == 'Mon') {
                         echo "<tr style='height: 60px'>";
                     }
 
                     if (isset($rowSpecial)) {
                         if ($rowSpecial == true) {
-                            list($specialDayYear, $specialDayMonth, $specialDayDay) = explode('-', $rowSpecial['date']);
-                            $specialDayStamp = mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+                            $specialDayStamp = dateConvertToTimestampGM($rowSpecial['date']);
                         }
                     }
 

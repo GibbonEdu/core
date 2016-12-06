@@ -22,7 +22,7 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 $URL="index.php" ;
 
-require_once ('google-api-php-client/src/Google/autoload.php');
+require_once ('google-api-php-client/vendor/autoload.php');
 
 //Cleint ID and Secret
 $client_id = getSettingByScope($connection2, "System", "googleClientID" ) ;
@@ -44,9 +44,10 @@ $client = new Google_Client();
 $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
-//$client->addScope("email");
-//$client->addScope("profile");
-$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
+$client->setAccessType('offline');
+$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/plus.me',
+    'https://www.googleapis.com/auth/calendar')); // set scope during user login
 
 /************************************************
   When we create the service here, we pass the

@@ -17,6 +17,72 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
+{
+    $output = '';
+
+    if (empty($basePage)) $basePage = 'markbook_view.php';
+
+    //Show class picker in sidebar
+    $output .= '<h2>';
+    $output .= __($guid, 'Choose A Class');
+    $output .= '</h2>';
+
+    $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
+    $output .= "<input name='q' id='q' type='hidden' value='/modules/Markbook/".$basePage."'>";
+
+    $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>";
+    $output .= '<tr>';
+    $output .= "<td style='width: 190px'>";
+
+    $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:161px; float: none;'>";
+    $output .= "<option value=''></option>";
+    try {
+        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID );
+        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
+        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+    } catch (PDOException $e) {
+    }
+    $isSelected = false;
+
+    $output .= "<optgroup label='--".__($guid, 'My Classes')."--'>";
+    while ($rowSelect = $resultSelect->fetch()) {
+        $selected = '';
+        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID && !$isSelected) {
+            $selected = 'selected';
+            $isSelected = true;
+        }
+        $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+    }
+    $output .= '</optgroup>';
+    try {
+        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
+        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+    } catch (PDOException $e) {
+    }
+    $output .= "<optgroup label='--".__($guid, 'All Classes')."--'>";
+    while ($rowSelect = $resultSelect->fetch()) {
+        $selected = '';
+        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID && !$isSelected) {
+            $selected = 'selected';
+            $isSelected = true;
+        }
+        $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+    }
+    $output .= '</optgroup>';
+    $output .= '</select>';
+    $output .= '</td>';
+    $output .= "<td class='right'>";
+    $output .= "<input type='submit' value='".__($guid, 'Go')."'>";
+    $output .= '</td>';
+    $output .= '</tr>';
+    $output .= '</table>';
+    $output .= '</form>';
+
+    return $output;
+}
+
 function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
     //Set timezone from session variable
@@ -116,7 +182,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     // More than one rollOrder means there are orders assigned to each student, otherwise skip the sort filter
     if ( $resultSelect->rowCount() > 0) {
-        if ($resultSelect->fetchColumn(0) > 0) { 
+        if ($resultSelect->fetchColumn(0) > 0) {
 
             $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
             $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
@@ -207,15 +273,13 @@ function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
 
 function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction = '' ) {
     try {
-        if ($highestAction == 'Edit Markbook_everything') {
+        if ($highestAction == 'View Markbook_allClassesAllData') {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
         } else {
-
             $data = array( 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
         }
-
         $result = $pdo->executeQuery($data, $sql);
     } catch (PDOException $e) {
         echo "<div class='error'>".$e->getMessage().'</div>';

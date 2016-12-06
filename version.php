@@ -20,4 +20,4 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information.
  */
-$version = '12.0.00';
+$version = '13.0.00';

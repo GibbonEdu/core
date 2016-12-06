@@ -85,6 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
 
             $attachment1 = $_POST['attachment1'];
+            $birthCertificateScan = $_POST['birthCertificateScanCurrent'];
             $nationalIDCardScan = $_POST['nationalIDCardScanCurrent'];
             $citizenship1PassportScan = $_POST['citizenship1PassportScanCurrent'];
 
@@ -336,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
-                    if ($_FILES['file1']['tmp_name'] != '' or $_FILES['nationalIDCardScan']['tmp_name'] != '' or $_FILES['citizenship1PassportScan']['tmp_name'] != '') {
+                    if ($_FILES['file1']['tmp_name'] != '' or $_FILES['birthCertificateScan']['tmp_name'] != '' or $_FILES['nationalIDCardScan']['tmp_name'] != '' or $_FILES['citizenship1PassportScan']['tmp_name'] != '') {
                         $time = time();
                         //Check for folder in uploads based on today's date
                         $path = $_SESSION[$guid]['absolutePath'];
@@ -365,6 +366,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             }
                         }
 
+                        //Move birth certificate scan file, if there is one
+                        if ($_FILES['birthCertificateScan']['tmp_name'] != '') {
+                            $unique = false;
+                            $count = 0;
+                            while ($unique == false and $count < 100) {
+                                $suffix = randomPassword(16);
+                                if ($count == 0) {
+                                    $birthCertificateScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_birthCertificate_'.$suffix.strrchr($_FILES['birthCertificateScan']['name'], '.');
+                                } else {
+                                    $birthCertificateScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_birthCertificate'."_$count_".$suffix.strrchr($_FILES['birthCertificateScan']['name'], '.');
+                                }
+
+                                if (!(file_exists($path.'/'.$birthCertificateScan))) {
+                                    $unique = true;
+                                }
+                                ++$count;
+                            }
+                            if (!(move_uploaded_file($_FILES['birthCertificateScan']['tmp_name'], $path.'/'.$birthCertificateScan))) {
+                                $birthCertificateScan = '';
+                                $imageFail = true;
+                            }
+                        }
+
                         //Move ID Card scan file, if there is one
                         if ($_FILES['nationalIDCardScan']['tmp_name'] != '') {
                             $unique = false;
@@ -372,9 +396,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             while ($unique == false and $count < 100) {
                                 $suffix = randomPassword(16);
                                 if ($count == 0) {
-                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan_'.$suffix;
+                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan_'.$suffix.strrchr($_FILES['nationalIDCardScan']['name'], '.');
                                 } else {
-                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan'."_$count_".$suffix;
+                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan'."_$count_".$suffix.strrchr($_FILES['nationalIDCardScan']['name'], '.');
                                 }
 
                                 if (!(file_exists($path.'/'.$nationalIDCardScan))) {
@@ -395,9 +419,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             while ($unique == false and $count < 100) {
                                 $suffix = randomPassword(16);
                                 if ($count == 0) {
-                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'.$suffix;
+                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'.$suffix.strrchr($_FILES['citizenship1PassportScan']['name'], '.');
                                 } else {
-                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'."_$count_".$suffix;
+                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'."_$count_".$suffix.strrchr($_FILES['citizenship1PassportScan']['name'], '.');
                                 }
 
                                 if (!(file_exists($path.'/'.$citizenship1PassportScan))) {
@@ -419,6 +443,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $aspect1 = $height1 / $width1;
                             if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
                                 $attachment1 = '';
+                                $imageFail = true;
+                            }
+                        }
+                        if ($birthCertificateScan != '') {
+                            $size3 = getimagesize($path.'/'.$birthCertificateScan);
+                            $width3 = $size3[0];
+                            $height3 = $size3[1];
+                            if ($width3 > 1440 or $height3 > 900) {
+                                $birthCertificateScan = '';
                                 $imageFail = true;
                             }
                         }
@@ -473,8 +506,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                         //Write to database
                         try {
-                            $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'status' => $status, 'canLogin' => $canLogin, 'passwordForceReset' => $passwordForceReset, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'dob' => $dob, 'email' => $email, 'emailAlternate' => $emailAlternate, 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'address2' => $address2, 'address2District' => $address2District, 'address2Country' => $address2Country, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'phone3Type' => $phone3Type, 'phone3CountryCode' => $phone3CountryCode, 'phone3' => $phone3, 'phone4Type' => $phone4Type, 'phone4CountryCode' => $phone4CountryCode, 'phone4' => $phone4, 'website' => $website, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'ethnicity' => $ethnicity, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'citizenship1PassportScan' => $citizenship1PassportScan, 'citizenship2' => $citizenship2, 'citizenship2Passport' => $citizenship2Passport, 'religion' => $religion, 'nationalIDCardNumber' => $nationalIDCardNumber, 'nationalIDCardScan' => $nationalIDCardScan, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'emergency1Name' => $emergency1Name, 'emergency1Number1' => $emergency1Number1, 'emergency1Number2' => $emergency1Number2, 'emergency1Relationship' => $emergency1Relationship, 'emergency2Name' => $emergency2Name, 'emergency2Number1' => $emergency2Number1, 'emergency2Number2' => $emergency2Number2, 'emergency2Relationship' => $emergency2Relationship, 'profession' => $profession, 'employer' => $employer, 'jobTitle' => $jobTitle, 'attachment1' => $attachment1, 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $studentID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearIDClassOf' => $gibbonSchoolYearIDClassOf, 'lastSchool' => $lastSchool, 'nextSchool' => $nextSchool, 'departureReason' => $departureReason, 'transport' => $transport, 'transportNotes' => $transportNotes, 'lockerNumber' => $lockerNumber, 'vehicleRegistration' => $vehicleRegistration, 'privacy' => $privacy, 'agreements' => $agreements, 'dayType' => $dayType, 'fields' => $fields, 'gibbonPersonID' => $gibbonPersonID);
-                            $sql = 'UPDATE gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity,  citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportScan=:citizenship1PassportScan, citizenship2=:citizenship2,  citizenship2Passport=:citizenship2Passport, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, nationalIDCardScan=:nationalIDCardScan, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, image_240=:attachment1, gibbonHouseID=:gibbonHouseID, studentID=:studentID, dateStart=:dateStart, dateEnd=:dateEnd, gibbonSchoolYearIDClassOf=:gibbonSchoolYearIDClassOf, lastSchool=:lastSchool, nextSchool=:nextSchool, departureReason=:departureReason, transport=:transport, transportNotes=:transportNotes, lockerNumber=:lockerNumber, vehicleRegistration=:vehicleRegistration, privacy=:privacy, studentAgreements=:agreements, dayType=:dayType, fields=:fields WHERE gibbonPersonID=:gibbonPersonID';
+                            $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'status' => $status, 'canLogin' => $canLogin, 'passwordForceReset' => $passwordForceReset, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'dob' => $dob, 'email' => $email, 'emailAlternate' => $emailAlternate, 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'address2' => $address2, 'address2District' => $address2District, 'address2Country' => $address2Country, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'phone3Type' => $phone3Type, 'phone3CountryCode' => $phone3CountryCode, 'phone3' => $phone3, 'phone4Type' => $phone4Type, 'phone4CountryCode' => $phone4CountryCode, 'phone4' => $phone4, 'website' => $website, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'birthCertificateScan' => $birthCertificateScan, 'ethnicity' => $ethnicity, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'citizenship1PassportScan' => $citizenship1PassportScan, 'citizenship2' => $citizenship2, 'citizenship2Passport' => $citizenship2Passport, 'religion' => $religion, 'nationalIDCardNumber' => $nationalIDCardNumber, 'nationalIDCardScan' => $nationalIDCardScan, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'emergency1Name' => $emergency1Name, 'emergency1Number1' => $emergency1Number1, 'emergency1Number2' => $emergency1Number2, 'emergency1Relationship' => $emergency1Relationship, 'emergency2Name' => $emergency2Name, 'emergency2Number1' => $emergency2Number1, 'emergency2Number2' => $emergency2Number2, 'emergency2Relationship' => $emergency2Relationship, 'profession' => $profession, 'employer' => $employer, 'jobTitle' => $jobTitle, 'attachment1' => $attachment1, 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $studentID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearIDClassOf' => $gibbonSchoolYearIDClassOf, 'lastSchool' => $lastSchool, 'nextSchool' => $nextSchool, 'departureReason' => $departureReason, 'transport' => $transport, 'transportNotes' => $transportNotes, 'lockerNumber' => $lockerNumber, 'vehicleRegistration' => $vehicleRegistration, 'privacy' => $privacy, 'agreements' => $agreements, 'dayType' => $dayType, 'fields' => $fields, 'gibbonPersonID' => $gibbonPersonID);
+                            $sql = 'UPDATE gibbonPerson SET title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, website=:website, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, birthCertificateScan=:birthCertificateScan, ethnicity=:ethnicity,  citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportScan=:citizenship1PassportScan, citizenship2=:citizenship2,  citizenship2Passport=:citizenship2Passport, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, nationalIDCardScan=:nationalIDCardScan, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, image_240=:attachment1, gibbonHouseID=:gibbonHouseID, studentID=:studentID, dateStart=:dateStart, dateEnd=:dateEnd, gibbonSchoolYearIDClassOf=:gibbonSchoolYearIDClassOf, lastSchool=:lastSchool, nextSchool=:nextSchool, departureReason=:departureReason, transport=:transport, transportNotes=:transportNotes, lockerNumber=:lockerNumber, vehicleRegistration=:vehicleRegistration, privacy=:privacy, studentAgreements=:agreements, dayType=:dayType, fields=:fields WHERE gibbonPersonID=:gibbonPersonID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

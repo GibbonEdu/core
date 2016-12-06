@@ -34,37 +34,61 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbookSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'Interface Settings') ?></h3>
-				</td>
-			</tr>
-			<tr>
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
+            <tr class='break'>
+                <td colspan=2>
+                    <h3><?php echo __($guid, 'Features') ?></h3>
+                </td>
+            </tr>
+            <tr>
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='markbookType'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='enableEffort'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {}
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+					</select>
 				</td>
 			</tr>
-			<tr>
+            <tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='enableRubrics'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+					</select>
+				</td>
+			</tr>
+            <tr>
 				<?php
                 try {
                     $data = array();
@@ -76,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -99,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -108,6 +132,35 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
+				</td>
+			</tr>
+
+
+            <tr class='break'>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'Interface') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Markbook' AND name='markbookType'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
+				<td style='width: 275px'>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
+					<script type="text/javascript">
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -122,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -143,12 +196,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<input type='text' maxlength='25' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
+					<input type='text' maxlength='25' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
 				</td>
 			</tr>
 			<tr>
@@ -161,12 +214,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<input type='text' maxlength='3' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
+					<input type='text' maxlength='3' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
 				</td>
 			</tr>
 			<tr>
@@ -179,12 +232,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<input type='text' maxlength='25' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
+					<input type='text' maxlength='25' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
 				</td>
 			</tr>
 			<tr>
@@ -197,16 +250,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<input type='text' maxlength='3' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
+					<input type='text' maxlength='3' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
 				</td>
 			</tr>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Warnings') ?></h3>
 				</td>
 			</tr>
@@ -222,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -245,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -268,7 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -291,7 +344,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -314,7 +367,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -325,9 +378,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
@@ -343,7 +396,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -354,7 +407,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

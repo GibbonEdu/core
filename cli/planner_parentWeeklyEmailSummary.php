@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
-require getcwd().'/../lib/PHPMailer/class.phpmailer.php';
+require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
@@ -80,8 +80,7 @@ else {
                     $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
+                } catch (PDOException $e) { }
 
                 $studentCount = $result->rowCount();
                 $sendSucceedCount = 0;
@@ -94,13 +93,14 @@ else {
                         //Get all homework for the past week, ready for email
                         $homework = '';
                         $homework .= '<h2>'.__($guid, 'Homework').'</h2>';
+                        $homework .= '<p>'.__($guid, 'The list below includes all homework assigned during the past week.').'</p>';
                         try {
                             $dataHomework = array('gibbonPersonID1' => $row['gibbonPersonID'], 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $row['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
                             $sqlHomework = "
-							(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID1 AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."')
-							UNION
-							(SELECT 'studentRecorded' AS type, gibbonPlannerEntry2.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry2.gibbonCourseClassID, gibbonCourse2.nameShort AS course, gibbonCourseClass2.nameShort AS class, gibbonPlannerEntry2.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry AS gibbonPlannerEntry2 JOIN gibbonCourseClass AS gibbonCourseClass2 ON (gibbonPlannerEntry2.gibbonCourseClassID=gibbonCourseClass2.gibbonCourseClassID) JOIN gibbonCourseClassPerson AS gibbonCourseClassPerson2 ON (gibbonCourseClass2.gibbonCourseClassID=gibbonCourseClassPerson2.gibbonCourseClassID) JOIN gibbonCourse AS gibbonCourse2 ON (gibbonCourse2.gibbonCourseID=gibbonCourseClass2.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry2.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson2.gibbonPersonID) WHERE gibbonCourseClassPerson2.gibbonPersonID=:gibbonPersonID2 AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID2 AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."')
-							ORDER BY date, timeStart";
+    						(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID1 AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."')
+    						UNION
+    						(SELECT 'studentRecorded' AS type, gibbonPlannerEntry2.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry2.gibbonCourseClassID, gibbonCourse2.nameShort AS course, gibbonCourseClass2.nameShort AS class, gibbonPlannerEntry2.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry AS gibbonPlannerEntry2 JOIN gibbonCourseClass AS gibbonCourseClass2 ON (gibbonPlannerEntry2.gibbonCourseClassID=gibbonCourseClass2.gibbonCourseClassID) JOIN gibbonCourseClassPerson AS gibbonCourseClassPerson2 ON (gibbonCourseClass2.gibbonCourseClassID=gibbonCourseClassPerson2.gibbonCourseClassID) JOIN gibbonCourse AS gibbonCourse2 ON (gibbonCourse2.gibbonCourseID=gibbonCourseClass2.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry2.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson2.gibbonPersonID) WHERE gibbonCourseClassPerson2.gibbonPersonID=:gibbonPersonID2 AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID2 AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."')
+    						ORDER BY date, timeStart";
                             $resultHomework = $connection2->prepare($sqlHomework);
                             $resultHomework->execute($dataHomework);
                         } catch (PDOException $e) {
@@ -238,14 +238,20 @@ else {
                                             } else {
                                                 //Prep email
                                                 $body = sprintf(__($guid, 'Dear %1$s'), $rowMember['preferredName'].' '.$rowMember['surname']).',<br/><br/>';
-                                                $body .= sprintf(__($guid, 'Please find below a summary of homework and behaviour for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
+                                                if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
+                                                    $body .= sprintf(__($guid, 'Please find below a summary of homework and behaviour for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
+                                                }
+                                                else {
+                                                    $body .= sprintf(__($guid, 'Please find below a summary of homework for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
+                                                }
                                                 $body .= $homework;
                                                 $body .= $behaviour;
                                                 $body .= sprintf(__($guid, 'Please %1$sclick here%2$s to confirm that you have received and read this summary email.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$row['gibbonPersonID'].'&gibbonPersonIDParent='.$rowMember['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."'>", '</a>');
                                                 $body .= "<p class='emphasis'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                                                 $bodyPlain = emailBodyConvert($body);
 
-                                                $mail = new PHPMailer();
+                                                $mail = getGibbonMailer($guid);
+                                                $mail->IsSMTP();
                                                 if ($replyTo != '') {
                                                     $mail->AddReplyTo($replyTo, $replyToName);
                                                 }
@@ -291,5 +297,5 @@ else {
             setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'Planner', '/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
         }
     }
-//}
-;
+}
+?>

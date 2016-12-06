@@ -20,13 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon;
 
 /**
- * CSV Generator
+ * Session Class
  *
- * @version	15th April 2016
- * @since	15th April 2016
- * @author	Craig Rayner
+ * Responsibilities:
+ * 		- User session
+ * 		- Persistance ($_SESSION)
+ * 		- Caching
+ *
+ * @version	v13
+ * @since	v12
  */
-class session
+class Session
 {
 	/**
 	 * string
@@ -34,134 +38,71 @@ class session
 	private	$guid ;
 
 	/**
-	 * string
-	 */
-	private	$base ;
-
-	/**
 	 * Construct
-	 *
-	 * @version	15th April 2016
-	 * @since	15th April 2016
-	 * @return	void
 	 */
-	public function __construct()
+	public function __construct( core $gibbon = null )
 	{
+		//Prevent breakage of back button on POST pages
+		ini_set('session.cache_limiter', 'private');
+		session_cache_limiter(false);
+
+		// Start the session (this should be the first time called)
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
-		//include GIBBON_ROOT . 'config.php';
-		//$this->guid = $guid;
+
+		$this->guid = $gibbon->guid();
 	}
 
 	/**
-	 * get Value
+	 * Return the guid string
 	 *
-	 * @version	19th April 2016
-	 * @since	15th April 2016
+	 * @return	string
+	 */
+	public function guid() {
+		return $this->guid;
+	}
+
+	/**
+	 * Get Session Value
+	 *
 	 * @param	string	Session Value Name
-	 * @param	boolean	Use GUID (default = true)
+	 * @param	mixed	default Define a value to return if the variable is empty
+	 * 
 	 * @return	mixed
 	 */
-	public function get($name, $guid = true)
+	public function get($name, $default = null)
 	{
-		$guid = (boolean) $guid;
-		$steps = explode(',', $name);
-		foreach($steps as $q=>$w)
-			$steps[$q] = trim($w);
-		if (count($steps) === 1)
-		{
-			if ($guid)
-			{
-				if (isset($_SESSION[$this->guid][$name]))
-					return $_SESSION[$this->guid][$name] ;
-			}
-			else
-				if (isset($_SESSION[$name]))
-					return $_SESSION[$name] ;
-		
-		}
-		else
-			if ($guid)
-				return $this->getSub($steps, $_SESSION[$this->guid][$steps[0]]);
-			else
-				return $this->getSub($steps, $_SESSION[$steps[0]]);
-		return NULL ;
+		return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
 	}
 
 	/**
-	 * set Value
+	 * Set Session Value
 	 *
-	 * @version	19th April 2016
-	 * @since	15th April 2016
 	 * @param	string	Session Value Name
 	 * @param	mixed	Session Value
-	 * @param	boolean	Use GUID (default = true)
+	 * 
 	 * @return	object	Gibbon\session
 	 */
-	public function set($name, $value, $guid = true)
+	public function set($name, $value)
 	{
-		$guid = (boolean) $guid ;
-		$this->base = NULL;
-		$steps = explode(',', $name);
-		foreach($steps as $q=>$w)
-			$steps[$q] = trim($w);
-			
-		if (count($steps) > 1)
-		{
-			$aValue = $this->setSub($steps, $this->get($steps[0]), $value);
-			return $this->set($this->base, $aValue);
-		}
-		else
-			if ($guid)
-				$_SESSION[$this->guid][$name] = $value ;
-			else
-				$_SESSION[$name] = $value ;
-		return $this ;
+		$_SESSION[$this->guid][$name] = $value ;
+
+		return $this;
 	}
 
 	/**
-	 * get Sub Value
+	 * Set Multiple Session Values
 	 *
-	 * @version	15th April 2016
-	 * @since	15th April 2016
-	 * @param	array	Step Names
-	 * @param	array	Parent Value
-	 * @return	mixed
-	 */
-	private function getSub($steps, $parent)
-	{
-		array_shift($steps);
-		if (count($steps) === 1)
-		{
-			if (isset($parent[$steps[0]]))
-				return $parent[$steps[0]] ;
-		}
-		else
-			return $this->getSub($steps, $parent[$steps[0]]);
-		return NULL ;
-	}
-
-	/**
-	 * set Sub Value
-	 *
-	 * @version	15th April 2016
-	 * @since	15th April 2016
-	 * @param	array	Name Array
-	 * @param	array	Current Value
-	 * @param	mixed	Session Value
+	 * @param	array	Array of name => value pairs
+	 * 
 	 * @return	object	Gibbon\session
 	 */
-	public function setSub($steps, $existing, $value)
+	public function setAll( array $values )
 	{
-		if ($this->base === NULL)
-			$base = $this->base = array_shift($steps);
-		else
-			$base = array_shift($steps);
-		if (count($steps) === 1)
-			$existing[$steps[0]] = $value; 
-		else
-			$existing[$steps[0]] = $this->setSub($steps, $existing[$steps[0]], $value);
-		return $existing;	
-	}
+		foreach ($values as $name => $value) {
+			$this->set($name, $value);
+		}
 
+		return $this;
+	}
 }

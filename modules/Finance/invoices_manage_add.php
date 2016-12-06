@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?><br/><?php echo sprintf(__($guid, 'Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>') ?></span>
 					</td>
 					<td class="right">
-						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">
+						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple class='standardWidth' style="height: 150px">
 							<optgroup label='--<?php echo __($guid, 'All Enrolled Students by Roll Group') ?>--'>
 							<?php
                             $students = array();

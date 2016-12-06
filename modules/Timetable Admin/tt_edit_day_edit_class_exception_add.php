@@ -84,18 +84,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_exception_addProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID"; ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Participants') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 							</td>
 							<td class="right">
-								<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
+								<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
 									<?php
                                     try {
                                         $dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND NOT role='Student - Left' AND NOT role='Teacher - Left' ORDER BY surname, preferredName";
+                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND NOT gibbonPerson.status='Left' ORDER BY surname, preferredName";
                                         $resultSelect = $connection2->prepare($sqlSelect);
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {

@@ -47,12 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo __($guid, 'Search');
     echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username, email, phone number, vehicle registration') ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username, role, student ID, email, phone number, vehicle registration') ?></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
@@ -81,10 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     }
     try {
         $data = array();
-        $sql = 'SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY surname, preferredName';
+        
         if ($search != '') {
-            $data = array('search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%", 'search4' => "%$search%", 'search5' => "%$search%", 'search6' => "%$search%", 'search7' => "%$search%", 'search8' => "%$search%", 'search9' => "%$search%", 'search10' => "%$search%");
-            $sql = 'SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3 OR email LIKE :search4 OR emailAlternate LIKE :search5 OR phone1 LIKE :search6 OR phone2 LIKE :search7 OR phone3 LIKE :search8 OR phone4 LIKE :search9 OR vehicleRegistration LIKE :search10) ORDER BY surname, preferredName';
+            $data = array('search' => "%$search%" );
+
+            $sql = 'SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (preferredName LIKE :search OR surname LIKE :search OR username LIKE :search OR studentID LIKE :search OR email LIKE :search OR emailAlternate LIKE :search OR phone1 LIKE :search OR phone2 LIKE :search OR phone3 LIKE :search OR phone4 LIKE :search OR vehicleRegistration LIKE :search OR gibbonRole.name LIKE :search) ORDER BY surname, preferredName';
+        } else {
+            $sql = 'SELECT * FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY surname, preferredName';
         }
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
@@ -186,11 +189,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             foreach ($families as $family) {
                 if ($family[1] == $row['gibbonPersonID']) {
                     if ($family[2] == 'child') { //Link child to self
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=off&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
                     } else { //Link adult to eldest child in family
 						foreach ($families as $family2) {
 							if ($family[0] == $family2[0] and $family2[2] == 'child' and $childCount == 0) {
-								echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+								echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=off&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
 								++$childCount;
 							}
 						}

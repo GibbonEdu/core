@@ -22,179 +22,182 @@ namespace Gibbon;
 /**
  * Main menu building Class
  *
- * @version	22nd April 2016
+ * @version	24rd November 2016
  * @since	22nd April 2016
  * @author	Ross Parker
  */
-class menuModule
+class MenuModule
 {
 	/**
 	 * Gibbon\sqlConnection
 	 */
-	private $pdo ;
-	
+	private $pdo;
+
 	/**
 	 * Gibbon\session
 	 */
-	private $session ;
-	
-	/**
-	 * Gibbon\config
-	 */
-	private $config ;
-	
+	private $session;
+
 	/**
 	 * Stores the type of module menu
 	 */
-	private $type ;
-	
-	/**
-	 * Stores the menu whilst it is being constructed, before returning
-	 */
-	public $menu = "" ;
-	
+	private $type;
+
 	/**
 	 * Construct
 	 *
-	 * @version 22nd April 2016
+	 * @version 23rd November 2016
 	 * @since	22nd April 2016
-	 * @return	void
-	 * $type should be 'full' or 'mini'
 	 */
-	public function __construct()
+	public function __construct( Core $gibbon, sqlConnection $pdo )
 	{
-		$this->pdo = new sqlConnection();
-		$this->session = new session();
-		$this->config = new config();
+		$this->pdo = $pdo;
+		$this->session = $gibbon->session;
 	}
 
 	/**
-	 * Construct and store main menu in session
+	 * Construct and return the module menu
 	 *
-	 * (Moved from /functions.php)
-	 * @version 19th April 2016
+	 * @version 24th November 2016
 	 * @since	Old
-	 * @return	void
+	 * @return	string
 	 */
 	public function getMenu($type='full')
 	{
-		$this->type=$type ;
+		$menu="";
+
+		$address = $this->session->get('address');
+		$absoluteURL = $this->session->get('absoluteURL');
+
 		//Check address to see if we are in the module area
-		if (substr($_SESSION[$this->config->get('guid')]["address"],0,8)=="/modules") {
+		if (substr($address,0,8)=='/modules') {
+
 			//Get and check the module name
-			$moduleID=checkModuleReady( $_SESSION[$this->config->get('guid')]["address"], $this->pdo->getConnection() );
+			$moduleID=checkModuleReady( $address, $this->pdo->getConnection() );
 			if ($moduleID!=FALSE) {
-				$gibbonRoleIDCurrent=NULL ;
-				if (isset($_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"])) {
-					$gibbonRoleIDCurrent=$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"] ;
-				}
-				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
+
+				$gibbonRoleIDCurrent= $this->session->get('gibbonRoleIDCurrent');
+
+				$data = array('gibbonModuleID'=>$moduleID, 'gibbonRoleID'=>$gibbonRoleIDCurrent);
+				$sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList
+						FROM gibbonModule
+						JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+						JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+						WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID)
+						AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)
+						AND NOT gibbonAction.entryURL=''
+						AND gibbonAction.menuShow='Y'
+						ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
+
 				$result = $this->pdo->executeQuery($data, $sql);
 
 				if ($result->rowCount()>0) {
-					if ($this->type=="full") {
-						$this->menu.="<ul class='moduleMenu'>" ;
-							$currentCategory="" ;
-							$lastCategory="" ;
-							$currentName="" ;
-							$lastName="" ;
-							$count=0;
-							$links=0 ;
-							while ($row=$result->fetch()) {
-								$moduleName=$row["moduleName"] ;
-								$moduleEntry=$row["moduleEntry"] ;
+
+					// Grab the result set, grouped by action category
+					$menuData = $result->fetchAll(\PDO::FETCH_GROUP);
+
+					if ($type=='full') {
+
+						$currentName="";
+						$lastName="";
+
+						$menu .= "<ul class='moduleMenu'>";
+
+						foreach ($menuData as $currentCategory => $menuItems) {
+
+							$moduleDomain = ($menuItems[0]['type'] == 'Core')? null : $menuItems[0]['moduleName'];
+
+							$menu .= "<li>";
+							$menu .= "<h4>" . __($currentCategory, $moduleDomain) . "</h4>";
+							$menu .= "<ul>";
+
+							foreach ($menuItems as $row) {
+
+								$moduleDomain = ($row['type'] == 'Core')? null : $row['moduleName'];
 
 								//Set active link class
-								$style="" ;
-								if (strpos($row["URLList"],getActionName($_SESSION[$this->config->get('guid')]["address"]))===0) {
-									$style="class='active'" ;
+								$style="";
+								if (strpos($row['URLList'],getActionName($address))===0) {
+									$style="class='active'";
 								}
 
-								$currentCategory=$row["category"] ;
-								if (strpos($row["name"],"_")>0) {
-									$currentName=__($this->config->get('guid'), substr($row["name"],0,strpos($row["name"],"_"))) ;
-								}
-								else {
-									$currentName=__($this->config->get('guid'), $row["name"]) ;
+								// Grab the base action name if this is a grouped action
+								if (strpos($row['name'],'_') !== false) {
+									$currentName=strstr($row['name'], '_', true);
+								} else {
+									$currentName=$row['name'];
 								}
 
+								// Avoid duplicates (esp. from grouped actions)
 								if ($currentName!=$lastName) {
-									if ($currentCategory!=$lastCategory) {
-										if ($count>0) {
-											$this->menu.="</ul></li>";
-										}
-										$this->menu.="<li><h4>" . __($this->config->get('guid'), $currentCategory) . "</h4>" ;
-										$this->menu.="<ul>" ;
-										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($this->config->get('guid'), $currentName) . "</a></li>" ;
-									}
-									else {
-										$this->menu.="<li><a $style href='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($this->config->get('guid'), $currentName) . "</a></li>" ;
-									}
-									$links++ ;
+									$menu .= "<li><a $style href='" . $absoluteURL . "/index.php?q=/modules/" . $row['moduleName'] . "/" . $row['entryURL'] . "'>" . __($currentName, $moduleDomain) . "</a></li>";
 								}
-								$lastCategory=$currentCategory ;
-								$lastName=$currentName ;
-								$count++ ;
+								$lastName=$currentName;
 							}
-							if ($count>0) {
-								$this->menu.="</ul></li>";
-							}
-						$this->menu.="</ul>" ;
+
+							$menu .= "</ul></li>";
+						}
+						$menu .= "</ul>";
 					}
-					else if ($this->type=="mini") {
-						$this->menu.="<div class='linkTop'>" ;
-							$this->menu.="<select id='floatingModuleMenu' style='width: 200px'>" ;						
-								$currentCategory="" ;
-								$lastCategory="" ;
-								$currentName="" ;
-								$lastName="" ;
-								$count=0;
-								$links=0 ;
-								while ($row=$result->fetch()) {
-									$moduleName=$row["moduleName"] ;
-									$moduleEntry=$row["moduleEntry"] ;
+					else if ($type=='mini') {
+						$menu .= "<div class='linkTop'>";
 
-									$currentCategory=$row["category"] ;
-									if (strpos($row["name"],"_")>0) {
-										$currentName=__($this->config->get('guid'), substr($row["name"],0,strpos($row["name"],"_"))) ;
-									}
-									else {
-										$currentName=__($this->config->get('guid'), $row["name"]) ;
-									}
+							$currentName="";
+							$lastName="";
 
-									if ($currentName!=$lastName) {
-										if ($currentCategory!=$lastCategory) {
-											$this->menu.="<optgroup label='--" .  __($this->config->get('guid'), $currentCategory) . "--'/>" ;
-										}
-										$selected="" ;
-										if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
-											$selected="selected" ;
-										}
-										$this->menu.="<option value='" . $_SESSION[$this->config->get('guid')]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($this->config->get('guid'), $currentName) . "</option>" ;
-										$links++ ;
-									}
-									$lastCategory=$currentCategory ;
-									$lastName=$currentName ;
-									$count++ ;
+							$menu .= "<select id='floatingModuleMenu' style='width: 200px'>";
+
+							foreach ($menuData as $currentCategory => $menuItems) {
+
+								// Wrap categories in optgroup labels
+								if (!empty($currentCategory)) {
+									$moduleDomain = ($menuItems[0]['type'] == 'Core')? null : $menuItems[0]['moduleName'];
+									$menu .= "<optgroup label='--" .  __($currentCategory, $moduleDomain) . "--'/>";
 								}
-						
-								$this->menu.="<script>
-									$(\"#floatingModuleMenu\").change(function() {
-										document.location.href = $(this).val();
-									});
-								</script>" ;
-							$this->menu.="</select>" ;
-							$this->menu.="<div style='float: right; padding-top: 10px'>" ;
-								$this->menu.=__($this->config->get('guid'), "Module Menu") ;
-							$this->menu.="</div>" ;
-						$this->menu.="</div>" ;	
+
+								foreach ($menuItems as $row) {
+
+									$moduleDomain = ($row['type'] == 'Core')? null : $row['moduleName'];
+
+									// Grab the base action name if this is a grouped action
+									if (strpos($row['name'],'_') !== false) {
+										$currentName = strstr($row['name'], '_', true);
+									} else {
+										$currentName = $row['name'];
+									}
+
+									// Avoid duplicates (esp. from grouped actions)
+									if ($currentName!=$lastName) {
+										$selected="";
+										if ($_GET['q']=="/modules/" . $row['moduleName'] . "/" . $row['entryURL']) {
+											$selected=" selected";
+										}
+
+										$menu .= "<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row['moduleName'] . "/" . $row['entryURL'] . "'$selected>" . __($currentName, $moduleDomain) . "</option>";
+									}
+
+									$lastName=$currentName;
+								}
+							}
+
+							// TODO: Move this to common.js?
+							$menu .= "<script>
+								$(\"#floatingModuleMenu\").change(function() {
+									document.location.href = $(this).val();
+								});
+							</script>";
+
+						$menu .= "</select>";
+							$menu .= "<div style='float: right; padding-top: 10px'>";
+								$menu.=__('Module Menu');
+							$menu .= "</div>";
+						$menu .= "</div>";
 					}
 				}
 			}
 		}
-	
-		return $this->menu ;
+
+		return $menu;
 	}
 }
 ?>

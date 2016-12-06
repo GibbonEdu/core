@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $analytics = $_POST['analytics'];
     $emailLink = $_POST['emailLink'];
     $webLink = $_POST['webLink'];
-    $primaryAssessmentScale = $_POST['primaryAssessmentScale'];
+    $defaultAssessmentScale = $_POST['defaultAssessmentScale'];
     $installType = $_POST['installType'];
     $statsCollection = $_POST['statsCollection'];
     $passwordPolicyMinLength = $_POST['passwordPolicyMinLength'];
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
 
     //Validate Inputs
-    if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
+    if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationEmail == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
@@ -347,8 +347,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
 
         try {
-            $data = array('primaryAssessmentScale' => $primaryAssessmentScale);
-            $sql = "UPDATE gibbonSetting SET value=:primaryAssessmentScale WHERE scope='System' AND name='primaryAssessmentScale'";
+            $data = array('defaultAssessmentScale' => $defaultAssessmentScale);
+            $sql = "UPDATE gibbonSetting SET value=:defaultAssessmentScale WHERE scope='System' AND name='defaultAssessmentScale'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -427,6 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             header("Location: {$URL}");
         } else {
             getSystemSettings($guid, $connection2);
+            $_SESSION[$guid]['pageLoads'] = null;
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }

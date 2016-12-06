@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
+require_once './modules/Attendance/src/attendanceView.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -37,11 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         returnProcess($guid, $_GET['return'], null, array('warning1' => 'Your request was successful, but some data was not properly saved.', 'error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
     }
 
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+
     $gibbonRollGroupID = '';
     if (isset($_GET['gibbonRollGroupID']) == false) {
         try {
             $data = array('gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = 'SELECT gibbonRollGroup.*, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sql = "SELECT gibbonRollGroup.*, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -62,9 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     }
 
     $today = date('Y-m-d'); ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
@@ -73,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Roll Group') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -83,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         echo "<option value=''></option>";
 						try {
 							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+							$sqlSelect = "SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y' ORDER BY LENGTH(name), name";
 							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						} catch (PDOException $e) {
@@ -97,12 +101,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -126,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-							?>." } ); 
+							?>." } );
 						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -177,21 +181,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 }
                 if ($rollGroupFail) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                else if ($row["attendance"] == 'N') {
+                    print "<div class='error'>" ;
+                        print _("Attendance taking has been disabled for this roll group.") ;
+                    print "</div>" ;
                 } else {
-                    //Get last 5 school days from currentDate within the last 100
-                    $timestamp = dateConvertToTimestamp($currentDate);
-                    $count = 0;
-                    $spin = 1;
-                    $last5SchoolDays = array();
-                    while ($count < 5 and $spin <= 100) {
-                        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
-                        if (isSchoolOpen($guid, $date, $connection2)) {
-                            $last5SchoolDays[$count] = $date;
-                            ++$count;
-                        }
-                        ++$spin;
-                    }
-                    $last5SchoolDaysCount = $count;
 
                     //Show attendance log for the current day
                     try {
@@ -270,14 +265,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
+
                                 $rowLog = $resultLog->fetch();
 
-                                if ($rowLog['type'] == 'Absent') {
-                                    echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
+                                    // Orange/warning background for partial absense
+                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0) {
+                                        print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
+                                    } else {
+                                        echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                    }
                                 } else {
                                     echo "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
                                 }
 
+                                //Alerts, if permission allows
+                                echo getAlertBar($guid, $connection2, $rowRollGroup['gibbonPersonID'], $rowRollGroup['privacy']);
+
+                                //User photo
                                 echo getUserPhoto($guid, $rowRollGroup['image_240'], 75);
 
                                 echo "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup['gibbonPersonID']."&subpage=School Attendance'>".formatName('', htmlPrep($rowRollGroup['preferredName']), htmlPrep($rowRollGroup['surname']), 'Student', true).'</a></b></div>';
@@ -285,129 +290,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 if ($firstDay != null and $lastDay != null) {
                                     $absenceCount = getAbsenceCount($guid, $rowRollGroup['gibbonPersonID'], $connection2, $firstDay, $lastDay);
                                     if ($absenceCount !== false) {
-                                        echo sprintf(__($guid, '%1$s Days Absent'), $absenceCount);
+                                        if ($absenceCount == 1)
+                                            echo sprintf(__($guid, '%1$s Day Absent'), $absenceCount);
+                                        else
+                                            echo sprintf(__($guid, '%1$s Days Absent'), $absenceCount);
+                                    }
+
+                                    // List partial absences
+                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0 && $attendance->isTypeAbsent($rowLog["type"]) ) {
+                                        printf( '<br/>'.__($guid, '%s Classes Absent'), $resultLog->rowCount() );
                                     }
                                 }
                                 echo '</div><br/>';
                                 echo "<input type='hidden' name='$count-gibbonPersonID' value='".$rowRollGroup['gibbonPersonID']."'>";
-                                echo "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-type'>";
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Present') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Present'>".__($guid, 'Present').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Present - Late') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Present - Offsite') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Absent') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Absent'>".__($guid, 'Absent').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Left') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Left'>".__($guid, 'Left').'</option>';
-                                echo '<option ';
-                                if ($rowLog['type'] == 'Left - Early') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
-                                echo '</select>';
-                                echo "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-reason'>";
-                                echo '<option ';
-                                if ($rowLog['reason'] == '') {
-                                    echo 'selected ';
-                                };
-                                echo "value=''></option>";
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Pending') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Pending'>".__($guid, 'Pending').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Education') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Education'>".__($guid, 'Education').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Family') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Family'>".__($guid, 'Family').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Medical') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Medical'>".__($guid, 'Medical').'</option>';
-                                echo '<option ';
-                                if ($rowLog['reason'] == 'Other') {
-                                    echo 'selected ';
-                                };
-                                echo "value='Other'>".__($guid, 'Other').'</option>';
-                                echo '</select>';
+
+                                echo $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$count-type", '130px');
+                                echo $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$count-reason", '130px');
+
                                 echo "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
 
-                                if ($rowLog['type'] == 'Present' or $rowLog['type'] == 'Present - Late') {
+                                if ( $attendance->isTypePresent($rowLog["type"]) ) {
                                     ++$countPresent;
                                 }
 
-                                echo "<table cellspacing='0' style='width:134px; margin: 0 auto 3px auto; height: 35px' >";
-                                echo '<tr>';
-                                for ($i = 4; $i >= 0; --$i) {
-                                    $link = '';
-                                    if ($i > ($last5SchoolDaysCount - 1)) {
-                                        $extraStyle = 'color: #555; background-color: #eee;';
+                                $attendance->renderMiniHistory( $rowRollGroup['gibbonPersonID'] );
 
-                                        echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
-                                        echo '<i>'.__($guid, 'NA').'</i>';
-                                        echo '</td>';
-                                    } else {
-                                        try {
-                                            $dataLast5SchoolDays = array('gibbonPersonID' => $rowRollGroup['gibbonPersonID'], 'date' => date('Y-m-d', dateConvertToTimestamp($last5SchoolDays[$i])).'%');
-                                            $sqlLast5SchoolDays = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
-                                            $resultLast5SchoolDays = $connection2->prepare($sqlLast5SchoolDays);
-                                            $resultLast5SchoolDays->execute($dataLast5SchoolDays);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
-                                        if ($resultLast5SchoolDays->rowCount() == 0) {
-                                            $extraStyle = 'color: #555; background-color: #eee; ';
-                                        } else {
-                                            $link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$rowRollGroup['gibbonPersonID'].'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
-                                            $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-                                            if ($rowLast5SchoolDays['type'] == 'Absent') {
-                                                $color = '#c00';
-                                                $extraStyle = 'color: #c00; background-color: #F6CECB; ';
-                                            } else {
-                                                $color = '#390';
-                                                $extraStyle = 'color: #390; background-color: #D4F6DC; ';
-                                            }
-                                        }
-
-                                        echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
-                                        if ($link != '') {
-                                            echo "<a style='text-decoration: none; color: $color' href='$link'>";
-                                            echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
-                                            echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
-                                            echo '</a>';
-                                        } else {
-                                            echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
-                                            echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
-                                        }
-                                        echo '</td>';
-                                    }
-                                }
-                                echo '</tr>';
-                                echo '</table>';
                                 echo '</td>';
 
                                 if ($count % $columns == ($columns - 1)) {
@@ -436,12 +343,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
-                        echo "<td class='right' colspan=5>";
-                        echo "<input type='hidden' name='gibbonRollGroupID' value='$gibbonRollGroupID'>";
-                        echo "<input type='hidden' name='currentDate' value='$currentDate'>";
-                        echo "<input type='hidden' name='count' value='".$resultRollGroup->rowCount()."'>";
-                        echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                        echo "<input type='submit' value='Submit'>";
+
+                        // Drop-downs to change the whole group at once
+                        echo "<td colspan=3>";
+                            echo $attendance->renderAttendanceTypeSelect( '', "set-all-type", '110px');
+                            echo $attendance->renderAttendanceReasonSelect( '', "set-all-reason", '110px');
+                            echo "<input type='text' maxlength=255 name='set-all-comment' id='set-all-comment' style='float: none; width:100px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+                            echo "<input id='set-all' type='button' value='Change All'>";
+                            echo "<span id='set-all-note' class='emphasis small' style='display:none;color:#CC0000;'>".__($guid, "* Submit to save changes.")."</span>";
+                        echo "</td>";
+
+                        echo "<td class='right' colspan=2>";
+                            echo "<input type='hidden' name='gibbonRollGroupID' value='$gibbonRollGroupID'>";
+                            echo "<input type='hidden' name='currentDate' value='$currentDate'>";
+                            echo "<input type='hidden' name='count' value='".$resultRollGroup->rowCount()."'>";
+                            echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
+                            echo "<input type='submit' value='Submit'>";
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';

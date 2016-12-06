@@ -756,28 +756,6 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 					}
 				});
 
-				<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {?>
-					var nameClick<?php echo $i ?>=false ;
-					$('#name<?php echo $i ?>').focus(function() {
-						if (nameClick<?php echo $i ?>==false) {
-							$('#name<?php echo $i ?>').css("color", "#000") ;
-							$('#name<?php echo $i ?>').val("") ;
-							nameClick<?php echo $i ?>=true ;
-						}
-					});
-
-					var feeClick<?php echo $i ?>=false ;
-					$('#fee<?php echo $i ?>').focus(function() {
-						if (feeClick<?php echo $i ?>==false) {
-							$('#fee<?php echo $i ?>').css("color", "#000") ;
-							$('#fee<?php echo $i ?>').val("") ;
-							feeClick<?php echo $i ?>=true ;
-						}
-					});
-				<?php
-				}
-				?>
-
 				$('#delete<?php echo $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
 						$('#blockOuter<?php echo $i ?>').fadeOut(600, function(){ $('#block<?php echo $i ?>').remove(); });
@@ -791,23 +769,12 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 				<tr>
 					<td style='width: 70%'>
 						<input name='order[]' type='hidden' value='<?php echo $i ?>'>
-						<input <?php if ($feeType == 'Standard') {
-							echo 'readonly';
-						}
-							?> maxlength=100 id='name<?php echo $i ?>' name='name<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-							echo 'color: #999;';
-						}
-							?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-							echo __($guid, 'Fee Name')." $i";
-						} else {
-							echo htmlPrep($name);
-						}
-							?>'><br/>
-						<?php
-                        if ($mode == 'add' and $feeType == 'Ad Hoc') {
+						<input <?php if ($feeType == 'Standard') { echo 'readonly'; } ?> maxlength=100 id='name<?php echo $i ?>' name='name<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if (!($mode == 'add' and $feeType == 'Ad Hoc')) { echo htmlPrep($name); }?>' placeholder='<?php echo __($guid, 'Fee Name'); ?>'><br/>
+                        <?php
+                        if ($feeType != 'Standard') {
                             ?>
-							<select name="gibbonFinanceFeeCategoryID<?php echo $i ?>" id="gibbonFinanceFeeCategoryID<?php echo $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
-								<?php
+                            <select name="gibbonFinanceFeeCategoryID<?php echo $i ?>" id="gibbonFinanceFeeCategoryID<?php echo $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
+                                <?php
                                 try {
                                     $dataSelect = array();
                                     $sqlSelect = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
@@ -815,39 +782,28 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                echo "<option value='".$rowSelect['gibbonFinanceFeeCategoryID']."'>".$rowSelect['name'].'</option>';
-                            }
-                            echo "<option selected value='1'>".__($guid, 'Other').'</option>';
-                            ?>
-							</select>
-							<?php
-
-                        } else {
-                            ?>
-							<input <?php if ($feeType == 'Standard') {
-								echo 'readonly';
-							}
-                            ?> maxlength=100 id='category<?php echo $i ?>' name='category<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php echo htmlPrep($category) ?>'>
-							<input type='hidden' id='gibbonFinanceFeeCategoryID<?php echo $i ?>' name='gibbonFinanceFeeCategoryID<?php echo $i ?>' value='<?php echo htmlPrep($gibbonFinanceFeeCategoryID) ?>'>
-							<?php
-
+                                echo "<option value='0001'>".__($guid, 'Other').'</option>';
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    $selected = '' ;
+                                    if ($mode == 'edit') {
+                                        if ($rowSelect['gibbonFinanceFeeCategoryID'] == $gibbonFinanceFeeCategoryID) {
+                                            $selected = 'selected';
+                                        }
+                                    }
+                                    echo "<option $selected value='".$rowSelect['gibbonFinanceFeeCategoryID']."'>".$rowSelect['name'].'</option>';
+                                }
+                                ?>
+                            </select>
+                            <?php
                         }
-   				 		?>
-						<input <?php if ($feeType == 'Standard') {
-							echo 'readonly';
-						}
-							?> maxlength=13 id='fee<?php echo $i ?>' name='fee<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-							echo 'color: #999;';
-						}
-							?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-							echo __($guid, 'Value'); if ($_SESSION[$guid]['currency'] != '') {
-							 echo ' ('.$_SESSION[$guid]['currency'].')';
-						 }
-						} else {
-							echo htmlPrep($fee);
-						}
-						?>'>
+                        else {
+                            ?>
+                            <input readonly maxlength=100 id='category<?php echo $i ?>' name='category<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php echo htmlPrep($category) ?>'>
+                            <input type='hidden' id='gibbonFinanceFeeCategoryID<?php echo $i ?>' name='gibbonFinanceFeeCategoryID<?php echo $i ?>' value='<?php echo htmlPrep($gibbonFinanceFeeCategoryID) ?>'>
+                            <?php
+                        }
+                        ?>
+						<input <?php if ($feeType == 'Standard') { echo 'readonly'; } ?> maxlength=13 id='fee<?php echo $i ?>' name='fee<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px;  margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if (!($mode == 'add' and $feeType == 'Ad Hoc')) { echo htmlPrep($fee); } ?>' placeholder='<?php echo __($guid, 'Value'); if ($_SESSION[$guid]['currency'] != '') { echo ' ('.$_SESSION[$guid]['currency'].')'; } ?>'>
 						<script type="text/javascript">
 							var fee<?php echo $i ?>=new LiveValidation('fee<?php echo $i ?>');
 							fee<?php echo $i ?>.add(Validate.Presence);
@@ -897,10 +853,11 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
     //Get currency
     $currency = getSettingByScope($connection2, 'System', 'currency');
+    $invoiceeNameStyle = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle');
 
     try {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-        $sql = 'SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+        $sql = 'SELECT gibbonPerson.gibbonPersonID, studentID, officialName, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -1000,7 +957,12 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '<tr>';
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Fees For').'</span><br/>';
-        $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').' '.$row['rollgroup'].'</span><br/>';
+        if ($invoiceeNameStyle =='Official Name') {
+            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').' '.$row['rollgroup'].'</span><br/>';
+        }
+        else {
+            $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').' '.$row['rollgroup'].'</span><br/>';
+        }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';
@@ -1196,10 +1158,11 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
     //Get currency
     $currency = getSettingByScope($connection2, 'System', 'currency');
+    $invoiceeNameStyle = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle');
 
     try {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-        $sql = 'SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+        $sql = 'SELECT gibbonPerson.gibbonPersonID, studentID, officialName, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -1299,7 +1262,12 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '<tr>';
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Fees For').'</span><br/>';
-        $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').' '.$row['rollgroup'].'</span><br/>';
+        if ($invoiceeNameStyle =='Official Name') {
+            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').' '.$row['rollgroup'].'</span><br/>';
+        }
+        else {
+            $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').' '.$row['rollgroup'].'</span><br/>';
+        }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';

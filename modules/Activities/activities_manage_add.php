@@ -617,7 +617,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 			</td>
 			<td class="right">
-				<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
+				<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
 					<?php
                     echo "<optgroup label='--".__($guid, 'Staff')."--'>";
 					try {
