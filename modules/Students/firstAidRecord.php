@@ -266,7 +266,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_edit.php&gibbonFirstAidID='.$row['gibbonFirstAidID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_delete.php&gibbonFirstAidID='.$row['gibbonFirstAidID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';
                 echo "\$(\".comment-$count\").hide();";
