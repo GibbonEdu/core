@@ -657,4 +657,5 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 ALTER TABLE `gibbonFirstAid` CHANGE `gibbonCourseClassID` `gibbonCourseClassID` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 UPDATE gibbonSetting SET value=(SELECT email FROM gibbonPerson WHERE gibbonPersonID=1) WHERE scope='System' AND name='organisationEmail' AND value='';end
 ALTER TABLE `gibbonCourse` ADD `map` ENUM('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this course be included in curriculum maps and other summaries?' AFTER `description`;end
+INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Odia');
 ";
