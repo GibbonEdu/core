@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
     //Acess denied
@@ -160,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         echo '</form>';
 
         echo '<h3>';
-        echo __($guid, 'Behaviour Records');
+        echo __($guid, 'First Aid Records');
         echo '</h3>';
         //Set pagination variable
         $page = 1;
@@ -177,15 +176,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             $sqlWhere = 'AND ';
             if ($gibbonPersonID != '') {
                 $data['gibbonPersonID'] = $gibbonPersonID;
-                $sqlWhere .= 'gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND ';
+                $sqlWhere .= 'gibbonFirstAid.gibbonPersonIDPatient=:gibbonPersonID AND ';
             }
             if ($gibbonRollGroupID != '') {
                 $data['gibbonRollGroupID'] = $gibbonRollGroupID;
-                $sqlWhere .= 'gibbonRollGroupID=:gibbonRollGroupID AND ';
+                $sqlWhere .= 'gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID AND ';
             }
             if ($gibbonYearGroupID != '') {
                 $data['gibbonYearGroupID'] = $gibbonYearGroupID;
-                $sqlWhere .= 'gibbonYearGroupID=:gibbonYearGroupID AND ';
+                $sqlWhere .= 'gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID AND ';
             }
             if ($sqlWhere == 'AND ') {
                 $sqlWhere = '';
@@ -197,7 +196,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 FROM gibbonFirstAid
                     JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
                     JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
+                    JOIN gibbonStudentEnrolment ON (patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
