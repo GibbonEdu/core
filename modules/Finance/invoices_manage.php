@@ -310,11 +310,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 								$whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
 							} elseif ($status == 'Paid - Partial') {
 								$data['status1'] = 'Paid - Partial';
-								$whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
+								$whereSched .= ' AND gibbonFinanceInvoice.status=:status1';
 								$data['status2'] = 'Paid - Partial';
-								$whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
+								$whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2';
 								$data['status3'] = 'Paid - Partial';
-								$whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
+								$whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3';
 							} elseif ($status == 'Paid - Late') {
 								$data['status1'] = 'Paid';
 								$whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate<paidDate';
