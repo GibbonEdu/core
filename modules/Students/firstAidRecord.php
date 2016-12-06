@@ -278,14 +278,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 echo '});';
                 echo '});';
                 echo '</script>';
-                if ($row['actionTaken'] != '' or $row['followUp'] != '') {
+                if ($row['actionTaken'] != '' or $row['followUp'] != '' or $row['description'] != '') {
                     echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
                 }
                 echo '</td>';
                 echo '</tr>';
-                if ($row['actionTaken'] != '' or $row['followUp'] != '') {
+                if ($row['actionTaken'] != '' or $row['followUp'] != '' or $row['description'] != '') {
                     echo "<tr class='comment-$count' id='comment-$count'>";
                     echo "<td colspan=6>";
+                    if ($row['description'] != '') {
+                        echo '<b>'.__($guid, 'Description').'</b><br/>';
+                        echo nl2brr($row['description']).'<br/><br/>';
+                    }
                     if ($row['actionTaken'] != '') {
                         echo '<b>'.__($guid, 'Action Taken').'</b><br/>';
                         echo nl2brr($row['actionTaken']).'<br/><br/>';

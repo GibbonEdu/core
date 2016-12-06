@@ -20415,7 +20415,7 @@ msgid "Datebase Update"
 msgstr ""
 
 #: modules/System Admin/module_manage_update.php:129
-msgid "It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click \\\"Submit\\\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
+msgid "It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click \\\"Submit\\\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
 msgstr ""
 
 #: modules/System Admin/systemSettings.php:46 Admin/systemSettings.php:79
@@ -20640,7 +20640,7 @@ msgid "Use an FTP client to upload the new files to your server, making sure not
 msgstr ""
 
 #: modules/System Admin/update.php:100
-msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s to v%2$s. <b>Click \\\"Submit\\\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
+msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click \\\"Submit\\\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
 msgstr ""
 
 #: modules/System Admin/update.php:141 Admin/update.php:148 Admin/update.php:147
@@ -20664,7 +20664,7 @@ msgid "Download the latest commits, and unzip it on your computer."
 msgstr ""
 
 #: modules/System Admin/update.php:168
-msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s line %2$s to v%3$s line %4$s. <b>Click \\\"Submit\\\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
+msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click \\\"Submit\\\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
 msgstr ""
 
 #: modules/Timetable Admin/course_manage.php:31 Admin/course_manage_add.php:34
@@ -55497,17 +55497,17 @@ msgstr ""
 
 #: modules/System Admin/module_manage_update.php:129 Admin/module_manage_update.php:135
 #: Admin/module_manage_update.php:136 Admin/module_manage_update.php:112
-msgid "It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
+msgid "It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
 msgstr ""
 
 #: modules/System Admin/update.php:100 Admin/update.php:107 Admin/update.php:106
 #: Admin/update.php:115 Admin/update.php:116 Admin/update.php:96
-msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s to v%2$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
+msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
 msgstr ""
 
 #: modules/System Admin/update.php:168 Admin/update.php:175 Admin/update.php:174
 #: Admin/update.php:183 Admin/update.php:184 Admin/update.php:162 Admin/update.php:160
-msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s line %2$s to v%3$s line %4$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
+msgid "It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click \"Submit\" below to continue. This operation cannot be undone: backup your entire database prior to running the update!"
 msgstr ""
 
 #: modules/Timetable/moduleFunctions.php:144 modules/Timetable/moduleFunctions.php:1205

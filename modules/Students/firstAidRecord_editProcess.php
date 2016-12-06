@@ -26,38 +26,50 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
-
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonBehaviourID = $_GET['gibbonBehaviourID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$gibbonFirstAidID = $_GET['gibbonFirstAidID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
-    if ($highestAction == false) {
-        $URL .= "&return=error0$params";
+    //Proceed!
+    //Check if school year specified
+    if ($gibbonFirstAidID == '') {
+        $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        //Proceed!
-        //Check if school year specified
-        if ($gibbonBehaviourID == '') {
-            $URL .= '&return=error1';
+        try {
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFirstAidID' => $gibbonFirstAidID);
+            $sql = "SELECT gibbonFirstAid.*, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
+                FROM gibbonFirstAid
+                    JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
+                    JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFirstAidID=:gibbonFirstAidID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            $timeOut = $_POST['timeOut'];
+            $followUp = $_POST['followUp'];
+
             try {
-                if ($highestAction == 'Manage Behaviour Records_all') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID ORDER BY date DESC';
-                } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonPersonIDCreator=:gibbonPersonID ORDER BY date DESC';
-                }
+                $data = array('timeOut' => $timeOut, 'followUp' => $followUp, 'gibbonFirstAidID' => $gibbonFirstAidID);
+                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut, followUp=:followUp WHERE gibbonFirstAidID=:gibbonFirstAidID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -66,48 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
                 exit();
             }
 
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-            } else {
-                $gibbonPersonID = $_POST['gibbonPersonID'];
-                $date = $_POST['date'];
-                $type = $_POST['type'];
-                $descriptor = null;
-                if (isset($_POST['descriptor'])) {
-                    $descriptor = $_POST['descriptor'];
-                }
-                $level = null;
-                if (isset($_POST['level'])) {
-                    $level = $_POST['level'];
-                }
-                $comment = $_POST['comment'];
-                $followup = $_POST['followup'];
-                if ($_POST['gibbonPlannerEntryID'] == '') {
-                    $gibbonPlannerEntryID = null;
-                } else {
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-                }
-
-                if ($gibbonPersonID == '' or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
-                } else {
-                    try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => dateConvert($guid, $date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID);
-                        $sql = 'UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
-                }
-            }
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
         }
     }
 }
