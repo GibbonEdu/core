@@ -44,6 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     else if (isset($_GET['tag'])) {
         $tags[0] = $_GET['tag'];
     }
+    $gibbonYearGroupID = '';
+    if (isset($_GET['gibbonYearGroupID'])) {
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+    }
 
     //Display concept cloud
     if (count($tags) == 0) {
@@ -85,6 +89,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 				</td>
 			</tr>
             <tr>
+				<td>
+					<b><?php echo __($guid, 'Year Group') ?></b><br/>
+					<span style="font-size: 90%"></span>
+				</td>
+				<td class="right">
+					<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
+						<?php
+                        echo "<option value=''></option>";
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+                            $selected = '';
+                            if ($rowSelect['gibbonYearGroupID'] == $gibbonYearGroupID) {
+                                $selected = 'selected';
+                            }
+                            echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>
+					</select>
+                </td>
+            </tr>
+            <tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/conceptExplorer.php">
                     <?php echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php'>".__($guid, 'Clear Filters').'</a> ';?>
@@ -117,6 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         try {
             $data = array() ;
 
+            //Tag filter
             $sqlWhere = ' AND (';
             $count = 0;
             foreach ($tags as $tag) {
@@ -128,6 +160,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 $sqlWhere = '';
             else
                 $sqlWhere = substr($sqlWhere, 0, -3).')';
+
+            //Year group Filters
+            if ($gibbonYearGroupID != '') {
+                $data['gibbonYearGroupID'] = '%'.$gibbonYearGroupID.'%';
+                $sqlWhere .= ' AND gibbonYearGroupIDList LIKE :gibbonYearGroupID ';
+            }
+
+
             $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
             $sql = "SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags, gibbonCourse.name AS course, gibbonDepartmentID, gibbonCourse.gibbonCourseID, gibbonSchoolYearID FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonUnit.map='Y' AND gibbonCourse.map='Y' $sqlWhere ORDER BY gibbonUnit.name";
             $result = $connection2->prepare($sql);
