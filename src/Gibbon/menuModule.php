@@ -117,7 +117,7 @@ class MenuModule
 
 								//Set active link class
 								$style="";
-								if (strpos($row['URLList'],getActionName($address))===0) {
+								if (strpos($row['URLList'],getActionName($address))!==false) {
 									$style="class='active'";
 								}
 

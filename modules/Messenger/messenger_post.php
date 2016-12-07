@@ -28,7 +28,7 @@ foreach ($includes AS $include) {
 	}
 }
 if ($included==FALSE) {
-	include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+	include_once "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 }
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
@@ -1320,18 +1320,31 @@ else {
 								// Get all possible attendance statuses
 								try {
 									$dataSelect=array();
-									$sqlSelect="SHOW COLUMNS FROM gibbonAttendanceLogPerson WHERE FIELD='type'" ;
+									$sqlSelect="SELECT name, gibbonRoleIDAll FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY direction DESC, sequenceNumber ASC, name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) {}
-								if ($resultSelect->rowCount()==1) {
+
+
+								if ($resultSelect->rowCount()>0) {
 										// Extract status strings
-										$rowSelect = $resultSelect->fetch();
-										$statusStr = $rowSelect["Type"];
-										$statusStr=explode(',', substr(str_replace("'", "", $statusStr), 5, -1));
-										foreach($statusStr as $status) {
-											print "<option value='" . $status . "'" . ($status === 'Absent' ? ' selected' : '') . ">" . htmlPrep(__($guid, $status)) . "</option>";
+										while ($rowSelect = $resultSelect->fetch()) {
+
+											// Check if a role is restricted - blank for unrestricted use
+							                if ( !empty($rowSelect['gibbonRoleIDAll']) ) {
+							                    $allowAttendanceType = false;
+							                    $rolesAllowed = explode(',', $rowSelect['gibbonRoleIDAll']);
+
+							                    foreach ($rolesAllowed as $role) {
+							                        if ( $role == $_SESSION[$guid]['gibbonRoleIDCurrent'] ) {
+							                            $allowAttendanceType = true;
+							                        }
+							                    }
+							                    if ($allowAttendanceType == false) continue; // Skip this type, continue the loop
+							                }
+
+											print "<option value='" . $rowSelect['name'] . "'" . ($rowSelect['name'] === 'Absent' ? ' selected' : '') . ">" . htmlPrep(__($guid, $rowSelect['name'])) . "</option>";
 										}
 								}
 								?>

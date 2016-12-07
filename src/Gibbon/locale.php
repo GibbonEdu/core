@@ -118,7 +118,7 @@ class Locale
 		$stringReplacements = $this->session->get('stringReplacement', null);
 
 		// Do this once per session, only if the value doesn't exist
-		if (!$forceRefresh && $stringReplacements === null) {
+		if ($forceRefresh || $stringReplacements === null) {
 		
 			$stringReplacements = array();
 

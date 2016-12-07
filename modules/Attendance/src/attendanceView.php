@@ -118,7 +118,6 @@ class attendanceView
     	return $this->attendanceTypes[$type];
     }
 
-
 	public function isTypePresent( $type ) {
 		if ( isset($this->attendanceTypes[$type]) == false ) return false;
 	    return ($this->attendanceTypes[$type]['direction'] == 'In');
@@ -129,9 +128,14 @@ class attendanceView
 	    return ($this->attendanceTypes[$type]['scope'] == 'Onsite - Late');
 	}
 
+    public function isTypeLeft( $type ) {
+        if ( isset($this->attendanceTypes[$type]) == false ) return false;
+        return ($this->attendanceTypes[$type]['scope'] == 'Offsite - Left');
+    }
+
 	public function isTypeAbsent( $type ) {
 	    if ( isset($this->attendanceTypes[$type]) == false ) return false;
-	    return ($this->attendanceTypes[$type]['direction'] == 'Out');
+	    return ($this->attendanceTypes[$type]['direction'] == 'Out' && $this->attendanceTypes[$type]['scope'] == 'Offsite');
 	}
 
     public function isTypeOnsite( $type ) {

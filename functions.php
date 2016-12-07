@@ -46,32 +46,26 @@ function setStringReplacementList($connection2, $guid)
 }
 
 //Custom translation function to allow custom string replacement
-function __($text, $arg2 = null, $arg3 = null)
+function __($arg1, $arg2 = null, $arg3 = null)
 {
-    global $gibbon; // For backwards compatibilty
+    global $gibbon, $guid; // For backwards compatibilty
 
-    if ($arg2 === null && $arg3 === null) {
-        // Handle __($text)
-        return $gibbon->locale->translate($text);
-    }
-
-    if (isGuid($text) === false && $text != '') {
-        // Handle __($text, $domain)
-        $domain = $arg2;
-    } else {
-        // Handle __($guid, $text) and __($guid, $text, $domain)
+    // Handle __($guid, $text) and __($guid, $text, $domain)
+    if ($arg1 == $guid) {
         $text = $arg2;
         $domain = $arg3;
+    } else {
+        // Handle __($text) and __($text, $domain)
+        $text = $arg1;
+        $domain = $arg2;
+    }
+
+    // Cancel out early for empty translations
+    if (empty($text)) {
+        return $text;
     }
 
     return $gibbon->locale->translate($text, $domain);
-}
-
-function isGuid($text) {
-    if (strstr($text, ' ') !== false) return false;
-    if (strlen($text) < 34 || strlen($text)  > 36) return false;
-
-    return (substr_count($text, '-') == 4);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
