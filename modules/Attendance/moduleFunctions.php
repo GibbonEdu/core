@@ -23,7 +23,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
     $queryFail = false;
 
     global $gibbon, $session, $pdo;
-    require_once './modules/Attendance/src/attendanceView.php';
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
@@ -119,7 +119,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd)
 {
     global $gibbon, $session, $pdo;
-    require_once './modules/Attendance/src/attendanceView.php';
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     $output = '';
