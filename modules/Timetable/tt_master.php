@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                         //Output periods/rows
                         while ($rowPeriods = $resultPeriods->fetch()) {
                             echo "<h5 style='margin-top: 25px'>";
-                            echo __($guid, $rowPeriods['name']);
+                            echo __($guid, $rowPeriods['name']).'<span style=\'font-weight: normal\'> ('.substr($rowPeriods['timeStart'], 0, 5).' - '.substr($rowPeriods['timeEnd'], 0, 5).')</span>';
                             echo '</h5>';
 
                             //GET CLASSES
