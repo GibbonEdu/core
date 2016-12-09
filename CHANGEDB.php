@@ -661,4 +661,7 @@ INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Odia');
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('in_OR', 'ଓଡ଼ିଆ - इंडिया', 'N', 'N', 'Saumya Kanta Swain', 'http://www.skswain.in', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ALTER TABLE `gibbonFinanceInvoice` ADD `gibbonFinanceFeeCategoryIDList` TEXT NULL DEFAULT NULL AFTER `status`;end
 ALTER TABLE `gibbonFirstAid` ADD `description` TEXT NOT NULL AFTER `gibbonSchoolYearID`;end
+DELETE FROM gibbonAction WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Copy Activities';end
+UPDATE gibbonAction SET category='Administration' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND (name='Manage Activities' OR name='Generate Invoices');end
+UPDATE gibbonAction SET category='Activities' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND (name='My Activities' OR name LIKE'View Activities_%');end
 ";

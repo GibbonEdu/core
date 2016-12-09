@@ -222,15 +222,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo __($guid, 'There are no records to display.');
                         echo '</div>';
                     } else {
-                        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
+                        echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
                         echo "<fieldset style='border: none'>";
                         echo "<div class='linkTop' style='height: 27px'>"; ?>
         						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 
                                 <div id="courseClassRow" style="display: none;">
-                                    <select style="width: 182px" name="gibbonCourseIDCopyTo">
+                                    <select style="width: 182px" name="gibbonCourseIDCopyTo" id="gibbonCourseIDCopyTo">
                                         <?php
-                                        print "<option value=''>" . _('Please select...') . "</option>" ;
+                                        print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 
                                         try {
                                             $dataSelect['gibbonSchoolYearID'] = $gibbonSchoolYearID;
@@ -264,6 +264,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                         }
                                         ?>
                                     </select>
+                                    <script type="text/javascript">
+                                        var gibbonCourseIDCopyTo=new LiveValidation('gibbonCourseIDCopyTo');
+                                        gibbonCourseIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Please select...') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+                                    </script>
                                 </div>
 
         						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
