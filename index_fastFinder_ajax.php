@@ -64,7 +64,11 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
 
     // ACTIONS
     // Grab the cached set of translated actions from the session
-    $actions = $_SESSION[$guid]['fastFinderActions'];
+    $actions = $gibbon->session->get('fastFinderActions');
+
+    if (empty($actions)) {
+        $actions = $gibbon->session->cacheFastFinderActions($gibbon->session->get('gibbonRoleIDCurrent'));
+    }
     
     if (!empty($actions) && is_array($actions)) {
         foreach ($actions as $action) {
