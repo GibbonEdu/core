@@ -358,7 +358,7 @@
                                 echo '});';
                                 echo '});';
                                 echo '</script>';
-                                echo '<span>'.substr($rowEntry['comment'], 0, 200).'...<br/>';
+                                echo '<span>'.mb_substr($rowEntry['comment'], 0, 200).'...<br/>';
                                 echo "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
                             } else {
                                 echo nl2br($rowEntry['comment']);
