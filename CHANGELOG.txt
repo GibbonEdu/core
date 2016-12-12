@@ -58,6 +58,7 @@ v13.0.00
 		System: removed robots meta tag
 		System: added ability to custom order module categories in main menu
 		System: AJAXified Fast Finder
+		System: added ability to search Fast Finder actions using current Gibbon language
 		System: set tinyMCE default target for new links to New Window
 		System: made organisationEmail compulsory: on install, and if blank on update, it defaults to email of gibbonPersonID=1
 		System: notification emails now come from organisation email address, not administrator address
