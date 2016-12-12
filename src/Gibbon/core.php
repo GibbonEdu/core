@@ -113,6 +113,9 @@ class Core {
 		// Load the string replacements from db
 		$this->locale->setStringReplacementList($pdo);
 
+		// Provide the session class with a db connection
+		$this->session->setDatabaseConnection($pdo);
+
 		$this->initialized = true;
 	}
 

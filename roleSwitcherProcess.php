@@ -54,9 +54,15 @@ else {
         header("Location: {$URL}");
     } else {
         //Make the switch
-        $_SESSION[$guid]['gibbonRoleIDCurrent'] = $role;
+        $gibbon->session->set('gibbonRoleIDCurrent', $role);
+
+        // Reload cached FF actions
+        $gibbon->session->cacheFastFinderActions($role);
+
+        // Reload the cached menu
         $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
         $mainMenu->setMenu();
+
         $URL .= '?return=success0';
         header("Location: {$URL}");
     }

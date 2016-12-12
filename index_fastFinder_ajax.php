@@ -63,22 +63,17 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
     $resultError = '[{"id":"","name":"Database Error"}]';
 
     // ACTIONS
-    try {
-        $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'] );
-        $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, gibbonModule.type, gibbonModule.name AS module
-                FROM gibbonModule
-                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                WHERE active='Y'
-                AND menuShow='Y'
-                AND gibbonPermission.gibbonRoleID=:gibbonRoleID
-                AND gibbonAction.name LIKE :search
-                ORDER BY name";
-        $resultList = $connection2->prepare($sql);
-        $resultList->execute($data);
-    } catch (PDOException $e) { die($resultError); }
-
-    if ($resultList->rowCount() > 0) $resultSet['Action'] = $resultList->fetchAll();
+    // Grab the cached set of translated actions from the session
+    $actions = $_SESSION[$guid]['fastFinderActions'];
+    
+    if (!empty($actions) && is_array($actions)) {
+        foreach ($actions as $action) {
+            // Add actions that match the search query to the result set
+            if (stristr($action['name'], $searchTerm) !== false) {
+                $resultSet['Action'][] = $action;
+            }
+        }
+    }
 
     // CLASSES
     if ($classIsAccessible) {
