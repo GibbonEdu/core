@@ -197,5 +197,6 @@ class Session
             // Cache the resulting set of translated actions
             $this->set('fastFinderActions', $actions);
         }
+        return $actions;
 	}
 }
