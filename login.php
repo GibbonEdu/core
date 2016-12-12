@@ -181,39 +181,11 @@ else {
                     }
 
                     //USER EXISTS, SET SESSION VARIABLES
-                    $_SESSION[$guid]['username'] = $username;
-                    $_SESSION[$guid]['passwordStrong'] = $passwordStrong;
-                    $_SESSION[$guid]['passwordStrongSalt'] = $salt;
-                    $_SESSION[$guid]['passwordForceReset'] = $row['passwordForceReset'];
-                    $_SESSION[$guid]['gibbonPersonID'] = $row['gibbonPersonID'];
-                    $_SESSION[$guid]['surname'] = $row['surname'];
-                    $_SESSION[$guid]['firstName'] = $row['firstName'];
-                    $_SESSION[$guid]['preferredName'] = $row['preferredName'];
-                    $_SESSION[$guid]['officialName'] = $row['officialName'];
-                    $_SESSION[$guid]['email'] = $row['email'];
-                    $_SESSION[$guid]['emailAlternate'] = $row['emailAlternate'];
-                    $_SESSION[$guid]['website'] = $row['website'];
-                    $_SESSION[$guid]['gender'] = $row['gender'];
-                    $_SESSION[$guid]['status'] = $row['status'];
-                    $_SESSION[$guid]['gibbonRoleIDPrimary'] = $row['gibbonRoleIDPrimary'];
-                    $_SESSION[$guid]['gibbonRoleIDCurrent'] = $row['gibbonRoleIDPrimary'];
-                    $_SESSION[$guid]['gibbonRoleIDCurrentCategory'] = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
-                    $_SESSION[$guid]['gibbonRoleIDAll'] = getRoleList($row['gibbonRoleIDAll'], $connection2);
-                    $_SESSION[$guid]['image_240'] = $row['image_240'];
-                    $_SESSION[$guid]['lastTimestamp'] = $row['lastTimestamp'];
-                    $_SESSION[$guid]['calendarFeedPersonal'] = $row['calendarFeedPersonal'];
-                    $_SESSION[$guid]['viewCalendarSchool'] = $row['viewCalendarSchool'];
-                    $_SESSION[$guid]['viewCalendarPersonal'] = $row['viewCalendarPersonal'];
-                    $_SESSION[$guid]['viewCalendarSpaceBooking'] = $row['viewCalendarSpaceBooking'];
-                    $_SESSION[$guid]['dateStart'] = $row['dateStart'];
-                    $_SESSION[$guid]['personalBackground'] = $row['personalBackground'];
-                    $_SESSION[$guid]['messengerLastBubble'] = $row['messengerLastBubble'];
-                    $_SESSION[$guid]['gibbonThemeIDPersonal'] = $row['gibbonThemeIDPersonal'];
-                    $_SESSION[$guid]['gibboni18nIDPersonal'] = $row['gibboni18nIDPersonal'];
-                    $_SESSION[$guid]['googleAPIRefreshToken'] = $row['googleAPIRefreshToken'];
-                    $_SESSION[$guid]['googleAPIAccessToken'] = null; //Set only when user logs in with Google
-                    $_SESSION[$guid]['receiveNotificationEmails'] = $row['receiveNotificationEmails'];
-                    $_SESSION[$guid]['gibbonHouseID'] = $row['gibbonHouseID'];
+                    $gibbon->session->createUserSession($username, $row);
+
+                    // Set these from local values
+                    $gibbon->session->set('passwordStrong', $passwordStrong);
+                    $gibbon->session->set('passwordStrongSalt', $salt);
 
                     //Allow for non-system default language to be specified from login form
                     if (@$_POST['gibboni18nID'] != $_SESSION[$guid]['i18n']['gibboni18nID']) {
