@@ -635,6 +635,16 @@ if ($proceed == false) {
 
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
+                $secureAI = sha1($AI);
+
+                // Update the Application Form with a hash for looking up this record in the future
+                try {
+                    $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
+                    $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
 
                 //Deal with family relationships
                 if ($gibbonFamily == 'TRUE') {
@@ -742,6 +752,26 @@ if ($proceed == false) {
                     $mail->Send();
                 }
 
+                // Handle linked applications
+                if (!empty($_POST['linkedApplicationFormID'])) {
+                    $data = array( 'gibbonApplicationFormID' => $_POST['linkedApplicationFormID'] );
+                    $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm 
+                            LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
+                            WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL) 
+                            OR gibbonApplicationFormID1=:gibbonApplicationFormID 
+                            OR gibbonApplicationFormID2=:gibbonApplicationFormID';
+                    $resultLinked = $pdo->executeQuery($data, $sql);
+
+                    if ($resultLinked && $resultLinked->rowCount() > 0) {
+                        // Create a new link to each existing form
+                        while ($linkedApplication = $resultLinked->fetch()) {
+                            $data = array( 'gibbonApplicationFormID1' => $AI, 'gibbonApplicationFormID2' => $linkedApplication['gibbonApplicationFormID'] );
+                            $sql = "INSERT INTO gibbonApplicationFormLink SET gibbonApplicationFormID1=:gibbonApplicationFormID1, gibbonApplicationFormID2=:gibbonApplicationFormID2 ON DUPLICATE KEY UPDATE timestamp=NOW()";
+                            $resultNewLink = $pdo->executeQuery($data, $sql);
+                        }
+                    }
+                }
+
                 //Attempt payment if everything is set up for it
                 $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
                 $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
@@ -750,11 +780,11 @@ if ($proceed == false) {
                 $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
 
                 if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
-                    $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$AI";
-                    $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$AI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$AI&applicationFee=$applicationFee");
+                    $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI";
+                    $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
                     header("Location: {$URL}");
                 } else {
-                    $URL .= "&return=success0&id=$AI";
+                    $URL .= "&return=success0&id=$secureAI";
                     header("Location: {$URL}");
                 }
             }
@@ -777,7 +807,14 @@ if ($proceed == false) {
         }
         $gibbonApplicationFormID = null;
         if (isset($_GET['id'])) {
-            $gibbonApplicationFormID = $_GET['id'];
+            // Find the ID based on the hash provided for added security
+            $data = array( 'gibbonApplicationFormHash' => $_GET['id'] );
+            $sql = "SELECT gibbonApplicationFormID FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
+            $resultID = $pdo->executeQuery($data, $sql);
+
+            if ($resultID && $resultID->rowCount() == 1) {
+                $gibbonApplicationFormID = $resultID->fetchColumn(0);
+            }
         }
         $applicationFee = null;
         if (isset($_GET['applicationFee'])) {

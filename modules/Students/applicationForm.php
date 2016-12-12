@@ -73,10 +73,21 @@ if ($proceed == false) {
     }
 
     $returnExtra = '';
-    if (isset($_GET['id'])) {
-        if ($_GET['id'] != '') {
-            $returnExtra = '<br/><br/>'.__($guid, 'If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$_GET['id'].'</b></u>.';
+    $gibbonApplicationFormID = null;
+
+    if (!empty($_GET['id'])) {
+
+    	// Use the returned hash to get the actual ID from the database
+    	$data = array( 'gibbonApplicationFormHash' => $_GET['id'] );
+        $sql = "SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
+        $resultID = $pdo->executeQuery($data, $sql);
+
+        if ($resultID && $resultID->rowCount() == 1) {
+            $row = $resultID->fetch();
+            $gibbonApplicationFormID = str_pad( intval($row['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT);
         }
+
+        $returnExtra = '<br/><br/>'.__($guid, 'If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$gibbonApplicationFormID.'</b></u>.';
     }
     if ($_SESSION[$guid]['organisationAdmissionsName'] != '' and $_SESSION[$guid]['organisationAdmissionsEmail'] != '') {
         $returnExtra .= '<br/><br/>'.sprintf(__($guid, 'Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdmissionsEmail']."'>".$_SESSION[$guid]['organisationAdmissionsName'].'</a>');
@@ -121,10 +132,55 @@ if ($proceed == false) {
         echo '</div>';
     }
 
+    $siblingApplicationMode = !empty($gibbonApplicationFormID);
+
     ?>
 	
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php' ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
+			
+			<?php if ($siblingApplicationMode == true) : ?>
+				<input type="hidden" name="linkedApplicationFormID" value="<?php echo $gibbonApplicationFormID; ?>">
+
+				<tr class='break'>
+					<td colspan=2> 
+						<h3><?php echo __($guid, 'Family') ?></h3>
+						<p>
+							<?php echo __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.') ?> 
+							<small class="emphasis small"><a href="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm.php' ?>">
+								<?php echo __($guid, 'Clear Form'); ?>
+							</a></small>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td style='width: 275px'> 
+						<b><?php echo __($guid, 'Current Applications') ?></b><br/>
+					</td>
+					<td class="right">
+					<?php
+						$data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
+						$sql = 'SELECT DISTINCT gibbonApplicationFormID, preferredName, surname FROM gibbonApplicationForm 
+								LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
+								WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL) 
+								OR gibbonApplicationFormID1=:gibbonApplicationFormID 
+								OR gibbonApplicationFormID2=:gibbonApplicationFormID
+								ORDER BY gibbonApplicationFormID';
+						$resultLinked = $pdo->executeQuery($data, $sql);
+
+						if ($resultLinked && $resultLinked->rowCount() > 0) {
+							echo '<ul style="width:302px;display:inline-block">';
+							while ($app = $resultLinked->fetch()) {
+								echo '<li>'. formatName('', $app['preferredName'], $app['surname'], 'Student', false, false);
+								echo ' ('.str_pad( intval($app['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
+							}
+							echo '</ul>';
+						}
+					?>
+					</td>
+				</tr>
+			<?php endif; ?>
+
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php echo __($guid, 'Student') ?></h3>
@@ -893,6 +949,11 @@ if ($proceed == false) {
 				?>
 				<input type="hidden" name="gibbonFamily" value="FALSE">
 				
+				<?php if ($siblingApplicationMode == true) : ?>
+					<input type="hidden" name="homeAddress" value="<?php echo $row['homeAddress']; ?>">
+					<input type="hidden" name="homeAddressDistrict" value="<?php echo $row['homeAddressDistrict']; ?>">
+					<input type="hidden" name="homeAddressCountry" value="<?php echo $row['homeAddressCountry']; ?>">
+				<?php else: ?>
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>
@@ -974,6 +1035,8 @@ if ($proceed == false) {
 						</script>
 					</td>
 				</tr>
+				<?php endif; ?>
+
 				<?php
 
                 if (isset($_SESSION[$guid]['username'])) {
