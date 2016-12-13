@@ -289,7 +289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 }
             }
         }
-        if ($highestAction == 'View Student Profile_full') {
+        if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes') {
             //Proceed!
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Profiles').'</div>';
@@ -406,21 +406,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 if ($allStudents != 'on') {
                     $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
                     $data['today'] = date('Y-m-d');
-                    $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.status, gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup 
-                        FROM gibbonPerson 
-                            INNER JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-                            INNER JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
-                            INNER JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
+                    $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.status, gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup
+                        FROM gibbonPerson
+                            INNER JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                            INNER JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                            INNER JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                         $familySQL
                         WHERE gibbonPerson.status='Full'
-                            AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
-                            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) 
+                            AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
                             AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today) ";
                 } else {
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status, NULL AS gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, NULL AS yearGroup, NULL AS rollGroup 
-                        FROM gibbonPerson 
-                            JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE concat('%', gibbonRole.gibbonRoleID , '%')) 
-                        $familySQL 
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status, NULL AS gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, NULL AS yearGroup, NULL AS rollGroup
+                        FROM gibbonPerson
+                            JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE concat('%', gibbonRole.gibbonRoleID , '%'))
+                        $familySQL
                         WHERE gibbonRole.category='Student'";
                 }
 

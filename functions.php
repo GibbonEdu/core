@@ -3769,7 +3769,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
     }
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    if ($highestAction == 'View Student Profile_full') {
+    if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes') {
         if ($div == true) {
             $output .= "<div $divExtras style='width: 83px; text-align: right; height: ".$totalHeight."px; padding: 3px 0px; margin: auto'><b>";
         }
