@@ -212,16 +212,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '<td>';
 
                 $data = array( 'gibbonApplicationFormID' => $row['gibbonApplicationFormID'] );
-                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname FROM gibbonApplicationForm 
+                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm 
                                 JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
                                 WHERE gibbonApplicationFormID1=:gibbonApplicationFormID 
-                                OR gibbonApplicationFormID2=:gibbonApplicationFormID";
+                                OR gibbonApplicationFormID2=:gibbonApplicationFormID ORDER BY gibbonApplicationFormID";
 
                 $resultLinked = $pdo->executeQuery($data, $sql);
                 if ($resultLinked->rowCount() > 0) {
                     $names = '<br/>';
                     while ($rowLinked = $resultLinked->fetch()) {
-                        $names .= '- '.formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true).'<br/>';
+                        $names .= '- '.formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true).' ('.$rowLinked['status'].')<br/>';
                     }
                     echo "<img title='" . __($guid, 'Linked Applications', 'Data Admin') .$names. "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/ style='float: right;   width:10px; height:10px;margin-left:4px;'>";
                 }

@@ -132,7 +132,7 @@ if ($proceed == false) {
         echo '</div>';
     }
 
-    $siblingApplicationMode = !empty($gibbonApplicationFormID);
+    $siblingApplicationMode = !empty($gibbonApplicationFormID); // && empty($gibbonPersonID)
 
     ?>
 	
@@ -144,7 +144,7 @@ if ($proceed == false) {
 
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php echo __($guid, 'Family') ?></h3>
+						<h3><?php echo __($guid, 'Add Another Application') ?></h3>
 						<p>
 							<?php echo __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').' '; ?> 
 							<?php echo __($guid, 'Some information has been pre-filled for you, feel free to change this information as needed.') ?> 
@@ -174,9 +174,9 @@ if ($proceed == false) {
 
 						if ($resultLinked && $resultLinked->rowCount() > 0) {
 							echo '<ul style="width:302px;display:inline-block">';
-							while ($app = $resultLinked->fetch()) {
-								echo '<li>'. formatName('', $app['preferredName'], $app['surname'], 'Student', false, false);
-								echo ' ('.str_pad( intval($app['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
+							while ($rowLinked = $resultLinked->fetch()) {
+								echo '<li>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
+								echo ' ('.str_pad( intval($rowLinked['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
 							}
 							echo '</ul>';
 						}
