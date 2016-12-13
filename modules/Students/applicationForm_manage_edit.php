@@ -77,6 +77,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
+							<small class="emphasis small" style="float:right;margin-top:16px;"><a id="fixCaps">
+								<?php echo __($guid, 'Fix Block Caps'); ?>
+							</a></small>
+
+							<script type="text/javascript">
+							$(document).ready(function(){
+
+								/* Replaces fields in all caps with title case */
+								$('a#fixCaps').click(function(){
+									$('input[type=text]').val (function () {
+										if (this.value.toUpperCase() == this.value) {
+									    	return this.value.replace(/\b\w+/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+										} else {
+											return this.value;
+										}
+									});
+									alert('<?php echo __($guid, 'Fields with all caps have been fixed. Please check the updated values and save the form to keep changes.'); ?>');
+								});
+							});
+							</script>
 							<h3><?php echo __($guid, 'For Office Use') ?></h3>
 						</td>
 					</tr>
@@ -390,6 +410,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							<textarea name="notes" id="notes" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php echo htmlPrep($row['notes']) ?></textarea>
 						</td>
 					</tr>
+
+					<?php
+						$data = array( 'gibbonApplicationFormID' => $row['gibbonApplicationFormID'] );
+		                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm 
+                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
+                                WHERE gibbonApplicationFormID1=:gibbonApplicationFormID 
+                                OR gibbonApplicationFormID2=:gibbonApplicationFormID ORDER BY gibbonApplicationFormID";
+
+		                $resultLinked = $pdo->executeQuery($data, $sql);
+
+						if ($resultLinked && $resultLinked->rowCount() > 0) :
+					?>
+					<tr>
+						<td>
+							<b><?php echo __($guid, 'Linked Applications') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'If accepted, these students will be part of the same family. Accepting this application does NOT automatically accept other linked applications.') ?></span>
+						</td>
+						<td class="right">
+							<ul style="width:302px;display:inline-block">
+							<?php
+							while ($rowLinked = $resultLinked->fetch()) {
+								echo '<li>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
+								echo ' ('.str_pad( intval($rowLinked['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).') - '.$rowLinked['status'].'</li>';
+							}
+							?>
+							</ul>
+						</td>
+					</tr>
+					<?php endif; ?>
 
 					<tr class='break'>
 						<td colspan=2>
