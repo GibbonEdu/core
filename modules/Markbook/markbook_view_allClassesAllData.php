@@ -172,7 +172,7 @@
         // Print table header info
         echo '<p>';
             if (!empty($teacherList)) {
-                echo '<b>'.sprintf(__($guid, 'Class taught by %1$s'), implode(',', $teacherList) ).'</b>. ';
+                echo '<b>'.sprintf(__($guid, 'Class taught by %1$s'), implode(', ', $teacherList) ).'</b>. ';
             }
             echo __($guid, 'To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, using the Newer and Older links.');
             if ($markbook->hasExternalAssessments() == true) {
