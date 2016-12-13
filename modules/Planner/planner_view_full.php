@@ -1633,7 +1633,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
                         $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
 
-                        require_once './modules/Attendance/src/attendanceView.php';
+                        require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
 
                         $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 

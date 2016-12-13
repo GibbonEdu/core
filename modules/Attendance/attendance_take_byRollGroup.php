@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-require_once './modules/Attendance/src/attendanceView.php';
+require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     //Acess denied
