@@ -75,7 +75,7 @@ class Core {
 	/**
 	 * Construct
 	 */
-	public function __construct(string $directory, string $domain)
+	public function __construct($directory, $domain)
 	{
 		// Set the root path
 		$this->locateSystemDirectory($directory, $domain);
@@ -179,7 +179,7 @@ class Core {
 	 *
 	 * @param    array|mixed
 	 */
-	public function loadYamlConfigFromFile( string $filename ) {
+	public function loadYamlConfigFromFile($filename) {
 		$yaml = new Yaml();
 		return $yaml::parse( file_get_contents($this->basePath . '/config/'. $filename ) );
 	}
@@ -191,7 +191,7 @@ class Core {
 	 *
 	 * @throws   Exception If the version file is not found
 	 */
-	protected function loadVersionFromFile(string $versionFilePath) {
+	protected function loadVersionFromFile($versionFilePath) {
 
 		if (file_exists($versionFilePath) == false) {
 			throw new Exception('Gibbon version.php file missing: '. $versionFilePath );
@@ -206,7 +206,7 @@ class Core {
 	 *
 	 * @param   string  $configFilePath
 	 */
-	protected function loadConfigFromFile(string $configFilePath) {
+	protected function loadConfigFromFile($configFilePath) {
 
 		include $configFilePath;
 
@@ -223,7 +223,7 @@ class Core {
 	 * @param    string  $directory
 	 * @param    string  $domain
 	 */
-	protected function locateSystemDirectory(string $directory, string $domain) {
+	protected function locateSystemDirectory($directory, $domain) {
 		// Determine the base Gibbon Path
 		$this->basePath = str_replace('\\', '/', $directory);
 		$this->basePath = rtrim($this->basePath, '/ ');
