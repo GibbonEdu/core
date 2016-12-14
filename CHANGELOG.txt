@@ -21,8 +21,11 @@ v13.0.00
 	Headlines
 		Automated Scope & Sequence documentation in Planner, based on Unit Planner
 		Concept Explorer in Planner, based on Unit Planner concepts & keywords
-		Take Attendance by Class, and generate student attendance reports
+		Attendance by class, plus generation of student attendance reports
 		Messenger read receipts, in order to confirm receipt of and agreement to emails
+		Improved student application workflow for siblings
+		Translatability of additional modules
+		New notification tray to improve visibility of notifications and other alerts
 
 	Changes With Important Notices
 		System: updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
@@ -33,10 +36,10 @@ v13.0.00
 
 	Significant Changes
 		System: changed Primary Assessment Scale to Default Assessment Scale
-		System: added ability to translate additional modules
-		System: new notification tray to improve visibility of notifications and other alerts
+		Activities: added bulk copy and delete for activities in Manage view, including option to also copy participants
 		Attendance: added landing page for teacher's daily attendance taking
 		Markbook: added ability to copy columns to other classes
+		Planner: added bulk duplicate function to unit planner
 		School Admin: added ability to edit and create attendance codes
 		Students: added First Aid Record action to record medical visits
 
@@ -70,7 +73,6 @@ v13.0.00
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
 		Activities: fixed translation of blank string in Parent Dashboard Activity view
-		Activities: added bulk copy and delete for activities in Manage view, including option to also copy participants
 		Activities: removed stand along activity copy functionality
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
 		Attendance: added ability to set partial per-class future absence
@@ -111,7 +113,6 @@ v13.0.00
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
 		Planner: switched from JS to HTML for Smart Block placeholders
-		Planner: added bulk duplicate function to unit planner
 		Planner: improved text readability in weekly CLI email
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
