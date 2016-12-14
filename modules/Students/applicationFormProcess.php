@@ -736,7 +736,7 @@ if ($proceed == false) {
                 if (!is_null($parent1email)) {
                     $body = sprintf(__($guid, 'Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $_SESSION[$guid]['organisationName']).' ';
                     $body .= __($guid, 'Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').'<br/><br/>';
-                    $body .= __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/>';
+                    $body .= __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/><br/>';
                     $body .= "<a href='{$URL}&id={$secureAI}'>{$URL}&id={$secureAI}</a><br/><br/>";
                     $body .= sprintf(__($guid, 'In the meantime, should you have any questions please contact %1$s at %2$s.'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['organisationAdmissionsEmail']).'<br/><br/>';
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
