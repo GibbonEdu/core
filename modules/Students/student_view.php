@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username.').'</span>'; ?>
 						</td>
 						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
+							<input name="search" id="search" maxlength=50 value="<?php echo $search ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
@@ -327,7 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.').'</span>'; ?>
 						</td>
 						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
+							<input name="search" id="search" maxlength=50 value="<?php echo $search ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>

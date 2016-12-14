@@ -137,6 +137,7 @@ v13.0.00
 		Students: added setting to allow student note creation notification to be sent to all teachers
 		Students: addition of new sub-action to allow viewing of full student profiles, without Notes
 		Students: added date range to Form Group Summary report
+		Students: increased length of student search field
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
