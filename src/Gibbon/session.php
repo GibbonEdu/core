@@ -156,7 +156,6 @@ class Session
 		$this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
 		$this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
 		$this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
-		$this->set('googleAPIAccessToken', null);
 		$this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
 		$this->set('gibbonHouseID', $userData['gibbonHouseID']);
 
