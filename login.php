@@ -186,6 +186,7 @@ else {
                     // Set these from local values
                     $gibbon->session->set('passwordStrong', $passwordStrong);
                     $gibbon->session->set('passwordStrongSalt', $salt);
+                    $gibbon->session->set('googleAPIAccessToken', null);
 
                     //Allow for non-system default language to be specified from login form
                     if (@$_POST['gibboni18nID'] != $_SESSION[$guid]['i18n']['gibboni18nID']) {
