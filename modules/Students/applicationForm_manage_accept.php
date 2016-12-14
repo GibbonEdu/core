@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            // Grab family ID from linked applications that have been accepted
+            // Grab family ID from Sibling Applications that have been accepted
             $data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
             $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm 
                     JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
@@ -843,7 +843,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo __($guid, 'Student could not be linked to family!');
                                     echo '</div>';
                                 } else {
-                                    // Update the application information with the newly created family ID, for linked applications to use
+                                    // Update the application information with the newly created family ID, for Sibling Applications to use
                                     $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonFamilyID' => $gibbonFamilyID);
                                     $sql = 'UPDATE gibbonApplicationForm SET gibbonFamilyID=:gibbonFamilyID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                                     $resultUpdateFamilyID = $pdo->executeQuery($data, $sql);

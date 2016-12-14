@@ -29,11 +29,10 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$search = $_GET['search'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_delete.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
+$gibbonApplicationFormID = $_GET['gibbonApplicationFormID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+$search = isset($_GET['search'])? $_GET['search'] : '';
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_delete.php') == false) {
     $URL .= '&return=error0';
@@ -58,30 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Write to database
-            try {
-                $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-                $sql = 'DELETE FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            // Clean up the application form relationships
-            try {
-                $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-                $sql = 'DELETE FROM gibbonApplicationFormRelationship WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
             // Clean up the links between this and other forms
             try {
                 $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
@@ -94,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 exit();
             }
 
-            $URLDelete = $URLDelete.'&return=success0';
-            header("Location: {$URLDelete}");
+            $URL = $URL.'&return=success0';
+            header("Location: {$URL}");
         }
     }
 }

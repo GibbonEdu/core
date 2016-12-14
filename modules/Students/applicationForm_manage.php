@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     while ($rowLinked = $resultLinked->fetch()) {
                         $names .= '- '.formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true).' ('.$rowLinked['status'].')<br/>';
                     }
-                    echo "<img title='" . __($guid, 'Linked Applications', 'Data Admin') .$names. "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/ style='float: right;   width:10px; height:10px;margin-left:4px;'>";
+                    echo "<img title='" . __($guid, 'Sibling Applications') .$names. "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/ style='float: right;   width:12px; height:12px;margin-left:4px;'>";
                 }
 
                 echo '<b>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
