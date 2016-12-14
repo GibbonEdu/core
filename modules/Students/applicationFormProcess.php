@@ -635,7 +635,7 @@ if ($proceed == false) {
 
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
-                $secureAI = sha1($AI.'X2J53ZGy'.$guid.$_SESSION[$guid]['gibbonSchoolYearID']);
+                $secureAI = sha1($AI.'X2J53ZGy'.$guid.$gibbonSchoolYearIDEntry);
 
                 // Update the Application Form with a hash for looking up this record in the future
                 try {
@@ -757,10 +757,10 @@ if ($proceed == false) {
                 // Handle Sibling Applications
                 if (!empty($_POST['linkedApplicationFormID'])) {
                     $data = array( 'gibbonApplicationFormID' => $_POST['linkedApplicationFormID'] );
-                    $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm 
-                            LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-                            WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL) 
-                            OR gibbonApplicationFormID1=:gibbonApplicationFormID 
+                    $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm
+                            LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                            WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL)
+                            OR gibbonApplicationFormID1=:gibbonApplicationFormID
                             OR gibbonApplicationFormID2=:gibbonApplicationFormID';
                     $resultLinked = $pdo->executeQuery($data, $sql);
 

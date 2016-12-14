@@ -125,14 +125,14 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<title>
 				<?php
                 echo $_SESSION[$guid]['organisationNameShort'].' - '.$_SESSION[$guid]['systemName'];
-    if ($_SESSION[$guid]['address'] != '') {
-        if (strstr($_SESSION[$guid]['address'], '..') == false) {
-            if (getModuleName($_SESSION[$guid]['address']) != '') {
-                echo ' - '.__($guid, getModuleName($_SESSION[$guid]['address']));
-            }
-        }
-    }
-    ?>
+                if ($_SESSION[$guid]['address'] != '') {
+                    if (strstr($_SESSION[$guid]['address'], '..') == false) {
+                        if (getModuleName($_SESSION[$guid]['address']) != '') {
+                            echo ' - '.__($guid, getModuleName($_SESSION[$guid]['address']));
+                        }
+                    }
+                }
+                ?>
 			</title>
 			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
