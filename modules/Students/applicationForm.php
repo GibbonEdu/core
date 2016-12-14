@@ -85,6 +85,10 @@ if ($proceed == false) {
         if ($resultID && $resultID->rowCount() == 1) {
             $row = $resultID->fetch();
             $gibbonApplicationFormID = str_pad( intval($row['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT);
+        } else {
+        	echo "<div class='error'>";
+		    echo __($guid, 'The application link does not match an existing record in our system. The record may have been removed or the link is no longer valid.');
+		    echo '</div>';
         }
 
         $returnExtra = '<br/><br/>'.__($guid, 'If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$gibbonApplicationFormID.'</b></u>.';

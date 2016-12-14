@@ -635,7 +635,7 @@ if ($proceed == false) {
 
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
-                $secureAI = sha1($AI);
+                $secureAI = sha1($AI.'X2J53ZGy'.$guid.$_SESSION[$guid]['gibbonSchoolYearID']);
 
                 // Update the Application Form with a hash for looking up this record in the future
                 try {
@@ -754,7 +754,7 @@ if ($proceed == false) {
                     $mail->Send();
                 }
 
-                // Handle linked applications
+                // Handle Sibling Applications
                 if (!empty($_POST['linkedApplicationFormID'])) {
                     $data = array( 'gibbonApplicationFormID' => $_POST['linkedApplicationFormID'] );
                     $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm 
