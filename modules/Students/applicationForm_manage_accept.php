@@ -62,6 +62,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
+            // Grab family ID from Sibling Applications that have been accepted
+            $data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
+            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm 
+                    JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
+                    WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL 
+                    AND gibbonApplicationForm.status='Accepted'
+                    AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID) 
+                    LIMIT 1";
+
+            $resultLinked = $pdo->executeQuery($data, $sql);
+
+            if ($resultLinked && $resultLinked->rowCount() == 1) {
+                $linkedApplication = $resultLinked->fetch();
+            }
+
             //Let's go!
             $row = $result->fetch();
             $step = '';
@@ -115,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                		 				?>
 									<li><?php echo __($guid, 'Save the student\'s payment preferences.') ?></li>
 									<?php
-                                    if ($row['gibbonFamilyID'] != '') {
+                                    if (!empty($row['gibbonFamilyID']) || !empty($linkedApplication['gibbonFamilyID'])) {
                                         echo '<li>'.__($guid, 'Link the student to their family (who are already in Gibbon).').'</li>';
                                     } else {
                                         echo '<li>'.__($guid, 'Create a new family.').'</li>';
@@ -560,7 +575,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
 
                     $failFamily = true;
-                    if ($row['gibbonFamilyID'] != '') {
+                    if (!empty($row['gibbonFamilyID']) || !empty($linkedApplication['gibbonFamilyID'])) {
+
+                        if (empty($row['gibbonFamilyID'])) {
+                            // Associate the application with the gibbonFamilyID from linked application
+                            $row['gibbonFamilyID'] = $linkedApplication['gibbonFamilyID'];
+                        }
+
                         //CONNECT STUDENT TO FAMILY
                         try {
                             $dataFamily = array('gibbonFamilyID' => $row['gibbonFamilyID']);
@@ -590,6 +611,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             }
                         }
 
+                        // Linked application only: try to find existing parents in this family
+                        if (!empty($linkedApplication['gibbonApplicationFormID'])) {
+
+                            for ($i = 1; $i <= 2; $i++) {
+                                // Attempt to find parents using surname, preferredName within the existing family adults
+                                if (empty($row["parent{$i}gibbonPersonID"])) {
+                                    try {
+                                        $dataParent = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'parentSurname' => $row["parent{$i}surname"], 'parentPreferredName' => $row["parent{$i}preferredName"]);
+                                        $sqlParent = 'SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND surname=:parentSurname AND preferredName=:parentPreferredName';
+                                        $resultParent = $pdo->executeQuery($dataParent, $sqlParent);
+                                    } catch (PDOException $e) {
+                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                    }
+
+                                    if (isset($resultParent) && $resultParent->rowCount() == 1) {
+                                        // Record the found ID -- otherwise the parent creation code further down will kick in
+                                        $row["parent{$i}gibbonPersonID"] = $resultParent->fetchColumn(0);
+
+                                        //Set parent relationship
+                                        try {
+                                            $dataParent = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonPersonID1' => $row["parent{$i}gibbonPersonID"], 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $row["parent{$i}relationship"]);
+                                            $sqlParent = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                            $resultParentRelationship = $pdo->executeQuery($dataParent, $sqlParent);
+                                        } catch (PDOException $e) {
+                                            echo "<div class='error'>".$e->getMessage().'</div>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         try {
                             $dataParents = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                             $sqlParents = 'SELECT gibbonFamilyAdult.*, gibbonPerson.gibbonRoleIDAll FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
@@ -610,7 +662,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                             }
-
+                            
                             //Add relationship record for each parent
                             try {
                                 $dataRelationship = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonPersonID' => $rowParents['gibbonPersonID']);
@@ -727,6 +779,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     $insertOK = false;
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
+
                                 if ($insertOK == true) {
                                     $failFamily = false;
                                 }
@@ -789,6 +842,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo "<div class='warning'>";
                                     echo __($guid, 'Student could not be linked to family!');
                                     echo '</div>';
+                                } else {
+                                    // Update the application information with the newly created family ID, for Sibling Applications to use
+                                    $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonFamilyID' => $gibbonFamilyID);
+                                    $sql = 'UPDATE gibbonApplicationForm SET gibbonFamilyID=:gibbonFamilyID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                                    $resultUpdateFamilyID = $pdo->executeQuery($data, $sql);
                                 }
                             }
 
@@ -1285,7 +1343,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</ul>';
 
                         echo "<div class='success' style='margin-bottom: 20px'>";
-                        echo __($guid, 'Applicant has been successfully accepted into ICHK.').' <i><u>'.__($guid, 'You may wish to now do the following:').'</u></i><br/>';
+                        echo str_replace('ICHK', $_SESSION[$guid]['organisationNameShort'], __($guid, 'Applicant has been successfully accepted into ICHK.') );
+                        echo ' <i><u>'.__($guid, 'You may wish to now do the following:').'</u></i><br/>';
                         echo '<ol>';
                         echo '<li>'.__($guid, 'Enrol the student in the relevant academic year.').'</li>';
                         echo '<li>'.__($guid, 'Create a medical record for the student.').'</li>';
