@@ -101,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         echo __($guid, 'Search');
         echo '</h2>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">
 				<tr><td style="width: 40%"></td><td></td></tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Search For') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Application ID, preferred, surname, payment transaction ID') ?></span>
 					</td>
@@ -212,9 +212,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '<td>';
 
                 $data = array( 'gibbonApplicationFormID' => $row['gibbonApplicationFormID'] );
-                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm 
-                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-                                WHERE gibbonApplicationFormID1=:gibbonApplicationFormID 
+                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm
+                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                                WHERE gibbonApplicationFormID1=:gibbonApplicationFormID
                                 OR gibbonApplicationFormID2=:gibbonApplicationFormID ORDER BY gibbonApplicationFormID";
 
                 $resultLinked = $pdo->executeQuery($data, $sql);
@@ -223,13 +223,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     while ($rowLinked = $resultLinked->fetch()) {
                         $names .= '- '.formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true).' ('.$rowLinked['status'].')<br/>';
                     }
-                    echo "<img title='" . __($guid, 'Sibling Applications') .$names. "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/ style='float: right;   width:12px; height:12px;margin-left:4px;'>";
+                    echo "<img title='" . __($guid, 'Sibling Applications') .$names. "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/ style='float: right;   width:20px; height:20px;margin-left:4px;'>";
                 }
 
                 echo '<b>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
                 echo "<span style='font-style: italic; font-size: 85%'>".dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'</span>';
 
-                
+
 
                 echo '</td>';
                 echo '<td>';
