@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 echo '</div>';
                             } else {
                                 echo '<h2>';
-                                echo __('Description');
+                                echo __($guid, 'Description');
                                 echo '</h2>';
                                 echo '<p>';
                                 echo $row['description'];
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                                 if ($row['tags'] != '') {
                                     echo '<h2>';
-                                    echo __('Concepts & Keywords');
+                                    echo __($guid, 'Concepts & Keywords');
                                     echo '</h2>';
                                     echo '<p>';
                                     echo $row['tags'];
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 }
                                 if ($row['details'] != '') {
                                     echo '<h2>';
-                                    echo __('Unit Outline');
+                                    echo __($guid, 'Unit Outline');
                                     echo '</h2>';
                                     echo '<p>';
                                     echo $row['details'];

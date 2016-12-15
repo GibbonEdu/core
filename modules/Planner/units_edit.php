@@ -393,8 +393,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									<tr>
 										<td colspan=2>
                                         <p><?php
-                                        $shareUnitOverviews = getSettingByScope($connection2, 'Planner', 'shareUnitOverviews');
-                                        if ($shareUnitOverviews == 'Y') {
+                                        $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                                        if ($shareUnitOutline == 'Y') {
                                             echo __($guid, 'The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
                                         }
                                         else {

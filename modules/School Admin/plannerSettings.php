@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 				<?php
                 try {
                     $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='shareUnitOverviews'";
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='shareUnitOutline'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

@@ -1490,8 +1490,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($resultResources->rowCount() > 0) {
                                     $rowResources = $resultResources->fetch();
                                 }
-                                $shareUnitOverviews = getSettingByScope($connection2, 'Planner', 'shareUnitOverviews');
-                                if ($row['role'] == 'Teacher' or $shareUnitOverviews == 'Y') {
+                                $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                                if ($row['role'] == 'Teacher' or $shareUnitOutline == 'Y') {
                                     //Check for outcomes
                                     try {
                                         $dataOutcomes = array('gibbonUnitID' => $row['gibbonUnitID']);
