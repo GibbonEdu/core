@@ -26,6 +26,7 @@ v13.0.00
 		Improved student application workflow for siblings
 		Translatability of additional modules
 		New notification tray to improve visibility of notifications and other alerts
+		Installation requirements checking
 
 	Changes With Important Notices
 		System: updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
@@ -67,7 +68,6 @@ v13.0.00
 		System: notification emails now come from organisation email address, not administrator address
 		System: added interface text to show threshold levels for student alerts
 		System: added Odia to list of languages
-		System: Added system requirements check to Install: Step 1
 		System: Added system check page with version & extension information
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
@@ -114,6 +114,7 @@ v13.0.00
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
 		Planner: switched from JS to HTML for Smart Block placeholders
 		Planner: improved text readability in weekly CLI email
+		Planner: added option to share unit outline with users who do not have access to the unit planner, via the lesson planner.
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days

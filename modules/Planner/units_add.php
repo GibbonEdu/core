@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td colspan=2>
-										<b><?php echo __($guid, 'Blurb') ?> *</b>
+										<b><?php echo __($guid, 'Description') ?> *</b>
 										<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
 										<script type="text/javascript">
 											var description=new LiveValidation('description');
@@ -287,7 +287,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								<tr>
 									<td colspan=2>
 										<?php $unitOutline = getSettingByScope($connection2, 'Planner', 'unitOutlineTemplate') ?>
-										<p><?php echo __($guid, 'The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
+										<p><?php
+                                        $shareUnitOverviews = getSettingByScope($connection2, 'Planner', 'shareUnitOverviews');
+                                        if ($shareUnitOverviews == 'Y') {
+                                            echo __($guid, 'The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
+                                        }
+                                        else {
+                                            echo __($guid, 'The contents of the Unit Outline field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).');
+                                        }
+                                        ?></p>
 										<?php echo getEditor($guid,  true, 'details', $unitOutline, 40, true, false, false) ?>
 									</td>
 								</tr>

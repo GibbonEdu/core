@@ -240,10 +240,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 							//Tab content
 							//UNIT OVERVIEW
 							echo "<div id='tabs1'>";
-                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-                                echo $rowUnit['details'];
-                            } else {
-                                echo '<p>'.$rowUnit['description'].'</p>';
+                            $shareUnitOverviews = getSettingByScope($connection2, 'Planner', 'shareUnitOverviews');
+                            echo '<h2>';
+                            echo __('Description');
+                            echo '</h2>';
+                            echo '<p>';
+                            echo $rowUnit['description'];
+                            echo '</p>';
+
+                            if ($rowUnit['tags'] != '') {
+                                echo '<h2>';
+                                echo __('Concepts & Keywords');
+                                echo '</h2>';
+                                echo '<p>';
+                                echo $rowUnit['tags'];
+                                echo '</p>';
+                            }
+                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $shareUnitOverviews == 'Y') {
+                                if ($rowUnit['details'] != '') {
+                                    echo '<h2>';
+                                    echo __('Unit Outline');
+                                    echo '</h2>';
+                                    echo '<p>';
+                                    echo $rowUnit['details'];
+                                    echo '</p>';
+                                }
                             }
                             echo '</div>';
 							//OUTCOMES

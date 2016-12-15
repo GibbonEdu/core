@@ -1490,7 +1490,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($resultResources->rowCount() > 0) {
                                     $rowResources = $resultResources->fetch();
                                 }
-                                if ($row['role'] == 'Teacher') {
+                                $shareUnitOverviews = getSettingByScope($connection2, 'Planner', 'shareUnitOverviews');
+                                if ($row['role'] == 'Teacher' or $shareUnitOverviews == 'Y') {
                                     //Check for outcomes
                                     try {
                                         $dataOutcomes = array('gibbonUnitID' => $row['gibbonUnitID']);
@@ -1711,7 +1712,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $reason = $rowAtt['reason'];
                                     $comment = $rowAtt['comment'];
 								}
-								
+
                             }
 
                             //$status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite'
@@ -1837,7 +1838,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         $_SESSION[$guid]['sidebarExtra'] .= '</table>';
 
-                    
+
 
                         //Guests
                         try {
