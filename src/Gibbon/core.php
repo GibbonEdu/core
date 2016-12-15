@@ -65,6 +65,7 @@ class Core {
 	protected $guid;
 	protected $caching;
 	protected $version;
+	protected $systemRequirements;
 
 	/**
 	 * Has gibbon been initialized using a DB connection?
@@ -148,6 +149,15 @@ class Core {
 	}
 
 	/**
+	 * Gets a System Requirement by array key
+	 *
+	 * @return   string
+	 */
+	public function getSystemRequirement($key) {
+		return (isset($this->systemRequirements[$key]))? $this->systemRequirements[$key] : null;
+	}
+
+	/**
 	 * Gets system-wide caching factor, used to balance performance and freshness.
 	 *
 	 * @return   int|null
@@ -199,6 +209,7 @@ class Core {
 
 		include $versionFilePath;
 		$this->version = $version;
+		$this->systemRequirements = $systemRequirements;
 	}
 
 	/**
