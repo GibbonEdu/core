@@ -193,7 +193,17 @@ class sqlConnection
 	 */
 	public function getVersion()
 	{
-		return $this->pdo->query('select version()')->fetchColumn();
+		return $this->pdo->query("SELECT VERSION()")->fetchColumn();
+	}
+
+	/**
+	 * Get Collation
+	 *
+	 * @return	string	Collation
+	 */
+	public function getCollation()
+	{
+		return $this->pdo->query("SELECT COLLATION('gibbon')")->fetchColumn();
 	}
 
 	/**
