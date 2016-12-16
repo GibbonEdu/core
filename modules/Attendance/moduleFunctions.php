@@ -100,7 +100,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-        $sql = "SELECT count(*) FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c WHERE c.scope='Onsite - Late' AND p.gibbonPersonID=:gibbonPersonID AND p.date>=:dateStart AND p.date<=:dateEnd AND p.type=c.name";
+        $sql = "SELECT count(*) AS count FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c WHERE c.scope='Onsite - Late' AND p.gibbonPersonID=:gibbonPersonID AND p.date>=:dateStart AND p.date<=:dateEnd AND p.type=c.name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -110,7 +110,8 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     if ($queryFail) {
         return false;
     } else {
-        return $result->rowCount();
+        $row = $result->fetch();
+        return $row['count'];
     }
 }
 
