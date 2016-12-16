@@ -29,7 +29,10 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date BETWEEN :dateStart AND :dateEnd ORDER BY date, timestampTaken';
+        $sql = 'SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay
+            FROM gibbonAttendanceLogPerson
+                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type=\'School Closure\')
+            WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -48,12 +51,14 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
             //Scan through all records, saving the last record for each day
             while ($row = $result->fetch()) {
-                $dateCurrent = $row['date'];
-                if ($dateCurrent != $dateLast) {
-                    ++$count;
+                if ($row['specialDay'] != 'School Closure') {
+                    $dateCurrent = $row['date'];
+                    if ($dateCurrent != $dateLast) {
+                        ++$count;
+                    }
+                    $endOfDays[$count] = $row['type'];
+                    $dateLast = $dateCurrent;
                 }
-                $endOfDays[$count] = $row['type'];
-                $dateLast = $dateCurrent;
             }
 
             //Scan though all of the end of days records, counting up days ending in absent
