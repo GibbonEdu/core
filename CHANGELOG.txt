@@ -21,8 +21,12 @@ v13.0.00
 	Headlines
 		Automated Scope & Sequence documentation in Planner, based on Unit Planner
 		Concept Explorer in Planner, based on Unit Planner concepts & keywords
-		Take Attendance by Class, and generate student attendance reports
+		Attendance by class, plus generation of student attendance reports
 		Messenger read receipts, in order to confirm receipt of and agreement to emails
+		Improved student application workflow for siblings
+		Translatability of additional modules
+		New notification tray to improve visibility of notifications and other alerts
+		Installation requirements checking
 
 	Changes With Important Notices
 		System: updated PHPMailer to v5.2.16, and switched to SMTP mailing (check that your server supports un-authenticated local SMTP relay, or set up SMTP in Third Party Settings)
@@ -33,19 +37,22 @@ v13.0.00
 
 	Significant Changes
 		System: changed Primary Assessment Scale to Default Assessment Scale
-		Markbook: added ability to copy columns to other classes
-		School Admin: added ability to edit and create attendance codes
+		Activities: added bulk copy and delete for activities in Manage view, including option to also copy participants
 		Attendance: added landing page for teacher's daily attendance taking
+		Markbook: added ability to copy columns to other classes
+		Planner: added bulk duplicate function to unit planner
+		School Admin: added ability to edit and create attendance codes
+		Students: added First Aid Record action to record medical visits
 
 	Security
-		...
+		System: added token-based user confirmation of password reset requests, to prevent unwanted third-party resets
 
 	Tweaks & Bug Fixes
 		System: fixed sql loading issue in trans class
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev and Namibian Dollar as currency
-		System: added Bulgarian, Korean and Finnish as development languages
+		System: added Bulgarian, Korean, Finnish, German and Odia as development languages
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken
@@ -54,21 +61,36 @@ v13.0.00
 		System: updated the reincarnate image on Default theme
 		System: removed robots meta tag
 		System: added ability to custom order module categories in main menu
+		System: AJAXified Fast Finder
+		System: added ability to search Fast Finder actions using current Gibbon language
+		System: set tinyMCE default target for new links to New Window
+		System: made organisationEmail compulsory: on install, and if blank on update, it defaults to email of gibbonPersonID=1
+		System: notification emails now come from organisation email address, not administrator address
+		System: added interface text to show threshold levels for student alerts
+		System: added Odia to list of languages
+		System: Added system check page with version & extension information
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
 		Activities: fixed translation of blank string in Parent Dashboard Activity view
+		Activities: removed stand along activity copy functionality
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
 		Attendance: added ability to set partial per-class future absence
 		Attendance: added visual graphing for school-wide Attendance Trends
 		Attendance: improved the display of Classes/Roll Groups Not Registered to include visual overview
 		Attendance: updated Daily Incomplete Email CLI script to include attendance by class
+		Attendance: colspan fix in attendance report for roll groups
+		Attendance: tweaked interface language to improve handling of plurals
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
 		Finance: removed thousand separator from invoice bulk export
 		Finance: switched from JS to HTML for fee block placeholders
+		Finance: added option to output name on invoice/receipt as student official name, rather than preferredName+surname
+		Finance: fixed bug in Paid - Partial filter in invoice manage view
+		Finance: added filter by fee category in invoice manage view
 		Individual Needs: added template settings for pre-filling fields on new IEPs
+		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
@@ -77,6 +99,7 @@ v13.0.00
 		Markbook: made target scale selectable (so not constained to Default Assessment Scale)
 		Markbook: fixed issue preventing some staff from seeing Markbook columns from other classes (depending on Edit rights)
 		Markbook: added a class chooser to the sidebar for view, edit and weightings sub-pages
+		Markbook: fixed multibyte substring issue when shortening comments for preview
 		Messenger: fixed formatting of Sent From Gibbon tag
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Messenger: disabled Canned Response for any non-staff users
@@ -90,6 +113,8 @@ v13.0.00
 		Planner: added field to mark whether unit should be included in curriculum maps and other summaries
 		Planner: made lesson plan Summary field optional, auto grabs content from Lesson Details field if blank
 		Planner: switched from JS to HTML for Smart Block placeholders
+		Planner: improved text readability in weekly CLI email
+		Planner: added option to share unit outline with users who do not have access to the unit planner, via the lesson planner.
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days
@@ -111,17 +136,29 @@ v13.0.00
 		Students: fixed PayPal locale code to correctly set PayPal language on redirect
 		Students: fixed tooltip alignment on alert bar above student profile image
 		Students: fixed colspan issue in Data Update report when no records found
+		Students: added student ID to search
+		Students: added student image to privacy report
+		Students: added setting to allow student note creation notification to be sent to all teachers
+		Students: addition of new sub-action to allow viewing of full student profiles, without Notes
+		Students: added date range to Form Group Summary report
+		Students: increased length of student search field
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
+		Timetable: fixed bug preventing Master Timetable from showing classes with on location
+		Timetable: added period times to titles in master timetable
 		Timetable Admin: removed Left users from exception add screen
 		Timetable Admin: narrowed down class participant count in Course edit view to users with status Full
 		Timetable Admin: added search and filters to course enrolment and course management pages
 		Timetable Admin: added bulk action to copy selected students to another class
+		Timetable Admin: code clean up on bulk actions when managing course enrolment by class
+		Timetable Admin: removed required field notice on location field when editing a class in a timetable
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
+		User Admin: added student ID to search in Manage Users
+		User Admin: added birth certificate scan field in Manage Users
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class

@@ -46,8 +46,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $allStudents = !empty($_GET["allStudents"])? 1 : 0;
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname';
 
-    require_once './modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     ?>
 

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, privacy, surname, preferredName, nameShort FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND NOT privacy='' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY nameShort, surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, privacy, surname, preferredName, nameShort, image_240 FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND NOT privacy='' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY nameShort, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
         echo '<th rowspan=2>';
         echo __($guid, 'Roll Group');
         echo '</th>';
-        echo '<th rowspan=2>';
+        echo '<th rowspan=2 style=\'text-align: center\'>';
         echo __($guid, 'Student');
         echo '</th>';
         echo '<th colspan='.count($privacyOptions).'>';
@@ -92,15 +92,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
             echo '<td>';
             echo $row['nameShort'];
             echo '</td>';
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo '<td style=\'text-align: center\'>';
+            echo getUserPhoto($guid, $row['image_240'], 75).'<br/>';
+            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'].'\'>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
             echo '</td>';
             $studentPrivacyOptions = explode(',', $row['privacy']);
             foreach ($privacyOptions as $option) {
                 echo '<td>';
                 foreach ($studentPrivacyOptions as $studentOption) {
                     if (trim($studentOption) == trim($option)) {
-                        echo __($guid, 'Yes');
+                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> " . __($guid, 'Required');
                     }
                 }
                 echo '</td>';

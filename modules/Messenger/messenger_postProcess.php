@@ -1796,8 +1796,8 @@ else {
 				//Prep message
 				$bodyFin = "<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 
-				//Send to sender
-				$emailCount=1 ;
+				//Set up email
+				$emailCount=0 ;
 				$mail=getGibbonMailer($guid);
 				$mail->IsSMTP();
 				
@@ -1821,17 +1821,41 @@ else {
 				$mail->Subject=$subject ;
 				$mail->Body = $body.$bodyFin ;
 				$mail->AltBody = emailBodyConvert($body.$bodyFin) ;
-				if(!$mail->Send()) {
-					$partialFail = TRUE ;
-				}
 
-				//If sender is using school-wide address, send to school-wide address
-				if ($from!=$_SESSION[$guid]["email"]) { //If sender is using school-wide address, add them to recipient list.
-					$emailCount ++;
-					$mail->ClearAddresses();
-					$mail->AddAddress($_SESSION[$guid]["email"]);
+				//Send to sender, if not in recipient list
+				$includeSender = true ;
+				foreach ($report as $reportEntry) {
+					if ($reportEntry[3] == 'Email') {
+						if ($reportEntry[4] == $from) {
+							$includeSender = false ;
+						}
+					}
+				}
+				if ($includeSender) {
+					$emailCount ++ ;
+					$mail->AddAddress($from);
 					if(!$mail->Send()) {
 						$partialFail = TRUE ;
+					}
+				}
+
+				//If sender is using school-wide address, and it is not in recipient list, send to school-wide address
+				if ($from!=$_SESSION[$guid]["email"]) { //If sender is using school-wide address, add them to recipient list.
+					$includeSender = true ;
+					foreach ($report as $reportEntry) {
+						if ($reportEntry[3] == 'Email') {
+							if ($reportEntry[4] == $_SESSION[$guid]["email"]) {
+								$includeSender = false ;
+							}
+						}
+					}
+					if ($includeSender) {
+						$emailCount ++;
+						$mail->ClearAddresses();
+						$mail->AddAddress($_SESSION[$guid]["email"]);
+						if(!$mail->Send()) {
+							$partialFail = TRUE ;
+						}
 					}
 				}
 
@@ -1841,16 +1865,21 @@ else {
 						$emailCount ++;
 						$mail->ClearAddresses();
 						$mail->AddAddress($reportEntry[4]);
-						//Deal with email receipt
+						//Deal with email receipt and body finalisation
 						if ($emailReceipt == 'Y') {
 							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry[0]."&key=".$reportEntry[5]."'>".$emailReceiptText."</a>";
-							$mail->Body = $body.$bodyReadReceipt.$bodyFin ;
-							$mail->AltBody = emailBodyConvert($body.$bodyReadReceipt.$bodyFin) ;
+							if (is_numeric(strpos($body, '[confirmLink]'))) {
+								$bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body).$bodyFin;
+							}
+							else {
+								$bodyOut = $body.$bodyReadReceipt.$bodyFin;
+							}
 						}
 						else {
-							$mail->Body = $body.$bodyFin ;
-							$mail->AltBody = emailBodyConvert($body.$bodyFin) ;
+							$bodyOut = $body.$bodyFin;
 						}
+						$mail->Body = $bodyOut ;
+						$mail->AltBody = emailBodyConvert($bodyOut);
 						if(!$mail->Send()) {
 							$partialFail = TRUE ;
 						}

@@ -110,7 +110,7 @@
 	$canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything');
 
     // Build the markbook object for this class
-    $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
+    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
 
     // Add a school term filter if one exists
     $gibbonSchoolYearTermID = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $_SESSION[$guid]['markbookTerm'];
@@ -172,7 +172,7 @@
         // Print table header info
         echo '<p>';
             if (!empty($teacherList)) {
-                echo '<b>'.sprintf(__($guid, 'Class taught by %1$s'), implode(',', $teacherList) ).'</b>. ';
+                echo '<b>'.sprintf(__($guid, 'Class taught by %1$s'), implode(', ', $teacherList) ).'</b>. ';
             }
             echo __($guid, 'To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, using the Newer and Older links.');
             if ($markbook->hasExternalAssessments() == true) {
@@ -750,7 +750,7 @@
                                 if (strlen($rowEntry['comment']) < 11) {
                                     echo htmlPrep($rowEntry['comment']);
                                 } else {
-                                    echo "<span $style title='".htmlPrep($rowEntry['comment'])."'>".substr($rowEntry['comment'], 0, 10).'...</span>';
+                                    echo "<span $style title='".htmlPrep($rowEntry['comment'])."'>".mb_substr($rowEntry['comment'], 0, 10).'...</span>';
                                 }
                             }
                             echo '</td>';

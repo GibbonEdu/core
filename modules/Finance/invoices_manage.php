@@ -108,6 +108,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         if (isset($_GET['gibbonFinanceBillingScheduleID'])) {
             $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
         }
+        $gibbonFinanceFeeCategoryID = null;
+        if (isset($_GET['gibbonFinanceFeeCategoryID'])) {
+            $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+        }
+
+        //SEARCH FOR gibbonFinanceFeeCategoryIDList SET TO NULL, AND UPDATE
+        //This is to facilitate the new fee category filter in v13, and can be removed in v14 or after
+        try {
+            $dataTemp = array();
+            $sqlTemp = 'SELECT gibbonFinanceInvoiceID, gibbonFinanceFeeCategoryIDList FROM gibbonFinanceInvoice WHERE gibbonFinanceFeeCategoryIDList IS NULL';
+            $resultTemp = $connection2->prepare($sqlTemp);
+            $resultTemp->execute($dataTemp);
+        } catch (PDOException $e) {}
+        while ($rowTemp = $resultTemp->fetch()) {
+            try {
+                $dataTemp2 = array('gibbonFinanceInvoiceID' => $rowTemp['gibbonFinanceInvoiceID']);
+                $sqlTemp2 = 'SELECT gibbonFinanceFeeCategoryID FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                $resultTemp2 = $connection2->prepare($sqlTemp2);
+                $resultTemp2->execute($dataTemp2);
+            } catch (PDOException $e) {}
+
+            $gibbonFinanceFeeCategoryIDList = '';
+            while ($rowTemp2 = $resultTemp2->fetch()) {
+                $gibbonFinanceFeeCategoryIDList .= $rowTemp2['gibbonFinanceFeeCategoryID'].",";
+            }
+
+            $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
+            if ($gibbonFinanceFeeCategoryIDList != '') {
+                try {
+                    $dataTemp3 = array('gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceID' => $rowTemp['gibbonFinanceInvoiceID']);
+                    $sqlTemp3 = 'UPDATE gibbonFinanceInvoice SET gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                    $resultTemp3 = $connection2->prepare($sqlTemp3);
+                    $resultTemp3->execute($dataTemp3);
+                } catch (PDOException $e) {}
+            }
+        }
 
         echo '<h3>';
         echo __($guid, 'Filters');
@@ -253,6 +289,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 						?>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<b><?php echo __($guid, 'Fee Category') ?></b><br/>
+						<span class="emphasis small"></span>
+					</td>
+					<td class="right">
+						<?php
+                        try {
+                            $dataPurpose = array();
+                            $sqlPurpose = 'SELECT * FROM gibbonFinanceFeeCategory ORDER BY name';
+                            $resultPurpose = $connection2->prepare($sqlPurpose);
+                            $resultPurpose->execute($dataPurpose);
+                        } catch (PDOException $e) {
+                        }
+
+						echo "<select name='gibbonFinanceFeeCategoryID' id='gibbonFinanceFeeCategoryID' style='width:302px'>";
+						echo "<option value=''></option>";
+						while ($rowPurpose = $resultPurpose->fetch()) {
+							$selected = '';
+							if ($rowPurpose['gibbonFinanceFeeCategoryID'] == $gibbonFinanceFeeCategoryID) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowPurpose['gibbonFinanceFeeCategoryID']."'>".$rowPurpose['name'].'</option>';
+						}
+						echo '</select>';
+						?>
+					</td>
+				</tr>
 				<?php
 
                 echo '<tr>';
@@ -310,11 +374,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 								$whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
 							} elseif ($status == 'Paid - Partial') {
 								$data['status1'] = 'Paid - Partial';
-								$whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
+								$whereSched .= ' AND gibbonFinanceInvoice.status=:status1';
 								$data['status2'] = 'Paid - Partial';
-								$whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
+								$whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2';
 								$data['status3'] = 'Paid - Partial';
-								$whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
+								$whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3';
 							} elseif ($status == 'Paid - Late') {
 								$data['status1'] = 'Paid';
 								$whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate<paidDate';
@@ -371,7 +435,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 								$whereNotPending .= ' AND gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID3';
 							}
 						}
-						//SQL for billing schedule AND pending
+                        if ($gibbonFinanceFeeCategoryID != '') {
+							$data['gibbonFinanceFeeCategoryID1'] = '%'.$gibbonFinanceFeeCategoryID.'%';
+							$whereSched .= ' AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList LIKE :gibbonFinanceFeeCategoryID1';
+							$data['gibbonFinanceFeeCategoryID2'] = '%'.$gibbonFinanceFeeCategoryID.'%';
+							$whereAdHoc .= ' AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList LIKE :gibbonFinanceFeeCategoryID2';
+							$data['gibbonFinanceFeeCategoryID3'] = '%'.$gibbonFinanceFeeCategoryID.'%';
+							$whereNotPending .= ' AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList LIKE :gibbonFinanceFeeCategoryID3';
+						}
+
+                        //SQL for billing schedule AND pending
 						$sql = "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, paidAmount, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' $whereSched)";
 						$sql .= ' UNION ';
 						//SQL for Ad Hoc AND pending
@@ -392,7 +465,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 						echo '</h3>';
 
 						echo "<div class='linkTop' style='text-align: right'>";
-						echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
+						echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
 						echo '</div>';
 
 						echo "<div class='error'>";
@@ -404,11 +477,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 						echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__($guid, '%1$s records(s) in current view'), $result->rowCount()).'</span>';
 						echo '</h3>';
 
-						echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>";
+						echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>";
 						echo "<fieldset style='border: none'>";
 						echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
 						echo "<div style='margin: 0 0 3px 0'>";
-						echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
+						echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
 						echo '</div>'; ?>
 						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
@@ -570,15 +643,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 echo '</td>';
                 echo '<td>';
                 if ($row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_edit.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_edit.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 }
                 if ($row['status'] == 'Pending') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_issue.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='Issue' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a><br/>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_delete.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_issue.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'><img title='Issue' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a><br/>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_delete.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&preview=true'><img title='Preview Invoice' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                 }
                 if ($row['status'] != 'Pending') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='Print Invoices, Receipts & Reminders' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print.php&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'><img title='Print Invoices, Receipts & Reminders' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                 }
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';

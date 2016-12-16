@@ -175,31 +175,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 
                         <div id="courseClassRow" style="display: none;">
-                            
+
                             <select style="width: 182px" name="gibbonCourseClassIDCopyTo">
                                 <?php
                                 print "<option value=''>" . _('Please select...') . "</option>" ;
 
                                 try {
-                                    $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+                                    $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
                                     $sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
                                     $resultSelect=$connection2->prepare($sqlSelect);
                                     $resultSelect->execute($dataSelect);
                                 }
-                                catch(PDOException $e) { 
-                                    print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+                                catch(PDOException $e) {
+                                    print "<div class='error'>" . $e->getMessage() . "</div>" ;
                                 }
-                                
+
                                 while ($rowSelect=$resultSelect->fetch()) {
                                     if ($gibbonCourseClassID==$rowSelect["gibbonCourseClassID"]) {
                                         print "<option selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
                                     }
                                     else {
                                         print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
-                                    }                       
+                                    }
                                 }
 
-                                ?>              
+                                ?>
                             </select>
 
                         </div>
@@ -213,11 +213,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
 							action.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Select action') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						
+
                             $(document).ready(function(){
                                 $('#action').change(function () {
                                     if ($(this).val() == 'Copy to class') {
-                                        $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","block")); 
+                                        $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","block"));
                                     } else {
                                         $("#courseClassRow").css("display","none");
                                     }
@@ -227,8 +227,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         </script>
 						<?php
                 echo '</div>';
-
-                
 
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
@@ -247,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '<th>';
                 echo __($guid, 'Actions');
                 echo '</th>';
-                echo '<th>'; ?>
+                echo '<th style=\'text-align: center\'>'; ?>
 				<script type="text/javascript">
 					$(function () {
 						$('.checkall').click(function () {
@@ -268,10 +266,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     } else {
                         $rowNum = 'odd';
                     }
-                    ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     if ($row['role'] == 'Student') {
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
@@ -292,12 +289,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                     echo '</td>';
-                    echo '<td>';
+                    echo '<td style=\'text-align: center\'>';
                     echo "<input name='gibbonPersonID-$count' value='".$row['gibbonPersonID']."' type='hidden'>";
                     echo "<input name='role-$count' value='".$row['role']."' type='hidden'>";
                     echo "<input type='checkbox' name='check-$count' id='check-$count'>";
                     echo '</td>';
                     echo '</tr>';
+
+                    ++$count;
                 }
                 echo '</table>';
 

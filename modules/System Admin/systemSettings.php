@@ -331,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
                 $row = $result->fetch();
                 ?>
 				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
@@ -339,6 +339,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Email);
+						<?php echo $row['name'] ?>.add(Validate.Presence);
 					</script>
 				</td>
 			</tr>

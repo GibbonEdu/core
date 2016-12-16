@@ -42,13 +42,14 @@ $status = $_GET['status'];
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
 $monthOfIssue = $_GET['monthOfIssue'];
 $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
 if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {
     if ($action == 'issue') {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=Issued&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
     } else {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
+        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
     }
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {

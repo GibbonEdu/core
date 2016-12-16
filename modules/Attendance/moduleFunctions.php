@@ -22,13 +22,17 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 {
     $queryFail = false;
 
-    require_once './modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+    global $gibbon, $session, $pdo;
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date BETWEEN :dateStart AND :dateEnd ORDER BY date, timestampTaken';
+        $sql = 'SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay
+            FROM gibbonAttendanceLogPerson
+                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type=\'School Closure\')
+            WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -47,12 +51,14 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
             //Scan through all records, saving the last record for each day
             while ($row = $result->fetch()) {
-                $dateCurrent = $row['date'];
-                if ($dateCurrent != $dateLast) {
-                    ++$count;
+                if ($row['specialDay'] != 'School Closure') {
+                    $dateCurrent = $row['date'];
+                    if ($dateCurrent != $dateLast) {
+                        ++$count;
+                    }
+                    $endOfDays[$count] = $row['type'];
+                    $dateLast = $dateCurrent;
                 }
-                $endOfDays[$count] = $row['type'];
-                $dateLast = $dateCurrent;
             }
 
             //Scan though all of the end of days records, counting up days ending in absent
@@ -75,7 +81,7 @@ function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = fa
 
     $timestamp = dateConvertToTimestamp($date);
     if ($inclusive == true)  $timestamp += 86400;
-    
+
     $count = 0;
     $spin = 1;
     $lastNSchoolDays = array();
@@ -99,7 +105,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-        $sql = "SELECT count(*) FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c WHERE c.scope='Onsite - Late' AND p.gibbonPersonID=:gibbonPersonID AND p.date>=:dateStart AND p.date<=:dateEnd AND p.type=c.name";
+        $sql = "SELECT count(*) AS count FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c WHERE c.scope='Onsite - Late' AND p.gibbonPersonID=:gibbonPersonID AND p.date>=:dateStart AND p.date<=:dateEnd AND p.type=c.name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -109,7 +115,8 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     if ($queryFail) {
         return false;
     } else {
-        return $result->rowCount();
+        $row = $result->fetch();
+        return $row['count'];
     }
 }
 
@@ -117,9 +124,9 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
 //$dateStart and $dateEnd refer to the students' first and last day at the school, not the range of dates for the report
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd)
 {
-
-    require_once './modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+    global $gibbon, $session, $pdo;
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     $output = '';
 
@@ -320,7 +327,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     $logCount = 0;
                                     try {
                                         $dataLog = array('date' => date('Y-m-d', $i), 'gibbonPersonID' => $gibbonPersonID);
-                                        $sqlLog = 'SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason FROM gibbonAttendanceLogPerson, gibbonAttendanceCode WHERE gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name AND date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber';
+                                        $sqlLog = 'SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason FROM gibbonAttendanceLogPerson, gibbonAttendanceCode WHERE gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name AND date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY timestampTaken DESC';
                                         $resultLog = $connection2->prepare($sqlLog);
                                         $resultLog->execute($dataLog);
                                     } catch (PDOException $e) {
@@ -362,7 +369,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {
-                                                $textClass = $attendance->isTypePresent($log[$x][0])? 'highlightPresent' : 'highlightAbsent';
+                                                $textClass = $attendance->isTypeAbsent($log[$x][0])? 'highlightAbsent' : 'highlightPresent';
                                                 $output .= '<span class="'.$textClass.'">';
                                                 $output .= $attendance->getAttendanceCodeByType( $log[$x][0] )['nameShort'];
                                                 $output .= '</span>';
@@ -474,4 +481,3 @@ function getColourArray()
 
     return $return;
 }
-

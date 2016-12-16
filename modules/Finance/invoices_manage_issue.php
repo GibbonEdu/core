@@ -36,9 +36,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
     $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
     $monthOfIssue = $_GET['monthOfIssue'];
     $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
+    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>".__($guid, 'Manage Invoices')."</a> > </div><div class='trailEnd'>".__($guid, 'Issue Invoice').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Manage Invoices')."</a> > </div><div class='trailEnd'>".__($guid, 'Issue Invoice').'</div>';
     echo '</div>';
 
     echo '<p>';
@@ -73,20 +74,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
             if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
             ?>
-			
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_issueProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_issueProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID" ?>">
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -109,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 							<input readonly name="yearName" id="yearName" value="<?php echo $yearName ?>" type="text" class="standardWidth">
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Invoicee') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -134,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 					</tr>
 					<?php //BILLING TYPE CHOOSER ?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Scheduling') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -146,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                     if ($row['billingScheduleType'] == 'Scheduled') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Billing Schedule') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -176,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                     } else {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -188,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 					}
                     ?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Status') ?> *</b><br/>
 							<?php
                             if ($row['status'] == 'Pending') {
@@ -208,14 +209,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Notes') ?></b> 
+						<td colspan=2>
+							<b><?php echo __($guid, 'Notes') ?></b>
 							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php echo htmlPrep($row['notes']) ?></textarea>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Email Invoice') ?></h3>
 						</td>
 					</tr>
@@ -236,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 							if ($row['companyEmail'] != '' and $row['companyContact'] != '' and $row['companyName'] != '') {
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo $row['companyContact'] ?></b> (<?php echo $row['companyName']; ?>)
 										<span class="emphasis small"></span>
 									</td>
@@ -264,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                                             if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                                 ?>
 												<tr>
-													<td> 
+													<td>
 														<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b> <i>(Family CC)</i>
 														<span class="emphasis small"></span>
 													</td>
@@ -301,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                             if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                 ?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b>
 										<span class="emphasis small"></span>
 									</td>
@@ -321,7 +322,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                     if ($_SESSION[$guid]['email'] != '') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Parent', false) ?></b>
 								<span class="emphasis small"><?php echo __($guid, '(CC Self?)') ?></span>
 							</td>

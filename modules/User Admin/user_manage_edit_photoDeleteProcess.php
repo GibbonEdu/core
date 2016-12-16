@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $sizeField = null;
                 if ($size == '240') {
                     $sizeField = 'image_240';
-                } elseif ($size == '75') {
-                    $sizeField = 'image_75';
+                } elseif ($size == 'birthCertificate') {
+                    $sizeField = 'birthCertificateScan';
                 } elseif ($size == 'passport') {
                     $sizeField = 'citizenship1PassportScan';
                 } elseif ($size == 'id') {

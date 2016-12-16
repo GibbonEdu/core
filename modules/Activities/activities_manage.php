@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For Activity') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Activity name.') ?></span>
 				</td>
@@ -133,6 +133,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
             }
 
+            echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manageProcessBulk.php'>";
+            echo "<fieldset style='border: none'>";
+            echo "<div class='linkTop' style='height: 27px'>"; ?>
+                    <input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+
+                    <div id="optionRow" style="display: none;">
+                        <select style="width: 182px" name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo">
+                            <?php
+                            print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+
+                            try {
+                                $dataSelect = array();
+                                $sqlSelect = "SELECT gibbonSchoolYear.name AS year, gibbonSchoolYearID FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
+                                $resultSelect=$connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            }
+                            catch(PDOException $e) {
+                                print "<div class='error'>" . $e->getMessage() . "</div>" ;
+                            }
+                            $yearCurrent = '';
+                            $yearLast = '';
+                            while ($rowSelect=$resultSelect->fetch()) {
+                                print "<option value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["year"]) . "</option>" ;
+                            }
+                            ?>
+                        </select>
+                        <script type="text/javascript">
+                            var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
+                            gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Please select...') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+                        </script>
+                    </div>
+
+                    <select name="action" id="action" style='width:220px; float: right; margin-right: 1px;'>
+                        <option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+                        <option value="Duplicate"><?php echo __($guid, 'Duplicate') ?></option>
+                        <option value="DuplicateParticipants"><?php echo __($guid, 'Duplicate With Participants') ?></option>
+                        <option value="Delete"><?php echo __($guid, 'Delete') ?></option>
+                    </select>
+                    <script type="text/javascript">
+                        var action=new LiveValidation('action');
+                        action.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Select action') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+
+                        $(document).ready(function(){
+                            $('#action').change(function () {
+                                if ($(this).val() == 'Duplicate' || $(this).val() == 'DuplicateParticipants') {
+                                    $("#optionRow").slideDown("fast", $("#optionRow").css("display","block"));
+                                    gibbonSchoolYearIDCopyTo.enable();
+                                } else {
+                                    $("#optionRow").css("display","none");
+                                    gibbonSchoolYearIDCopyTo.disable();
+                                }
+                            });
+                        });
+
+                    </script>
+                    <?php
+            echo '</div>';
+
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
@@ -166,6 +224,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo "<th style='width: 100px'>";
             echo __($guid, 'Actions');
             echo '</th>';
+            echo '<th style=\'text-align: center\'>'; ?>
+            <script type="text/javascript">
+                $(function () {
+                    $('.checkall').click(function () {
+                        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+                    });
+                });
+            </script>
+            <?php
+            echo "<input type='checkbox' class='checkall'>";
+            echo '</th>';
             echo '</tr>';
 
             $count = 0;
@@ -187,7 +256,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     } else {
                         $rowNum = 'odd';
                     }
-                    ++$count;
 
                     if ($row['active'] == 'N') {
                         $rowNum = 'error';
@@ -272,10 +340,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
                     echo '</td>';
+                    echo '<td>';
+                    echo "<input name='gibbonActivityID-$count' value='".$row['gibbonActivityID']."' type='hidden'>";
+                    echo "<input type='checkbox' name='check-$count' id='check-$count'>";
+                    echo '</td>';
                     echo '</tr>';
+
+                    ++$count;
                 }
             }
             echo '</table>';
+            echo '</fieldset>';
+
+            echo "<input name='count' value='$count' type='hidden'>";
+            echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
+            echo '</form>';
 
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
                 printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');

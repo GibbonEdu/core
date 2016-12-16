@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/plannerSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Planner Templates') ?></h3>
 				</td>
 			</tr>
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -114,9 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=10><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Access Settings') ?></h3>
 				</td>
 			</tr>
@@ -132,7 +132,30 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='shareUnitOutline'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -155,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -178,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -201,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -212,9 +235,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3>Miscellaneous</h3>
 				</td>
 			</tr>
@@ -230,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -241,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

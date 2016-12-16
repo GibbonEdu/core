@@ -70,6 +70,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 exit();
             }
 
+            // Clean up the application form relationships
+            try {
+                $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+                $sql = 'DELETE FROM gibbonApplicationFormRelationship WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            // Clean up the links between this and other forms
+            try {
+                $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+                $sql = 'DELETE FROM gibbonApplicationFormLink WHERE gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");
         }

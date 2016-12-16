@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summary.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/in_summary.php'>";
     echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
 	<tr>
-		<td> 
+		<td>
 			<b><?php echo __($guid, 'Descriptor') ?></b><br/>
 			<span class="emphasis small"></span>
 		</td>
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 		</td>
 	</tr>
 	<tr>
-		<td> 
+		<td>
 			<b><?php echo __($guid, 'Alert Level') ?></b><br/>
 			<span class="emphasis small"></span>
 		</td>
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 		</td>
 	</tr>
 	<tr>
-		<td> 
+		<td>
 			<b><?php echo __($guid, 'Roll Group') ?></b><br/>
 			<span class="emphasis small"></span>
 		</td>
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 		</td>
 	</tr>
 	<tr>
-		<td> 
+		<td>
 			<b><?php echo __($guid, 'Year Group') ?></b><br/>
 			<span class="emphasis small"></span>
 		</td>

@@ -60,8 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
     
-    require_once './modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo);
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {
         $types = $_POST['types'];

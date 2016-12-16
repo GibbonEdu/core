@@ -17,26 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Prevent breakage of back button on POST pages
-ini_set('session.cache_limiter', 'private');
-session_cache_limiter(false);
 
-//Gibbon system-wide includes
-if (file_exists('./config.php')) {
-    include './config.php';
-} else { //no config, so go to installer
-    $URL = './installer/install.php';
-    header("Location: {$URL}");
-    exit();
-}
-include './functions.php';
-include './version.php';
+// Gibbon system-wide include
+include './gibbon.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -85,23 +69,10 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
 }
 
-//Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', './i18n');
-        textdomain('gibbon');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
-    }
-}
-
-setStringReplacementList($connection2, $guid);
-
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
     if ($_SESSION[$guid]['calendarFeedPersonal'] == '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
-        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/autoload.php';
+        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/vendor/autoload.php';
         $client2 = new Google_Client();
         $client2->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
         $service = new Google_Service_Calendar($client2);
@@ -154,14 +125,14 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<title>
 				<?php
                 echo $_SESSION[$guid]['organisationNameShort'].' - '.$_SESSION[$guid]['systemName'];
-    if ($_SESSION[$guid]['address'] != '') {
-        if (strstr($_SESSION[$guid]['address'], '..') == false) {
-            if (getModuleName($_SESSION[$guid]['address']) != '') {
-                echo ' - '.__($guid, getModuleName($_SESSION[$guid]['address']));
-            }
-        }
-    }
-    ?>
+                if ($_SESSION[$guid]['address'] != '') {
+                    if (strstr($_SESSION[$guid]['address'], '..') == false) {
+                        if (getModuleName($_SESSION[$guid]['address']) != '') {
+                            echo ' - '.__($guid, getModuleName($_SESSION[$guid]['address']));
+                        }
+                    }
+                }
+                ?>
 			</title>
 			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
@@ -188,7 +159,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-form/jquery.form.js"></script>
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.mini.js"></script>
+			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.min.js"></script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox-compressed.js"></script>
 			<script type="text/javascript"> var tb_pathToImage="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/loadingAnimation.gif"</script>
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
@@ -301,7 +272,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			 	apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
-			 	relative_urls: false
+			 	relative_urls: false,
+                default_link_target: "_blank"
 			 });
 			</script>
 			<style>
@@ -376,15 +348,21 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						</div>
 						<div id="header-menu">
 							<?php
-                                //Get main menu
-                                if ($cacheLoad) {
-                                    $mainMenu = new Gibbon\menuMain();
-                                    $mainMenu->setMenu();
-                                }
-								if (isset($_SESSION[$guid]['mainMenu'])) {
-									echo $_SESSION[$guid]['mainMenu'];
-								}
-								?>
+                            //Get main menu
+                            $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
+                            if ($cacheLoad) {
+                                $mainMenu->setMenu();
+                            }
+
+                            // Display the main menu
+							echo $mainMenu->getMenu();
+
+                            //Display notification temp_array
+                            echo "<div class='notificationTray'>";
+                                echo getNotificationTray($connection2, $guid, $cacheLoad);
+                            echo "</div>";
+
+							?>
 						</div>
 					</div>
 					<div id="content-wrap">
@@ -392,8 +370,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         //Allow for wide pages (no sidebar)
                         if ($sidebar == 'false') {
                             echo "<div id='content-wide'>";
-                                //Invoke and show Module Menu
-                                $menuModule = new Gibbon\menuModule();
+
+                            //Invoke and show Module Menu
+                            $menuModule = new Gibbon\menuModule($gibbon, $pdo);
+
+                            // Display the module menu
                             echo $menuModule->getMenu('mini');
 
                             //No closing </div> required here
@@ -402,9 +383,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         }
 
 						if ($_SESSION[$guid]['address'] == '') {
-							if (isset($_GET['return'])) {
-								returnProcess($guid, $_GET['return'], null, null);
-							}
+                            $returns = array();
+                        	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
+                        	if (isset($_GET['return'])) {
+                        	    returnProcess($guid, $_GET['return'], null, $returns);
+                        	}
 						}
 
                         //Show index page Content
@@ -654,7 +637,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         if ($sidebar != 'false') {
                             ?>
 							<div id="sidebar">
-								<?php sidebar($connection2, $guid);
+								<?php sidebar($gibbon, $pdo);
                             ?>
 							</div>
 							<br style="clear: both">

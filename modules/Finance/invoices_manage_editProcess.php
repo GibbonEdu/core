@@ -40,10 +40,11 @@ $status = $_GET['status'];
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
 $monthOfIssue = $_GET['monthOfIssue'];
 $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
 if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_edit.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_edit.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_edit.php') == false) {
         $URL .= '&return=error0';
@@ -153,6 +154,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                         //Organise Fees
                         $fees = array();
+                        $gibbonFinanceFeeCategoryIDList = '';
                         foreach ($order as $fee) {
                             $fees[$fee]['name'] = $_POST['name'.$fee];
                             $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee];
@@ -160,6 +162,19 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             $fees[$fee]['feeType'] = $_POST['feeType'.$fee];
                             $fees[$fee]['gibbonFinanceFeeID'] = $_POST['gibbonFinanceFeeID'.$fee];
                             $fees[$fee]['description'] = $_POST['description'.$fee];
+
+                            $gibbonFinanceFeeCategoryIDList .= $_POST['gibbonFinanceFeeCategoryID'.$fee].",";
+                        }
+                        $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
+
+                        //Write to fee categories
+                        try {
+                            $dataTemp = array('gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                            $sqlTemp = "UPDATE gibbonFinanceInvoice SET gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
+                            $resultTemp = $connection2->prepare($sqlTemp);
+                            $resultTemp->execute($dataTemp);
+                        } catch (PDOException $e) {
+                            $partialFail = true;
                         }
 
                         //Add fees to invoice

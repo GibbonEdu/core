@@ -271,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 				<td class="right">
 					<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
-					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
+					<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" class="standardWidth"><br/>
 
 					<script type="text/javascript">
 						var passwordNew=new LiveValidation('passwordNew');
@@ -320,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
+					<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" class="standardWidth">
 					<script type="text/javascript">
 						var passwordConfirm=new LiveValidation('passwordConfirm');
 						passwordConfirm.add(Validate.Presence);
@@ -823,6 +823,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					</select>
 				</td>
 			</tr>
+            <tr>
+                <td>
+                    <b><?php echo __($guid, 'Birth Certificate Scan') ?></b><br/>
+                    <span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
+                </td>
+                <td class="right">
+                    <input type="file" name="birthCertificateScan" id="birthCertificateScan"><br/><br/>
+                    <script type="text/javascript">
+                        var birthCertificateScan=new LiveValidation('birthCertificateScan');
+                        birthCertificateScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+                    </script>
+                </td>
+            </tr>
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Ethnicity') ?></b><br/>
@@ -893,7 +906,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Citizenship 1 Passport Scan') ?></b><br/>

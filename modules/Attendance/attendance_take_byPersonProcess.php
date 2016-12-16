@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 } else {
                     //Write to database
                     require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
-                    $attendance = new Module\Attendance\attendanceView(NULL, NULL, NULL);
+                    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
                     $fail = false;
                     $type = $_POST['type'];

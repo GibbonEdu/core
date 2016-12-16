@@ -34,19 +34,21 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $password = randomPassword(8);
 
 //Check email address is not blank
-$input = $_POST['email'];
+if (isset($_GET['input']))
+    $input = $_GET['input'];
+else
+    $input = $_POST['email'];
+$step = $_GET['step'];
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=passwordReset.php';
+$URLSuccess1 = $_SESSION[$guid]['absoluteURL'].'/index.php';
 
-if ($input == '') {
+if ($input == '' or ($step != 1 and $step != 2)) {
     $URL = $URL.'&return=error0';
     header("Location: {$URL}");
 }
 //Otherwise proceed
 else {
-    //If answer insert fails...
-    $salt = getSalt();
-    $passwordStrong = hash('sha256', $salt.$password);
     try {
         $data = array('email' => $input, 'username' => $input);
         $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
@@ -67,24 +69,35 @@ else {
         $email = $row['email'];
         $username = $row['username'];
 
-        try {
-            $data = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='Y' WHERE gibbonPersonID=:gibbonPersonID";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL = $URL.'&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        if ($step == 1) { //This is the request phase
+            //Generate key
+            $key = randomPassword(40);
 
-        if ($result->rowCount() != 1) {
-            $URL = $URL.'&return=error2';
-            header("Location: {$URL}");
-        } else {
+            //Try to delete other recors for this user
+            try {
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) { }
+
+            //Insert key record
+            try {
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'key' => $key);
+                $sql = "INSERT INTO gibbonPersonReset SET gibbonPersonID=:gibbonPersonID, `key`=:key";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL = $URL.'&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+            $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
+
+            //Send email
             $to = $email;
-            $subject = $_SESSION[$guid]['organisationNameShort'].' Gibbon Password Reset';
-            $body = "Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n".$_SESSION[$guid]['systemName'].' Administrator';
+            $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Password Reset');
+            $body = sprintf(__($guid, 'A password reset request has been initiated for account %1$s, which is registered to this email address.%2$sIf you did not initiate this request, please ignore this email.%2$sIf you do wish to reset your password, please use the link below to access the reset form:%2$s%3$s%2$s%4$s'), $username, "\n\n", $_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key", $_SESSION[$guid]['systemName']." Administrator");
             $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
 
             if (mail($to, $subject, $body, $headers)) {
@@ -93,6 +106,86 @@ else {
             } else {
                 $URL = $URL.'&return=error3';
                 header("Location: {$URL}");
+            }
+        }
+        else { //This is the confirmation/reset phase
+            //Get URL parameters
+        	$input = $_GET['input'];
+        	$key = $_GET['key'];
+        	$gibbonPersonResetID = $_GET['gibbonPersonResetID'];
+
+        	//Verify authenticity of this request and check it is fresh (within 48 hours)
+        	try {
+                $data = array('key' => $key, 'gibbonPersonResetID' => $gibbonPersonResetID);
+                $sql = "SELECT * FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL = $URL.'&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+        	if ($result->rowCount() != 1) {
+                $URL = $URL.'&return=error2';
+                header("Location: {$URL}");
+        	} else {
+                $row = $result->fetch();
+                $gibbonPersonID = $row['gibbonPersonID'];
+                $passwordNew = $_POST['passwordNew'];
+                $passwordConfirm = $_POST['passwordConfirm'];
+
+                //Check passwords are not blank
+                if ($passwordNew == '' or $passwordConfirm == '') {
+                    $URL .= '&return=error1';
+                    header("Location: {$URL}");
+                } else {
+                    //Check that new password is not same as old password
+                    if ($password == $passwordNew) {
+                        $URL .= '&return=error7';
+                        header("Location: {$URL}");
+                    } else {
+                        //Check strength of password
+                        $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
+
+                        if ($passwordMatch == false) {
+                            $URL .= '&return=error6';
+                            header("Location: {$URL}");
+                        } else {
+                            //Check new passwords match
+                            if ($passwordNew != $passwordConfirm) {
+                                $URL .= '&return=error4';
+                                header("Location: {$URL}");
+                            } else {
+                                //Update password
+                                $salt = getSalt();
+                                $passwordStrong = hash('sha256', $salt.$passwordNew);
+                                try {
+                                    $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
+                                    $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
+                                } catch (PDOException $e) {
+                                    $URL .= '&return=error2';
+                                    header("Location: {$URL}");
+                                    exit();
+                                }
+
+                                //Remove requests for this person
+                                try {
+                                    $data = array('gibbonPersonID' => $gibbonPersonID);
+                                    $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
+                                } catch (PDOException $e) { }
+
+                                //Return
+                                $URL = $URLSuccess1.'?return=success1';
+                                header("Location: {$URL}");
+                            }
+                        }
+                    }
+                }
             }
         }
     }

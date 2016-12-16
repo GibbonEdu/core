@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
     $unitOutlineTemplate = $_POST['unitOutlineTemplate'];
     $smartBlockTemplate = $_POST['smartBlockTemplate'];
     $makeUnitsPublic = $_POST['makeUnitsPublic'];
+    $shareUnitOutline = $_POST['shareUnitOutline'];
     $allowOutcomeEditing = $_POST['allowOutcomeEditing'];
     $sharingDefaultParents = $_POST['sharingDefaultParents'];
     $sharingDefaultStudents = $_POST['sharingDefaultStudents'];
@@ -88,6 +89,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
     try {
         $data = array('value' => $makeUnitsPublic);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='makeUnitsPublic'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $shareUnitOutline);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='shareUnitOutline'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

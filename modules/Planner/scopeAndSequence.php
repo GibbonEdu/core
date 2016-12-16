@@ -41,28 +41,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     if (isset($_GET['gibbonCourseIDs'])) {
         $gibbonCourseIDs = $_GET['gibbonCourseIDs'];
     }
+    $gibbonYearGroupID = '';
+    if (isset($_GET['gibbonYearGroupID'])) {
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+    }
     ?>
 
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
+            <tr>
 				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Course') ?> *</b><br/>
                     <span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
-					<select multiple class="standardWidth" name="gibbonCourseIDs[]" style="height: 150px">
+					<select multiple class="standardWidth" name="gibbonCourseIDs[]" id="gibbonCourseIDs" style="height: 150px">
 						<?php
                         $currentDepartment = '';
 						$lastDepartment = '';
 
 						try {
 							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, nameShort";
+							$sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND map='Y' ORDER BY department, nameShort";
 							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
+						} catch (PDOException $e) {}
 						while ($rowSelect = $resultSelect->fetch()) {
 							$currentDepartment = $rowSelect['department'];
 							if (($currentDepartment != $lastDepartment) and $currentDepartment != '') {
@@ -75,14 +78,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     								$selected = 'selected';
     							}
                             }
-                            echo "<option $selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                            echo "<option $selected class='".$rowSelect['gibbonYearGroupIDList']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							$lastDepartment = $rowSelect['department'];
 						}
 						?>
 					</select>
 				</td>
 			</tr>
-			<tr>
+            <tr>
+				<td>
+					<b><?php echo __($guid, 'Year Group') ?></b><br/>
+					<span style="font-size: 90%"></span>
+				</td>
+				<td class="right">
+					<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
+						<?php
+                        echo "<option value=''></option>";
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+                            $selected = '';
+                            if ($rowSelect['gibbonYearGroupID'] == $gibbonYearGroupID) {
+                                $selected = 'selected';
+                            }
+                            echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>
+					</select>
+                </td>
+            </tr>
+            <tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/scopeAndSequence.php">
 					<?php echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/scopeAndSequence.php'>".__($guid, 'Clear Filters').'</a> ';?>
@@ -111,24 +141,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
             }
         }
 
+        //Set up stats variables
+        $countCourses = 0 ;
+        $countCoursesNoUnits = 0 ;
+        $coursesNoUnits = '';
+        $countUnits = 0;
+        $countUnitsNoKeywords = 0 ;
+        $unitsNoKeywords = '';
 
         //Cycle through courses
         foreach ($gibbonCourseIDs as $gibbonCourseID) {
             //Check course exists
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseID' => $gibbonCourseID);
-                $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID ORDER BY department, nameShort";
+                $data = array();
+                $sqlWhere = '';
+                if ($gibbonYearGroupID != '') {
+                    $data['gibbonYearGroupID'] = '%'.$gibbonYearGroupID.'%';
+                    $sqlWhere = ' AND gibbonYearGroupIDList LIKE :gibbonYearGroupID ';
+                }
+                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                $data['gibbonCourseID'] = $gibbonCourseID;
+                $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID AND map='Y' $sqlWhere ORDER BY department, nameShort";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
-            } else {
+            if ($result->rowCount() == 1) {
+                $countCourses ++ ;
+
                 $row = $result->fetch();
 
                 //Can this course's units be edited?
@@ -150,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
 
                 try {
                     $dataUnit = array('gibbonCourseID' => $gibbonCourseID);
-                    $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' AND map=\'Y\' ORDER BY ordering, name';
+                    $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' AND gibbonCourse.map=\'Y\' AND gibbonUnit.map=\'Y\' ORDER BY ordering, name';
                     $resultUnit = $connection2->prepare($sqlUnit);
                     $resultUnit->execute($dataUnit);
                 } catch (PDOException $e) {
@@ -161,6 +203,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     echo "<div class='error'>";
                     echo __($guid, 'There are no records to display.');
                     echo '</div>';
+                    $countCoursesNoUnits ++;
+                    $coursesNoUnits .= $row['nameShort'].', ';
                 }
                 else {
                     echo "<table cellspacing='0' style='width: 100%'>";
@@ -179,7 +223,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     echo '</th>';
                     echo '</tr>';
 
-
                     $count = 0;
                     $rowNum = 'odd';
                     while ($rowUnit = $resultUnit->fetch()) {
@@ -189,6 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                             $rowNum = 'odd';
                         }
                         ++$count;
+                        $countUnits ++;
 
                         //COLOR ROW BY STATUS!
                         echo "<tr class=$rowNum>";
@@ -202,14 +246,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         }
                         echo '</td>';
                         echo '<td>';
-                        $tags = explode(',', $rowUnit['tags']);
-                        $tagsOutput = '' ;
-                        foreach ($tags as $tag) {
-                            $tagsOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
+                        if ($rowUnit['tags'] == '') {
+                            $countUnitsNoKeywords ++;
+                            $unitsNoKeywords .= $row['nameShort'].' ('.$rowUnit['name'].'), ';
                         }
-                        if ($tagsOutput != '')
-                            $tagsOutput = substr($tagsOutput, 0, -2);
-                        echo $tagsOutput;
+                        else {
+                            $tags = explode(',', $rowUnit['tags']);
+                            $tagsOutput = '' ;
+                            foreach ($tags as $tag) {
+                                $tagsOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
+                            }
+                            if ($tagsOutput != '')
+                                $tagsOutput = substr($tagsOutput, 0, -2);
+                            echo $tagsOutput;
+                        }
                         echo '</td>';
                         echo '<td>';
                             if ($canEdit) {
@@ -223,6 +273,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 }
             }
         }
+
+        echo "<div class='success'>";
+            echo '<b>'.__($guid, 'Total Courses').'</b>: '.$countCourses.'<br/>';
+            echo '<b>'.__($guid, 'Courses Without Units').'</b>: '.$countCoursesNoUnits.'<br/>';
+            if ($coursesNoUnits != '') {
+                print '<i>'.substr($coursesNoUnits, 0, -2).'</i><br/>';
+            }
+            echo '<b>'.__($guid, 'Total Units').'</b>: '.$countUnits.'<br/>';
+            echo '<b>'.__($guid, 'Units Without Concepts & Keywords').'</b>: '.$countUnitsNoKeywords.'<br/>';
+            if ($unitsNoKeywords != '') {
+                print '<i>'.substr($unitsNoKeywords, 0, -2).'</i><br/>';
+            }
+        echo "</div>";
+
     }
 }
 ?>

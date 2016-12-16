@@ -33,7 +33,91 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Roll Group Summary').'</div>';
     echo '</div>';
 
+    echo '<h2>';
+    echo __($guid, 'Choose Options');
+    echo '</h2>';
+
+    echo '<p>';
+        echo __($guid, 'By default this report counts all students who are enroled in the current academic year and whose status is currently set to full. However, if dates are set, only those students who have start and end dates outside of the specified dates, or have no start and end dates, will be shown (irrespective of their status).');
+    echo '</p>';
+
     $today = time();
+
+    $dateFrom = null;
+    if (isset($_GET['dateFrom']) && $_GET['dateFrom'] != '') {
+        $dateFrom = $_GET['dateFrom'];
+    }
+    $dateTo = null;
+    if (isset($_GET['dateTo']) && $_GET['dateTo'] != '') {
+        $dateTo = $_GET['dateTo'];
+    }
+
+    if (is_null($dateFrom) AND !is_null($dateTo)) {
+        $dateFrom = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
+    }
+    if (is_null($dateTo) AND !is_null($dateFrom)) {
+        if (dateConvertToTimestamp(dateConvert($guid, $dateFrom))>$today) {
+            $dateTo = $dateFrom;
+        }
+        else {
+            $dateTo = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
+        }
+    }
+
+    ?>
+
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
+			<tr>
+				<td style='width: 275px'>
+					<b><?php echo __($guid, 'From Date') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'End date must be after this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
+				</td>
+				<td class="right">
+					<input name="dateFrom" id="dateFrom" maxlength=10 value="<?php echo $dateFrom ?>" type="text" class="standardWidth">
+					<script type="text/javascript">
+						$(function() {
+							$( "#dateFrom" ).datepicker();
+						});
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'To Date') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Start date must be before this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
+				</td>
+				<td class="right">
+					<input name="dateTo" id="dateTo" maxlength=10 value="<?php echo $dateTo ?>" type="text" class="standardWidth">
+					<script type="text/javascript">
+						$(function() {
+							$( "#dateTo" ).datepicker();
+						});
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 class="right">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_rollGroupSummary.php">
+                    <?php echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_rollGroupSummary.php'>".__($guid, 'Clear Filters').'</a>'; ?>
+                    <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+				</td>
+			</tr>
+		</table>
+	</form>
+	<?php
+
+    echo '<h2>';
+    echo __($guid, 'Results');
+    echo '</h2>';
 
     //Get roll groups in current school year
     try {
@@ -47,7 +131,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     //Get all students
     try {
         $dataList = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlList = "SELECT gibbonRollGroup.name AS rollGroup, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollGroup";
+        if (!is_null($dateFrom) AND !is_null($dateTo)) { //Search with dates
+            $dataList['dateFrom'] = dateConvert($guid, $dateFrom);
+            $dataList['dateTo'] = dateConvert($guid, $dateTo);
+            $sqlList = "SELECT gibbonRollGroup.name AS rollGroup, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND (dateStart IS NULL OR dateStart<=:dateTo) AND (dateEnd IS NULL OR dateEnd>=:dateFrom) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollGroup";
+        }
+        else { //Search without dates
+            $sqlList = "SELECT gibbonRollGroup.name AS rollGroup, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollGroup";
+        }
         $resultList = $connection2->prepare($sqlList);
         $resultList->execute($dataList);
     } catch (PDOException $e) {

@@ -126,7 +126,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo __($guid, $moduleName);
+            if ($installed && $modulesSQL[$moduleName][0]['type'] == 'Core')
+                echo __($guid, $moduleName);
+            else
+                echo __($guid, $moduleName, $moduleName);
             echo '</td>';
             if ($installed) {
                 echo '<td>';
@@ -154,7 +157,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             }
             if ($installed) {
                 echo '<td>';
-                echo __($guid, $modulesSQL[$moduleName][0]['description']);
+                if ($modulesSQL[$moduleName][0]['type'] == 'Core')
+                    echo __($guid, __($guid, $modulesSQL[$moduleName][0]['description']));
+                else
+                    echo __($guid, __($guid, $modulesSQL[$moduleName][0]['description']), $moduleName);
                 echo '</td>';
                 echo '<td>';
                 echo __($guid, $modulesSQL[$moduleName][0]['type']);

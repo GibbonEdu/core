@@ -64,9 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Learning Area') ?></b><br/>
 						</td>
 						<td class="right">
@@ -97,12 +97,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 								while ($rowSelect = $resultSelect->fetch()) {
 									echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this school year.') ?></span>
 						</td>
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -167,18 +167,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Blurb') ?></b> 
+						<td colspan=2>
+							<b><?php echo __($guid, 'Blurb') ?></b>
 							<?php echo getEditor($guid,  true, 'description', '', 20) ?>
 						</td>
 					</tr>
+                    <tr>
+                        <td>
+                            <b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+                            <span class="emphasis small"></span>
+                        </td>
+                        <td class="right">
+                            <select name="map" id="map" class="standardWidth">
+                                <option value="Y"><?php echo __($guid, 'Yes') ?></option>
+                                <option value="N"><?php echo __($guid, 'No') ?></option>
+                            </select>
+                        </td>
+                    </tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Enrolable year groups.') ?></span>
 						</td>
 						<td class="right">
-							<?php 
+							<?php
                             $yearGroups = getYearGroups($connection2);
 							if ($yearGroups == '') {
 								echo '<i>'.__($guid, 'No year groups available.').'</i>';

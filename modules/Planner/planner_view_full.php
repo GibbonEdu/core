@@ -1490,7 +1490,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($resultResources->rowCount() > 0) {
                                     $rowResources = $resultResources->fetch();
                                 }
-                                if ($row['role'] == 'Teacher') {
+                                $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                                if ($row['role'] == 'Teacher' or $shareUnitOutline == 'Y') {
                                     //Check for outcomes
                                     try {
                                         $dataOutcomes = array('gibbonUnitID' => $row['gibbonUnitID']);
@@ -1633,9 +1634,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
                         $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
 
-                        require_once './modules/Attendance/src/attendanceView.php';
+                        require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
 
-                        $attendance = new Module\Attendance\attendanceView(NULL, NULL, $pdo );
+                        $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
                         try {
                             $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -1711,7 +1712,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $reason = $rowAtt['reason'];
                                     $comment = $rowAtt['comment'];
 								}
-								
+
                             }
 
                             //$status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite'
@@ -1837,7 +1838,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         $_SESSION[$guid]['sidebarExtra'] .= '</table>';
 
-                    
+
 
                         //Guests
                         try {

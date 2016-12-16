@@ -63,7 +63,7 @@ body {
 #header {
 	margin: -8px 0 0 -1px ;
 	padding: 0 ;
-	height: 158px!important ;
+	height: 170px!important ;
 	background-color: #ffffff ;
 	border-radius: 5px 5px 0 0;
 }
@@ -84,11 +84,12 @@ body {
 #header-menu {
 	color:#fff;
 	font-weight:bold;
-	height: 32px!important;
+	height: 44px!important;
 	margin: 3px 0 0 0 ;
 	background-color: rgba(240,240,240,0.9);
 	border-top: 1px solid rgba(0,0,0,0.15);
 	border-bottom: 1px solid rgba(0,0,0,0.15);
+	z-index: 99;
 }
 #header-finder {
 	float: right ;
@@ -98,7 +99,7 @@ body {
 	top:24px;
 	right:24px;
 	left:auto;
-	width:360px;
+	width:400px;
 }
 #header-finder h2 {
 	text-align: right ;
@@ -229,12 +230,10 @@ img.minorLinkIcon {
 	height: 38px ;
 	max-height: 38px ;
 }
-
 img.minorLinkIconLarge {
 	height: 65px ;
 	max-height: 65px ;
 }
-
 div.minorLinks a {
 	color: #fff;
 }
@@ -249,13 +248,14 @@ div.minorLinks a:hover {
 	list-style: none;
 }
 #nav {
-	height:23px;
+	height:30px;
 	font-weight: bold ;
 	font-size: 90% ;
-	width: 1087px;
-	padding-top: 5px;
+	width: 800px;
+	padding-top: 10px;
 	padding-left: 15px;
 	text-transform: uppercase ;
+	float: left;
 }
 #nav li {
 	position:relative;
@@ -1237,6 +1237,24 @@ table.colorOddEven tr:nth-of-type(even) td {
 /* V13 NEW CLASSES */
 td.wordWrap {
 	overflow-wrap: break-word;
-  	word-wrap: break-word; 
-  	word-break: break-word;
+  	word-wrap: break-word;
+  	word-break: break-word !important;
+}
+
+div.notificationTray {
+	float: right;
+	font-size: 13px;
+	height: 44px;
+	padding-right: 25px;
+	padding-top: 3px;
+	color: #C0C0C0;
+	width: 235px;
+}
+div.notificationTray a {
+	color: #000000;
+}
+div.notificationTray a.inactive {
+	color: #C0C0C0;
+	cursor: default;
+	text-decoration: none;
 }
