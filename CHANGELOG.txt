@@ -52,7 +52,7 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev and Namibian Dollar as currency
-		System: added Bulgarian, Korean, Finnish, German and Odia as development languages
+		System: added Bulgarian, Korean, Finnish, German, Odia and Norwegian as development languages
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken
