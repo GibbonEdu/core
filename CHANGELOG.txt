@@ -74,6 +74,7 @@ v13.0.00
 		Activities: fixed bug which cut one student off print view of attendance print out
 		Activities: fixed translation of blank string in Parent Dashboard Activity view
 		Activities: removed stand along activity copy functionality
+		Activities: interface string fix in activity edit screen
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
 		Attendance: added ability to set partial per-class future absence
 		Attendance: added visual graphing for school-wide Attendance Trends

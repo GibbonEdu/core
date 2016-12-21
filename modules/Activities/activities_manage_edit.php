@@ -702,7 +702,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 								echo __($guid, 'There are no records to display.');
 								echo '</div>';
 							} else {
-								echo '<i><b>Warning</b>: If you delete a guest, any unsaved changes to this planner entry will be lost!</i>';
+								echo '<i><b>Warning</b>: If you delete a staff member, any unsaved changes to this planner entry will be lost!</i>';
 								echo "<table cellspacing='0' style='width: 100%'>";
 								echo "<tr class='head'>";
 								echo '<th>';
