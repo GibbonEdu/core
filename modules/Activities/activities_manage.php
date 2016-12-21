@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_manage.php">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+                    <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_manage.php'>".__($guid, 'Clear Search').'</a>';?>
 					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
@@ -354,6 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             echo "<input name='count' value='$count' type='hidden'>";
             echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
+            echo "<input name='search' value='$search' type='hidden'>";
             echo '</form>';
 
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
