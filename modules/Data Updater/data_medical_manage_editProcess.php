@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $count2 = $_POST['count2'];
                 }
                 for ($i = ($count + 1); $i <= ($count + $count2); ++$i) {
-                    if ($_POST["nameOn$i"] == 'on' and $_POST["gibbonPersonMedicalConditionUpdateID$i"] != '') {
+                    if (isset($_POST["nameOn$i"]) && $_POST["nameOn$i"] == 'on' && $_POST["gibbonPersonMedicalConditionUpdateID$i"] != '') {
                         $dataCond = array();
                         $sqlSetCond = '';
                         if (isset($_POST["nameOn$i"])) {
