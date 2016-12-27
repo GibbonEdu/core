@@ -60,7 +60,6 @@ v13.0.00
 		System: updated PayPal integration to set localecode based on current Gibbon language
 		System: updated the reincarnate image on Default theme
 		System: removed robots meta tag
-		System: added ability to custom order module categories in main menu
 		System: AJAXified Fast Finder
 		System: added ability to search Fast Finder actions using current Gibbon language
 		System: set tinyMCE default target for new links to New Window
@@ -68,7 +67,6 @@ v13.0.00
 		System: notification emails now come from organisation email address, not administrator address
 		System: added interface text to show threshold levels for student alerts
 		System: added Odia to list of languages
-		System: Added system check page with version & extension information
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
@@ -148,6 +146,9 @@ v13.0.00
 		Students: addition of new sub-action to allow viewing of full student profiles, without Notes
 		Students: added date range to Form Group Summary report
 		Students: increased length of student search field
+		System Admin: added ability to custom order module categories in main menu
+		System Admin: added system check page with version & extension information
+		System Admin: coloured rows for inactive module in Manage Modules
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
