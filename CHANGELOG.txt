@@ -165,6 +165,7 @@ v13.0.00
 		User Admin: fixed mime-type issue in user image import function
 		User Admin: added student ID to search in Manage Users
 		User Admin: added birth certificate scan field in Manage Users
+		User Admin: hide inactive modules under Manage Permissions
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
