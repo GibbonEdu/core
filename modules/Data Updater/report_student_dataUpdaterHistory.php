@@ -40,6 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo __($guid, 'Choose Students');
     echo '</h2>';
 
+    $choices = null;
+    if (isset($_POST['members'])) {
+        $choices = $_POST['members'];
+    }
     $nonCompliant = null;
     if (isset($_POST['nonCompliant'])) {
         $nonCompliant = $_POST['nonCompliant'];
@@ -58,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
 					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
-					<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
+					<select name="members[]" id="members[]" multiple class='standardWidth' style="height: 150px">
 						<optgroup label='--<?php echo __($guid, 'Students by Roll Group') ?>--'>
 							<?php
                             try {
@@ -69,7 +73,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
                             } catch (PDOException $e) {
                             }
 							while ($rowSelect = $resultSelect->fetch()) {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+                                $selected = '';
+                                foreach ($choices as $choice) {
+                                    if ($choice == $rowSelect['gibbonPersonID']) {
+                                        $selected = 'selected';
+                                    }
+                                }
+                                echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
 							}
 							?>
 						</optgroup>
@@ -83,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
                             } catch (PDOException $e) {
                             }
 							while ($rowSelect = $resultSelect->fetch()) {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+                                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
 							}
 							?>
 						</optgroup>
@@ -141,11 +151,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
 		</table>
 	</form>
 	<?php
-
-    $choices = null;
-    if (isset($_POST['Members'])) {
-        $choices = $_POST['Members'];
-    }
 
     if (count($choices) > 0) {
         echo '<h2>';

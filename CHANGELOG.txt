@@ -86,6 +86,7 @@ v13.0.00
 		Attendance: tweaked interface language to improve handling of plurals
 		Attendance: fixed non-functional client-side date testing in reports for Students Not Onsite and Students Not Present
 		Data Updater: fixed PHP notice issue in Manage Medical Form Data edit view
+		Data Updater: added selection persistence to student listing in Student Data Updater History report
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
