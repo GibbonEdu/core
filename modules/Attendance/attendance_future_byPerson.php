@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     echo '</div>';
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, 
+        returnProcess($guid, $_GET['return'], null,
         	array( 'warning2' => __($guid, 'Your request was successful, but some data was not properly saved.') .' '. __($guid, 'The specified date is not in the future, or is not a school day.'),
         		   'error7' => __($guid, 'Your request failed because the student has already been marked absent for the full day.'),
         		   'error8' => __($guid, 'Your request failed because the selected date is not in the future.'), )
@@ -61,18 +61,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     }
 
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3>
 						<?php echo __($guid, 'Choose Student') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Student') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -95,13 +95,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Absence Type') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -113,9 +113,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 				</td>
 			</tr>
 			<?php endif; ?>
-			
+
 			<tr id="absencePartialDateRow" <?php if ($absenceType == 'full') { echo "style='display: none'"; } ?>>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 
 						if ($('#absenceType').val()=='partial' ) {
 					 		date.add(Validate.Presence);
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 				$(document).ready(function(){
 					 $("#absenceType").change(function(){
 						if ($('#absenceType').val()=='partial' ) {
-							$("#absencePartialDateRow").slideDown("fast", $("#absencePartialDateRow").css("display","table-row")); 
+							$("#absencePartialDateRow").slideDown("fast", $("#absencePartialDateRow").css("display","table-row"));
 							date.add(Validate.Presence);
 						} else {
 							$("#absencePartialDateRow").css("display","none");
@@ -189,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         	echo '<h4>';
 	    		echo __($guid, 'Attendance Log');
 	    	echo '</h4>';
-			    	
+
             echo "<p><span class='emphasis small'>";
             	echo __($guid, 'The following future absences have been set for the selected student.');
             echo '</span></p>';
@@ -202,23 +202,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 	        	echo '<th>'.__($guid, 'Recorded By').'</th>';
 	        	echo '<th>'.__($guid, 'On').'</th>';
 	        	echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
-	        	
+
 	        echo '</tr>';
 	        while ($rowLog = $resultLog->fetch()) {
 
 	            echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
 
 	            echo '<td>'.date("M j", strtotime($rowLog['date']) ).'</td>';
-	  
+
 
 				echo '<td>';
 	            echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
 
-	            if ( !empty($rowLog['comment']) ) { 
+	            if ( !empty($rowLog['comment']) ) {
 	            	echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
 	        	}
 	            echo '</td>';
-	            
+
 
 	            if ( empty($rowLog['gibbonCourseClassID']) || $rowLog['gibbonCourseClassID'] == 0 ) {
 	            	echo '<td>'.__($guid, 'Roll Group').'</td>';
@@ -242,11 +242,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 	        echo '</table><br/>';
         }
 
-       
+
         // Get timetabled classes for this student
         if ($absenceType == 'partial') {
 			$dateSQL = dateConvert($guid, $date);
-			
+
 	        try {
 	            $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'date' => $dateSQL );
 	            $sqlClasses = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonTTDayDate.date=:date ORDER BY gibbonTTColumnRow.timeStart ASC";
@@ -261,26 +261,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 	        	return;
 	        }
 	    }
-        
+
 
         //Show student form
-         
+
         ?>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_future_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-			<table id="absenceDetailsRow" class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table id="absenceDetailsRow" class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3>
 							<?php echo __($guid, 'Set Future Attendance') ?>
 						</h3>
 					</td>
 				</tr>
-				
-				<?php 
+
+				<?php
 				// Full-day Absenses
 				if ($absenceType=="full") : ?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
 						<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 					</td>
@@ -298,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-							?>." } ); 
+							?>." } );
 						 	dateStart.add(Validate.Presence);
 						</script>
 						 <script type="text/javascript">
@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'End Date') ?></b><br/>
 						<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 					</td>
@@ -327,7 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-							?>." } ); 
+							?>." } );
 						</script>
 						 <script type="text/javascript">
 							$(function() {
@@ -336,16 +336,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						</script>
 					</td>
 				</tr>
-				<?php 
+				<?php
 
-				endif; 
+				endif;
 
 				// Partial Absenses
 				if ($absenceType=="partial") : ?>
 				<input type="hidden" name="dateStart" id="dateStart" maxlength=10 value="<?php echo $date; ?>" class="standardWidth">
 				<input type="hidden" name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo $date; ?>" class="standardWidth">
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Periods Absent') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -369,7 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 				</tr>
 				<?php endif; ?>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'Type') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -378,7 +378,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Reason') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -387,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Comment') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, '255 character limit') ?></span>
 					</td>

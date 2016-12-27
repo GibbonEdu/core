@@ -50,11 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $reportType = (empty($gibbonAttendanceCodeID))? 'types' : 'reasons';
 
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_summary_byDate.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                         } else {
                             echo $_SESSION[$guid]['i18n']['dateFormat'];
                         }
-                        ?>." } ); 
+                        ?>." } );
                         dateStart.add(Validate.Presence);
                     </script>
                      <script type="text/javascript">
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 </td>
             </tr>
             <tr>
-                <td style='width: 275px'> 
+                <td style='width: 275px'>
                     <b><?php echo __($guid, 'End Date') ?> *</b><br/>
                     <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
                 </td>
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                         } else {
                             echo $_SESSION[$guid]['i18n']['dateFormat'];
                         }
-                        ?>." } ); 
+                        ?>." } );
                         dateEnd.add(Validate.Presence);
                     </script>
                      <script type="text/javascript">
@@ -137,13 +137,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 $(document).ready(function(){
                      $("#group").change(function(){
                         if ($('#group').val()=='class' ) {
-                            $("#groupByClass").slideDown("fast", $("#groupByClass").css("display","table-row")); 
+                            $("#groupByClass").slideDown("fast", $("#groupByClass").css("display","table-row"));
                         } else {
                             $("#groupByClass").css("display","none");
                         }
 
                         if ($('#group').val()=='rollGroup' ) {
-                            $("#groupByRollGroup").slideDown("fast", $("#groupByRollGroup").css("display","table-row")); 
+                            $("#groupByRollGroup").slideDown("fast", $("#groupByRollGroup").css("display","table-row"));
                         } else {
                             $("#groupByRollGroup").css("display","none");
                         }
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 });
             </script>
             <tr id="groupByClass" <?php if ($group != 'class') { echo "style='display: none'"; } ?>>
-                <td> 
+                <td>
                     <b><?php echo __($guid, 'Class') ?> *</b><br/>
                     <span class="emphasis small"></span>
                 </td>
@@ -162,15 +162,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                         echo "<option value=''>" . __($guid, 'Please select...') . "</option>" ;
 
                         try {
-                            $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+                            $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
                             $sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
                             $resultSelect=$connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         }
-                        catch(PDOException $e) { 
-                            print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+                        catch(PDOException $e) {
+                            print "<div class='error'>" . $e->getMessage() . "</div>" ;
                         }
-                        
+
 
                         while ($rowSelect=$resultSelect->fetch()) {
                             if ($gibbonCourseClassID==$rowSelect["gibbonCourseClassID"]) {
@@ -178,15 +178,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                             }
                             else {
                                 print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
-                            }                       
+                            }
                         }
 
-                        ?>              
+                        ?>
                     </select>
                 </td>
             </tr>
             <tr id="groupByRollGroup" <?php if ($group != 'rollGroup') { echo "style='display: none'"; } ?>>
-                <td> 
+                <td>
                     <b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
                     <span class="emphasis small"></span>
                 </td>
@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                                 echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
                             }
                         }
-                        ?>              
+                        ?>
                     </select>
                 </td>
             </tr>
@@ -244,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             $dataCodes = array();
             $sqlCodes = "SELECT * FROM gibbonAttendanceCode WHERE active = 'Y' AND reportable='Y' ORDER BY sequenceNumber ASC, name";
         }
-        
+
         $resultCodes = $pdo->executeQuery($dataCodes, $sqlCodes);
     } catch (PDOException $e) {
         echo "<div class='error'>".$e->getMessage().'</div>';
@@ -285,12 +285,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
         if ($reportType == 'types') {
             $attendanceCodes = array();
-            
+
             while( $type = $resultCodes->fetch() ) {
                 $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.name='".$type['name']."' THEN date END) AS ".$type['nameShort'];
                 $attendanceCodes[ $type['direction'] ][] = $type;
             }
-        } 
+        }
         else if ($reportType == 'reasons') {
             $attendanceCodeInfo = $resultCodes->fetch();
             $attendanceReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceReasons') );
@@ -311,9 +311,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             $groupBy = 'GROUP BY gibbonAttendanceLogPerson.gibbonPersonID';
             $orderBy = 'ORDER BY surname, preferredName';
-            if ($sort == 'preferredName') 
+            if ($sort == 'preferredName')
                 $orderBy = 'ORDER BY preferredName, surname';
-            if ($sort == 'rollGroup') 
+            if ($sort == 'rollGroup')
                 $orderBy = ' ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
 
             if ($group == 'all') {
@@ -443,7 +443,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                     }
                 }
                 echo '</tr>';
-                
+
             }
             if ($result->rowCount() == 0) {
                 echo "<tr>";
@@ -453,8 +453,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 echo '</tr>';
             }
             echo '</table>';
-            
-        
+
+
         }
     }
 }

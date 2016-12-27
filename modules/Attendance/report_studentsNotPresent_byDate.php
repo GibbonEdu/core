@@ -67,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+						var currentDate=new LiveValidation('currentDate');
+						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
 							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
 							?>." } );
-						date.add(Validate.Presence);
+						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
                 $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
-                
+
                 $sql .= $orderBy;
 
                 $result = $connection2->prepare($sql);
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         echo '</td>';
                         echo '<td>';
                         $rowRollAttendance = null;
-                        
+
                         if ($resultAttendance->rowCount() < 1) {
                             echo '<i>Not registered</i>';
                         } else {
