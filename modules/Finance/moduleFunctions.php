@@ -183,7 +183,6 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
         $resultLock = $connection2->query($sqlLock);
     } catch (PDOException $e) {
         $lock = false;
-
         return false;
     }
 
@@ -265,6 +264,12 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
                 }
             }
         }
+
+        //Unlock tables
+        try {
+            $sql = 'UNLOCK TABLES';
+            $result = $connection2->query($sql);
+        } catch (PDOException $e) {}
     }
 }
 
@@ -275,11 +280,10 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
     $lock = true;
     if ($locking) {
         try {
-            $sqlLock = 'LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ';
+            $sqlLock = 'LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ, gibbonAction READ, gibbonPermission READ';
             $resultLock = $connection2->query($sqlLock);
         } catch (PDOException $e) {
             $lock = false;
-
             return false;
         }
     }
@@ -397,6 +401,12 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
                 }
             }
         }
+
+        //Unlock tables
+        try {
+            $sql = 'UNLOCK TABLES';
+            $result = $connection2->query($sql);
+        } catch (PDOException $e) {}
     }
 }
 
@@ -520,6 +530,12 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                 }
             }
         }
+
+        //Unlock tables
+        try {
+            $sql = 'UNLOCK TABLES';
+            $result = $connection2->query($sql);
+        } catch (PDOException $e) {}
     }
 }
 
