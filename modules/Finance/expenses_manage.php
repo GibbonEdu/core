@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Status') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Budget') ?></b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -286,20 +286,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 									}
 									//GET THE DATA ACCORDING TO FILTERS
 									if ($highestAction == 'Manage Expenses_all') { //Access to everything
-										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-											FROM gibbonFinanceExpense 
-											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus 
+										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+											FROM gibbonFinanceExpense
+											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus
 											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
 									} else { //Access only to own budgets
 										$data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
 										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
-											FROM gibbonFinanceExpense 
-											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
+											FROM gibbonFinanceExpense
+											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
 											JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus 
+											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus
 											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
 									}
 									$result = $connection2->prepare($sql);
@@ -427,9 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         if ($count < 1) {
                             echo '<tr>';
                             echo '<td colspan=7>';
-                            echo "<div class='error'>";
                             echo __($guid, 'There are no records to display.');
-                            echo '</div>';
                             echo '</td>';
                             echo '</tr>';
                         }
