@@ -56,13 +56,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         $budgetsAccess = false;
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
         $budgetsAll = null;
+        echo $highestAction;
         if ($highestAction == 'Manage Expenses_all') {
             $budgetsAll = getBudgets($connection2);
             $budgetsAccess = true;
         } else {
-            foreach ($budgets as $budget) {
-                if ($budget[2] == 'Full' or $budget[2] == 'Write' or $budget[2] == 'READ') {
-                    $budgetsAccess = true;
+            if (is_array($budgets) && count($budgets)>0) {
+                foreach ($budgets as $budget) {
+                    if ($budget[2] == 'Full' or $budget[2] == 'Write' or $budget[2] == 'READ') {
+                        $budgetsAccess = true;
+                    }
                 }
             }
         }

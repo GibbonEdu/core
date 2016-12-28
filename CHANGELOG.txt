@@ -97,6 +97,7 @@ v13.0.00
 		Finance: made filters persist when using pagination links in Manage Invoicees
 		Finance: fixed no record display in Manage Expenses
 		Finance: removed edit link in return message on successful add in Manage Expense Requests
+		Finance: fixed PHP Notice issue when checking for budget access
 		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page

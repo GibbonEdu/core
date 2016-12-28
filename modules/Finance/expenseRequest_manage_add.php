@@ -49,9 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         //Check if have Full or Write in any budgets
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
         $budgetsAccess = false;
-        foreach ($budgets as $budget) {
-            if ($budget[2] == 'Full' or $budget[2] == 'Write') {
-                $budgetsAccess = true;
+        if (is_array($budgets) && count($budgets)>0) {
+            foreach ($budgets as $budget) {
+                if ($budget[2] == 'Full' or $budget[2] == 'Write') {
+                    $budgetsAccess = true;
+                }
             }
         }
         if ($budgetsAccess == false) {

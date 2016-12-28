@@ -46,9 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         //Check if have Full or Write in any budgets
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
         $budgetsAccess = false;
-        foreach ($budgets as $budget) {
-            if ($budget[2] == 'Full' or $budget[2] == 'Write') {
-                $budgetsAccess = true;
+        if (is_array($budgets) && count($budgets)>0) {
+            foreach ($budgets as $budget) {
+                if ($budget[2] == 'Full' or $budget[2] == 'Write') {
+                    $budgetsAccess = true;
+                }
             }
         }
         if ($budgetsAccess == false) {
@@ -105,14 +107,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         }
                         ?>
 						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_viewProcess.php' ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Basic Information') ?></h3>
 									</td>
 								</tr>
 								<tr>
-									<td style='width: 275px'> 
+									<td style='width: 275px'>
 										<b><?php echo __($guid, 'Budget Cycle') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -140,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td style='width: 275px'> 
+									<td style='width: 275px'>
 										<b><?php echo __($guid, 'Budget') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -148,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Title') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -156,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Status') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -164,9 +166,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td colspan=2> 
+									<td colspan=2>
 										<b><?php echo __($guid, 'Description') ?></b>
-										<?php 
+										<?php
                                             echo '<p>';
 											echo $row['body'];
 											echo '</p>'
@@ -174,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Total Cost') ?> *</b><br/>
 										<span style="font-size: 90%">
 											<i>
@@ -193,16 +195,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
-								
+
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -210,30 +212,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</tr>
 								<tr>
-									<td colspan=2> 
+									<td colspan=2>
 										<b><?php echo __($guid, 'Purchase Details') ?></b>
-										<?php 
+										<?php
                                             echo '<p>';
 											echo $row['purchaseDetails'];
 											echo '</p>'
                                         ?>
 									</td>
 								</tr>
-							
+
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Log') ?></h3>
 									</td>
 								</tr>
 								<tr>
-									<td colspan=2> 
+									<td colspan=2>
 										<?php
                                         echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
                         				?>
 									</td>
 								</tr>
 								<tr>
-									<td colspan=2> 
+									<td colspan=2>
 										<b><?php echo __($guid, 'Comment') ?></b><br/>
 										<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 									</td>
