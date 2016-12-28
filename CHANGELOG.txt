@@ -94,6 +94,7 @@ v13.0.00
 		Finance: fixed bug in Paid - Partial filter in invoice manage view
 		Finance: added filter by fee category in invoice manage view
 		Finance: made year choice persist when using search in Manage Fees
+		Finance: made filters persist when using pagination links in Manage Invoicees
 		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page
