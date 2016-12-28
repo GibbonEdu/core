@@ -99,6 +99,7 @@ v13.0.00
 		Finance: removed edit link in return message on successful add in Manage Expense Requests
 		Finance: fixed PHP Notice issue when checking for budget access
 		Finance: fixed sidebar PHP exception when approving/rejecting an expense request
+		Finance: fixed background repeat issue in Show/Hide button in fee blocks
 		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page
