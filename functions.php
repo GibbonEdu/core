@@ -2820,121 +2820,119 @@ function sidebar($gibbon, $pdo)
 			<?php
 
         } //End Check for Google Auth
-            if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
-            ?>
-			<h2>
-				<?php echo __($guid, 'Login'); ?>
-			</h2>
-			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q'];
-}
-                ?>">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Username'); ?></b>
-						</td>
-						<td class="right">
-							<input name="username" id="username" maxlength=20 type="text" style="width:120px">
-							<script type="text/javascript">
-								var username=new LiveValidation('username', {onlyOnSubmit: true });
-								username.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Password'); ?></b>
-						</td>
-						<td class="right">
-							<input name="password" id="password" maxlength=30 type="password" style="width:120px">
-							<script type="text/javascript">
-								var password=new LiveValidation('password', {onlyOnSubmit: true });
-								password.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr class='schoolYear' id='schoolYear'>
-						<td>
-							<b><?php echo __($guid, 'School Year'); ?></b>
-						</td>
-						<td class="right">
-							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['status'] == 'Current') {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
-							</select>
-						</td>
-					</tr>
-					<tr class='language' id='language'>
-						<td>
-							<b><?php echo __($guid, 'Language'); ?></b>
-						</td>
-						<td class="right">
-							<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['systemDefault'] == 'Y') {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-						</td>
-						<td class="right">
+        if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
+        ?>
+		<h2>
+			<?php echo __($guid, 'Login'); ?>
+		</h2>
+		<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q']; } ?>">
+			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
+				<tr>
+					<td>
+						<b><?php echo __($guid, 'Username'); ?></b>
+					</td>
+					<td class="right">
+						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
+						<script type="text/javascript">
+							var username=new LiveValidation('username', {onlyOnSubmit: true });
+							username.add(Validate.Presence);
+						</script>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<b><?php echo __($guid, 'Password'); ?></b>
+					</td>
+					<td class="right">
+						<input name="password" id="password" maxlength=30 type="password" style="width:120px">
+						<script type="text/javascript">
+							var password=new LiveValidation('password', {onlyOnSubmit: true });
+							password.add(Validate.Presence);
+						</script>
+					</td>
+				</tr>
+				<tr class='schoolYear' id='schoolYear'>
+					<td>
+						<b><?php echo __($guid, 'School Year'); ?></b>
+					</td>
+					<td class="right">
+						<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
 							<?php
-                            echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo '$(".schoolYear").hide();';
-                echo '$(".language").hide();';
-                echo '$(".show_hide").fadeIn(1000);';
-                echo '$(".show_hide").click(function(){';
-                echo '$(".schoolYear").fadeToggle(1000);';
-                echo '$(".language").fadeToggle(1000);';
-                echo '});';
-                echo '});';
-                echo '</script>'; ?>
-							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="Login">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+                            try {
+                                $dataSelect = array();
+                                $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+                                $resultSelect = $connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                $selected = '';
+                                if ($rowSelect['status'] == 'Current') {
+                                    $selected = 'selected';
+                                }
+                                echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                            }
+                            ?>
+						</select>
+					</td>
+				</tr>
+				<tr class='language' id='language'>
+					<td>
+						<b><?php echo __($guid, 'Language'); ?></b>
+					</td>
+					<td class="right">
+						<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+							<?php
+                            try {
+                                $dataSelect = array();
+                                $sqlSelect = "SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name";
+                                $resultSelect = $connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                $selected = '';
+                                if ($rowSelect['systemDefault'] == 'Y') {
+                                    $selected = 'selected';
+                                }
+                                echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                            }
+                            ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td class="right">
+						<?php
+                        echo "<script type='text/javascript'>";
+                            echo '$(document).ready(function(){';
+                            echo '$(".schoolYear").hide();';
+                            echo '$(".language").hide();';
+                            echo '$(".show_hide").fadeIn(1000);';
+                            echo '$(".show_hide").click(function(){';
+                            echo '$(".schoolYear").fadeToggle(1000);';
+                            echo '$(".language").fadeToggle(1000);';
+                            echo '});';
+                            echo '});';
+                        echo '</script>'; ?>
+						<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="right" colspan=2>
+						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+						<input type="submit" value="Login">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<?php
 
-            }
+        }
     }
 
     //Invoke and show Module Menu
