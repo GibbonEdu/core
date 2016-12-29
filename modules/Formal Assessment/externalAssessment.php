@@ -47,10 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     ?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
 				</td>
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'All Students') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Include all students, regardless of status and current enrolment. Some data may not display.') ?></span>
 				</td>
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search");
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search&allStudents=$allStudents");
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         echo '</table>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search");
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search&allStudents=$allStudents");
         }
     }
 }
