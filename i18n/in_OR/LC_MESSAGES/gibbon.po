@@ -62477,7 +62477,7 @@ msgstr ""
 #: .git/modules/School Admin/gradeScales_manage.php:33
 #: modules/School Admin/gradeScales_manage.php:33
 msgid ""
-"Grade scales are used through the ARR modules to control what grades can be "
+"Grade scales are used through the Assess modules to control what grades can be "
 "entered into the system. Editing some of the inbuilt scales can impact other "
 "areas of the system: it is advised to take a backup of the entire system "
 "before doing this."
