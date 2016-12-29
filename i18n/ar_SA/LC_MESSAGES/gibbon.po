@@ -71308,7 +71308,7 @@ msgstr ""
 
 #: modules/Library/report_viewOverdueItems.php:54
 #: modules/Library/report_viewOverdueItems.php:52
-msgid "Include all studenusersts, regardless of status and current enrolment."
+msgid "Include all users, regardless of status and current enrolment."
 msgstr ""
 
 #: modules/School Admin/behaviourSettings.php:225 Admin/behaviourSettings.php:237

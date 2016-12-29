@@ -55701,7 +55701,7 @@ msgstr ""
 #: modules/Library/report_viewOverdueItems.php:52
 #: .git/modules/Library/report_viewOverdueItems.php:52
 #: modules/Library/report_viewOverdueItems.php:52
-msgid "Include all studenusersts, regardless of status and current enrolment."
+msgid "Include all users, regardless of status and current enrolment."
 msgstr ""
 
 #: .git/modules/Library/report_viewOverdueItems.php:99

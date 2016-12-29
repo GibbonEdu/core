@@ -113,6 +113,7 @@ v13.0.00
 		Library: fixed issue preventing Name field from being set on import from Google Books
 		Library: fixed issue preventing ID and Producer field validation from firing on submit of Add in Manage Catalog
 		Library: fixed colspan issue in View Overdue Items
+		Library: fixed interface string issue in View Overdue Items
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
 		Markbook: removed Learning Area rubrics from multiple column add

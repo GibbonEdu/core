@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Ignore Status') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Include all studenusersts, regardless of status and current enrolment.') ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Include all users, regardless of status and current enrolment.') ?></span>
 				</td>
 				<td class="right">
 					<?php
