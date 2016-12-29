@@ -398,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "name=$name&producer=$producer&category=$category&collection=$collection");
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "name=$name&producer=$producer&category=$category&collection=$collection&everything=$everything");
         }
 
         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%; border: 1px solid #444'>";
@@ -518,7 +518,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         echo '</table>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "name=$name&producer=$producer&category=$category&collection=$collection");
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "name=$name&producer=$producer&category=$category&collection=$collection&everything=$everything");
         }
     }
     echo '</div>';
