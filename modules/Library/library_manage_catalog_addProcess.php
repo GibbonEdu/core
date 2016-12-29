@@ -39,8 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 } else {
     //Get general fields
     $gibbonLibraryTypeID = $_POST['type'];
-    $id = $_POST['id'];
-    $name = $_POST['name'];
+    $id = $_POST['idCheck'];
+    $name = $_POST['name2'];
     $producer = $_POST['producer'];
     $vendor = $_POST['vendor'];
     $purchaseDate = null;
