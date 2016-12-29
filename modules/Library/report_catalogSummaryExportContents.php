@@ -60,11 +60,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 	} else {
 		$sqlWhere = substr($sqlWhere, 0, -5);
 	}
-	$sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields
+	$sql = "SELECT gibbonLibraryItem.*
 		FROM gibbonLibraryItem
 			JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) $sqlWhere
 		ORDER BY id";
 	$result = $pdo->executeQuery($data, $sql, '_');
+
+    //Cache TypeFields
+    try {
+        $dataTypeFields = array() ;
+        $sqlTypeFields = "SELECT gibbonLibraryType.* FROM gibbonLibraryType";
+        $resultTypeFields = $connection2->prepare($sqlTypeFields);
+        $resultTypeFields->execute($dataTypeFields);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+    $typeFieldsTemp = $resultTypeFields->fetchAll();
+
+    $typeFields = array();
+    foreach ($typeFieldsTemp as $typeField) {
+        $typeFields[$typeField['gibbonLibraryTypeID']] = $typeField;
+    }
 
 
 	$excel = new Gibbon\Excel('catalogSummary.xlsx');
@@ -163,9 +179,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, $x);
 		//Column H
 		$x = '';
-        $typeFields = unserialize($row['typeFields']);
+        $typeFieldsInner = unserialize($typeFields[$row['gibbonLibraryTypeID']]['fields']);
         $fields = unserialize($row['fields']);
-        foreach ($typeFields as $typeField) {
+        foreach ($typeFieldsInner as $typeField) {
             if (isset($fields[$typeField['name']])) {
                 if ($fields[$typeField['name']] != '') {
                     $x .= __($guid, $typeField['name']).': ';
