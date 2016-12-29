@@ -344,7 +344,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 								if (is_array($typeFields)) {
 									foreach ($typeFields as $typeField) {
 										if (isset($data[$totalFieldCount])) {
-											$typeFieldValues[$typeField['name']] = $data[$totalFieldCount];
+                                            if ($typeField['type'] == 'Date') {
+                                                $typeFieldValues[$typeField['name']] = dateConvert($guid, $data[$totalFieldCount]);
+                                            }
+                                            else {
+                                                $typeFieldValues[$typeField['name']] = $data[$totalFieldCount];
+                                            }
 										}
 										++$totalFieldCount;
 									}

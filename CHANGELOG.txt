@@ -109,6 +109,7 @@ v13.0.00
 		Library: fixed PHP notice issue in Browse Library, when an older entry lacks new fields added to a type
 		Library: reduced memory usage of Catalog Summary export
 		Library: interface string fix in Import Records
+		Library: fixed date format issue in Import Records
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
 		Markbook: removed Learning Area rubrics from multiple column add
