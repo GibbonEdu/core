@@ -492,7 +492,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
                 $fields = unserialize($row['fields']);
                 if (is_array($typeFieldsInner) && count($typeFieldsInner) > 0) {
                     foreach ($typeFieldsInner as $typeField) {
-                        if ($fields[$typeField['name']] != '') {
+                        if (isset($fields[$typeField['name']]) && $fields[$typeField['name']] != '') {
                             echo '<tr>';
                             echo "<td style='vertical-align: top; width: 200px'>";
                             echo '<b>'.($typeField['name']).'</b>';

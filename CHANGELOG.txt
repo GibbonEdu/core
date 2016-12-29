@@ -106,6 +106,7 @@ v13.0.00
 		Library: reduced memory usage of Library browse page
 		Library: fixed bug preventing item details from appearing in drop down in Browse Library
 		Library: added All Fields filter persistence to pagination links in Browse Library
+		Library: fixed PHP notice issue in Browse Library, when an older entry lacks new fields added to a type
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
 		Markbook: removed Learning Area rubrics from multiple column add
