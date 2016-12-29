@@ -488,22 +488,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
                 echo "<tr class='description-$count' id='fields-$count' style='background-color: #fff; display: none'>";
                 echo '<td colspan=5>';
                 echo "<table cellspacing='0' style='width: 100%'>";
-                $typeFields = unserialize($typeFields[$row['gibbonLibraryTypeID']]['fields']);
+                $typeFieldsInner = unserialize($typeFields[$row['gibbonLibraryTypeID']]['fields']);
                 $fields = unserialize($row['fields']);
-                foreach ($typeFields as $typeField) {
-                    if ($fields[$typeField['name']] != '') {
-                        echo '<tr>';
-                        echo "<td style='vertical-align: top; width: 200px'>";
-                        echo '<b>'.($typeField['name']).'</b>';
-                        echo '</td>';
-                        echo "<td style='vertical-align: top'>";
-                        if ($typeField['type'] == 'URL') {
-                            echo "<a target='_blank' href='".$fields[$typeField['name']]."'>".$fields[$typeField['name']].'</a><br/>';
-                        } else {
-                            echo $fields[$typeField['name']].'<br/>';
+                if (is_array($typeFieldsInner) && count($typeFieldsInner) > 0) {
+                    foreach ($typeFieldsInner as $typeField) {
+                        if ($fields[$typeField['name']] != '') {
+                            echo '<tr>';
+                            echo "<td style='vertical-align: top; width: 200px'>";
+                            echo '<b>'.($typeField['name']).'</b>';
+                            echo '</td>';
+                            echo "<td style='vertical-align: top'>";
+                            if ($typeField['type'] == 'URL') {
+                                echo "<a target='_blank' href='".$fields[$typeField['name']]."'>".$fields[$typeField['name']].'</a><br/>';
+                            } else {
+                                echo $fields[$typeField['name']].'<br/>';
+                            }
+                            echo '</td>';
+                            echo '</tr>';
                         }
-                        echo '</td>';
-                        echo '</tr>';
                     }
                 }
                 echo '</table>';
