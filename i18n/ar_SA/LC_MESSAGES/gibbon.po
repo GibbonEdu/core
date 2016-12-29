@@ -65562,7 +65562,7 @@ msgid "Username of person the device is assigned to."
 msgstr "اسم مستخدم الشخص الذي تم تعيين الجهاز إليه."
 
 #: modules/Library/library_import.php:151 modules/Library/library_import.php:148
-msgid "'Name' filed for department responsible for the item."
+msgid "'Name' field for department responsible for the item."
 msgstr ""
 
 #: modules/Library/library_import.php:152 modules/Library/library_import.php:149

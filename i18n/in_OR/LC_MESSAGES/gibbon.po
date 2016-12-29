@@ -54487,7 +54487,7 @@ msgstr ""
 #: modules/Library/library_import.php:148
 #: .git/modules/Library/library_import.php:148
 #: modules/Library/library_import.php:148
-msgid "'Name' filed for department responsible for the item."
+msgid "'Name' field for department responsible for the item."
 msgstr ""
 
 #: .git/modules/Library/library_import.php:149
