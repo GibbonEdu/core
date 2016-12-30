@@ -142,6 +142,7 @@ v13.0.00
 		Planner: added option to share unit outline with users who do not have access to the unit planner, via the lesson planner.
 		Planner: added On Time column to Work Summary by Roll Group report
 		Planner: removed Unit Overview link from Edit view in Lesson Planner
+		Planner: removed Unit Content from View in Lesson Planner (it's now accessible via the Unit Overview link)
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days
