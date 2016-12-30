@@ -176,6 +176,7 @@ v13.0.00
 		System Admin: added ability to custom order module categories in main menu
 		System Admin: added system check page with version & extension information
 		System Admin: coloured rows for inactive module in Manage Modules
+		System Admin: fixed PHP notice in Manage Modules when un-installed modules present
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
@@ -194,6 +195,7 @@ v13.0.00
 		User Admin: added student ID to search in Manage Users
 		User Admin: added birth certificate scan field in Manage Users
 		User Admin: hide inactive modules under Manage Permissions
+		User Admin: fixed bug preventing User Custom Field options from appearing when adding a new field
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
