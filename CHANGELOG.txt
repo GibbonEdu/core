@@ -146,6 +146,7 @@ v13.0.00
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		Resources: added filter persistence to pagination links in View Resources
+		Resources: fixed issue leading to new tags having '' added around them when adding new resource
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
