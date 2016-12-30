@@ -46,14 +46,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $category = null;
     if (isset($_POST['category'])) {
         $category = trim($_POST['category']);
+    } elseif (isset($_GET['category'])) {
+        $category = trim($_GET['category']);
     }
     $purpose = null;
     if (isset($_POST['purpose'])) {
         $purpose = trim($_POST['purpose']);
+    } elseif (isset($_GET['purpose'])) {
+        $purpose = trim($_GET['purpose']);
     }
     $gibbonYearGroupID = null;
     if (isset($_POST['gibbonYearGroupID'])) {
         $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
+    } elseif (isset($_GET['gibbonYearGroupID'])) {
+        $gibbonYearGroupID = trim($_GET['gibbonYearGroupID']);
     }
 
     //Display filters
@@ -273,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
@@ -373,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
         echo '</table>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
         }
     }
 

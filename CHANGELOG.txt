@@ -145,6 +145,7 @@ v13.0.00
 		Planner: removed Unit Content from View in Lesson Planner (it's now accessible via the Unit Overview link)
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
+		Resources: added filter persistence to pagination links in View Resources
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
