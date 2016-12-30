@@ -140,6 +140,7 @@ v13.0.00
 		Planner: switched from JS to HTML for Smart Block placeholders
 		Planner: improved text readability in weekly CLI email
 		Planner: added option to share unit outline with users who do not have access to the unit planner, via the lesson planner.
+		Planner: added On Time column to Work Summary by Roll Group report
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		School Admin: fixed timezone issue in managing special days
