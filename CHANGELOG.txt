@@ -129,6 +129,7 @@ v13.0.00
 		Messenger: added new permission to control usage of canned responses
 		Messenger: added missing post-add edit link when adding a Canned Response
 		Messenger: added Search filter persistence to pagination links in Manage Messages
+		Messenger: added missing post-add edit link when adding a Quick Wall Message
 		Planner: adjusted permissions to allow teachers to duplicate lessons belonging to other people (to reuse them)
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class
 		Planner: added ability to tag units, in order to help build curriculum maps

@@ -42,8 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'New Quick Wall Message').'</div>';
     echo '</div>';
 
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&gibbonMessengerID='.$_GET['editID'];
+    }
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+        returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
     echo "<div class='warning'>";
