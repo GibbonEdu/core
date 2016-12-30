@@ -149,7 +149,7 @@ else {
 		}
 		else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search") ;
 			}
 
 			print "<table cellspacing='0' style='width: 100%'>" ;
@@ -456,7 +456,7 @@ else {
 			print "</table>" ;
 
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "&search=$search") ;
 			}
 		}
 	}
