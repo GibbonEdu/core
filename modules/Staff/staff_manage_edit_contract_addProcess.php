@@ -81,7 +81,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $salaryScale = $_POST['salaryScale'];
                 }
                 $salaryAmount = null;
-                if (isset($_POST['salaryAmount'])) {
+                if (isset($_POST['salaryAmount']) && $_POST['salaryAmount'] != '') {
                     $salaryAmount = $_POST['salaryAmount'];
                 }
                 $salaryPeriod = null;
@@ -93,7 +93,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $responsibility = $_POST['responsibility'];
                 }
                 $responsibilityAmount = null;
-                if (isset($_POST['responsibilityAmount'])) {
+                if (isset($_POST['responsibilityAmount']) && $_POST['responsibilityAmount'] != '') {
                     $responsibilityAmount = $_POST['responsibilityAmount'];
                 }
                 $responsibilityPeriod = null;
@@ -101,7 +101,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $responsibilityPeriod = $_POST['responsibilityPeriod'];
                 }
                 $housingAmount = null;
-                if (isset($_POST['housingAmount'])) {
+                if (isset($_POST['housingAmount']) && $_POST['housingAmount'] != '') {
                     $housingAmount = $_POST['housingAmount'];
                 }
                 $housingPeriod = null;
@@ -109,7 +109,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $housingPeriod = $_POST['housingPeriod'];
                 }
                 $travelAmount = null;
-                if (isset($_POST['travelAmount'])) {
+                if (isset($_POST['travelAmount']) && $_POST['travelAmount'] != '') {
                     $travelAmount = $_POST['travelAmount'];
                 }
                 $travelPeriod = null;
@@ -117,7 +117,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $travelPeriod = $_POST['travelPeriod'];
                 }
                 $retirementAmount = null;
-                if (isset($_POST['retirementAmount'])) {
+                if (isset($_POST['retirementAmount']) && $_POST['retirementAmount'] != '') {
                     $retirementAmount = $_POST['retirementAmount'];
                 }
                 $retirementPeriod = null;
@@ -125,7 +125,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $retirementPeriod = $_POST['retirementPeriod'];
                 }
                 $bonusAmount = null;
-                if (isset($_POST['bonusAmount'])) {
+                if (isset($_POST['bonusAmount']) && $_POST['bonusAmount'] != '') {
                     $bonusAmount = $_POST['bonusAmount'];
                 }
                 $bonusPeriod = null;
@@ -140,6 +140,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 if (isset($_POST['notes'])) {
                     $notes = $_POST['notes'];
                 }
+
                 $contractUpload = null;
                 if ($_FILES['file1']['tmp_name'] != '') {
                     $time = time();

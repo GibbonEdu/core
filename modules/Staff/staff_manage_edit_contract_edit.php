@@ -256,7 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 								<option <?php if ($row['responsibilityPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
 								<option <?php if ($row['responsibilityPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
-							<input name="responsibilityAmount" id="responsibilityAmount" maxlength=12 value="<?php echo htmlPrep($row['responsibilityAmount']) ?>" type="text" style="width: 145px">
+							<input name="responsibilityAmount" id="responsibilityAmount" maxlength=12 value="<?php if (!is_null($row['responsibilityAmount'])) { echo htmlPrep($row['responsibilityAmount']); } ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
 								var responsibilityAmount=new LiveValidation('responsibilityAmount');
 								responsibilityAmount.add(Validate.Numericality);

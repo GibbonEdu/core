@@ -158,6 +158,7 @@ v13.0.00
 		Staff: tweaked student accept to remove - from names
 		Staff: fixed date display in Job Openings manage page
 		Staff: added setting to control public display of staff application form (public applications are on by default)
+		Staff: fixed bug causing blank contract money values being set to 0 instead of null when adding and editing contracts
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		Students: tweaked student accept to remove - from names
 		Students: fixed broken link from Family in student profile to sibling, when sibling is not enroled in the year
