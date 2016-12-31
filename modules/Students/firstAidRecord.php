@@ -62,93 +62,93 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         echo '</h3>';
         echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/firstAidRecord.php'>";
         echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-        ?>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Student') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-							<option value=""></option>
-							<?php
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowSelect = $resultSelect->fetch()) {
-								if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-									echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-								} else {
-									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-								}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Roll Group') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
+            ?>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Student') ?></b><br/>
+					<span class="emphasis small"></span>
+				</td>
+				<td class="right">
+					<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
+						<option value=""></option>
 						<?php
                         try {
-                            $dataPurpose = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlPurpose = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                            $resultPurpose = $connection2->prepare($sqlPurpose);
-                            $resultPurpose->execute($dataPurpose);
+                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                            $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                            $resultSelect = $connection2->prepare($sqlSelect);
+                            $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-
-						echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
-						echo "<option value=''></option>";
-						while ($rowPurpose = $resultPurpose->fetch()) {
-							$selected = '';
-							if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
-								$selected = 'selected';
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 							}
-							echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
 						}
-						echo '</select>';
 						?>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Year Group') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<?php
-                        try {
-                            $dataPurpose = array();
-                            $sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-                            $resultPurpose = $connection2->prepare($sqlPurpose);
-                            $resultPurpose->execute($dataPurpose);
-                        } catch (PDOException $e) {
-                        }
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Roll Group') ?></b><br/>
+					<span class="emphasis small"></span>
+				</td>
+				<td class="right">
+					<?php
+                    try {
+                        $dataPurpose = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sqlPurpose = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+                        $resultPurpose = $connection2->prepare($sqlPurpose);
+                        $resultPurpose->execute($dataPurpose);
+                    } catch (PDOException $e) {
+                    }
 
-						echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
-						echo "<option value=''></option>";
-						while ($rowPurpose = $resultPurpose->fetch()) {
-							$selected = '';
-							if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+					echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
+					echo "<option value=''></option>";
+					while ($rowPurpose = $resultPurpose->fetch()) {
+						$selected = '';
+						if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
+							$selected = 'selected';
 						}
-						echo '</select>';
-						?>
-					</td>
-				</tr>
-				<?php
+						echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
+					}
+					echo '</select>';
+					?>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b><?php echo __($guid, 'Year Group') ?></b><br/>
+					<span class="emphasis small"></span>
+				</td>
+				<td class="right">
+					<?php
+                    try {
+                        $dataPurpose = array();
+                        $sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
+                        $resultPurpose = $connection2->prepare($sqlPurpose);
+                        $resultPurpose->execute($dataPurpose);
+                    } catch (PDOException $e) {
+                    }
 
-                echo '<tr>';
+					echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
+					echo "<option value=''></option>";
+					while ($rowPurpose = $resultPurpose->fetch()) {
+						$selected = '';
+						if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+					}
+					echo '</select>';
+					?>
+				</td>
+			</tr>
+			<?php
+
+            echo '<tr>';
 				echo "<td class='right' colspan=2>";
 				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
 				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/firstAidRecord.php'>".__($guid, 'Clear Filters').'</a> ';
@@ -199,7 +199,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                     JOIN gibbonStudentEnrolment ON (patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                     JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                     JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere";
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere
+                ORDER BY date DESC, timeIn DESC";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
