@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
             echo __($guid, 'This report shows all students whose End Date is on or between the indicated dates.');
             echo '</p>';
 
-            if ($startDateFrom == '' or $startDateTo == '') {
+            if ($endDateFrom == '' or $endDateTo == '') {
                 $proceed = false;
             }
         } elseif ($type == 'Current School Year') {
