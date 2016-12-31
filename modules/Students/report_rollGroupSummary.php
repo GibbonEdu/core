@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 			<tr>
 				<td style='width: 275px'>
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'End date must be after this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+                    <span class="emphasis small"><?php echo __($guid, 'Start date must be before this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
 						echo $_SESSION[$guid]['i18n']['dateFormat'];
 					}
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'To Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Start date must be before this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+                    <span class="emphasis small"><?php echo __($guid, 'End date must be after this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
 						echo $_SESSION[$guid]['i18n']['dateFormat'];
 					}
