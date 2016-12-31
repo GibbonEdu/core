@@ -178,6 +178,7 @@ v13.0.00
 		Students: fixed PHP error on Application Form edit process, when there are no roll groups to select
 		Students: interface string fix in Roll Group Summary
 		Students: improved address output in Student Transport report
+		Students: fixed date filter bug in Roll Group Summary report
 		System Admin: added ability to custom order module categories in main menu
 		System Admin: added system check page with version & extension information
 		System Admin: coloured rows for inactive module in Manage Modules
