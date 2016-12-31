@@ -43,11 +43,13 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID =
         header("Location: {$URL}");
     } else {
         $people = array();
-        for ($i = 0; $i < $_POST['count']; ++$i) {
+        $peopleCount = 0;
+        for ($i = 0; $i < $_POST['count']; $i++) {
             if (isset($_POST["check-$i"])) {
                 if ($_POST["check-$i"] == 'on') {
-                    $people[$i][0] = $_POST["gibbonPersonID-$i"];
-                    $people[$i][1] = $_POST["role-$i"];
+                    $people[$peopleCount][0] = $_POST["gibbonPersonID-$i"];
+                    $people[$peopleCount][1] = $_POST["role-$i"];
+                    $peopleCount ++;
                 }
             }
         }
