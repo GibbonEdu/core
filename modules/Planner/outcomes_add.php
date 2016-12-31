@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 								$("#learningAreaRow").css("display","none");
 
 								$("#scope").change(function(){
-									if ($('#scope option:selected').val()=="Learning Area" ) {
+									if ($('#scope').val()=="Learning Area" ) {
 										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
 										gibbonDepartmentID.enable();
 									}

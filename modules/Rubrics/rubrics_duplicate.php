@@ -90,14 +90,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                     }
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_duplicateProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr class='break'>
 								<td colspan=2>
 									<h3><?php echo __($guid, 'Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Scope') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -125,17 +125,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                    		 			?>
 								</td>
 							</tr>
-					
+
 							<?php
                             if ($highestAction == 'Manage Rubrics_viewEditAll') {
                                 ?>
 								<script type="text/javascript">
 									$(document).ready(function(){
 										$("#learningAreaRow").css("display","none");
-								
+
 										$("#scope").change(function(){
-											if ($('#scope option:selected').val()=="Learning Area" ) {
-												$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row")); 
+											if ($('#scope').val()=="Learning Area" ) {
+												$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
 												gibbonDepartmentID.enable();
 											}
 											else {
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                             }
                     		?>
 							<tr id='learningAreaRow'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">

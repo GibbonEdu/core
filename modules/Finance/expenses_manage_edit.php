@@ -155,10 +155,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 											?>
 											<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
-											<script type="text/javascript">
-												var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
-												gibbonFinanceBudgetCycleID.add(Validate.Presence);
-											</script>
 										</td>
 									</tr>
 									<tr>
@@ -184,89 +180,87 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 										<td class="right">
 											<?php
                                             if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered') {
-                                                echo "<select name='status' id='status' style='width:302px'>";
-                                                echo "<option  value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                                if ($row['status'] == 'Requested') {
-                                                    $selected = '';
+                                                echo "<select name='status' id='status' class='status' style='width:302px'>";
+                                                    echo "<option  value='Please select...'>".__($guid, 'Please select...').'</option>';
                                                     if ($row['status'] == 'Requested') {
-                                                        $selected = 'selected';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Requested') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Requested'>".__($guid, 'Requested').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Approved') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Rejected') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Rejected'>".__($guid, 'Rejected').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Ordered') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Paid') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Cancelled') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
+                                                    } elseif ($row['status'] == 'Approved') {
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Approved') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Ordered') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Paid') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Cancelled') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
+                                                    } elseif ($row['status'] == 'Ordered') {
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Ordered') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Paid') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
+                                                        $selected = '';
+                                                        if ($row['status'] == 'Cancelled') {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
                                                     }
-                                                    echo "<option $selected value='Requested'>".__($guid, 'Requested').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Approved') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Rejected') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Rejected'>".__($guid, 'Rejected').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Ordered') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Paid') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Cancelled') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
-                                                } elseif ($row['status'] == 'Approved') {
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Approved') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Ordered') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Paid') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Cancelled') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
-                                                } elseif ($row['status'] == 'Ordered') {
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Ordered') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Paid') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
-                                                    $selected = '';
-                                                    if ($row['status'] == 'Cancelled') {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
-                                                }
                                                 echo '</select>';
                                             } else {
                                                 ?>
-												<input readonly name="status" id="status" maxlength=60 value="<?php echo $row['status'];
-                                                ?>" type="text" class="standardWidth">
+												<input readonly name="status" id="status" maxlength=60 value="<?php echo $row['status'];?>" type="text" class="standardWidth">
 												<?php
-
                                             }
                             				?>
 											<script type="text/javascript">
-												var status=new LiveValidation('status');
-												status.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+												var statusVar=new LiveValidation('status');
+												statusVar.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 											</script>
 										</td>
 									</tr>
@@ -415,56 +409,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 												<td class="right">
 													<?php
                                                     $budgetAllocated = 0;
-                                            $budgetAllocatedFail = false;
-                                            try {
-                                                $dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
-                                                $sqlCheck = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
-													UNION
-													(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
-													";
-                                                $resultCheck = $connection2->prepare($sqlCheck);
-                                                $resultCheck->execute($dataCheck);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                $budgetAllocatedFail = true;
-                                            }
-                                            if ($budgetAllocatedFail == false) {
-                                                while ($rowCheck = $resultCheck->fetch()) {
-                                                    $budgetAllocated = $budgetAllocated + $rowCheck['cost'];
-                                                }
-                                                ?>
-												<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocated, 2, '.', ',');?>" type="text" class="standardWidth">
-												<?php
-												}
-
-												?>
-												</td>
-											</tr>
-											<?php
-                                            if ($budgetAllocationFail == false and $budgetAllocatedFail == false) {
-                                                ?>
-												<tr>
-												<td>
-													<b><?php echo __($guid, 'Budget Remaining For Cycle') ?> *</b><br/>
-													<span style="font-size: 90%">
-														<i>
-														<?php
-                                                        if ($_SESSION[$guid]['currency'] != '') {
-                                                            echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
-                                                        } else {
-                                                            echo __($guid, 'Numeric value of the fee.');
+                                                    $budgetAllocatedFail = false;
+                                                    try {
+                                                        $dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
+                                                        $sqlCheck = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+        													UNION
+        													(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
+        													";
+                                                        $resultCheck = $connection2->prepare($sqlCheck);
+                                                        $resultCheck->execute($dataCheck);
+                                                    } catch (PDOException $e) {
+                                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                                        $budgetAllocatedFail = true;
+                                                    }
+                                                    if ($budgetAllocatedFail == false) {
+                                                        while ($rowCheck = $resultCheck->fetch()) {
+                                                            $budgetAllocated = $budgetAllocated + $rowCheck['cost'];
                                                         }
-                                                		?>
-														</i>
-													</span>
-												</td>
-												<td class="right">
-													<?php
-                                                    $color = 'red';
-                                                if (($budgetAllocation - $budgetAllocated) - $row['cost'] > 0) {
-                                                    $color = 'green';
-                                                }
-                                                ?>
+                                                        ?>
+        												<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocated, 2, '.', ',');?>" type="text" class="standardWidth">
+        												<?php
+        												}
+
+        												?>
+        												</td>
+        											</tr>
+        											<?php
+                                                    if ($budgetAllocationFail == false and $budgetAllocatedFail == false) {
+                                                        ?>
+        												<tr>
+        												<td>
+        													<b><?php echo __($guid, 'Budget Remaining For Cycle') ?> *</b><br/>
+        													<span style="font-size: 90%">
+        														<i>
+        														<?php
+                                                                if ($_SESSION[$guid]['currency'] != '') {
+                                                                    echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                                } else {
+                                                                    echo __($guid, 'Numeric value of the fee.');
+                                                                }
+                                                        		?>
+        														</i>
+        													</span>
+        												</td>
+        												<td class="right">
+        													<?php
+                                                            $color = 'red';
+                                                        if (($budgetAllocation - $budgetAllocated) - $row['cost'] > 0) {
+                                                            $color = 'green';
+                                                        }
+                                                        ?>
 													<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format(($budgetAllocation - $budgetAllocated), 2, '.', ',');
                                                 ?>" type="text" style="width: 300px; font-weight: bold; color: <?php echo $color ?>">
 												</td>
@@ -507,7 +501,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 												gibbonPersonIDPayment.disable() ;
 												paymentMethod.disable() ;
 												$("#status").change(function(){
-													if ($('#status option:selected').val()=="Paid" ) {
+													if ($('#status').val()=="Paid" ) {
 														$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row"));
 														$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row"));
 														$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row"));
@@ -760,8 +754,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                                         echo '</select>';
                                                     } else {
                                                         ?>
-														<input readonly name="paymentReimbursementStatus" id="paymentReimbursementStatus" maxlength=60 value="<?php echo $row['paymentReimbursementStatus'];
-                                                        ?>" type="text" class="standardWidth">
+														<input readonly name="paymentReimbursementStatus" id="paymentReimbursementStatus" maxlength=60 value="<?php echo $row['paymentReimbursementStatus'];?>" type="text" class="standardWidth">
 														<?php
 
                                                     }

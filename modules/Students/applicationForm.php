@@ -139,39 +139,39 @@ if ($proceed == false) {
     $siblingApplicationMode = !empty($gibbonApplicationFormID); // && empty($gibbonPersonID)
 
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php' ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			
+
 			<?php if ($siblingApplicationMode == true) : ?>
 				<input type="hidden" name="linkedApplicationFormID" value="<?php echo $gibbonApplicationFormID; ?>">
 
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Add Another Application') ?></h3>
 						<p>
-							<?php echo __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').' '; ?> 
-							<?php echo __($guid, 'Some information has been pre-filled for you, feel free to change this information as needed.') ?> 
+							<?php echo __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').' '; ?>
+							<?php echo __($guid, 'Some information has been pre-filled for you, feel free to change this information as needed.') ?>
 						</p>
 						<div style="text-align:right;">
 							<small class="emphasis small"><a href="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm.php' ?>">
 								<?php echo __($guid, 'Clear Form'); ?>
 							</a></small>
 						</div>
-						
+
 					</td>
 				</tr>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'Current Applications') ?></b><br/>
 					</td>
 					<td class="right">
 					<?php
 						$data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
-						$sql = 'SELECT DISTINCT gibbonApplicationFormID, preferredName, surname FROM gibbonApplicationForm 
-								LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-								WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL) 
-								OR gibbonApplicationFormID1=:gibbonApplicationFormID 
+						$sql = 'SELECT DISTINCT gibbonApplicationFormID, preferredName, surname FROM gibbonApplicationForm
+								LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+								WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL)
+								OR gibbonApplicationFormID1=:gibbonApplicationFormID
 								OR gibbonApplicationFormID2=:gibbonApplicationFormID
 								ORDER BY gibbonApplicationFormID';
 						$resultLinked = $pdo->executeQuery($data, $sql);
@@ -190,18 +190,18 @@ if ($proceed == false) {
 			<?php endif; ?>
 
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Student') ?></h3>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<h4><?php echo __($guid, 'Student Personal Data') ?></h4>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Surname') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 				</td>
@@ -214,7 +214,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Name') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 				</td>
@@ -227,7 +227,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Preferred Name') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 				</td>
@@ -240,7 +240,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Official Name') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
 				</td>
@@ -253,7 +253,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Name In Characters') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
 				</td>
@@ -262,7 +262,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -278,7 +278,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date of Birth') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
@@ -296,7 +296,7 @@ if ($proceed == false) {
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					 	dob.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -306,15 +306,15 @@ if ($proceed == false) {
 					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<h4><?php echo __($guid, 'Student Background') ?></h4>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Home Language - Primary') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'The primary language used in the student\'s home.') ?></span>
 				</td>
@@ -333,7 +333,7 @@ if ($proceed == false) {
 							$selected = (isset($row['languageHomePrimary']) && $row['languageHomePrimary'] == $rowSelect['name'])? 'selected' : '';
 							echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var languageHomePrimary=new LiveValidation('languageHomePrimary');
@@ -342,7 +342,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Home Language - Secondary') ?></b><br/>
 				</td>
 				<td class="right">
@@ -360,12 +360,12 @@ if ($proceed == false) {
 							$selected = (isset($row['languageHomeSecondary']) && $row['languageHomeSecondary'] == $rowSelect['name'])? 'selected' : '';
 							echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Language') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Student\'s native/first/mother language.') ?></span>
 				</td>
@@ -384,7 +384,7 @@ if ($proceed == false) {
 							$selected = (isset($row['languageFirst']) && $row['languageFirst'] == $rowSelect['name'])? 'selected' : '';
 							echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var languageFirst=new LiveValidation('languageFirst');
@@ -393,7 +393,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Second Language') ?></b><br/>
 				</td>
 				<td class="right">
@@ -411,12 +411,12 @@ if ($proceed == false) {
 							$selected = (isset($row['languageSecond']) && $row['languageSecond'] == $rowSelect['name'])? 'selected' : '';
 							echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Third Language') ?></b><br/>
 				</td>
 				<td class="right">
@@ -434,12 +434,12 @@ if ($proceed == false) {
 							$selected = (isset($row['languageThird']) && $row['languageThird'] == $rowSelect['name'])? 'selected' : '';
 							echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Country of Birth') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -456,7 +456,7 @@ if ($proceed == false) {
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var countryOfBirth=new LiveValidation('countryOfBirth');
@@ -465,7 +465,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -490,7 +490,7 @@ if ($proceed == false) {
 								echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var citizenship1=new LiveValidation('citizenship1');
@@ -499,7 +499,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
@@ -507,7 +507,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'National ID Card Number').'</b><br/>';
@@ -521,7 +521,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'Residency/Visa Type').'</b><br/>';
@@ -548,7 +548,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
@@ -577,7 +577,7 @@ if ($proceed == false) {
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -586,15 +586,15 @@ if ($proceed == false) {
 					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<h4><?php echo __($guid, 'Student Contact') ?></h4>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Email') ?></b><br/>
 				</td>
 				<td class="right">
@@ -609,7 +609,7 @@ if ($proceed == false) {
             for ($i = 1; $i < 3; ++$i) {
                 ?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Phone') ?> <?php echo $i ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
 					</td>
@@ -628,7 +628,7 @@ if ($proceed == false) {
 							while ($rowSelect = $resultSelect->fetch()) {
 								echo "<option value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 							}
-							?>				
+							?>
 						</select>
 						<select style="width: 70px" name="phone<?php echo $i ?>Type">
 							<option value=""></option>
@@ -645,9 +645,9 @@ if ($proceed == false) {
 
             }
     		?>
-			
+
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<h4><?php echo __($guid, 'Special Educational Needs & Medical') ?></h4>
 					<?php
                     $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
@@ -662,8 +662,8 @@ if ($proceed == false) {
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$(".sen").change(function(){
-						if ($('select.sen option:selected').val()=="Y" ) {
-							$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row")); 
+						if ($('#sen').val()=="Y" ) {
+							$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row"));
 						} else {
 							$("#senDetailsRow").css("display","none");
 						}
@@ -671,7 +671,7 @@ if ($proceed == false) {
 				});
 			</script>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Special Educational Needs (SEN)') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Are there any known or suspected SEN concerns, or previous SEN assessments?') ?></span><br/>
 				</td>
@@ -688,29 +688,29 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id='senDetailsRow' style='display: none'>
-				<td colspan=2 style='padding-top: 15px'> 
+				<td colspan=2 style='padding-top: 15px'>
 					<b><?php echo __($guid, 'SEN Details') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></span><br/> 					
+					<span class="emphasis small"><?php echo __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></span><br/>
 					<textarea name="senDetails" id="senDetails" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2 style='padding-top: 15px'> 
+				<td colspan=2 style='padding-top: 15px'>
 					<b><?php echo __($guid, 'Medical Information') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Please indicate any medical conditions.') ?></span><br/>
 					<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
-			
-			
-			
+
+
+
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<h4><?php echo __($guid, 'Student Education') ?></h4>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Anticipated Year of Entry') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'What school year will the student join in?') ?></span>
 				</td>
@@ -729,7 +729,7 @@ if ($proceed == false) {
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
@@ -738,7 +738,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Intended Start Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Student\'s intended first day at school.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
@@ -760,7 +760,7 @@ if ($proceed == false) {
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					 	dateStart.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -771,7 +771,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Year Group at Entry') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Which year level will student enter.') ?></span>
 				</td>
@@ -790,7 +790,7 @@ if ($proceed == false) {
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
@@ -798,13 +798,13 @@ if ($proceed == false) {
 					</script>
 				</td>
 			</tr>
-			
+
 			<?php
             $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
 			if ($dayTypeOptions != '') {
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Day Type') ?></b><br/>
 						<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText'); ?></span>
 					</td>
@@ -815,7 +815,7 @@ if ($proceed == false) {
 							foreach ($dayTypes as $dayType) {
 								echo "<option value='".trim($dayType)."'>".trim($dayType).'</option>';
 							}
-							?>				
+							?>
 						</select>
 					</td>
 				</tr>
@@ -826,7 +826,7 @@ if ($proceed == false) {
 			if ($applicationFormRefereeLink != '') {
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Current School Reference Email') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'An email address for a referee at the applicant\'s current school.') ?></span>
 					</td>
@@ -842,15 +842,15 @@ if ($proceed == false) {
 				<?php
 			}
 			?>
-			
+
 			<tr>
-				<td colspan=2 style='padding-top: 15px'> 
+				<td colspan=2 style='padding-top: 15px'>
 					<b><?php echo __($guid, 'Previous Schools') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Please give information on the last two schools attended by the applicant.') ?></span>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<?php
                     echo "<table cellspacing='0' style='width: 100%'>";
 					echo "<tr class='head'>";
@@ -939,7 +939,7 @@ if ($proceed == false) {
 			if ($resultFields->rowCount() > 0) {
 				?>
 				<tr>
-					<td colspan=2> 
+					<td colspan=2>
 						<h4><?php echo __($guid, 'Other Information') ?></h4>
 					</td>
 				</tr>
@@ -961,14 +961,14 @@ if ($proceed == false) {
 			if ($public == true or $resultSelect->rowCount() < 1) {
 				?>
 				<input type="hidden" name="gibbonFamily" value="FALSE">
-				
+
 				<?php if ($siblingApplicationMode == true) : ?>
 					<input type="hidden" name="homeAddress" value="<?php echo @$row['homeAddress']; ?>">
 					<input type="hidden" name="homeAddressDistrict" value="<?php echo @$row['homeAddressDistrict']; ?>">
 					<input type="hidden" name="homeAddressCountry" value="<?php echo @$row['homeAddressCountry']; ?>">
 				<?php else: ?>
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3>
 							<?php echo __($guid, 'Home Address') ?>
 						</h3>
@@ -978,7 +978,7 @@ if ($proceed == false) {
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Home Address') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 					</td>
@@ -991,7 +991,7 @@ if ($proceed == false) {
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Home Address (District)') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 					</td>
@@ -1023,7 +1023,7 @@ if ($proceed == false) {
 					</script>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Home Address (Country)') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -1040,7 +1040,7 @@ if ($proceed == false) {
 							while ($rowSelect = $resultSelect->fetch()) {
 								echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 							}
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var homeAddressCountry=new LiveValidation('homeAddressCountry');
@@ -1070,7 +1070,7 @@ if ($proceed == false) {
                     }
                     ?>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3>
 								<?php echo __($guid, 'Parent/Guardian 1') ?>
 								<?php
@@ -1082,7 +1082,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Username') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'System login ID.') ?></span>
 						</td>
@@ -1091,9 +1091,9 @@ if ($proceed == false) {
 							<input type="hidden" name='parent1email' value="<?php echo $parent1email; ?>" >
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Surname') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 						</td>
@@ -1102,7 +1102,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Preferred Name') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 						</td>
@@ -1111,7 +1111,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Relationship') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -1138,7 +1138,7 @@ if ($proceed == false) {
 					</tr>
 					<?php
                         //CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-                        
+
                         $existingFields = (isset($row["parent{$i}fields"]))? unserialize($row["parent{$i}fields"]) : null;
 
                         $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
@@ -1149,7 +1149,7 @@ if ($proceed == false) {
 	                        }
 	                    }
                     ?>
-					
+
 					<input name='parent1gibbonPersonID' value="<?php echo $parent1gibbonPersonID ?>" type="hidden">
 					<?php
 
@@ -1159,7 +1159,7 @@ if ($proceed == false) {
 				for ($i = $start;$i < 3;++$i) {
 					?>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 
 							<?php if ($siblingApplicationMode == true) : ?>
 								<small class="emphasis small" style="float:right;margin-top:16px;"><a id="clearParent<?php echo $i; ?>" data-parent="parent<?php echo $i; ?>">
@@ -1183,7 +1183,7 @@ if ($proceed == false) {
                     if ($i == 2) {
                         ?>
 						<tr>
-							<td class='right' colspan=2> 
+							<td class='right' colspan=2>
 								<script type="text/javascript">
 									/* Advanced Options Control */
 									$(document).ready(function(){
@@ -1196,12 +1196,12 @@ if ($proceed == false) {
 
 										$("#secondParent").click(function(){
 											if ($('input[name=secondParent]:checked').val()=="No" ) {
-												$(".secondParent").slideUp("fast"); 	
+												$(".secondParent").slideUp("fast");
 												$('[name^="parent2"]').attr("disabled", "disabled");
-											} 
+											}
 											else {
 												$(".secondParent").slideDown("fast", $(".secondParent").css("display","table-row"));
-												$('[name^="parent2"]').removeAttr("disabled"); 
+												$('[name^="parent2"]').removeAttr("disabled");
 											}
 										 });
 
@@ -1221,12 +1221,12 @@ if ($proceed == false) {
                     }
             		?>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php echo __($guid, 'Parent/Guardian') ?> <?php echo $i ?> <?php echo __($guid, 'Personal Data') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Title') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -1242,7 +1242,7 @@ if ($proceed == false) {
 							<script type="text/javascript">
 								var <?php echo "parent$i" ?>title=new LiveValidation('<?php echo "parent$i" ?>title');
 								<?php echo "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							
+
 								$(document).ready(function(){
 									if ("<?php echo @$row["parent{$i}title"]; ?>" != '') {
 										$('select#<?php echo "parent{$i}title"; ?> option:contains("<?php echo @$row["parent{$i}title"]; ?>")').attr('selected', 'selected');
@@ -1252,7 +1252,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Surname') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 						</td>
@@ -1265,7 +1265,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'First Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 						</td>
@@ -1278,7 +1278,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Preferred Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 						</td>
@@ -1291,7 +1291,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Official Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
 						</td>
@@ -1304,7 +1304,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name In Characters') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
 						</td>
@@ -1313,7 +1313,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Gender') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -1329,7 +1329,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Relationship') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -1354,14 +1354,14 @@ if ($proceed == false) {
 							</script>
 						</td>
 					</tr>
-					
+
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php echo __($guid, 'Parent/Guardian') ?> <?php echo $i ?> <?php echo __($guid, 'Personal Background') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'First Language') ?></b><br/>
 						</td>
 						<td class="right">
@@ -1379,12 +1379,12 @@ if ($proceed == false) {
 									$selected = (isset($row["parent{$i}languageFirst"]) && $row["parent{$i}languageFirst"] == $rowSelect['name'])? 'selected' : '';
 									echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Second Language') ?></b><br/>
 						</td>
 						<td class="right">
@@ -1402,12 +1402,12 @@ if ($proceed == false) {
 									$selected = (isset($row["parent{$i}languageSecond"]) && $row["parent{$i}languageSecond"] == $rowSelect['name'])? 'selected' : '';
 									echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Citizenship') ?></b><br/>
 						</td>
 						<td class="right">
@@ -1434,12 +1434,12 @@ if ($proceed == false) {
 										echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 									}
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<?php
                             if ($_SESSION[$guid]['country'] == '') {
                                 echo '<b>'.__($guid, 'National ID Card Number').'</b><br/>';
@@ -1453,7 +1453,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<?php
                             if ($_SESSION[$guid]['country'] == '') {
                                 echo '<b>'.__($guid, 'Residency/Visa Type').'</b><br/>';
@@ -1481,7 +1481,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<?php
                             if ($_SESSION[$guid]['country'] == '') {
                                 echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
@@ -1510,7 +1510,7 @@ if ($proceed == false) {
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -1519,33 +1519,33 @@ if ($proceed == false) {
 							</script>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php echo __($guid, 'Parent/Guardian') ?> <?php echo $i ?> <?php echo __($guid, 'Contact') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Email') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="<?php echo "parent$i" ?>email" id="<?php echo "parent$i" ?>email" maxlength=50 value="<?php echo @$row["parent{$i}email"]; ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php echo "parent$i" ?>email=new LiveValidation('<?php echo "parent$i" ?>email');
-								<?php 
+								<?php
                                 echo "parent$i".'email.add(Validate.Email);';
     							echo "parent$i".'email.add(Validate.Presence);'; ?>
 							</script>
 						</td>
 					</tr>
-					
+
 					<?php
                     for ($y = 1; $y < 3; ++$y) {
                         ?>
 						<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Phone') ?> <?php echo $y;
 								if ($y == 1) {
 									echo ' *';
@@ -1579,7 +1579,7 @@ if ($proceed == false) {
 									while ($rowSelect = $resultSelect->fetch()) {
 										echo "<option value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 								<select style="width: 70px" name="<?php echo "parent$i" ?>phone<?php echo $y ?>Type" id="<?php echo "parent$i" ?>phone<?php echo $y ?>Type">
 									<option value=""></option>
@@ -1597,7 +1597,7 @@ if ($proceed == false) {
 										if ("<?php echo @$row["parent{$i}phone{$y}CountryCode"]; ?>" != '') {
 											$('select#<?php echo "parent{$i}phone{$y}CountryCode"; ?> option:contains("<?php echo @$row["parent{$i}phone{$y}CountryCode"]; ?>")').attr('selected', 'selected');
 										}
-										
+
 										if ("<?php echo @$row["parent{$i}phone{$y}Type"]; ?>" != '') {
 											$('select#<?php echo "parent{$i}phone{$y}Type"; ?> option:contains("<?php echo @$row["parent{$i}phone{$y}Type"]; ?>")').attr('selected', 'selected');
 										}
@@ -1609,14 +1609,14 @@ if ($proceed == false) {
 
                     }
             		?>
-					
+
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php echo __($guid, 'Parent/Guardian') ?> <?php echo $i ?> <?php echo __($guid, 'Employment') ?></h4>
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Profession') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -1628,7 +1628,7 @@ if ($proceed == false) {
 						</td>
 					</tr>
 					<tr <?php if ($i == 2) { echo "class='secondParent'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Employer') ?></b><br/>
 						</td>
 						<td class="right">
@@ -1644,7 +1644,7 @@ if ($proceed == false) {
 						?>
 						<tr <?php if ($i == 2) {
     					echo "class='secondParent'"; } ?>>
-							<td colspan=2> 
+							<td colspan=2>
 								<h4><?php echo __($guid, 'Parent/Guardian') ?> <?php echo $i ?> <?php echo __($guid, 'Other Fields') ?></h4>
 							</td>
 						</tr>
@@ -1667,7 +1667,7 @@ if ($proceed == false) {
 				?>
 				<input type="hidden" name="gibbonFamily" value="TRUE">
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Family') ?></h3>
 						<p><?php echo __($guid, 'Choose the family you wish to associate this application with.') ?></p>
 						<?php
@@ -1697,7 +1697,7 @@ if ($proceed == false) {
 							echo '<b>'.$rowSelect['name'].'</b><br/>';
 							echo '</td>';
 							echo '<td>';
-							
+
 							if (isset($row['gibbonFamilyID'])) {
 								$checked = ($row['gibbonFamilyID'] == $rowSelect['gibbonFamilyID'])? 'checked' : '';
 							} else {
@@ -1748,17 +1748,17 @@ if ($proceed == false) {
 			}
 			?>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Siblings') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2 style='padding-top: 0px'> 
+				<td colspan=2 style='padding-top: 0px'>
 					<p><?php echo __($guid, 'Please give information on the applicants\'s siblings.') ?></p>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<?php
                     echo "<table cellspacing='0' style='width: 100%'>";
 					echo "<tr class='head'>";
@@ -1869,13 +1869,13 @@ if ($proceed == false) {
    				echo '</table>';?>
 				</td>
 			</tr>
-			
+
 			<?php
             $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
 			if ($languageOptionsActive == 'Y') {
 				?>
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Language Selection') ?></h3>
 						<?php
                         $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
@@ -1888,7 +1888,7 @@ if ($proceed == false) {
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Language Choice') ?> *</b><br/>
 						<span class="emphasis small"><?php  echo __($guid, 'Please choose preferred additional language to study.') ?></span>
 					</td>
@@ -1901,7 +1901,7 @@ if ($proceed == false) {
 							foreach ($languages as $language) {
 								echo "<option value='".trim($language)."'>".trim($language).'</option>';
 							}
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var languageChoice=new LiveValidation('languageChoice');
@@ -1910,9 +1910,9 @@ if ($proceed == false) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan=2 style='padding-top: 15px'> 
+					<td colspan=2 style='padding-top: 15px'>
 						<b><?php echo __($guid, 'Language Choice Experience') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></span><br/> 					
+						<span class="emphasis small"><?php echo __($guid, 'Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></span><br/>
 						<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 						<script type="text/javascript">
 							var languageChoiceExperience=new LiveValidation('languageChoiceExperience');
@@ -1925,7 +1925,7 @@ if ($proceed == false) {
 			?>
 
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Scholarships') ?></h3>
 					<?php
                     //Get scholarships info
@@ -1939,7 +1939,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Interest') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Indicate if you are interested in a scholarship.') ?></span><br/>
 				</td>
@@ -1949,7 +1949,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Required?') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Is a scholarship required for you to take up a place at the school?') ?></span><br/>
 				</td>
@@ -1958,10 +1958,10 @@ if ($proceed == false) {
 					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php echo ynExpander($guid, 'N') ?>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Payment') ?></h3>
 				</td>
 			</tr>
@@ -1983,7 +1983,7 @@ if ($proceed == false) {
 						companyContact.disable() ;
 						companyName.disable() ;
 					}
-			
+
 					$(".payment").click(function(){
 						if ($('input[name=payment]:checked').val()=="Family" ) {
 							$("#companyNameRow").css("display","none");
@@ -1999,17 +1999,17 @@ if ($proceed == false) {
 							companyContact.disable() ;
 							companyName.disable() ;
 						} else {
-							$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
-							$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
-							$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row")); 
-							$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row")); 
-							$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
-							$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
-							$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
+							$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row"));
+							$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row"));
+							$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row"));
+							$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row"));
+							$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row"));
+							$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row"));
+							$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row"));
 							if ($('input[name=companyAll]:checked').val()=="Y" ) {
 								$("#companyCategoriesRow").css("display","none");
 							} else {
-								$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
+								$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
 							}
 							companyEmail.enable() ;
 							companyAddress.enable() ;
@@ -2017,12 +2017,12 @@ if ($proceed == false) {
 							companyName.enable() ;
 						}
 					 });
-			 
+
 					 $(".companyAll").click(function(){
 						if ($('input[name=companyAll]:checked').val()=="Y" ) {
 							$("#companyCategoriesRow").css("display","none");
 						} else {
-							$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
+							$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
 						}
 					 });
 				});
@@ -2033,7 +2033,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Send Future Invoices To') ?></b><br/>
 				</td>
 				<td class="right">
@@ -2042,7 +2042,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id="companyNameRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Company Name') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -2054,7 +2054,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id="companyContactRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Company Contact Person') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -2066,7 +2066,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id="companyAddressRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Company Address') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -2078,7 +2078,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id="companyEmailRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Company Emails') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Comma-separated list of email address.') ?></span>
 				</td>
@@ -2091,7 +2091,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id="companyCCFamilyRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'CC Family?') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Should the family be sent a copy of billing emails?') ?></span>
 				</td>
@@ -2103,7 +2103,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr id="companyPhoneRow">
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Company Phone') ?></b><br/>
 				</td>
 				<td class="right">
@@ -2123,7 +2123,7 @@ if ($proceed == false) {
 			} else {
 				?>
 				<tr id="companyAllRow">
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Company All?') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
 					</td>
@@ -2133,7 +2133,7 @@ if ($proceed == false) {
 					</td>
 				</tr>
 				<tr id="companyCategoriesRow">
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Company Fee Categories') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
 					</td>
@@ -2160,9 +2160,9 @@ if ($proceed == false) {
 			if ($requiredDocuments != '' and $requiredDocuments != false) {
 				?>
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Supporting Documents') ?></h3>
-						<?php 
+						<?php
                         if ($requiredDocumentsText != '' or $requiredDocumentsCompulsory != '') {
                             echo '<p>';
                             echo $requiredDocumentsText.' ';
@@ -2196,7 +2196,7 @@ if ($proceed == false) {
 			foreach ($requiredDocumentsList as $document) {
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo $document;
 						if ($requiredDocumentsCompulsory == 'Y') {
 							echo ' *';
@@ -2221,7 +2221,7 @@ if ($proceed == false) {
 			}
 			?>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<?php echo getMaxUpload($guid);?>
 					<input type="hidden" name="fileCount" value="<?php echo $count ?>">
 				</td>
@@ -2229,14 +2229,14 @@ if ($proceed == false) {
 			<?php
 			}
 			?>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'How Did You Hear About Us?') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -2265,17 +2265,17 @@ if ($proceed == false) {
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#howDidYouHear").change(function(){
-						if ($('#howDidYouHear option:selected').val()=="Please select..." ) {
+						if ($('#howDidYouHear').val()=="Please select..." ) {
 							$("#tellUsMoreRow").css("display","none");
 						}
 						else {
-							$("#tellUsMoreRow").slideDown("fast", $("#tellUsMoreRow").css("display","table-row")); 
+							$("#tellUsMoreRow").slideDown("fast", $("#tellUsMoreRow").css("display","table-row"));
 						}
 					 });
 				});
 			</script>
 			<tr id="tellUsMoreRow" style='display: none'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Tell Us More') ?> </b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'The name of a person or link to a website, etc.') ?></span>
 				</td>
@@ -2290,7 +2290,7 @@ if ($proceed == false) {
 			if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Privacy') ?> *</b><br/>
 						<span class="emphasis small"><?php echo htmlPrep($privacyBlurb) ?><br/>
 						</span>
@@ -2337,7 +2337,7 @@ if ($proceed == false) {
         echo '</tr>';
 		}
 		?>
-	
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -2348,8 +2348,8 @@ if ($proceed == false) {
 				</td>
 			</tr>
 		</table>
-	</form>	
-	
+	</form>
+
 	<?php
     //Get postscrript
     $postscript = getSettingByScope($connection2, 'Application Form', 'postscript');

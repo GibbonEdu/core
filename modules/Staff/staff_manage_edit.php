@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#firstAidQualified").change(function(){
-									if ($('select.firstAidQualified option:selected').val()=="Y" ) {
+									if ($('#firstAidQualified').val()=="Y" ) {
 										$("#firstAidExpiryRow").slideDown("fast", $("#firstAidExpiryRow").css("display","table-row"));
 									} else {
 										$("#firstAidExpiryRow").css("display","none");

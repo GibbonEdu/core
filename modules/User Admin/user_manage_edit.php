@@ -348,13 +348,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#status").change(function(){
-								if ($('#status option:selected').val()=="Left" ) {
+								if ($('#status').val()=="Left" ) {
 									alert("As you have marked this person as left, please consider setting the End Date field.") ;
 								}
-								else if ($('#status option:selected').val()=="Full" ) {
+								else if ($('#status').val()=="Full" ) {
 									alert("As you have marked this person as full, please consider setting the Start Date field.") ;
 								}
-								else if ($('#status option:selected').val()=="Expected" ) {
+								else if ($('#status').val()=="Expected" ) {
 									alert("As you have marked this person as expected, please consider setting the Start Date field.") ;
 								}
 							 });

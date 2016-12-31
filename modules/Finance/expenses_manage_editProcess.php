@@ -52,7 +52,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
             $URL .= '&return=error0';
             header("Location: {$URL}");
         } else {
-            if ($gibbonFinanceExpenseID == '' or $status == '' or $countAgainstBudget == '') {
+            if ($gibbonFinanceExpenseID == '' or $status == '' or $status == 'Please select...' or $countAgainstBudget == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
@@ -82,10 +82,10 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                         try {
                             //Set Up filter wheres
                             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                            $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-								FROM gibbonFinanceExpense 
-								JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-								JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                            $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+								FROM gibbonFinanceExpense
+								JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+								JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 								WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);

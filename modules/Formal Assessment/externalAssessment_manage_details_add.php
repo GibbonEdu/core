@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
 
 								$("#gibbonExternalAssessmentID").change(function(){
-									if ($('#gibbonExternalAssessmentID option:selected').val()=="0002" ) {
+									if ($('#gibbonExternalAssessmentID').val()=="0002" ) {
 										$("#copyToGCSE").slideDown("fast", $("#copyToGCSE").css("display","table-row"));
 									}
 									else {
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								$("#copyToIB").css("display","none");
 
 								$("#gibbonExternalAssessmentID").change(function(){
-									if ($('#gibbonExternalAssessmentID option:selected').val()=="0003" ) {
+									if ($('#gibbonExternalAssessmentID').val()=="0003" ) {
 										$("#copyToIB").slideDown("fast", $("#copyToIB").css("display","table-row"));
 									}
 									else {

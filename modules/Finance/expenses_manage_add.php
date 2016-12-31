@@ -246,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 							gibbonPersonIDPayment.disable() ;
 							paymentMethod.disable() ;
 							$("#status").change(function(){
-								if ($('#status option:selected').val()=="Paid" ) {
+								if ($('#status').val()=="Paid" ) {
 									$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row"));
 									$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row"));
 									$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row"));

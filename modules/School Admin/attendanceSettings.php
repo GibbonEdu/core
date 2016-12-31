@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			
+
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Reasons'); ?></h3>
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
 
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-                <td style='width: 275px'> 
+                <td style='width: 275px'>
                     <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
                     <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
                 </td>
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-                <td style='width: 275px'> 
+                <td style='width: 275px'>
                     <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
                     <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
                 </td>
@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-                <td style='width: 275px'> 
+                <td style='width: 275px'>
                     <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
                     <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
                 </td>
@@ -214,14 +214,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                         <?php
                         try {
                             $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
-                            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName 
-                                    FROM gibbonPerson 
-                                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID) 
-                                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-                                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID) 
-                                    WHERE status='Full' 
+                            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
+                                    FROM gibbonPerson
+                                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)
+                                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                                    WHERE status='Full'
                                     AND (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2)
-                                    GROUP BY gibbonPerson.gibbonPersonID 
+                                    GROUP BY gibbonPerson.gibbonPersonID
                                     ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
                             $resultSelect=$connection2->prepare($sql);
                             $resultSelect->execute($data);
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                             echo '</option>' ;
                         }
                         echo '</optgroup>';
-                        ?>          
+                        ?>
                     </select>
                 </td>
             </tr>
@@ -268,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 $row = $result->fetch();
                 $enableSymptoms = $row['value'];
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -307,8 +307,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 			<script type="text/javascript">
 				$(document).ready(function(){
 					 $("#attendanceEnableMedicalTracking").click(function(){
-						if ($('#attendanceEnableMedicalTracking option:selected').val()=="Y" ) {
-							$("#symptomsRow").slideDown("fast", $("#symptomsRow").css("display","table-row"));  
+						if ($('#attendanceEnableMedicalTracking').val()=="Y" ) {
+							$("#symptomsRow").slideDown("fast", $("#symptomsRow").css("display","table-row"));
 
 						} else {
 							$("#symptomsRow").css("display","none");
@@ -334,11 +334,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
             */ ?>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

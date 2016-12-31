@@ -54,45 +54,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         $startDateTo = $_GET['startDateTo'];
     }
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#type").change(function(){
-						if ($('select.type option:selected').val()=="Date Range" ) {
-							$("#startDateFromRow").slideDown("fast", $("#startDateFromRow").css("display","table-row")); 
-							$("#startDateToRow").slideDown("fast", $("#startDateToRow").css("display","table-row")); 
+						if ($('#type').val()=="Date Range" ) {
+							$("#startDateFromRow").slideDown("fast", $("#startDateFromRow").css("display","table-row"));
+							$("#startDateToRow").slideDown("fast", $("#startDateToRow").css("display","table-row"));
 						} else {
 							$("#startDateFromRow").css("display","none");
 							$("#startDateToRow").css("display","none");
-						} 
+						}
 					 });
 				});
 			</script>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select class="standardWidth" name="type" id="type" class="type">
 						<?php
                         echo '<option';
-    if ($type == 'Current School Year') {
-        echo ' selected';
-    }
-    echo " value='Current School Year'>".__($guid, 'Current School Year').'</option>';
-    echo '<option';
-    if ($type == 'Date Range') {
-        echo ' selected';
-    }
-    echo " value='Date Range'>".__($guid, 'Date Range').'</option>';?>
+                        if ($type == 'Current School Year') {
+                            echo ' selected';
+                        }
+                        echo " value='Current School Year'>".__($guid, 'Current School Year').'</option>';
+                        echo '<option';
+                        if ($type == 'Date Range') {
+                            echo ' selected';
+                        }
+                        echo " value='Date Range'>".__($guid, 'Date Range').'</option>';?>
 					</select>
 				</td>
 			</tr>
 			<tr id='startDateFromRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Earliest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 				</td>
 			</tr>
 			<tr id='startDateToRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'To Date') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Latest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Ignore Enrolment') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
 				</td>

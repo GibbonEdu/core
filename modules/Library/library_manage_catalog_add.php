@@ -227,12 +227,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#imageType").change(function(){
-						if ($('select.imageType option:selected').val()=="Link" ) {
+						if ($('select.imageType').val()=="Link" ) {
 							$("#imageFileRow").css("display","none");
 							$("#imageLinkRow").slideDown("fast", $("#imageLinkRow").css("display","table-row"));
 							imageLink.enable();
 							imageFile.disable();
-						} else if ($('select.imageType option:selected').val()=="File" ) {
+						} else if ($('#imageType').val()=="File" ) {
 							$("#imageLinkRow").css("display","none");
 							$("#imageFileRow").slideDown("fast", $("#imageFileRow").css("display","table-row"));
 							imageFile.enable();
@@ -326,10 +326,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#ownershipType").change(function(){
-						if ($('select.ownershipType option:selected').val()=="School" ) {
+						if ($('#ownershipType').val()=="School" ) {
 							$("#ownershipTypeIndividualRow").css("display","none");
 							$("#ownershipTypeSchoolRow").slideDown("fast", $("#ownershipTypeSchoolRow").css("display","table-row"));
-						} else if ($('select.ownershipType option:selected').val()=="Individual" ) {
+						} else if ($('#ownershipType').val()=="Individual" ) {
 							$("#ownershipTypeSchoolRow").css("display","none");
 							$("#ownershipTypeIndividualRow").slideDown("fast", $("#ownershipTypeIndividualRow").css("display","table-row"));
 						}
@@ -471,7 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#replacement").change(function(){
-						if ($('#replacement option:selected').val()=="Y" ) {
+						if ($('#replacement').val()=="Y" ) {
 							$("#gibbonSchoolYearIDReplacementRow").slideDown("fast", $("#gibbonSchoolYearIDReplacementRow").css("display","table-row"));
 							$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row"));
 						}

@@ -411,7 +411,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						</td>
 					</tr>
 
-					
+
 					<tr>
 						<td colspan=2>
 							<h4><?php echo __($guid, 'Sibling Applications') ?></h4>
@@ -426,14 +426,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						$messageConfirm = __($guid, 'This will link the current application to the family of the selected application, including all other applications within that family.')." ".__($guid, 'Are you sure you want to proceed with this request?');
 
 						$data = array( 'gibbonApplicationFormID' => $row['gibbonApplicationFormID'] );
-		                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm 
-                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-                                WHERE gibbonApplicationFormID <> :gibbonApplicationFormID  
+		                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm
+                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                                WHERE gibbonApplicationFormID <> :gibbonApplicationFormID
 	                            AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID)
 	                            ORDER BY gibbonApplicationFormID";
 
 		                $resultLinked = $pdo->executeQuery($data, $sql);
-					
+
 						// Display Sibling Applications
 						if ($resultLinked && $resultLinked->rowCount() > 0) { ?>
 
@@ -469,7 +469,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
 							echo '</table>';
 
-						} 
+						}
 						// Or add a new link (mutually exclusive, to prevent linking multiple families)
 						else {
 
@@ -491,7 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 					        	while ($rowApplication = $resultApplications->fetch()) {
 					        		if ($rowApplication['gibbonApplicationFormID']==$gibbonApplicationFormID) continue; // Skip self
 					        		if (isset($linkedApplications[$rowApplication['gibbonApplicationFormID']])) continue; // Skip applications already linked
-					        		
+
 					        		if ($currentYear != $rowApplication['gibbonSchoolYearID']) {
 					        			if ($currentYear == '') echo '</optgroup>';
 					        			echo '<optgroup label="--'.$rowApplication['schoolYearName'].'--">';
@@ -1009,7 +1009,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$(".sen").change(function(){
-								if ($('select.sen option:selected').val()=="Y" ) {
+								if ($('#sen').val()=="Y" ) {
 									$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row"));
 								} else {
 									$("#senDetailsRow").css("display","none");

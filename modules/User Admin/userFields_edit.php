@@ -60,9 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_editProcess.php?gibbonPersonFieldID='.$row['gibbonPersonFieldID'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Active') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -90,12 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 								if ($row['active'] == 'N') {
 									echo 'selected';
 								}
-								echo " value='N'>".__($guid, 'No').'</option>'; ?>				
+								echo " value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Description') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							</script>
 						</td>
 					</tr>
-			
+
 					<script type="text/javascript">
 						$(document).ready(function(){
 							<?php
@@ -114,13 +114,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
                                     echo '$("#optionsRow").css("display","none");';
                                 }
            	 					?>
-							
+
 							$("#type").change(function(){
 								//varchar = chars
 								//text = rows
 								//select = csl of options
-								if ($('select.type option:selected').val()=="varchar" || $('select.type option:selected').val()=="text" || $('select.type option:selected').val()=="select") {
-									$("#optionsRow").slideDown("fast", $("#optionsRow").css("display","table-row")); 
+								if ($('#type').val()=="varchar" || $('#type').val()=="text" || $('#type').val()=="select") {
+									$("#optionsRow").slideDown("fast", $("#optionsRow").css("display","table-row"));
 								}
 								else {
 									$("#optionsRow").css("display","none");
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 						});
 					</script>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Type') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 									if ($row['type'] == 'select') {
 										echo 'selected';
 									}
-									echo " value='select'>Dropdown</option>"; ?>				
+									echo " value='select'>Dropdown</option>"; ?>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
@@ -169,10 +169,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 						</td>
 					</tr>
 					<tr id="optionsRow">
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Options') ?> *</b><br/>
 							<span class="emphasis small">
-								<?php 
+								<?php
                                     echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
 									echo __($guid, 'Long Text: number of rows for field.').'<br/>';
 									echo __($guid, 'Dropdown: comma separated list of options.').'<br/>'; ?>
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Required') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Is this field compulsory?') ?></span>
 						</td>
@@ -199,12 +199,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 								if ($row['required'] == 'N') {
 									echo 'selected';
 								}
-								echo " value='N'>".__($guid, 'No').'</option>'; ?>				
+								echo " value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Role Categories') ?></b><br/>
 						</td>
 						<td class="right">
@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Include In Data Updater?') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -247,12 +247,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 								if ($row['activeDataUpdater'] == '0') {
 									echo 'selected';
 								}
-								echo " value='0'>".__($guid, 'No').'</option>'; ?>				
+								echo " value='0'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Include In Application Form?') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -267,11 +267,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 								if ($row['activeApplicationForm'] == '0') {
 									echo 'selected';
 								}
-								echo " value='0'>".__($guid, 'No').'</option>'; ?>				
+								echo " value='0'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
-			
+
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
