@@ -57,16 +57,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
 				$(document).ready(function(){
+                    <?php if ($type != 'Date Range') { echo "startDateFrom.disable(); startDateTo.disable();"; } ?>
 					$("#type").change(function(){
 						if ($('#type').val()=="Date Range" ) {
 							$("#startDateFromRow").slideDown("fast", $("#startDateFromRow").css("display","table-row"));
 							$("#startDateToRow").slideDown("fast", $("#startDateToRow").css("display","table-row"));
+							$("#ignoreEnrolmentRow").slideDown("fast", $("#ignoreEnrolmentRow").css("display","table-row"));
+                            startDateFrom.enable();
+                            startDateTo.enable();
 						} else {
 							$("#startDateFromRow").css("display","none");
 							$("#startDateToRow").css("display","none");
+							$("#ignoreEnrolmentRow").css("display","none");
+                            startDateFrom.disable();
+                            startDateTo.disable();
 						}
 					 });
 				});
@@ -93,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 			</tr>
 			<tr id='startDateFromRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td>
-					<b><?php echo __($guid, 'From Date') ?></b><br/>
+					<b><?php echo __($guid, 'From Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Earliest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
 						echo $_SESSION[$guid]['i18n']['dateFormat'];
@@ -115,6 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
 						?>." } );
+                        startDateFrom.add(Validate.Presence);
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -125,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 			</tr>
 			<tr id='startDateToRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td>
-					<b><?php echo __($guid, 'To Date') ?></b><br/>
+					<b><?php echo __($guid, 'To Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Latest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
 						echo $_SESSION[$guid]['i18n']['dateFormat'];
@@ -147,6 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
 						?>." } );
+                        startDateTo.add(Validate.Presence);
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -155,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 					</script>
 				</td>
 			</tr>
-			<tr>
+			<tr id='ignoreEnrolmentRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td>
 					<b><?php echo __($guid, 'Ignore Enrolment') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
