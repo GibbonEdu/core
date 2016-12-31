@@ -93,9 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         echo __($guid, 'Filters');
         echo '</h3>'; ?>
         <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-            <table class='noIntBorder' cellspacing='0' style="width: 100%"> 
+            <table class='noIntBorder' cellspacing='0' style="width: 100%">
                 <tr>
-                    <td> 
+                    <td>
                         <b><?php echo __($guid, 'Search For') ?></b><br/>
                     </td>
                     <td class="right">
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID");
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&gibbonYearGroupID=$gibbonYearGroupID");
             }
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</table>';
 
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID");
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&gibbonYearGroupID=$gibbonYearGroupID");
             }
         }
     }
