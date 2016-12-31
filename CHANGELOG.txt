@@ -195,6 +195,7 @@ v13.0.00
 		Timetable Admin: code clean up on bulk actions when managing course enrolment by class
 		Timetable Admin: removed required field notice on location field when editing a class in a timetable
 		Timetable Admin: added filter persistence on pagination in Manage Courses & Classes
+		Timetable Admin: fixed colspan issue when deleting a day in Manage Timetables
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
