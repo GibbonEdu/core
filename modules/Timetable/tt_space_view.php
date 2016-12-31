@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/tt_space.php&search=$seearch'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
 
