@@ -174,6 +174,7 @@ v13.0.00
 		Students: addition of new sub-action to allow viewing of full student profiles, without Notes
 		Students: added date range to Form Group Summary report
 		Students: increased length of student search field
+		Students: fixed PHP error on Application Form edit process, when there are no roll groups to select
 		System Admin: added ability to custom order module categories in main menu
 		System Admin: added system check page with version & extension information
 		System Admin: coloured rows for inactive module in Manage Modules
