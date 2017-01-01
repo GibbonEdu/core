@@ -207,7 +207,8 @@ v13.0.00
 		User Admin: fixed bug preventing User Custom Field options from appearing when adding a new field
 		User Admin: fixed PHP Notice in Import User Photos
 		User Admin: fixed bug preventing Import User Photos from working when year/month folder does not already exist in uploads
-
+		User Admin: switched default import mode form Sync to Import
+		
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
 

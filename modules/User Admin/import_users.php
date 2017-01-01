@@ -58,8 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 					</td>
 					<td class="right">
 						<select name="mode" id="mode" class="standardWidth">
+                            <option value="import"><?php echo __($guid, 'Import') ?></option>
 							<option value="sync"><?php echo __($guid, 'Sync') ?></option>
-							<option value="import"><?php echo __($guid, 'Import') ?></option>
 						</select>
 					</td>
 				</tr>
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 			<li><?php echo __($guid, 'Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
 			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
-					<li><b><?php echo __($guid, 'Title') ?></b> - <?php echo __($guid, 'e.g. Mr, Mrs, Dr') ?></li>
+					<li><b><?php echo __($guid, 'Title') ?></b> - <?php echo __($guid, 'e.g. Ms., Miss, Mr., Mrs., Dr.') ?></li>
 					<li><b><?php echo __($guid, 'Surname') ?> *</b> - <?php echo __($guid, 'Family name') ?></li>
 					<li><b><?php echo __($guid, 'First Name') ?> *</b> - <?php echo __($guid, 'Given name') ?></li>
 					<li><b><?php echo __($guid, 'Preferred Name') ?> *</b> - <?php echo __($guid, 'Most common name, alias, nickname, handle, etc') ?></li>
