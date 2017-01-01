@@ -199,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                             }
                                             ++$count;
                                         }
-                                        if (!(copy('zip://'.$path.'#'.$filename, $filePath))) {
+                                        if (!(@copy('zip://'.$path.'#'.$filename, $filePath))) {
                                             $fileUploadFail = true;
                                             echo "<div class='error'>";
                                             echo __($guid, 'There was an error uploading photo for user:').' '.$username.'.';

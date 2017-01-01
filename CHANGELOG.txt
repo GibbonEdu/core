@@ -205,6 +205,7 @@ v13.0.00
 		User Admin: added birth certificate scan field in Manage Users
 		User Admin: hide inactive modules under Manage Permissions
 		User Admin: fixed bug preventing User Custom Field options from appearing when adding a new field
+		User Admin: fixed PHP Notice in Import User Photos
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
