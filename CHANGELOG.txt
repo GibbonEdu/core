@@ -145,6 +145,7 @@ v13.0.00
 		Planner: added On Time column to Work Summary by Roll Group report
 		Planner: removed Unit Overview link from Edit view in Lesson Planner
 		Planner: removed Unit Content from View in Lesson Planner (it's now accessible via the Unit Overview link)
+		Planner: improved workflow from Departments to Lesson Planner for parents
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		Resources: added filter persistence to pagination links in View Resources

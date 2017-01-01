@@ -71,7 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = null;
+            if (isset($_GET['gibbonCourseClassID'])) {
+                $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            }
         }
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
@@ -156,7 +159,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 							</tr>
 							<tr>
 								<td colspan=2 class="right">
-									<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner.php">
+                                    <?php
+                                    if (isset($gibbonCourseClassID) && $gibbonCourseClassID != '') {
+                                        echo "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'/>";
+                                    }
+                                    ?>
+                                    <input type='hidden' name='viewBy' value='class'/>
+                                    <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner.php">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
