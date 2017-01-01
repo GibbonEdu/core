@@ -84,6 +84,7 @@ v13.0.00
 		Attendance: colspan fix in attendance report for roll groups
 		Attendance: tweaked interface language to improve handling of plurals
 		Attendance: fixed non-functional client-side date testing in reports for Students Not Onsite and Students Not Present
+		Crowd Assessment: removed legacy interface string from Discuss page
 		Data Updater: fixed PHP notice issue in Manage Medical Form Data edit view
 		Data Updater: added selection persistence to student listing in Student Data Updater History report
 		Departments: added course long name to header of Class page
@@ -208,7 +209,7 @@ v13.0.00
 		User Admin: fixed PHP Notice in Import User Photos
 		User Admin: fixed bug preventing Import User Photos from working when year/month folder does not already exist in uploads
 		User Admin: switched default import mode form Sync to Import
-		
+
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class
 
