@@ -801,7 +801,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 															if ($rowVersion['type'] == 'File') {
 																echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
 															} else {
-																echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                if (strlen($rowVersion['location'])<=40) {
+                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                }
+                                                                else {
+                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 50).'...'.'</a>';
+                                                                }
 															}
 														?>
 														</td>
@@ -1027,14 +1032,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														<td>
 															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 														</td>
-														<td>
+														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
 															if ($rowVersion['type'] == 'File') {
 																echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
 															} else {
-																echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                if (strlen($rowVersion['location'])<=40) {
+                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                }
+                                                                else {
+                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 40).'...'.'</a>';
+                                                                }
 															}
-													?>
+                                                            ?>
 														</td>
 													</tr>
 													<?php
