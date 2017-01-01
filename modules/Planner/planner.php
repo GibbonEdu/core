@@ -162,9 +162,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     <?php
                                     if (isset($gibbonCourseClassID) && $gibbonCourseClassID != '') {
                                         echo "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'/>";
+                                        echo "<input type='hidden' name='viewBy' value='class'/>";
+                                    }
+                                    else {
+                                        echo "<input type='hidden' name='viewBy' value='date'/>";
                                     }
                                     ?>
-                                    <input type='hidden' name='viewBy' value='class'/>
                                     <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner.php">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
