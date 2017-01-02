@@ -676,5 +676,5 @@ UPDATE gibbonSetting SET name='shareUnitOutline', nameDisplay='Share Unit Outlin
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('no_NO', 'Norsk - Norge', 'N', 'N', 'Susanne Bergsmark', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 DELETE FROM gibbonPermission WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Generate Invoices') AND gibbonRoleID=2;end
 DELETE FROM gibbonPermission WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') AND name='Import Outcomes') AND gibbonRoleID=2;end
-
+UPDATE gibbonAction SET entrySidebar='N' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND (name='Students by Roll Group');end
 ";
