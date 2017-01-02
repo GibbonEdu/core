@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all') == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __($guid, 'You do not have access to this action.');
         echo '</div>';
     } else {
         //Proceed!

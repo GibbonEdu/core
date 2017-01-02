@@ -105,6 +105,7 @@ v13.0.00
 		Finance: fixed PHP Notice issue when checking for budget access
 		Finance: fixed sidebar PHP exception when approving/rejecting an expense request
 		Finance: fixed background repeat issue in Show/Hide button in fee blocks
+		Finance: removed edit icon from Manage Expenses for users without access to it
 		Formal Assessment: added All Students filter persistence to pagination links
 		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Individual Needs: fixed permission issue on summary page
