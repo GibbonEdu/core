@@ -56,7 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         $budgetsAccess = false;
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
         $budgetsAll = null;
-        echo $highestAction;
         if ($highestAction == 'Manage Expenses_all') {
             $budgetsAll = getBudgets($connection2);
             $budgetsAccess = true;
