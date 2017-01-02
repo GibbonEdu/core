@@ -677,4 +677,6 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 DELETE FROM gibbonPermission WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Generate Invoices') AND gibbonRoleID=2;end
 DELETE FROM gibbonPermission WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') AND name='Import Outcomes') AND gibbonRoleID=2;end
 UPDATE gibbonAction SET entrySidebar='N' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND (name='Students by Roll Group');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '6', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='View Message Wall'));end
+
 ";
