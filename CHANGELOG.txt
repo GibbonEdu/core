@@ -162,6 +162,7 @@ v13.0.00
 		Resources: added filter persistence to pagination links in View Resources
 		Resources: fixed issue leading to new tags having '' added around them when adding new resource
 		Resources: fixed tag search bug affecting first and last tags in list
+		Resources: fixed PHP Notice bug when editing a resource of type file
 		Rubrics: fixed MySQL error for students using Learning Area filter in View Rubrics
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
