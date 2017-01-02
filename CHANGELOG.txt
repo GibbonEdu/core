@@ -150,6 +150,7 @@ v13.0.00
 		Planner: improved workflow from Departments to Lesson Planner for parents
 		Planner: fixed long-link display issue in submitted homework in Planner View
 		Planner: fixed unit overview MySQL issue for parents
+		Planner: permission tweak for Import Outcomes
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
 		Resources: added filter persistence to pagination links in View Resources
