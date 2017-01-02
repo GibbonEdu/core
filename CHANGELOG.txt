@@ -68,6 +68,7 @@ v13.0.00
 		System: added interface text to show threshold levels for student alerts
 		System: added Odia to list of languages
 		System: removed use of old style jQuery select.* option:selected across the system
+		System: tweaked notification tray to hide Message Wall notification if permission to View Message Wall is not granted
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out

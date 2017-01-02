@@ -141,8 +141,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
     if (isset($_SESSION[$guid]['username']) != false) {
         //MESSAGE WALL!
-        $return .= "<div id='messageWall' style='display: inline; float: right'>";
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
+            $return .= "<div id='messageWall' style='display: inline; float: right'>";
+
             include './modules/Messenger/moduleFunctions.php';
 
             $addReturn = null;
@@ -190,88 +191,88 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                     $_SESSION[$guid]['messageWallOutput'] = $output;
                 }
             }
-        }
 
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
-        if (isset($_SESSION[$guid]['messageWallCount']) == false) {
-            $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
-        } else {
-            if ($_SESSION[$guid]['messageWallCount'] < 1) {
+            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
+            if (isset($_SESSION[$guid]['messageWallCount']) == false) {
                 $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
             } else {
-                $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
-                if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
-                    echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
-                    $bubbleBG = '';
-                    if ($messageBubbleBGColor != '') {
-                        $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
-                        $return .= '<style>';
-                        $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
-                        $return .= '</style>';
-                    }
-                    $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
-                    $bubbleWidth = 300;
-                    $bubbleLeft = 755;
-                    if ($messageBubbleWidthType == 'Wide') {
-                        $bubbleWidth = 700;
-                        $bubbleLeft = 415;
-                    }
-                    $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
-                    $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
-                    $return .= '<div class="ui-tooltip-content">';
-                    $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
-                    $test = count($output);
-                    if ($test > 3) {
-                        $test = 3;
-                    }
-                    for ($i = 0; $i < $test; ++$i) {
-                        $return .= "<span style='font-size: 120%; font-weight: bold'>";
-                        if (strlen($output[$i]['subject']) <= 30) {
-                            $return .= $output[$i]['subject'];
-                        } else {
-                            $return .= substr($output[$i]['subject'], 0, 30).'...';
+                if ($_SESSION[$guid]['messageWallCount'] < 1) {
+                    $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                } else {
+                    $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
+                        echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
+                        $bubbleBG = '';
+                        if ($messageBubbleBGColor != '') {
+                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
+                            $return .= '<style>';
+                            $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
+                            $return .= '</style>';
+                        }
+                        $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
+                        $bubbleWidth = 300;
+                        $bubbleLeft = 755;
+                        if ($messageBubbleWidthType == 'Wide') {
+                            $bubbleWidth = 700;
+                            $bubbleLeft = 415;
+                        }
+                        $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
+                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
+                        $return .= '<div class="ui-tooltip-content">';
+                        $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
+                        $test = count($output);
+                        if ($test > 3) {
+                            $test = 3;
+                        }
+                        for ($i = 0; $i < $test; ++$i) {
+                            $return .= "<span style='font-size: 120%; font-weight: bold'>";
+                            if (strlen($output[$i]['subject']) <= 30) {
+                                $return .= $output[$i]['subject'];
+                            } else {
+                                $return .= substr($output[$i]['subject'], 0, 30).'...';
+                            }
+
+                            $return .= '</span><br/>';
+                            $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
+                        }
+                        if (count($output) > 3) {
+                            $return .= '<i>'.__($guid, 'Plus more').'...</i>';
+                        }
+                        $return .= '</div>';
+                        $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
+                        $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
+                        $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
+                        $return .= '</div>';
+                        $return .= '</div>';
+
+                        $messageBubbleAutoHide = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide');
+                        if ($messageBubbleAutoHide != 'N') {
+                            $return .= '<script type="text/javascript">';
+                            $return .= '$(function() {';
+                            $return .= 'setTimeout(function() {';
+                            $return .= "$(\"#messageBubble\").hide('fade', {}, 3000)";
+                            $return .= '}, 10000);';
+                            $return .= '});';
+                            $return .= '$(function() {';
+                            $return .= 'setTimeout(function() {';
+                            $return .= "$(\"#messageBubbleArrow\").hide('fade', {}, 3000)";
+                            $return .= '}, 10000);';
+                            $return .= '});';
+                            $return .= '</script>';
                         }
 
-                        $return .= '</span><br/>';
-                        $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
-                    }
-                    if (count($output) > 3) {
-                        $return .= '<i>'.__($guid, 'Plus more').'...</i>';
-                    }
-                    $return .= '</div>';
-                    $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
-                    $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
-                    $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
-                    $return .= '</div>';
-                    $return .= '</div>';
-
-                    $messageBubbleAutoHide = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide');
-                    if ($messageBubbleAutoHide != 'N') {
-                        $return .= '<script type="text/javascript">';
-                        $return .= '$(function() {';
-                        $return .= 'setTimeout(function() {';
-                        $return .= "$(\"#messageBubble\").hide('fade', {}, 3000)";
-                        $return .= '}, 10000);';
-                        $return .= '});';
-                        $return .= '$(function() {';
-                        $return .= 'setTimeout(function() {';
-                        $return .= "$(\"#messageBubbleArrow\").hide('fade', {}, 3000)";
-                        $return .= '}, 10000);';
-                        $return .= '});';
-                        $return .= '</script>';
-                    }
-
-                    try {
-                        $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
+                        try {
+                            $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                            $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                        }
                     }
                 }
             }
+            $return .= "</div>";
         }
-        $return .= "</div>";
 
         //GET AND SHOW LIKES
         $return .= "<div id='likes' style='display: inline; float: right'>";
