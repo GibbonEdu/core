@@ -77,6 +77,7 @@ v13.0.00
 		Activities: fixed Back button level skip issue when managing enrolment
 		Activities: fixed dropped search string on bulk action in activity manage
 		Activities: hidden Register/Unregister icons when access is View
+		Activities: permission tweak for Generate Invoices
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
 		Attendance: added ability to set partial per-class future absence
 		Attendance: added visual graphing for school-wide Attendance Trends
