@@ -127,7 +127,7 @@
 
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') and $canEditThisClass) {
+        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
 			if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
 	            if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
