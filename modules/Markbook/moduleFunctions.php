@@ -321,13 +321,15 @@ function getAlertStyle( $alert, $concern ) {
 
 function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
 
+    global $gibbon;
+
     $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
     if ($enableColumnWeighting != 'Y') return;
 
     require_once './modules/Markbook/src/markbookView.php';
 
     // Build the markbook object for this class & student
-    $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
+    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
     $markbook->cacheWeightings( $gibbonPersonIDStudent );
 
     $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
