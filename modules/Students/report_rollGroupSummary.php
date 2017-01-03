@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 			<tr>
 				<td style='width: 275px'>
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'End date must be after this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+                    <span class="emphasis small"><?php echo __($guid, 'Start date must be before this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
 						echo $_SESSION[$guid]['i18n']['dateFormat'];
 					}
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'To Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Start date must be before this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+                    <span class="emphasis small"><?php echo __($guid, 'End date must be after this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 					} else {
 						echo $_SESSION[$guid]['i18n']['dateFormat'];
 					}
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         if (!is_null($dateFrom) AND !is_null($dateTo)) { //Search with dates
             $dataList['dateFrom'] = dateConvert($guid, $dateFrom);
             $dataList['dateTo'] = dateConvert($guid, $dateTo);
-            $sqlList = "SELECT gibbonRollGroup.name AS rollGroup, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND (dateStart IS NULL OR dateStart<=:dateTo) AND (dateEnd IS NULL OR dateEnd>=:dateFrom) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollGroup";
+            $sqlList = "SELECT gibbonRollGroup.name AS rollGroup, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND (dateStart IS NULL OR dateStart<=:dateFrom) AND (dateEnd IS NULL OR dateEnd>=:dateTo) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollGroup";
         }
         else { //Search without dates
             $sqlList = "SELECT gibbonRollGroup.name AS rollGroup, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollGroup";

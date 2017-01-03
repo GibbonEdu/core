@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $dateStart = dateConvert($guid, $_POST['dateStart']);
             }
             $gibbonRollGroupID = null;
-            if ($_POST['gibbonRollGroupID'] != '') {
+            if (isset($_POST['gibbonRollGroupID']) && $_POST['gibbonRollGroupID'] != '') {
                 $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
             }
             $paymentMade = 'N';
@@ -672,10 +672,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     // Handle Sibling Applications
                     if (!empty($_POST['linkedApplicationFormID'])) {
                         $data = array( 'gibbonApplicationFormID' => $_POST['linkedApplicationFormID'] );
-                        $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm 
-                                LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-                                WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL) 
-                                OR gibbonApplicationFormID1=:gibbonApplicationFormID 
+                        $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm
+                                LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                                WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL)
+                                OR gibbonApplicationFormID1=:gibbonApplicationFormID
                                 OR gibbonApplicationFormID2=:gibbonApplicationFormID';
                         $resultLinked = $pdo->executeQuery($data, $sql);
 

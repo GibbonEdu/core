@@ -159,12 +159,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         echo "<option value=''></value>";
                                     }
                                     echo $options;
-                                    ?> 
+                                    ?>
 								</select>
 							</td>
 						</tr>
 						<?php
-
                     }
                     ?>
 
@@ -489,6 +488,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '<td>';
                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                         $signup = true;
+                        if ($access == 'View') {
+                            $signup = false;
+                        }
                         if ($row['registration'] == 'N') {
                             $signup = false;
                         }

@@ -52,7 +52,7 @@ v13.0.00
 		System: enabled Smart Workflow Help for newly added staff
 		System: turned on Smart Workflow help for admin user created during install
 		System: added Bulgarian Lev and Namibian Dollar as currency
-		System: added Bulgarian, Korean, Finnish, German and Odia as development languages
+		System: added Bulgarian, Korean, Finnish, German, Odia and Norwegian as development languages
 		System: removed image button from TinyMCE
 		System: fixed out of place > in Chrome in certain breadcrumbs
 		System: directed Google OAuth to give offline access, ensure presence of refreshToken
@@ -60,7 +60,6 @@ v13.0.00
 		System: updated PayPal integration to set localecode based on current Gibbon language
 		System: updated the reincarnate image on Default theme
 		System: removed robots meta tag
-		System: added ability to custom order module categories in main menu
 		System: AJAXified Fast Finder
 		System: added ability to search Fast Finder actions using current Gibbon language
 		System: set tinyMCE default target for new links to New Window
@@ -68,12 +67,19 @@ v13.0.00
 		System: notification emails now come from organisation email address, not administrator address
 		System: added interface text to show threshold levels for student alerts
 		System: added Odia to list of languages
-		System: Added system check page with version & extension information
+		System: removed use of old style jQuery select.* option:selected across the system
+		System: tweaked notification tray to hide Message Wall notification if permission to View Message Wall is not granted
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
 		Activities: fixed translation of blank string in Parent Dashboard Activity view
 		Activities: removed stand along activity copy functionality
+		Activities: interface string fix in activity edit screen
+		Activities: fixed Back button level skip issue when managing enrolment
+		Activities: fixed dropped search string on bulk action in activity manage
+		Activities: hidden Register/Unregister icons when access is View
+		Activities: permission tweak for Generate Invoices
+		Activities: fixed bug preventing Support Staff from viewing activity details from Activity Choices by Student
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
 		Attendance: added ability to set partial per-class future absence
 		Attendance: added visual graphing for school-wide Attendance Trends
@@ -81,6 +87,10 @@ v13.0.00
 		Attendance: updated Daily Incomplete Email CLI script to include attendance by class
 		Attendance: colspan fix in attendance report for roll groups
 		Attendance: tweaked interface language to improve handling of plurals
+		Attendance: fixed non-functional client-side date testing in reports for Students Not Onsite and Students Not Present
+		Crowd Assessment: removed legacy interface string from Discuss page
+		Data Updater: fixed PHP notice issue in Manage Medical Form Data edit view
+		Data Updater: added selection persistence to student listing in Student Data Updater History report
 		Departments: added course long name to header of Class page
 		Departments: fixed errant translation preventing Class page details from showing in some languages (e.g. Spanish, French)
 		Departments: included participants in Class page, rather than as a subpage.
@@ -89,9 +99,28 @@ v13.0.00
 		Finance: added option to output name on invoice/receipt as student official name, rather than preferredName+surname
 		Finance: fixed bug in Paid - Partial filter in invoice manage view
 		Finance: added filter by fee category in invoice manage view
+		Finance: made year choice persist when using search in Manage Fees
+		Finance: made filters persist when using pagination links in Manage Invoicees
+		Finance: fixed no record display in Manage Expenses
+		Finance: removed edit link in return message on successful add in Manage Expense Requests
+		Finance: fixed PHP Notice issue when checking for budget access
+		Finance: fixed sidebar PHP exception when approving/rejecting an expense request
+		Finance: fixed background repeat issue in Show/Hide button in fee blocks
+		Finance: removed edit icon from Manage Expenses for users without access to it
+		Formal Assessment: added All Students filter persistence to pagination links
 		Individual Needs: added template settings for pre-filling fields on new IEPs
 		Individual Needs: fixed permission issue on summary page
 		Library: reduced memory usage of Library browse page
+		Library: fixed bug preventing item details from appearing in drop down in Browse Library
+		Library: added All Fields filter persistence to pagination links in Browse Library
+		Library: fixed PHP notice issue in Browse Library, when an older entry lacks new fields added to a type
+		Library: reduced memory usage of Catalog Summary export
+		Library: interface string fix in Import Records
+		Library: fixed date format issue in Import Records
+		Library: fixed issue preventing Name field from being set on import from Google Books
+		Library: fixed issue preventing ID and Producer field validation from firing on submit of Add in Manage Catalog
+		Library: fixed colspan issue in View Overdue Items
+		Library: fixed interface string issue in View Overdue Items
 		Markbook: added settings to enable/disable Effort and Rubrics
 		Markbook: fixed bug preventing Learning Area rubric selection when course is associated with multiple year groups
 		Markbook: removed Learning Area rubrics from multiple column add
@@ -100,11 +129,16 @@ v13.0.00
 		Markbook: fixed issue preventing some staff from seeing Markbook columns from other classes (depending on Edit rights)
 		Markbook: added a class chooser to the sidebar for view, edit and weightings sub-pages
 		Markbook: fixed multibyte substring issue when shortening comments for preview
+		Markbook: permission tweak for users with view-only Markbook access, in order to hide Add link
 		Messenger: fixed formatting of Sent From Gibbon tag
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Messenger: disabled Canned Response for any non-staff users
 		Messenger: doubled character limit on subject field
 		Messenger: added new permission to control usage of canned responses
+		Messenger: added missing post-add edit link when adding a Canned Response
+		Messenger: added Search filter persistence to pagination links in Manage Messages
+		Messenger: added missing post-add edit link when adding a Quick Wall Message
+		Messenger: permission tweak to give Support Staff access to View Message Wall by default
 		Planner: adjusted permissions to allow teachers to duplicate lessons belonging to other people (to reuse them)
 		Planner: fixed Previous/Next Lesson links in lesson plan view to work for teachers who do not teach a given class
 		Planner: added ability to tag units, in order to help build curriculum maps
@@ -115,18 +149,33 @@ v13.0.00
 		Planner: switched from JS to HTML for Smart Block placeholders
 		Planner: improved text readability in weekly CLI email
 		Planner: added option to share unit outline with users who do not have access to the unit planner, via the lesson planner.
+		Planner: added On Time column to Work Summary by Roll Group report
+		Planner: removed Unit Overview link from Edit view in Lesson Planner
+		Planner: removed Unit Content from View in Lesson Planner (it's now accessible via the Unit Overview link)
+		Planner: improved workflow from Departments to Lesson Planner for parents
+		Planner: fixed long-link display issue in submitted homework in Planner View
+		Planner: fixed unit overview MySQL issue for parents
+		Planner: permission tweak for Import Outcomes
+		Planner: aesthetic tweaks to Add Unit page
 		Resources: improved usability of tag entry interface
 		Resources: fixed breakage of tags including apostrophes
+		Resources: added filter persistence to pagination links in View Resources
+		Resources: fixed issue leading to new tags having '' added around them when adding new resource
+		Resources: fixed tag search bug affecting first and last tags in list
+		Resources: fixed PHP Notice bug when editing a resource of type file
+		Rubrics: fixed MySQL error for students using Learning Area filter in View Rubrics
 		School Admin: fixed timezone issue in managing special days
 		School Admin: added Dashboard Settings, to allow setting of default landing tab in staff, student and parent dashboards
 		School Admin: fixed PHP notice issue when adding special days
 		School Admin: fixed PHP warning caused by empty arrays in Tracking Settings
 		School Admin: added ability to link Educational Assistances to Form/Roll Groups
 		School Admin: fixed leap year error in Manage Special Days
+		School Admin: interface text tweak in Manage Grade Scales
 		Staff: fixed PHP Notice bugs in Staff Manage Contract Add screen
 		Staff: tweaked student accept to remove - from names
 		Staff: fixed date display in Job Openings manage page
 		Staff: added setting to control public display of staff application form (public applications are on by default)
+		Staff: fixed bug causing blank contract money values being set to 0 instead of null when adding and editing contracts
 		Students: fixed PHP Notice bug in Student Enrolment Add screen
 		Students: tweaked student accept to remove - from names
 		Students: fixed broken link from Family in student profile to sibling, when sibling is not enroled in the year
@@ -142,23 +191,40 @@ v13.0.00
 		Students: addition of new sub-action to allow viewing of full student profiles, without Notes
 		Students: added date range to Form Group Summary report
 		Students: increased length of student search field
+		Students: fixed PHP error on Application Form edit process, when there are no roll groups to select
+		Students: interface string fix in Roll Group Summary
+		Students: improved address output in Student Transport report
+		Students: fixed date filter bug in Roll Group Summary report
+		Students: converted Students by Roll Group to full screen
+		System Admin: added ability to custom order module categories in main menu
+		System Admin: added system check page with version & extension information
+		System Admin: coloured rows for inactive module in Manage Modules
+		System Admin: fixed PHP notice in Manage Modules when un-installed modules present
 		Timetable: more graceful fail when getting Google Calendar and refreshToken is not present
 		Timetable: PHP Notice fix on heigh constant
 		Timetable: fixed typo in class edit view
 		Timetable: fixed bug preventing Master Timetable from showing classes with on location
 		Timetable: added period times to titles in master timetable
+		Timetable: fixed PHP Notice error when viewing the timetable for a Facility
 		Timetable Admin: removed Left users from exception add screen
 		Timetable Admin: narrowed down class participant count in Course edit view to users with status Full
 		Timetable Admin: added search and filters to course enrolment and course management pages
 		Timetable Admin: added bulk action to copy selected students to another class
 		Timetable Admin: code clean up on bulk actions when managing course enrolment by class
 		Timetable Admin: removed required field notice on location field when editing a class in a timetable
+		Timetable Admin: added filter persistence on pagination in Manage Courses & Classes
+		Timetable Admin: fixed colspan issue when deleting a day in Manage Timetables
 		User Admin: fixed PHP Notice issue in user import
 		User Admin: tweaked link to family from Manage Users to fix year group no-show issue
 		User Admin: fixed PHP Notice issue in student enrolment import
 		User Admin: fixed mime-type issue in user image import function
 		User Admin: added student ID to search in Manage Users
 		User Admin: added birth certificate scan field in Manage Users
+		User Admin: hide inactive modules under Manage Permissions
+		User Admin: fixed bug preventing User Custom Field options from appearing when adding a new field
+		User Admin: fixed PHP Notice in Import User Photos
+		User Admin: fixed bug preventing Import User Photos from working when year/month folder does not already exist in uploads
+		User Admin: switched default import mode form Sync to Import
 
 	Deprecated
 		Planner: replaced original planner-based attendance with attendance by class

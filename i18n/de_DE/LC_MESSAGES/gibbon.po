@@ -54210,7 +54210,7 @@ msgstr ""
 #: modules/Library/library_import.php:148
 #: .git/modules/Library/library_import.php:148
 #: modules/Library/library_import.php:148
-msgid "'Name' filed for department responsible for the item."
+msgid "'Name' field for department responsible for the item."
 msgstr ""
 
 #: .git/modules/Library/library_import.php:149
@@ -55701,7 +55701,7 @@ msgstr ""
 #: modules/Library/report_viewOverdueItems.php:52
 #: .git/modules/Library/report_viewOverdueItems.php:52
 #: modules/Library/report_viewOverdueItems.php:52
-msgid "Include all studenusersts, regardless of status and current enrolment."
+msgid "Include all users, regardless of status and current enrolment."
 msgstr ""
 
 #: .git/modules/Library/report_viewOverdueItems.php:99
@@ -62145,7 +62145,7 @@ msgstr ""
 #: .git/modules/School Admin/gradeScales_manage.php:33
 #: modules/School Admin/gradeScales_manage.php:33
 msgid ""
-"Grade scales are used through the ARR modules to control what grades can be "
+"Grade scales are used through the Assess modules to control what grades can be "
 "entered into the system. Editing some of the inbuilt scales can impact other "
 "areas of the system: it is advised to take a backup of the entire system "
 "before doing this."

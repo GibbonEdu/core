@@ -1962,7 +1962,6 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
 				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				header("Location: {$URL}") ;
 			}

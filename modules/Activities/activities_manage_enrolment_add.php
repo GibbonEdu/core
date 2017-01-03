@@ -85,14 +85,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
             if ($_GET['search'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonActivityID=$gibbonActivityID'>".__($guid, 'Back').'</a>';
                 echo '</div>';
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Name') ?></b><br/>
 						</td>
 						<td class="right">
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     if ($dateType == 'Date') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     } else {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Terms') ?></b><br/>
 							</td>
 							<td class="right">
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					}
                     ?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Students') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Status') ?> *</b><br/>
 						</td>
 						<td class="right">

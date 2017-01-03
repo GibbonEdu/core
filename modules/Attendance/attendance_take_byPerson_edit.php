@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 	$gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
 	$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-	
+
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) ) {
 
@@ -80,11 +80,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 echo '</div>';
             } else {
                 $timestamp = dateConvertToTimestamp($currentDate);
-               
                 ?>
-				
+
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_editProcess.php'; ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
 							<td colspan=2>
 								<h3>
@@ -93,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Student') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -102,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Date') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -127,12 +126,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-									?>." } ); 
+									?>." } );
 								</script>
 							</td>
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Recorded By') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -141,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Time') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -150,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Where') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -160,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						</tr>
 
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Type') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -169,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Reason') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -178,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Comment') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, '255 character limit') ?></span>
 							</td>
@@ -208,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				<?php
 
 
-	            
+
 	        }
 	    }
 	}

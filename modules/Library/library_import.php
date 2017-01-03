@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 			<?php echo __($guid, 'This page allows you to import library records from a CSV file. The import includes one row for each record. The system will match records by ID, updating any matching results, whilst creating new records not already existing in the system.') ?><br/>
 		</p>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_import.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
 					</td>
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -101,9 +101,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 				</tr>
 			</table>
 		</form>
-		
-		
-		
+
+
+
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
 			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php echo __($guid, 'Imports can only be for one Type (e.g. Print Publication, Computer, etc). The type of the first item in the import will be applied to all other entries.') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
 					<li><b><?php echo __($guid, 'General Details'); ?></b></li>
 					<ol>
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 						<li><b><?php echo __($guid, 'Location Detail') ?></b> - <?php echo __($guid, 'Shelf, cabinet, sector, etc') ?></li>
 						<li><b><?php echo __($guid, 'Ownership Type') ?> *</b> - <?php echo __($guid, 'One of: \'School\' or \'Individual\'.') ?></li>
 						<li><b><?php echo __($guid, 'Main User').'/'.__($guid, 'Owner') ?></b> - <?php echo __($guid, 'Username of person the device is assigned to.') ?></li>
-						<li><b><?php echo __($guid, 'Department') ?></b> - <?php echo __($guid, '\'Name\' filed for department responsible for the item.') ?></li>
+						<li><b><?php echo __($guid, 'Department') ?></b> - <?php echo __($guid, '\'Name\' field for department responsible for the item.') ?></li>
 						<li><b><?php echo __($guid, 'Borrowable?') ?> *</b> - <?php echo __($guid, 'Is item available for loan?'.' '.__($guid, 'One of: \'Y\' or \'N\'.')) ?></li>
 						<li><b><?php echo __($guid, 'Status?') ?> *</b> - <?php echo __($guid, 'Initial availability.'.' '.'One of: \'Available\',\'In Use\',\'Decommissioned\',\'Lost\',\'On Loan\',\'Repair\' or \'Reserved\'.') ?></li>
 						<li><b><?php echo __($guid, 'Comments/Notes') ?></b></li>
@@ -344,7 +344,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 								if (is_array($typeFields)) {
 									foreach ($typeFields as $typeField) {
 										if (isset($data[$totalFieldCount])) {
-											$typeFieldValues[$typeField['name']] = $data[$totalFieldCount];
+                                            if ($typeField['type'] == 'Date') {
+                                                $typeFieldValues[$typeField['name']] = dateConvert($guid, $data[$totalFieldCount]);
+                                            }
+                                            else {
+                                                $typeFieldValues[$typeField['name']] = $data[$totalFieldCount];
+                                            }
 										}
 										++$totalFieldCount;
 									}

@@ -54,16 +54,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     }
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_addProcess.php?search=$search&allStaff=$allStaff" ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Person') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>		
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
 					<select class="standardWidth" name="gibbonPersonID" id="gibbonPersonID">
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 						while ($row = $result->fetch()) {
 							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Initials') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique if set.') ?></span>
 				</td>
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -146,16 +146,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Job Title') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'First Aid') ?></h3>
 				</td>
 			</tr>
@@ -163,16 +163,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#firstAidQualified").change(function(){
-						if ($('select.firstAidQualified option:selected').val()=="Y" ) {
-							$("#firstAidExpiryRow").slideDown("fast", $("#firstAidExpiryRow").css("display","table-row")); 
+						if ($('#firstAidQualified').val()=="Y" ) {
+							$("#firstAidExpiryRow").slideDown("fast", $("#firstAidExpiryRow").css("display","table-row"));
 						} else {
 							$("#firstAidExpiryRow").css("display","none");
-						} 
+						}
 					 });
 				});
 			</script>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Aid Qualified?') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr id='firstAidExpiryRow' style='display: none'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Aid Expiry') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -204,14 +204,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 					</script>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Biography') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Country Of Origin') ?></b><br/>
 				</td>
 				<td class="right">
@@ -228,12 +228,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Qualifications') ?></b><br/>
 				</td>
 				<td class="right">
@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Grouping') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Used to group staff when creating a staff directory.') ?></span>
 				</td>
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Grouping Priority') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Higher numbers move teachers up the order within their grouping.') ?></span>
 				</td>
@@ -263,14 +263,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Biography') ?></b><br/>
 				</td>
 				<td class="right">
 					<textarea name='biography' id='biography' rows=10 style='width: 300px'></textarea>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

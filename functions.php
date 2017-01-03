@@ -141,8 +141,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
     if (isset($_SESSION[$guid]['username']) != false) {
         //MESSAGE WALL!
-        $return .= "<div id='messageWall' style='display: inline; float: right'>";
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
+            $return .= "<div id='messageWall' style='display: inline; float: right'>";
+
             include './modules/Messenger/moduleFunctions.php';
 
             $addReturn = null;
@@ -190,88 +191,88 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                     $_SESSION[$guid]['messageWallOutput'] = $output;
                 }
             }
-        }
 
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
-        if (isset($_SESSION[$guid]['messageWallCount']) == false) {
-            $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
-        } else {
-            if ($_SESSION[$guid]['messageWallCount'] < 1) {
+            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
+            if (isset($_SESSION[$guid]['messageWallCount']) == false) {
                 $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
             } else {
-                $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
-                if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
-                    echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
-                    $bubbleBG = '';
-                    if ($messageBubbleBGColor != '') {
-                        $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
-                        $return .= '<style>';
-                        $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
-                        $return .= '</style>';
-                    }
-                    $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
-                    $bubbleWidth = 300;
-                    $bubbleLeft = 755;
-                    if ($messageBubbleWidthType == 'Wide') {
-                        $bubbleWidth = 700;
-                        $bubbleLeft = 415;
-                    }
-                    $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
-                    $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
-                    $return .= '<div class="ui-tooltip-content">';
-                    $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
-                    $test = count($output);
-                    if ($test > 3) {
-                        $test = 3;
-                    }
-                    for ($i = 0; $i < $test; ++$i) {
-                        $return .= "<span style='font-size: 120%; font-weight: bold'>";
-                        if (strlen($output[$i]['subject']) <= 30) {
-                            $return .= $output[$i]['subject'];
-                        } else {
-                            $return .= substr($output[$i]['subject'], 0, 30).'...';
+                if ($_SESSION[$guid]['messageWallCount'] < 1) {
+                    $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                } else {
+                    $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
+                        echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
+                        $bubbleBG = '';
+                        if ($messageBubbleBGColor != '') {
+                            $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
+                            $return .= '<style>';
+                            $return .= ".ui-tooltip, .arrow:after { $bubbleBG }";
+                            $return .= '</style>';
+                        }
+                        $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
+                        $bubbleWidth = 300;
+                        $bubbleLeft = 755;
+                        if ($messageBubbleWidthType == 'Wide') {
+                            $bubbleWidth = 700;
+                            $bubbleLeft = 415;
+                        }
+                        $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
+                        $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
+                        $return .= '<div class="ui-tooltip-content">';
+                        $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
+                        $test = count($output);
+                        if ($test > 3) {
+                            $test = 3;
+                        }
+                        for ($i = 0; $i < $test; ++$i) {
+                            $return .= "<span style='font-size: 120%; font-weight: bold'>";
+                            if (strlen($output[$i]['subject']) <= 30) {
+                                $return .= $output[$i]['subject'];
+                            } else {
+                                $return .= substr($output[$i]['subject'], 0, 30).'...';
+                            }
+
+                            $return .= '</span><br/>';
+                            $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
+                        }
+                        if (count($output) > 3) {
+                            $return .= '<i>'.__($guid, 'Plus more').'...</i>';
+                        }
+                        $return .= '</div>';
+                        $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
+                        $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
+                        $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
+                        $return .= '</div>';
+                        $return .= '</div>';
+
+                        $messageBubbleAutoHide = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide');
+                        if ($messageBubbleAutoHide != 'N') {
+                            $return .= '<script type="text/javascript">';
+                            $return .= '$(function() {';
+                            $return .= 'setTimeout(function() {';
+                            $return .= "$(\"#messageBubble\").hide('fade', {}, 3000)";
+                            $return .= '}, 10000);';
+                            $return .= '});';
+                            $return .= '$(function() {';
+                            $return .= 'setTimeout(function() {';
+                            $return .= "$(\"#messageBubbleArrow\").hide('fade', {}, 3000)";
+                            $return .= '}, 10000);';
+                            $return .= '});';
+                            $return .= '</script>';
                         }
 
-                        $return .= '</span><br/>';
-                        $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
-                    }
-                    if (count($output) > 3) {
-                        $return .= '<i>'.__($guid, 'Plus more').'...</i>';
-                    }
-                    $return .= '</div>';
-                    $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
-                    $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
-                    $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
-                    $return .= '</div>';
-                    $return .= '</div>';
-
-                    $messageBubbleAutoHide = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide');
-                    if ($messageBubbleAutoHide != 'N') {
-                        $return .= '<script type="text/javascript">';
-                        $return .= '$(function() {';
-                        $return .= 'setTimeout(function() {';
-                        $return .= "$(\"#messageBubble\").hide('fade', {}, 3000)";
-                        $return .= '}, 10000);';
-                        $return .= '});';
-                        $return .= '$(function() {';
-                        $return .= 'setTimeout(function() {';
-                        $return .= "$(\"#messageBubbleArrow\").hide('fade', {}, 3000)";
-                        $return .= '}, 10000);';
-                        $return .= '});';
-                        $return .= '</script>';
-                    }
-
-                    try {
-                        $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
+                        try {
+                            $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                            $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                        }
                     }
                 }
             }
+            $return .= "</div>";
         }
-        $return .= "</div>";
 
         //GET AND SHOW LIKES
         $return .= "<div id='likes' style='display: inline; float: right'>";
@@ -2820,121 +2821,119 @@ function sidebar($gibbon, $pdo)
 			<?php
 
         } //End Check for Google Auth
-            if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
-            ?>
-			<h2>
-				<?php echo __($guid, 'Login'); ?>
-			</h2>
-			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q'];
-}
-                ?>">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Username'); ?></b>
-						</td>
-						<td class="right">
-							<input name="username" id="username" maxlength=20 type="text" style="width:120px">
-							<script type="text/javascript">
-								var username=new LiveValidation('username', {onlyOnSubmit: true });
-								username.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Password'); ?></b>
-						</td>
-						<td class="right">
-							<input name="password" id="password" maxlength=30 type="password" style="width:120px">
-							<script type="text/javascript">
-								var password=new LiveValidation('password', {onlyOnSubmit: true });
-								password.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr class='schoolYear' id='schoolYear'>
-						<td>
-							<b><?php echo __($guid, 'School Year'); ?></b>
-						</td>
-						<td class="right">
-							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['status'] == 'Current') {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
-							</select>
-						</td>
-					</tr>
-					<tr class='language' id='language'>
-						<td>
-							<b><?php echo __($guid, 'Language'); ?></b>
-						</td>
-						<td class="right">
-							<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['systemDefault'] == 'Y') {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-						</td>
-						<td class="right">
+        if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
+        ?>
+		<h2>
+			<?php echo __($guid, 'Login'); ?>
+		</h2>
+		<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q']; } ?>">
+			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
+				<tr>
+					<td>
+						<b><?php echo __($guid, 'Username'); ?></b>
+					</td>
+					<td class="right">
+						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
+						<script type="text/javascript">
+							var username=new LiveValidation('username', {onlyOnSubmit: true });
+							username.add(Validate.Presence);
+						</script>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<b><?php echo __($guid, 'Password'); ?></b>
+					</td>
+					<td class="right">
+						<input name="password" id="password" maxlength=30 type="password" style="width:120px">
+						<script type="text/javascript">
+							var password=new LiveValidation('password', {onlyOnSubmit: true });
+							password.add(Validate.Presence);
+						</script>
+					</td>
+				</tr>
+				<tr class='schoolYear' id='schoolYear'>
+					<td>
+						<b><?php echo __($guid, 'School Year'); ?></b>
+					</td>
+					<td class="right">
+						<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
 							<?php
-                            echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo '$(".schoolYear").hide();';
-                echo '$(".language").hide();';
-                echo '$(".show_hide").fadeIn(1000);';
-                echo '$(".show_hide").click(function(){';
-                echo '$(".schoolYear").fadeToggle(1000);';
-                echo '$(".language").fadeToggle(1000);';
-                echo '});';
-                echo '});';
-                echo '</script>'; ?>
-							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="Login">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+                            try {
+                                $dataSelect = array();
+                                $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+                                $resultSelect = $connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                $selected = '';
+                                if ($rowSelect['status'] == 'Current') {
+                                    $selected = 'selected';
+                                }
+                                echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                            }
+                            ?>
+						</select>
+					</td>
+				</tr>
+				<tr class='language' id='language'>
+					<td>
+						<b><?php echo __($guid, 'Language'); ?></b>
+					</td>
+					<td class="right">
+						<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+							<?php
+                            try {
+                                $dataSelect = array();
+                                $sqlSelect = "SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name";
+                                $resultSelect = $connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                $selected = '';
+                                if ($rowSelect['systemDefault'] == 'Y') {
+                                    $selected = 'selected';
+                                }
+                                echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                            }
+                            ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td class="right">
+						<?php
+                        echo "<script type='text/javascript'>";
+                            echo '$(document).ready(function(){';
+                            echo '$(".schoolYear").hide();';
+                            echo '$(".language").hide();';
+                            echo '$(".show_hide").fadeIn(1000);';
+                            echo '$(".show_hide").click(function(){';
+                            echo '$(".schoolYear").fadeToggle(1000);';
+                            echo '$(".language").fadeToggle(1000);';
+                            echo '});';
+                            echo '});';
+                        echo '</script>'; ?>
+						<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="right" colspan=2>
+						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+						<input type="submit" value="Login">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<?php
 
-            }
+        }
     }
 
     //Invoke and show Module Menu

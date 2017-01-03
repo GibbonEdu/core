@@ -79,8 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo "if (obj['totalItems']==0) {";
             echo "alert('".__($guid, 'The specified record cannot be found.')."');";
             echo '} else {';
-                                    //SET FIELDS
-                                    echo "$(\"#name\").val(obj['items'][0]['volumeInfo']['title']);";
+            //SET FIELDS
+            echo "$(\"#name2\").val(obj['items'][0]['volumeInfo']['title']);";
             echo "var authors='';";
             echo "for (var i=0; i < obj['items'][0]['volumeInfo']['authors'].length; i++) {";
             echo "authors=authors + obj['items'][0]['volumeInfo']['authors'][i] + ', ';";

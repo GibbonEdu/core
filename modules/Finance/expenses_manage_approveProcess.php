@@ -58,14 +58,16 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                 header("Location: {$URL}");
             } else {
                 $budgetsAccess = false;
-                if ($highestAction == 'Manage Expenses_all') { //Access to everything 
+                if ($highestAction == 'Manage Expenses_all') { //Access to everything
                     $budgetsAccess = true;
                 } else {
                     //Check if have Full or Write in any budgets
                     $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
-                    foreach ($budgets as $budget) {
-                        if ($budget[2] == 'Full' or $budget[2] == 'Write') {
-                            $budgetsAccess = true;
+                    if (is_array($budgets) && count($budgets)>0) {
+                        foreach ($budgets as $budget) {
+                            if ($budget[2] == 'Full' or $budget[2] == 'Write') {
+                                $budgetsAccess = true;
+                            }
                         }
                     }
                 }
@@ -102,18 +104,18 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                 $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                                 //GET THE DATA ACCORDING TO FILTERS
                                 if ($highestAction == 'Manage Expenses_all') { //Access to everything
-                                    $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-										FROM gibbonFinanceExpense 
-										JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-										JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                                    $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+										FROM gibbonFinanceExpense
+										JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+										JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 										WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID";
                                 } else { //Access only to own budgets
                                     $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
                                     $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
-										FROM gibbonFinanceExpense 
-										JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
+										FROM gibbonFinanceExpense
+										JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
 										JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-										JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+										JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 										WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID AND access='Full'";
                                 }
                                 $result = $connection2->prepare($sql);
@@ -241,7 +243,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                                 exit();
                                             }
 
-                                            if ($approval = 'Approval - Partial - Budget') { //If budget-level approval, write that budget passed to expense record 
+                                            if ($approval = 'Approval - Partial - Budget') { //If budget-level approval, write that budget passed to expense record
                                                 try {
                                                     $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                                                     $sql = "UPDATE gibbonFinanceExpense SET statusApprovalBudgetCleared='Y' WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID";

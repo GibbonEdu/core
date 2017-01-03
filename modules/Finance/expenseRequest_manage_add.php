@@ -33,12 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__($guid, 'My Expense Requests')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Expense Request').'</div>';
     echo '</div>';
 
-    $editLink = '';
-    if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID='.$_GET['editID'].'&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID'].'&status2='.$_GET['status2'].'&gibbonFinanceBudgetID2='.$_GET['gibbonFinanceBudgetID2'];
-    }
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, array('success1' => 'Your request was completed successfully, but notifications could not be sent out.'));
+        returnProcess($guid, $_GET['return'], null, array('success1' => 'Your request was completed successfully, but notifications could not be sent out.'));
     }
 
     //Check if school year specified
@@ -53,9 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         //Check if have Full or Write in any budgets
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
         $budgetsAccess = false;
-        foreach ($budgets as $budget) {
-            if ($budget[2] == 'Full' or $budget[2] == 'Write') {
-                $budgetsAccess = true;
+        if (is_array($budgets) && count($budgets)>0) {
+            foreach ($budgets as $budget) {
+                if ($budget[2] == 'Full' or $budget[2] == 'Write') {
+                    $budgetsAccess = true;
+                }
             }
         }
         if ($budgetsAccess == false) {
@@ -95,9 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     }
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_addProcess.php' ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Budget Cycle') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -126,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Budget') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -153,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Title') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -165,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Status') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -178,14 +176,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr id="teachersNotesRow">
-								<td colspan=2> 
+								<td colspan=2>
 									<b><?php echo __($guid, 'Description') ?></b>
 									<?php $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate') ?>
 									<?php echo getEditor($guid,  true, 'body', $expenseRequestTemplate, 25, true, false, false) ?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Total Cost') ?> *</b><br/>
 									<span style="font-size: 90%">
 										<i>
@@ -209,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
 									<span class="emphasis small">
 										<?php echo __($guid, 'For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.'); ?>
@@ -220,13 +218,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 										<?php
                                         echo "<option selected value='Y'>".ynExpander($guid, 'Y').'</option>';
 										echo "<option value='N'>".ynExpander($guid, 'N').'</option>';
-										?>			
+										?>
 									</select>
 								</td>
 							</tr>
-							
+
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -238,14 +236,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									?>
 								</td>
 							</tr>
-							
+
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<b><?php echo __($guid, 'Purchase Details') ?></b><br/>
 									<textarea name="purchaseDetails" id="purchaseDetails" rows=8 style="width: 100%"></textarea>
 								</td>
 							</tr>
-				
+
 							<tr>
 								<td>
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

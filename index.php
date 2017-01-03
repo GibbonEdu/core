@@ -637,12 +637,10 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                         if ($sidebar != 'false') {
                             ?>
 							<div id="sidebar">
-								<?php sidebar($gibbon, $pdo);
-                            ?>
+								<?php sidebar($gibbon, $pdo);?>
 							</div>
 							<br style="clear: both">
 							<?php
-
                         }
    				 		?>
 					</div>

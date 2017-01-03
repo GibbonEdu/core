@@ -541,7 +541,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 										<h3><?php echo __($guid, 'Smart Blocks') ?></h3>
 									</td>
 								</tr>
-								<tr class='break hiddenRow'>
+								<tr class='hiddenRow'>
 									<td colspan=2>
 										<p>
 											<?php echo __($guid, 'Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
@@ -599,7 +599,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                         <h3><?php echo __($guid, 'Miscellaneous Settings') ?></h3>
                                     </td>
                                 </tr>
-                                <tr class='break hiddenRow'>
+                                <tr class='hiddenRow'>
                                     <td>
                                         <b><?php echo __($guid, 'License') ?></b><br/>
                                         <span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?'); ?></span>

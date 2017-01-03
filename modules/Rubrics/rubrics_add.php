@@ -67,14 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_addProcess.php?search=$search&filter2=$filter2" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'Rubric Basics') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Scope') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -102,18 +102,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             				?>
 						</td>
 					</tr>
-					
-					
+
+
 					<?php
                     if ($highestAction == 'Manage Rubrics_viewEditAll') {
                         ?>
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#learningAreaRow").css("display","none");
-								
+
 								$("#scope").change(function(){
-									if ($('#scope option:selected').val()=="Learning Area" ) {
-										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row")); 
+									if ($('#scope').val()=="Learning Area" ) {
+										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
 										gibbonDepartmentID.enable();
 									}
 									else {
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                     }
             		?>
 					<tr id='learningAreaRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Active') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -188,9 +188,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 							</select>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Category') ?></b><br/>
 						</td>
 						<td class="right">
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Description') ?></b><br/>
 						</td>
 						<td class="right">
@@ -225,11 +225,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 						</td>
 						<td class="right">
-							<?php 
+							<?php
                             $yearGroups = getYearGroups($connection2);
 							if ($yearGroups == '') {
 								echo '<i>'.__($guid, 'No year groups available.').'</i>';
@@ -245,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Grade Scale') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Link columns to grades on a scale?') ?></span>
 						</td>
@@ -268,18 +268,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 										echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 									}
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
-								
+
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'Rubric Design') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Initial Rows') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Rows store assessment strands.') ?></span>
 						</td>
@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Initial Columns') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Columns store assessment levels.') ?></span>
 						</td>
@@ -308,7 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 							</select>
 						</td>
 					</tr>
-					
+
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

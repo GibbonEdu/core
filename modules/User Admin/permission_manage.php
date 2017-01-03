@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
     try {
         $dataModules = array();
-        $sqlModules = 'SELECT * FROM gibbonModule ORDER BY name';
+        $sqlModules = 'SELECT * FROM gibbonModule WHERE active=\'Y\' ORDER BY name';
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {

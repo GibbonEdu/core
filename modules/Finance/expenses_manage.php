@@ -60,9 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
             $budgetsAll = getBudgets($connection2);
             $budgetsAccess = true;
         } else {
-            foreach ($budgets as $budget) {
-                if ($budget[2] == 'Full' or $budget[2] == 'Write' or $budget[2] == 'READ') {
-                    $budgetsAccess = true;
+            if (is_array($budgets) && count($budgets)>0) {
+                foreach ($budgets as $budget) {
+                    if ($budget[2] == 'Full' or $budget[2] == 'Write' or $budget[2] == 'READ') {
+                        $budgetsAccess = true;
+                    }
                 }
             }
         }
@@ -174,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Status') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -226,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Budget') ?></b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -286,20 +288,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 									}
 									//GET THE DATA ACCORDING TO FILTERS
 									if ($highestAction == 'Manage Expenses_all') { //Access to everything
-										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-											FROM gibbonFinanceExpense 
-											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus 
+										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+											FROM gibbonFinanceExpense
+											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus
 											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
 									} else { //Access only to own budgets
 										$data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
 										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
-											FROM gibbonFinanceExpense 
-											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
+											FROM gibbonFinanceExpense
+											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
 											JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus 
+											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus
 											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
 									}
 									$result = $connection2->prepare($sql);
@@ -409,8 +411,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 echo '<td>';
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_view.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_print.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='Print' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-                                if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered') {
-                                    echo "<a style='margin-left: 4px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
+                                    if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered') {
+                                        echo "<a style='margin-left: 4px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    }
                                 }
                                 if ($row['status'] == 'Requested') {
                                     if ($approvalRequired == true) {
@@ -427,9 +431,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         if ($count < 1) {
                             echo '<tr>';
                             echo '<td colspan=7>';
-                            echo "<div class='error'>";
                             echo __($guid, 'There are no records to display.');
-                            echo '</div>';
                             echo '</td>';
                             echo '</tr>';
                         }

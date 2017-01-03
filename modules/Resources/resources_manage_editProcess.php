@@ -102,6 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         header("Location: {$URL}");
                     } else {
                         if ($type == 'File') {
+                            $attachment = '';
                             if ($_FILES['file']['tmp_name'] != '') {
                                 //Check for folder in uploads based on today's date
                                 $path = $_SESSION[$guid]['absolutePath'];

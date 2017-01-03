@@ -146,6 +146,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                 $zip = new ZipArchive();
                 $time = time();
 
+                $year = date('Y', $time);
+                $month = date('m', $time);
+                
+                //Check for folder in uploads based on today's date
+                $pathTemp = $_SESSION[$guid]['absolutePath'];
+                if (is_dir($pathTemp.'/uploads/'.$year.'/'.$month) == false) {
+                    mkdir($pathTemp.'/uploads/'.$year.'/'.$month, 0777, true);
+                }
+
                 if ($zip->open($path) === true) { //Success
                     for ($i = 0; $i < $zip->numFiles; ++$i) {
                         if (substr($zip->getNameIndex($i), 0, 8) != '__MACOSX') {
@@ -190,16 +199,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                         $count = 0;
                                         while ($unique == false and $count < 100) {
                                             if ($count == 0) {
-                                                $filePath = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.strrchr($filename, '.');
+                                                $filePath = 'uploads/'.$year.'/'.$month.'/'.$username.strrchr($filename, '.');
                                             } else {
-                                                $filePath = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username."_$count".strrchr($filename, '.');
+                                                $filePath = 'uploads/'.$year.'/'.$month.'/'.$username."_$count".strrchr($filename, '.');
                                             }
                                             if (!(file_exists($_SESSION[$guid]['absolutePath'].'/'.$filePath))) {
                                                 $unique = true;
                                             }
                                             ++$count;
                                         }
-                                        if (!(copy('zip://'.$path.'#'.$filename, $filePath))) {
+                                        if (!(@copy('zip://'.$path.'#'.$filename, $filePath))) {
                                             $fileUploadFail = true;
                                             echo "<div class='error'>";
                                             echo __($guid, 'There was an error uploading photo for user:').' '.$username.'.';

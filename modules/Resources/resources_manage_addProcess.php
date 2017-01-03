@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 $tagList = '';
                 foreach ($tags as $tag) {
                     if (trim($tag) != '') {
-                        $tagList .= "'".trim($tag)."',";
+                        $tagList .= trim($tag).",";
                         try {
                             $dataTags = array('tag' => trim($tag));
                             $sqlTags = 'SELECT * FROM gibbonResourceTag WHERE tag=:tag';

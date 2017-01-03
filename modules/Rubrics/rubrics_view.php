@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
             }
             if ($resultEnrolment->rowCount() == 1) {
                 $rowEnrolment = $resultEnrolment->fetch();
-                $data = array('gibbonSchoolYearID' => '%'.$rowEnrolment['gibbonYearGroupID'].'%');
-                $sql = "SELECT * FROM gibbonRubric WHERE active='Y' AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID  $and ORDER BY scope, category, name";
+                $data['gibbonSchoolYearID'] = '%'.$rowEnrolment['gibbonYearGroupID'].'%';
+                $sql = "SELECT * FROM gibbonRubric WHERE active='Y' AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID $and ORDER BY scope, category, name";
             } else {
                 $sql = "SELECT * FROM gibbonRubric WHERE active='Y' $and ORDER BY scope, category, name";
             }

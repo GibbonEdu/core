@@ -115,6 +115,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             } else {
                 $rowNum = 'odd';
             }
+            if (isset($modulesSQL[$moduleName][0]) && $modulesSQL[$moduleName][0]['active']=='N') {
+                $rowNum = 'error';
+            }
             $installed = true;
             if (isset($modulesSQL[$moduleName][0]) == false) {
                 $installed = false;

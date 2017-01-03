@@ -274,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                 }
                         		?>
 								$("#status").change(function(){
-									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial" || $('#status option:selected').val()=="Paid - Complete") {
+									if ($('#status').val()=="Paid" || $('#status').val()=="Paid - Partial" || $('#status').val()=="Paid - Complete") {
 										$("#paidDateRow").slideDown("fast", $("#paidDateRow").css("display","table-row"));
 										$("#paidAmountRow").slideDown("fast", $("#paidAmountRow").css("display","table-row"));
 										$("#paymentTypeRow").slideDown("fast", $("#paymentTypeRow").css("display","table-row"));
@@ -613,11 +613,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         ?>
 						<script type="text/javascript">
 							$(document).ready(function(){
-								if ($('#status option:selected').val()!="Paid - Partial") {
+								if ($('#status').val()!="Paid - Partial") {
 									$(".emailReceipt").css("display","none");
 								}
 								$("#status").change(function(){
-									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial"  || $('#status option:selected').val()=="Paid - Complete") {
+									if ($('#status').val()=="Paid" || $('#status').val()=="Paid - Partial"  || $('#status').val()=="Paid - Complete") {
 										$(".emailReceipt").slideDown("fast", $(".emailReceipt").css("display","table-row"));
 										$("#emailReceipt").val('Y');
 									}
@@ -764,7 +764,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#status").change(function(){
-									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Cancelled" ) {
+									if ($('#status').val()=="Paid" || $('#status').val()=="Cancelled" ) {
 										$(".emailReminder").css("display","none");
 										$("#emailReminder").val('N');
 									}

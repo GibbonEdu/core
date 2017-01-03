@@ -34,9 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activitySettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
 				<?php
                 try {
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -60,13 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 			</tr>
 			<script type="text/javascript">
 				$(document).ready(function(){
-					<?php if ($row['value'] == 'Date') { ?> 
+					<?php if ($row['value'] == 'Date') { ?>
 						$("#maxPerTermRow").css("display","none");
 					<?php } ?>
-							
+
 					$("#dateType").change(function(){
-						if ($('#dateType option:selected').val()=="Term" ) {
-							$("#maxPerTermRow").slideDown("fast", $("#maxPerTermRow").css("display","table-row")); 
+						if ($('#dateType').val()=="Term" ) {
+							$("#maxPerTermRow").slideDown("fast", $("#maxPerTermRow").css("display","table-row"));
 						}
 						else {
 							$("#maxPerTermRow").css("display","none");
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<?php
                 try {
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<?php
                 try {
@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -248,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             echo __($guid, "Expense approval has been set as 'One Of', which means that only one of the people listed below needs to approve an expense before it can go ahead.");
         }
-    } elseif ($expenseApprovalType == 'One Of') {
+    } elseif ($expenseApprovalType == 'Two Of') {
         if ($budgetLevelExpenseApproval == 'Y') {
             echo __($guid, "Expense approval has been set as 'Two Of', which means that only two of the people listed below (as well as someone with Full budget access) need to approve an expense before it can go ahead.");
         } else {

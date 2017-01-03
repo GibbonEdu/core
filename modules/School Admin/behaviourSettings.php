@@ -38,11 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviourSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Descriptors') ?></h3>
 				</td>
 			</tr>
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -72,9 +72,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 			<script type="text/javascript">
 				$(document).ready(function(){
 					 $("#enableDescriptors").click(function(){
-						if ($('#enableDescriptors option:selected').val()=="Y" ) {
-							$("#positiveRow").slideDown("fast", $("#positiveRow").css("display","table-row")); 
-							$("#negativeRow").slideDown("fast", $("#negativeRow").css("display","table-row"));   
+						if ($('#enableDescriptors').val()=="Y" ) {
+							$("#positiveRow").slideDown("fast", $("#positiveRow").css("display","table-row"));
+							$("#negativeRow").slideDown("fast", $("#negativeRow").css("display","table-row"));
 
 						} else {
 							$("#positiveRow").css("display","none");
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr id='negativeRow' <?php if ($enableDescriptors == 'N') { echo " style='display: none'"; } ?>>
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -124,13 +124,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Levels') ?></h3>
 				</td>
 			</tr>
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -160,8 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 			<script type="text/javascript">
 				$(document).ready(function(){
 					 $("#enableLevels").click(function(){
-						if ($('#enableLevels option:selected').val()=="Y" ) {
-							$("#levelsRow").slideDown("fast", $("#levelsRow").css("display","table-row"));  
+						if ($('#enableLevels').val()=="Y" ) {
+							$("#levelsRow").slideDown("fast", $("#levelsRow").css("display","table-row"));
 
 						} else {
 							$("#levelsRow").css("display","none");
@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -188,13 +188,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Behaviour Letters') ?></h3>
 					<p><?php echo sprintf(__($guid, 'By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]') ?></p>
 				</td>
@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -225,17 +225,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 			<script type="text/javascript">
 				$(document).ready(function(){
 					 $("#enableBehaviourLetters").click(function(){
-						if ($('#enableBehaviourLetters option:selected').val()=="Y" ) {
-							$("#behaviourLettersLetter1CountRow").slideDown("fast", $("#behaviourLettersLetter1CountRow").css("display","table-row"));  
-							$("#behaviourLettersLetter1TextRow").slideDown("fast", $("#behaviourLettersLetter1TextRow").css("display","table-row"));  
-							$("#behaviourLettersLetter2CountRow").slideDown("fast", $("#behaviourLettersLetter2CountRow").css("display","table-row"));  
-							$("#behaviourLettersLetter2TextRow").slideDown("fast", $("#behaviourLettersLetter2TextRow").css("display","table-row"));  
-							$("#behaviourLettersLetter3CountRow").slideDown("fast", $("#behaviourLettersLetter3CountRow").css("display","table-row"));  
-							$("#behaviourLettersLetter3TextRow").slideDown("fast", $("#behaviourLettersLetter3TextRow").css("display","table-row"));  
+						if ($('#enableBehaviourLetters').val()=="Y" ) {
+							$("#behaviourLettersLetter1CountRow").slideDown("fast", $("#behaviourLettersLetter1CountRow").css("display","table-row"));
+							$("#behaviourLettersLetter1TextRow").slideDown("fast", $("#behaviourLettersLetter1TextRow").css("display","table-row"));
+							$("#behaviourLettersLetter2CountRow").slideDown("fast", $("#behaviourLettersLetter2CountRow").css("display","table-row"));
+							$("#behaviourLettersLetter2TextRow").slideDown("fast", $("#behaviourLettersLetter2TextRow").css("display","table-row"));
+							$("#behaviourLettersLetter3CountRow").slideDown("fast", $("#behaviourLettersLetter3CountRow").css("display","table-row"));
+							$("#behaviourLettersLetter3TextRow").slideDown("fast", $("#behaviourLettersLetter3TextRow").css("display","table-row"));
 							behaviourLettersLetter1Count.enable() ;
-							behaviourLettersLetter1Text.enable() ; 
+							behaviourLettersLetter1Text.enable() ;
 							behaviourLettersLetter2Count.enable() ;
-							behaviourLettersLetter2Text.enable() ; 
+							behaviourLettersLetter2Text.enable() ;
 							behaviourLettersLetter3Count.enable() ;
 							behaviourLettersLetter3Text.enable() ;
 						} else {
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
@@ -298,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -308,7 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
 						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
@@ -321,7 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -341,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -364,7 +364,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
 						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
@@ -377,7 +377,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -397,7 +397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
@@ -410,7 +410,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -420,13 +420,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
 						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script> 
+					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
@@ -440,7 +440,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -449,10 +449,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script>	
+					</script>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

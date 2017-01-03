@@ -311,14 +311,14 @@ else {
 							print "$(document).ready(function(){" ;
 								print "$(\"#cannedResponse\").change(function(){" ;
 									print "if (confirm(\"Are you sure you want to insert these records.\")==1) {" ;
-										print "if ($('#cannedResponse option:selected').val()==\"\" ) {" ;
+										print "if ($('#cannedResponse').val()==\"\" ) {" ;
 											print "$('#subject').val('');" ;
 											print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
 											print "$('#body').val('" . addSlashes($signature) . "');" ;
 											print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
 										print "}" ;
 										foreach ($cannedResponses AS $rowSelect) {
-											print "if ($('#cannedResponse option:selected').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
+											print "if ($('#cannedResponse').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
 												print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
 												print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
 												print "

@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     //Check if have Full or Write in any budgets
     $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
     $budgetsAccess = false;
-    if (is_array($budgets) > 0) {
+    if (is_array($budgets) && count($budgets)>0) {
         foreach ($budgets as $budget) {
             if ($budget[2] == 'Full' or $budget[2] == 'Write') {
                 $budgetsAccess = true;
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php'>";
                     echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Status') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 							</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Budget') ?></b><br/>
 									<span class="emphasis small"></span>
 								</td>

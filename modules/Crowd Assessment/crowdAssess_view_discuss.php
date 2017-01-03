@@ -131,10 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
 
-                        echo "<div style='margin-bottom: 0px' class='success'>";
-                        echo sprintf(__($guid, 'Items in %1$sred%2$s are new since your last login. Items in green are older.'), " <span style='color: #c00'>", '</span>');
-                        echo '</div>';
-
                         //Get discussion
                         echo getThread($guid, $connection2, $rowWork['gibbonPlannerEntryHomeworkID'], null, 0, null, $gibbonPersonID, $gibbonPlannerEntryID);
 

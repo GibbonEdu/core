@@ -72,21 +72,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						$("#resourceLink").css("display","none");
 
 						$("#type").change(function(){
-							if ($('select.type option:selected').val()=="Link" ) {
+							if ($('#type').val()=="Link" ) {
 								$("#resourceFile").css("display","none");
 								$("#resourceHTML").css("display","none");
 								$("#resourceLink").slideDown("fast", $("#resourceLink").css("display","table-row"));
 								link.enable();
 								file.disable();
 								html.disable();
-							} else if ($('select.type option:selected').val()=="File" ) {
+							} else if ($('#type').val()=="File" ) {
 								$("#resourceLink").css("display","none");
 								$("#resourceHTML").css("display","none");
 								$("#resourceFile").slideDown("fast", $("#resourceFile").css("display","table-row"));
 								file.enable();
 								link.disable();
 								html.disable();
-							} else if ($('select.type option:selected').val()=="HTML" ) {
+							} else if ($('#type').val()=="HTML" ) {
 								$("#resourceLink").css("display","none");
 								$("#resourceFile").css("display","none");
 								$("#resourceHTML").slideDown("fast", $("#resourceHTML").css("display","table-row"));
