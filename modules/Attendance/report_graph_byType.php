@@ -57,6 +57,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
+    // Correct inverse date ranges rather than generating an error
+    if ($dateStart > $dateEnd) {
+        $swapDates = $dateStart;
+        $dateStart = $dateEnd;
+        $dateEnd = $swapDates;
+    }
+    
+    // Limit date range to the current school year
+    if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
+        $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    }
+
+    if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
+        $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    }
+    
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
     

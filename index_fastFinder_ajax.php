@@ -23,11 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './functions.php';
 include './config.php';
 
-// AJAX check - die if the origin looks suspicious
-if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-    die( __($guid, 'Your request failed because you do not have access to this action.') );
-}
-
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
@@ -68,6 +63,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
 
     if (empty($actions)) {
         $actions = $gibbon->session->cacheFastFinderActions($gibbon->session->get('gibbonRoleIDCurrent'));
+        $actions[] = array('');
     }
     
     if (!empty($actions) && is_array($actions)) {
@@ -75,6 +71,14 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
             // Add actions that match the search query to the result set
             if (stristr($action['name'], $searchTerm) !== false) {
                 $resultSet['Action'][] = $action;
+            }
+
+            // Handle the special Lockdown case
+            if ($alarmIsAccessible) {
+                if (stristr('Lockdown', $searchTerm) !== false && $action['name'] == 'Sound Alarm') {
+                    $action['name'] = 'Lockdown';
+                    $resultSet['Action'][] = $action;
+                }
             }
         }
     }
@@ -179,9 +183,6 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
             }
             else {
                 $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep($token['name']).'"},';
-            }
-            if ($alarmIsAccessible && $token['name'] == 'Sound Alarm') { // Special lockdown entry
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep($type).' - Lockdown"},';
             }
         }
     }

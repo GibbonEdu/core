@@ -123,7 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					<input name="date" id="date" maxlength=10 value="<?php echo $date; ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+						var datePresenceParams = {};
+						var dateFormatParams = {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
 							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
@@ -133,10 +134,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } );
+						?>." };
+
+						date.add(Validate.Format, dateFormatParams);
 
 						if ($('#absenceType').val()=='partial' ) {
-					 		date.add(Validate.Presence);
+					 		date.add(Validate.Presence, datePresenceParams);
 					 	}
 					</script>
 					 <script type="text/javascript">
@@ -152,10 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					 $("#absenceType").change(function(){
 						if ($('#absenceType').val()=='partial' ) {
 							$("#absencePartialDateRow").slideDown("fast", $("#absencePartialDateRow").css("display","table-row"));
-							date.add(Validate.Presence);
+							date.add(Validate.Presence, datePresenceParams);
+							date.add(Validate.Format, dateFormatParams);
 						} else {
 							$("#absencePartialDateRow").css("display","none");
-							date.remove(Validate.Presence);
+							date.remove(Validate.Presence, datePresenceParams);
+							date.remove(Validate.Format, dateFormatParams);
 						}
 						$("#absenceDetailsRow").css("display","none");
 					 });
