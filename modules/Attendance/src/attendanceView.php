@@ -94,12 +94,12 @@ class attendanceView
     	// Get the current date
 		$currentDate = (isset($_GET['currentDate']))? dateConvert($this->guid, $_GET['currentDate']) : date('Y-m-d');
 
-
     	// Get attendance reasons
         $this->genericReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceReasons') );
         $this->medicalReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceMedicalReasons') );
 
-        $this->attendanceReasons = array_merge( array(''), $this->genericReasons, $this->medicalReasons );
+        //$this->attendanceReasons = array_merge( array(''), $this->genericReasons, $this->medicalReasons );
+        $this->attendanceReasons = $this->genericReasons;
 
         //Get last 5 school days from currentDate within the last 100
         $this->last5SchoolDays = getLastNSchoolDays($this->guid, $this->pdo->getConnection(), $currentDate, 5);
