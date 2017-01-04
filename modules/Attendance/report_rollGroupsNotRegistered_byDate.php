@@ -48,6 +48,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         $dateEnd = $swapDates;
     }
 
+    // Limit date range to the current school year
+    if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
+        $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    }
+
+    if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
+        $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    }
+
     $datediff = strtotime($dateEnd) - strtotime($dateStart);
     $daysBetweenDates = floor($datediff / (60 * 60 * 24)) + 1;
 

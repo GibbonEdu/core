@@ -84,8 +84,9 @@ function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = fa
 
     $count = 0;
     $spin = 1;
+    $max = max($n, 100);
     $lastNSchoolDays = array();
-    while ($count < $n and $spin <= 100) {
+    while ($count < $n and $spin <= $max) {
         $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
         if (isSchoolOpen($guid, $date, $connection2 )) {
             $lastNSchoolDays[$count] = $date;
