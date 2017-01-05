@@ -541,14 +541,15 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                 $return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
 
 				//DEAL WITH LIKES
-				$likesGiven = countLikesByContextAndGiver($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $_SESSION[$guid]['gibbonPersonID'], $output[$i]['gibbonPersonID']);
                 if ($output[$i]['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
+                    $likesGiven = countLikesByContextAndRecipient($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $output[$i]['gibbonPersonID']);
                     if ($likesGiven == 1) {
                         $return .= $likesGiven.'x '.__($guid, 'Like').'<br/><br/>';
                     } else {
                         $return .= $likesGiven.'x '.__($guid, 'Likes').'<br/><br/>';
                     }
                 } else {
+                    $likesGivenByMe = countLikesByContextAndGiver($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $_SESSION[$guid]['gibbonPersonID'], $output[$i]['gibbonPersonID']);
                     $comment = addSlashes($output[$i]['subject']);
                     $return .= "<div id='star".$output[$i]['gibbonMessengerID']."'>";
                     $return .= '<script type="text/javascript">';
@@ -561,7 +562,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                     $return .= '});';
                     $return .= '});';
                     $return .= '</script>';
-                    if ($likesGiven != 1) {
+                    if ($likesGivenByMe != 1) {
                         $return .= "<a id='starAdd".$output[$i]['gibbonMessengerID']."' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
                     } else {
                         $return .= "<a id='starRemove".$output[$i]['gibbonMessengerID']."' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
