@@ -196,6 +196,7 @@ v13.0.00
 		Students: improved address output in Student Transport report
 		Students: fixed date filter bug in Roll Group Summary report
 		Students: converted Students by Roll Group to full screen
+		Students: fixed bug preventing parents without status Full from being shown in student profile
 		System Admin: added ability to custom order module categories in main menu
 		System Admin: added system check page with version & extension information
 		System Admin: coloured rows for inactive module in Manage Modules
