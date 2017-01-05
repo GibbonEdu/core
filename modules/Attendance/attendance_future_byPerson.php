@@ -45,20 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
+    $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
 
-    $absenceType = "full";
-    if (isset($_GET['absenceType'])) {
-        $absenceType = $_GET['absenceType'];
-    }
+    $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
 
-    $date = '';
-    if (isset($_GET['date'])) {
-        $date = $_GET['date'];
-    }
+    $date = (isset($_GET['date']))? $_GET['date'] : '';
 
     ?>
 
@@ -136,9 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						}
 						?>." };
 
-						date.add(Validate.Format, dateFormatParams);
-
 						if ($('#absenceType').val()=='partial' ) {
+							date.add(Validate.Format, dateFormatParams);
 					 		date.add(Validate.Presence, datePresenceParams);
 					 	}
 					</script>
@@ -161,6 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 							$("#absencePartialDateRow").css("display","none");
 							date.remove(Validate.Presence, datePresenceParams);
 							date.remove(Validate.Format, dateFormatParams);
+							$('#date').blur();
 						}
 						$("#absenceDetailsRow").css("display","none");
 					 });
