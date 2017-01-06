@@ -224,5 +224,19 @@ class Excel extends \PHPExcel
 	{
 		return $this->cellFontColour($cells, $colour);
 	}
+
+	/**
+	 * Get a column letter name for given number
+	 *
+	 * @version	v13
+	 * @since	v13
+	 * @param	int		number
+	 * @return	string	letter
+	 */
+	public function num2alpha($n) {
+	    for($r = ""; $n >= 0; $n = intval($n / 26) - 1)
+	        $r = chr($n%26 + 0x41) . $r;
+	    return $r;
+	}
 }
 ?>
