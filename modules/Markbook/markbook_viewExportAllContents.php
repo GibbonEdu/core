@@ -57,6 +57,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
+
+        require_once $_SESSION[$guid]['absolutePath'].'/modules/Markbook/src/markbookView.php';
+
+        // Build the markbook object for this class
+        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+
+        // Calculate and cache all weighting data
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
+            $markbook->cacheWeightings( );
+        }
+
         //Print table header
 		$excel = new Gibbon\Excel('markbookAll.xlsx');
 		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
@@ -65,6 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		$excel->getProperties()->setTitle('All Markbook Data');
 		$excel->getProperties()->setSubject('All Markbook Data');
 		$excel->getProperties()->setDescription('All Markbook Data');
+
+        // Use advanced binder - better handling of numbers, percents, etc.
+        PHPExcel_Cell::setValueBinder( new PHPExcel_Cell_AdvancedValueBinder() );
 
         //Create border and fill style
         $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
@@ -131,6 +145,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
         }
 
+        $DAS = $markbook->getDefaultAssessmentScale();
+        $markFormat = PHPExcel_Style_NumberFormat::FORMAT_GENERAL;
+
+        if (isset($DAS['percent']) && $DAS['percent'] == '%') {
+            $markFormat = PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE;
+        }
+        else if (isset($DAS['numeric']) && $DAS['numeric'] == 'Y') {
+            $markFormat = PHPExcel_Style_NumberFormat::FORMAT_NUMBER;
+        }
+
+        // Add columns for Overall Grades, if enabled
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
+            $markSuffix = (isset($DAS['percent']))? $DAS['percent'] : '';
+
+            $finalColumnNum = ($columns * (3-$effortAdjust));
+            $finalColumnStart = $finalColumnNum+1;
+
+            // Cumulative Average
+            $finalColumnNum++;
+            $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
+            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __($guid, 'Cumulative'));
+            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+            
+            // Add Final Grades, if enabled & available
+            if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0) {
+
+                foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
+                    // Final Weighted Types
+                    $finalColumnNum++;
+                    $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
+                    $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, $type );
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+                }
+
+                // Final Grade
+                $finalColumnNum++;
+                $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
+                $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __($guid, 'Final Grade'));
+                $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+            }
+
+            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnStart, 1, __($guid, 'Overall Grades'));
+            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnStart, 1)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnStart, 1)->applyFromArray($style_head_fill);
+            $excel->getActiveSheet()->mergeCells( $excel->num2alpha($finalColumnStart).'1:' .$excel->num2alpha($finalColumnNum).'1');
+        }
+
 		$r = 2;
 
         $count = 0;
@@ -171,6 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         }
 						$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r, htmlPrep($rowEntry['attainmentValue']));
                         $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->getNumberFormat()->setFormatCode($markFormat);
 
                         $effort = '';
                         if ($rowEntry['effortValue'] != '') {
@@ -194,6 +259,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
                         $excel->getActiveSheet()->setCellValueByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), $r, '');
                         $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
+                    }
+                }
+
+                // Output Overall Grades, if enabled
+                if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
+                    $finalColumnNum = 1 + ($columns * (3-$effortAdjust));
+
+                    // Cumulative Average
+                    $cumulativeAverage = round($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']), 0).$markSuffix;
+                    $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $cumulativeAverage);
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
+                    $finalColumnNum++;
+
+                    if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0) {
+
+                        foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
+                            // Final Weighted Types
+                            $typeAverage = round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type), 0).$markSuffix;
+                            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $typeAverage);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
+                            $finalColumnNum++;
+                        }
+
+                        // Final Grade
+                        $finalAverage = round($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']), 0).$markSuffix;
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $finalAverage);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
                     }
                 }
             }
