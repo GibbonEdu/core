@@ -77,6 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		$excel->getProperties()->setSubject('All Markbook Data');
 		$excel->getProperties()->setDescription('All Markbook Data');
 
+        // Use advanced binder - better handling of numbers, percents, etc.
+        PHPExcel_Cell::setValueBinder( new PHPExcel_Cell_AdvancedValueBinder() );
+
         //Create border and fill style
         $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
         $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
@@ -142,9 +145,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
         }
 
+        $DAS = $markbook->getDefaultAssessmentScale();
+        $markFormat = PHPExcel_Style_NumberFormat::FORMAT_GENERAL;
+
+        if (isset($DAS['percent']) && $DAS['percent'] == '%') {
+            $markFormat = PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE;
+        }
+        else if (isset($DAS['numeric']) && $DAS['numeric'] == 'Y') {
+            $markFormat = PHPExcel_Style_NumberFormat::FORMAT_NUMBER;
+        }
+
         // Add columns for Overall Grades, if enabled
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-            $DAS = $markbook->getDefaultAssessmentScale();
             $markSuffix = (isset($DAS['percent']))? $DAS['percent'] : '';
 
             $finalColumnNum = ($columns * (3-$effortAdjust));
@@ -223,6 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         }
 						$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r, htmlPrep($rowEntry['attainmentValue']));
                         $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->getNumberFormat()->setFormatCode($markFormat);
 
                         $effort = '';
                         if ($rowEntry['effortValue'] != '') {
@@ -257,6 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                     $cumulativeAverage = round($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']), 0).$markSuffix;
                     $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $cumulativeAverage);
                     $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
                     $finalColumnNum++;
 
                     if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0) {
@@ -266,6 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                             $typeAverage = round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type), 0).$markSuffix;
                             $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $typeAverage);
                             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
                             $finalColumnNum++;
                         }
 
@@ -273,6 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         $finalAverage = round($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']), 0).$markSuffix;
                         $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $finalAverage);
                         $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
                     }
                 }
             }
