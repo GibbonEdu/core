@@ -252,6 +252,10 @@
                         //alert( '<?php echo __($guid, 'Error'); ?>'  );
                     });
                 });
+
+                var numCols = $("#myTable").find('tr')[0].cells.length;
+                $("#fullspan").attr('colspan', numCols - $("#fullspan").data('cols') );
+                
             });
         </script>
         <?php
@@ -584,6 +588,8 @@
         }
 
         $count = 0;
+        $totals = array();
+
         if ($resultStudents->rowCount() < 1) {
             echo '<tr>';
             echo '<td colspan='.($markbook->getColumnCountTotal() + 1).'>';
@@ -875,6 +881,7 @@
                     echo '<td class="dataColumn dataDivider">';
                     echo $markbook->getFormattedAverage( $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) );
                     echo '</td>';
+                    $totals['cumulativeAverage'] += $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
 
                     if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
 
@@ -883,12 +890,14 @@
                                 echo '<td class="dataColumn">';
                                     echo $markbook->getFormattedAverage( $markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type) );
                                 echo '</td>';
+                                $totals[$type] += $markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type);
                             }
                         }
 
                         echo '<td class="dataColumn">';
                         echo $markbook->getFormattedAverage($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']));
                         echo '</td>';
+                        $totals['finalGrade'] += $markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']);
                     }
                 }
 
@@ -897,6 +906,30 @@
                 echo '</tr>';
             }
         }
+
+        // Class Average
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
+            echo '<tr>';
+            echo '<td id="fullspan" class="right" data-cols="'.count($totals).'">'.__($guid, 'Class Average').':</td>';
+            
+            $cumulativeAverage = ($count > 0 && $totals['cumulativeAverage'] > 0)? ($totals['cumulativeAverage'] / $count) : '';
+            echo '<td class="dataColumn dataDivider">'.$markbook->getFormattedAverage($cumulativeAverage).'</td>';
+
+            if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
+
+                if ($columnFilter == 'averages') {
+                    foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
+                        $typeAverage = ($count > 0 && $totals[$type] > 0)? ($totals[$type] / $count) : '';
+                        echo '<td class="dataColumn">'.$markbook->getFormattedAverage($typeAverage).'</td>';
+                    }
+                }
+                $finalGrade = ($count > 0 && $totals['finalGrade'] > 0)? ($totals['finalGrade'] / $count) : '';
+                echo '<td class="dataColumn">'.$markbook->getFormattedAverage($finalGrade).'</td>';
+            }
+            echo '</tr>';
+        }
+
+
         echo "</tbody>";
         echo '</table>';
 
