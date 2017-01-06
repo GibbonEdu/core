@@ -131,6 +131,7 @@ v13.0.00
 		Markbook: added a class chooser to the sidebar for view, edit and weightings sub-pages
 		Markbook: fixed multibyte substring issue when shortening comments for preview
 		Markbook: permission tweak for users with view-only Markbook access, in order to hide Add link
+		Markbook: added cumulative averages to markbook Export to Excel (if enabled)
 		Messenger: fixed formatting of Sent From Gibbon tag
 		Messenger: fixed display of email/SMS report for recipients with , in their name
 		Messenger: disabled Canned Response for any non-staff users
