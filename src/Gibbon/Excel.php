@@ -10,8 +10,7 @@
  */
 namespace Gibbon;
 
-$config = new config();
-require_once $config->get('basePath').'/lib/PHPExcel/Classes/PHPExcel.php';
+require_once '../../lib/PHPExcel/Classes/PHPExcel.php';
 
 /**
  * Export to Excel
