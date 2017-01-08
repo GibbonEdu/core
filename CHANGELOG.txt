@@ -70,6 +70,7 @@ v13.0.00
 		System: removed use of old style jQuery select.* option:selected across the system
 		System: tweaked notification tray to hide Message Wall notification if permission to View Message Wall is not granted
 		System: fixed PHP Notice error when viewing Notifications page without being logged in
+		System: adjusted function formatName to account for names containing multibyte characters
 		Activities: added information to parent dashboard
 		Activities: efficiency improvements in displaying time slots
 		Activities: fixed bug which cut one student off print view of attendance print out
