@@ -133,9 +133,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                 if ($result->rowCount() > 0) {
                                     $URL .= '&return=error7';
                                     header("Location: {$URL}");
+                                    exit();
                                 } else {
 
-                                    $courses = $_POST['courses'];
+                                    $courses = (isset($_POST['courses']))? $_POST['courses'] : null;
 
                                     if (!empty($courses) && is_array($courses)) {
 
@@ -150,6 +151,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                                 $partialFail = true;
                                             }
                                         }
+                                    } else {
+                                        // Return error if no courses selected for partial absence
+                                        $URL .= '&return=error1';
+                                        header("Location: {$URL}");
+                                        exit();
                                     }
 
                                 }
@@ -157,6 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             } else {
                                 $URL .= '&return=error1';
                                 header("Location: {$URL}");
+                                exit();
                             }
                         }
 

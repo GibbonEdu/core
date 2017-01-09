@@ -10,8 +10,7 @@
  */
 namespace Gibbon;
 
-$config = new config();
-require_once $config->get('basePath').'/lib/PHPExcel/Classes/PHPExcel.php';
+require_once '../../lib/PHPExcel/Classes/PHPExcel.php';
 
 /**
  * Export to Excel
@@ -223,6 +222,20 @@ class Excel extends \PHPExcel
 	public function cellFontColor($cells, $colour)
 	{
 		return $this->cellFontColour($cells, $colour);
+	}
+
+	/**
+	 * Get a column letter name for given number
+	 *
+	 * @version	v13
+	 * @since	v13
+	 * @param	int		number
+	 * @return	string	letter
+	 */
+	public function num2alpha($n) {
+	    for($r = ""; $n >= 0; $n = intval($n / 26) - 1)
+	        $r = chr($n%26 + 0x41) . $r;
+	    return $r;
 	}
 }
 ?>

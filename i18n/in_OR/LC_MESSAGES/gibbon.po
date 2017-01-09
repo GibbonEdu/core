@@ -60968,20 +60968,6 @@ msgid ""
 "Blocks can be dragged from one lesson to another."
 msgstr ""
 
-#: .git/modules/Planner/units_edit_deploy.php:568
-#: modules/Planner/units_edit_deploy.php:568
-#: .git/modules/Planner/units_edit_deploy.php:568
-#: modules/Planner/units_edit_deploy.php:568
-msgid "There are no records to displayhere."
-msgstr ""
-
-#: .git/modules/Planner/units_edit_deploy.php:588
-#: modules/Planner/units_edit_deploy.php:588
-#: .git/modules/Planner/units_edit_deploy.php:588
-#: modules/Planner/units_edit_deploy.php:588
-msgid "There are no records to displaynair."
-msgstr ""
-
 #: .git/modules/Planner/units_edit_deploy.php:605
 #: .git/modules/Planner/units_edit_working.php:281
 #: modules/Planner/units_edit_deploy.php:605

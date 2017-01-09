@@ -490,7 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                                 $rowEntry = $resultEntry->fetch();
                                 if ($submission == true) {
-                                    echo "<td style='text-align: left ; width: 40px'>";
+                                    echo "<td style='text-align: left ; width: 50px'>";
                                     try {
                                         $dataWork = array('gibbonPlannerEntryID' => $row2['gibbonPlannerEntryID'], 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
                                         $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';

@@ -319,7 +319,7 @@ class markbookView
         $DAS = getSettingByScope($this->pdo->getConnection(), 'System', 'defaultAssessmentScale');
         try {
             $data = array('gibbonScaleID' => $DAS);
-            $sql = 'SELECT name, nameShort FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+            $sql = 'SELECT `name`, `nameShort`, `numeric` FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
             $result = $this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 

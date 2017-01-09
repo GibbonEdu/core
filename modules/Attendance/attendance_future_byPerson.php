@@ -45,20 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
+    $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
 
-    $absenceType = "full";
-    if (isset($_GET['absenceType'])) {
-        $absenceType = $_GET['absenceType'];
-    }
+    $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
 
-    $date = '';
-    if (isset($_GET['date'])) {
-        $date = $_GET['date'];
-    }
+    $date = (isset($_GET['date']))? $_GET['date'] : '';
 
     ?>
 
@@ -123,7 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					<input name="date" id="date" maxlength=10 value="<?php echo $date; ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+						var datePresenceParams = {};
+						var dateFormatParams = {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
 							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
@@ -133,10 +125,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } );
+						?>." };
 
 						if ($('#absenceType').val()=='partial' ) {
-					 		date.add(Validate.Presence);
+							date.add(Validate.Format, dateFormatParams);
+					 		date.add(Validate.Presence, datePresenceParams);
 					 	}
 					</script>
 					 <script type="text/javascript">
@@ -152,10 +145,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					 $("#absenceType").change(function(){
 						if ($('#absenceType').val()=='partial' ) {
 							$("#absencePartialDateRow").slideDown("fast", $("#absencePartialDateRow").css("display","table-row"));
-							date.add(Validate.Presence);
+							date.add(Validate.Presence, datePresenceParams);
+							date.add(Validate.Format, dateFormatParams);
 						} else {
 							$("#absencePartialDateRow").css("display","none");
-							date.remove(Validate.Presence);
+							date.remove(Validate.Presence, datePresenceParams);
+							date.remove(Validate.Format, dateFormatParams);
+							$('#date').blur();
 						}
 						$("#absenceDetailsRow").css("display","none");
 					 });

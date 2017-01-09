@@ -1178,7 +1178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 //Get adults
                                 try {
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status=\'Full\' ORDER BY contactPriority, surname, preferredName';
+                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
                                     $resultMember->execute($dataMember);
                                 } catch (PDOException $e) {
@@ -1186,17 +1186,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
 
                                 while ($rowMember = $resultMember->fetch()) {
+                                    $class='';
+                                    if ($rowMember['status'] != 'Full') {
+                                        $class = "class='error'";
+                                    }
                                     echo '<h4>';
                                     echo __($guid, 'Adult').' '.$count;
                                     echo '</h4>';
                                     echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                                     echo '<tr>';
-                                    echo "<td style='width: 33%; vertical-align: top' rowspan=2>";
+                                    echo "<td $class style='width: 33%; vertical-align: top' rowspan=2>";
                                     echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                     echo '</td>';
-                                    echo "<td style='width: 33%; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-                                    echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent').'<br/>';
+                                    echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                    if ($rowMember['status'] != 'Full') {
+                                        echo "<span style='font-weight: normal; font-style: italic'> (".$rowMember['status'].')</span>';
+                                    }
                                     echo "<div style='font-size: 85%; font-style: italic'>";
                                     try {
                                         $dataRelationship = array('gibbonPersonID1' => $rowMember['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID, 'gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
@@ -1214,23 +1221,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     }
                                     echo '</div>';
                                     echo '</td>';
-                                    echo "<td style='width: 34%; vertical-align: top' colspan=2>";
+                                    echo "<td $class style='width: 34%; vertical-align: top' colspan=2>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact Priority').'</span><br/>';
                                     echo $rowMember['contactPriority'];
                                     echo '</td>';
                                     echo '</tr>';
                                     echo '<tr>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'First Language').'</span><br/>';
                                     echo $rowMember['languageFirst'];
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Second Language').'</span><br/>';
                                     echo $rowMember['languageSecond'];
                                     echo '</td>';
                                     echo '</tr>';
                                     echo '<tr>';
-                                    echo "<td style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact By Phone').'</span><br/>';
                                     if ($rowMember['contactCall'] == 'N') {
                                         echo __($guid, 'Do not contact by phone.');
@@ -1248,7 +1255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         }
                                     }
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact By SMS').'</span><br/>';
                                     if ($rowMember['contactSMS'] == 'N') {
                                         echo __($guid, 'Do not contact by SMS.');
@@ -1266,7 +1273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         }
                                     }
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact By Email').'</span><br/>';
                                     if ($rowMember['contactEmail'] == 'N') {
                                         echo __($guid, 'Do not contact by email.');
@@ -1282,36 +1289,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                     echo '</tr>';
                                     echo '<tr>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Profession').'</span><br/>';
                                     echo $rowMember['profession'];
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Employer').'</span><br/>';
                                     echo $rowMember['employer'];
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Job Title').'</span><br/>';
                                     echo $rowMember['jobTitle'];
                                     echo '</td>';
                                     echo '</tr>';
 
                                     echo '<tr>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Vehicle Registration').'</span><br/>';
                                     echo $rowMember['vehicleRegistration'];
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
 
                                     echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
 
                                     echo '</td>';
                                     echo '</tr>';
 
                                     if ($rowMember['comment'] != '') {
                                         echo '<tr>';
-                                        echo "<td style='width: 33%; vertical-align: top' colspan=3>";
+                                        echo "<td $class style='width: 33%; vertical-align: top' colspan=3>";
                                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Comment').'</span><br/>';
                                         echo $rowMember['comment'];
                                         echo '</td>';
