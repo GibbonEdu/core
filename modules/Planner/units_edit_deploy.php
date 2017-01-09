@@ -565,7 +565,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             $lessonCount = $_POST['count'];
                             if ($lessonCount < 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There are no records to displayhere.');
+                                echo __($guid, 'There are no records to display.');
                                 echo '</div>';
                             } else {
                                 $lessons = array();
@@ -585,7 +585,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $cells = count($lessons);
                                 if ($cells < 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There are no records to displaynair.');
+                                    echo __($guid, 'There are no records to display.');
                                     echo '</div>';
                                 } else {
                                     $deployCount = 0;
