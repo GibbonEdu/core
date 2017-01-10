@@ -113,7 +113,7 @@ else {
             $mail->Encoding="base64" ;
             $mail->IsHTML(true);
             $mail->Subject=$subject ;
-            $mail->Body = $body ;
+            $mail->Body = nl2br($body) ;
             $mail->AltBody = emailBodyConvert($body) ;
 
             if ($mail->Send()) {
