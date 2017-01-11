@@ -78,8 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
         //Check unique inputs for uniquness
         try {
-            $data = array('date' => dateConvert($guid, $date));
-            $sql = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date';
+            $data = array('date' => dateConvert($guid, $date), 'gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
+            $sql = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
