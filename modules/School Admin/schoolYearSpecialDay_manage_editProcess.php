@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     } else {
         try {
             $data = array('gibbonSchoolYearSpecialDayID' => $gibbonSchoolYearSpecialDayID);
-            $sql = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearSpecialDayID=:gibbonSchoolYearSpecialDayID';
+            $sql = 'SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearSpecialDayID=:gibbonSchoolYearSpecialDayID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -79,14 +79,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 $schoolClose = $_POST['schoolCloseH'].':'.$_POST['schoolCloseM'].':00';
             }
 
+            // Update the term ID, or fallback to the previous one
+            $gibbonSchoolYearTermID = (isset($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : $result->fetchColumn(0);
+
             if ($type == '' or $name == '' or $gibbonSchoolYearID == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
                 //Write to database
                 try {
-                    $data = array('type' => $type, 'name' => $name, 'description' => $description, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose, 'gibbonSchoolYearSpecialDayID' => $gibbonSchoolYearSpecialDayID);
-                    $sql = 'UPDATE gibbonSchoolYearSpecialDay SET type=:type, name=:name, description=:description,schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose WHERE gibbonSchoolYearSpecialDayID=:gibbonSchoolYearSpecialDayID';
+                    $data = array('type' => $type, 'name' => $name, 'description' => $description, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose, 'gibbonSchoolYearTermID' => $gibbonSchoolYearTermID, 'gibbonSchoolYearSpecialDayID' => $gibbonSchoolYearSpecialDayID);
+                    $sql = 'UPDATE gibbonSchoolYearSpecialDay SET type=:type, name=:name, description=:description,schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose, gibbonSchoolYearTermID=:gibbonSchoolYearTermID WHERE gibbonSchoolYearSpecialDayID=:gibbonSchoolYearSpecialDayID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
