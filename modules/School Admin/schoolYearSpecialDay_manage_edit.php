@@ -290,6 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
+						<input name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" value="<?php echo $_GET['gibbonSchoolYearTermID'] ?>" type="hidden">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
