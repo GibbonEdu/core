@@ -36,9 +36,9 @@ if ($step == 1) {
 	<?php
 	$returns = array();
 	$returns['error0'] = __($guid, 'Email address not set.');
-	$returns['error4'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
 	$returns['error3'] = __($guid, 'Failed to send update email.');
 	$returns['error4'] = __($guid, 'Your request failed due to non-matching passwords.');
+	$returns['error5'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
     $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
     $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
     $returns['success0'] = __($guid, 'Password reset request successfully initiated, please check your email.');

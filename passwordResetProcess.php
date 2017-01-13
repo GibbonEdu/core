@@ -61,7 +61,7 @@ else {
     }
 
     if ($result->rowCount() != 1) {
-        $URL = $URL.'&return=error4';
+        $URL = $URL.'&return=error5';
         header("Location: {$URL}");
     } else {
         $row = $result->fetch();

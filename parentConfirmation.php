@@ -38,9 +38,9 @@ if ($step == 1) { ?>
 <?
 	$returns = array();
 	$returns['error0'] = __($guid, 'Email address not set.');
-	$returns['error4'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
 	$returns['error3'] = __($guid, 'Failed to send update email.');
 	$returns['error4'] = __($guid, 'Your request failed due to non-matching passwords.');
+	$returns['error5'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
     $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
     $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
     $returns['error8'] = __($guid, 'Your request failed because the birthdate supplied does not match the one in our records, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
