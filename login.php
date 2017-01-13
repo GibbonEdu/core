@@ -53,7 +53,7 @@ if (($username == '') or ($password == '')) {
 else {
     try {
         $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, canLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full') AND (canLogin='Y'))";
+        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, canLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -68,6 +68,7 @@ else {
     } else {
         $row = $result->fetch();
 
+        // Insufficient privledges message if login not enabled
         if ($row['canLogin'] != "Y") {
             $URL .= '?loginReturn=fail2';
             header("Location: {$URL}");
