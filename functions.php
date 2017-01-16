@@ -2265,6 +2265,10 @@ function getParentPhotoUploader($connection2, $guid)
             $output .= '</div>';
             $output .= '</p>';
         }
+
+        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">';
+            $output .= 'Click here to update photos for family memebers and helpers.';
+        $output .= '</a>';
     }
 
     return $output;

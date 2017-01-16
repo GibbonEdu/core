@@ -385,6 +385,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						if ($_SESSION[$guid]['address'] == '') {
                             $returns = array();
                         	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
+                            $returns['success2'] = __($guid, 'Account confirmation was successful: you may now log in. Please check your email for login details. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.');
                         	if (isset($_GET['return'])) {
                         	    returnProcess($guid, $_GET['return'], null, $returns);
                         	}
