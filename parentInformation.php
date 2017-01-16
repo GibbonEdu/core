@@ -305,6 +305,19 @@ else {
 
 				<?php
 	    			for ($i = 0; $i < 3;$i++) :
+
+	    				try {
+					        $data = array( 'sequenceNumber' => $i, 'gibbonPersonID' => $gibbonPersonID);
+					        $sql = "SELECT name, relationship, image_240 FROM gibbonFamilyAdditionalPerson WHERE gibbonFamilyID=(SELECT gibbonFamilyID FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID) AND sequenceNumber=:sequenceNumber";
+					        $result = $connection2->prepare($sql);
+					        $result->execute($data);
+					    } catch (PDOException $e) {}
+
+					    if ($result->rowCount() == 1) {
+					    	$additionalPerson = $result->fetch();
+					    } else {
+					    	$additionalPerson = array('name' => '', 'relationship' => '', 'image_240' => '');
+					    }
 	    		?>
 					<tr>
 						<td rowspan=3 style="width:200px;">
@@ -316,7 +329,7 @@ else {
 							</span>
 						</td>
 						<td>
-							<div id="photo<?php echo $i;?>" class="cropit-photo" style="width:302px;float:right;">
+							<div id="additionalPhoto<?php echo $i;?>" class="cropit-photo" style="width:302px;float:right;">
 								<div class="cropit-preview" style="border: 2px solid #bbbbbb;"></div>
 
 								<img title="Zoom In" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/plus.png" style="width:20px;height:20px;">
@@ -325,14 +338,13 @@ else {
 
 								<img title="Rotate" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/refresh.png" class="rotate-cw-btn" style="width:20px;height:20px;margin-left:20px;">
 
-								<input type="file" class="cropit-image-input standardWidth" name="file<?php echo $i;?>" id="file<?php echo $i;?>" accept=".jpg,.gif,.jpeg,.png" />
+								<input type="file" class="cropit-image-input standardWidth" name="additionalFile<?php echo $i;?>" id="additionalFile<?php echo $i;?>" accept=".jpg,.gif,.jpeg,.png" />
 								<input type="hidden" name="attachmentAdditional[<?php echo $i;?>]" id="attachmentAdditional[<?php echo $i;?>]" value="" />
 							</div>
 
 							<script type="text/javascript">
-								var file<?php echo $i;?>=new LiveValidation('file<?php echo $i;?>');
-								var photoName = "<?php echo 'photo'.$i;?>";
-								$('#'+photoName).cropit({ width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
+								var photoName = "<?php echo 'additionalPhoto'.$i;?>";
+								$('#'+photoName).cropit({ imageState: { src: '<?php echo $additionalPerson['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
 								});
 							</script>
 						</td>
@@ -342,7 +354,7 @@ else {
 							<b><?php echo __($guid, "Name");?></b>
 						</td>
 						<td class="right">
-							<input class="standardWidth" name="email" id="email" type="text" value="<?php echo $email; ?>">
+							<input class="standardWidth" name="additionalName[<?php echo $i;?>]" type="text" value="<?php echo $additionalPerson['name'];?>">
 						</td>
 					</tr>
 					<tr>
@@ -350,7 +362,7 @@ else {
 							<b><?php echo __($guid, "Relationship");?></b>
 						</td>
 						<td class="right">
-							<input class="standardWidth" name="email" id="email" type="text" value="<?php echo $email; ?>">
+							<input class="standardWidth" name="additionalRelationship[<?php echo $i;?>]" type="text" value="<?php echo $additionalPerson['relationship'];?>">
 						</td>
 					</tr>
 				<?php endfor; ?>

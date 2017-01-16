@@ -245,11 +245,12 @@ else {
 
                             // Upload the data URI
                             $binary = file_get_contents( 'data://' . substr($attachment, 5) );
-                            if (file_put_contents( $_SESSION[$guid]['absolutePath'].'/'.$photoPath.'/'.$id.'.jpg', $binary ) !== false) {
+                            $filename = $id.'.jpg';
+                            if (file_put_contents( $_SESSION[$guid]['absolutePath'].'/'.$photoPath.'/'.$filename, $binary ) !== false) {
 
                                 // Update the photo link for this family member
                                 try {
-                                    $data = array('image_240' => $photoPath.'/'.$id.'.jpg', 'username' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
+                                    $data = array('image_240' => $photoPath.'/'.$filename, 'username' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
                                     $sql = "UPDATE gibbonPerson, gibbonFamilyAdult SET gibbonPerson.image_240=:image_240 WHERE gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.username=:username";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
@@ -257,6 +258,44 @@ else {
                                     $partialFail = true;
                                 }
                             } else {
+                                $partialFail = true;
+                            }
+                        }
+                    }
+
+
+                    $additionalPhotos = $_POST['attachmentAdditional'];
+                    $additionalName = $_POST['additionalName'];
+                    $additionalRelationship = $_POST['additionalRelationship'];
+
+                    // Upload photos and create/update gibbonFamilyAdditionalPeople
+                    if (is_array($additionalName) && count($additionalName) > 0) {
+                        foreach ($additionalName as $id => $name) {
+
+                            if (empty($name)) continue; // Skip empty additional people
+
+                            $relationship = (isset($additionalRelationship[$id]))? $additionalRelationship[$id] : '';
+
+                            if (!empty($additionalPhotos[$id])) {
+                                // Upload the data URI
+                                $binary = file_get_contents( 'data://' . substr($additionalPhotos[$id], 5) );
+                                $filename = $row['gibbonFamilyID'].'-'.$id.'.jpg';
+                                if (file_put_contents( $_SESSION[$guid]['absolutePath'].'/'.$photoPath.'/'.$filename, $binary ) === false) {
+                                    $partialFail = true;
+                                }
+
+                                $data = array('image_240' => $photoPath.'/'.$filename, 'name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
+                                $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, image_240=:image_240, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship, image_240=:image_240";
+                            } else {
+                                $data = array('name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
+                                $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship";
+                            }
+
+                            // Update the photo link for this family member
+                            try {
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
                                 $partialFail = true;
                             }
                         }
