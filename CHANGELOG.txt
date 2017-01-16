@@ -84,6 +84,7 @@ v13.0.00
 		Activities: permission tweak for Generate Invoices
 		Activities: fixed bug preventing Support Staff from viewing activity details from Activity Choices by Student
 		Activities: fixed search persistence on pagination issue
+		Activities: added required field label to new slots section of Edit Activity screen
 		Attendance: added new filters to student absence reports to allow sorting by roll group or student
 		Attendance: added ability to set partial per-class future absence
 		Attendance: added visual graphing for school-wide Attendance Trends
