@@ -130,38 +130,46 @@ else {
             }
             $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
-            require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
+            $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/parentConfirmation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key";
+            header("Location: {$URL}");
 
-            //Send email
-            $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Account Confirmed');
-            $body = sprintf(__($guid, 'You\'ve successfully confirmed your account and are now ready to set your password which can be used to login to Gibbon for the first time.%2$sTo continue please use the link below (this link will only be vaild for the next 48 hours):%2$s%3$s%2$s%4$s'), $username, "\n\n", $_SESSION[$guid]['absoluteURL']."/index.php?q=/parentConfirmation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key", $_SESSION[$guid]['systemName']." Administrator");
+            // require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
 
-            $mail = getGibbonMailer($guid);
-            $mail->AddAddress($email);
+            // //Send email
+            // $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Account Confirmed');
+            // $body = sprintf(__($guid, 'You\'ve successfully confirmed your account and are now ready to set your password which can be used to login to Gibbon for the first time.%2$sTo continue please use the link below (this link will only be vaild for the next 48 hours):%2$s%3$s%2$s%4$s'), $username, "\n\n", $_SESSION[$guid]['absoluteURL']."/index.php?q=/parentConfirmation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key", $_SESSION[$guid]['systemName']." Administrator");
 
-            if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
-                $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
-            } else {
-                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
-            }
+            // $mail = getGibbonMailer($guid);
+            // $mail->AddAddress($email);
+
+            // if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
+            //     $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
+            // } else {
+            //     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
+            // }
             
-            $mail->CharSet="UTF-8";
-            $mail->Encoding="base64" ;
-            $mail->IsHTML(true);
-            $mail->Subject=$subject ;
-            $mail->Body = nl2br($body) ;
-            $mail->AltBody = emailBodyConvert($body) ;
+            // $mail->CharSet="UTF-8";
+            // $mail->Encoding="base64" ;
+            // $mail->IsHTML(true);
+            // $mail->Subject=$subject ;
+            // $mail->Body = nl2br($body) ;
+            // $mail->AltBody = emailBodyConvert($body) ;
 
-            if ($mail->Send()) {
-                $URL = $URL.'&return=success0';
-                header("Location: {$URL}");
-            } else {
-                $URL = $URL.'&return=error3';
-                header("Location: {$URL}");
-            }
+            // if ($mail->Send()) {
+            //     $URL = $URL.'&return=success0';
+            //     header("Location: {$URL}");
+            // } else {
+            //     $URL = $URL.'&return=error3';
+            //     header("Location: {$URL}");
+            // }
         }
         else { //This is the confirmation/reset phase
             //Get URL parameters
+            
+            print_r($_FILES);
+            echo $_FILES['canvasImage']['tmp_name'];
+            die();
+
         	$input = $_GET['input'];
         	$key = $_GET['key'];
         	$gibbonPersonResetID = $_GET['gibbonPersonResetID'];

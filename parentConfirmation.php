@@ -21,6 +21,31 @@ echo "<div class='trail'>";
 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Parent Confirmation').'</div>';
 echo '</div>';
 
+?>
+<script type="text/javascript">
+function dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], {type:mimeString});
+}
+</script>
+
+<?php
+
 $step = 1;
 if (isset($_GET['step'])) {
 	if ($_GET['step'] == 2) {
@@ -142,7 +167,7 @@ else {
 	//Verify authenticity of this request and check it is fresh (within 48 hours)
 	try {
         $data = array('key' => $key, 'gibbonPersonResetID' => $gibbonPersonResetID);
-        $sql = "SELECT * FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
+        $sql = "SELECT gibbonPersonID FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -155,14 +180,167 @@ else {
 		echo '</div>';
 	} else {
 		echo "<div class='success'>";
-		echo __($guid, 'Your reset request is valid: you may proceed.');
+		echo __($guid, 'Account confirmation successfull, please continue.');
 		echo '</div>';
 
+		$gibbonPersonID = $result->fetchColumn(0);
+
+		try {
+	        $data = array('gibbonPersonID' => $gibbonPersonID);
+	        $sql = "SELECT familyPerson.gibbonPersonID, familyPerson.surname, familyPerson.firstName, familyPerson.officialName FROM gibbonFamilyAdult AS parent JOIN gibbonFamilyAdult AS familyAdult ON (parent.gibbonFamilyID=familyAdult.gibbonFamilyID) JOIN gibbonPerson AS familyPerson ON (familyAdult.gibbonPersonID=familyPerson.gibbonPersonID) WHERE parent.gibbonPersonID=:gibbonPersonID ORDER BY familyAdult.gibbonPersonID=:gibbonPersonID DESC, familyAdult.contactPriority";
+	        $result = $connection2->prepare($sql);
+	        $result->execute($data);
+	    } catch (PDOException $e) {
+	        echo "<div class='error'>".$e->getMessage().'</div>';
+	    }
+
 		//Show form
-		echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/parentConfirmationProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key'>";
+		echo "<form id='photoupload' name='photoupload' method='post' action='".$_SESSION[$guid]['absoluteURL']."/parentConfirmationProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key' enctype='multipart/form-data'>";
 			?>
 			<table class='smallIntBorder fullWidth' cellspacing='0'>
-	    		<tr class='break'>
+				<tr class='break'>
+	    			<td colspan=3>
+	    				<h3>
+	    					<?php echo __($guid, 'Upload Family Member Photos'); ?>
+	    				</h3>
+	    			</td>
+	    		</tr>
+	    		<tr>
+					<td colspan=2>
+						<b><?php echo __($guid, 'Test Photo') ?></b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Displayed at 240px by 320px.').'<br/>'.__($guid, 'Accepts images up to 360px by 480px.').'<br/>'.__($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?><br/>
+						<?php if ($row['image_240'] != '') { echo __($guid, 'Will overwrite existing attachment.'); } ?>
+						</span>
+					</td>
+					<td class="right">
+
+						<div id="image-cropper" style="width:240px;margin-right:10px;float:right;">
+						  <div class="cropit-preview" style="cursor:move;border: 2px solid #bbbbbb;"></div>
+						  
+						  <img src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/refresh.png" class="rotate-cw-btn" style="width:20px;height:20px;margin-right:20px;">
+
+						  <img src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/plus.png" class="rotate-cw-btn" style="width:20px;height:20px;">
+						  <input type="range" class="cropit-image-zoom-input" />
+						  <img src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/minus.png" class="rotate-cw-btn" style="width:20px;height:20px;">
+						  
+						  <input type="file" class="cropit-image-input" />
+						</div>
+
+						<script type="text/javascript">
+							$(document).ready(function(){
+								$imageCropper = $('#image-cropper');
+								$imageCropper.cropit({ width: 240, height: 320 });
+
+								// Handle rotation
+								$('#image-cropper .rotate-cw-btn').click(function() {
+								  $('#image-cropper').cropit('rotateCW');
+								});
+
+
+								//$('#photoupload').submit(function() {
+								$('#test').click(function() {
+									alert('Foo');
+									var dataURL = $('#image-cropper').cropit('export', {
+									  type: 'image/jpeg',
+									  quality: .9,
+									  fillBg: '#fff',
+									});
+
+									var blob = dataURItoBlob(dataURL);
+									var fd = new FormData(document.forms[0]);
+									fd.append("canvasImage", blob);
+
+									$('#photoupload').append(fd);
+
+									// var xhr = new XMLHttpRequest();
+									// xhr.open("POST", "/upload", true);
+									// xhr.send(fd);
+
+									alert(blob);
+								});
+							});
+						</script>
+					</td>
+				</tr>
+
+	    		<?php
+	    			while ($familyAdult = $result->fetch()) :
+	    		?>
+		    		<tr>
+		    			<td rowspan=1 style="width:200px;">
+							<b><?php echo $familyAdult['officialName']; ?></b><br/>
+						</td>
+						<td style="width:210px;">
+							<b><?php echo __($guid, 'Photo'); ?></b>
+							<?php if ($familyAdult['gibbonPersonID']==$gibbonPersonID) echo '<span style="color:#ff0000;">* required</span>'; ?><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Displayed at 240px by 320px.').'<br/>'.__($guid, 'Accepts images up to 360px by 480px.').'<br/>'.__($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?><br/>
+							<?php if ($row['image_240'] != '') { echo __($guid, 'Will overwrite existing attachment.'); } ?>
+							</span>
+						</td>
+						<td class="right">
+							<input type="file" name="file<?php echo $familyAdult['gibbonPersonID'];?>" id="file<?php echo $familyAdult['gibbonPersonID'];?>"><br/><br/>
+							<input type="hidden" name="attachment<?php echo $familyAdult['gibbonPersonID'];?>" value='<?php echo $row['image_240'] ?>'>
+							<script type="text/javascript">
+								var file<?php echo $familyAdult['gibbonPersonID'];?>=new LiveValidation('file<?php echo $familyAdult['gibbonPersonID'];?>');
+								file<?php echo $familyAdult['gibbonPersonID'];?>.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								<?php if ($familyAdult['gibbonPersonID']==$gibbonPersonID) echo 'file'.$familyAdult['gibbonPersonID'].'.add( Validate.Presence );';?>
+
+								var fileName = "<?php echo 'file'.$familyAdult['gibbonPersonID'];?>";
+								$('#'+fileName).cropit();
+							</script>
+						</td>
+					</tr>
+				<?php endwhile; ?>
+
+				<tr class='break'>
+	    			<td colspan=3>
+	    				<h3>
+	    					<?php echo __($guid, 'Additional Photos'); ?>
+	    				</h3>
+	    				<p>Here you can optionally upload photos for helpers and drivers and other family members. ID cards will only be provided to additional people who have a photo on file.</p>
+	    			</td>
+	    		</tr>
+
+				<?php
+	    			for ($i = 0; $i < 3;$i++) :
+	    		?>
+		    		<tr>
+						<td rowspan=3 style="width:200px;">
+							<b><?php echo __($guid, 'Additional Person').' '.($i+1); ?></b>
+						</td>
+						<td style="width:160px;">
+							<b><?php echo __($guid, "Name");?></b>
+						</td>
+						<td class="right">
+							<input class="standardWidth" name="email" id="email" type="text" value="<?php echo $email; ?>">
+						</td>
+					</tr>
+					<tr>
+						<td style="width:160px;">
+							<b><?php echo __($guid, "Relationship");?></b>
+						</td>
+						<td class="right">
+							<input class="standardWidth" name="email" id="email" type="text" value="<?php echo $email; ?>">
+						</td>
+					</tr>
+					<tr>
+						<td style="width:210px;">
+							<b><?php echo __($guid, 'Photo'); ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Displayed at 240px by 320px.').'<br/>'.__($guid, 'Accepts images up to 360px by 480px.').'<br/>'.__($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?>
+							</span>
+						</td>
+						<td class="right">
+							<input type="file" name="file1" id="file1"><br/>
+							<input type="hidden" name="attachment1" value='<?php echo $row['image_240'] ?>'>
+							<script type="text/javascript">
+								var file1=new LiveValidation('file1');
+								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+							</script>
+						</td>
+					</tr>
+				<?php endfor; ?>
+
+	    		<!-- <tr class='break'>
 	    			<td colspan=2>
 	    				<h3>
 	    					<?php echo __($guid, 'Set your Password'); ?>
@@ -241,14 +419,16 @@ else {
 	    					passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
 	    				</script>
 	    			</td>
-	    		</tr>
+	    		</tr> -->
 	    		<tr>
-	    			<td>
+	    			<td colspan=2>
 	    				<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 	    			</td>
 	    			<td class="right">
 	    				<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 	    				<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+
+	    				<input id="test" type="button" value="<?php echo __($guid, 'Test'); ?>">
 	    			</td>
 	    		</tr>
 	    	</table>
