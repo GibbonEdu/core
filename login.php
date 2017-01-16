@@ -47,6 +47,7 @@ $password = $_POST['password'];
 if (($username == '') or ($password == '')) {
     $URL .= '?loginReturn=fail0b';
     header("Location: {$URL}");
+    exit;
 }
 //VALIDATE LOGIN INFORMATION
 else {
@@ -63,6 +64,7 @@ else {
         setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Login - Failed', array('username' => $username, 'reason' => 'Username does not exist'), $_SERVER['REMOTE_ADDR']);
         $URL .= '?loginReturn=fail1';
         header("Location: {$URL}");
+        exit;
     } else {
         $row = $result->fetch();
 
@@ -84,6 +86,7 @@ else {
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
             $URL .= '?loginReturn=fail6';
             header("Location: {$URL}");
+            exit;
         } else {
             $passwordTest = false;
             //If strong password exists
@@ -129,12 +132,14 @@ else {
                 setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
                 $URL .= '?loginReturn=fail1';
                 header("Location: {$URL}");
+                exit;
             } else {
                 if ($row['gibbonRoleIDPrimary'] == '' or count(getRoleList($row['gibbonRoleIDAll'], $connection2)) == 0) {
                     //FAILED TO SET ROLES
                     setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
                     $URL .= '?loginReturn=fail2';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     //Allow for non-current school years to be specified
                     if ($_POST['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
@@ -238,6 +243,7 @@ else {
                     }
                     setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
                     header("Location: {$URL}");
+                    exit;
                 }
             }
         }
