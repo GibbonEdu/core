@@ -52,8 +52,8 @@ if ($input == '' or ($step != 1 and $step != 2)) {
 else {
 
     try {
-        $data = array('email' => $input, 'username' => $input);
-        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonRole.category='Parent' AND (email=:email OR username=:username) AND gibbonPerson.status='Full' AND canLogin<>'N' AND NOT email=''";
+        $data = array('email' => $input);
+        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonRole.category='Parent' AND email=:email AND gibbonPerson.status='Full' AND canLogin<>'N' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -132,7 +132,7 @@ else {
             }
             $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
-            $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/parentInformation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key";
+            $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=parentInformation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key&sidebar=false";
             header("Location: {$URL}");
             exit;
         }
@@ -249,6 +249,7 @@ else {
                             if (empty($name)) continue; // Skip empty additional people
 
                             $relationship = (isset($additionalRelationship[$id]))? $additionalRelationship[$id] : '';
+                            $image_240 = '';
 
                             if (!empty($additionalPhotos[$id])) {
                                 // Upload the data URI
@@ -258,15 +259,13 @@ else {
                                     $partialFail = true;
                                 }
 
-                                $data = array('image_240' => $photoPath.'/'.$filename, 'name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
-                                $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, image_240=:image_240, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship, image_240=:image_240";
-                            } else {
-                                $data = array('name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
-                                $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship";
+                                $image_240 = $photoPath.'/'.$filename;
                             }
 
                             // Update the photo link for this family member
                             try {
+                                $data = array('image_240' => $image_240, 'name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $row['gibbonFamilyID'] );
+                                $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, image_240=:image_240, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship, image_240=:image_240";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {

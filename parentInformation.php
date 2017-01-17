@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 echo "<div class='trail'>";
 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Parent Information').'</div>';
 echo '</div>';
-
 ?>
 <script type="text/javascript">
 function dataURItoBlob(dataURI) {
@@ -45,8 +44,14 @@ function dataURItoBlob(dataURI) {
 </script>
 <style>
 	/* Show load indicator when image is being loaded */
-	.cropit-preview.cropit-image-loading .spinner {
+	.cropit-preview.cropit-image-loading .loading {
 	  opacity: 1;
+	}
+
+	.cropit-preview .loading {
+	  opacity: 0;
+	  width: 180px;
+	  margin:110px auto 0;
 	}
 
 	/* Show move cursor when image has been loaded */
@@ -61,7 +66,7 @@ function dataURItoBlob(dataURI) {
 	}
 
 	/* Show upload photo text */
-	.cropit-preview::before {
+	.cropit-preview:not(.cropit-image-loading)::before {
 		content: "Upload a Photo";
 		border: 2px dashed #dddddd;
 		border-radius: 8px;
@@ -113,15 +118,18 @@ if (isset($_GET['return'])) {
 
 if ($step == 1) { ?>
 
-	<h3>
-		Welcome to Gibbon
-	</h3>
-	<p>
-		Before you can login we'd like to request a few details confirm your account. After submitting this form you'll be promted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.
-	</p>
-
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/parentInformationProcess.php?step=1">
-		<table cellspacing='0' style="width: 100%">
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
+			<tr class='break'>
+    			<td colspan=2>
+    				<h3>
+    					Step 1 &nbsp;<small>Account Confirmation</small>
+    				</h3>
+    				<p>
+						Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be promted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.
+					</p>
+    			</td>
+    		</tr>
 			<tr>
 				<td style="width:160px;">
 					<b><?php echo __($guid, "Your Email Address");?></b>
@@ -136,8 +144,10 @@ if ($step == 1) { ?>
 			</tr>
 			<tr>
 				<td colspan="2">
-				<?php echo __($guid, "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.");?>
-				</td>
+				<br/><p>
+					<?php echo __($guid, "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.");?>
+					</td>
+				</p>
 			</tr>
 			<tr>
 				<td>
@@ -186,7 +196,7 @@ if ($step == 1) { ?>
 			<tr>
 				<td colspan="2" class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>"  style='font-size: 16px;padding:6px 10px;height:auto;'>
 				</td>
 			</tr>
 		</table>
@@ -196,7 +206,7 @@ if ($step == 1) { ?>
 else {
 	//Get URL parameters
 	$proceed = false;
-
+	$message = 'This request is invalid: either the form has already been submitted or session has expired. Please go back to <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">Step 1</a>';
 
 	if (!empty($_SESSION[$guid]['username'])) {
 		// Logged in users
@@ -204,7 +214,20 @@ else {
 		$gibbonPersonResetID='';
 		$key='';
 		$input = $_SESSION[$guid]['email'];
-		$proceed = true;
+
+		try {
+			$data = array('gibbonPersonID' => $gibbonPersonID);
+            $sql = "SELECT student.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonFamilyChild ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) JOIN gibbonPerson AS student ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND student.status='Full' && gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+	    } catch (PDOException $e) {}
+
+	    if ($result->rowCount() == 1) {
+	    	$proceed = true;
+	    } else {
+	    	$message = 'The request could not proceed. Either your account is not currently active in our system, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>';
+	    }
+		
 	} else {
 		$input = (isset($_GET['input']))? $_GET['input'] : null;
 		$key = (isset($_GET['key']))? $_GET['key'] : null;
@@ -217,9 +240,7 @@ else {
 		        $sql = "SELECT gibbonPersonID FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
 		        $result = $connection2->prepare($sql);
 		        $result->execute($data);
-		    } catch (PDOException $e) {
-		        echo "<div class='error'>".$e->getMessage().'</div>';
-		    }
+		    } catch (PDOException $e) {}
 
 		    if ($result->rowCount() == 1) {
 		    	$gibbonPersonID = $result->fetchColumn(0);
@@ -230,13 +251,13 @@ else {
 
 	if ($proceed == false) {
 		echo "<div class='error'>";
-		echo __($guid, 'Your reset request is invalid: you may not proceed.');
+		echo __($guid, $message);
 		echo '</div>';
 	} else {
 
 		if (empty($_SESSION[$guid]['username'])) {
 			echo "<div class='success'>";
-			echo __($guid, 'Account confirmation successfull, please continue.');
+			echo __($guid, 'Account confirmation successfull, please continue. Be sure to click <b>Submit</b> when you\'ve completed this form.');
 			echo '</div>';
 		}
 
@@ -252,24 +273,29 @@ else {
 		//Show form
 		echo "<form id='photoupload' name='photoupload' method='post' action='".$_SESSION[$guid]['absoluteURL']."/parentInformationProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key' enctype='multipart/form-data'>";
 			?>
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
+			<table class='smallIntBorder' cellspacing='0' <?php if (isset($_GET['sidebar']) && $_GET['sidebar'] == 'false') echo 'style="width:65%;margin: 0 auto;"'; ?>>
 				<tr class='break'>
 	    			<td colspan=3>
-	    				<h3>
-	    					<?php echo __($guid, 'Upload Family Member Photos'); ?>
-	    				</h3>
-	    				<p>
-	    					The addition of the new North Wing affords TIS the opportunity to review and enhance our security on campus. A Parent ID card system will be implemented at the school to ensure the safety of all TIS students and their families.
-	    				</p>
+	    				<?php if (empty($_SESSION[$guid]['username'])) : ?>
+		    				<h3>
+		    					Step 2 &nbsp;<small>Upload Family Member Photos</small>
+		    				</h3>
+		    				<p>
+		    					The addition of the new North Wing affords TIS the opportunity to review and enhance our security on campus. A Parent ID card system will be implemented at the school to ensure the safety of all TIS students and their families.
+		    				</p>
+		    			<?php endif; ?>
+	    				<h4>Parent ID Cards:</h4>
 	    				<p>
 	    					Please take the time now to upload a passport-sized photo for family members and helpers who may need an ID card. Parent ID cards will only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opporunity to upload it later. Please note, however, that your Parent IDs will be processed faster if the photos are included here.
 	    				</p>
 	    				<p>
+	    					<b style='color:#c0292d;'>Processing and issuing of Parent IDs will begin mid to late February 2017.</b>
+	    				</p>
+	    				<h4>Photo Instructions:</h4>
+	    				<p>
 	    					For the best results your photos should be <u>passport-sized, good quality and on a plain background</u>. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.
 	    				</p>
-	    				<p>
-	    					<b style='color:#c0292d;'>Processing and issuing of Parent IDs will begin mid to late Febriary 2017.</b>
-	    				</p>
+	    				
 	    			</td>
 	    		</tr>
 	    		<?php
@@ -298,6 +324,7 @@ else {
 								<td>
 								<div id="photo<?php echo $familyAdult['username'];?>" class="cropit-photo" style="width:302px;float:right;">
 									<div class="cropit-preview" style="border: 2px solid #bbbbbb;">
+										<img class="loading" title="Loading" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/loading.gif">
 									</div>
 
 									<img title="Zoom In" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/plus.png" style="width:20px;height:20px;">
@@ -306,13 +333,15 @@ else {
 
 									<img title="Rotate" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/refresh.png" class="rotate-cw-btn" style="width:20px;height:20px;margin-left:20px;">
 
+									<img title="Delete" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/garbage.png" class="delete-btn" style="width:20px;height:20px;margin-left:20px;">
+
 									<input type="file" class="cropit-image-input standardWidth" name="file[<?php echo $familyAdult['username'];?>]" id="file[<?php echo $familyAdult['username'];?>]" accept=".jpg,.gif,.jpeg,.png" />
 									<input type="hidden" name="attachment[<?php echo $familyAdult['username'];?>]" id="attachment[<?php echo $familyAdult['username'];?>]" value="" />
 								</div>
 
 								<script type="text/javascript">
 									var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
-									$('#'+photoName).cropit({ imageState: { src: '<?php echo $familyAdult['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
+									$('#'+photoName).cropit({ imageState: { src: '<?php echo $familyAdult['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
 								</script>
 							</td>
 						<?php endif; ?>
@@ -356,7 +385,9 @@ else {
 						</td>
 						<td>
 							<div id="additionalPhoto<?php echo $i;?>" class="cropit-photo" style="width:302px;float:right;">
-								<div class="cropit-preview" style="border: 2px solid #bbbbbb;"></div>
+								<div class="cropit-preview" style="border: 2px solid #bbbbbb;">
+									<img class="loading" title="Loading" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/loading.gif">
+								</div>
 
 								<img title="Zoom In" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/plus.png" style="width:20px;height:20px;">
 								<input type="range" class="cropit-image-zoom-input" style="width:140px;"/>
@@ -364,13 +395,15 @@ else {
 
 								<img title="Rotate" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/refresh.png" class="rotate-cw-btn" style="width:20px;height:20px;margin-left:20px;">
 
+								<img title="Delete" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/garbage.png" class="delete-btn" style="width:20px;height:20px;margin-left:20px;">
+
 								<input type="file" class="cropit-image-input standardWidth" name="additionalFile<?php echo $i;?>" id="additionalFile<?php echo $i;?>" accept=".jpg,.gif,.jpeg,.png" />
 								<input type="hidden" name="attachmentAdditional[<?php echo $i;?>]" id="attachmentAdditional[<?php echo $i;?>]" value="" />
 							</div>
 
 							<script type="text/javascript">
 								var photoName = "<?php echo 'additionalPhoto'.$i;?>";
-								$('#'+photoName).cropit({ imageState: { src: '<?php echo $additionalPerson['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
+								$('#'+photoName).cropit({ imageState: { src: '<?php echo $additionalPerson['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
 								});
 							</script>
 						</td>
@@ -388,7 +421,14 @@ else {
 							<b><?php echo __($guid, "Relationship");?></b>
 						</td>
 						<td class="right">
-							<input class="standardWidth" name="additionalRelationship[<?php echo $i;?>]" type="text" value="<?php echo $additionalPerson['relationship'];?>">
+							<!-- <input class="standardWidth" name="additionalRelationship[<?php echo $i;?>]" type="text" value="<?php echo $additionalPerson['relationship'];?>"> -->
+							<select name="additionalRelationship[<?php echo $i;?>]" class="standardWidth">
+								<option value="" <?php if ($additionalPerson['relationship'] == '') echo 'selected';?>></option>
+								<option value="Helper" <?php if ($additionalPerson['relationship'] == 'Helper') echo 'selected';?>>Helper</option>
+								<option value="Driver" <?php if ($additionalPerson['relationship'] == 'Driver') echo 'selected';?>>Driver</option>
+								<option value="Family" <?php if ($additionalPerson['relationship'] == 'Family') echo 'selected';?>>Family</option>
+								<option value="Other" <?php if ($additionalPerson['relationship'] == 'Other') echo 'selected';?>>Other</option>
+							</select>
 						</td>
 					</tr>
 				<?php endfor; ?>
@@ -396,15 +436,31 @@ else {
 
 				<script type="text/javascript">
 					$(document).ready(function(){
-						//$imageCropper = $('#image-cropper');
-						//$imageCropper.cropit({ width: 240, height: 320 });
-
 						// Handle rotation
 						$('.rotate-cw-btn').click(function() {
 							$(this).parent().cropit('rotateCW');
 						});
 
+						// Handle deletion
+						$('.delete-btn').click(function() {
+							var parent = $(this).parent();
 
+							//parent.cropit('imageSrc', ' ');
+							//$('input[name^="file"]', parent).val('');
+							//$('input[name^="attachment"]', parent).val('');
+							$('.cropit-preview', parent).removeClass('cropit-image-loaded');
+							//$('.cropit-preview-image-container', parent).remove();
+							//$('.cropit-preview-image', parent).removeAttr('style');
+							$('.cropit-preview-image', parent).attr('src','');
+
+							parent.cropit('destroy');
+							//parent.cropit({ width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.25, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } });
+
+							//parent.cropit('reenable');
+						});
+
+
+						// Open file dialog when initially clicked
 						$('.cropit-preview').click(function() {
 							if ($(this).hasClass('cropit-image-loaded')) return;
 							$('.cropit-image-input', $(this).parent()).click();
@@ -427,6 +483,11 @@ else {
 								$(this).attr('value', dataURL);
 							});
 
+							// Disable upload of original files
+							$('input[name^="file"]').each( function() {
+								$(this).prop('disabled', true);
+							});
+
 							$(this).unbind('submit').submit(); // continue the submit unbind preventDefault
 						});
 					});
@@ -447,10 +508,10 @@ else {
 	    			</td>
 	    			<td class="right">
 	    				<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-	    				<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+	    				<input type="submit" value="<?php echo __($guid, 'Submit'); ?>"  onclick='if(confirm("<?php echo 'Are you ready to complete your form? Click cancel if you wish to go back and make changes.'; ?>")) document.forms[0].submit(); else return false;' style='font-size: 16px;padding:6px 10px;height:auto;'>
 	    			</td>
 	    		</tr>
-	    	</table>
+	    	</table><br/>
 	    </form>
 		<?php
 	}
