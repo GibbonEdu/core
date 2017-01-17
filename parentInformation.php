@@ -72,6 +72,13 @@ function dataURItoBlob(dataURI) {
 		left: calc(50% - ((90px + 40px - 4px)/2));
 	}
 
+	.cropit-photo-disabled {
+		width: 180px;
+		height: 240px;
+		border: 2px solid #bbbbbb;
+		background-size: cover;
+	}
+
 </style>
 
 <?php
@@ -272,32 +279,44 @@ else {
 		    			<td rowspan=1 style="width:200px;">
 							<b><?php echo $familyAdult['officialName']; ?></b><br/>
 						</td>
-						<td style="width:210px;">
-							<b><?php echo __($guid, 'Photo'); ?></b>
-							<?php if (empty($familyAdult['image_240']) && $familyAdult['gibbonPersonID']==$gibbonPersonID) echo '<span style="color:#ff0000;">* required</span>'; ?><br/>
-							<span class="emphasis small">
-							</span>
-						</td>
-						<td>
-							<div id="photo<?php echo $familyAdult['username'];?>" class="cropit-photo" style="width:302px;float:right;">
-								<div class="cropit-preview" style="border: 2px solid #bbbbbb;">
+						
+						<?php if ( substr($familyAdult['username'], 0, 4) == '1000' && !empty($familyAdult['image_240'])) : ?>
+							<td style="width:210px;">
+								<b><?php echo __($guid, 'Photo'); ?></b><br/>
+								<span class="emphasis small">Staff photos cannot be changed.</span>
+							</td>
+							<td>
+								<div style="width:302px;float:right;">
+									<div class="cropit-photo-disabled" style="background-image:url(<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$familyAdult['image_240']; ?>);">&nbsp;</div>
+									
+								</div>
+							</td>
+						<?php else : ?>
+							<td style="width:210px;">
+								<b><?php echo __($guid, 'Photo'); ?></b>
+								</td>
+								<td>
+								<div id="photo<?php echo $familyAdult['username'];?>" class="cropit-photo" style="width:302px;float:right;">
+									<div class="cropit-preview" style="border: 2px solid #bbbbbb;">
+									</div>
+
+									<img title="Zoom In" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/plus.png" style="width:20px;height:20px;">
+									<input type="range" class="cropit-image-zoom-input" style="width:140px;"/>
+									<img title="Zoom Out" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/minus.png" style="width:20px;height:20px;">
+
+									<img title="Rotate" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/refresh.png" class="rotate-cw-btn" style="width:20px;height:20px;margin-left:20px;">
+
+									<input type="file" class="cropit-image-input standardWidth" name="file[<?php echo $familyAdult['username'];?>]" id="file[<?php echo $familyAdult['username'];?>]" accept=".jpg,.gif,.jpeg,.png" />
+									<input type="hidden" name="attachment[<?php echo $familyAdult['username'];?>]" id="attachment[<?php echo $familyAdult['username'];?>]" value="" />
 								</div>
 
-								<img title="Zoom In" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/plus.png" style="width:20px;height:20px;">
-								<input type="range" class="cropit-image-zoom-input" style="width:140px;"/>
-								<img title="Zoom Out" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/minus.png" style="width:20px;height:20px;">
-
-								<img title="Rotate" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/themes/Default/img/refresh.png" class="rotate-cw-btn" style="width:20px;height:20px;margin-left:20px;">
-
-								<input type="file" class="cropit-image-input standardWidth" name="file[<?php echo $familyAdult['username'];?>]" id="file[<?php echo $familyAdult['username'];?>]" accept=".jpg,.gif,.jpeg,.png" />
-								<input type="hidden" name="attachment[<?php echo $familyAdult['username'];?>]" id="attachment[<?php echo $familyAdult['username'];?>]" value="" />
-							</div>
-
-							<script type="text/javascript">
-								var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
-								$('#'+photoName).cropit({ imageState: { src: '<?php echo $familyAdult['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
-							</script>
-						</td>
+								<script type="text/javascript">
+									var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
+									$('#'+photoName).cropit({ imageState: { src: '<?php echo $familyAdult['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
+								</script>
+							</td>
+						<?php endif; ?>
+						
 					</tr>
 				<?php endwhile; ?>
 
