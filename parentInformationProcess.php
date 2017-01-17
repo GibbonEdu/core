@@ -46,13 +46,14 @@ $URLSuccess1 = $_SESSION[$guid]['absoluteURL'].'/index.php';
 if ($input == '' or ($step != 1 and $step != 2)) {
     $URL = $URL.'&return=error0';
     header("Location: {$URL}");
+    exit;
 }
 //Otherwise proceed
 else {
 
     try {
         $data = array('email' => $input, 'username' => $input);
-        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonRole.category='Parent' AND (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonRole.category='Parent' AND (email=:email OR username=:username) AND gibbonPerson.status='Full' AND canLogin<>'N' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -64,6 +65,7 @@ else {
     if ($result->rowCount() != 1) {
         $URL = $URL.'&return=error9';
         header("Location: {$URL}");
+        exit;
     } else {
         $row = $result->fetch();
         $gibbonPersonID = $row['gibbonPersonID'];
@@ -81,7 +83,7 @@ else {
             if (empty($birthyear) || empty($birthmonth) || empty($birthday)) {
                 $URL = $URL.'&return=error8';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             // Format birthday in in YYYY-MM-DD
@@ -103,7 +105,7 @@ else {
                 // Child not found, or birthdate doesn't match
                 $URL = $URL.'&return=error8';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             //Generate key
@@ -126,42 +128,13 @@ else {
             } catch (PDOException $e) {
                 $URL = $URL.'&return=error2';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
             $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
             $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/parentInformation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key";
             header("Location: {$URL}");
-
-            // require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
-
-            // //Send email
-            // $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Account Confirmed');
-            // $body = sprintf(__($guid, 'You\'ve successfully confirmed your account and are now ready to set your password which can be used to login to Gibbon for the first time.%2$sTo continue please use the link below (this link will only be vaild for the next 48 hours):%2$s%3$s%2$s%4$s'), $username, "\n\n", $_SESSION[$guid]['absoluteURL']."/index.php?q=/parentInformation.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key", $_SESSION[$guid]['systemName']." Administrator");
-
-            // $mail = getGibbonMailer($guid);
-            // $mail->AddAddress($email);
-
-            // if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
-            //     $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
-            // } else {
-            //     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
-            // }
-            
-            // $mail->CharSet="UTF-8";
-            // $mail->Encoding="base64" ;
-            // $mail->IsHTML(true);
-            // $mail->Subject=$subject ;
-            // $mail->Body = nl2br($body) ;
-            // $mail->AltBody = emailBodyConvert($body) ;
-
-            // if ($mail->Send()) {
-            //     $URL = $URL.'&return=success0';
-            //     header("Location: {$URL}");
-            // } else {
-            //     $URL = $URL.'&return=error3';
-            //     header("Location: {$URL}");
-            // }
+            exit;
         }
         else { //This is the confirmation/reset phase
             //Get URL parameters
@@ -189,7 +162,7 @@ else {
                     } catch (PDOException $e) {
                         $URL = $URL.'&return=error2';
                         header("Location: {$URL}");
-                        exit();
+                        exit;
                     }
 
                     if ($result->rowCount() == 1) {
@@ -202,12 +175,13 @@ else {
         	if ($proceed == false) {
                 $URL = $URL.'&return=error1';
                 header("Location: {$URL}");
+                exit;
         	} else {
 
 
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
-                    $sql = "SELECT username, canLogin, email, gibbonFamilyAdult.gibbonFamilyID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                    $sql = "SELECT username, canLogin, email, fields, gibbonFamilyAdult.gibbonFamilyID, (SELECT gibbonPersonFieldID FROM gibbonPersonField WHERE name='Account Activated') as `activationID` FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -302,15 +276,22 @@ else {
                     }
 
                     // User cannot currently login - generate a password, and activate their account
-                    if ($row['canLogin'] == 'N') {
+                    if ($row['canLogin'] == 'A') {
 
                         //Generate a password
                         $passwordNew = randomPassword(10);
                         $salt = getSalt();
                         $passwordStrong = hash('sha256', $salt.$passwordNew);
+
+                        $fields = array();
+                        if (!empty($row['activationID'])) {
+                            $fields = (!empty($row['fields']))? unserialize($row['fields']) : array();
+                            $fields[$row['activationID']] = date('Y-m-d');
+                        }
+
                         try {
-                            $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
-                            $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt, canLogin='Y', passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
+                            $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'fields' => serialize($fields), 'gibbonPersonID' => $gibbonPersonID);
+                            $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt, canLogin='Y', passwordForceReset='N', failCount=0, fields=:fields WHERE gibbonPersonID=:gibbonPersonID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -324,7 +305,7 @@ else {
                         //Send email
                         $email = $row['email'];
                         $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Account Confirmed - You may now login');
-                        $body = sprintf(__($guid, 'You\'ve successfully confirmed your account. Below you will find your username and password which can be used to login to Gibbon for the first time.%1$sUsername: %2$s%1$sPassword: %3$s%1$sTo continue please use the link below:%1$s%4$s%1$s'), "\n\n", $row['email'], $passwordNew, $_SESSION[$guid]['absoluteURL']."/index.php", $_SESSION[$guid]['systemName']." Administrator");
+                        $body = sprintf(__($guid, 'You\'ve successfully confirmed your account. Below you will find your username and password which can be used to login to Gibbon for the first time.%1$sEmail:  %2$s%1$sUsername:  %3$s%1$sPassword:  %4$s%1$sIf you\'ve uploaded photos in the previous step, no further action needs taken at this time. If you\'d like to continue to Gibbon please use the link below:%1$s%5$s%1$s'), "\n\n", $row['email'], $row['username'], $passwordNew, $_SESSION[$guid]['absoluteURL']."/index.php", $_SESSION[$guid]['systemName']." Administrator");
 
                         $mail = getGibbonMailer($guid);
                         $mail->AddAddress($email);

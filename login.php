@@ -68,11 +68,11 @@ else {
     } else {
         $row = $result->fetch();
 
-        // Insufficient privledges message if login not enabled
-        if ($row['canLogin'] != "Y") {
-            $URL .= '?loginReturn=fail2';
+        // Insufficient privledges / activation message if login not enabled
+        if ($row['canLogin'] != 'Y') {
+            $URL .= ($row['canLogin'] == 'A')? '?loginReturn=fail2b' : '?loginReturn=fail2';
             header("Location: {$URL}");
-            die();
+            exit;
         }
 
         // Set the username explicity, to handle logging in with email

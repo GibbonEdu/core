@@ -41,6 +41,8 @@ if ($step == 1) {
 	$returns['error5'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
     $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
     $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
+    $returns['error8'] = __($guid, 'Your request failed because you do not have sufficient privileges to login.');
+    $returns['error9'] = __($guid, 'Your request failed because your account has not been activated. <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">Please visit the account confirmation page to continue</a>.');
     $returns['success0'] = __($guid, 'Password reset request successfully initiated, please check your email.');
 	if (isset($_GET['return'])) {
 	    returnProcess($guid, $_GET['return'], null, $returns);

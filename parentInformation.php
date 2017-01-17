@@ -110,7 +110,7 @@ if ($step == 1) { ?>
 		Welcome to Gibbon
 	</h3>
 	<p>
-		Before you can login we'd like to request a few details confirm your account. After submitting this form you'll receive a link to set your password, then you'll be able to login to Gibbon with the blue Login form on the right.
+		Before you can login we'd like to request a few details confirm your account. After submitting this form you'll be promted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.
 	</p>
 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/parentInformationProcess.php?step=1">
@@ -177,11 +177,6 @@ if ($step == 1) { ?>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">
-				<?php echo __($guid, "After pressing submit <b style='color:#c0292d;'>a unique link will be emailed to you</b> to set your password. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.");?>
-				</td>
-			</tr>
-			<tr>
 				<td colspan="2" class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
@@ -231,9 +226,12 @@ else {
 		echo __($guid, 'Your reset request is invalid: you may not proceed.');
 		echo '</div>';
 	} else {
-		// echo "<div class='success'>";
-		// echo __($guid, 'Account confirmation successfull, please continue.');
-		// echo '</div>';
+
+		if (empty($_SESSION[$guid]['username'])) {
+			echo "<div class='success'>";
+			echo __($guid, 'Account confirmation successfull, please continue.');
+			echo '</div>';
+		}
 
 		try {
 	        $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -253,6 +251,18 @@ else {
 	    				<h3>
 	    					<?php echo __($guid, 'Upload Family Member Photos'); ?>
 	    				</h3>
+	    				<p>
+	    					The addition of the new North Wing affords TIS the opportunity to review and enhance our security on campus. A Parent ID card system will be implemented at the school to ensure the safety of all TIS students and their families.
+	    				</p>
+	    				<p>
+	    					Please take the time now to upload a passport-sized photo for family members and helpers who may need an ID card. Parent ID cards will only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opporunity to upload it later. Please note, however, that your Parent IDs will be processed faster if the photos are included here.
+	    				</p>
+	    				<p>
+	    					For the best results your photos should be <u>passport-sized, good quality and on a plain background</u>. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.
+	    				</p>
+	    				<p>
+	    					<b style='color:#c0292d;'>Processing and issuing of Parent IDs will begin mid to late Febriary 2017.</b>
+	    				</p>
 	    			</td>
 	    		</tr>
 	    		<?php
@@ -284,9 +294,6 @@ else {
 							</div>
 
 							<script type="text/javascript">
-								var file<?php echo $familyAdult['username'];?>=new LiveValidation('file[<?php echo $familyAdult['username'];?>]');
-								<?php if (empty($familyAdult['image_240']) && $familyAdult['gibbonPersonID']==$gibbonPersonID) echo 'file'.$familyAdult['username'].'.add( Validate.Presence );';?>
-
 								var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
 								$('#'+photoName).cropit({ imageState: { src: '<?php echo $familyAdult['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.0, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
 							</script>
@@ -299,7 +306,7 @@ else {
 	    				<h3>
 	    					<?php echo __($guid, 'Additional Photos'); ?>
 	    				</h3>
-	    				<p>You may optionally upload photos for helpers, drivers and other family members. ID cards will only be provided for additional people if there is a valid photo on file.</p>
+	    				<p>You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file.</p>
 	    			</td>
 	    		</tr>
 
@@ -406,6 +413,15 @@ else {
 					});
 				</script>
 
+				<?php if (empty($_SESSION[$guid]['username'])) : ?>
+					<tr class="break">
+						<td colspan="3"><br/>
+						<p>
+						After pressing submit <b style='color:#c0292d;'>your login details will be emailed to you</b>. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.
+						</p>
+						</td>
+					</tr>
+				<?php endif; ?>
 	    		<tr>
 	    			<td colspan=2>
 	    				<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

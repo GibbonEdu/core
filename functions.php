@@ -2266,8 +2266,8 @@ function getParentPhotoUploader($connection2, $guid)
             $output .= '</p>';
         }
 
-        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">';
-            $output .= 'Click here to update photos for family memebers and helpers.';
+        $output .= '<br/><a class="button" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php" style="border: 1px solid #222222;background-color: #eeeeee;;color: #444444;font-weight: bold;font-size: 13px ;text-decoration:none;padding: 8px;display:block;text-align:center;">';
+            $output .= 'Update Family Member Photos';
         $output .= '</a>';
     }
 
@@ -2785,6 +2785,8 @@ function sidebar($gibbon, $pdo)
             $loginReturnMessage = __($guid, 'Incorrect username and password.');
         } elseif ($loginReturn == 'fail2') {
             $loginReturnMessage = __($guid, 'You do not have sufficient privileges to login.');
+        } elseif ($loginReturn == 'fail2b') {
+            $loginReturnMessage = __($guid, 'Your account requires activation before you can login. <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">Please visit the account confirmation page to continue</a>');
         } elseif ($loginReturn == 'fail5') {
             $loginReturnMessage = __($guid, 'Your request failed due to a database error.');
         } elseif ($loginReturn == 'fail6') {
