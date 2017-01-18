@@ -196,9 +196,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
 
                 echo "<div class='linkTop' style='margin-bottom: 7px'>";
-                if ($row['gibbonUnitID'] != '') {
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$row['date']."&subView=$subView&gibbonUnitID=".$row['gibbonUnitID']."&width=1000&height=550'>".__($guid, 'Unit Overview').'</a> | ';
-                }
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params'>".__($guid, 'View')."<img style='margin: 0 0 -4px 3px' title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                 echo '</div>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_editProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
@@ -326,15 +323,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 						</tr>
 						<tr>
 							<td>
-								<b><?php echo __($guid, 'Summary') ?> *</b><br/>
+								<b><?php echo __($guid, 'Summary') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Will be overwritten by Smart Block titles.') ?><br/></span>
 							</td>
 							<td class="right">
 								<input name="summary" id="summary" maxlength=255 value="<?php echo htmlPrep($row['summary']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var summary=new LiveValidation('summary');
-									summary.add(Validate.Presence);
-								</script>
 							</td>
 						</tr>
 						<tr>
@@ -1348,7 +1341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
-							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
+							<select name="guests[]" id="guests[]" multiple class='standardWidth' style="height: 150px">
 								<?php
                                 try {
                                     $dataSelect = array();

@@ -148,28 +148,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Child') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Choose the child you are registering for.') ?></span>
 							</td>
 							<td class="right">
 								<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-									<?php 
+									<?php
                                     if ($countChild > 1) {
                                         echo "<option value=''></value>";
                                     }
-                        echo $options;
-                        ?> 
+                                    echo $options;
+                                    ?>
 								</select>
 							</td>
 						</tr>
 						<?php
-
                     }
                     ?>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Search For Activity') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Activity name.') ?></span>
 						</td>
@@ -489,6 +488,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '<td>';
                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                         $signup = true;
+                        if ($access == 'View') {
+                            $signup = false;
+                        }
                         if ($row['registration'] == 'N') {
                             $signup = false;
                         }

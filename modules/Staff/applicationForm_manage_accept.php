@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_accept.php') == false) {
     //Acess denied
@@ -202,6 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $username = str_replace('[surname]', strtolower($row['surname']), $username);
                                 $username = str_replace(' ', '', $username);
                                 $username = str_replace("'", '', $username);
+                                $username = str_replace("-", '', $username);
                                 $username = substr($username, 0, 12);
                             }
                             $usernameBase = $username;
@@ -268,7 +269,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."<br/>";
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = new PHPMailer();
+                                $mail = getGibbonMailer($guid);
+                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -382,7 +384,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     }
                                     $bodyPlain = emailBodyConvert($body);
 
-                                    $mail = new PHPMailer();
+                                    $mail = getGibbonMailer($guid);
+                                    $mail->IsSMTP();
                                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     $mail->AddAddress($to);
                                     $mail->CharSet = 'UTF-8';

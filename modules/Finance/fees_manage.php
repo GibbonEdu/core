@@ -87,10 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
         echo __($guid, 'Search');
         echo '</h3>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Search For') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Fee name, category name.') ?></span>
 					</td>
@@ -100,10 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
+                        <input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/fees_manage.php">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/fees_manage.php'>".__($guid, 'Clear Search').'</a>'; ?>
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/fees_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Clear Search').'</a>'; ?>
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>

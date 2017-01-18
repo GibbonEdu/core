@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     } else {
         try {
             $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>				
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_editProcess.php?gibbonCourseID='.$row['gibbonCourseID'] ?>">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 					</td>
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Learning Area') ?></b><br/>
 					</td>
 					<td class="right">
@@ -114,12 +114,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 									echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
 								}
 							}
-							?>				
+							?>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Must be unique for this school year.') ?></span>
 					</td>
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Order') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>
 					</td>
@@ -158,18 +158,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					</td>
 				</tr>
 				<tr>
-					<td colspan=2> 
-						<b><?php echo __($guid, 'Blurb') ?></b> 
+					<td colspan=2>
+						<b><?php echo __($guid, 'Blurb') ?></b>
 						<?php echo getEditor($guid,  true, 'description', $row['description'], 20) ?>
 					</td>
 				</tr>
+                <tr>
+                    <td>
+                        <b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+                        <span class="emphasis small"></span>
+                    </td>
+                    <td class="right">
+                        <select name="map" id="map" class="standardWidth">
+                            <option <?php if ($row['map'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+                            <option <?php if ($row['map'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+                        </select>
+                    </td>
+                </tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Enrolable year groups.') ?></span>
 					</td>
 					<td class="right">
-						<?php 
+						<?php
                         $yearGroups = getYearGroups($connection2);
 						if ($yearGroups == '') {
 							echo '<i>'.__($guid, 'No year groups available.').'</i>';
@@ -263,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     echo '<td>';
                     try {
                         $dataClasses = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
-                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status=\'Full\' AND gibbonCourseClassID=:gibbonCourseClassID';
                         $resultClasses = $connection2->prepare($sqlClasses);
                         $resultClasses->execute($dataClasses);
                     } catch (PDOException $e) {

@@ -35,7 +35,24 @@ class markbookColumn
 	 * @var array
 	 */
 	protected $data = array();
+
+	/**
+	 * A count of the number of columns, so header can be spanned correctly
+	 * @var int
+	 */
 	protected $spanCount;
+
+	/**
+	 * Y/N to enable/disable effort in column
+	 * @var string
+	 */
+	protected $enableEffort = '';
+
+	/**
+	 * Y/N to enable/disable rubrics in column
+	 * @var string
+	 */
+	protected $enableRubrics = '';
 
 	/**
      * Constructor
@@ -44,17 +61,22 @@ class markbookColumn
      * @version  3rd May 2016
      * @since    3rd May 2016
      * @param    array  SQL Data Row
+     * @param    Y/N value to enable/disable effort
+     * @param    Y/N value to enable/disable rubrics
      * @return   void
      */
-    public function __construct( $row )
+    public function __construct( $row, $enableEffort, $enableRubrics )
     {
     	$this->gibbonMarkbookColumnID = $row['gibbonMarkbookColumnID'];
 
     	$this->data = $row;
     	$this->spanCount = 0;
 
+		$this->enableEffort = $enableEffort;
+		$this->enableRubrics = $enableRubrics;
+
     	if ( $this->displayAttainment() ) $this->spanCount++;
-    	if ( $this->displayEffort() ) $this->spanCount++;
+		if ( $this->displayEffort() ) $this->spanCount++;
     	if ( $this->displayComment() ) $this->spanCount++;
     	if ( $this->displayUploadedResponse() ) $this->spanCount++;
     	if ( $this->displaySubmission() ) $this->spanCount++;
@@ -64,7 +86,7 @@ class markbookColumn
     /**
      * Get Data
      * Returns field data from the column's row
-     * 
+     *
      * @version 4th May 2016
      * @since   4th May 2016
      * @param   string  $key
@@ -92,10 +114,11 @@ class markbookColumn
      * Display Effort
      * @version 4th May 2016
      * @since   4th May 2016
+	 * @param Y/N to enable/disable effort
      * @return  bool
      */
     public function displayEffort() {
-    	if (isset($this->data['effort'])) {
+		if (isset($this->data['effort']) and $this->enableEffort == 'Y') {
     		return ( $this->data['effort'] == 'Y' && ($this->hasEffortGrade() || $this->hasEffortRubric()) );
     	} else {
     		return false;
@@ -169,11 +192,11 @@ class markbookColumn
      * @return  bool
      */
     public function hasAttainmentRubric() {
-    	return (isset($this->data['gibbonRubricIDAttainment']))? !empty($this->data['gibbonRubricIDAttainment']) : false;
+    	return (isset($this->data['gibbonRubricIDAttainment']) and $this->enableRubrics == 'Y')? !empty($this->data['gibbonRubricIDAttainment']) : false;
     }
 
     /**
-     * Ha sAttainment Weighting
+     * Has Attainment Weighting
      * @version 4th May 2016
      * @since   4th May 2016
      * @return  bool
@@ -199,7 +222,7 @@ class markbookColumn
      * @return  bool
      */
     public function hasEffortRubric() {
-    	return (isset($this->data['gibbonRubricIDEffort']))? !empty($this->data['gibbonRubricIDEffort']) : false;
+    	return (isset($this->data['gibbonRubricIDEffort']) and $this->enableRubrics == 'Y')? !empty($this->data['gibbonRubricIDEffort']) : false;
     }
 
     /**
@@ -231,7 +254,7 @@ class markbookColumn
      */
     public function setSubmissionDetails( $row ) {
     	if (empty($row)) return false;
-    	
+
     	$this->data['lessonDate'] = (isset($row['date']))? $row['date'] : '';
     	$this->data['homeworkDueDateTime'] = (isset($row['homeworkDueDateTime']))? $row['homeworkDueDateTime'] : '';
     	$this->data['homeworkSubmissionRequired'] = (isset($row['homeworkSubmissionRequired']))? $row['homeworkSubmissionRequired'] : '';

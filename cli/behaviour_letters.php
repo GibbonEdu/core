@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
-require getcwd().'/../lib/PHPMailer/class.phpmailer.php';
+require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -254,7 +254,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     $gibbonBehaviourLetterID = $connection2->lastInsertID();
 
                                     //Notify tutor(s)
-                                    $notificationText = sprintf(___($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
                                     if ($row['gibbonPersonIDTutor'] != '') {
                                         setNotification($connection2, $guid, $row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
@@ -266,7 +266,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     }
 
                                     //Notify teachers
-                                    $notificationText = sprintf(___($guid, 'A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
                                     try {
                                         $dataTeachers = array('gibbonPersonID' => $row['gibbonPersonID']);
                                         $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
@@ -331,8 +331,9 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     //Prep message
                                     $body .= '<br/><br/><i>'.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
                                     $bodyPlain = emailBodyConvert($body);
-                                    
-                                    $mail = new PHPMailer();
+
+                                    $mail = getGibbonMailer($guid);
+                                    $mail->IsSMTP();
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {
                                         $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);

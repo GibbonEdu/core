@@ -289,11 +289,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $output .= "$('div.historical').css('display','none');";
 
                 $output .= "$('#type').change(function(){";
-                $output .= "if ($('select.type option:selected').val()=='Current' ) {";
+                $output .= "if ($('#type').val()=='Current' ) {";
                 $output .= "$('div.historical').css('display','none');";
                 $output .= "$('div.currentView').css('display','block');";
                 $output .= '} ';
-                $output .= "else if ($('select.type option:selected').val()=='Historical' ) {";
+                $output .= "else if ($('#type').val()=='Historical' ) {";
                 $output .= "$('div.currentView').css('display','none');";
                 $output .= "$('div.historical').css('display','block');";
                 $output .= '}';

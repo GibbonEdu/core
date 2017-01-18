@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_dataUpdaterHistory.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_IDCards.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
-					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
+					<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
 						<optgroup label='--<?php echo __($guid, 'Students by Roll Group') ?>--'>
 							<?php
                             try {

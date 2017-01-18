@@ -42,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     header("Location: {$URL}");
 } else {
     $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+    $noteCreationNotification = getSettingByScope($connection2, 'Students', 'noteCreationNotification');
+
     if ($enableStudentNotes != 'Y') {
         $URL .= '&return=error0';
         header("Location: {$URL}");
@@ -95,37 +97,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         exit();
                     }
 
-                    //Attempt to alert form tutor(s)
+                    //Attempt to issue alerts form tutor(s) and teacher(s) accornding to settings
                     if ($status == 'Full') {
-                        try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sql = "SELECT tutor1.gibbonPersonID AS tutor1gibbonPersonID, tutor2.gibbonPersonID AS tutor2gibbonPersonID, tutor3.gibbonPersonID AS tutor3gibbonPersonID 
-								FROM gibbonStudentEnrolment 
-								JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
-								LEFT JOIN gibbonPerson AS tutor1 ON (tutor1.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor AND tutor1.status='Full') 
-								LEFT JOIN gibbonPerson AS tutor2 ON (tutor2.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 AND tutor2.status='Full') 
-								LEFT JOIN gibbonPerson AS tutor3 ON (tutor3.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor3 AND tutor3.status='Full') 
-								WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
+                        $notify = array();
+                        $notifyCount = 0;
+
+                        if ($noteCreationNotification == 'Tutors' or $noteCreationNotification == 'Tutors & Teachers') {
+                            try {
+                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                $sql = "SELECT gibbonPerson.gibbonPersonID
+    								FROM gibbonStudentEnrolment
+    								JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+    								LEFT JOIN gibbonPerson ON ((gibbonPerson.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor AND gibbonPerson.status='Full') OR (gibbonPerson.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 AND gibbonPerson.status='Full') OR (gibbonPerson.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor3 AND gibbonPerson.status='Full'))
+    								WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) { print $e->getMessage(); }
+                            while ($row = $result->fetch()) {
+                                $notify[$notifyCount] = $row['gibbonPersonID'];
+                                $notifyCount ++;
+                            }
+
                         }
-                        if ($result->rowCount() == 1) {
-                            $row = $result->fetch();
+                        if ($noteCreationNotification == 'Tutors & Teachers') {
+                            try {
+                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                $sql = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) { }
+                            while ($row = $result->fetch()) {
+                                $notify[$notifyCount] = $row['gibbonPersonID'];
+                                $notifyCount ++;
+                            }
+                        }
+                        $notify = array_unique($notify) ;
+
+                        if (count($notify > 0)) {
                             $notificationText = sprintf(__($guid, 'Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name);
-                            if ($row['tutor1gibbonPersonID'] != '') {
-                                if ($row['tutor1gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $row['tutor1gibbonPersonID'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
-                                }
-                            }
-                            if ($row['tutor2gibbonPersonID'] != '') {
-                                if ($row['tutor2gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $row['tutor2gibbonPersonID'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
-                                }
-                            }
-                            if ($row['tutor3gibbonPersonID'] != '') {
-                                if ($row['tutor3gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $row['tutor3gibbonPersonID'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
+                            foreach ($notify AS $gibbonPersonIDNotify) {
+                                if ($gibbonPersonIDNotify != $_SESSION[$guid]['gibbonPersonID']) {
+                                    setNotification($connection2, $guid, $gibbonPersonIDNotify, $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
                                 }
                             }
                         }

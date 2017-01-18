@@ -75,8 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 				echo '</td>';
 				echo '</tr>';
 			} else {
-				$externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
-				while ($row = $result->fetch()) {
+                $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
+                $externalAssessmentDataPoints = is_array($externalAssessmentDataPoints) ? $externalAssessmentDataPoints : array() ;
+                while ($row = $result->fetch()) {
 					?>
 						<tr>
 							<td>
@@ -111,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 
 			<tr class='break'>
 				<td colspan=2>
-					<h3><?php echo __($guid, 'Data Points').' - '.__($guid, 'Interal Assessment') ?></h3>
+					<h3><?php echo __($guid, 'Data Points').' - '.__($guid, 'Internal Assessment') ?></h3>
 					<?php echo __($guid, 'Use the options below to select the internal assessments that you wish to include in your Data Points export.').' '.__($guid, 'If duplicates of any assessment exist, only the most recent entry will be shown.') /*. " " . __($guid, 'Year 13 settings will be applied to recent grauates, who will be shown in the Last Graduating Cohort tab in the export.')*/ ; ?>
 					</td>
 				</tr>
@@ -122,7 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 					<?php
                     $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
 					$internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
-					foreach ($internalAssessmentTypes as $internalAssessmentType) {
+                    $internalAssessmentDataPoints = is_array($internalAssessmentDataPoints) ? $internalAssessmentDataPoints : array() ;
+                    foreach ($internalAssessmentTypes as $internalAssessmentType) {
 						?>
 						<tr>
 							<td>

@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         //Check if school year specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
-        if ($gibbonBehaviourID == 'Y') {
+        if ($gibbonBehaviourID == '') {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
             echo '</div>';
@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $row = $result->fetch();
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/behaviour_manage_editProcess.php?gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'] ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Student') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Date') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 									echo 'dd/mm/yyyy';
@@ -128,9 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 								<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row['date']) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
-					
+
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Type') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 								<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php echo __($guid, $row['type']) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
-						
+
 						<?php
                         if ($enableDescriptors == 'Y') {
                             $options = array();
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             if (count($options) > 0) {
                                 ?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Descriptor') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             }
                         }
                			 ?>
-						
+
 						<?php
                         if ($enableLevels == 'Y') {
                             try {
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                     $optionsLevels = explode(',', $optionsLevels);
                                     ?>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Level') ?> *</b><br/>
 											<span class="emphasis small"></span>
 										</td>
@@ -262,19 +262,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 							});
 						</script>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<b><?php echo __($guid, 'Incident') ?></b><br/>
 								<textarea name="comment" id="comment" rows=8 style="width: 100%"><?php echo htmlPrep($row['comment']) ?></textarea>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<b><?php echo __($guid, 'Follow Up') ?></b><br/>
 								<textarea name="followup" id="followup" rows=8 style="width: 100%"><?php echo htmlPrep($row['followup']) ?></textarea>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Link To Lesson?') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'From last 30 days') ?></span>
 							</td>
@@ -323,11 +323,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 											echo "<option $selected value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' - '.htmlPrep($rowSelect['lesson'])."$submission</option>";
 										}
 									}
-									?>			
+									?>
 								</select>
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

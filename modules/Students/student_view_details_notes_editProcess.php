@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             echo 'Fatal error loading this page!';
         } else {
             try {
-                $data = array('gibbonStudentNoteID' => $gibbonStudentNoteID);
-                $sql = 'SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID';
+                $data = array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = 'SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID AND gibbonPersonIDCreator=:gibbonPersonIDCreator';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -67,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $row = $result->fetch();
                 //Validate Inputs
                 $title = $_POST['title'];
                 $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'];
@@ -90,6 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         header("Location: {$URL}");
                         exit();
                     }
+
+                    //Attempt to write logo
+                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $row['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
 
                     $URL .= '&return=success0';
                     header("Location: {$URL}");

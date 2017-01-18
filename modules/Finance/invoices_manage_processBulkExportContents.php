@@ -211,10 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			}
 			$x = '';
 			if (! $feeError) {
-				if (substr($_SESSION[$guid]["currency"],4)!="") {
-					$x .= substr($_SESSION[$guid]["currency"],4) . " " ;
-				}
-				$x .= number_format($totalFee, 2, ".", ",") ;
+				$x .= number_format($totalFee, 2, ".", "") ;
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, $x);
 			}
             $excel->getActiveSheet()->getStyleByColumnAndRow(8, $r)->applyFromArray($style_border);
@@ -231,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 $excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, '');
             $excel->getActiveSheet()->getStyleByColumnAndRow(11, $r)->applyFromArray($style_border);
 			//Column M
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ","));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ""));
             $excel->getActiveSheet()->getStyleByColumnAndRow(12, $r)->applyFromArray($style_border);
 			$r++;
 		}

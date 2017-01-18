@@ -28,7 +28,7 @@ foreach ($includes AS $include) {
 	}
 }
 if ($included==FALSE) {
-	include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+	include_once "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 }
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
@@ -293,65 +293,68 @@ else {
 					</td>
 				</tr>
 				<?php
-				try {
-					$dataSelect=array();
-					$sqlSelect="SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject" ;
-					$resultSelect=$connection2->prepare($sqlSelect);
-					$resultSelect->execute($dataSelect);
-				}
-				catch(PDOException $e) { }
-				if ($resultSelect->rowCount()>0) {
-					$cannedResponses=$resultSelect->fetchAll() ;
+				$cannedResponse = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", 'New Message_cannedResponse');
+				if ($cannedResponse) {
+					try {
+						$dataSelect=array();
+						$sqlSelect="SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject" ;
+						$resultSelect=$connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					}
+					catch(PDOException $e) { }
+					if ($resultSelect->rowCount()>0) {
+						$cannedResponses=$resultSelect->fetchAll() ;
 
-					//Set up JS to deal with canned response selection
-					$signature=getSignature($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
-					print "<script type=\"text/javascript\">" ;
-						print "$(document).ready(function(){" ;
-							print "$(\"#cannedResponse\").change(function(){" ;
-								print "if (confirm(\"Are you sure you want to insert these records.\")==1) {" ;
-									print "if ($('#cannedResponse option:selected').val()==\"\" ) {" ;
-										print "$('#subject').val('');" ;
-										print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-										print "$('#body').val('" . addSlashes($signature) . "');" ;
-										print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
-									print "}" ;
-									foreach ($cannedResponses AS $rowSelect) {
-										print "if ($('#cannedResponse option:selected').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
-											print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
+						//Set up JS to deal with canned response selection
+						$signature=getSignature($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
+						print "<script type=\"text/javascript\">" ;
+							print "$(document).ready(function(){" ;
+								print "$(\"#cannedResponse\").change(function(){" ;
+									print "if (confirm(\"Are you sure you want to insert these records.\")==1) {" ;
+										print "if ($('#cannedResponse').val()==\"\" ) {" ;
+											print "$('#subject').val('');" ;
 											print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-											print "
-												$.get('./modules/Messenger/messenger_post_ajax.php?gibbonMessengerCannedResponseID=" . $rowSelect["gibbonMessengerCannedResponseID"] . "', function(response) {
-													 var result = response;
-													$('#body').val(result + '" . addSlashes($signature) . "');
-													tinyMCE.execCommand('mceAddEditor', false, 'body') ;
-												});
-											" ;
+											print "$('#body').val('" . addSlashes($signature) . "');" ;
+											print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
 										print "}" ;
-									}
-								print "}" ;
-								print "else {" ;
-									print "$('#cannedResponse').val('')" ;
-								print "}" ;
+										foreach ($cannedResponses AS $rowSelect) {
+											print "if ($('#cannedResponse').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
+												print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
+												print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
+												print "
+													$.get('./modules/Messenger/messenger_post_ajax.php?gibbonMessengerCannedResponseID=" . $rowSelect["gibbonMessengerCannedResponseID"] . "', function(response) {
+														 var result = response;
+														$('#body').val(result + '" . addSlashes($signature) . "');
+														tinyMCE.execCommand('mceAddEditor', false, 'body') ;
+													});
+												" ;
+											print "}" ;
+										}
+									print "}" ;
+									print "else {" ;
+										print "$('#cannedResponse').val('')" ;
+									print "}" ;
+								print "});" ;
 							print "});" ;
-						print "});" ;
-					print "</script>" ;
-					?>
-					<tr>
-						<td>
-							<b><?php print __($guid, 'Canned Response') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="cannedResponse" id="cannedResponse" style="width: 302px">
-								<option value=''></option>
-								<?php
-								foreach ($cannedResponses AS $rowSelect) {
-									print "<option value='" . $rowSelect["gibbonMessengerCannedResponseID"] . "'>" . $rowSelect["subject"] . "</option>" ;
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<?php
+						print "</script>" ;
+						?>
+						<tr>
+							<td>
+								<b><?php print __($guid, 'Canned Response') ?></b><br/>
+							</td>
+							<td class="right">
+								<select name="cannedResponse" id="cannedResponse" style="width: 302px">
+									<option value=''></option>
+									<?php
+									foreach ($cannedResponses AS $rowSelect) {
+										print "<option value='" . $rowSelect["gibbonMessengerCannedResponseID"] . "'>" . $rowSelect["subject"] . "</option>" ;
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<?php
+					}
 				}
 				?>
 
@@ -361,7 +364,7 @@ else {
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
-						<input name="subject" id="subject" maxlength=30 value="" type="text" style="width: 300px">
+						<input name="subject" id="subject" maxlength=60 value="" type="text" style="width: 300px">
 						<script type="text/javascript">
 							var subject=new LiveValidation('subject');
 							subject.add(Validate.Presence);
@@ -379,6 +382,58 @@ else {
 					</td>
 				</tr>
 
+				<?php
+				if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
+					echo '<input type="hidden" name="emailReceipt" value="N"/>';
+				}
+				else{
+					?>
+					<tr class='break'>
+						<td colspan=2>
+							<h3><?php print __($guid, 'Email Read Receipts') ?></h3>
+							<p><?php print __($guid, 'With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.') ?></p>
+						</td>
+					</tr>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$("#receiptRow").css("display","none");
+							emailReceiptText.disable() ;
+							$(".emailReceipt").click(function(){
+								if ($('input[name=emailReceipt]:checked').val()=="Y" ) {
+									$("#receiptRow").slideDown("fast", $("#receiptRow").css("display","table-row"));
+									emailReceiptText.enable() ;
+								} else {
+									$("#receiptRow").css("display","none");
+									emailReceiptText.disable() ;
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td style='width: 275px'>
+							<b><?php print __($guid, 'Enable Read Receipts') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Each email recipient will receive a personalised confirmation link.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="emailReceipt" class="emailReceipt" value="Y"/> <?php print __($guid, 'Yes') ?>
+							<input checked type="radio" name="emailReceipt" class="emailReceipt" value="N"/> <?php print __($guid, 'No') ?>
+						</td>
+					</tr>
+					<tr id="receiptRow">
+						<td>
+							<b><?php print __($guid, 'Link Text') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Confirmation link text to display to recipient.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<textarea name="emailReceiptText" id="emailReceiptText" rows=4 class="standardWidth"><?php echo __($guid, 'By clicking on this link I agree that I have read, and agree to, the text contained within this email.') ?></textarea>
+							<script type="text/javascript">
+								var emailReceiptText=new LiveValidation('emailReceiptText');
+								emailReceiptText.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<?php
+				} ?>
 				<tr class='break'>
 					<td colspan=2>
 						<h3><?php print __($guid, 'Targets') ?></h3>
@@ -1265,18 +1320,31 @@ else {
 								// Get all possible attendance statuses
 								try {
 									$dataSelect=array();
-									$sqlSelect="SHOW COLUMNS FROM gibbonAttendanceLogPerson WHERE FIELD='type'" ;
+									$sqlSelect="SELECT name, gibbonRoleIDAll FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY direction DESC, sequenceNumber ASC, name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) {}
-								if ($resultSelect->rowCount()==1) {
+
+
+								if ($resultSelect->rowCount()>0) {
 										// Extract status strings
-										$rowSelect = $resultSelect->fetch();
-										$statusStr = $rowSelect["Type"];
-										$statusStr=explode(',', substr(str_replace("'", "", $statusStr), 5, -1));
-										foreach($statusStr as $status) {
-											print "<option value='" . $status . "'" . ($status === 'Absent' ? ' selected' : '') . ">" . htmlPrep(__($guid, $status)) . "</option>";
+										while ($rowSelect = $resultSelect->fetch()) {
+
+											// Check if a role is restricted - blank for unrestricted use
+							                if ( !empty($rowSelect['gibbonRoleIDAll']) ) {
+							                    $allowAttendanceType = false;
+							                    $rolesAllowed = explode(',', $rowSelect['gibbonRoleIDAll']);
+
+							                    foreach ($rolesAllowed as $role) {
+							                        if ( $role == $_SESSION[$guid]['gibbonRoleIDCurrent'] ) {
+							                            $allowAttendanceType = true;
+							                        }
+							                    }
+							                    if ($allowAttendanceType == false) continue; // Skip this type, continue the loop
+							                }
+
+											print "<option value='" . $rowSelect['name'] . "'" . ($rowSelect['name'] === 'Absent' ? ' selected' : '') . ">" . htmlPrep(__($guid, $rowSelect['name'])) . "</option>";
 										}
 								}
 								?>

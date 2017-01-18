@@ -22,7 +22,7 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 $URL="index.php" ;
 
-require_once ('google-api-php-client/src/Google/autoload.php');
+require_once ('google-api-php-client/vendor/autoload.php');
 
 //Cleint ID and Secret
 $client_id = getSettingByScope($connection2, "System", "googleClientID" ) ;
@@ -44,9 +44,10 @@ $client = new Google_Client();
 $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
-//$client->addScope("email");
-//$client->addScope("profile");
-$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
+$client->setAccessType('offline');
+$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/plus.me',
+    'https://www.googleapis.com/auth/calendar')); // set scope during user login
 
 /************************************************
   When we create the service here, we pass the
@@ -111,6 +112,7 @@ if (isset($authUrl)){
 		$_SESSION[$guid]=NULL ;
 		$URL="../../index.php?loginReturn=fail8" ;
 		header("Location: {$URL}");
+		exit;
 	}
 	//Start to collect User Info and test
 	try {
@@ -151,6 +153,7 @@ if (isset($authUrl)){
 
 			$URL.="?loginReturn=fail6" ;
 			header("Location: {$URL}");
+			exit;
 		}
 		if ($row["passwordForceReset"]=="Y") {
 			$salt=getSalt() ;
@@ -179,41 +182,11 @@ if (isset($authUrl)){
 			//FAILED TO SET ROLES
 			$URL.="?loginReturn=fail2" ;
 			header("Location: {$URL}");
+			exit;
 		}
-		$_SESSION[$guid]["username"]=$username ;
-		$_SESSION[$guid]["email"]=$email ;
-		$_SESSION[$guid]["passwordStrong"]=$row["passwordStrong"] ;
-		$_SESSION[$guid]["passwordStrongSalt"]=$row["passwordStrongSalt"] ;
-		$_SESSION[$guid]["passwordForceReset"]=$row["passwordForceReset"] ;
-		$_SESSION[$guid]["gibbonPersonID"]=$row["gibbonPersonID"] ;
-		$_SESSION[$guid]["surname"]=$row["surname"] ;
-		$_SESSION[$guid]["firstName"]=$row["firstName"] ;
-		$_SESSION[$guid]["preferredName"]=$row["preferredName"] ;
-		$_SESSION[$guid]["officialName"]=$row["officialName"] ;
-		$_SESSION[$guid]["email"]=$row["email"] ;
-		$_SESSION[$guid]["emailAlternate"]=$row["emailAlternate"] ;
-		$_SESSION[$guid]["website"]=$row["website"] ;
-		$_SESSION[$guid]["gender"]=$row["gender"] ;
-		$_SESSION[$guid]["status"]=$row["status"] ;
-		$_SESSION[$guid]["gibbonRoleIDPrimary"]=$row["gibbonRoleIDPrimary"] ;
-		$_SESSION[$guid]["gibbonRoleIDCurrent"]=$row["gibbonRoleIDPrimary"] ;
-		$_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2)  ;
-		$_SESSION[$guid]["gibbonRoleIDAll"]=getRoleList($row["gibbonRoleIDAll"], $connection2) ;
-		$_SESSION[$guid]["image_240"]=$row["image_240"] ;
-		$_SESSION[$guid]["lastTimestamp"]=$row["lastTimestamp"] ;
-		$_SESSION[$guid]["calendarFeedPersonal"]=$row["calendarFeedPersonal"] ;
-		$_SESSION[$guid]["viewCalendarSchool"]=$row["viewCalendarSchool"] ;
-		$_SESSION[$guid]["viewCalendarPersonal"]=$row["viewCalendarPersonal"] ;
-		$_SESSION[$guid]["viewCalendarSpaceBooking"]=$row["viewCalendarSpaceBooking"] ;
-		$_SESSION[$guid]["dateStart"]=$row["dateStart"] ;
-		$_SESSION[$guid]["personalBackground"]=$row["personalBackground"] ;
-		$_SESSION[$guid]["messengerLastBubble"]=$row["messengerLastBubble"] ;
-		$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
-		$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
-		$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
-		$_SESSION[$guid]['receiveNotificationEmails']=$row["receiveNotificationEmails"] ;
-		$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
-
+		
+		//USER EXISTS, SET SESSION VARIABLES
+		$gibbon->session->createUserSession($username, $row);
 
 		//If user has personal language set, load it to session variable.
 		if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
@@ -260,6 +233,7 @@ if (isset($authUrl)){
 			$URL="../../index.php?loginReturn=fail8" ;
 		}
 		header("Location: {$URL}");
+		exit;
 
 
 		}
@@ -277,6 +251,7 @@ if (isset($_GET['logout'])) {
 
   session_destroy();
   header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before
+  exit;
   //NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function
 }
 }

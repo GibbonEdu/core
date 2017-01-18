@@ -108,8 +108,6 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 $demoData = $_POST['demoData'];
                             }
 
-                            echo '<h2>'.sprintf(__($guid, 'Installation - Step %1$s'), ($step + 1)).'</h2>';
-
                             //Set language
                             $code = 'en_GB';
                             if (isset($_POST['code'])) {
@@ -119,6 +117,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             setlocale(LC_ALL, $code);
                             bindtextdomain('gibbon', '../i18n');
                             textdomain('gibbon');
+
+                            echo '<h2>'.sprintf(__($guid, 'Installation - Step %1$s'), ($step + 1)).'</h2>';
 
                             if ($step == 0) { //Choose language
                                 if (file_exists('../config.php')) { //Make sure system is not already installed
@@ -135,20 +135,81 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                         echo __($guid, 'The directory containing the Gibbon files is writable, so the installation may proceed.');
                                         echo '</div>';
 
+                                        $trueIcon = "<img title='" . __($guid, 'Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
+										$falseIcon = "<img title='" . __($guid, 'No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+
+										$versionTitle = __($guid, '%s Version');
+										$versionMessage = __($guid, '%s requires %s version %s or higher');
+
+										$phpVersion = phpversion();
+
+										$phpRequirement = $gibbon->getSystemRequirement('php');
+										$extensions = $gibbon->getSystemRequirement('extensions');
+
                                         //Set language options
                                         ?>
 										<form method="post" action="./install.php?step=1&guid=<?php echo $guid ?>">
 											<table class='smallIntBorder fullWidth' cellspacing='0'>
 												<tr class='break'>
-													<td colspan=2>
-														<h3><?php echo 'Language Settings' ?></h3>
+													<td colspan=3>
+														<h3><?php echo __($guid, 'System Requirements') ?></h3>
 													</td>
 												</tr>
 												<tr>
-													<td style='width: 275px'>
-														<b><?php echo 'System Language' ?> *</b><br/>
+													<td>
+														<b><?php printf($versionTitle, 'PHP'); ?></b><br/>
+														<span class="emphasis small">
+															<?php printf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement ); ?>
+														</span>
+													</td>
+													<td style="width:60px;padding-left:10px!important;">
+														<b><?php echo $phpVersion; ?></b>
+													</td>
+													<td class="right" style="width:60px;">
+														<?php echo (version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon; ?>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b><?php echo __($guid, 'MySQL PDO Support'); ?></b><br/>
+													</td>
+													<td style="padding-left:10px!important;">
+														<?php echo (@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
 													</td>
 													<td class="right">
+														<?php echo (@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon; ?>
+													</td>
+												</tr>
+												<?php 
+										            if (!empty($extensions) && is_array($extensions)) {
+										                foreach ($extensions as $extension) { 
+										                    $installed = @extension_loaded($extension);
+										                    ?>
+										                    <tr>
+										                        <td>
+										                            <b><?php echo __($guid, 'Extension').' '. $extension; ?></b><br/>
+										                        </td>
+										                        <td style="padding-left:10px!important;">
+										                            <?php echo ($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
+										                        </td>
+										                        <td colspan=2 class="right">
+										                            <?php echo ($installed)? $trueIcon : $falseIcon; ?>
+										                        </td>
+										                    </tr>
+										                    <?php
+										                }
+										            }
+										        ?>
+												<tr class='break'>
+													<td colspan=3>
+														<h3><?php echo __($guid, 'Language Settings') ?></h3>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b><?php echo __($guid, 'System Language') ?> *</b><br/>
+													</td>
+													<td colspan=2 class="right" style='width: 275px'>
 														<select name="code" id="code" class="standardWidth">
 															<option value='nl_NL'>Dutch - Nederland</option>
 															<option selected value='en_GB'>English - United Kingdom</option>
@@ -166,7 +227,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 													<td>
 														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 													</td>
-													<td class="right">
+													<td colspan=2 class="right">
 														<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 													</td>
 												</tr>
@@ -526,7 +587,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 															</td>
 															<td class="right">
 																<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
-																<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
+																<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" class="standardWidth"><br/>
 
 																<script type="text/javascript">
 																	var passwordNew=new LiveValidation('passwordNew');
@@ -573,7 +634,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																<span class="emphasis small"></span>
 															</td>
 															<td class="right">
-																<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
+																<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" class="standardWidth">
 																<script type="text/javascript">
 																	var passwordConfirm=new LiveValidation('passwordConfirm');
 																	passwordConfirm.add(Validate.Presence);
@@ -907,7 +968,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																<optgroup label='--<?php echo __($guid, 'OTHERS') ?>--'/>
 																	<option value='BDT ó'>Bangladeshi Taka (ó)</option>
 																	<option value='BTC'>Bitcoin</option>
-																	<option value='XAF FCFA'>Central African Francs (FCFA)</option>
+                                                                    <option value='BGN лв.'>Bulgarian Lev (лв.)</option>
+                                        							<option value='XAF FCFA'>Central African Francs (FCFA)</option>
 																	<option value='EGP £'>Egyptian Pound (£)</option>
 																	<option value='GHS GH₵'>Ghanaian Cedi (GH₵)</option>
 																	<option value='INR ₹'>Indian Rupee (₹)</option>
@@ -916,7 +978,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																	<option value='KES KSh'>Kenyan Shilling (KSh)</option>
 																	<option value='MOP MOP$'>Macanese Pataca (MOP$)</option>
                                         							<option value='MMK K'>Myanmar Kyat (K)</option>
-																	<option value='NPR ₨'>Nepalese Rupee (₨)</option>
+                                                                    <option value='NAD N$'>Namibian Dollar (N$)</option>
+                                        							<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																	<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																	<option value='PKR ₨'>Pakistani Rupee (₨)</option>
 																	<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
@@ -1053,48 +1116,6 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																</script>
 															</td>
 														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-															</td>
-															<td class="right">
-																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-																	<?php
-                                                                    echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-																	try {
-																		$dataSelect = array();
-																		$sqlSelect = "SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name";
-																		$resultSelect = $connection2->prepare($sqlSelect);
-																		$resultSelect->execute($dataSelect);
-																	} catch (PDOException $e) {
-																		echo "<div class='error'>".$e->getMessage().'</div>';
-																	}
-																	while ($rowSelect = $resultSelect->fetch()) {
-																		echo "<option value='".$rowSelect['gibbonScaleID']."'>".__($guid, $rowSelect['name']).'</option>';
-																	}
-																	?>
-																</select>
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-																</script>
-															</td>
-														</tr>
 
 														<tr>
 															<td>
@@ -1149,14 +1170,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $currency = $_POST['currency'];
                                     $timezone = $_POST['timezone'];
                                     $country = $_POST['country'];
-                                    $primaryAssessmentScale = $_POST['primaryAssessmentScale'];
                                     $installType = $_POST['installType'];
                                     $statsCollection = $_POST['statsCollection'];
                                     $cuttingEdgeCode = $_POST['cuttingEdgeCode'];
                                     $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
                                     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
 
-                                    if ($surname == '' or $firstName == '' or $preferredName == '' or $email == '' or $username == '' or $password == '' or $passwordConfirm == '' or $email == '' or $absoluteURL == '' or $absolutePath == '' or $systemName == '' or $organisationName == '' or $organisationNameShort == '' or $timezone == '' or $country == '' or $primaryAssessmentScale == '' or $installType == '' or $statsCollection == '' or $cuttingEdgeCode == '') {
+                                    if ($surname == '' or $firstName == '' or $preferredName == '' or $email == '' or $username == '' or $password == '' or $passwordConfirm == '' or $email == '' or $absoluteURL == '' or $absolutePath == '' or $systemName == '' or $organisationName == '' or $organisationNameShort == '' or $timezone == '' or $country == '' or $installType == '' or $statsCollection == '' or $cuttingEdgeCode == '') {
                                         echo "<div class='error'>";
                                         echo __($guid, 'Some required fields have not been set, and so installation cannot proceed.');
                                         echo '</div>';
@@ -1186,7 +1206,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                             try {
                                                 $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
-                                                $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
+                                                $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching', smartWorkflowHelp='Y'";
                                                 $resultStaff = $connection2->prepare($sqlStaff);
                                                 $resultStaff->execute($dataStaff);
                                             } catch (PDOException $e) {
@@ -1233,6 +1253,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 try {
                                                     $data = array('organisationNameShort' => $organisationNameShort);
                                                     $sql = "UPDATE gibbonSetting SET value=:organisationNameShort WHERE scope='System' AND name='organisationNameShort'";
+                                                    $result = $connection2->prepare($sql);
+                                                    $result->execute($data);
+                                                } catch (PDOException $e) {
+                                                    $settingsFail = true;
+                                                }
+
+                                                try {
+                                                    $data = array('organisationEmail' => $email); //Use user email as organisation email, initially
+                                                    $sql = "UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'";
                                                     $result = $connection2->prepare($sql);
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {
@@ -1314,15 +1343,6 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 try {
                                                     $data = array('timezone' => $timezone);
                                                     $sql = "UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'";
-                                                    $result = $connection2->prepare($sql);
-                                                    $result->execute($data);
-                                                } catch (PDOException $e) {
-                                                    $settingsFail = true;
-                                                }
-
-                                                try {
-                                                    $data = array('primaryAssessmentScale' => $primaryAssessmentScale);
-                                                    $sql = "UPDATE gibbonSetting SET value=:primaryAssessmentScale WHERE scope='System' AND name='primaryAssessmentScale'";
                                                     $result = $connection2->prepare($sql);
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {

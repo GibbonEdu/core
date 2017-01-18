@@ -20,13 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon;
 
 /**
- * CSV Generator
+ * Session Class
  *
- * @version	15th April 2016
- * @since	15th April 2016
- * @author	Craig Rayner
+ * Responsibilities:
+ * 		- User session
+ * 		- Persistance ($_SESSION)
+ * 		- Caching
+ *
+ * @version	v13
+ * @since	v12
  */
-class session
+class Session
 {
 	/**
 	 * string
@@ -34,134 +38,164 @@ class session
 	private	$guid ;
 
 	/**
-	 * string
+	 * Gibbon/sqlConnection
 	 */
-	private	$base ;
+	private	$pdo ;
 
 	/**
 	 * Construct
-	 *
-	 * @version	15th April 2016
-	 * @since	15th April 2016
-	 * @return	void
 	 */
-	public function __construct()
+	public function __construct( core $gibbon = null )
 	{
+		global $guid;
+
+		//Prevent breakage of back button on POST pages
+		ini_set('session.cache_limiter', 'private');
+		session_cache_limiter(false);
+
+		// Start the session (this should be the first time called)
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
-		//include GIBBON_ROOT . 'config.php';
-		//$this->guid = $guid;
+
+		$this->guid = (isset($gibbon))? $gibbon->guid() : $guid; // Backwards compatability for external modules
 	}
 
 	/**
-	 * get Value
+	 * Set Database Connection
+	 * @version  v13
+	 * @since    v13
+	 * @param    sqlConnection  $pdo
+	 */
+	public function setDatabaseConnection(sqlConnection $pdo) {
+		$this->pdo = $pdo;
+	}
+
+	/**
+	 * Return the guid string
+	 * TODO: Remove this
 	 *
-	 * @version	19th April 2016
-	 * @since	15th April 2016
+	 * @return	string
+	 */
+	public function guid() {
+		return $this->guid;
+	}
+
+	/**
+	 * Get Session Value
+	 *
 	 * @param	string	Session Value Name
-	 * @param	boolean	Use GUID (default = true)
+	 * @param	mixed	default Define a value to return if the variable is empty
+	 * 
 	 * @return	mixed
 	 */
-	public function get($name, $guid = true)
+	public function get($name, $default = null)
 	{
-		$guid = (boolean) $guid;
-		$steps = explode(',', $name);
-		foreach($steps as $q=>$w)
-			$steps[$q] = trim($w);
-		if (count($steps) === 1)
-		{
-			if ($guid)
-			{
-				if (isset($_SESSION[$this->guid][$name]))
-					return $_SESSION[$this->guid][$name] ;
-			}
-			else
-				if (isset($_SESSION[$name]))
-					return $_SESSION[$name] ;
+		return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
+	}
+
+	/**
+	 * Set Session Value
+	 *
+	 * @param	string	Session Value Name
+	 * @param	mixed	Session Value
+	 * 
+	 * @return	object	Gibbon\session
+	 */
+	public function set($name, $value)
+	{
+		$_SESSION[$this->guid][$name] = $value ;
+
+		return $this;
+	}
+
+	/**
+	 * Set Multiple Session Values
+	 *
+	 * @param	array	Array of name => value pairs
+	 * 
+	 * @return	object	Gibbon\session
+	 */
+	public function setAll( array $values )
+	{
+		foreach ($values as $name => $value) {
+			$this->set($name, $value);
+		}
+
+		return $this;
+	}
+
+	public function createUserSession($username, $userData) {
+
+		$this->set('username', $username);
+		$this->set('passwordStrong', $userData['passwordStrong']);
+		$this->set('passwordStrongSalt', $userData['passwordStrongSalt']);
+		$this->set('passwordForceReset', $userData['passwordForceReset']);
+		$this->set('gibbonPersonID', $userData['gibbonPersonID']);
+		$this->set('surname', $userData['surname']);
+		$this->set('firstName', $userData['firstName']);
+		$this->set('preferredName', $userData['preferredName']);
+		$this->set('officialName', $userData['officialName']);
+		$this->set('email', $userData['email']);
+		$this->set('emailAlternate', $userData['emailAlternate']);
+		$this->set('website', $userData['website']);
+		$this->set('gender', $userData['gender']);
+		$this->set('status', $userData['status']);
+		$this->set('gibbonRoleIDPrimary', $userData['gibbonRoleIDPrimary']);
+		$this->set('gibbonRoleIDCurrent', $userData['gibbonRoleIDPrimary']);
+		$this->set('gibbonRoleIDCurrentCategory', getRoleCategory($userData['gibbonRoleIDPrimary'], $this->pdo->getConnection()) );
+		$this->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $this->pdo->getConnection()) );
+		$this->set('image_240', $userData['image_240']);
+		$this->set('lastTimestamp', $userData['lastTimestamp']);
+		$this->set('calendarFeedPersonal', $userData['calendarFeedPersonal']);
+		$this->set('viewCalendarSchool', $userData['viewCalendarSchool']);
+		$this->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
+		$this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
+		$this->set('dateStart', $userData['dateStart']);
+		$this->set('personalBackground', $userData['personalBackground']);
+		$this->set('messengerLastBubble', $userData['messengerLastBubble']);
+		$this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
+		$this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
+		$this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
+		$this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
+		$this->set('gibbonHouseID', $userData['gibbonHouseID']);
+
+		// Cache FF actions on login
+        $this->cacheFastFinderActions($userData['gibbonRoleIDPrimary']);
+	}
+
+	/**
+	 * Cache translated FastFinder actions to allow searching actions with the current locale
+	 * @version  v13
+	 * @since    v13
+	 * @param    Gibbon/sqlConnection  $pdo
+	 */
+	public function cacheFastFinderActions($gibbonRoleIDCurrent) {
 		
-		}
-		else
-			if ($guid)
-				return $this->getSub($steps, $_SESSION[$this->guid][$steps[0]]);
-			else
-				return $this->getSub($steps, $_SESSION[$steps[0]]);
-		return NULL ;
-	}
+		// Get the accesible actions for the current user
+        $data = array( 'gibbonRoleID' => $gibbonRoleIDCurrent );
+        $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, gibbonModule.type, gibbonModule.name AS module
+                FROM gibbonModule
+                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                WHERE active='Y'
+                AND menuShow='Y'
+                AND gibbonPermission.gibbonRoleID=:gibbonRoleID
+                ORDER BY name";
+            
+        $result = $this->pdo->executeQuery($data, $sql);
 
-	/**
-	 * set Value
-	 *
-	 * @version	19th April 2016
-	 * @since	15th April 2016
-	 * @param	string	Session Value Name
-	 * @param	mixed	Session Value
-	 * @param	boolean	Use GUID (default = true)
-	 * @return	object	Gibbon\session
-	 */
-	public function set($name, $value, $guid = true)
-	{
-		$guid = (boolean) $guid ;
-		$this->base = NULL;
-		$steps = explode(',', $name);
-		foreach($steps as $q=>$w)
-			$steps[$q] = trim($w);
-			
-		if (count($steps) > 1)
-		{
-			$aValue = $this->setSub($steps, $this->get($steps[0]), $value);
-			return $this->set($this->base, $aValue);
-		}
-		else
-			if ($guid)
-				$_SESSION[$this->guid][$name] = $value ;
-			else
-				$_SESSION[$name] = $value ;
-		return $this ;
-	}
+        if ($result->rowCount() > 0) {
+            $actions = array();
 
-	/**
-	 * get Sub Value
-	 *
-	 * @version	15th April 2016
-	 * @since	15th April 2016
-	 * @param	array	Step Names
-	 * @param	array	Parent Value
-	 * @return	mixed
-	 */
-	private function getSub($steps, $parent)
-	{
-		array_shift($steps);
-		if (count($steps) === 1)
-		{
-			if (isset($parent[$steps[0]]))
-				return $parent[$steps[0]] ;
-		}
-		else
-			return $this->getSub($steps, $parent[$steps[0]]);
-		return NULL ;
-	}
+            // Translate the action names
+            while ($row = $result->fetch()) {
+                $row['name'] = __($row['name']);
+                $actions[] = $row;
+            }
 
-	/**
-	 * set Sub Value
-	 *
-	 * @version	15th April 2016
-	 * @since	15th April 2016
-	 * @param	array	Name Array
-	 * @param	array	Current Value
-	 * @param	mixed	Session Value
-	 * @return	object	Gibbon\session
-	 */
-	public function setSub($steps, $existing, $value)
-	{
-		if ($this->base === NULL)
-			$base = $this->base = array_shift($steps);
-		else
-			$base = array_shift($steps);
-		if (count($steps) === 1)
-			$existing[$steps[0]] = $value; 
-		else
-			$existing[$steps[0]] = $this->setSub($steps, $existing[$steps[0]], $value);
-		return $existing;	
+            // Cache the resulting set of translated actions
+            $this->set('fastFinderActions', $actions);
+        }
+        return $actions;
 	}
-
 }

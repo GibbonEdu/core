@@ -57,9 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
             } else {
                 //Check if have Full or Write in any budgets
                 $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
-                foreach ($budgets as $budget) {
-                    if ($budget[2] == 'Full' or $budget[2] == 'Write') {
-                        $budgetsAccess = true;
+                if (is_array($budgets) && count($budgets)>0) {
+                    foreach ($budgets as $budget) {
+                        if ($budget[2] == 'Full' or $budget[2] == 'Write') {
+                            $budgetsAccess = true;
+                        }
                     }
                 }
             }
@@ -99,20 +101,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                             //GET THE DATA ACCORDING TO FILTERS
                             if ($highestAction == 'Manage Expenses_all') { //Access to everything
-                                $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-									FROM gibbonFinanceExpense 
-									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-									JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                                $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+									FROM gibbonFinanceExpense
+									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+									JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID
 									ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
                             } else { //Access only to own budgets
                                 $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
                                 $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
-									FROM gibbonFinanceExpense 
-									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
+									FROM gibbonFinanceExpense
+									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
 									JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-									JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID 
+									JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID
 									ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
                             }
                             $result = $connection2->prepare($sql);
@@ -136,14 +138,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                             }
                             ?>
 							<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_addProcess.php' ?>">
-								<table class='smallIntBorder fullWidth' cellspacing='0'>	
+								<table class='smallIntBorder fullWidth' cellspacing='0'>
 									<tr class='break'>
-										<td colspan=2> 
+										<td colspan=2>
 											<h3><?php echo __($guid, 'Basic Information') ?></h3>
 										</td>
 									</tr>
 									<tr>
-										<td style='width: 275px'> 
+										<td style='width: 275px'>
 											<b><?php echo __($guid, 'Budget Cycle') ?></b><br/>
 										</td>
 										<td class="right">
@@ -171,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td style='width: 275px'> 
+										<td style='width: 275px'>
 											<b><?php echo __($guid, 'Budget') ?></b><br/>
 										</td>
 										<td class="right">
@@ -179,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Title') ?></b><br/>
 										</td>
 										<td class="right">
@@ -187,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Status') ?></b><br/>
 										</td>
 										<td class="right">
@@ -195,9 +197,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td colspan=2> 
+										<td colspan=2>
 											<b><?php echo __($guid, 'Description') ?></b>
-											<?php 
+											<?php
                                                 echo '<p>';
 												echo $row['body'];
 												echo '</p>'
@@ -205,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Total Cost') ?></b><br/>
 											<span style="font-size: 90%">
 												<i>
@@ -224,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
@@ -232,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
@@ -240,39 +242,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</td>
 									</tr>
 									<tr>
-										<td colspan=2> 
+										<td colspan=2>
 											<b><?php echo __($guid, 'Purchase Details') ?></b>
-											<?php 
+											<?php
                                                 echo '<p>';
 												echo $row['purchaseDetails'];
 												echo '</p>'
                                             ?>
 										</td>
 									</tr>
-							
+
 									<tr class='break'>
-										<td colspan=2> 
+										<td colspan=2>
 											<h3><?php echo __($guid, 'Log') ?></h3>
 										</td>
 									</tr>
 									<tr>
-										<td colspan=2> 
+										<td colspan=2>
 											<?php
                                             echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
                             				?>
 										</td>
 									</tr>
-									
+
 									<?php
                                     if ($row['status'] == 'Paid') {
                                         ?>
 										<tr class='break' id="paidTitle">
-											<td colspan=2> 
+											<td colspan=2>
 												<h3><?php echo __($guid, 'Payment Information') ?></h3>
 											</td>
 										</tr>
 										<tr id="paymentDateRow">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Date Paid') ?></b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Date of payment, not entry to system.') ?></span>
 											</td>
@@ -281,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											</td>
 										</tr>
 										<tr id="paymentAmountRow">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Amount Paid') ?></b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Final amount paid.') ?>
 												<?php
@@ -296,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											</td>
 										</tr>
 										<tr id="payeeRow">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Payee') ?></b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Staff who made, or arranged, the payment.') ?></span>
 											</td>
@@ -316,11 +318,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 															<?php
 
 												}
-												?>	
+												?>
 											</td>
 										</tr>
 										<tr id="paymentMethodRow">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Payment Method') ?></b><br/>
 											</td>
 											<td class="right">
@@ -328,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											</td>
 										</tr>
 										<tr id="paymentIDRow">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Payment ID') ?></b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Transaction ID to identify this payment.') ?></span>
 											</td>

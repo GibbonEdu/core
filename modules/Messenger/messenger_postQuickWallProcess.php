@@ -111,6 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 exit();
             }
 
+            //Last insert ID
+            $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
+
             try {
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
@@ -139,7 +142,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
             } else {
-                $URL .= '&return=success0';
+                //Success 0
+				$URL .= "&return=success0&editID=$AI";
                 header("Location: {$URL}");
             }
         }

@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php echo __($guid, 'Google Integration') ?></h3>
-					<?php echo sprintf(__($guid, 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/authenticating-with-google-oauth/' target='_blank'>", '</a>') ?>
+					<?php echo sprintf(__($guid, 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>') ?>
 				</td>
 			</tr>
 			<tr>
@@ -360,6 +360,126 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 				</td>
 				<td class="right">
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
+				</td>
+			</tr>
+
+			<!-- PHPMail SMTP -->
+
+			<tr class='break'>
+				<td colspan=2>
+					<h3><?php echo __($guid, 'SMTP Mail') ?></h3>
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='enableMailerSMTP'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<?php
+                        $selected = '';
+						if ($row['value'] == 'Y') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
+						$selected = '';
+						if ($row['value'] == 'N') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='mailerSMTPHost'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='mailerSMTPPort'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='mailerSMTPUsername'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
+				</td>
+			</tr>
+			<tr>
+				<?php
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='mailerSMTPPassword'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                $row = $result->fetch();
+                ?>
+				<td>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
+				</td>
+				<td class="right">
+					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 

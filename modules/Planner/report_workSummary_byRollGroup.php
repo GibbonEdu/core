@@ -45,11 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
         $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
     }
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
@@ -108,6 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Unsatisfactory');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'On Time');
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Late');
@@ -149,15 +152,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             }
             echo '</td>';
             echo "<td style='width:15%'>";
-                        //Count up unsatisfactory from markbook
-                        try {
-                            $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentConcern='Y' OR effortConcern='Y') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
-                            $resultData = $connection2->prepare($sqlData);
-                            $resultData->execute($dataData);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+            //Count up unsatisfactory from markbook
+            try {
+                $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentConcern='Y' OR effortConcern='Y') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
+                $resultData = $connection2->prepare($sqlData);
+                $resultData->execute($dataData);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
             $dataData2 = array();
             $sqlWhere = ' AND (';
             $countWhere = 0;
@@ -196,6 +199,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
                 echo $resultData->rowCount() + $resultData2->rowCount();
             }
             echo '</td>';
+
+
+            echo "<td style='width:15%'>";
+			//Count up on time in planner
+            try {
+				$dataData['gibbonPersonID'] = $row['gibbonPersonID'];
+				$dataData['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$sqlData = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='On Time' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Compulsory'";
+				$resultData = $connection2->prepare($sqlData);
+				$resultData->execute($dataData);
+			} catch (PDOException $e) {
+				echo "<div class='error'>".$e->getMessage().'</div>';
+			}
+
+			//Print out total on times
+			if (($resultData->rowCount() < 1)) {
+				echo '0';
+			} else {
+				echo $resultData->rowCount();
+			}
+            echo '</td>';
+
+
+
+
             echo "<td style='width:15%'>";
 			//Count up lates in markbook
 			try {

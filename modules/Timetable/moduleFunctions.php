@@ -176,7 +176,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
-        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/src/Google/autoload.php';
+        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/vendor/autoload.php';
 
         $client = new Google_Client();
         $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
@@ -197,8 +197,15 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
             $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
             $client->setDeveloperKey($googleDeveloperKey); // Developer key
             $client->setAccessType('offline');
-            $client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
-            $_SESSION[$guid]['googleAPIAccessToken'] = $client->getAccessToken();
+            if ($_SESSION[$guid]['googleAPIRefreshToken'] == '') {
+                echo "<div class='error'>";
+                echo __($guid, 'Your request failed due to a database error.');
+                echo '</div>';
+            }
+            else {
+                $client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
+                $_SESSION[$guid]['googleAPIAccessToken'] = $client->getAccessToken();
+            }
         }
 
         $getFail = false;
@@ -1227,7 +1234,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                                             try {
                                                 $dataPlan = array('gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'date' => $date, 'timeStart' => $rowPeriods['timeStart'], 'timeEnd' => $rowPeriods['timeEnd']);
-                                                $sqlPlan = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd';
+                                                $sqlPlan = 'SELECT name, gibbonPlannerEntryID FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd GROUP BY name';
                                                 $resultPlan = $connection2->prepare($sqlPlan);
                                                 $resultPlan->execute($dataPlan);
                                             } catch (PDOException $e) {
@@ -1254,7 +1261,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                                         try {
                                             $dataPlan = array('gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'date' => $date, 'timeStart' => $rowPeriods['timeStart'], 'timeEnd' => $rowPeriods['timeEnd']);
-                                            $sqlPlan = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd';
+                                            $sqlPlan = 'SELECT name, gibbonPlannerEntryID FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd GROUP BY name';
                                             $resultPlan = $connection2->prepare($sqlPlan);
                                             $resultPlan->execute($dataPlan);
                                         } catch (PDOException $e) {
@@ -1308,7 +1315,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							$title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                             $height = ceil(($event[3] - $event[2]) / 60).'px';
                             $charCut = 20;
-                            if (height < 20) {
+                            if ($height < 20) {
                                 $charCut = 12;
                             }
                             if (strlen($label) > $charCut) {
@@ -1350,7 +1357,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							$title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                             $height = ceil(($event[3] - $event[2]) / 60).'px';
                             $charCut = 20;
-                            if (height < 20) {
+                            if ($height < 20) {
                                 $charCut = 12;
                             }
                             if (strlen($label) > $charCut) {

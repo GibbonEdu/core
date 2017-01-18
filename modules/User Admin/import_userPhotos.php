@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 			<?php echo __($guid, 'This page allows you to bulk import user photos, in the form of a ZIP file contain images named with individual usernames. See notes below for sizing information.') ?><br/>
 		</p>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_userPhotos.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'ZIP File') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
 					</td>
@@ -76,9 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 				</tr>
 			</table>
 		</form>
-		
-		
-		
+
+
+
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
 			<li><?php echo __($guid, 'You may only submit ZIP files.') ?></li>
 			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Please note the following requirements for images in preparing your ZIP file:') ?></li> 
+			<li><?php echo __($guid, 'Please note the following requirements for images in preparing your ZIP file:') ?></li>
 				<ol>
 					<li><b><?php echo __($guid, 'File Name') ?></b> - <?php echo __($guid, 'File name of each image must be username plus extension, e.g. astudent.jpg') ?></li>
 					<li><b><?php echo __($guid, 'Folder') ?> *</b> - <?php echo __($guid, 'The ZIP file must not contain any folders, only files.') ?></li>
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 					<li><b><?php echo __($guid, 'Aspect Ratio Range') ?> *</b> - <?php echo __($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></li>
 				</ol>
 			</li>
-		</ol>		
+		</ol>
 	<?php
 
     } elseif ($step == 2) {
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 		<?php
 
         //Check file type
-        if ($_FILES['file']['type'] != 'application/zip') {
+        if ($_FILES['file']['type'] != 'application/zip' and $_FILES['file']['type'] != 'application/x-zip-compressed') {
             ?>
 			<div class='error'>
 				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a ZIP file.'), $_FILES['file']['type']) ?><br/>
@@ -145,6 +145,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                 $path = str_replace('\\', '/', $path);
                 $zip = new ZipArchive();
                 $time = time();
+
+                $year = date('Y', $time);
+                $month = date('m', $time);
+
+                //Check for folder in uploads based on today's date
+                $pathTemp = $_SESSION[$guid]['absolutePath'];
+                if (is_dir($pathTemp.'/uploads/'.$year.'/'.$month) == false) {
+                    mkdir($pathTemp.'/uploads/'.$year.'/'.$month, 0777, true);
+                }
 
                 if ($zip->open($path) === true) { //Success
                     for ($i = 0; $i < $zip->numFiles; ++$i) {
@@ -190,16 +199,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                         $count = 0;
                                         while ($unique == false and $count < 100) {
                                             if ($count == 0) {
-                                                $filePath = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.strrchr($filename, '.');
+                                                $filePath = 'uploads/'.$year.'/'.$month.'/'.$username.strrchr($filename, '.');
                                             } else {
-                                                $filePath = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username."_$count".strrchr($filename, '.');
+                                                $filePath = 'uploads/'.$year.'/'.$month.'/'.$username."_$count".strrchr($filename, '.');
                                             }
                                             if (!(file_exists($_SESSION[$guid]['absolutePath'].'/'.$filePath))) {
                                                 $unique = true;
                                             }
                                             ++$count;
                                         }
-                                        if (!(copy('zip://'.$path.'#'.$filename, $filePath))) {
+                                        if (!(@copy('zip://'.$path.'#'.$filename, $filePath))) {
                                             $fileUploadFail = true;
                                             echo "<div class='error'>";
                                             echo __($guid, 'There was an error uploading photo for user:').' '.$username.'.';

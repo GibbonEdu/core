@@ -226,16 +226,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     echo __($guid, 'Your request failed due to a database error.');
                     echo '</div>';
                 } else {
-                    $rowIEP = $resultIEP->fetch(); ?>
+                    //Set field values/templates
+                    if ($resultIEP->rowCount() == 0) { //New record, get templates if they exist
+                        $targets = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate');
+                        $strategies = getSettingByScope($connection2, 'Individual Needs', 'teachingStrategiesTemplate');
+                        $notes = getSettingByScope($connection2, 'Individual Needs', 'notesReviewTemplate');
+                    }
+                    else { //Existing record, set values from database
+                        $rowIEP = $resultIEP->fetch();
+                        $targets = $rowIEP['targets'];
+                        $strategies = $rowIEP['strategies'];
+                        $notes = $rowIEP['notes'];
+                    }
+                    ?>
 						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
 								<td colspan=2 style='padding-top: 25px'>
 									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
 									<?php
                                     if ($highestAction == 'Individual Needs Records_viewEdit') {
-                                        echo getEditor($guid,  true, 'targets', $rowIEP['targets'], 20, true);
+                                        echo getEditor($guid,  true, 'targets', $targets, 20, true);
                                     } else {
-                                        echo '<p>'.$rowIEP['targets'].'</p>';
+                                        echo '<p>'.$targets.'</p>';
                                     }
                    		 			?>
 								</td>
@@ -245,9 +257,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
 									<?php
                                     if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
-                                        echo getEditor($guid,  true, 'strategies', $rowIEP['strategies'], 20, true);
+                                        echo getEditor($guid,  true, 'strategies', $strategies, 20, true);
                                     } else {
-                                        echo '<p>'.$rowIEP['strategies'].'</p>';
+                                        echo '<p>'.$strategies.'</p>';
                                     }
                    		 			?>
 								</td>
@@ -257,9 +269,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
 									<?php
                                     if ($highestAction == 'Individual Needs Records_viewEdit') {
-                                        echo getEditor($guid,  true, 'notes', $rowIEP['notes'], 20, true);
+                                        echo getEditor($guid,  true, 'notes', $notes, 20, true);
                                     } else {
-                                        echo '<p>'.$rowIEP['notes'].'</p>';
+                                        echo '<p>'.$notes.'</p>';
                                     }
                    		 			?>
 								</td>

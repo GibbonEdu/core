@@ -62,15 +62,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage_edit_contract.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
             ?>
-			
+
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_editProcess.php?gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Person') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Title') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'A name to identify this contract.') ?></span>
 						</td>
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Status') ?></b><br/>
 						</td>
 						<td class="right">
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							<script type="text/javascript">
 								$(function() {
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'End Date') ?></b><br/>
 						</td>
 						<td class="right">
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							<script type="text/javascript">
 								$(function() {
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						$types = explode(',', $types);
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Salary Scale') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					}
 					?>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Salary') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'] ?><br/></span>
 						</td>
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						$types = explode(',', $types);
                 		?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Responsibility Level') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -244,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					}
 					?>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Responsibility') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'] ?><br/></span>
 						</td>
@@ -256,7 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 								<option <?php if ($row['responsibilityPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
 								<option <?php if ($row['responsibilityPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
-							<input name="responsibilityAmount" id="responsibilityAmount" maxlength=12 value="<?php echo htmlPrep($row['responsibilityAmount']) ?>" type="text" style="width: 145px">
+							<input name="responsibilityAmount" id="responsibilityAmount" maxlength=12 value="<?php if (!is_null($row['responsibilityAmount'])) { echo htmlPrep($row['responsibilityAmount']); } ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
 								var responsibilityAmount=new LiveValidation('responsibilityAmount');
 								responsibilityAmount.add(Validate.Numericality);
@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Housing') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'] ?><br/></span>
 						</td>
@@ -284,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Travel') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'] ?><br/></span>
 						</td>
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Retirement') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'] ?><br/></span>
 						</td>
@@ -324,7 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Bonus/Gratuity') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'] ?><br/></span>
 						</td>
@@ -344,24 +344,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2 style='padding-top: 15px'> 
+						<td colspan=2 style='padding-top: 15px'>
 							<b><?php echo __($guid, 'Education Benefits') ?></b><br/>
 							<textarea name="education" id="education" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php echo htmlPrep($row['education']) ?></textarea>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2 style='padding-top: 15px'> 
+						<td colspan=2 style='padding-top: 15px'>
 							<b><?php echo __($guid, 'Notes') ?></b><br/>
 							<textarea name="notes" id="notes" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php echo htmlPrep($row['notes']) ?></textarea>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Contract File') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Accepts PDF, ODT, DOC, DOCX, RTF.') ?><br/></span>
 							<?php if ($row['contractUpload'] != '') { ?>
 							<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-							<?php 
+							<?php
 							}
             				?>
 						</td>

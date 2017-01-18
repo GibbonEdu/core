@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									</tr>
 									<tr>
 										<td colspan=2>
-											<b><?php echo __($guid, 'Blurb') ?> *</b>
+											<b><?php echo __($guid, 'Description') ?> *</b>
 											<textarea name='description' id='description' rows=5 style='width: 300px'><?php echo htmlPrep($row['description']) ?></textarea>
 											<script type="text/javascript">
 												var description=new LiveValidation('description');
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 											</script>
 										</td>
 									</tr>
-        							<tr>
+                                    <tr>
         								<td>
         									<b><?php echo __($guid, 'Active') ?> *</b><br/>
         									<span class="emphasis small"></span>
@@ -172,6 +172,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             <select name="active" id="active" class="standardWidth">
         										<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
         										<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+        									</select>
+        								</td>
+        							</tr>
+                                    <tr>
+        								<td>
+        									<b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+        									<span class="emphasis small"></span>
+        								</td>
+        								<td class="right">
+                                            <select name="map" id="map" class="standardWidth">
+        										<option <?php if ($row['map'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+        										<option <?php if ($row['map'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
         									</select>
         								</td>
         							</tr>
@@ -189,6 +201,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 											</script>
 										</td>
 									</tr>
+                                    <tr>
+            							<td class='long' colspan=2>
+            								<b><?php echo __($guid, 'Concepts & Keywords') ?></b><br/>
+            								<span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
+            								<?php
+                                            $tags = getTagList($connection2, $gibbonSchoolYearID);
+                                            $list = '';
+                                            foreach ($tags AS $tag) {
+                                                $list .= '{id: "'.addslashes($tag[1]).'", name: "'.addslashes($tag[1]).'"},';
+                                            }
+                    						?>
+            								<style>
+            									td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
+            									td.long div.token-input-dropdown-facebook { width: 120px }
+            								</style>
+            								<input type="text" id="tags" name="tags" class='standardWidth' />
+            								<?php
+                                                $prepopulate = '';
+                                                $tags = array();
+            									$tagsInner = explode(',', $row['tags']);
+                                                foreach ($tagsInner AS $tagInner) {
+                                                    array_push($tags, mb_strtolower(trim($tagInner)));
+                                                }
+                                                sort($tags, SORT_STRING) ;
+            									foreach ($tags as $tag) {
+                                                    if ($tag != '')
+                                                        $prepopulate .= '{id: \''.addslashes($tag).'\', name: \''.addslashes($tag).'\'}, ';
+            									}
+            									$prepopulate = substr($prepopulate, 0, -2);
+            									?>
+                                                <script type="text/javascript">
+            									$(document).ready(function() {
+            										 $("#tags").tokenInput([
+            												<?php echo substr($list, 0, -1) ?>
+            											],
+            											{theme: "facebook",
+            											hintText: "Start typing a tag...",
+            											allowCreation: true,
+            											<?php
+                                                        if ($prepopulate != '{id: , name: }') {
+                                                            echo "prePopulate: [ $prepopulate ],";
+                                                        }
+                            						?>
+            											preventDuplicates: true});
+            									});
+            								</script>
+            							</td>
+            						</tr>
 									<tr class='break'>
 										<td colspan=2>
 											<h3><?php echo __($guid, 'Classes') ?></h3>
@@ -332,7 +392,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									</tr>
 									<tr>
 										<td colspan=2>
-											<p><?php echo __($guid, 'The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
+                                        <p><?php
+                                        $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                                        if ($shareUnitOutline == 'Y') {
+                                            echo __($guid, 'The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
+                                        }
+                                        else {
+                                            echo __($guid, 'The contents of the Unit Outline field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).');
+                                        }
+                                        ?></p>
 											<?php echo getEditor($guid,  true, 'details', $row['details'], 40, true, false, false) ?>
 										</td>
 									</tr>

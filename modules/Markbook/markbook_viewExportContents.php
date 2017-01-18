@@ -23,11 +23,19 @@ include '../../config.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-//Get alternative header names
+//Get settings
+$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+
+//Set up adjustment for presence of effort column or not
+if ($enableEffort == 'Y')
+    $effortAdjust = 0 ;
+else
+    $effortAdjust = 1 ;
 
 @session_start();
 
@@ -85,17 +93,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, $x);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-        if ($effortAlternativeNameAbrev != '') {
-            $x = $effortAlternativeNameAbrev;
-        } else {
-            $x = __($guid, 'Eff');
+        if ($enableEffort == 'Y') {
+            if ($effortAlternativeNameAbrev != '') {
+                $x = $effortAlternativeNameAbrev;
+            } else {
+                $x = __($guid, 'Eff');
+            }
+    		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, $x);
+            $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
         }
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, $x);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Com'));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow((3-$effortAdjust), 1, __($guid, 'Com'));
+        $excel->getActiveSheet()->getStyleByColumnAndRow((3-$effortAdjust), 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow((3-$effortAdjust), 1)->applyFromArray($style_head_fill);
 
 		$r = 1;
         while ($rowStudents = $resultStudents->fetch()) {
@@ -132,10 +142,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 } elseif ($rowEntry['effortValue'] == 'Incomplete') {
                     $effort = 'IC';
                 }
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, htmlPrep($rowEntry['effortValue']));
-                $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
-                $excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, htmlPrep($rowEntry['comment']));
-                $excel->getActiveSheet()->getStyleByColumnAndRow(3, $r)->applyFromArray($style_border);
+				if ($enableEffort == 'Y') {
+                    $excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, htmlPrep($rowEntry['effortValue']));
+                    $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
+                }
+                $excel->getActiveSheet()->setCellValueByColumnAndRow((3-$effortAdjust), $r, htmlPrep($rowEntry['comment']));
+                $excel->getActiveSheet()->getStyleByColumnAndRow((3-$effortAdjust), $r)->applyFromArray($style_border);
             } else {
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, 'No data.');
                 $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);

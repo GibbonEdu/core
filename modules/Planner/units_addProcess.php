@@ -52,7 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             //Validate Inputs
             $name = $_POST['name'];
             $description = $_POST['description'];
+            $tags = $_POST['tags'];
             $active = $_POST['active'];
+            $map = $_POST['map'];
             $ordering = $_POST['ordering'];
             $details = $_POST['details'];
             $license = $_POST['license'];
@@ -61,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 $sharedPublic = $_POST['sharedPublic'];
             }
 
-            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $name == '' or $description == '' or $active == '' or $ordering == '') {
+            if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $name == '' or $description == '' or $active == '' or $map == '' or $ordering == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
@@ -221,8 +223,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                     //Write to database
                     try {
-                        $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'description' => $description, 'active'=>$active, 'ordering' => $ordering, 'license' => $license, 'sharedPublic' => $sharedPublic, 'attachment' => $attachment, 'details' => $details, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, active=:active, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
+                        $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'license' => $license, 'sharedPublic' => $sharedPublic, 'attachment' => $attachment, 'details' => $details, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

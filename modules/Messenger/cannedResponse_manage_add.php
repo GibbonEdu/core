@@ -30,15 +30,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/cannedResponse_manage.php'>".__($guid, 'Manage Canned Responses')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Canned Response').'</div>';
     echo '</div>';
 
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$_GET['editID'];
+    }
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+        returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Subject') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
@@ -47,13 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 					<script type="text/javascript">
 						var subject=new LiveValidation('subject');
 						subject.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<b><?php echo __($guid, 'Body') ?> *</b>
-					<?php 
+					<?php
                     //Attempt to build a signature for the user
                     echo getEditor($guid,  true, 'body', '', 20, true, true, false, true); ?>
 				</td>

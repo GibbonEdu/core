@@ -46,14 +46,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $category = null;
     if (isset($_POST['category'])) {
         $category = trim($_POST['category']);
+    } elseif (isset($_GET['category'])) {
+        $category = trim($_GET['category']);
     }
     $purpose = null;
     if (isset($_POST['purpose'])) {
         $purpose = trim($_POST['purpose']);
+    } elseif (isset($_GET['purpose'])) {
+        $purpose = trim($_GET['purpose']);
     }
     $gibbonYearGroupID = null;
     if (isset($_POST['gibbonYearGroupID'])) {
         $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
+    } elseif (isset($_GET['gibbonYearGroupID'])) {
+        $gibbonYearGroupID = trim($_GET['gibbonYearGroupID']);
     }
 
     //Display filters
@@ -76,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
 
     $list = '';
     while ($rowList = $resultList->fetch()) {
-        $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
+        $list = $list.'{id: "'.addslashes($rowList['tag']).'", name: "'.addslashes($rowList['tag']).' <i>('.$rowList['count'].')</i>"},';
     }
     ?>
 	<style>
@@ -88,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
 		$(document).ready(function() {
 			 $("#tag").tokenInput([
 				<?php echo substr($list, 0, -1) ?>
-			], 
+			],
 				{theme: "facebook",
 				hintText: "Type a tag...",
 				allowCreation: false,
@@ -98,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
 				if ($tags != '') {
 					$tagList = explode(',', $tags);
 					foreach ($tagList as $tag) {
-						$tagString .= "{id: '$tag', name: '$tag'},";
+						$tagString .= "{id: '".addslashes($tag)."', name: '".addslashes($tag)."'},";
 					}
 				}
 				echo 'prePopulate: ['.substr($tagString, 0, -1).'],';?>
@@ -233,8 +239,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             $tagCount = 0;
             $tagArray = explode(',', $tags);
             foreach ($tagArray as $atag) {
-                $data['tag'.$tagCount] = "'%".$atag."%'";
-                $sqlWhere .= 'tags LIKE :tag'.$tagCount.' AND ';
+                $data['tag'.$tagCount] = "%,".$atag.",%";
+                $sqlWhere .= "concat(',', tags, ',') LIKE :tag".$tagCount." AND ";
                 ++$tagCount;
             }
         }
@@ -273,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
@@ -331,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             $tags = explode(',', $row['tags']);
             natcasesort($tags);
             foreach ($tags as $tag) {
-                $output .= substr(trim($tag), 1, -1).'<br/>';
+                $output .= trim($tag).'<br/>';
             }
             echo substr($output, 0, -2);
             echo '</td>';
@@ -373,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
         echo '</table>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
         }
     }
 

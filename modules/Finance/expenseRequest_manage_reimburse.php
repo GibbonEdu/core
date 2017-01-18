@@ -75,10 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                 try {
                     //Set Up filter wheres
                     $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                    $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-							FROM gibbonFinanceExpense 
-							JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-							JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                    $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+							FROM gibbonFinanceExpense
+							JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+							JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 							WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceExpense.status='Approved'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -101,14 +101,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     }
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_reimburseProcess.php' ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Basic Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Budget Cycle') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Budget') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Title') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Status') ?> *</b><br/><?php echo $row['status'] ?>
 								</td>
 								<td class="right">
@@ -180,9 +180,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<b><?php echo __($guid, 'Description') ?></b>
-									<?php 
+									<?php
                                         echo '<p>';
 										echo $row['body'];
 										echo '</p>'
@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -198,39 +198,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<b><?php echo __($guid, 'Purchase Details') ?></b>
-									<?php 
+									<?php
                                         echo '<p>';
 										echo $row['purchaseDetails'];
 										echo '</p>'
                                     ?>
 								</td>
 							</tr>
-					
+
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Log') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<?php
                                     echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
                     				?>
 								</td>
 							</tr>
-							
+
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#status").change(function(){
-										if ($('#status option:selected').val()=="Paid" ) {
-											$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row")); 
-											$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row")); 
-											$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row")); 
-											$("#payeeRow").slideDown("fast", $("#payeeRow").css("display","table-row")); 
-											$("#paymentMethodRow").slideDown("fast", $("#paymentMethodRow").css("display","table-row")); 
-											$("#paymentIDRow").slideDown("fast", $("#paymentIDRow").css("display","table-row")); 
+										if ($('#status').val()=="Paid" ) {
+											$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row"));
+											$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row"));
+											$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row"));
+											$("#payeeRow").slideDown("fast", $("#payeeRow").css("display","table-row"));
+											$("#paymentMethodRow").slideDown("fast", $("#paymentMethodRow").css("display","table-row"));
+											$("#paymentIDRow").slideDown("fast", $("#paymentIDRow").css("display","table-row"));
 											paymentDate.enable() ;
 											paymentAmount.enable() ;
 											paymentMethod.enable() ;
@@ -251,12 +251,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								});
 							</script>
 							<tr class='break' id="paidTitle">
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Payment Information') ?></h3>
 								</td>
 							</tr>
 							<tr id="paymentDateRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Date Paid') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Date of payment, not entry to system.') ?></span>
 								</td>
@@ -274,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-										?>." } ); 
+										?>." } );
 										paymentDate.add(Validate.Presence);
 									</script>
 									 <script type="text/javascript">
@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr id="paymentAmountRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Amount Paid') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Final amount paid.') ?>
 									<?php
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr id="payeeRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Payee') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Staff who made, or arranged, the payment.') ?></span>
 								</td>
@@ -315,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr id="paymentMethodRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Payment Method') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -336,7 +336,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								</td>
 							</tr>
 							<tr id="paymentIDRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Payment Receipt') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Digital copy of the receipt for this payment.') ?></span>
 								</td>
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									</td>
 								</td>
 							</tr>
-							
+
 							<tr>
 								<td>
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

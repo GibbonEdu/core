@@ -26,7 +26,11 @@ $proceed = false;
 $public = false;
 if (isset($_SESSION[$guid]['username']) == false) {
     $public = true;
-    $proceed = true;
+    //Get public access
+    $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+    if ($access == 'Y') {
+        $proceed = true;
+    }
 } else {
     if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm.php') != false) {
         $proceed = true;
@@ -47,7 +51,6 @@ if ($proceed == false) {
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Application Form').'</div>';
     }
     echo '</div>';
-}
 
     //Check for job openings
     try {
@@ -78,3 +81,4 @@ if ($proceed == false) {
             echo $jobOpening['description'].'<br/>';
         }
     }
+}

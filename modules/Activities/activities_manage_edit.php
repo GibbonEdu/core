@@ -553,7 +553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</tr>
 						<tr id="slot<?php echo $i ?>DayRow">
 							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Day'), $i) ?></b><br/>
+								<b><?php echo sprintf(__($guid, 'Slot %1$s Day'), $i) ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonDaysOfWeekID<?php echo $i ?>" id="gibbonDaysOfWeekID<?php echo $i ?>" class="standardWidth">
@@ -576,7 +576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</tr>
 						<tr id="slot<?php echo $i ?>StartRow">
 							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?></b><br/>
+								<b><?php echo sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
 							</td>
 							<td class="right">
@@ -604,7 +604,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</tr>
 						<tr id="slot<?php echo $i ?>EndRow">
 							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s End Time'), $i) ?></b><br/>
+								<b><?php echo sprintf(__($guid, 'Slot %1$s End Time'), $i) ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
 							</td>
 							<td class="right">
@@ -702,7 +702,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 								echo __($guid, 'There are no records to display.');
 								echo '</div>';
 							} else {
-								echo '<i><b>Warning</b>: If you delete a guest, any unsaved changes to this planner entry will be lost!</i>';
+								echo '<i><b>Warning</b>: If you delete a staff member, any unsaved changes to this planner entry will be lost!</i>';
 								echo "<table cellspacing='0' style='width: 100%'>";
 								echo "<tr class='head'>";
 								echo '<th>';
@@ -755,7 +755,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
-						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
+						<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
 							<?php
                             echo "<optgroup label='--".__($guid, 'Staff')."--'>";
 							try {

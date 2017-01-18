@@ -27,7 +27,7 @@ $connection2 = $pdo->getConnection();
 @session_start();
 
 //PHPMailer include
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 $from = getSettingByScope($connection2, 'Finance', 'email');
 
 //Module includes
@@ -42,13 +42,14 @@ $status = $_GET['status'];
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
 $monthOfIssue = $_GET['monthOfIssue'];
 $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
 if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {
     if ($action == 'issue') {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=Issued&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
     } else {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
+        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
     }
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
@@ -316,7 +317,8 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                             $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
-                            $mail = new PHPMailer();
+                            $mail = getGibbonMailer($guid);
+                            $mail->IsSMTP();
                             $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
                             foreach ($emails as $address) {
                                 $mail->AddBCC($address);
@@ -461,7 +463,8 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             }
                         }
 
-                        $mail = new PHPMailer();
+                        $mail = getGibbonMailer($guid);
+                        $mail->IsSMTP();
                         $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
                         foreach ($emails as $address) {
                             $mail->AddBCC($address);

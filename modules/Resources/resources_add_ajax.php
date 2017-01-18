@@ -115,12 +115,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         $output .= "$('#".$id."resourceLink').css('display','none');";
 
         $output .= "$('#".$id."type').change(function(){";
-        $output .= "if ($('select.".$id."type option:selected').val()=='Link' ) {";
+        $output .= "if ($('#".$id."type').val()=='Link' ) {";
         $output .= "$('#".$id."resourceFile').css('display','none');";
         $output .= "$('#".$id."resourceLink').slideDown('fast', $('#".$id."resourceLink').css('display','table-row'));";
         $output .= $id.'file.disable();';
         $output .= $id.'link.enable();';
-        $output .= "} else if ($('select.".$id."type option:selected').val()=='File' ) {";
+        $output .= "} else if ($('#".$id."type').val()=='File' ) {";
         $output .= "$('#".$id."resourceLink').css('display','none');";
         $output .= "$('#".$id."resourceFile').slideDown('fast', $('#".$id."resourceFile').css('display','table-row'));";
         $output .= $id.'file.enable();';

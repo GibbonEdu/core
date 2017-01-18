@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     $staffApplicationFormQuestions = $_POST['staffApplicationFormQuestions'];
     $staffApplicationFormPostscript = $_POST['staffApplicationFormPostscript'];
     $staffApplicationFormAgreement = $_POST['staffApplicationFormAgreement'];
+    $staffApplicationFormPublicApplications = $_POST['staffApplicationFormPublicApplications'];
     $staffApplicationFormMilestones = $_POST['staffApplicationFormMilestones'];
     $staffApplicationFormRequiredDocuments = $_POST['staffApplicationFormRequiredDocuments'];
     $staffApplicationFormRequiredDocumentsText = $_POST['staffApplicationFormRequiredDocumentsText'];
@@ -100,6 +101,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     try {
         $data = array('value' => $staffApplicationFormAgreement);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Staff' AND name='staffApplicationFormAgreement'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+
+    try {
+        $data = array('value' => $staffApplicationFormPublicApplications);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Staff Application Form' AND name='staffApplicationFormPublicApplications'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

@@ -42,23 +42,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_addProcess.php?address='.$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("#type").change(function(){
-						if ($('select.type option:selected').val()=="Learning Area" ) {
+						if ($('#type').val()=="Learning Area" ) {
 							$("#roleAdminRow").css("display","none");
-							$("#roleLARow").slideDown("fast", $("#roleLARow").css("display","table-row")); 
-						} else if ($('select.type option:selected').val()=="Administration" ) {
+							$("#roleLARow").slideDown("fast", $("#roleLARow").css("display","table-row"));
+						} else if ($('#type').val()=="Administration" ) {
 							$("#roleLARow").css("display","none");
-							$("#roleAdminRow").slideDown("fast", $("#roleAdminRow").css("display","table-row")); 
-						} 
+							$("#roleAdminRow").slideDown("fast", $("#roleAdminRow").css("display","table-row"));
+						}
 					 });
 				});
 			</script>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Subject Listing') ?></b><br/>
 				</td>
 				<td class="right">
@@ -101,13 +101,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
-					<b><?php echo __($guid, 'Blurb') ?></b> 
+				<td colspan=2>
+					<b><?php echo __($guid, 'Blurb') ?></b>
 					<?php echo getEditor($guid,  true, 'blurb', '', 20) ?>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Logo') ?></b><br/>
 					<span class="emphasis small">125x125px jpg/png/gif</span>
 				</td>
@@ -115,9 +115,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
                     echo getMaxUpload($guid);
-    				$ext = "'.png','.jpeg','.jpg','.gif'"; 
+    				$ext = "'.png','.jpeg','.jpg','.gif'";
     				?>
-					
+
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
 						file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
@@ -125,12 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Staff') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
-					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
+					<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
 						<?php
                         try {
                             $dataSelect = array();
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr id='roleLARow'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Role') ?></b><br/>
 				</td>
 				<td class="right">
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 				</td>
 			</tr>
 			<tr id='roleAdminRow' style='display: none'>
-				<td> 
+				<td>
 					<b>Role</b><br/>
 				</td>
 				<td class="right">

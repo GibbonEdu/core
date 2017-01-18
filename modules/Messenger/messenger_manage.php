@@ -149,7 +149,7 @@ else {
 		}
 		else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search") ;
 			}
 
 			print "<table cellspacing='0' style='width: 100%'>" ;
@@ -418,6 +418,9 @@ else {
 									print "});" ;
 								print "});" ;
 							print "</script>" ;
+							if (is_null($row["emailReceipt"]) == false) {
+								print "<a title='" . __($guid, 'View Send Report') . "' href='".$_SESSION[$guid]["absoluteURL"]."/index.php?q=/modules/Messenger/messenger_manage_report.php&gibbonMessengerID=".$row['gibbonMessengerID']."&sidebar=true&search=$search'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png' alt='" . __($guid, 'View Send Report') . "'/></a>" ;
+							}
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
 								print "<a title='" . __($guid, 'View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 							}
@@ -428,20 +431,20 @@ else {
 							print "<td style='background-color: #fff' colspan=8>" ;
 								if ($row["emailReport"]!="") {
 									print "<b><u>Email Report</u></b><br/>" ;
-									$emails=explode(",",$row["emailReport"]) ;
+									$emails=explode("),",$row["emailReport"]) ;
 									$emails=array_unique($emails) ;
 									$emails=msort($emails) ;
 									foreach ($emails AS $email) {
-										print $email . "<br/>" ;
+										print $email . ")<br/>" ;
 									}
 								}
 								if ($row["smsReport"]!="") {
 									print "<b><u>SMS Report</u></b><br/>" ;
-									$smss=explode(",",$row["smsReport"]) ;
+									$smss=explode("),",$row["smsReport"]) ;
 									$smss=array_unique($smss) ;
 									$smss=msort($smss) ;
 									foreach ($smss AS $sms) {
-										print $sms . "<br/>" ;
+										print $sms . ")<br/>" ;
 									}
 								}
 							print "</td>" ;
@@ -453,7 +456,7 @@ else {
 			print "</table>" ;
 
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "&search=$search") ;
 			}
 		}
 	}

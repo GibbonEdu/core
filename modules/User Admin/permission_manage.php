@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
     try {
         $dataModules = array();
-        $sqlModules = 'SELECT * FROM gibbonModule ORDER BY name';
+        $sqlModules = 'SELECT * FROM gibbonModule WHERE active=\'Y\' ORDER BY name';
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {
@@ -117,7 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                 echo '</tr>';
                 while ($rowActions = $resultActions->fetch()) {
                     echo '<tr>';
-                    echo "<td><span title='".htmlPrep(__($guid, $rowActions['description']))."'>".__($guid, $rowActions['name']).'</span></td>';
+                    echo "<td>";
+                        if ($rowModules['type'] == 'Core')
+                            echo "<span title='".htmlPrep(__($guid, $rowActions['description']))."'>".__($guid, $rowActions['name']).'</span>';
+                        else
+                            echo "<span title='".htmlPrep(__($guid, $rowActions['description'], $rowModules['name']))."'>".__($guid, $rowActions['name'], $rowModules['name']).'</span>';
+                    echo '</td>';
                     for ($i = 0;$i < $resultRoles->rowCount();++$i) {
                         echo '<td>';
                         $checked = '';

@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td colspan=2>
-										<b><?php echo __($guid, 'Blurb') ?> *</b>
+										<b><?php echo __($guid, 'Description') ?> *</b>
 										<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
 										<script type="text/javascript">
 											var description=new LiveValidation('description');
@@ -156,6 +156,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             							</select>
             						</td>
             					</tr>
+            					<tr>
+            						<td>
+            							<b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+            							<span class="emphasis small"></span>
+            						</td>
+            						<td class="right">
+            							<select name="map" id="map" class="standardWidth">
+            								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+            								<option value="N"><?php echo __($guid, 'No') ?></option>
+            							</select>
+            						</td>
+            					</tr>
 								<tr>
 									<td>
 										<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
@@ -170,6 +182,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 										</script>
 									</td>
 								</tr>
+                                <tr>
+                                    <td class='long' colspan=2>
+                                        <b><?php echo __($guid, 'Concepts & Keywords') ?></b><br/>
+                                        <span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
+                						<?php
+                                        $tags = getTagList($connection2);
+                                        $list = '';
+                                        foreach ($tags AS $tag) {
+                                            $list = $list.'{id: "'.$tag[1].'", name: "'.$tag[1].'"},';
+                                        }
+                						?>
+                						<style>
+                							td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
+                							td.long div.token-input-dropdown-facebook { width: 120px }
+                						</style>
+                						<input type="text" id="tags" name="tags" />
+                						<script type="text/javascript">
+                							$(document).ready(function() {
+                								 $("#tags").tokenInput([
+                									<?php echo substr($list, 0, -1) ?>
+                								],
+                									{theme: "facebook",
+                									hintText: "Start typing a tag...",
+                									allowCreation: true,
+                									preventDuplicates: true});
+                							});
+                						</script>
+                					</td>
+                				</tr>
 
                                 <tr class='break' id="datesHeaderRow">
     								<td colspan=2>
@@ -246,7 +287,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								<tr>
 									<td colspan=2>
 										<?php $unitOutline = getSettingByScope($connection2, 'Planner', 'unitOutlineTemplate') ?>
-										<p><?php echo __($guid, 'The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
+										<p><?php
+                                        $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                                        if ($shareUnitOutline == 'Y') {
+                                            echo __($guid, 'The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
+                                        }
+                                        else {
+                                            echo __($guid, 'The contents of the Unit Outline field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).');
+                                        }
+                                        ?></p>
 										<?php echo getEditor($guid,  true, 'details', $unitOutline, 40, true, false, false) ?>
 									</td>
 								</tr>
@@ -492,7 +541,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 										<h3><?php echo __($guid, 'Smart Blocks') ?></h3>
 									</td>
 								</tr>
-								<tr class='break hiddenRow'>
+								<tr class='hiddenRow'>
 									<td colspan=2>
 										<p>
 											<?php echo __($guid, 'Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
@@ -550,7 +599,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                         <h3><?php echo __($guid, 'Miscellaneous Settings') ?></h3>
                                     </td>
                                 </tr>
-                                <tr class='break hiddenRow'>
+                                <tr class='hiddenRow'>
                                     <td>
                                         <b><?php echo __($guid, 'License') ?></b><br/>
                                         <span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?'); ?></span>

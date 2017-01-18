@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $email = $_POST['email'];
     $financeOnlinePaymentEnabled = $_POST['financeOnlinePaymentEnabled'];
     $financeOnlinePaymentThreshold = $_POST['financeOnlinePaymentThreshold'];
+    $invoiceeNameStyle = $_POST['invoiceeNameStyle'];
     $invoiceText = $_POST['invoiceText'];
     $invoiceNotes = $_POST['invoiceNotes'];
     $invoiceNumber = $_POST['invoiceNumber'];
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $purchasingOfficer = $_POST['purchasingOfficer'];
     $reimbursementOfficer = $_POST['reimbursementOfficer'];
 
-    if ($email == '' or $financeOnlinePaymentEnabled == '' or $invoiceNumber == '' or $hideItemisation == '' or $budgetCategories == '' or $expenseApprovalType == '' or $budgetLevelExpenseApproval == '' or $allowExpenseAdd == '') {
+    if ($email == '' or $financeOnlinePaymentEnabled == '' or $invoiceeNameStyle == '' or $invoiceNumber == '' or $hideItemisation == '' or $budgetCategories == '' or $expenseApprovalType == '' or $budgetLevelExpenseApproval == '' or $allowExpenseAdd == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -84,6 +85,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         try {
             $data = array('value' => $financeOnlinePaymentThreshold);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='financeOnlinePaymentThreshold'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $invoiceeNameStyle);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='invoiceeNameStyle'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

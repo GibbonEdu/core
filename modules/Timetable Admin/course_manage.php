@@ -86,6 +86,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			}
         echo '</div>';
 
+        $search = (isset($_GET['search']))? $_GET['search'] : '';
+        $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
+
+        echo '<h3>';
+        echo __($guid, 'Filters');
+        echo '</h3>'; ?>
+        <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+            <table class='noIntBorder' cellspacing='0' style="width: 100%">
+                <tr>
+                    <td>
+                        <b><?php echo __($guid, 'Search For') ?></b><br/>
+                    </td>
+                    <td class="right">
+                        <input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b><?php echo __($guid, 'Year Group') ?></b><br/>
+                        <span class="emphasis small"></span>
+                    </td>
+                    <td class="right">
+                        <?php
+                        try {
+                            $dataPurpose = array();
+                            $sqlPurpose = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+                            $resultPurpose = $connection2->prepare($sqlPurpose);
+                            $resultPurpose->execute($dataPurpose);
+                        } catch (PDOException $e) {
+                        }
+
+                        echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
+                        echo "<option value=''></option>";
+                        while ($rowPurpose = $resultPurpose->fetch()) {
+                            $selected = ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID)? 'selected' : '';
+                            echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+                        }
+                        echo '</select>';
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=2 class="right">
+                        <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/course_manage.php">
+                        <input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
+                        <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+                        <?php
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/course_manage.php'>".__($guid, 'Clear Filters').'</a>'; ?>
+                        <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <?php
+
         //Set pagination variable
         $page = 1;
         if (isset($_GET['page'])) {
@@ -96,9 +151,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
 
         try {
+            $sqlFilters = array();
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort, name';
+            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, name, nameShort FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+
+            if (!empty($search)) {
+                $data['search1'] = "%$search%";
+                $data['search2'] = "%$search%";
+                $sqlFilters[] = '(name LIKE :search1 OR nameShort LIKE :search2)';
+            }
+
+            if (!empty($gibbonYearGroupID)) {
+                $data['gibbonYearGroupID'] = '%'.str_pad($gibbonYearGroupID, 3, '0').'%';
+                $sqlFilters[] = '(gibbonYearGroupIDList LIKE :gibbonYearGroupID)';
+            }
+
+            if (!empty($sqlFilters)) {
+                $sql .= ' AND ('. implode(' AND ', $sqlFilters) .')';
+            }
+
+            $sql .= ' ORDER BY nameShort, name';
             $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -118,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID");
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&gibbonYearGroupID=$gibbonYearGroupID");
             }
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -167,29 +242,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 if ($row['gibbonDepartmentID'] != '') {
                     try {
                         $dataLA = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                        $sqlLA = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
+                        $sqlLA = 'SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
                         $resultLA = $connection2->prepare($sqlLA);
                         $resultLA->execute($dataLA);
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($resultLA->rowCount() >= 0) {
-                        $rowLA = $resultLA->fetch();
-                        echo $rowLA['name'];
+                        echo $resultLA->fetchColumn(0);
                     }
                 }
                 echo '</td>';
                 echo '<td>';
                 try {
                     $dataClasses = array('gibbonCourseID' => $row['gibbonCourseID']);
-                    $sqlClasses = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID';
+                    $sqlClasses = 'SELECT COUNT(*) FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID';
                     $resultClasses = $connection2->prepare($sqlClasses);
                     $resultClasses->execute($dataClasses);
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 if ($resultClasses->rowCount() >= 0) {
-                    echo $resultClasses->rowCount();
+                    echo $resultClasses->fetchColumn(0);
                 }
                 echo '</td>';
                 echo '<td>';
@@ -203,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</table>';
 
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID");
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&gibbonYearGroupID=$gibbonYearGroupID");
             }
         }
     }

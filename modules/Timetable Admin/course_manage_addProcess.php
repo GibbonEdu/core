@@ -38,6 +38,7 @@ $name = $_POST['name'];
 $nameShort = $_POST['nameShort'];
 $orderBy = $_POST['orderBy'];
 $description = $_POST['description'];
+$map = $_POST['map'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $count = $_POST['count'];
 $gibbonYearGroupIDList = '';
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 } else {
     //Proceed!
     //Validate Inputs
-    if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '') {
+    if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '' or $map == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -80,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
-                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList';
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
+                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

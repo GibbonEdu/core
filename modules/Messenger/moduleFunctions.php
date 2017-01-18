@@ -17,6 +17,35 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Helps builds report array for setting gibbonMessengerReceipt
+function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail)
+{
+    if ($contactDetail != '' AND is_null($contactDetail) == false) {
+        $unique = true;
+        foreach ($report as $reportEntry) {
+            if ($reportEntry[4] == $contactDetail)
+                $unique = false;
+        }
+
+        if ($unique) {
+            $count = count($report);
+            $report[$count][0] = $gibbonPersonID;
+            $report[$count][1] = $targetType;
+            $report[$count][2] = $targetID;
+            $report[$count][3] = $contactType;
+            $report[$count][4] = $contactDetail;
+            if ($contactType == 'Email' and $emailReceipt == 'Y') {
+                $report[$count][5] = randomPassword(40);
+            }
+            else {
+                $report[$count][5] = null;
+            }
+        }
+    }
+
+    return $report;
+}
+
 //Build an email signautre for the specified user
 function getSignature($guid, $connection2, $gibbonPersonID)
 {
@@ -27,8 +56,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
         $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
+    } catch (PDOException $e) { }
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -47,7 +75,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
     return $return;
 }
 
-//Mode may be "print" (return table of messages), "count" (return message count) or "result" (return database query result) 
+//Mode may be "print" (return table of messages), "count" (return message count) or "result" (return database query result)
 function getMessages($guid, $connection2, $mode = '', $date = '')
 {
     $return = '';
@@ -407,6 +435,47 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     $dataPosts['gibbonPersonID4'] = $_SESSION[$guid]['gibbonPersonID'];
     $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, 'Individual: You' AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS individual ON (gibbonMessengerTarget.id=individual.gibbonPersonID) WHERE gibbonMessengerTarget.type='Individuals' AND (messageWall_date1=:date52 OR messageWall_date2=:date53 OR messageWall_date3=:date54) AND individual.gibbonPersonID=:gibbonPersonID4)";
 
+
+    //Attendance
+    if ($student) {
+        try {
+          $dataAttendance=array( "gibbonPersonID" => $_SESSION[$guid]['gibbonPersonID'], "selectedDate"=>$date, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d") );
+          $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, galp.date FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND galp.gibbonPersonID=:gibbonPersonID ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
+          $resultAttendance=$connection2->prepare($sqlAttendance);
+          $resultAttendance->execute($dataAttendance);
+        }
+        catch(PDOException $e) { }
+
+        if ($resultAttendance->rowCount() > 0) {
+            $studentAttendance = $resultAttendance->fetch();
+            $dataPosts['date55'] = $date;
+            $dataPosts['date56'] = $date;
+            $dataPosts['date57'] = $date;
+            $dataPosts['attendanceType1'] = $studentAttendance['type'].' '.$date;
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType1 AND (messageWall_date1=:date55 OR messageWall_date2=:date56 OR messageWall_date3=:date57) )";
+
+        }
+    }
+    if ($parent and $children != false) {
+        try {
+          $dataAttendance=array( "gibbonPersonID" => $_SESSION[$guid]['gibbonPersonID'], "selectedDate"=>$date, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d") );
+          $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, gp.firstName FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND ".preg_replace('/gibbonPersonID/', 'galp.gibbonPersonID', $children)." ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
+          $resultAttendance=$connection2->prepare($sqlAttendance);
+          $resultAttendance->execute($dataAttendance);
+        }
+        catch(PDOException $e) { }
+
+        if ($resultAttendance->rowCount() > 0) {
+            $studentAttendance = $resultAttendance->fetch();
+            $dataPosts['date57'] = $date;
+            $dataPosts['date58'] = $date;
+            $dataPosts['date59'] = $date;
+            $dataPosts['attendanceType2'] = $studentAttendance['type'].' '.$date;
+            $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Attendance:', gibbonMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."') AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessengerTarget.type='Attendance' AND gibbonMessengerTarget.id=:attendanceType2 AND (messageWall_date1=:date57 OR messageWall_date2=:date58 OR messageWall_date3=:date59) )";
+
+        }
+    }
+
     //SPIT OUT RESULTS
     if ($mode == 'result') {
         $resultReturn = array();
@@ -472,14 +541,15 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                 $return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
 
 				//DEAL WITH LIKES
-				$likesGiven = countLikesByContextAndGiver($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $_SESSION[$guid]['gibbonPersonID'], $output[$i]['gibbonPersonID']);
                 if ($output[$i]['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
+                    $likesGiven = countLikesByContextAndRecipient($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $output[$i]['gibbonPersonID']);
                     if ($likesGiven == 1) {
                         $return .= $likesGiven.'x '.__($guid, 'Like').'<br/><br/>';
                     } else {
                         $return .= $likesGiven.'x '.__($guid, 'Likes').'<br/><br/>';
                     }
                 } else {
+                    $likesGivenByMe = countLikesByContextAndGiver($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $_SESSION[$guid]['gibbonPersonID'], $output[$i]['gibbonPersonID']);
                     $comment = addSlashes($output[$i]['subject']);
                     $return .= "<div id='star".$output[$i]['gibbonMessengerID']."'>";
                     $return .= '<script type="text/javascript">';
@@ -492,7 +562,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                     $return .= '});';
                     $return .= '});';
                     $return .= '</script>';
-                    if ($likesGiven != 1) {
+                    if ($likesGivenByMe != 1) {
                         $return .= "<a id='starAdd".$output[$i]['gibbonMessengerID']."' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
                     } else {
                         $return .= "<a id='starRemove".$output[$i]['gibbonMessengerID']."' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";

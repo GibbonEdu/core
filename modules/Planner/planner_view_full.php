@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+include './modules/Attendance/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     //Acess denied
@@ -104,14 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</div>';
                     } else {
                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'date' => $date, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPlannerEntryID2' => $gibbonPlannerEntryID);
-                        $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2 AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2) ORDER BY date, timeStart";
+                        $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2 AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2) ORDER BY date, timeStart";
                     }
                 }
             } elseif ($highestAction == 'Lesson Planner_viewMyClasses') {
                 $data = array('date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=".$_SESSION[$guid]['gibbonPersonID'].' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) ORDER BY date, timeStart';
+                $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=".$_SESSION[$guid]['gibbonPersonID'].' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) ORDER BY date, timeStart';
             } elseif ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-                $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonDepartmentID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID ORDER BY date, timeStart";
+                $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonDepartmentID, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID ORDER BY date, timeStart";
                 $teacher = false;
                 try {
                     $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID2' => $gibbonPlannerEntryID, 'date2' => $date);
@@ -279,8 +280,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             echo "<span style='font-size: 85%'>".__($guid, 'For this class:').'</span><br/>';
                             try {
                                 if ($row['role'] == 'Teacher') {
-                                    $dataPrevious = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
-                                    $sqlPrevious = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (date<:date1 OR (date=:date2 AND timeStart<:timeStart)) ORDER BY date DESC, timeStart DESC";
+                                    $dataPrevious = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
+                                    $sqlPrevious = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date<:date1 OR (date=:date2 AND timeStart<:timeStart)) ORDER BY date DESC, timeStart DESC";
                                 } else {
                                     if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                                         $dataPrevious = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonPersonID' => $gibbonPersonID, 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
@@ -306,8 +307,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             try {
                                 if ($row['role'] == 'Teacher') {
-                                    $dataNext = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
-                                    $sqlNext = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (date>:date1 OR (date=:date2 AND timeStart>:timeStart)) ORDER BY date, timeStart";
+                                    $dataNext = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
+                                    $sqlNext = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date>:date1 OR (date=:date2 AND timeStart>:timeStart)) ORDER BY date, timeStart";
                                 } else {
                                     if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                                         $dataNext = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonPersonID' => $gibbonPersonID, 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
@@ -800,7 +801,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 															if ($rowVersion['type'] == 'File') {
 																echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
 															} else {
-																echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                if (strlen($rowVersion['location'])<=40) {
+                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                }
+                                                                else {
+                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 50).'...'.'</a>';
+                                                                }
 															}
 														?>
 														</td>
@@ -1026,14 +1032,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														<td>
 															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 														</td>
-														<td>
+														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
 															if ($rowVersion['type'] == 'File') {
 																echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
 															} else {
-																echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                if (strlen($rowVersion['location'])<=40) {
+                                                                    echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+                                                                }
+                                                                else {
+                                                                    echo "<a href='".$rowVersion['location']."'>".substr($rowVersion['location'], 0, 40).'...'.'</a>';
+                                                                }
 															}
-													?>
+                                                            ?>
 														</td>
 													</tr>
 													<?php
@@ -1476,158 +1487,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</tr>';
                         echo '</table>';
 
-                            //Unit resources
-                            if ($row['gibbonUnitID'] != '') {
-                                try {
-                                    $dataResources = array('gibbonUnitID' => $row['gibbonUnitID']);
-                                    $sqlResources = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID';
-                                    $resultResources = $connection2->prepare($sqlResources);
-                                    $resultResources->execute($dataResources);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($resultResources->rowCount() > 0) {
-                                    $rowResources = $resultResources->fetch();
-                                }
-                                if ($row['role'] == 'Teacher') {
-                                    //Check for outcomes
-                                    try {
-                                        $dataOutcomes = array('gibbonUnitID' => $row['gibbonUnitID']);
-                                        $sqlOutcomes = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                        $resultOutcomes = $connection2->prepare($sqlOutcomes);
-                                        $resultOutcomes->execute($dataOutcomes);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    echo '</table>';
-
-                                    if (@$rowResources['attachment'] != '' or @$rowResources['details'] != '' or $resultOutcomes->rowCount() > 0) {
-                                        echo "<h2 style='padding-top: 30px'>".__($guid, 'Unit Content').'</h2>';
-                                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
-                                        echo '<tr>';
-                                        echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
-                                        if ($rowResources['details'] != '') {
-                                            echo $rowResources['details'];
-                                        }
-                                        if ($rowResources['attachment'] != '') {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowResources['attachment']."'>".__($guid, 'Downloadable Unit Outline').'</a>';
-                                        }
-                                        echo '</td>';
-                                        echo '</tr>';
-                                        if ($resultOutcomes->rowCount() > 0) {
-                                            echo "<tr class='break'>";
-                                            echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
-                                            echo '<h3>'.__($guid, 'Unit Outcomes').'</h3>';
-                                            echo '</td>';
-                                            echo '</tr>';
-                                            echo '<tr>';
-                                            echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
-                                            echo "<table cellspacing='0' style='width: 100%'>";
-                                            echo "<tr class='head'>";
-                                            echo '<th>';
-                                            echo __($guid, 'Scope');
-                                            echo '</th>';
-                                            echo '<th>';
-                                            echo __($guid, 'Category');
-                                            echo '</th>';
-                                            echo '<th>';
-                                            echo __($guid, 'Name');
-                                            echo '</th>';
-                                            echo '<th>';
-                                            echo __($guid, 'Year Groups');
-                                            echo '</th>';
-                                            echo '<th>';
-                                            echo __($guid, 'Actions');
-                                            echo '</th>';
-                                            echo '</tr>';
-
-                                            $count = 0;
-                                            $rowNum = 'odd';
-                                            while ($rowOutcomes = $resultOutcomes->fetch()) {
-                                                if ($count % 2 == 0) {
-                                                    $rowNum = 'even';
-                                                } else {
-                                                    $rowNum = 'odd';
-                                                }
-
-												//COLOR ROW BY STATUS!
-												echo "<tr class=$rowNum>";
-                                                echo '<td>';
-                                                echo '<b>'.$rowOutcomes['scope'].'</b><br/>';
-                                                if ($rowOutcomes['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
-                                                    try {
-                                                        $dataLearningArea = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                                                        $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                                                        $resultLearningArea = $connection2->prepare($sqlLearningArea);
-                                                        $resultLearningArea->execute($dataLearningArea);
-                                                    } catch (PDOException $e) {
-                                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                                    }
-                                                    if ($resultLearningArea->rowCount() == 1) {
-                                                        $rowLearningAreas = $resultLearningArea->fetch();
-                                                        echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
-                                                    }
-                                                }
-                                                echo '</td>';
-                                                echo '<td>';
-                                                echo '<b>'.$rowOutcomes['category'].'</b><br/>';
-                                                echo '</td>';
-                                                echo '<td>';
-                                                echo '<b>'.$rowOutcomes['nameShort'].'</b><br/>';
-                                                echo "<span style='font-size: 75%; font-style: italic'>".$rowOutcomes['name'].'</span>';
-                                                echo '</td>';
-                                                echo '<td>';
-                                                echo getYearGroupsFromIDList($guid, $connection2, $rowOutcomes['gibbonYearGroupIDList']);
-                                                echo '</td>';
-                                                echo '<td>';
-                                                echo "<script type='text/javascript'>";
-                                                echo '$(document).ready(function(){';
-                                                echo "\$(\".unitDescription-$count\").hide();";
-                                                echo "\$(\".unitShow_hide-$count\").fadeIn(1000);";
-                                                echo "\$(\".unitShow_hide-$count\").click(function(){";
-                                                echo "\$(\".unitDescription-$count\").fadeToggle(1000);";
-                                                echo '});';
-                                                echo '});';
-                                                echo '</script>';
-                                                if ($rowOutcomes['content'] != '') {
-                                                    echo "<a class='unitShow_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
-                                                }
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                if ($rowOutcomes['content'] != '') {
-                                                    echo "<tr class='unitDescription-$count' id='unitDescription-$count'>";
-                                                    echo '<td colspan=6>';
-                                                    echo $rowOutcomes['content'];
-                                                    echo '</td>';
-                                                    echo '</tr>';
-                                                }
-                                                echo '</tr>';
-
-                                                ++$count;
-                                            }
-                                            echo '</table>';
-                                            echo '</td>';
-                                            echo '</tr>';
-                                        }
-                                        echo '</table>';
-                                    }
-                                } else {
-                                    if ($rowResources['attachment'] != '') {
-                                        echo "<h2 style='padding-top: 30px'>Unit Content</h2>";
-                                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
-                                        echo '<tr>';
-                                        echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowResources['attachment']."'>".__($guid, 'Downloadable Unit Outline').'</a>';
-                                        echo '</td>';
-                                        echo '</tr>';
-                                        echo '</table>';
-                                    }
-                                }
-                            }
-
                         //Participants & Attendance
                         $gibbonCourseClassID = $row['gibbonCourseClassID'];
                         $columns = 2;
+
+                        // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
+                        $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
+
+                        require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+
+                        $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+
                         try {
                             $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
                             $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName";
@@ -1637,12 +1507,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
                         }
 
-                        $_SESSION[$guid]['sidebarExtra'] = "<div style='width:260px; float: right; font-size: 115%; font-weight: bold; margin-top: 8px; padding-left: 25px'>Participants & Attendance<br/>";
+                        $_SESSION[$guid]['sidebarExtra'] = "<div style='width:260px; float: right; font-size: 115%; font-weight: bold; margin-top: 8px; padding-left: 25px'>";
+
+                        if ($attendanceEnabled) {
+                             $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Participants') .' & '. __($guid, 'Attendance') . "<br/>";
+                        } else {
+                            $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Participants') . "<br/>";
+                        }
                             //Show attendance log for the current day
-                            if ($row['role'] == 'Teacher' and $teacher == true) {
+                            if ( $attendanceEnabled && ( ($row['role'] == 'Teacher' and $teacher == true) )) {
                                 try {
-                                    $dataLog = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                                    $sqlLog = 'SELECT * FROM gibbonPlannerEntryAttendanceLog, gibbonPerson WHERE gibbonPlannerEntryAttendanceLog.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY timestampTaken';
+                                    $dataLog = array( 'date' => $row['date'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                                    $sqlLog = 'SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND date LIKE :date AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY timestampTaken';
                                     $resultLog = $connection2->prepare($sqlLog);
                                     $resultLog->execute($dataLog);
                                 } catch (PDOException $e) {
@@ -1657,14 +1533,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Attendance has been taken at the following times for this lesson:');
                                     $_SESSION[$guid]['sidebarExtra'] .= "<ul style='margin-left: 20px'>";
                                     while ($rowLog = $resultLog->fetch()) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= '<li>'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__($guid, 'by').' '.formatName($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true).'</li>';
+                                        $_SESSION[$guid]['sidebarExtra'] .= '<li><a style="color:inherit;" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.dateConvertBack($guid, $row['date'] ).'">'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__($guid, 'by').' '.formatName($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true).'</a></li>';
                                     }
                                     $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                                 }
                             }
 
-                        $_SESSION[$guid]['sidebarExtra'] .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_fullProcess.php'>";
+                        if ($attendanceEnabled && $row['role'] == 'Teacher' and $teacher == true) {
+                            $_SESSION[$guid]['sidebarExtra'] .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_take_byCourseClassProcess.php'>";
+                        }
                         $_SESSION[$guid]['sidebarExtra'] .= "<table class='noIntBorder' cellspacing='0' style='width:260px; float: right; margin-bottom: 30px'>";
                         $count = 0;
                         $countStudents = 0;
@@ -1674,42 +1552,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
 
 							//Get attendance status for students
-							$status = '';
+							$status = 'Present';
+                            $reason = '';
+                            $comment = '';
                             if ($rowClassGroup['role'] == 'Student') {
-                                //Check for record
+
+								//Check for school attendance
 								try {
-									$dataAtt = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
-									$sqlAtt = 'SELECT * FROM gibbonPlannerEntryAttendance WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID';
+									$dataAtt = array('date' => $row['date'], 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
+									$sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY timestampTaken DESC';
 									$resultAtt = $connection2->prepare($sqlAtt);
 									$resultAtt->execute($dataAtt);
 								} catch (PDOException $e) {
 									$_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
 								}
-                                if ($resultAtt->rowCount() == 1) {
-                                    $rowAtt = $resultAtt->fetch();
+								if ($resultAtt->rowCount() > 0) {
+									$rowAtt = $resultAtt->fetch();
                                     $status = $rowAtt['type'];
-                                }
-
-								//Check for school attendance
-								if ($status == '') {
-									try {
-										$dataAtt = array('date' => $row['date'], 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
-										$sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
-										$resultAtt = $connection2->prepare($sqlAtt);
-										$resultAtt->execute($dataAtt);
-									} catch (PDOException $e) {
-										$_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-									}
-									if ($resultAtt->rowCount() > 0) {
-										$rowAtt = $resultAtt->fetch();
-										if ($rowAtt['type'] == 'Absent' or $rowAtt['type'] == 'Left - Early' or $rowAtt['type'] == 'Left' or $rowAtt['type'] == 'Present - Offsite') {
-											$status = 'Absent';
-										}
-									}
+                                    $reason = $rowAtt['reason'];
+                                    $comment = $rowAtt['comment'];
 								}
+
                             }
 
-                            if ($status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite') {
+                            //$status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite'
+                            if ( $attendance->isTypeAbsent($status) ) {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #CC0000; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
                             } else {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #rgba (1,1,1,0); width:20%; text-align: center; vertical-align: top'>";
@@ -1748,15 +1615,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 									//DEAL WITH LIKES
 									$likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $gibbonPlannerEntryID, $_SESSION[$guid]['gibbonPersonID'], $rowClassGroup['gibbonPersonID']);
-                                    $comment = addSlashes($row['course'].'.'.$row['class'].': '.$row['name']);
+                                    $likeComment = addSlashes($row['course'].'.'.$row['class'].': '.$row['name']);
                                     $_SESSION[$guid]['sidebarExtra'] .= "<div id='star".$rowClassGroup['gibbonPersonID']."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= '<script type="text/javascript">';
                                     $_SESSION[$guid]['sidebarExtra'] .= '$(document).ready(function(){';
                                     $_SESSION[$guid]['sidebarExtra'] .= '$("#starAdd'.$rowClassGroup['gibbonPersonID'].'").click(function(){';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "add", "comment": "'.$comment.'"});';
+                                    $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "add", "comment": "'.$likeComment.'"});';
                                     $_SESSION[$guid]['sidebarExtra'] .= '});';
                                     $_SESSION[$guid]['sidebarExtra'] .= '$("#starRemove'.$rowClassGroup['gibbonPersonID'].'").click(function(){';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "remove", "comment": "'.$comment.'"});';
+                                    $_SESSION[$guid]['sidebarExtra'] .= '$("#star'.$rowClassGroup['gibbonPersonID'].'").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/planner_view_full_starAjax.php",{"gibbonPersonID": "'.$rowClassGroup['gibbonPersonID'].'", "gibbonPlannerEntryID": "'.$row['gibbonPlannerEntryID'].'", "mode": "remove", "comment": "'.$likeComment.'"});';
                                     $_SESSION[$guid]['sidebarExtra'] .= '});';
                                     $_SESSION[$guid]['sidebarExtra'] .= '});';
                                     $_SESSION[$guid]['sidebarExtra'] .= '</script>';
@@ -1771,36 +1638,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                             $_SESSION[$guid]['sidebarExtra'] .= '</div>';
 
-                            if ($row['role'] == 'Teacher' and $teacher == true) {
+                            if ($attendanceEnabled && $row['role'] == 'Teacher' and $teacher == true) {
                                 if ($rowClassGroup['role'] == 'Student') {
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."'>";
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<select style='float: none; width:84px; margin: 3px 0px 3px 0px' name='$countStudents-type'>";
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<option ';
-                                    if ($status == 'Present') {
-                                        $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
-                                    };
-                                    $_SESSION[$guid]['sidebarExtra'] .= "value='Present'>".__($guid, 'Present').'</option>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<option ';
-                                    if ($status == 'Present - Late') {
-                                        $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
-                                    };
-                                    $_SESSION[$guid]['sidebarExtra'] .= "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<option ';
-                                    if ($status == 'Absent') {
-                                        $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
-                                    };
-                                    $_SESSION[$guid]['sidebarExtra'] .= "value='Absent'>".__($guid, 'Absent').'</option>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<option ';
-                                    if ($status == 'Left') {
-                                        $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
-                                    };
-                                    $_SESSION[$guid]['sidebarExtra'] .= "value='Left'>".__($guid, 'Left').'</option>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<option ';
-                                    if ($status == 'Left - Early') {
-                                        $_SESSION[$guid]['sidebarExtra'] .= 'selected ';
-                                    };
-                                    $_SESSION[$guid]['sidebarExtra'] .= "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '</select>';
+
+
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
+
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $status, "$countStudents-type", '86px;margin-left:1px;');
+
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $reason, "$countStudents-reason", '84px');
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($comment)."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= "</div>";
+
                                 }
                             }
 
@@ -1831,20 +1681,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
                         }
 
-                        if ($row['role'] == 'Teacher' and $teacher == true) {
+                        if ($attendanceEnabled && $row['role'] == 'Teacher' and $teacher == true) {
                             $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
                             $_SESSION[$guid]['sidebarExtra'] .= "<td class='right' colspan=5>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='params' value='$params'>";
+                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='currentDate' value='".$row['date']."'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='countStudents' value='$countStudents'>";
+                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='count' value='$countStudents'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='submit' value='Submit'>";
                             $_SESSION[$guid]['sidebarExtra'] .= '</td>';
                             $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
+                            $_SESSION[$guid]['sidebarExtra'] .= '</form>';
                         }
+
                         $_SESSION[$guid]['sidebarExtra'] .= '</table>';
-                        $_SESSION[$guid]['sidebarExtra'] .= '</form>';
+
+
 
                         //Guests
                         try {

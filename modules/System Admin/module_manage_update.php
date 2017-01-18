@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo __($guid, 'Datebase Update');
                 echo '</h3>';
                 echo '<p>';
-                echo sprintf(__($guid, 'It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row['name']), $versionDB, $versionCode).'</b>';
+                echo sprintf(__($guid, 'It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row['name']), $versionDB, $versionCode).'</b>';
                 echo '</p>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
 					<table cellspacing='0' style="width: 100%">	

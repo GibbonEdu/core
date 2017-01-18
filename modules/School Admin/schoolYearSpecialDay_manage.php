@@ -101,27 +101,25 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 echo '<h3>';
                 echo $row['name'];
                 echo '</h3>';
-                list($firstDayYear, $firstDayMonth, $firstDayDay) = explode('-', $row['firstDay']);
-                $firstDayStamp = mktime(0, 0, 0, $firstDayMonth, $firstDayDay, $firstDayYear);
-                list($lastDayYear, $lastDayMonth, $lastDayDay) = explode('-', $row['lastDay']);
-                $lastDayStamp = mktime(0, 0, 0, $lastDayMonth, $lastDayDay, $lastDayYear);
+                $firstDayStamp = dateConvertToTimestampGM($row['firstDay']);
+                $lastDayStamp = dateConvertToTimestampGM($row['lastDay']);
 
                 //Count back to first Monday before first day
                 $startDayStamp = $firstDayStamp;
                 while (date('D', $startDayStamp) != 'Mon') {
-                    $startDayStamp = $startDayStamp - 86400;
+                    $startDayStamp = strtotime('-1 day', $startDayStamp);
                 }
 
                 //Count forward to first Sunday after last day
                 $endDayStamp = $lastDayStamp;
                 while (date('D', $endDayStamp) != 'Sun') {
-                    $endDayStamp = $endDayStamp + 86400;
+                    $endDayStamp = strtotime('+1 day', $endDayStamp);
                 }
 
                 //Get the special days
                 try {
-                    $dataSpecial = array('gibbonSchoolYearTermID' => $row['gibbonSchoolYearTermID']);
-                    $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID ORDER BY date';
+                    $dataSpecial = array('firstDay' => $row['firstDay'], 'lastDay' => $row['lastDay']);
+                    $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date BETWEEN :firstDay AND :lastDay ORDER BY date';
                     $resultSpecial = $connection2->prepare($sqlSpecial);
                     $resultSpecial->execute($dataSpecial);
                 } catch (PDOException $e) {
@@ -195,15 +193,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 echo '</tr>';
 
                 $specialDayStamp = null;
-                for ($i = $startDayStamp;$i <= $endDayStamp;$i = $i + 86400) {
+                for ($i = $startDayStamp; $i <= $endDayStamp;$i = strtotime('+1 day', $i)) {
                     if (date('D', $i) == 'Mon') {
                         echo "<tr style='height: 60px'>";
                     }
 
                     if (isset($rowSpecial)) {
                         if ($rowSpecial == true) {
-                            list($specialDayYear, $specialDayMonth, $specialDayDay) = explode('-', $rowSpecial['date']);
-                            $specialDayStamp = mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+                            $specialDayStamp = dateConvertToTimestampGM($rowSpecial['date']);
                         }
                     }
 
@@ -219,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                         if ($i == $specialDayStamp) {
                             echo "<span style='color: #ff0000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'</span>';
                             echo '<br/>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearTermID=".$row['gibbonSchoolYearTermID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                             $rowSpecial = $resultSpecial->fetch();
                         } else {

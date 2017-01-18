@@ -68,9 +68,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
         }
         //Check existence of and access to this class.
         else {
+
+            $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
+
             try {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+                if ($highestAction == 'Edit Markbook_everything') {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+                } else {
+                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+                }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -90,9 +98,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Edit').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook').'</div>';
                 echo '</div>';
 
+                if (isset($_GET['return'])) {
+                    returnProcess($guid, $_GET['return'], null, null);
+                }
+
                 //Add multiple columns
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-                    $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
+
                     if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
 
                         //Check highest role in any department
@@ -108,6 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 //Get teacher list
                 $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
                 $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
+
+                $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
 
                 if (!empty($teacherList)) {
                     echo '<h3>';
@@ -143,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                if ($teaching) {
+                if ($canEditThisClass) {
                     echo "<div class='linkTop'>";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
 
@@ -238,7 +252,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     }
                     echo '</table>';
                 }
+
+                echo '<br/>&nbsp;<br/>';
+
+                if ($canEditThisClass) {
+                    echo '<h3>';
+                    echo __($guid, 'Copy Markbook Columns');
+                    echo '</h1>';
+
+                    echo "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
+                    echo '<tr>';
+                    echo "<td style='vertical-align: top'>";
+
+                    echo '</td>';
+                    echo "<td style='vertical-align: top; text-align: right'>";
+                    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID=$gibbonCourseClassID'>";
+
+                    echo "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Copy from')." ".__($guid, 'Class').": </span>";
+                    echo "<select name='gibbonMarkbookCopyClassID' id='gibbonMarkbookCopyClassID' style='width:193px; float: none;'>";
+                    echo "<option value=''></option>";
+                    try {
+                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sqlSelect = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
+                        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+                    } catch (PDOException $e) {
+                    }
+                    $selectCount = 0;
+
+                    echo "<optgroup label='--".__($guid, 'My Classes')."--'>";
+                    while ($rowSelect = $resultSelect->fetch()) {
+                        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) continue; // Skip the current class
+                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+                    }
+                    echo '</optgroup>';
+                    try {
+                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sqlSelect = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
+                        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+                    } catch (PDOException $e) {
+                    }
+                    echo "<optgroup label='--".__($guid, 'All Classes')."--'>";
+                    while ($rowSelect = $resultSelect->fetch()) {
+                        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) continue; // Skip the current class
+                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+                    }
+                    echo '</optgroup>';
+                    echo '</select>';
+                    echo "<input type='submit' value='".__($guid, 'Go')."'>";
+                    echo '</form>';
+                    echo '</td>';
+                    echo '</tr>';
+                    echo '</table>';
+                }
             }
         }
     }
+
+    // Print the sidebar
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit.php');
 }

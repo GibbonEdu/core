@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Ignore Status') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Include all studenusersts, regardless of status and current enrolment.') ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Include all users, regardless of status and current enrolment.') ?></span>
 				</td>
 				<td class="right">
 					<?php
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 					echo "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">"; ?>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewOverdueItems.php">
@@ -72,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 			</tr>
 		</table>
 	</form>
-	
-	<?php	
+
+	<?php
     echo '<h2>';
     echo __($guid, 'Report Data');
     echo '</h2>';
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     }
     if ($count == 0) {
         echo "<tr class=$rowNum>";
-        echo '<td colspan=4>';
+        echo '<td colspan=6>';
         echo __($guid, 'There are no records to display.');
         echo '</td>';
         echo '</tr>';

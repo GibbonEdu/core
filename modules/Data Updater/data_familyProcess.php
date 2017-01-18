@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 //Attempt to send email to DBA
                 if ($_SESSION[$guid]['organisationDBA'] != '') {
                     $notificationText = sprintf(__($guid, 'A family data update request has been submitted.'));
-                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/User Admin/data_family.php');
+                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/Data Updater/data_family_manage.php');
                 }
 
                 //Write to database

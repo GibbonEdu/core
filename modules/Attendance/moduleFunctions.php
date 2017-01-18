@@ -18,14 +18,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Get's a count of absent days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
-function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd)
+function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd, $gibbonCourseClassID = 0)
 {
     $queryFail = false;
 
+    global $gibbon, $session, $pdo;
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
-        $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-        $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd ORDER BY date, timestampTaken';
+        $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
+        $sql = 'SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay
+            FROM gibbonAttendanceLogPerson
+                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type=\'School Closure\')
+            WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -44,18 +51,20 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
             //Scan through all records, saving the last record for each day
             while ($row = $result->fetch()) {
-                $dateCurrent = $row['date'];
-                if ($dateCurrent != $dateLast) {
-                    ++$count;
+                if ($row['specialDay'] != 'School Closure') {
+                    $dateCurrent = $row['date'];
+                    if ($dateCurrent != $dateLast) {
+                        ++$count;
+                    }
+                    $endOfDays[$count] = $row['type'];
+                    $dateLast = $dateCurrent;
                 }
-                $endOfDays[$count] = $row['type'];
-                $dateLast = $dateCurrent;
             }
 
             //Scan though all of the end of days records, counting up days ending in absent
             if (count($endOfDays) >= 0) {
                 foreach ($endOfDays as $endOfDay) {
-                    if ($endOfDay == 'Absent') {
+                    if ( $attendance->isTypeAbsent($endOfDay) ) {
                         ++$absentCount;
                     }
                 }
@@ -66,6 +75,29 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
     }
 }
 
+//Get last N school days from currentDate within the last 100
+function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = false ) {
+
+
+    $timestamp = dateConvertToTimestamp($date);
+    if ($inclusive == true)  $timestamp += 86400;
+
+    $count = 0;
+    $spin = 1;
+    $max = max($n, 100);
+    $lastNSchoolDays = array();
+    while ($count < $n and $spin <= $max) {
+        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
+        if (isSchoolOpen($guid, $date, $connection2 )) {
+            $lastNSchoolDays[$count] = $date;
+            ++$count;
+        }
+        ++$spin;
+    }
+
+    return $lastNSchoolDays;
+}
+
 //Get's a count of late days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error.
 function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd)
 {
@@ -74,7 +106,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-        $sql = "SELECT * FROM gibbonAttendanceLogPerson WHERE type='Present - Late' AND gibbonPersonID=:gibbonPersonID AND date>=:dateStart AND date<=:dateEnd";
+        $sql = "SELECT count(*) AS count FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c WHERE c.scope='Onsite - Late' AND p.gibbonPersonID=:gibbonPersonID AND p.date>=:dateStart AND p.date<=:dateEnd AND p.type=c.name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -84,13 +116,19 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
     if ($queryFail) {
         return false;
     } else {
-        return $result->rowCount();
+        $row = $result->fetch();
+        return $row['count'];
     }
 }
+
 
 //$dateStart and $dateEnd refer to the students' first and last day at the school, not the range of dates for the report
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd)
 {
+    global $gibbon, $session, $pdo;
+    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+
     $output = '';
 
     if ($print) {
@@ -101,7 +139,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'firstDay' => date('Y-m-d'));
-        $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND firstDay<=:firstDay';
+        $sql = 'SELECT name, firstDay, lastDay, gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND firstDay<=:firstDay';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -116,6 +154,9 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
         $countSchoolDays = 0;
         $countAbsent = 0;
         $countPresent = 0;
+        $countTypes = array();
+        $countReasons = array();
+
         while ($row = $result->fetch()) {
             $output .= '<h4>';
             $output .= $row['name'];
@@ -140,7 +181,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
             //Get the special days
             try {
                 $dataSpecial = array('gibbonSchoolYearTermID' => $row['gibbonSchoolYearTermID']);
-                $sqlSpecial = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID AND type='School Closure' ORDER BY date";
+                $sqlSpecial = "SELECT name, date FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID AND type='School Closure' ORDER BY date";
                 $resultSpecial = $connection2->prepare($sqlSpecial);
                 $resultSpecial->execute($dataSpecial);
             } catch (PDOException $e) {
@@ -152,7 +193,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                 $rowSpecial = $resultSpecial->fetch();
             }
 
-            //Check which days are school days
+            // Check which days are school days
             $days = array();
             $days['Mon'] = 'Y';
             $days['Tue'] = 'Y';
@@ -164,34 +205,18 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
             $days['count'] = 7;
             try {
                 $dataDays = array();
-                $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
+                $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE schoolDay='N'";
                 $resultDays = $connection2->prepare($sqlDays);
                 $resultDays->execute($dataDays);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
+            // Mark non-school days as N
             while ($rowDays = $resultDays->fetch()) {
-                if ($rowDays['nameShort'] == 'Mon') {
-                    $days['Mon'] = 'N';
-                    --$days['count'];
-                } elseif ($rowDays['nameShort'] == 'Tue') {
-                    $days['Tue'] = 'N';
-                    --$days['count'];
-                } elseif ($rowDays['nameShort'] == 'Wed') {
-                    $days['Wed'] = 'N';
-                    --$days['count'];
-                } elseif ($rowDays['nameShort'] == 'Thu') {
-                    $days['Thu'] = 'N';
-                    --$days['count'];
-                } elseif ($rowDays['nameShort'] == 'Fri') {
-                    $days['Fri'] = 'N';
-                    --$days['count'];
-                } elseif ($rowDays['nameShort'] == 'Sat') {
-                    $days['Sat'] = 'N';
-                    --$days['count'];
-                } elseif ($rowDays['nameShort'] == 'Sun') {
-                    $days['Sun'] = 'N';
+                $day = $rowDays['nameShort'];
+                if ( isset($days[$day]) ) {
+                    $days[$day] = 'N';
                     --$days['count'];
                 }
             }
@@ -200,7 +225,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
             $count = 0;
             $weeks = 2;
 
-            $output .= "<table class='mini' cellspacing='0' style='width: 100%'>";
+            $output .= "<table class='mini historyCalendar' cellspacing='0' style='width: 100%'>";
             $output .= "<tr class='head'>";
             for ($w = 0; $w < $weeks; ++$w) {
                 if ($days['Mon'] == 'Y') {
@@ -256,7 +281,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
                     //Before student started at school
                     if ($dateStart != '' and date('Y-m-d', $i) < $dateStart) {
-                        $output .= "<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>";
+                        $output .= "<td class='dayClosed'>";
                         $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
                         $output .= 'Before Start Date';
                         $output .= '</td>';
@@ -264,7 +289,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                     }
                     //After student left school
                     elseif ($dateEnd != '' and date('Y-m-d', $i) > $dateEnd) {
-                        $output .= "<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>";
+                        $output .= "<td class='dayClosed'>";
                         $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
                         $output .= __($guid, 'After End Date');
                         $output .= '</td>';
@@ -281,7 +306,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                         }
 
                         if ($i < $firstDayStamp or $i > $lastDayStamp) {
-                            $output .= "<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>";
+                            $output .= "<td class='dayClosed'>";
                             $output .= '</td>';
                             ++$count;
 
@@ -290,7 +315,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                             }
                         } else {
                             if ($i == $specialDayStamp) {
-                                $output .= "<td style='border: 1px solid #aaa; color: #aaa; background-color: #ccc!important; text-align: center; font-size: 10px'>";
+                                $output .= "<td class='dayClosed'>";
                                 $output .= $rowSpecial['name'];
                                 $output .= '</td>';
                                 ++$count;
@@ -303,7 +328,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     $logCount = 0;
                                     try {
                                         $dataLog = array('date' => date('Y-m-d', $i), 'gibbonPersonID' => $gibbonPersonID);
-                                        $sqlLog = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
+                                        $sqlLog = 'SELECT gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.reason FROM gibbonAttendanceLogPerson, gibbonAttendanceCode WHERE gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name AND date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY timestampTaken DESC';
                                         $resultLog = $connection2->prepare($sqlLog);
                                         $resultLog->execute($dataLog);
                                     } catch (PDOException $e) {
@@ -311,20 +336,26 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     }
 
                                     if ($resultLog->rowCount() < 1) {
-                                        $extraStyle = 'border: 1px solid #555; color: #555; background-color: #eee; ';
+                                        $class = 'dayNoData';
                                     } else {
                                         while ($rowLog = $resultLog->fetch()) {
                                             $log[$logCount][0] = $rowLog['type'];
                                             $log[$logCount][1] = $rowLog['reason'];
+
+                                            if ($rowLog['type'] != 'Present') @$countTypes[ $rowLog['type'] ]++;
+                                            if ($rowLog['reason'] != '') @$countReasons[ $rowLog['reason'] ]++;
+
                                             ++$logCount;
                                         }
 
-                                        if ($log[0][0] == 'Absent') {
+                                        if ( $attendance->isTypeAbsent($log[0][0])) {
                                             ++$countAbsent;
-                                            $extraStyle = 'border: 1px solid #c00; color: #c00; background-color: #F6CECB; ';
+                                            $class = 'dayAbsent';
+                                            $textClass = 'highlightAbsent';
                                         } else {
                                             ++$countPresent;
-                                            $extraStyle = 'border: 1px solid #390; color: #390; background-color: #D4F6DC; ';
+                                            $class = 'dayPresent';
+                                            $textClass = 'highlightPresent';
                                         }
                                         if ($log[0][1] != '') {
                                             $title = "title='".$log[0][1]."'";
@@ -332,25 +363,17 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                             $title = '';
                                         }
                                     }
-                                    $output .= "<td style='text-align: center; font-size: 10px; $extraStyle'>";
+                                    $output .= "<td class='$class'>";
                                     $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
                                     if (count($log) > 0) {
                                         $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
+
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {
-                                                if ($log[$x][0] == 'Present') {
-                                                    $output .= 'P';
-                                                } elseif ($log[$x][0] == 'Present - Late') {
-                                                    $output .= 'PL';
-                                                } elseif ($log[$x][0] == 'Present - Offsite') {
-                                                    $output .= 'PS';
-                                                } elseif ($log[$x][0] == 'Left') {
-                                                    $output .= 'L';
-                                                } elseif ($log[$x][0] == 'Left - Early') {
-                                                    $output .= 'LE';
-                                                } elseif ($log[$x][0] == 'Absent') {
-                                                    $output .= 'A';
-                                                }
+                                                $textClass = $attendance->isTypeAbsent($log[$x][0])? 'highlightAbsent' : 'highlightPresent';
+                                                $output .= '<span class="'.$textClass.'">';
+                                                $output .= $attendance->getAttendanceCodeByType( $log[$x][0] )['nameShort'];
+                                                $output .= '</span>';
                                             }
                                             if ($x != 0 and $x != count($log)) {
                                                 $output .= ' : ';
@@ -379,7 +402,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo "<td style='vertical-align: top; width: 410px'>";
     echo '<h3>';
     echo __($guid, 'Summary');
-    echo '</h2>';
+    echo '</h3>';
     echo '<p>';
     if (isset($countSchoolDays) and isset($countPresent) and isset($countAbsent)) {
         if ($countSchoolDays != ($countPresent + $countAbsent)) {
@@ -389,6 +412,20 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
         echo '<b>'.__($guid, 'Total number of school days to date:')." $countSchoolDays</b><br/>";
         echo __($guid, 'Total number of school days attended:')." $countPresent<br/>";
         echo __($guid, 'Total number of school days absent:')." $countAbsent<br/>";
+
+        if ( count($countTypes) > 0 ) {
+            echo '<br/><b>'.__($guid, 'Type').":</b><br/>";
+            foreach ($countTypes as $typeName => $count ) {
+                echo '<span style="width:180px;display:inline-block;">'.__($guid, $typeName)."</span>$count<br/>";
+            }
+        }
+
+        if ( count($countReasons) > 0 ) {
+            echo '<br/><b>'.__($guid, 'Reason').":</b><br/>";
+            foreach ($countReasons as $reasonName => $count ) {
+                echo '<span style="width:180px;display:inline-block;">'.__($guid, $reasonName)."</span>$count<br/>";
+            }
+        }
     } else {
         echo __($guid, 'NA');
     }
@@ -406,4 +443,42 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo '</table>';
 
     echo $output;
+}
+
+function num2alpha($n)
+{
+    for ($r = ''; $n >= 0; $n = intval($n / 26) - 1) {
+        $r = chr($n % 26 + 0x41).$r;
+    }
+
+    return $r;
+}
+
+function getColourArray()
+{
+    $return = array();
+
+    $return[] = '255, 99, 132';
+    $return[] = '54, 162, 235';
+    $return[] = '255, 206, 86';
+    $return[] = '153, 102, 255';
+    $return[] = '75, 192, 192';
+    $return[] = '255, 159, 64';
+    $return[] = '152, 221, 95';
+
+
+    // $return[0] = '54, 175, 56';
+    // $return[1] = '192, 89, 203';
+    // $return[2] = '30, 30, 200';
+    // $return[3] = '65, 83, 84';
+    // $return[4] = '206, 169, 83';
+    // $return[5] = '30, 255, 30';
+    // $return[6] = '255, 40, 40';
+    // $return[7] = '146, 156, 163';
+    // $return[8] = '121, 126, 203';
+    // $return[9] = '86, 117, 57';
+    // $return[10] = '114, 66, 47';
+    // $return[11] = '93, 55, 98';
+
+    return $return;
 }

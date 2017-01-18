@@ -317,10 +317,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#ownershipType<?php echo $i ?>").change(function(){
-										if ($('select.ownershipType<?php echo $i ?> option:selected').val()=="School" ) {
+										if ($('#ownershipType<?php echo $i ?>').val()=="School" ) {
 											$("#ownershipTypeIndividualRow<?php echo $i ?>").css("display","none");
 											$("#ownershipTypeSchoolRow<?php echo $i ?>").slideDown("fast", $("#ownershipTypeSchoolRow<?php echo $i ?>").css("display","table-row"));
-										} else if ($('select.ownershipType<?php echo $i ?> option:selected').val()=="Individual" ) {
+										} else if ($('#ownershipType<?php echo $i ?>').val()=="Individual" ) {
 											$("#ownershipTypeSchoolRow<?php echo $i ?>").css("display","none");
 											$("#ownershipTypeIndividualRow<?php echo $i ?>").slideDown("fast", $("#ownershipTypeIndividualRow<?php echo $i ?>).css("display","table-row"));
 										}

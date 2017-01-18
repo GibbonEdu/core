@@ -325,14 +325,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					</tr>
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Summary') ?> *</b><br/>
+							<b><?php echo __($guid, 'Summary') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="summary" id="summary" maxlength=255 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var summary=new LiveValidation('summary');
-								summary.add(Validate.Presence);
-							</script>
 						</td>
 					</tr>
 
@@ -1190,7 +1186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
-							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
+							<select name="guests[]" id="guests[]" multiple class='standardWidth' style="height: 150px">
 								<?php
                                 try {
                                     $dataSelect = array();

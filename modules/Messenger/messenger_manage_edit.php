@@ -236,7 +236,7 @@ else {
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input name="subject" id="subject" maxlength=30 value="<?php print htmlPrep($row["subject"]) ?>" type="text" class="standardWidth">
+								<input name="subject" id="subject" maxlength=60 value="<?php print htmlPrep($row["subject"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var subject=new LiveValidation('subject');
 									subject.add(Validate.Presence);
@@ -249,6 +249,39 @@ else {
 								<?php print getEditor($guid,  TRUE, "body", $row["body"], 20, true, true, false, true, "purpose=Mass%20Mailer%20Attachment" ) ?>
 							</td>
 						</tr>
+
+						<?php
+						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
+							?>
+							<tr class='break'>
+								<td colspan=2>
+									<h3><?php print __($guid, 'Email Read Receipts') ?></h3>
+								</td>
+							</tr>
+							<tr>
+								<td style='width: 275px'>
+									<b><?php print __($guid, 'Enable Read Receipts') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print __($guid, 'Each email recipient will receive a personalised confirmation link.') ?><br/></i></span>
+								</td>
+								<td class="right">
+									<?php echo ynExpander($guid, $row['emailReceipt']); ?>
+								</td>
+							</tr>
+							<?php
+							if ($row['emailReceipt'] == 'Y') {
+								?>
+								<tr id="receiptRow">
+									<td>
+										<b><?php print __($guid, 'Link Text') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, 'Confirmation link text to display to recipient.') ?><br/></i></span>
+									</td>
+									<td class="right">
+										<textarea readonly name="emailReceiptText" id="emailReceiptText" rows=4 class="standardWidth"><?php echo $row['emailReceiptText'] ?></textarea>
+									</td>
+								</tr>
+								<?php
+							}
+						} ?>
 
 						<tr class='break'>
 							<td colspan=2>

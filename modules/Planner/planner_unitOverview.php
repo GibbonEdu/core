@@ -70,6 +70,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             $replyTo = $_GET['replyTo'];
         }
 
+        $gibbonPersonID = null;
+        if (isset($_GET['search'])) {
+            $gibbonPersonID = $_GET['search'];
+        }
+
         //Get class variable
         $gibbonPlannerEntryID = null;
         if (isset($_GET['gibbonPlannerEntryID'])) {
@@ -88,7 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                     echo __($guid, 'You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    $gibbonPersonID = $_GET['search'];
                     try {
                         $dataChild = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
@@ -103,8 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         echo '</div>';
                     } else {
                         $data = array('date' => $date);
-                        $data = array('gibbonPlannerEntryID1' => $gibbonPlannerEntryID);
-                        $data = array('gibbonPlannerEntryID2' => $gibbonPlannerEntryID);
+                        $data['gibbonPlannerEntryID1'] = $gibbonPlannerEntryID;
+                        $data['gibbonPlannerEntryID2'] = $gibbonPlannerEntryID;
                         $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=$gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID1) UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryGuest.gibbonPersonID=$gibbonPersonID AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2) ORDER BY date, timeStart";
                     }
                 }
@@ -149,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 $params .= "&subView=$subView";
 
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>".__($guid, 'View Lesson Plan')."</a> > </div><div class='trailEnd'>".__($guid, 'Unit Overview').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params&search=$gibbonPersonID'>".__($guid, 'Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$gibbonPersonID'>".__($guid, 'View Lesson Plan')."</a> > </div><div class='trailEnd'>".__($guid, 'Unit Overview').'</div>';
                 echo '</div>';
 
                 if ($row['gibbonUnitID'] == '') {
@@ -240,10 +244,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 							//Tab content
 							//UNIT OVERVIEW
 							echo "<div id='tabs1'>";
-                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-                                echo $rowUnit['details'];
-                            } else {
-                                echo '<p>'.$rowUnit['description'].'</p>';
+                            $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                            echo '<h2>';
+                            echo __($guid, 'Description');
+                            echo '</h2>';
+                            echo '<p>';
+                            echo $rowUnit['description'];
+                            echo '</p>';
+
+                            if ($rowUnit['tags'] != '') {
+                                echo '<h2>';
+                                echo __($guid, 'Concepts & Keywords');
+                                echo '</h2>';
+                                echo '<p>';
+                                echo $rowUnit['tags'];
+                                echo '</p>';
+                            }
+                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $shareUnitOutline == 'Y') {
+                                if ($rowUnit['details'] != '') {
+                                    echo '<h2>';
+                                    echo __($guid, 'Unit Outline');
+                                    echo '</h2>';
+                                    echo '<p>';
+                                    echo $rowUnit['details'];
+                                    echo '</p>';
+                                }
                             }
                             echo '</div>';
 							//OUTCOMES
@@ -401,16 +426,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     }
 
 									//Print chats
-									echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
-                                    echo '<style type="text/css">';
-                                    echo 'table.chatbox { width: 90%!important }';
-                                    echo '</style>';
-                                    echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false, true);
+                                    try {
+                                        $dataDiscuss = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
+                                        $sqlDiscuss = 'SELECT gibbonPlannerEntryDiscuss.*, title, surname, preferredName, category FROM gibbonPlannerEntryDiscuss JOIN gibbonPerson ON (gibbonPlannerEntryDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY timestamp';
+                                        $resultDiscuss = $connection2->prepare($sqlDiscuss);
+                                        $resultDiscuss->execute($dataDiscuss);
+                                    } catch (PDOException $e) { print $e->getMessage();}
+
+                                    if ($resultDiscuss->rowCount() > 0) {
+                                        echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
+                                        echo '<style type="text/css">';
+                                        echo 'table.chatbox { width: 90%!important }';
+                                        echo '</style>';
+                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false, true);
+                                    }
                                 }
                             }
                             echo '</div>';
-                                //RESOURCES
-                                echo "<div id='tabs4'>";
+                            //RESOURCES
+                            echo "<div id='tabs4'>";
                             $noReosurces = true;
 
 							//Links

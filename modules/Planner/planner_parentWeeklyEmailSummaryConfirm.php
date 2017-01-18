@@ -64,7 +64,7 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
 
         if ($rowKeyRead['confirmed'] == 'Y') { //If already confirmed, report success
             echo "<div class='success'>";
-            echo __($guid, 'Thank you for confirmed receipt and reading of this email.');
+            echo __($guid, 'Thank you for confirming receipt and reading of this email.');
             echo '</div>';
         } else { //If not confirmed, confirm
             $keyWriteFail = false;
@@ -83,7 +83,7 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
                 echo '</div>';
             } else { //Report success
                 echo "<div class='success'>";
-                echo __($guid, 'Thank you for confirmed receipt and reading of this email.');
+                echo __($guid, 'Thank you for confirming receipt and reading of this email.');
                 echo '</div>';
             }
         }

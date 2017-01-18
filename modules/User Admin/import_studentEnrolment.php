@@ -59,8 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 					</td>
 					<td class="right">
 						<select name="mode" id="mode" class="standardWidth">
+                            <option value="import"><?php echo __($guid, 'Import') ?></option>
 							<option value="sync"><?php echo __($guid, 'Sync') ?></option>
-							<option value="import"><?php echo __($guid, 'Import') ?></option>
 						</select>
 					</td>
 				</tr>
@@ -107,7 +107,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>

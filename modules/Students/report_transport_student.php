@@ -94,7 +94,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         }
         while ($rowFamily = $resultFamily->fetch()) {
             if ($rowFamily['nameAddress'] != '') {
-                echo $rowFamily['nameAddress'].',<br/>';
+                echo $rowFamily['nameAddress'];
+                if ($rowFamily['homeAddress'] != '') {
+                    echo ',<br/>';
+                }
             }
             if (substr(rtrim($rowFamily['homeAddress']), -1) == ',') {
                 $address = substr(rtrim($rowFamily['homeAddress']), 0, -1);

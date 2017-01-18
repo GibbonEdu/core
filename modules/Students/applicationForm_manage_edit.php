@@ -77,6 +77,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
+							<small class="emphasis small" style="float:right;margin-top:16px;"><a id="fixCaps">
+								<?php echo __($guid, 'Fix Block Caps'); ?>
+							</a></small>
+
+							<script type="text/javascript">
+							$(document).ready(function(){
+
+								/* Replaces fields in all caps with title case */
+								$('a#fixCaps').click(function(){
+									$('input[type=text]').val (function () {
+										if (this.value.toUpperCase() == this.value) {
+									    	return this.value.replace(/\b\w+/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+										} else {
+											return this.value;
+										}
+									});
+									alert('<?php echo __($guid, 'Fields with all caps have been changed to title case. Please check the updated values and save the form to keep changes.'); ?>');
+								});
+							});
+							</script>
 							<h3><?php echo __($guid, 'For Office Use') ?></h3>
 						</td>
 					</tr>
@@ -388,6 +408,113 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<td colspan=2 style='padding-top: 15px'>
 							<b><?php echo __($guid, 'Notes') ?></b><br/>
 							<textarea name="notes" id="notes" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php echo htmlPrep($row['notes']) ?></textarea>
+						</td>
+					</tr>
+
+
+					<tr>
+						<td colspan=2>
+							<h4><?php echo __($guid, 'Sibling Applications') ?></h4>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2>
+						<?php
+
+						$messageDelete = __($guid, 'Removing a linked application will NOT delete the application, but the students will no longer be added to the same family.')." ".__($guid, 'Are you sure you want to proceed with this request?');
+
+						$messageConfirm = __($guid, 'This will link the current application to the family of the selected application, including all other applications within that family.')." ".__($guid, 'Are you sure you want to proceed with this request?');
+
+						$data = array( 'gibbonApplicationFormID' => $row['gibbonApplicationFormID'] );
+		                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm
+                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                                WHERE gibbonApplicationFormID <> :gibbonApplicationFormID
+	                            AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID)
+	                            ORDER BY gibbonApplicationFormID";
+
+		                $resultLinked = $pdo->executeQuery($data, $sql);
+
+						// Display Sibling Applications
+						if ($resultLinked && $resultLinked->rowCount() > 0) { ?>
+
+							<span class="emphasis small"><?php echo __($guid, 'If accepted, these students will be part of the same family. Accepting or deleting this application does NOT change other Sibling Applications.') ?></span>
+
+							<table class='smallIntBorder mini fullWidth' cellspacing='0'>
+							<tr class='head'>
+								<th><?php echo __($guid, 'ID'); ?></th>
+								<th><?php echo __($guid, 'Student'); ?></th>
+								<th><?php echo __($guid, 'Status'); ?></th>
+								<th style="width:60px;"><?php echo __($guid, 'Actions'); ?></th>
+							</tr>
+							<?php
+
+							$count = 0;
+							$linkedApplications = $resultLinked->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
+
+							foreach ($linkedApplications as $linkedApplicationFormID => $rowLinked) {
+								echo '<tr>';
+								echo '<td>'.str_pad( intval($linkedApplicationFormID), 7, '0', STR_PAD_LEFT).'</td>';
+								echo '<td>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true).'</td>';
+								echo '<td>'.$rowLinked['status'].'</td>';
+
+								if ($count == 0) {
+									echo '<td rowspan="'.$resultLinked->rowCount().'" style="'.( (count($linkedApplications) > 1)? 'border-left:1px solid #dddddd !important;border-bottom:0px;' : '').'">';
+
+									echo "<a href='#' onclick='if (confirm(\"".$messageDelete."\")) window.location = \"".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_deleteLinkProcess.php?gibbonApplicationFormID='.$gibbonApplicationFormID."&gibbonSchoolYearID=".$gibbonSchoolYearID."\"; else return false;'><img style='margin-left: 4px' title='".__($guid, 'Remove')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo '</td>';
+								}
+								echo '</tr>';
+								$count++;
+							}
+
+							echo '</table>';
+
+						}
+						// Or add a new link (mutually exclusive, to prevent linking multiple families)
+						else {
+
+							echo '<div style="vertical-align: top; text-align: right">';
+							echo __($guid, 'Add linked application(s)').': ';
+							echo "<select name='linkedApplicationFormID' id='linkedApplicationFormID' style='width:193px; float: none;'>";
+	                		echo "<option value=''></option>";
+
+	                		try {
+					            $data = array();
+					            $sql = "SELECT gibbonApplicationFormID, surname, preferredName, gibbonApplicationForm.status, gibbonSchoolYearID, gibbonSchoolYear.name as schoolYearName FROM gibbonApplicationForm JOIN gibbonSchoolYear ON (gibbonApplicationForm.gibbonSchoolYearIDEntry=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonApplicationForm.gibbonSchoolYearIDEntry >= (SELECT gibbonSchoolYearID from gibbonSchoolYear WHERE status='Current') ORDER BY gibbonSchoolYearID, surname, preferredName";
+					            $resultApplications = $pdo->executeQuery($data, $sql);
+					        } catch (PDOException $e) {
+					            echo "<div class='error'>".$e->getMessage().'</div>';
+					        }
+
+					        if (isset($resultApplications) && $resultApplications->rowCount() > 0) {
+					        	$currentYear = '';
+					        	while ($rowApplication = $resultApplications->fetch()) {
+					        		if ($rowApplication['gibbonApplicationFormID']==$gibbonApplicationFormID) continue; // Skip self
+					        		if (isset($linkedApplications[$rowApplication['gibbonApplicationFormID']])) continue; // Skip applications already linked
+
+					        		if ($currentYear != $rowApplication['gibbonSchoolYearID']) {
+					        			if ($currentYear == '') echo '</optgroup>';
+					        			echo '<optgroup label="--'.$rowApplication['schoolYearName'].'--">';
+					        		}
+
+					        		echo '<option value="'.$rowApplication['gibbonApplicationFormID'].'">';
+					        			echo formatName('', $rowApplication['preferredName'], $rowApplication['surname'], 'Student', true);
+					        			echo ' ('.str_pad( intval($rowApplication['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).') ';
+					        		echo '</option>';
+
+					        		$currentYear = $rowApplication['gibbonSchoolYearID'];
+					        	}
+					        }
+					        echo '</optgroup>';
+	                		echo '</select>';
+
+	                		echo "<input type='submit' value='".__($guid, 'Go')."' onclick='if(confirm(\"".$messageConfirm."\")) document.forms[0].submit(); else return false;'>";
+
+	                		echo '</div>';
+
+                		}
+
+						?>
 						</td>
 					</tr>
 
@@ -882,7 +1009,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$(".sen").change(function(){
-								if ($('select.sen option:selected').val()=="Y" ) {
+								if ($('#sen').val()=="Y" ) {
 									$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row"));
 								} else {
 									$("#senDetailsRow").css("display","none");
@@ -2087,7 +2214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						});
 					</script>
 					<tr id="familyRow">
-						<td colspan=2'>
+						<td colspan=2>
 							<p><?php echo __($guid, 'If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
 						</td>
 					</tr>

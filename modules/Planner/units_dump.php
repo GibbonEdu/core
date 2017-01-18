@@ -145,16 +145,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                             }
                             echo '</ul>';
 
-                                //Tabs
-                                echo "<div id='tabs1'>";
+                            //Tabs
+                            echo "<div id='tabs1'>";
                             if ($row['details'] == '') {
                                 echo "<div class='error'>";
                                 echo __($guid, 'There are no records to display.');
                                 echo '</div>';
                             } else {
+                                echo '<h2>';
+                                echo __($guid, 'Description');
+                                echo '</h2>';
                                 echo '<p>';
-                                echo $row['details'];
+                                echo $row['description'];
                                 echo '</p>';
+
+                                if ($row['tags'] != '') {
+                                    echo '<h2>';
+                                    echo __($guid, 'Concepts & Keywords');
+                                    echo '</h2>';
+                                    echo '<p>';
+                                    echo $row['tags'];
+                                    echo '</p>';
+                                }
+                                if ($row['details'] != '') {
+                                    echo '<h2>';
+                                    echo __($guid, 'Unit Outline');
+                                    echo '</h2>';
+                                    echo '<p>';
+                                    echo $row['details'];
+                                    echo '</p>';
+                                }
                             }
                             echo '</div>';
                             echo "<div id='tabs2'>";

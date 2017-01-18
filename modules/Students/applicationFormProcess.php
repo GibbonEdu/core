@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../functions.php';
 include '../../config.php';
-require '../../lib/PHPMailer/class.phpmailer.php';
+require '../../lib/PHPMailer/PHPMailerAutoload.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -635,6 +635,16 @@ if ($proceed == false) {
 
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
+                $secureAI = sha1($AI.'X2J53ZGy'.$guid.$gibbonSchoolYearIDEntry);
+
+                // Update the Application Form with a hash for looking up this record in the future
+                try {
+                    $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
+                    $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
 
                 //Deal with family relationships
                 if ($gibbonFamily == 'TRUE') {
@@ -709,8 +719,8 @@ if ($proceed == false) {
                     $body = sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]['organisationAdmissionsName'], '<br/><br/>');
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
-
-                    $mail = new PHPMailer();
+                    $mail = getGibbonMailer($guid);
+                    $mail->IsSMTP();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($referenceEmail);
                     $mail->CharSet = 'UTF-8';
@@ -719,8 +729,49 @@ if ($proceed == false) {
                     $mail->Subject = $subject;
                     $mail->Body = $body;
                     $mail->AltBody = $bodyPlain;
-
                     $mail->Send();
+                }
+
+                //Notify parent 1 of application status
+                if (!is_null($parent1email)) {
+                    $body = sprintf(__($guid, 'Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $_SESSION[$guid]['organisationName']).' ';
+                    $body .= __($guid, 'Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').'<br/><br/>';
+                    $body .= __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/><br/>';
+                    $body .= "<a href='{$URL}&id={$secureAI}'>{$URL}&id={$secureAI}</a><br/><br/>";
+                    $body .= sprintf(__($guid, 'In the meantime, should you have any questions please contact %1$s at %2$s.'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['organisationAdmissionsEmail']).'<br/><br/>';
+                    $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                    $bodyPlain = emailBodyConvert($body);
+                    $mail = getGibbonMailer($guid);
+                    $mail->IsSMTP();
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->AddAddress($parent1email);
+                    $mail->CharSet = 'UTF-8';
+                    $mail->Encoding = 'base64';
+                    $mail->IsHTML(true);
+                    $mail->Subject = sprintf(__($guid, '%1$s Application Form Confirmation'), $_SESSION[$guid]['organisationName']);
+                    $mail->Body = $body;
+                    $mail->AltBody = $bodyPlain;
+                    $mail->Send();
+                }
+
+                // Handle Sibling Applications
+                if (!empty($_POST['linkedApplicationFormID'])) {
+                    $data = array( 'gibbonApplicationFormID' => $_POST['linkedApplicationFormID'] );
+                    $sql = 'SELECT DISTINCT gibbonApplicationFormID FROM gibbonApplicationForm
+                            LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                            WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL)
+                            OR gibbonApplicationFormID1=:gibbonApplicationFormID
+                            OR gibbonApplicationFormID2=:gibbonApplicationFormID';
+                    $resultLinked = $pdo->executeQuery($data, $sql);
+
+                    if ($resultLinked && $resultLinked->rowCount() > 0) {
+                        // Create a new link to each existing form
+                        while ($linkedApplication = $resultLinked->fetch()) {
+                            $data = array( 'gibbonApplicationFormID1' => $AI, 'gibbonApplicationFormID2' => $linkedApplication['gibbonApplicationFormID'] );
+                            $sql = "INSERT INTO gibbonApplicationFormLink SET gibbonApplicationFormID1=:gibbonApplicationFormID1, gibbonApplicationFormID2=:gibbonApplicationFormID2 ON DUPLICATE KEY UPDATE timestamp=NOW()";
+                            $resultNewLink = $pdo->executeQuery($data, $sql);
+                        }
+                    }
                 }
 
                 //Attempt payment if everything is set up for it
@@ -731,11 +782,11 @@ if ($proceed == false) {
                 $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
 
                 if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
-                    $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$AI";
-                    $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$AI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$AI&applicationFee=$applicationFee");
+                    $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI";
+                    $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
                     header("Location: {$URL}");
                 } else {
-                    $URL .= "&return=success0&id=$AI";
+                    $URL .= "&return=success0&id=$secureAI";
                     header("Location: {$URL}");
                 }
             }
@@ -758,7 +809,14 @@ if ($proceed == false) {
         }
         $gibbonApplicationFormID = null;
         if (isset($_GET['id'])) {
-            $gibbonApplicationFormID = $_GET['id'];
+            // Find the ID based on the hash provided for added security
+            $data = array( 'gibbonApplicationFormHash' => $_GET['id'] );
+            $sql = "SELECT gibbonApplicationFormID FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
+            $resultID = $pdo->executeQuery($data, $sql);
+
+            if ($resultID && $resultID->rowCount() == 1) {
+                $gibbonApplicationFormID = $resultID->fetchColumn(0);
+            }
         }
         $applicationFee = null;
         if (isset($_GET['applicationFee'])) {
@@ -775,7 +833,8 @@ if ($proceed == false) {
             $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
             $bodyPlain = emailBodyConvert($body);
 
-            $mail = new PHPMailer();
+            $mail = getGibbonMailer($guid);
+            $mail->IsSMTP();
             $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
             $mail->AddAddress($to);
             $mail->CharSet = 'UTF-8';
@@ -784,7 +843,6 @@ if ($proceed == false) {
             $mail->Subject = $subject;
             $mail->Body = $body;
             $mail->AltBody = $bodyPlain;
-
             $mail->Send();
 
             //Success 2
@@ -828,7 +886,8 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = new PHPMailer();
+                    $mail = getGibbonMailer($guid);
+                    $mail->IsSMTP();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
@@ -837,7 +896,6 @@ if ($proceed == false) {
                     $mail->Subject = $subject;
                     $mail->Body = $body;
                     $mail->AltBody = $bodyPlain;
-
                     $mail->Send();
 
                     $URL .= '&return=success3&id='.$_GET['id'];
@@ -872,7 +930,8 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = new PHPMailer();
+                    $mail = getGibbonMailer($guid);
+                    $mail->IsSMTP();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
@@ -881,7 +940,6 @@ if ($proceed == false) {
                     $mail->Subject = $subject;
                     $mail->Body = $body;
                     $mail->AltBody = $bodyPlain;
-
                     $mail->Send();
 
                     //Success 2

@@ -87,10 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     }
     ?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
 				</td>
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'All Students') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Include students whose status is not "Full".') ?></span>
 				</td>
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "&search=$search&allUsers=$allUsers");
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
