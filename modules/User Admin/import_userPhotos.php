@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 		<?php
 
         //Check file type
-        if ($_FILES['file']['type'] != 'application/zip' AND $_FILES['file']['type'] != 'application/x-zip-compressed') {
+        if ($_FILES['file']['type'] != 'application/zip' and $_FILES['file']['type'] != 'application/x-zip-compressed') {
             ?>
 			<div class='error'>
 				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a ZIP file.'), $_FILES['file']['type']) ?><br/>
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 
                 $year = date('Y', $time);
                 $month = date('m', $time);
-                
+
                 //Check for folder in uploads based on today's date
                 $pathTemp = $_SESSION[$guid]['absolutePath'];
                 if (is_dir($pathTemp.'/uploads/'.$year.'/'.$month) == false) {

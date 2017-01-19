@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                         </script>
                     </td>
                 </tr>
-			<tr>
+                <tr>
 					<td>
 						<b><?php echo __($guid, 'Order') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>

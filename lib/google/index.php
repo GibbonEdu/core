@@ -112,6 +112,7 @@ if (isset($authUrl)){
 		$_SESSION[$guid]=NULL ;
 		$URL="../../index.php?loginReturn=fail8" ;
 		header("Location: {$URL}");
+		exit;
 	}
 	//Start to collect User Info and test
 	try {
@@ -152,6 +153,7 @@ if (isset($authUrl)){
 
 			$URL.="?loginReturn=fail6" ;
 			header("Location: {$URL}");
+			exit;
 		}
 		if ($row["passwordForceReset"]=="Y") {
 			$salt=getSalt() ;
@@ -180,6 +182,7 @@ if (isset($authUrl)){
 			//FAILED TO SET ROLES
 			$URL.="?loginReturn=fail2" ;
 			header("Location: {$URL}");
+			exit;
 		}
 		
 		//USER EXISTS, SET SESSION VARIABLES
@@ -230,6 +233,7 @@ if (isset($authUrl)){
 			$URL="../../index.php?loginReturn=fail8" ;
 		}
 		header("Location: {$URL}");
+		exit;
 
 
 		}
@@ -247,6 +251,7 @@ if (isset($_GET['logout'])) {
 
   session_destroy();
   header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before
+  exit;
   //NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function
 }
 }

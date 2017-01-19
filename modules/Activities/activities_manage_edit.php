@@ -553,7 +553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</tr>
 						<tr id="slot<?php echo $i ?>DayRow">
 							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Day'), $i) ?></b><br/>
+								<b><?php echo sprintf(__($guid, 'Slot %1$s Day'), $i) ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonDaysOfWeekID<?php echo $i ?>" id="gibbonDaysOfWeekID<?php echo $i ?>" class="standardWidth">
@@ -576,7 +576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</tr>
 						<tr id="slot<?php echo $i ?>StartRow">
 							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?></b><br/>
+								<b><?php echo sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
 							</td>
 							<td class="right">
@@ -604,7 +604,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</tr>
 						<tr id="slot<?php echo $i ?>EndRow">
 							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s End Time'), $i) ?></b><br/>
+								<b><?php echo sprintf(__($guid, 'Slot %1$s End Time'), $i) ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
 							</td>
 							<td class="right">
