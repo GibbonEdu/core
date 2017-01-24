@@ -21,7 +21,7 @@ $basePath = dirname(__FILE__);
 $basePath = rtrim(str_replace('\\', '/', $basePath), '/');
 
 // Handle Gibbon installation redirect
-if (file_exists($basePath . '/config.php') == false) {
+if (file_exists($basePath.'/config.php') == false || filesize($basePath.'/config.php') == 0) {
     // Test if installer already invoked and ignore.
     if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
         $URL = './installer/install.php';

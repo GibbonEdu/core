@@ -334,9 +334,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             echo '</td>';
             echo '<td>';
             $output = '';
-            $tags = explode(',', $row['tags']);
-            natcasesort($tags);
-            foreach ($tags as $tag) {
+            $tagsInner = explode(',', $row['tags']);
+            natcasesort($tagsInner);
+            foreach ($tagsInner as $tag) {
                 $output .= trim($tag).'<br/>';
             }
             echo substr($output, 0, -2);

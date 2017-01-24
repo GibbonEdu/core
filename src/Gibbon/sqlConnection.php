@@ -31,32 +31,32 @@ class sqlConnection
 	 * PDO Object
 	 */
 	protected	$pdo = NULL ;
-	
+
 	/**
 	 * Connection Success
 	 */
 	private		$success = false ;
-	
+
 	/**
 	 * Query Success
 	 */
 	private		$querySuccess = false ;
-	
+
 	/**
-	 * PDOStatement 
+	 * PDOStatement
 	 */
 	private		$result = NULL ;
-	
+
 	/**
 	 * array
 	 */
 	private		$data = array() ;
-	
+
 	/**
 	 * String
 	 */
 	private		$query = NULL ;
-	
+
 	/**
 	 * String
 	 */
@@ -66,13 +66,13 @@ class sqlConnection
 	 * Construct
 	 *
 	 * @param	string	error Message
-	 * 
+	 *
 	 * @return	Object	PDO Connection
 	 */
 	public function __construct( $message = null )
-	{	
-		// Test for Config file. 
-		if (file_exists(dirname(__FILE__). '/../../config.php')) {
+	{
+		// Test for Config file.
+		if (file_exists(dirname(__FILE__). '/../../config.php') && filesize(dirname(__FILE__). '/../../config.php') > 0) {
 			include dirname(__FILE__). '/../../config.php';
 		} else {
 			return NULL;
@@ -89,7 +89,7 @@ class sqlConnection
 	 * @param	string	User Name
 	 * @param	string	Password
 	 * @param	string	error Message
-	 * 
+	 *
 	 * @return	Object	PDO Connection
 	 */
 	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
@@ -117,7 +117,7 @@ class sqlConnection
 
 	/**
 	 * Get connection. Required for backwards compatibilty in Gibbon.
-	 * 
+	 *
 	 * @return	Object PDO COnnection
 	 */
 	public function getConnection()
@@ -151,7 +151,7 @@ class sqlConnection
 	 * @param	array	Data Information
 	 * @param	string	SQL Query
 	 * @param	string	Error
-	 * 
+	 *
 	 * @return	Object	PDO Result
 	 */
 	public function executeQuery($data, $query, $error = NULL)
@@ -164,7 +164,7 @@ class sqlConnection
 			$this->result = $this->getConnection()->prepare($query);
 			$this->result->execute($data);
 		}
-		catch(PDOException $e) 
+		catch(PDOException $e)
 		{
 			$this->error = $e->getMessage();
 			$this->querySuccess = false;
@@ -179,7 +179,7 @@ class sqlConnection
 	/**
 	 * Get Result
 	 *
-	 * @return	Object	PDOStatement 
+	 * @return	Object	PDOStatement
 	 */
 	public function getResult()
 	{
@@ -214,7 +214,7 @@ class sqlConnection
 	 * @param	string	User Name
 	 * @param	string	Password
 	 * @param	string	error Message
-	 * 
+	 *
 	 * @return	Object	PDO Connection
 	 */
 	public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
@@ -244,7 +244,7 @@ class sqlConnection
 			$result = $this->executeQuery(array(), "USE ". $databaseNameClean);
 		return $this;
 	}
-	 
+
 	/**
 	 * Set SQL Mode
 	 */
