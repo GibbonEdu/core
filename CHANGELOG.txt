@@ -16,6 +16,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v14.0.00
+--------
+	Headlines
+		...
+
+	Changes With Important Notices
+		...
+
+	Significant Changes
+		...
+
+	Security
+		...
+
+	Tweaks & Bug Fixes
+		...
+
 v13.0.01
 --------
 Tweaks & Bug Fixes
