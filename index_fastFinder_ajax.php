@@ -144,7 +144,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
 
         $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
 
-        // Allow parents to search students in their family
+        // Allow parents to search students in any family they belong to
         if ($highestActionStudent == 'View Student Profile_myChildren') {
             $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
@@ -153,11 +153,12 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                         WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
                         ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
                     NULL as type 
-                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFamilyChild
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFamilyChild, gibbonFamilyAdult
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
                     AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
+                    AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
                     AND gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID 
-                    AND gibbonFamilyChild.gibbonFamilyID=(SELECT gibbonFamilyAdult.gibbonFamilyID FROM gibbonFamilyAdult WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID)";
+                    AND gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID";
         }
         // Allow individuals to only search themselves
         else if ($highestActionStudent == 'View Student Profile_my') {
