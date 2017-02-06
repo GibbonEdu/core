@@ -46,6 +46,8 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
 
     // Check access levels
     $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
+    $highestActionStudent = getHighestGroupedAction($guid, '/modules/students/student_view.php', $connection2);
+
     $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
     $classIsAccessible = false;
     $alarmIsAccessible = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
@@ -88,25 +90,21 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
         try {
             if ($highestActionClass == 'Lesson Planner_viewEditAllClasses' or $highestActionClass == 'Lesson Planner_viewAllEditMyClasses') {
                 $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
                         FROM gibbonCourseClass
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                         WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2
-                        AND (gibbonCourse.name LIKE :search
-                            OR gibbonCourse.nameShort LIKE :search
-                            OR gibbonCourseClass.nameShort LIKE :search)
+                        AND (gibbonCourse.name LIKE :search OR CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) LIKE :search)
                         ORDER BY name";
             } else {
                 $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID3' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'] );
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
                         FROM gibbonCourseClassPerson
                         JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                         WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID3
                         AND gibbonPersonID=:gibbonPersonID
-                        AND (gibbonCourse.name LIKE :search
-                            OR gibbonCourse.nameShort LIKE :search
-                            OR gibbonCourseClass.nameShort LIKE :search)
+                        AND (gibbonCourse.name LIKE :search OR CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) LIKE :search)
                         ORDER BY name";
             }
             $resultList = $connection2->prepare($sql);
@@ -143,8 +141,40 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
 
     // STUDENTS
     if ($studentIsAccessible == true) {
-        try {
-            $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
+
+        $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
+
+        // Allow parents to search students in their family
+        if ($highestActionStudent == 'View Student Profile_myChildren') {
+            $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
+            $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
+                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
+                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
+                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
+                        ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
+                    NULL as type 
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFamilyChild
+                    WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
+                    AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
+                    AND gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                    AND gibbonFamilyChild.gibbonFamilyID=(SELECT gibbonFamilyAdult.gibbonFamilyID FROM gibbonFamilyAdult WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID)";
+        }
+        // Allow individuals to only search themselves
+        else if ($highestActionStudent == 'View Student Profile_my') {
+            $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
+            $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
+                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
+                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
+                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
+                        ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
+                    NULL as type
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
+                    WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
+                    AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
+                    AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+        }
+        // Allow searching of all students
+        else {
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
                     (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
                         WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
@@ -154,17 +184,21 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
                     AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID
-                    AND status='Full'
-                    AND (dateStart IS NULL OR dateStart<=:today)
-                    AND (dateEnd IS NULL OR dateEnd>=:today)
-                    AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND (gibbonPerson.surname LIKE :search
-                        OR gibbonPerson.firstName LIKE :search
-                        OR gibbonPerson.preferredName LIKE :search
-                        OR gibbonPerson.username LIKE :search
-                        OR gibbonPerson.studentID LIKE :search
-                        OR gibbonRollGroup.name LIKE :search)
-                    ORDER BY name";
+                    AND status='Full'";
+        }
+
+        $sql.=" AND (dateStart IS NULL OR dateStart<=:today)
+                AND (dateEnd IS NULL OR dateEnd>=:today)
+                AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND (gibbonPerson.surname LIKE :search
+                    OR gibbonPerson.firstName LIKE :search
+                    OR gibbonPerson.preferredName LIKE :search
+                    OR gibbonPerson.username LIKE :search
+                    OR gibbonPerson.studentID LIKE :search
+                    OR gibbonRollGroup.name LIKE :search)
+                ORDER BY name";
+
+        try {
             $resultList = $connection2->prepare($sql);
             $resultList->execute($data);
         } catch (PDOException $e) { die($resultError); }
