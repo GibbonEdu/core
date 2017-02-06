@@ -121,121 +121,129 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             echo '<h2>'.sprintf(__($guid, 'Installation - Step %1$s'), ($step + 1)).'</h2>';
 
                             if ($step == 0) { //Choose language
+                                $proceed = true;
+
                                 if (file_exists('../config.php')) { //Make sure system is not already installed
-                                    echo "<div class='error'>";
-                                    echo __($guid, '../config.php already exists, which suggests this system is already installed. The installer cannot proceed.');
-                                    echo '</div>';
+                                    if (filesize('../config.php') > 0 or is_writable('../config.php') == false) {
+                                        $proceed = false;
+                                    }
                                 } else { //No config, so continue installer
                                     if (is_writable('../') == false) { //Ensure that home directory is writable
-                                        echo "<div class='error'>";
-                                        echo __($guid, 'The directory containing the Gibbon files is not currently writable, so the installer cannot proceed.');
-                                        echo '</div>';
-                                    } else {
-                                        echo "<div class='success'>";
-                                        echo __($guid, 'The directory containing the Gibbon files is writable, so the installation may proceed.');
-                                        echo '</div>';
-
-                                        $trueIcon = "<img title='" . __($guid, 'Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-										$falseIcon = "<img title='" . __($guid, 'No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
-
-										$versionTitle = __($guid, '%s Version');
-										$versionMessage = __($guid, '%s requires %s version %s or higher');
-
-										$phpVersion = phpversion();
-
-										$phpRequirement = $gibbon->getSystemRequirement('php');
-										$extensions = $gibbon->getSystemRequirement('extensions');
-
-                                        //Set language options
-                                        ?>
-										<form method="post" action="./install.php?step=1&guid=<?php echo $guid ?>">
-											<table class='smallIntBorder fullWidth' cellspacing='0'>
-												<tr class='break'>
-													<td colspan=3>
-														<h3><?php echo __($guid, 'System Requirements') ?></h3>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<b><?php printf($versionTitle, 'PHP'); ?></b><br/>
-														<span class="emphasis small">
-															<?php printf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement ); ?>
-														</span>
-													</td>
-													<td style="width:60px;padding-left:10px!important;">
-														<b><?php echo $phpVersion; ?></b>
-													</td>
-													<td class="right" style="width:60px;">
-														<?php echo (version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon; ?>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<b><?php echo __($guid, 'MySQL PDO Support'); ?></b><br/>
-													</td>
-													<td style="padding-left:10px!important;">
-														<?php echo (@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
-													</td>
-													<td class="right">
-														<?php echo (@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon; ?>
-													</td>
-												</tr>
-												<?php 
-										            if (!empty($extensions) && is_array($extensions)) {
-										                foreach ($extensions as $extension) { 
-										                    $installed = @extension_loaded($extension);
-										                    ?>
-										                    <tr>
-										                        <td>
-										                            <b><?php echo __($guid, 'Extension').' '. $extension; ?></b><br/>
-										                        </td>
-										                        <td style="padding-left:10px!important;">
-										                            <?php echo ($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
-										                        </td>
-										                        <td colspan=2 class="right">
-										                            <?php echo ($installed)? $trueIcon : $falseIcon; ?>
-										                        </td>
-										                    </tr>
-										                    <?php
-										                }
-										            }
-										        ?>
-												<tr class='break'>
-													<td colspan=3>
-														<h3><?php echo __($guid, 'Language Settings') ?></h3>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<b><?php echo __($guid, 'System Language') ?> *</b><br/>
-													</td>
-													<td colspan=2 class="right" style='width: 275px'>
-														<select name="code" id="code" class="standardWidth">
-															<option value='nl_NL'>Dutch - Nederland</option>
-															<option selected value='en_GB'>English - United Kingdom</option>
-															<option value='en_US'>English - United States</option>
-															<option value='es_ES'>Español</option>
-															<option value='fr_FR'>Français - France</option>
-															<option value='it_IT'>Italiano - Italia</option>
-															<option value='ro_RO'>Română</option>
-															<option value='zh_HK'>體字 - 香港</option>
-															<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
-														</select>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-													</td>
-													<td colspan=2 class="right">
-														<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-													</td>
-												</tr>
-											</table>
-										</form>
-										<?php
-
+                                        $proceed = false;
                                     }
+                                }
+
+                                if ($proceed == false) {
+                                    echo "<div class='error'>";
+                                    echo __($guid, 'The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.');
+                                    echo '</div>';
+                                }
+                                else {
+                                    //PROCEED
+                                    echo "<div class='success'>";
+                                    echo __($guid, 'The directory containing the Gibbon files is writable, so the installation may proceed.');
+                                    echo '</div>';
+
+                                    $trueIcon = "<img title='" . __($guid, 'Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
+									$falseIcon = "<img title='" . __($guid, 'No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+
+									$versionTitle = __($guid, '%s Version');
+									$versionMessage = __($guid, '%s requires %s version %s or higher');
+
+									$phpVersion = phpversion();
+
+									$phpRequirement = $gibbon->getSystemRequirement('php');
+									$extensions = $gibbon->getSystemRequirement('extensions');
+
+                                    //Set language options
+                                    ?>
+									<form method="post" action="./install.php?step=1&guid=<?php echo $guid ?>">
+										<table class='smallIntBorder fullWidth' cellspacing='0'>
+											<tr class='break'>
+												<td colspan=3>
+													<h3><?php echo __($guid, 'System Requirements') ?></h3>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<b><?php printf($versionTitle, 'PHP'); ?></b><br/>
+													<span class="emphasis small">
+														<?php printf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement ); ?>
+													</span>
+												</td>
+												<td style="width:60px;padding-left:10px!important;">
+													<b><?php echo $phpVersion; ?></b>
+												</td>
+												<td class="right" style="width:60px;">
+													<?php echo (version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon; ?>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<b><?php echo __($guid, 'MySQL PDO Support'); ?></b><br/>
+												</td>
+												<td style="padding-left:10px!important;">
+													<?php echo (@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
+												</td>
+												<td class="right">
+													<?php echo (@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon; ?>
+												</td>
+											</tr>
+											<?php
+									            if (!empty($extensions) && is_array($extensions)) {
+									                foreach ($extensions as $extension) {
+									                    $installed = @extension_loaded($extension);
+									                    ?>
+									                    <tr>
+									                        <td>
+									                            <b><?php echo __($guid, 'Extension').' '. $extension; ?></b><br/>
+									                        </td>
+									                        <td style="padding-left:10px!important;">
+									                            <?php echo ($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
+									                        </td>
+									                        <td colspan=2 class="right">
+									                            <?php echo ($installed)? $trueIcon : $falseIcon; ?>
+									                        </td>
+									                    </tr>
+									                    <?php
+									                }
+									            }
+									        ?>
+											<tr class='break'>
+												<td colspan=3>
+													<h3><?php echo __($guid, 'Language Settings') ?></h3>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<b><?php echo __($guid, 'System Language') ?> *</b><br/>
+												</td>
+												<td colspan=2 class="right" style='width: 275px'>
+													<select name="code" id="code" class="standardWidth">
+														<option value='nl_NL'>Dutch - Nederland</option>
+														<option selected value='en_GB'>English - United Kingdom</option>
+														<option value='en_US'>English - United States</option>
+														<option value='es_ES'>Español</option>
+														<option value='fr_FR'>Français - France</option>
+														<option value='it_IT'>Italiano - Italia</option>
+														<option value='ro_RO'>Română</option>
+														<option value='zh_HK'>體字 - 香港</option>
+														<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+												</td>
+												<td colspan=2 class="right">
+													<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+												</td>
+											</tr>
+										</table>
+									</form>
+									<?php
+
                                 }
                             }
                             if ($step == 1) { //Set database options

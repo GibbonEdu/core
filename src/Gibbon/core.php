@@ -127,7 +127,7 @@ class Core {
 	 */
 	public function isInstalled()
 	{
-		return file_exists($this->basePath.'/config.php');
+		return (file_exists($this->basePath.'/config.php') && filesize($this->basePath.'/config.php') > 0);
 	}
 
 	/**
