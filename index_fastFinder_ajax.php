@@ -88,25 +88,21 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
         try {
             if ($highestActionClass == 'Lesson Planner_viewEditAllClasses' or $highestActionClass == 'Lesson Planner_viewAllEditMyClasses') {
                 $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
                         FROM gibbonCourseClass
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                         WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2
-                        AND (gibbonCourse.name LIKE :search
-                            OR gibbonCourse.nameShort LIKE :search
-                            OR gibbonCourseClass.nameShort LIKE :search)
+                        AND (gibbonCourse.name LIKE :search OR CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) LIKE :search)
                         ORDER BY name";
             } else {
                 $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID3' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'] );
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
                         FROM gibbonCourseClassPerson
                         JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                         WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID3
                         AND gibbonPersonID=:gibbonPersonID
-                        AND (gibbonCourse.name LIKE :search
-                            OR gibbonCourse.nameShort LIKE :search
-                            OR gibbonCourseClass.nameShort LIKE :search)
+                        AND (gibbonCourse.name LIKE :search OR CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) LIKE :search)
                         ORDER BY name";
             }
             $resultList = $connection2->prepare($sql);
