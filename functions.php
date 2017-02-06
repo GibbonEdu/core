@@ -2185,7 +2185,9 @@ function getFastFinder($connection2, $guid)
         $output .= '$(document).ready(function() {';
         $output .= '$("#id").tokenInput("'.$_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php",';
         $output .= '{theme: "facebook",';
-        $output .= 'hintText: "Start typing a name...",';
+        $output .= 'hintText: "'.__($guid, 'Start typing a name...').'",';
+        $output .= 'noResultsText: "'.__($guid, 'No results').'",';
+        $output .= 'searchingText: "'.__($guid, 'Searching...').'",';
         $output .= 'allowCreation: false,';
         $output .= 'preventDuplicates: true,';
         $output .= 'tokenLimit: 1});';
