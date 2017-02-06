@@ -32,6 +32,7 @@ v14.0.00
 
 	Tweaks & Bug Fixes
 		System: Improved Fast Finder student search permissions
+		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 
 v13.0.01
 --------

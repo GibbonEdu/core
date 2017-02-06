@@ -111,27 +111,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 list($lastDayYear, $lastDayMonth, $lastDayDay) = explode('-', $row['lastDay']);
                 $lastDayStamp = mktime(0, 0, 0, $lastDayMonth, $lastDayDay, $lastDayYear);
 
-                    //Count back to first Monday before first day
-                    $startDayStamp = $firstDayStamp;
+                //Count back to first Monday before first day
+                $startDayStamp = $firstDayStamp;
                 while (date('D', $startDayStamp) != 'Mon') {
                     $startDayStamp = $startDayStamp - 86400;
                 }
 
-                    //Count forward to first Sunday after last day
-                    $endDayStamp = $lastDayStamp;
+                //Count forward to first Sunday after last day
+                $endDayStamp = $lastDayStamp;
                 while (date('D', $endDayStamp) != 'Sun') {
                     $endDayStamp = $endDayStamp + 86400;
                 }
 
-                    //Get the special days
-                    try {
-                        $dataSpecial = array('gibbonSchoolYearTermID' => $row['gibbonSchoolYearTermID']);
-                        $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID ORDER BY date';
-                        $resultSpecial = $connection2->prepare($sqlSpecial);
-                        $resultSpecial->execute($dataSpecial);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+                //Get the special days
+                try {
+                    $dataSpecial = array('gibbonSchoolYearTermID' => $row['gibbonSchoolYearTermID']);
+                    $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID ORDER BY date';
+                    $resultSpecial = $connection2->prepare($sqlSpecial);
+                    $resultSpecial->execute($dataSpecial);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
                 if ($resultSpecial->rowCount() > 0) {
                     $rowSpecial = $resultSpecial->fetch();
                 }
@@ -183,12 +183,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     echo __($guid, $dowLong).'<br/>';
                     echo '<script type="text/javascript">';
                     echo '$(function () {';
-                    echo "$('.checkall".$dowShort."').click(function () {";
-                    echo "$('.".$dowShort."').find(':checkbox').attr('checked', this.checked);";
+                    echo "$('.checkall".$dowShort.$row['nameShort']."').click(function () {";
+                    echo "$('.".$dowShort.$row['nameShort']."').find(':checkbox').attr('checked', this.checked);";
                     echo '});';
                     echo '});';
                     echo '</script>';
-                    echo "<input type='checkbox' class='checkall".$dowShort."'><br/>";
+                    echo "<input type='checkbox' class='checkall".$dowShort.$row['nameShort']."'><br/>";
                     echo '</th>';
                 }
                 echo '</tr>';
@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                                 echo "<span style='color: #000000'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>'.__($guid, 'School Day').'</span>';
                             }
                             echo '<br/>';
-                            echo "<fieldset class='".date('D', $i)."' style='border: none'>";
+                            echo "<fieldset class='".date('D', $i).$row['nameShort']."' style='border: none'>";
                             echo "<input name='dates[]' value='$i' type='checkbox'/>";
                             echo '</fieldset>';
                             echo '<br/>';
