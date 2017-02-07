@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 // Gibbon system-wide include
 include './gibbon.php';
 
-
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
     ++$_SESSION[$guid]['pageLoads'];

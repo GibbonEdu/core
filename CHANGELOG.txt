@@ -16,6 +16,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v14.0.00
+--------
+	Headlines
+		...
+
+	Changes With Important Notices
+		...
+
+	Significant Changes
+		...
+
+	Security
+		...
+
+	Tweaks & Bug Fixes
+		System: Improved Fast Finder student search permissions
+
+v13.0.01
+--------
+Tweaks & Bug Fixes
+	System: installer adjusted to provide compatibility with Softaculous
+	System: fixed Resource tag issue in demo data
+	Resources: fixed PHP notice in View Resources
+
 v13.0.00
 --------
 	Headlines
