@@ -2044,6 +2044,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
 
                                 if ($resultList->rowCount() > 0) {
+
+                                    require_once './modules/Markbook/moduleFunctions.php';
+                                    renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'] );
+
                                     while ($rowList = $resultList->fetch()) {
                                         try {
                                             $dataEntry['gibbonPersonID'] = $gibbonPersonID;

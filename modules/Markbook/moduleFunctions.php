@@ -319,22 +319,135 @@ function getAlertStyle( $alert, $concern ) {
     }
 }
 
+function getReportGrade($pdo, $reportName, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID) {
+
+    // read criteria for this subject
+    $data = array(
+        'gibbonCourseClassID' => $gibbonCourseClassID,
+        'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+        'reportName' => $reportName,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'today' => date('Y-m-d'),
+    );
+    $sql = "SELECT arrReportGrade.gradeID 
+        FROM arrCriteria 
+        JOIN arrReport ON (arrCriteria.reportID=arrReport.reportID)
+        JOIN arrReportGrade ON (arrReportGrade.criteriaID=arrCriteria.criteriaID)
+        JOIN gibbonCourseClass ON (arrCriteria.subjectID=gibbonCourseClass.gibbonCourseID)
+        WHERE arrReport.reportName=:reportName 
+        AND arrReport.schoolYearID=:gibbonSchoolYearID 
+        AND arrReport.endDate<=:today
+        AND arrCriteria.criteriaType = 2 
+        AND arrReportGrade.studentID=:gibbonPersonIDStudent 
+        AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID";
+    $rs = $pdo->executeQuery($data, $sql);
+
+    return ($rs && $rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
+}
+
+function getCriteriaGrade($pdo, $criteriaType, $gibbonPersonIDStudent, $gibbonCourseClassID) {
+
+    // read criteria for this subject
+    $data = array(
+        'gibbonCourseClassID' => $gibbonCourseClassID,
+        'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+        'criteriaType' => $criteriaType,
+    );
+    $sql = "SELECT arrReportGrade.gradeID 
+        FROM arrCriteria 
+        JOIN arrReportGrade ON (arrReportGrade.criteriaID=arrCriteria.criteriaID)
+        JOIN gibbonCourseClass ON (arrCriteria.subjectID=gibbonCourseClass.gibbonCourseID)
+        WHERE arrCriteria.criteriaType =:criteriaType 
+        AND arrReportGrade.studentID=:gibbonPersonIDStudent 
+        AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
+        ORDER BY arrCriteria.reportID DESC LIMIT 1";
+    $rs = $pdo->executeQuery($data, $sql);
+
+    return ($rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
+}
+
+function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
+
+    $data = array(
+        'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+        'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
+        'today' => date('Y-m-d'),
+    );
+    $sql = "SELECT arrReportGPA.GPA, arrReport.reportName
+        FROM arrReportGPA 
+        JOIN arrReport ON (arrReportGPA.reportID=arrReport.reportID)
+        WHERE arrReport.schoolYearID=:gibbonSchoolYearID 
+        AND arrReport.endDate<=:today
+        AND arrReportGPA.studentID=:gibbonPersonIDStudent 
+        ORDER BY arrReport.reportID ASC";
+    $rs = $pdo->executeQuery($data, $sql);
+
+    if ($rs->rowCount() == 0) return;
+
+    $marks = $rs->fetchAll();
+
+    echo '<h4>Current GPA</h4>';
+
+    echo '<table class="mini fullWidth" cellspacing="0">';
+        echo '<tr class="head">';
+
+        foreach ($marks as $row) {
+            if (empty($row['GPA'])) continue;
+            echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 65px;font-size: 11px;">'.$row['reportName'].'</td>';
+        }
+
+        echo '<td rowspan="2" style="padding: 10px 30px !important; border: 0; border-left: 1px solid #dfdfdf;">';
+            echo '<span class="small emphasis">A student\'s GPA is the weighted average of course marks, taking into account the credit value of each course. The GPA\'s listed here are from  posted report card marks.</span>';
+        echo '</td>';
+    echo '</tr>';
+
+    echo '<tr>';
+
+        foreach ($marks as $row) {
+            if (empty($row['GPA'])) continue;
+            echo '<td style="padding: 10px !important; text-align: center;">'.round( $row['GPA'], 1 ).'%</td>';
+        }
+    echo '</tr>';
+
+    echo '</table>';
+}
+
 function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
 
     global $gibbon;
 
-    $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-    if ($enableColumnWeighting != 'Y') return;
+    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
 
-    require_once './modules/Markbook/src/markbookView.php';
+    $sem1Mid = getReportGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    $sem1End = getReportGrade($pdo, 'Sem1-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    $sem2Mid = getReportGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    $sem2End = getReportGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
-    // Build the markbook object for this class & student
-    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
-    $markbook->cacheWeightings( $gibbonPersonIDStudent );
+    $finalMark = getCriteriaGrade($pdo, 4, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
-    $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
-    $examMark = round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
-    $finalMark = round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
+    if (!empty($finalMark)) {
+
+        $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
+
+        $courseMark = '';
+        $examMark = getCriteriaGrade($pdo, 1, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    } else {
+
+        $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
+        if ($enableColumnWeighting != 'Y') return;
+
+        require_once './modules/Markbook/src/markbookView.php';
+
+        // Build the markbook object for this class & student
+        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+        $markbook->cacheWeightings( $gibbonPersonIDStudent );
+
+        $message = '<b>Current course</b>: Overall mark is a cumulative grade from ongoing course work.';
+
+        $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
+        $examMark = ''; //round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
+        $finalMark = ''; //round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
+    }
 
     // Only display if there are marks
     if (!empty($courseMark) || !empty($examMark) || !empty($finalMark) ) {
@@ -343,26 +456,54 @@ function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonC
         echo '<td colspan=7 style="padding:0;">';
         echo '<table class="mini fullWidth" style="margin: 0; border: 0;" cellspacing="0">';
         echo '<tr class="head">';
-        echo '<td width="70%" style="border: 0;">&nbsp;</td>';
-        echo '<th width="10%" class="columnLabel" style="border: 0; padding: 10px !important;text-align: center;">'.__($guid, 'Course').'</td>';
-        echo '<th width="10%" class="columnLabel" style="border: 0; padding: 10px !important;text-align: center;">'.__($guid, 'Exam').'</td>';
-        echo '<th width="10%" class="columnLabel" style="border: 0; padding: 10px !important;text-align: center;">'.__($guid, 'Final').'</td>';
+
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem1-Mid').'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem1-End').'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem2-Mid').'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem2-End').'</td>';
+
+        echo '<td rowspan="2" style="padding: 10px 30px !important;">';
+            echo '<span class="small emphasis">'.$message.'</span>';
+        echo '</td>';
+
+        if (!empty($courseMark)) {
+            echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 65px;">'.__($guid, 'Course').'</td>';
+        }
+        if (!empty($examMark)) {
+            echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 65px;">'.__($guid, 'Exam').'</td>';
+        }
+        if (!empty($finalMark)) {
+            echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 65px;">'.__($guid, 'Final').'</td>';
+        }
         echo '</tr>';
 
         echo '<tr>';
-        echo '<td style="border: 0;">&nbsp;</td>';
+
+        echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem1Mid)? round( $sem1Mid ).'%' : '' ) .'</td>';
+
+        echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem1End)? round( $sem1End ).'%' : '' ) .'</td>';
+
+        echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem2Mid)? round( $sem2Mid ).'%' : '' ) .'</td>';
+
+        echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem2End)? round( $sem2End ).'%' : '' ) .'</td>';
 
         // Display the cumulative average
-        echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
-        echo ( !empty($courseMark)? round( $courseMark ).'%' : '' ) .'</td>';
+        if (!empty($courseMark)) {
+            echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
+            echo round( $courseMark ).'%' .'</td>';
+        }
         
         // Display final exam mark
-        echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
-        echo ( !empty($examMark)? round( $examMark ).'%' : '' ) .'</td>';
+        if (!empty($examMark)) {
+            echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
+            echo round( $examMark ).'%' .'</td>';
+        }
 
-        // Don't display a final mark unless there's an exam mark too
-        echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
-        echo ( (!empty($examMark) && !empty($finalMark))? round( $finalMark ).'%' : '' ) .'</td>';
+        // Display final course mark
+        if (!empty($finalMark)) {
+            echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
+            echo round( $finalMark ).'%' .'</td>';
+        }
 
         echo '</tr></table>';
         echo '</td>';
