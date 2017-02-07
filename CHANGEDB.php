@@ -690,5 +690,8 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '14.0.00';
 $sql[$count][1] = "
-
+INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Myanmar');end
+UPDATE gibbonLanguage SET name='Croatian' WHERE gibbonLanguageID='0012';end
+UPDATE gibbonLanguage SET name='Ukrainian' WHERE gibbonLanguageID='0068';end
+UPDATE gibbonCountry SET iddCountryCode='95' WHERE printable_name='Myanmar';end
 ";
