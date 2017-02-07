@@ -163,13 +163,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'>
+				<td style='width: 275px' rowspan=2>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-				</td>
+                </td>
+			</tr>
+            <tr>
+				<td class="right">
+					<?php
+                    $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+                    if ($row['value'] != '' && $row['value'] != null) {
+                        $inRange = false ;
+                        foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
+                            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR'])
+                                $inRange = true ;
+                        }
+                    }
+                    if ($inRange) { //Current address is in range
+                        echo "<div style='float: right' class='success standardWidth'>";
+                            echo sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>");
+                        echo "</div>";
+                    }
+                    else { //Current address is not in range
+                        echo "<div style='float: right' class='warning standardWidth'>";
+                            echo sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>");
+                        echo "</div>";
+                    }
+                    ?>
+                </td>
 			</tr>
 
             <tr class='break'>
