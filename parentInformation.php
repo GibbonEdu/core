@@ -281,7 +281,7 @@ else {
 		    					Step 2 &nbsp;<small>Upload Family Member Photos</small>
 		    				</h3>
 		    				<p>
-		    					The addition of the new North Wing affords TIS the opportunity to review and enhance our security on campus. A Parent ID card system will be implemented at the school to ensure the safety of all TIS students and their families.
+		    					The addition of the new North Wing affords TIS the opportunity to review and enhance our security on campus. A Parent ID card system is being implemented at the school to ensure the safety of all TIS students and their families.
 		    				</p>
 		    			<?php endif; ?>
 	    				<h4>Parent ID Cards:</h4>
@@ -356,7 +356,7 @@ else {
 	    				<h3>
 	    					<?php echo __($guid, 'Additional Photos'); ?>
 	    				</h3>
-	    				<p>You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file.</p>
+	    				<p>You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.</p>
 	    			</td>
 	    		</tr>
 
