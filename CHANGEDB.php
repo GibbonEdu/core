@@ -690,5 +690,7 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '14.0.00';
 $sql[$count][1] = "
-
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'studentSelfRegistrationIPAddresses', 'Student Self Registration IP Addresses', 'Comma-separated list of IP addresses within which students can self register.', '');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Student Self Registration', 0, 'Take Attendance', 'Allows students to self register as Present, provided they are within a certain range of IP addresses.', 'attendance_studentSelfRegister.php', 'attendance_studentSelfRegister.php', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N');end
+ALTER TABLE `gibbonAttendanceLogPerson` CHANGE `gibbonCourseClassID` `gibbonCourseClassID` INT(8) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ";

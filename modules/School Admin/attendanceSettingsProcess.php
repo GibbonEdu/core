@@ -47,6 +47,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
+    $studentSelfRegistrationIPAddresses = '';
+    foreach (explode(',', $_POST['studentSelfRegistrationIPAddresses']) as $ipAddress) {
+        $studentSelfRegistrationIPAddresses .= trim($ipAddress).',';
+    }
+    $studentSelfRegistrationIPAddresses = substr($studentSelfRegistrationIPAddresses, 0, -1);
+
+    try {
+        $data = array('value' => $studentSelfRegistrationIPAddresses);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='studentSelfRegistrationIPAddresses'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
     $attendanceCLINotifyByRollGroup = (isset($_POST['attendanceCLINotifyByRollGroup'])) ? $_POST['attendanceCLINotifyByRollGroup'] : NULL;
     try {
         $data = array('value' => $attendanceCLINotifyByRollGroup);
