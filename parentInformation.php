@@ -222,7 +222,7 @@ else {
             $result->execute($data);
 	    } catch (PDOException $e) {}
 
-	    if ($result->rowCount() == 1) {
+	    if ($result->rowCount() >= 1) {
 	    	$proceed = true;
 	    } else {
 	    	$message = 'The request could not proceed. Either your account is not currently active in our system, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>';
@@ -300,6 +300,8 @@ else {
 	    		</tr>
 	    		<?php
 	    			while ($familyAdult = $result->fetch()) :
+
+	    				$photoURL = file_exists($_SESSION[$guid]['absoluteURL'].'/'.$familyAdult['image_240'])? $familyAdult['image_240'] : '';
 	    		?>
 		    		<tr>
 		    			<td rowspan=1 style="width:200px;">
@@ -341,7 +343,7 @@ else {
 
 								<script type="text/javascript">
 									var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
-									$('#'+photoName).cropit({ imageState: { src: '<?php echo $familyAdult['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
+									$('#'+photoName).cropit({ imageState: { src: '<?php echo $photoURL; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
 								</script>
 							</td>
 						<?php endif; ?>
@@ -373,6 +375,8 @@ else {
 					    } else {
 					    	$additionalPerson = array('name' => '', 'relationship' => '', 'image_240' => '');
 					    }
+
+					    $photoURL = file_exists($_SESSION[$guid]['absoluteURL'].'/'.$additionalPerson['image_240'])? $additionalPerson['image_240'] : '';
 	    		?>
 					<tr>
 						<td rowspan=3 style="width:200px;">
@@ -403,7 +407,7 @@ else {
 
 							<script type="text/javascript">
 								var photoName = "<?php echo 'additionalPhoto'.$i;?>";
-								$('#'+photoName).cropit({ imageState: { src: '<?php echo $additionalPerson['image_240']; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
+								$('#'+photoName).cropit({ imageState: { src: '<?php echo $photoURL; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
 								});
 							</script>
 						</td>
