@@ -8,15 +8,13 @@ $form->addSubheading('Bar');
 
 $form->addGeneric('readonly', 'Read Only')->setValue('Something!');
 
-$form->addTextField('name', 'Name')->setDescription('Must be unique.')->setValue('foo')->isRequired();
-
-$form->addTextField('description', 'Description'); // OVERWRITTEN
+$form->addTextField('name', 'Name')->setDescription('Must be unique.')->setValue('foo')->maxLength(20)->isRequired();
 
 $form->addTextArea('description', 'Description')->setDescription('Say something');
 
 $form->addTextField('sequenceNumber', 'Sequence Number')->setDescription('Must be unique. Controls chronological ordering.')->isRequired();
 
-$form->addSection('Lorem ipsum');
+$form->addRow('Lorem ipsum');
 
 $form->addSelect('status', 'Status')->fromString('Past, Current, Upcoming')->selected('Upcoming')->isRequired();
 

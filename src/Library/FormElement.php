@@ -27,7 +27,7 @@ namespace Library;
  * @version	v14
  * @since	v14
  */
-class Form_Element {
+class FormElement implements iFormElement {
 
 	protected $name;
 	protected $label;
@@ -116,15 +116,15 @@ class Form_Element {
 
 		if ($this->required == true || !empty($this->validation)) {
 			
-			$output .= 'var '.$this->name.'Valid=new LiveValidation(\''.$this->name.'\'); '."\r";
+			$output .= 'var '.$this->name.'Validate=new LiveValidation(\''.$this->name.'\'); '."\r";
 
 			if ($this->required == true) {
-				$output .= $this->name.'Valid.add(Validate.Presence); '."\r";
+				$output .= $this->name.'Validate.add(Validate.Presence); '."\r";
 			}
 
 			if (!empty($this->validation) && is_array($this->validation)) {
 				foreach ($this->validation as $type => $params) {
-					$output .= $this->name.'Valid.add('.$type.', {'.$params.' } ); '."\r";
+					$output .= $this->name.'Validate.add('.$type.', {'.$params.' } ); '."\r";
 				}
 			}
 		}

@@ -27,9 +27,25 @@ namespace Library;
  * @version	v14
  * @since	v14
  */
-class Form_TextField extends Form_Element {
+class FormTextField extends FormElement {
+
+	protected $maxLength;
+
+	public function maxLength($value = '') {
+		$this->maxLength = $value;
+		return $this;
+	}
 
 	protected function getElement() {
-		return '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'">';
+
+		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+
+		if (!empty($this->maxLength)) {
+			$output .= ' maxlength="'.$this->maxLength.'"';
+		}
+
+		$output .= '>';
+
+		return $output;
 	}
 }

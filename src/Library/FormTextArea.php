@@ -27,15 +27,32 @@ namespace Library;
  * @version	v14
  * @since	v14
  */
-class Form_TextArea extends Form_Element {
+class FormTextArea extends FormElement {
 
 	protected $rows = 4;
+	protected $maxLength;
 
 	public function setRows($count) {
 		$this->rows = $count;
 	}
 
+	public function maxLength($value = '') {
+		$this->maxLength = $value;
+		return $this;
+	}
+
 	protected function getElement() {
-		return '<textarea class="standardWidth" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'">'.$this->value.'</textarea>';
+
+		$output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
+
+		if (!empty($this->maxLength)) {
+			$output .= ' maxlength="'.$this->maxLength.'"';
+		}
+		$output .= '>';
+
+		$output .= $this->value;
+		$output .= '</textarea>';
+
+		return $output;
 	}
 }

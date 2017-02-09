@@ -54,25 +54,25 @@ class Form {
 		$this->hiddenValues[$name] = $value;
 	}
 
-	public function addElement($element) {
+	public function addElement(iFormElement $element) {
 		$this->formElements[] = $element;
 		return $element;
 	}
 
 	public function addGeneric($name, $label) {
-		return $this->addElement( new \Library\Form_Element($name, $label) );
+		return $this->addElement( new \Library\FormElement($name, $label) );
 	}
 
 	public function addTextField($name, $label) {
-		return $this->addElement( new \Library\Form_TextField($name, $label) );
+		return $this->addElement( new \Library\FormTextField($name, $label) );
 	}
 
 	public function addTextArea($name, $label) {
-		return $this->addElement( new \Library\Form_TextArea($name, $label) );
+		return $this->addElement( new \Library\FormTextArea($name, $label) );
 	}
 
 	public function addSelect($name, $label) {
-		return $this->addElement( new \Library\Form_Select($name, $label) );
+		return $this->addElement( new \Library\FormSelect($name, $label) );
 	}
 
 	public function addSelectSchoolYear($name, $label) {
@@ -95,21 +95,21 @@ class Form {
 
 	public function addHeading($label) {
 		$content = sprintf('<h3>%s</h3>', $label);
-		return $this->addElement( new \Library\Form_Layout($content) )->setClass('break');
+		return $this->addElement( new \Library\FormLayout($content) )->setClass('break');
 	}
 
 	public function addSubheading($label) {
 		$content = sprintf('<h4>%s</h4>', $label);
-		return $this->addElement( new \Library\Form_Layout($content) );
+		return $this->addElement( new \Library\FormLayout($content) );
 	}
 
-	public function addSection($content) {
-		return $this->addElement( new \Library\Form_Layout($content) );
+	public function addRow($content) {
+		return $this->addElement( new \Library\FormLayout($content) );
 	}
 
 	public function addAlert($content, $level = 'warning') {
 		$content = sprintf('<div class="%s">%s</div>', $level, $content);
-		return $this->addElement( new \Library\Form_Layout($content) );
+		return $this->addElement( new \Library\FormLayout($content) );
 	}
 	
 	public function getOutput() {
@@ -153,4 +153,14 @@ class Form {
 	public function output() {
 		echo $this->getOutput();
 	}
+}
+
+/**
+ * Defone a common interface for elements
+ *
+ * @version	v14
+ * @since	v14
+ */
+interface iFormElement {
+    public function getOutput();
 }

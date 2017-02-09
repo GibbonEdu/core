@@ -27,7 +27,7 @@ namespace Library;
  * @version	v14
  * @since	v14
  */
-class Form_Select extends Form_Element {
+class FormSelect extends FormElement {
 
 	protected $options = array();
 
