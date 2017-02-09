@@ -38,6 +38,9 @@ class FormTextArea extends FormElement {
 
 	public function maxLength($value = '') {
 		$this->maxLength = $value;
+
+		$this->addValidation('Validate.Length', '{ maximum: '.$this->maxLength.' }');
+
 		return $this;
 	}
 
