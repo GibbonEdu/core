@@ -17,42 +17,38 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library;
+namespace Library\Forms;
 
 /**
- * Form
- *
- * Responsibilities:
+ * Element
  *
  * @version	v14
  * @since	v14
  */
-class FormElement implements iFormElement {
+abstract class Element implements FormElementInterface {
 
 	protected $name;
-	protected $label;
-	protected $description;
 	protected $class;
 	protected $value;
 
 	protected $required = false;
-	protected $fullWidth = false;
 
 	protected $validation = array();
 
-	public function __construct($name, $label) {
+	public function __construct($name) {
 		$this->name = $name;
-		$this->label = $label;
 		$this->class = 'standardWidth';
 	}
+
+	protected abstract function getElement();
 
 	public function isRequired($value = true) {
 		$this->required = $value;
 		return $this;
 	}
 
-	public function setDescription($value = '') {
-		$this->description = $value;
+	public function addClass($value = '') {
+		$this->class .= ' '.$value;
 		return $this;
 	}
 
@@ -60,15 +56,9 @@ class FormElement implements iFormElement {
 		$this->class = $value;
 		return $this;
 	}
-
+	
 	public function setValue($value = '') {
 		$this->value = $value;
-		return $this;
-	}
-
-	public function fullWidth($value = true) {
-		$this->fullWidth = $value;
-		$this->class = 'fullWidth';
 		return $this;
 	}
 
@@ -77,38 +67,16 @@ class FormElement implements iFormElement {
 		return $this;
 	}
 
-	protected function getElement() {
-		return $this->value;
+	public function getRequired() {
+		return $this->required;
 	}
 
-	protected function getLabel() {
-		if (empty($this->label)) return '';
-
-		return'<b>'.__($this->label).' '.( ($this->required)? '*' : '').'</b><br/>';
-	}
-
-	protected function getDescription() {
-		if (empty($this->description)) return '';
-
-		return '<span class="emphasis small">'.__($this->description).'</span><br/>';
+	public function getClass() {
+		return $this->class;
 	}
 
 	public function getOutput() {
-		$output = '';
-
-		$output .= '<tr id="'.$this->name.'-row">';
-
-			$output .= '<td style="width: 275px">';
-				$output .= $this->getLabel();
-				$output .= $this->getDescription();
-			$output .= '</td>';
-
-			$output .= '<td class="right">';
-				$output .= $this->getElement();
-			$output .= '</td>';
-		$output .= '</tr>';
-
-		return $output;
+		return $this->getElement();
 	}
 
 	public function getValidation() {

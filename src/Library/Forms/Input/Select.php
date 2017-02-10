@@ -17,17 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library;
+namespace Library\Forms\Input;
+
+use \Library\Forms\Element as Element;
 
 /**
- * Form
- *
- * Responsibilities:
+ * Select
  *
  * @version	v14
  * @since	v14
  */
-class FormSelect extends FormElement {
+class Select extends Element {
 
 	protected $options = array();
 

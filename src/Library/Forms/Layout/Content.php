@@ -17,45 +17,54 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library;
+namespace Library\Forms\Layout;
+
+use \Library\Forms\FormElementInterface as FormElementInterface;
 
 /**
- * Form
- *
- * Responsibilities:
+ * Content
  *
  * @version	v14
  * @since	v14
  */
-class FormTextArea extends FormElement {
+class Content implements FormElementInterface {
 
-	protected $rows = 4;
-	protected $maxLength;
+	protected $content;
+	protected $class = '';
 
-	public function setRows($count) {
-		$this->rows = $count;
+	public function __construct($content) {
+		$this->content = $content;
 	}
 
-	public function maxLength($value = '') {
-		$this->maxLength = $value;
-
-		$this->addValidation('Validate.Length', '{ maximum: '.$this->maxLength.' }');
-
+	public function prepend($value) {
+		$this->content = $value.$this->content;
 		return $this;
 	}
 
-	protected function getElement() {
+	public function append($value) {
+		$this->content .= $value;
+		return $this;
+	}
 
-		$output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
+	public function addClass($value = '') {
+		$this->class .= ' '.$value;
+		return $this;
+	}
+	
+	public function setClass($value = '') {
+		$this->class = $value;
+		return $this;
+	}
 
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
-		$output .= '>';
+	public function getClass() {
+		return $this->class;
+	}
 
-		$output .= $this->value;
-		$output .= '</textarea>';
+	public function getOutput() {
+		return $this->content;
+	}
 
-		return $output;
+	public function getValidation() {
+		return '';
 	}
 }

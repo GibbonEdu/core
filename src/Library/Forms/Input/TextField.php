@@ -17,49 +17,48 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library;
+namespace Library\Forms\Input;
+
+use \Library\Forms\Element as Element;
 
 /**
- * Form
- *
- * Responsibilities:
+ * TextField
  *
  * @version	v14
  * @since	v14
  */
-class FormLayout implements iFormElement {
+class TextField extends Element {
 
-	protected $content;
-	protected $class;
+	protected $maxLength;
 
-	public function __construct($content) {
-		$this->content = $content;
-		$this->class = '';
-	}
+	public function maxLength($value = '') {
+		$this->maxLength = $value;
 
-	public function setClass($value = '') {
-		$this->class = $value;
+		$this->addValidation('Validate.Length', '{ maximum: '.$this->maxLength.' }');
+		
 		return $this;
 	}
 
-	public function append($value = '') {
-		$this->content .= $value;
+	public function placeholder($value) {
+		$this->placeholder = $value;
+
 		return $this;
 	}
 
-	public function getOutput() {
-		$output = '';
+	protected function getElement() {
 
-		$output .= '<tr class="'.$this->class.'">';
-			$output .= '<td colspan="2">';
-				$output .= $this->content;
-			$output .= '</td>';
-		$output .= '</tr>';
+		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+
+		if (!empty($this->maxLength)) {
+			$output .= ' maxlength="'.$this->maxLength.'"';
+		}
+
+		if (!empty($this->placeholder)) {
+			$output .= ' placeholder="'.$this->placeholder.'"';
+		}
+
+		$output .= '>';
 
 		return $output;
-	}
-
-	public function getValidation() {
-		return '';
 	}
 }

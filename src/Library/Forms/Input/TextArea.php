@@ -17,37 +17,44 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library;
+namespace Library\Forms\Input;
+
+use \Library\Forms\Element as Element;
 
 /**
- * Form
- *
- * Responsibilities:
+ * TextArea
  *
  * @version	v14
  * @since	v14
  */
-class FormTextField extends FormElement {
+class TextArea extends Element {
 
+	protected $rows = 4;
 	protected $maxLength;
+
+	public function setRows($count) {
+		$this->rows = $count;
+	}
 
 	public function maxLength($value = '') {
 		$this->maxLength = $value;
 
 		$this->addValidation('Validate.Length', '{ maximum: '.$this->maxLength.' }');
-		
+
 		return $this;
 	}
 
 	protected function getElement() {
 
-		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+		$output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
 
 		if (!empty($this->maxLength)) {
 			$output .= ' maxlength="'.$this->maxLength.'"';
 		}
-
 		$output .= '>';
+
+		$output .= $this->value;
+		$output .= '</textarea>';
 
 		return $output;
 	}
