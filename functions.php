@@ -2155,12 +2155,13 @@ function getFastFinder($connection2, $guid)
     }
 
     $output .= '<style>';
-    $output .= 'ul.token-input-list-facebook { width: 320px; float: left; height: 25px!important; margin-right: -5px }';
+    $output .= 'ul.token-input-list-facebook { width: 310px; float: right; height: 25px!important; margin-right: -5px }';
     $output .= 'div.token-input-dropdown-facebook { width: 320px; z-index: 99999999 }';
+    $output .= 'table.fastFinder td { border-top: none }';
     $output .= '</style>';
     $output .= "<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>";
     $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/indexFindRedirect.php'>";
-    $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>";
+    $output .= "<table class='smallIntBorder fastFinder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>";
     $output .= '<tr>';
     $output .= "<td style='vertical-align: top; padding: 0px' colspan=2>";
     $output .= "<h2 style='padding-bottom: 0px'>";
@@ -2216,7 +2217,7 @@ function getFastFinder($connection2, $guid)
 
             $output .= '<tr>';
             $output .= "<td style='vertical-align: top' colspan=2>";
-            $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
+            $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
             $output .= '</td>';
             $output .= '</tr>';
         }
