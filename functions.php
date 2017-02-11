@@ -3985,10 +3985,8 @@ function setLanguageSession($guid, $row)
 }
 
 //Gets the desired setting, specified by name and scope.
-function getSettingByScope($connection2, $scope, $name)
+function getSettingByScope($connection2, $scope, $name, $returnRow = false )
 {
-    $output = false;
-
     try {
         $data = array('scope' => $scope, 'name' => $name);
         $sql = 'SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name';
@@ -3996,12 +3994,18 @@ function getSettingByScope($connection2, $scope, $name)
         $result->execute($data);
     } catch (PDOException $e) {
     }
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-        $output = $row['value'];
+
+    if ($result && $result->rowCount() == 1) {
+
+        if ($returnRow) {
+            return $result->fetch();
+        } else {
+            $row = $result->fetch();
+            return $row['value'];
+        }
     }
 
-    return $output;
+    return null;
 }
 
 //Converts date from language-specific format to YYYY-MM-DD
