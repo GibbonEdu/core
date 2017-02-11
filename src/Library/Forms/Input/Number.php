@@ -57,7 +57,7 @@ class Number extends TextField {
 		$this->addValidation('Validate.Numericality', implode(', ', $validateParams));
 
 		if (!empty($this->decimal) && $this->decimal > 0) {
-			$this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{'.$this->decimal.'})+$/');
+			$this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{'.$this->decimal.'})+$/, failureMessage: "'.sprintf(__('Must be in format %1$s'),str_pad('0.', $this->decimal+2, '0')).'"');
 		}
 
 		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';

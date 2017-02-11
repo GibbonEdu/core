@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $form = new \Library\Forms\Form('messengerSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbookSettingsProcess.php' );
+    $form = new \Library\Forms\Form('markbookSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbookSettingsProcess.php' );
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -125,7 +125,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $row = $form->addRow();
     	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])->fromString('On, Off')->selected($settingByScope['value'])->isRequired();
-        //$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
 	$row = $form->addRow();
 		$row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
