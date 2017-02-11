@@ -89,12 +89,12 @@ class Row {
 
 	public function addHeading($label) {
 		$this->setClass('break');
-		$content = sprintf('<h3>%s</h3>', $label);
+		$content = sprintf('<h3>%s</h3>', __($label) );
 		return $this->addContent($content);
 	}
 
 	public function addSubheading($label) {
-		$content = sprintf('<h4>%s</h4>', $label);
+		$content = sprintf('<h4>%s</h4>', __($label) );
 		return $this->addContent($content);
 	}
 
@@ -104,12 +104,12 @@ class Row {
 	}
 
 	public function addSubmit($label = 'Submit') {
-		$content = sprintf('<input type="submit" value="%s">', $label);
+		$content = sprintf('<input type="submit" value="%s">', __($label) );
 		return $this->addContent($content)->setClass('right');
 	}
 
 	public function addButton($label = 'Button', $onClick = '') {
-		$content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
+		$content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
 		return $this->addContent($content)->setClass('right');
 	}
 
