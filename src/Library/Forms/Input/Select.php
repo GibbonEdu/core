@@ -40,7 +40,7 @@ class Select extends Element {
 			throw new \Exception( sprintf('Select Field %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
 		}
 
-		$pieces = explode(',', $value);
+		$pieces = str_getcsv($value);
 
 		foreach ($pieces as $piece) {
 			$piece = trim($piece);

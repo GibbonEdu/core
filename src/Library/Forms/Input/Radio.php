@@ -37,7 +37,7 @@ class Radio extends Element {
 			throw new \Exception( sprintf('Radio Options %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
 		}
 
-		$pieces = explode(',', $value);
+		$pieces = str_getcsv($value);
 
 		foreach ($pieces as $piece) {
 			$piece = trim($piece);
