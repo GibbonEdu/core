@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 	$settingByScope = getSettingByScope($connection2, 'Messenger', 'smsPassword', true);
 	$row = $form->addRow();
     	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+		$row->addPassword($settingByScope['name'])->setValue($settingByScope['value']);
 
 	$settingByScope = getSettingByScope($connection2, 'Messenger', 'smsURL', true);
 	$row = $form->addRow();

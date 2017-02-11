@@ -65,6 +65,10 @@ class Row {
 		return $this->addElement( $name, new \Library\Forms\Input\TextArea($name) );
 	}
 
+	public function addPassword($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\Password($name) );
+	}
+
 	public function addSelect($name) {
 		return $this->addElement( $name, new \Library\Forms\Input\Select($name) );
 	}
