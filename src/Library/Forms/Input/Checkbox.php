@@ -27,7 +27,7 @@ use \Library\Forms\Element as Element;
  * @version	v14
  * @since	v14
  */
-class Checkbox extends Element {
+class Checkbox extends Radio {
 
 	protected $description;
 
@@ -37,19 +37,42 @@ class Checkbox extends Element {
 	}
 
 	public function checked($value) {
+
+		if (empty($value) || !is_array($value)) {
+			throw new \Exception( sprintf('Checkbox Options %s: checked expects value to be an Array, %s given.', $this->name, gettype($value) ) );
+		}
+
+		if (count($this->options) != count($value)) {
+			throw new Exception( sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name) );
+		}
+
 		$this->value = $value;
+		
 		return $this;
 	}
 
-	protected function getIsChecked($value) {
-		return (!empty($value) && ($value == 1 || $value == true || $value == "1") )? 'checked' : '';
+	protected function getIsChecked($value, $index = 0) {
+
+		if (empty($value) || !isset($this->value[$index])) return '';
+
+		return ($this->value[$index] == 1 || $this->value[$index] == '1' || strtolower($this->value[$index]) == 'true' )? 'checked' : '';
 	}
 
 	protected function getElement() {
 		$output = '';
 
-		$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($this->description).'</label> ';
-		$output .= '<input type="checkbox" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" '.$this->getIsChecked($this->value).'>';
+		$this->options = (!empty($this->options))? $this->options : array($this->value => $this->description);
+
+		if (!empty($this->options) && is_array($this->options)) {
+
+			$i = 0;
+			foreach ($this->options as $value => $label) {
+				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
+				$output .= '<input type="checkbox" class="'.$this->class.'" name="'.$this->name.'[]" value="'.$value.'" '.$this->getIsChecked($value, $i).'><br/>';
+				$i++;
+			}
+
+		}
 
 		return $output;
 	}

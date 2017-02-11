@@ -32,6 +32,11 @@ class Radio extends Element {
 	protected $options = array();
 
 	public function fromString($value) {
+
+		if (empty($value) || !is_string($value)) {
+			throw new \Exception( sprintf('Radio Options %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
+		}
+
 		$pieces = explode(',', $value);
 
 		foreach ($pieces as $piece) {
@@ -44,7 +49,12 @@ class Radio extends Element {
 	}
 
 	public function fromArray($value) {
-		$this->options = $value;
+
+		if (empty($value) || !is_array($value)) {
+			throw new \Exception( sprintf('Radio Options %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value) ) );
+		}
+
+		$this->options = array_merge($this->options, $value);
 
 		return $this;
 	}
@@ -55,7 +65,7 @@ class Radio extends Element {
 	}
 
 	protected function getIsChecked($value) {
-		return (!empty($value) && ($value == 1 || $value == true || $value == "1") )? 'checked' : '';
+		return (!empty($value) && $value == $this->value )? 'checked' : '';
 	}
 
 	protected function getElement() {
@@ -64,8 +74,8 @@ class Radio extends Element {
 		if (!empty($this->options) && is_array($this->options)) {
 
 			foreach ($this->options as $value => $label) {
-				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($this->description).'</label> ';
-				$output .= '<input type="radio" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" '.$this->getIsChecked().'><br/>';
+				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
+				$output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
 			}
 
 		}
