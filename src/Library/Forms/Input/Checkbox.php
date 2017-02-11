@@ -22,42 +22,34 @@ namespace Library\Forms\Input;
 use \Library\Forms\Element as Element;
 
 /**
- * TextField
+ * Checkbox
  *
  * @version	v14
  * @since	v14
  */
-class TextField extends Element {
+class Checkbox extends Element {
 
-	protected $maxLength;
+	protected $description;
 
-	public function maxLength($value = '') {
-		$this->maxLength = $value;
-
-		$this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
-		
+	public function description($value = '') {
+		$this->description = $value;
 		return $this;
 	}
 
-	public function placeholder($value) {
-		$this->placeholder = $value;
-
+	public function checked($value) {
+		$this->value = $value;
 		return $this;
+	}
+
+	protected function getIsChecked($value) {
+		return (!empty($value) && ($value == 1 || $value == true || $value == "1") )? 'checked' : '';
 	}
 
 	protected function getElement() {
+		$output = '';
 
-		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
-
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
-
-		if (!empty($this->placeholder)) {
-			$output .= ' placeholder="'.$this->placeholder.'"';
-		}
-
-		$output .= '>';
+		$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($this->description).'</label> ';
+		$output .= '<input type="checkbox" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" '.$this->getIsChecked($this->value).'>';
 
 		return $output;
 	}

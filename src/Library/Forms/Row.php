@@ -69,6 +69,14 @@ class Row {
 		return $this->addElement( $name, new \Library\Forms\Input\Password($name) );
 	}
 
+	public function addCheckbox($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\Checkbox($name) )->setClass('right');
+	}
+
+	public function addRadio($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\Radio($name) )->setClass('right');
+	}
+
 	public function addSelect($name) {
 		return $this->addElement( $name, new \Library\Forms\Input\Select($name) );
 	}
