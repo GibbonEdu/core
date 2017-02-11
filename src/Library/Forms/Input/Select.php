@@ -66,6 +66,8 @@ class Select extends Element {
 
 		$results = $pdo->executeQuery($data, $sql);
 
+
+
 		return $this->fromResults($results);
 	}
 
@@ -75,10 +77,12 @@ class Select extends Element {
 			throw new \Exception( sprintf('Select Field %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results) ) );
 		}
 		
-		while ($row = $results->fetch()) {
-			if (!isset($row['value']) || !isset($row['name'])) continue;
+		if ($results && $results->rowCount() > 0) {
+			while ($row = $results->fetch()) {
+				if (!isset($row['value']) || !isset($row['name'])) continue;
 
-			$this->options[$row['value']] = $row['name'];
+				$this->options[$row['value']] = $row['name'];
+			}
 		}
 
 		return $this;
@@ -92,9 +96,7 @@ class Select extends Element {
 
 	public function placeholder($value) {
 		$this->placeholder = $value;
-
-		$this->addValidation('Validate.Exclusion', 'within: [\''.$value.'\'], failureMessage: "'.__('Select something!').'"');
-
+		
 		return $this;
 	}
 
@@ -103,8 +105,12 @@ class Select extends Element {
 
 		$output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'">';
 
-		if (!empty($this->placeholder)) {
+		if (isset($this->placeholder)) {
 			$output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
+
+			if ($this->required) {
+				$this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
+			}
 		}
 
 		foreach ($this->options as $value => $label) {
