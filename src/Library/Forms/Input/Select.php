@@ -35,6 +35,11 @@ class Select extends Element {
 	protected $placeholder;
 
 	public function fromString($value) {
+
+		if (empty($value) || !is_string($value)) {
+			throw new \Exception( sprintf('Select Field %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
+		}
+
 		$pieces = explode(',', $value);
 
 		foreach ($pieces as $piece) {
@@ -47,12 +52,28 @@ class Select extends Element {
 	}
 
 	public function fromArray($value) {
-		$this->options = $value;
+
+		if (empty($value) || !is_array($value)) {
+			throw new \Exception( sprintf('Select Field %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value) ) );
+		}
+
+		$this->options = array_merge($this->options, $value);
 
 		return $this;
 	}
 
-	public function fromQuery($results) {
+	public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array() ) {
+
+		$results = $pdo->executeQuery($data, $sql);
+
+		return $this->fromResults($results);
+	}
+
+	public function fromResults($results) {
+
+		if (empty($results) || !is_object($results)) {
+			throw new \Exception( sprintf('Select Field %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results) ) );
+		}
 		
 		while ($row = $results->fetch()) {
 			if (!isset($row['value']) || !isset($row['name'])) continue;
