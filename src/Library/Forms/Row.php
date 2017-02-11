@@ -107,6 +107,22 @@ class Row {
 		return $this->addSelect($name)->fromResults($results)->placeholder('Please select...');
 	}
 
+	public function addSelectStaff(\Gibbon\sqlConnection $pdo, $name) {
+
+		$sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+
+		$results = $pdo->executeQuery(array(), $sql);
+
+		$values = array();
+		if ($results && $results->rowCount() > 0) {
+			while ($row = $results->fetch()) {
+				$values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
+			}
+		}
+
+		return $this->addSelect($name)->fromArray($values);
+	}
+
 	public function addYesNo($name) {
 		return $this->addSelect($name)->fromArray( array( 'Y' => 'Yes', 'N' => 'No') );
 	}
