@@ -81,18 +81,18 @@ class Row {
 		return $this->addElement( $name, new \Library\Forms\Input\Select($name) );
 	}
 
-	public function addSelectSchoolYear($name, \Gibbon\sqlConnection $pdo) {
+	public function addSelectSchoolYear(\Gibbon\sqlConnection $pdo, $name) {
 		$sql = 'SELECT gibbonSchoolYearID as `value`, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
 		$results = $pdo->executeQuery(array(), $sql);
 
-		return $this->addSelect($name)->fromQuery($results)->placeholder('Please select...');
+		return $this->addSelect($name)->fromResults($results)->placeholder('Please select...');
 	}
 
-	public function addSelectLanguage($name, \Gibbon\sqlConnection $pdo) {
+	public function addSelectLanguage(\Gibbon\sqlConnection $pdo, $name) {
 		$sql = 'SELECT name as `value`, name FROM gibbonLanguage ORDER BY name';
 		$results = $pdo->executeQuery(array(), $sql);
 
-		return $this->addSelect($name)->fromQuery($results)->placeholder('Please select...');
+		return $this->addSelect($name)->fromResults($results)->placeholder('Please select...');
 	}
 
 	public function addYesNo($name) {
