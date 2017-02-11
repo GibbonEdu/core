@@ -57,6 +57,10 @@ class Row {
 		return $this->addElement( '', new \Library\Forms\Layout\Label($this, $for, $label) );
 	}
 
+	public function addTextArea($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\TextArea($name) );
+	}
+
 	public function addTextField($name) {
 		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) );
 	}
@@ -69,8 +73,8 @@ class Row {
 		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) )->placeholder('http://')->addValidation('Validate.Format', 'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://"');
 	}
 
-	public function addTextArea($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\TextArea($name) );
+	public function addNumber($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\Number($name) );
 	}
 
 	public function addPassword($name) {
