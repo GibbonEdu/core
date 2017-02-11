@@ -1258,3 +1258,9 @@ div.notificationTray a.inactive {
 	cursor: default;
 	text-decoration: none;
 }
+
+/* v14 */
+
+table.standardForm td:last-child {
+	min-width: 450px;
+}

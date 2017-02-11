@@ -34,7 +34,7 @@ class Form {
 	protected $formRows = array();
 	protected $hiddenValues = array();
 
-	public function __construct($id, $action, $class = 'smallIntBorder fullWidth') {
+	public function __construct($id, $action, $class = 'smallIntBorder fullWidth standardForm') {
 		$this->id = $id;
 		$this->action = ltrim($action, '/');
 		$this->class = $class;
