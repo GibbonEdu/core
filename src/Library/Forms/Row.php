@@ -61,6 +61,14 @@ class Row {
 		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) );
 	}
 
+	public function addEmail($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) )->addValidation('Validate.Email');
+	}
+
+	public function addURL($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) )->placeholder('http://')->addValidation('Validate.Format', 'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://"');
+	}
+
 	public function addTextArea($name) {
 		return $this->addElement( $name, new \Library\Forms\Input\TextArea($name) );
 	}
