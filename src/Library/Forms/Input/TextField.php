@@ -31,16 +31,24 @@ class TextField extends Element {
 
 	protected $maxLength;
 
+	protected $readonly = false;
+
 	public function maxLength($value = '') {
 		$this->maxLength = $value;
 
 		$this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
-		
+
 		return $this;
 	}
 
 	public function placeholder($value) {
 		$this->placeholder = $value;
+
+		return $this;
+	}
+
+	public function readonly() {
+		$this->readonly = true;
 
 		return $this;
 	}
@@ -55,6 +63,10 @@ class TextField extends Element {
 
 		if (!empty($this->placeholder)) {
 			$output .= ' placeholder="'.$this->placeholder.'"';
+		}
+
+		if (!empty($this->readonly) && $this->readonly) {
+			$output .= ' readonly ';
 		}
 
 		$output .= '>';

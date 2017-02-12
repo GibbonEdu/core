@@ -56,7 +56,7 @@ abstract class Element implements FormElementInterface {
 		$this->class = $value;
 		return $this;
 	}
-	
+
 	public function setValue($value = '') {
 		$this->value = $value;
 		return $this;
@@ -83,7 +83,7 @@ abstract class Element implements FormElementInterface {
 		$output = '';
 
 		if ($this->required == true || !empty($this->validation)) {
-			
+
 			$output .= 'var '.$this->name.'Validate=new LiveValidation(\''.$this->name.'\'); '."\r";
 
 			if ($this->required == true) {
