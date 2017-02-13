@@ -31,6 +31,7 @@ class Select extends MultiElement {
 
 	protected $selected = null;
 	protected $placeholder;
+	protected $multiple = false;
 
 	public function selected($value) {
 		$this->selected = $value;
@@ -44,10 +45,22 @@ class Select extends MultiElement {
 		return $this;
 	}
 
+	public function selectMultiple($value = true) {
+		$this->multiple = $value;
+
+		return $this;
+	}
+
 	protected function getElement() {
 		$output = '';
 
-		$output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'">';
+		if (!empty($this->multiple) && $this->multiple) {
+			$output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.count($this->getOptions()).'"';
+		} else {
+			$output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'" ';
+		}
+
+		$output .= '>';
 
 		if (isset($this->placeholder)) {
 			$output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';

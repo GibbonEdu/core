@@ -1264,3 +1264,8 @@ div.notificationTray a.inactive {
 table.standardForm td:last-child {
 	min-width: 450px;
 }
+
+select[multiple] {
+	height: auto;
+	max-height: 130px;
+}
