@@ -63,8 +63,4 @@ class Content implements FormElementInterface {
 	public function getOutput() {
 		return $this->content;
 	}
-
-	public function getValidation() {
-		return '';
-	}
 }
