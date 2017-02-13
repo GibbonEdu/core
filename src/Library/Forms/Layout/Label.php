@@ -52,11 +52,25 @@ class Label extends Content {
 		return (!empty($element))? $element->getRequired() : false;
 	}
 
+	public function getReadOnly() {
+		if (empty($this->for)) return false;
+
+		$element = $this->row->getElement($this->for);
+
+		return (!empty($element) && method_exists($element, 'getReadonly'))? $element->getReadonly() : false;
+	}
+
 	public function getOutput() {
 		$output = '';
 
 		if (!empty($this->label)) {
 			$output .= '<label for="'.$this->for.'"><b>'.__($this->label).' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
+		}
+
+		if ($this->getReadonly()) {
+			if (!empty($this->description)) $this->description .= ' ';
+
+			$this->description .= __('This value cannot be changed.');
 		}
 
 		if (!empty($this->description)) {
