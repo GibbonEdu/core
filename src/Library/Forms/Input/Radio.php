@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use \Library\Forms\Element as Element;
+use \Library\Forms\MultiElement as MultiElement;
 
 /**
  * Checkbox
@@ -27,37 +27,7 @@ use \Library\Forms\Element as Element;
  * @version	v14
  * @since	v14
  */
-class Radio extends Element {
-
-	protected $options = array();
-
-	public function fromString($value) {
-
-		if (empty($value) || !is_string($value)) {
-			throw new \Exception( sprintf('Radio Options %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
-		}
-
-		$pieces = str_getcsv($value);
-
-		foreach ($pieces as $piece) {
-			$piece = trim($piece);
-
-			$this->options[$piece] = $piece;
-		}
-
-		return $this;
-	}
-
-	public function fromArray($value) {
-
-		if (empty($value) || !is_array($value)) {
-			throw new \Exception( sprintf('Radio Options %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value) ) );
-		}
-
-		$this->options = array_merge($this->options, $value);
-
-		return $this;
-	}
+class Radio extends MultiElement {
 
 	public function checked($value) {
 		$this->value = $value;
@@ -71,9 +41,9 @@ class Radio extends Element {
 	protected function getElement() {
 		$output = '';
 
-		if (!empty($this->options) && is_array($this->options)) {
+		if (!empty($this->getOptions()) && is_array($this->getOptions())) {
 
-			foreach ($this->options as $value => $label) {
+			foreach ($this->getOptions() as $value => $label) {
 				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
 				$output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
 			}

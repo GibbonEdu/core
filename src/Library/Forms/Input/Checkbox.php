@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use \Library\Forms\Element as Element;
+use \Library\Forms\MultiElement as MultiElement;
 
 /**
  * Checkbox
@@ -27,7 +27,7 @@ use \Library\Forms\Element as Element;
  * @version	v14
  * @since	v14
  */
-class Checkbox extends Radio {
+class Checkbox extends MultiElement {
 
 	protected $description;
 
@@ -39,11 +39,11 @@ class Checkbox extends Radio {
 	public function checked($value) {
 
 		if (empty($value) || !is_array($value)) {
-			throw new \Exception( sprintf('Checkbox Options %s: checked expects value to be an Array, %s given.', $this->name, gettype($value) ) );
+			throw new InvalidArgumentException( sprintf('Checkbox Options %s: checked expects value to be an Array, %s given.', $this->name, gettype($value) ) );
 		}
 
 		if (count($this->options) != count($value)) {
-			throw new Exception( sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name) );
+			throw new InvalidArgumentException( sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name) );
 		}
 
 		$this->value = $value;
