@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use \Library\Forms\Form as Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -34,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $form = new \Library\Forms\Form('dashboardSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dashboardSettingsProcess.php' );
+    $form = Form::create('dashboardSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dashboardSettingsProcess.php' );
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

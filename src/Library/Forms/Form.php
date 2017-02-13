@@ -40,6 +40,10 @@ class Form implements FormInterface {
 		$this->class = $class;
 	}
 
+	public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm') {
+		return new \Library\Forms\Form($id, $action, $class);
+	}
+
 	public function setClass($value = '') {
 		$this->class = $value;
 		return $this;
