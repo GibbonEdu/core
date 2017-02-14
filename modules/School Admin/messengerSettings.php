@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-use \Library\Forms\Form as Form;
+use Library\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
     //Acess denied

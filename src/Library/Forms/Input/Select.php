@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use \Library\Forms\MultiElement as MultiElement;
+use Library\Forms\MultiElement;
 
 /**
  * Select
