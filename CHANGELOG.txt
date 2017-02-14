@@ -32,6 +32,7 @@ v14.0.00
 
 	Tweaks & Bug Fixes
 		System: Improved Fast Finder student search permissions
+		System: added Albanian as development language
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 
