@@ -161,6 +161,11 @@ class Row {
 		return $this->addContent($content)->setClass('right');
 	}
 
+	public function addClass($value = '') {
+		$this->class .= ' '.$value;
+		return $this;
+	}
+
 	public function setClass($value = '') {
 		$this->class = $value;
 		return $this;

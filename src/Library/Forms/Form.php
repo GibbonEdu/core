@@ -32,6 +32,7 @@ class Form implements FormInterface {
 	protected $class;
 
 	protected $formRows = array();
+	protected $formTriggers = array();
 	protected $hiddenValues = array();
 
 	public function __construct($id, $action, $class = 'smallIntBorder fullWidth standardForm') {
@@ -73,6 +74,24 @@ class Form implements FormInterface {
 
 	public function addHiddenValue($name, $value) {
 		$this->hiddenValues[$name] = $value;
+	}
+
+	public function toggleVisibilityByClass($class) {
+		$selector = '.'.$class;
+
+		$trigger = new \Library\Forms\Trigger($selector);
+		$this->formTriggers[$selector ] = $trigger;
+
+		return $trigger;
+	}
+
+	public function toggleVisibilityByID($id) {
+		$selector = '#'.$id;
+
+		$trigger = new \Library\Forms\Trigger($selector);
+		$this->formTriggers[$selector] = $trigger;
+
+		return $trigger;
 	}
 	
 	public function getOutput() {
@@ -116,6 +135,10 @@ class Form implements FormInterface {
 						$output .= $element->getValidation();
 					}
 				} 
+			}
+
+			foreach ($this->formTriggers as $trigger) {
+				$output .= $trigger->getOutput();
 			}
 
 			$output .= '</script>';

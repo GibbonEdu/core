@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Library\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -33,8 +35,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    ?>
 
+    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $settingByScope = getSettingByScope($connection2, 'Activities', 'dateType', true);
+	$row = $form->addRow();
+    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+		$row->addSelect($settingByScope['name'])->fromString('Date, Term')->selected($settingByScope['value']);
+
+	$form->toggleVisibilityByClass('perTerm')->onSelect($settingByScope['name'])->when('Term');
+
+	$settingByScope = getSettingByScope($connection2, 'Activities', 'maxPerTerm', true);
+	$row = $form->addRow()->addClass('perTerm');
+    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+		$row->addSelect($settingByScope['name'])->fromString('0,1,2,3,4,5')->selected($settingByScope['value']);
+
+	
+
+	// $form->toggleVisiblityByClass('class')->onSelect('name')->when('Term');
+	// $form->toggleVisiblityByClass('class')->onCheckbox('name')->when(true);
+	// $form->toggleVisiblityByClass('class')->onRadio('name')->when('Yes');
+
+    $row = $form->addRow();
+		$row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+		$row->addSubmit();
+
+	echo $form->getOutput();
+
+    ?>
+<!-- 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activitySettingsProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
@@ -259,7 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 			</tr>
 		</table>
-	</form>
+	</form> -->
 <?php
 
 }
