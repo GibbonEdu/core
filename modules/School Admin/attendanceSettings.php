@@ -166,11 +166,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
 
     $roleGroup = '';
-    $users = explode(',', $row['value'] );
+
 
     while ($rowSelect=$resultSelect->fetch()) {
 
-        $selected = ( in_array($rowSelect['gibbonPersonID'], $users) !== false)? 'selected' : '';
+
 
         if ($roleGroup != $rowSelect["roleName"]) {
             if ($roleGroup != '') echo '</optgroup>';
@@ -206,21 +206,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     }
     catch(PDOException $e) { }
     $roleGroup = '';
+    $users = explode(',', $settingByScope['value'] );
+    $selected = array();
     while ($rowSelect=$resultSelect->fetch()) {
+        (in_array($rowSelect['gibbonPersonID'], $users) !== false)? array_push($selected,$rowSelect['gibbonPersonID']) : false;
         if ($roleGroup != $rowSelect["roleName"]) {
             $roleGroup = $rowSelect["roleName"] ;
         }
         $inputs[$roleGroup][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
     }
 
+    print_r($selected);
+
     $row = $form->addRow();
     	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])
             ->selectMultiple()
-            ->fromArray($inputs);
-            //Work on multi select!
-            //->selected($settingByScope['value']);
-
+            ->fromArray($inputs)
+            ->selected('0000001101'); //THIS NEEDS WORK!
 
     $row = $form->addRow();
 		$row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
