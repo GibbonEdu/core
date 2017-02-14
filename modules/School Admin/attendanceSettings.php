@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Library\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -115,290 +117,116 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo '<h3>';
     echo __($guid, 'Miscellaneous');
     echo '</h3>';
+
+    $form = Form::create('attendanceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' );
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow()->addHeading('Reasons');
+
+    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceReasons', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+
+    $row = $form->addRow()->addHeading('Student Self Registration');
+
+    $settingByScope = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    if ($settingByScope['value'] != '' && $settingByScope['value'] != null) {
+        $inRange = false ;
+        foreach (explode(',', $settingByScope['value']) as $ipAddress) {
+            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR'])
+                $inRange = true ;
+        }
+    }
+    if ($inRange) { //Current address is in range
+        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>"), 'success')->setClass('standardWidth');
+    }
+    else { //Current address is not in range
+        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>"), 'warning')->setClass('standardWidth');
+    }
+
+    $row = $form->addRow()->addHeading('Attendance CLI');
+
+    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
+    $row = $form->addRow();
+    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+
+    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass', true);
+    $row = $form->addRow();
+    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+
+    /*
+
+
+    $roleGroup = '';
+    $users = explode(',', $row['value'] );
+
+    while ($rowSelect=$resultSelect->fetch()) {
+
+        $selected = ( in_array($rowSelect['gibbonPersonID'], $users) !== false)? 'selected' : '';
+
+        if ($roleGroup != $rowSelect["roleName"]) {
+            if ($roleGroup != '') echo '</optgroup>';
+
+            $roleGroup = $rowSelect["roleName"];
+            echo '<optgroup label="-- '.__($guid, $roleGroup).' --">';
+        }
+
+        echo '<option '.$selected.' value="' . $rowSelect["gibbonPersonID"] . '">';
+            echo  formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+        echo '</option>' ;
+    }
+    echo '</optgroup>';
     ?>
+    */
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
+    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
 
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Reasons'); ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceReasons'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
+    $inputs = array();
+    try {
+        $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
+                FROM gibbonPerson
+                JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)
+                JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                WHERE status='Full'
+                AND (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2)
+                GROUP BY gibbonPerson.gibbonPersonID
+                ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
+        $resultSelect=$connection2->prepare($sql);
+        $resultSelect->execute($data);
+    }
+    catch(PDOException $e) { }
+    $roleGroup = '';
+    while ($rowSelect=$resultSelect->fetch()) {
+        if ($roleGroup != $rowSelect["roleName"]) {
+            $roleGroup = $rowSelect["roleName"] ;
+        }
+        $inputs[$roleGroup][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+    }
 
-            <tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Student Self Registration'); ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='studentSelfRegistrationIPAddresses'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px' rowspan=2>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-                </td>
-			</tr>
-            <tr>
-				<td class="right">
-					<?php
-                    $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
-                    if ($row['value'] != '' && $row['value'] != null) {
-                        $inRange = false ;
-                        foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
-                            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR'])
-                                $inRange = true ;
-                        }
-                    }
-                    if ($inRange) { //Current address is in range
-                        echo "<div style='float: right' class='success standardWidth'>";
-                            echo sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>");
-                        echo "</div>";
-                    }
-                    else { //Current address is not in range
-                        echo "<div style='float: right' class='warning standardWidth'>";
-                            echo sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>");
-                        echo "</div>";
-                    }
-                    ?>
-                </td>
-			</tr>
+    $row = $form->addRow();
+    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addSelect($settingByScope['name'])
+            ->selectMultiple()
+            ->fromArray($inputs);
+            //Work on multi select!
+            //->selected($settingByScope['value']);
 
-            <tr class='break'>
-                <td colspan=2>
-                    <h3><?php echo __($guid, 'Attendance CLI'); ?></h3>
-                </td>
-            </tr>
-            <tr>
-                <?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceCLINotifyByRollGroup'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-                <td style='width: 275px'>
-                    <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-                    <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-                </td>
-                <td class="right">
-                    <select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-                        <option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceCLINotifyByClass'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-                <td style='width: 275px'>
-                    <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-                    <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-                </td>
-                <td class="right">
-                    <select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-                        <option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceCLIAdditionalUsers'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-                <td style='width: 275px'>
-                    <b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-                    <span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-                </td>
-                <td class="right">
-                    <select multiple name="<?php echo $row['name'] ?>[]" id="<?php echo $row['name'] ?>[]" style="width: 302px; height: 130px">
-                        <?php
-                        try {
-                            $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
-                            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
-                                    FROM gibbonPerson
-                                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)
-                                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
-                                    WHERE status='Full'
-                                    AND (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2)
-                                    GROUP BY gibbonPerson.gibbonPersonID
-                                    ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
-                            $resultSelect=$connection2->prepare($sql);
-                            $resultSelect->execute($data);
-                        }
-                        catch(PDOException $e) { }
 
-                        $roleGroup = '';
-                        $users = explode(',', $row['value'] );
+    $row = $form->addRow();
+		$row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+		$row->addSubmit();
 
-                        while ($rowSelect=$resultSelect->fetch()) {
-
-                            $selected = ( in_array($rowSelect['gibbonPersonID'], $users) !== false)? 'selected' : '';
-
-                            if ($roleGroup != $rowSelect["roleName"]) {
-                                if ($roleGroup != '') echo '</optgroup>';
-
-                                $roleGroup = $rowSelect["roleName"];
-                                echo '<optgroup label="-- '.__($guid, $roleGroup).' --">';
-                            }
-
-                            echo '<option '.$selected.' value="' . $rowSelect["gibbonPersonID"] . '">';
-                                echo  formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
-                            echo '</option>' ;
-                        }
-                        echo '</optgroup>';
-                        ?>
-                    </select>
-                </td>
-            </tr>
-
-            <?php /*
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Medical'); ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceMedicalReasons'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Attendance' AND name='attendanceEnableMedicalTracking'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                $enableSymptoms = $row['value'];
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<script type="text/javascript">
-				$(document).ready(function(){
-					 $("#attendanceEnableMedicalTracking").click(function(){
-						if ($('#attendanceEnableMedicalTracking').val()=="Y" ) {
-							$("#symptomsRow").slideDown("fast", $("#symptomsRow").css("display","table-row"));
-
-						} else {
-							$("#symptomsRow").css("display","none");
-						}
-					 });
-				});
-			</script>
-			<tr id='symptomsRow' <?php if ($enableSymptoms == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='medicalIllnessSymptoms'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-            */ ?>
-
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-<?php
+	echo $form->getOutput();
 
 }
 ?>
