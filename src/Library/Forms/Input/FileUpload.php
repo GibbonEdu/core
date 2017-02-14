@@ -19,36 +19,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use Library\Forms\MultiElement;
+use Library\Forms\Element;
 
 /**
- * Checkbox
+ * TextField
  *
  * @version	v14
  * @since	v14
  */
-class Radio extends MultiElement {
+class FileUpload extends Element {
 
-	public function checked($value) {
-		$this->value = $value;
+	protected $accepts = array();
+
+	public function accepts($value) {
+		if (is_string($value)) {
+			$value = explode(',', $value);
+		}
+		$this->accepts = $value;
+
+		if (!empty($this->accepts) && is_array($this->accepts)) {
+			$within = implode(',', array_map(function($str) { return sprintf("'%s'", $str); }, $this->accepts));
+			$this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
+		}
 		return $this;
 	}
 
-	protected function getIsChecked($value) {
-		return (!empty($value) && $value == $this->value )? 'checked' : '';
-	}
-
 	protected function getElement() {
-		$output = '';
 
-		if (!empty($this->getOptions()) && is_array($this->getOptions())) {
+		$output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';
 
-			foreach ($this->getOptions() as $value => $label) {
-				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-				$output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
-			}
-
+		if (!empty($this->accepts) && is_array($this->accepts)) {
+			$output .= ' accepts="'.implode(',', $this->accepts).'"';
 		}
+
+		$output .= '>';
 
 		return $output;
 	}

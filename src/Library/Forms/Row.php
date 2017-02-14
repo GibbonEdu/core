@@ -81,6 +81,10 @@ class Row {
 		return $this->addElement( $name, new \Library\Forms\Input\Password($name) );
 	}
 
+	public function addFileUpload($name) {
+		return $this->addElement( $name, new \Library\Forms\Input\FileUpload($name) );
+	}
+
 	public function addDate($name) {
 		return $this->addElement( $name, new \Library\Forms\Input\Date($name) );
 	}

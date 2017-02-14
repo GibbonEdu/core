@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Library\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     }
 
 
-    $form = new \Library\Forms\Form('messengerSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messengerSettingsProcess.php' );
+    $form = Form::create('messengerSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messengerSettingsProcess.php' );
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use \Library\Forms\Element as Element;
+use Library\Forms\Element;
 
 /**
  * Password

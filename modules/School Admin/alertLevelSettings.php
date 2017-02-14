@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Library\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -44,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     }
 
     //Let's go!
-    $form = new \Library\Forms\Form('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
+    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

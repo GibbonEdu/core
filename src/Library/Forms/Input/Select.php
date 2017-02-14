@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use \Library\Forms\Element as Element;
+use Library\Forms\MultiElement;
 
 /**
  * Select
@@ -27,66 +27,11 @@ use \Library\Forms\Element as Element;
  * @version	v14
  * @since	v14
  */
-class Select extends Element {
-
-	protected $options = array();
+class Select extends MultiElement {
 
 	protected $selected = null;
 	protected $placeholder;
-
-	public function fromString($value) {
-
-		if (empty($value) || !is_string($value)) {
-			throw new \Exception( sprintf('Select Field %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
-		}
-
-		$pieces = str_getcsv($value);
-
-		foreach ($pieces as $piece) {
-			$piece = trim($piece);
-
-			$this->options[$piece] = $piece;
-		}
-
-		return $this;
-	}
-
-	public function fromArray($value) {
-
-		if (empty($value) || !is_array($value)) {
-			throw new \Exception( sprintf('Select Field %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value) ) );
-		}
-
-		$this->options = array_merge($this->options, $value);
-
-		return $this;
-	}
-
-	public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array() ) {
-
-		$results = $pdo->executeQuery($data, $sql);
-
-
-
-		return $this->fromResults($results);
-	}
-
-	public function fromResults($results) {
-
-		if (empty($results) || !is_object($results)) {
-			throw new \Exception( sprintf('Select Field %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results) ) );
-		}
-		
-		if ($results && $results->rowCount() > 0) {
-			while ($row = $results->fetch()) {
-				if (!isset($row['value']) || !isset($row['name'])) continue;
-
-				$this->options[$row['value']] = $row['name'];
-			}
-		}
-
-		return $this;
-	}
+	protected $multiple = false;
 
 	public function selected($value) {
 		$this->selected = $value;
@@ -100,10 +45,22 @@ class Select extends Element {
 		return $this;
 	}
 
+	public function selectMultiple($value = true) {
+		$this->multiple = $value;
+
+		return $this;
+	}
+
 	protected function getElement() {
 		$output = '';
 
-		$output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'">';
+		if (!empty($this->multiple) && $this->multiple) {
+			$output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.count($this->getOptions()).'"';
+		} else {
+			$output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'" ';
+		}
+
+		$output .= '>';
 
 		if (isset($this->placeholder)) {
 			$output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
@@ -113,17 +70,19 @@ class Select extends Element {
 			}
 		}
 
-		foreach ($this->options as $value => $label) {
-			if (is_array($label)) {
-				$output .= '<optgroup label="'.$value.'">';
-				foreach ($label as $subvalue => $sublabel) {
-					$selected = ($this->selected == $subvalue)? 'selected' : '';
-					$output .= '<option value="'.$subvalue.'" '.$selected.'>'.__($sublabel).'</option>';
+		if (!empty($this->getOptions()) && is_array($this->getOptions())) {
+			foreach ($this->getOptions() as $value => $label) {
+				if (is_array($label)) {
+					$output .= '<optgroup label="'.$value.'">';
+					foreach ($label as $subvalue => $sublabel) {
+						$selected = ($this->selected == $subvalue)? 'selected' : '';
+						$output .= '<option value="'.$subvalue.'" '.$selected.'>'.__($sublabel).'</option>';
+					}
+					$output .= '</optgroup>';
+				} else {
+					$selected = ($this->selected == $value)? 'selected' : '';
+					$output .= '<option value="'.$value.'" '.$selected.'>'.__($label).'</option>';
 				}
-				$output .= '</optgroup>';
-			} else {
-				$selected = ($this->selected == $value)? 'selected' : '';
-				$output .= '<option value="'.$value.'" '.$selected.'>'.__($label).'</option>';
 			}
 		}
 

@@ -25,7 +25,7 @@ namespace Library\Forms;
  * @version	v14
  * @since	v14
  */
-abstract class Element implements FormElementInterface {
+abstract class Element implements FormElementInterface, ValidateableInterface {
 
 	protected $name;
 	protected $class;

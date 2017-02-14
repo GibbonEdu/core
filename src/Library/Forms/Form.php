@@ -25,7 +25,7 @@ namespace Library\Forms;
  * @version	v14
  * @since	v14
  */
-class Form {
+class Form implements FormInterface {
 
 	protected $id;
 	protected $action;
@@ -38,6 +38,10 @@ class Form {
 		$this->id = $id;
 		$this->action = ltrim($action, '/');
 		$this->class = $class;
+	}
+
+	public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm') {
+		return new \Library\Forms\Form($id, $action, $class);
 	}
 
 	public function setClass($value = '') {
@@ -108,7 +112,9 @@ class Form {
 
 			foreach ($this->formRows as $row) {
 				foreach ($row->getElements() as $element) {
-					$output .= $element->getValidation();
+					if ($element instanceof ValidateableInterface) {
+						$output .= $element->getValidation();
+					}
 				} 
 			}
 
@@ -132,13 +138,29 @@ class Form {
 }
 
 /**
- * Define a common interface for elements
+ * Define common interfaces for elements
  *
  * @version	v14
  * @since	v14
  */
+interface FormInterface {
+	public function addClass($value);
+	public function setClass($value);
+	public function getClass();
+
+	public function addRow();
+	public function getRow();
+
+	public function addHiddenValue($name, $value);
+
+    public function getOutput();
+}
+
 interface FormElementInterface {
 	public function getClass();
     public function getOutput();
-    public function getValidation();
+}
+
+interface ValidateableInterface {
+	public function getValidation();
 }

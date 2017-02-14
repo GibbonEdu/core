@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use \Library\Forms\Element as Element;
+use Library\Forms\Element;
 
 /**
  * TextField
@@ -41,16 +41,19 @@ class TextField extends Element {
 		return $this;
 	}
 
-	public function placeholder($value) {
+	public function placeholder($value = '') {
 		$this->placeholder = $value;
 
 		return $this;
 	}
 
-	public function readonly() {
-		$this->readonly = true;
-
+	public function readonly($value = true) {
+		$this->readonly = $value;
 		return $this;
+	}
+
+	public function getReadonly() {
+		return $this->readonly;
 	}
 
 	protected function getElement() {
