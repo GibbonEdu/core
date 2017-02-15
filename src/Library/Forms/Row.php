@@ -19,175 +19,102 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms;
 
+use Library\Forms\FormFactory;
+
 /**
  * Row
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Row {
+class Row
+{
+    protected $id = '';
+    protected $class = '';
 
-	protected $id;
-	protected $class;
+    protected $formFactory;
+    protected $formElements = array();
 
-	protected $formElements = array();
+    public function __construct(FormFactory $formFactory, $id = '')
+    {
+        $this->formFactory = $formFactory;
+        $this->id = $id;
+    }
 
-	public function __construct($id = '') {
-		$this->id = $id;
-		$this->class = '';
-	}
+    public function __call($function, $args)
+    {
+        if (stripos($function, 'add') === false) return;
 
-	public function addElement($id, FormElementInterface $element) {
-		if (empty($id)) $id = 'element-'.count($this->formElements);
+        $element = null;
+        try {
+            $function = str_replace('add', 'create', $function);
+            if (method_exists($this->formFactory, $function)) {
+                $element = call_user_func_array( array($this->formFactory, $function), $args);
+            }
+        } catch (Exception $e) {
+        }
+        return $this->addElement($element, isset($args[0])? $args[0] : '');
+    }
 
-		$this->formElements[$id] = $element;
-		return $element;
-	}
+    public function addLabel($for, $label)
+    {
+        return $this->addElement($this->formFactory->createLabel($this, $for, $label));
+    }
 
-	public function getElement($id = '') {
-		if (empty($this->formElements) || count($this->formElements) == 1) return null;
-		return (isset($this->formElements[$id]))? $this->formElements[$id] : end($this->formElements);
-	}
+    public function addElement(FormElementInterface $element, $id = '')
+    {
+        //if (empty($id)) {
+            $id = 'element-'.count($this->formElements);
+        //}
 
-	public function addContent($content) {
-		return $this->addElement( '', new \Library\Forms\Layout\Content($content) );
-	}
+        $this->formElements[$id] = $element;
+        return $element;
+    }
 
-	public function addLabel($for, $label) {
-		return $this->addElement( '', new \Library\Forms\Layout\Label($this, $for, $label) );
-	}
+    public function getElement($id = '')
+    {
+        if (empty($this->formElements) || count($this->formElements) == 1) {
+            return null;
+        }
+        return (isset($this->formElements[$id]))? $this->formElements[$id] : end($this->formElements);
+    }
 
-	public function addTextArea($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\TextArea($name) );
-	}
+    public function addClass($value = '')
+    {
+        if (empty($this->class)) return $this->setClass($value);
 
-	public function addTextField($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) );
-	}
+        $this->class .= ' '.$value;
+        return $this;
+    }
 
-	public function addEmail($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) )->addValidation('Validate.Email');
-	}
+    public function setClass($value = '')
+    {
+        $this->class = $value;
+        return $this;
+    }
 
-	public function addURL($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\TextField($name) )->placeholder('http://')->addValidation('Validate.Format', 'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://"');
-	}
+    public function getID()
+    {
+        return $this->id;
+    }
 
-	public function addNumber($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\Number($name) );
-	}
+    public function getClass()
+    {
+        return $this->class;
+    }
 
-	public function addPassword($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\Password($name) );
-	}
+    public function getElements()
+    {
+        return $this->formElements;
+    }
 
-	public function addFileUpload($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\FileUpload($name) );
-	}
+    public function getElementCount()
+    {
+        return count($this->formElements);
+    }
 
-	public function addDate($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\Date($name) );
-	}
-
-	public function addCheckbox($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\Checkbox($name) )->setClass('right');
-	}
-
-	public function addRadio($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\Radio($name) )->setClass('right');
-	}
-
-	public function addSelect($name) {
-		return $this->addElement( $name, new \Library\Forms\Input\Select($name) );
-	}
-
-	public function addSelectSchoolYear(\Gibbon\sqlConnection $pdo, $name) {
-		$sql = 'SELECT gibbonSchoolYearID as `value`, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
-		$results = $pdo->executeQuery(array(), $sql);
-
-		return $this->addSelect($name)->fromResults($results)->placeholder('Please select...');
-	}
-
-	public function addSelectLanguage(\Gibbon\sqlConnection $pdo, $name) {
-		$sql = 'SELECT name as `value`, name FROM gibbonLanguage ORDER BY name';
-		$results = $pdo->executeQuery(array(), $sql);
-
-		return $this->addSelect($name)->fromResults($results)->placeholder('Please select...');
-	}
-
-	public function addSelectStaff(\Gibbon\sqlConnection $pdo, $name) {
-
-		$sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-
-		$results = $pdo->executeQuery(array(), $sql);
-
-		$values = array();
-		if ($results && $results->rowCount() > 0) {
-			while ($row = $results->fetch()) {
-				$values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
-			}
-		}
-
-		return $this->addSelect($name)->fromArray($values);
-	}
-
-	public function addYesNo($name) {
-		return $this->addSelect($name)->fromArray( array( 'Y' => 'Yes', 'N' => 'No') );
-	}
-
-	public function addHeading($label) {
-		$this->setClass('break');
-		$content = sprintf('<h3>%s</h3>', __($label) );
-		return $this->addContent($content);
-	}
-
-	public function addSubheading($label) {
-		$content = sprintf('<h4>%s</h4>', __($label) );
-		return $this->addContent($content);
-	}
-
-	public function addAlert($content, $level = 'warning') {
-		$content = sprintf('<div class="%s">%s</div>', $level, $content);
-		return $this->addContent($content);
-	}
-
-	public function addSubmit($label = 'Submit') {
-		$content = sprintf('<input type="submit" value="%s">', __($label) );
-		return $this->addContent($content)->setClass('right');
-	}
-
-	public function addButton($label = 'Button', $onClick = '') {
-		$content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
-		return $this->addContent($content)->setClass('right');
-	}
-
-	public function addClass($value = '') {
-		$this->class .= ' '.$value;
-		return $this;
-	}
-
-	public function setClass($value = '') {
-		$this->class = $value;
-		return $this;
-	}
-
-	public function getID() {
-		return $this->id;
-	}
-
-	public function getClass() {
-		return $this->class;
-	}
-
-	public function getElements() {
-		return $this->formElements;
-	}
-
-	public function getElementCount() {
-		return count($this->formElements);
-	}
-
-	public function isLastElement($element) {
-		return (end($this->formElements) == $element);
-	}
+    public function isLastElement($element)
+    {
+        return (end($this->formElements) == $element);
+    }
 }

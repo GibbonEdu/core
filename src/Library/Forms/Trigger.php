@@ -22,68 +22,83 @@ namespace Library\Forms;
 /**
  * Trigger
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Trigger {
+class Trigger
+{
+    protected $elementType;
+    protected $elementValue;
 
-	protected $selector;
-	protected $elementType;
-	protected $elementName;
-	protected $elementValue;
+    protected $targetSelector;
+    protected $sourceSelector;
+    protected $sourceValueSelector;
 
-	public function __construct($selector) {
-		$this->selector = $selector;
-	}
+    public function __construct($selector)
+    {
+        $this->targetSelector = $selector;
+    }
 
-	public function onSelect($name) {
-		$this->elementType = 'select';
-		$this->elementName = $name;
-		return $this;
-	}
+    public function onSelect($name)
+    {
+        $this->elementType = 'select';
+        $this->sourceSelector = 'select[name="'.$name.'"]';
+        $this->sourceValueSelector = $this->sourceSelector;
 
-	public function onCheckbox($name) {
-		$this->elementType = 'input[type="checkbox"]';
-		$this->elementName = $name;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function onRadio($name) {
-		$this->elementType = 'input[type="radio"]';
-		$this->elementName = $name;
-		return $this;
-	}
+    public function onCheckbox($name)
+    {
+        $this->elementType = 'checkbox';
+        $this->sourceSelector = 'input[type="checkbox"][name="'.$name.'"]';
+        $this->sourceValueSelector = $this->sourceSelector.':checked';
 
-	public function when($value) {
-		$this->elementValue = $value;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getTargetSelector() {
-		return $this->selector;
-	}
+    public function onRadio($name)
+    {
+        $this->elementType = 'radio';
+        $this->sourceSelector = 'input[type="radio"][name="'.$name.'"]';
+        $this->sourceValueSelector = $this->sourceSelector.':checked';
 
-	public function getSourceSelector() {
-		return $this->elementType.'[name='.$this->elementName.']';
-	}
+        return $this;
+    }
 
-	public function getOutput() {
-		$output = '';
+    public function when($value)
+    {
+        if ($this->elementType == 'checkbox') {
+            $this->sourceValueSelector .= '[value="'.$value.'"]';
+        }
 
-		$targetSelector = $this->getTargetSelector();
-		$sourceSelector = $this->getSourceSelector();
+        $this->elementValue = $value;
+        return $this;
+    }
 
-		$output .= "if ($('{$sourceSelector}').val() != '{$this->elementValue}') \n";
-		$output .= "{ $('{$targetSelector}').hide(); } \n\n";
+    public function getOutput()
+    {
+        $output = '';
 
-		$output .= "$('{$sourceSelector}').change(function(){ \n";
-			$output .= "if ($('{$sourceSelector}').val()=='{$this->elementValue}' ) { \n";
-				$output .= "$('{$targetSelector}').slideDown('fast'); \n";
-			$output .= "} else { \n";
-				$output .= "$('{$targetSelector}').hide(); \n";
-			$output .= "} \n";
-		$output .= "}); \n";
+        // Change target visibility if source value equals trigger value
+        // Handles LiveValidation by also disabling/enabling inputs
+        // The change() call activates any nested triggers
+        $output .= "$('{$this->sourceSelector}').change(function(){ \n";
+            $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && $('{$this->sourceValueSelector}').val() == '{$this->elementValue}' ) { \n";
+                $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
+                $output .= "$('{$this->targetSelector} :input').prop('disabled', false).change(); \n";
+            $output .= "} else { \n";
+                $output .= "$('{$this->targetSelector}').hide(); \n";
+                $output .= "$('{$this->targetSelector} :input').prop('disabled', true).change(); \n";
+            $output .= "} \n";
+        $output .= "}); \n";
 
-		return $output;
-	}
+        // Hide all initial targets if the source value does not equal the trigger value
+        $output .= "if ( $('{$this->sourceValueSelector}').val() != '{$this->elementValue}') { \n";
+            $output .= "$('{$this->targetSelector}').hide(); \n";
+            $output .= "$('{$this->targetSelector} :input').prop('disabled', true).change(); \n";
+        $output .= "} \n\n";
+
+        return $output;
+    }
 }

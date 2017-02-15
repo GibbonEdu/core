@@ -19,171 +19,203 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms;
 
+use Library\Forms\FormFactory;
+
 /**
  * Form
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Form implements FormInterface {
+class Form implements FormInterface
+{
+    protected $id;
+    protected $action;
+    protected $class;
 
-	protected $id;
-	protected $action;
-	protected $class;
+    protected $formFactory;
 
-	protected $formRows = array();
-	protected $formTriggers = array();
-	protected $hiddenValues = array();
+    protected $formRows = array();
+    protected $formTriggers = array();
+    protected $hiddenValues = array();
 
-	public function __construct($id, $action, $class = 'smallIntBorder fullWidth standardForm') {
-		$this->id = $id;
-		$this->action = ltrim($action, '/');
-		$this->class = $class;
-	}
+    public function __construct($id, $action, FormFactory $formFactory)
+    {
+        $this->formFactory = $formFactory;
+        $this->id = $id;
+        $this->action = ltrim($action, '/');
+    }
 
-	public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm') {
-		return new \Library\Forms\Form($id, $action, $class);
-	}
+    public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm')
+    {
 
-	public function setClass($value = '') {
-		$this->class = $value;
-		return $this;
-	}
+        $formFactory = new \Library\Forms\FormFactory();
 
-	public function addClass($value = '') {
-		$this->class .= ' '.$value;
-		return $this;
-	}
+        $form = new \Library\Forms\Form($id, $action, $formFactory);
+        $form->setClass($class);
 
-	public function getClass() {
-		return $this->class;
-	}
+        return $form;
+    }
 
-	public function addRow($id = '') {
-		if (empty($id)) $id = 'row-'.count($this->formRows);
+    public function setClass($value = '')
+    {
+        $this->class = $value;
+        return $this;
+    }
 
-		$row = new \Library\Forms\Row($id);
-		$this->formRows[$id] = $row;
+    public function addClass($value = '')
+    {
+        $this->class .= ' '.$value;
+        return $this;
+    }
 
-		return $row;
-	}
+    public function getClass()
+    {
+        return $this->class;
+    }
 
-	public function getRow($id = '') {
-		return (isset($this->formRows[$id]))? $this->formRows[$id] : end($this->formRows);
-	}
+    public function setFactory($formFactory)
+    {
+        $this->formFactory = $formFactory;
+    }
 
-	public function addHiddenValue($name, $value) {
-		$this->hiddenValues[$name] = $value;
-	}
+    public function addRow($id = '')
+    {
+    	$row = $this->formFactory->createRow($id);
+        $this->formRows[] = $row;
 
-	public function toggleVisibilityByClass($class) {
-		$selector = '.'.$class;
+        return $row;
+    }
 
-		$trigger = new \Library\Forms\Trigger($selector);
-		$this->formTriggers[$selector ] = $trigger;
+    public function getRow()
+    {
+        return (!empty($this->formRows))? end($this->formRows) : null;
+    }
 
-		return $trigger;
-	}
+    public function addHiddenValue($name, $value)
+    {
+        $this->hiddenValues[$name] = $value;
+    }
 
-	public function toggleVisibilityByID($id) {
-		$selector = '#'.$id;
+    public function toggleVisibilityByClass($class)
+    {
+        $selector = '.'.$class;
 
-		$trigger = new \Library\Forms\Trigger($selector);
-		$this->formTriggers[$selector] = $trigger;
+        $trigger = new \Library\Forms\Trigger($selector);
+        $this->formTriggers[$selector ] = $trigger;
 
-		return $trigger;
-	}
-	
-	public function getOutput() {
-		$output = '';
+        return $trigger;
+    }
 
-		$totalColumns = $this->getColumnCount($this->formRows);
+    public function toggleVisibilityByID($id)
+    {
+        $selector = '#'.$id;
 
-		$output .= '<form id="'.$this->id.'" method="post" action="'.$this->action.'">';
+        $trigger = new \Library\Forms\Trigger($selector);
+        $this->formTriggers[$selector] = $trigger;
 
-			// Output hidden values
-			foreach ($this->hiddenValues as $name => $value) {
-				$output .= '<input name="'.$name.'" value="'.$value.'" type="hidden">';
-			}
+        return $trigger;
+    }
 
-			$output .= '<table class="'.$this->class.'" cellspacing="0">';
+    public function getOutput()
+    {
+        $output = '';
 
-				// Output form rows
-				foreach ($this->formRows as $row) {
-					$output .= '<tr id="'.$row->getID().'" class="'.$row->getClass().'">';
+        $totalColumns = $this->getColumnCount($this->formRows);
 
-					// Output each element inside the row
-					foreach ($row->getElements() as $element) {
+        $output .= '<form id="'.$this->id.'" method="post" action="'.$this->action.'">';
 
-						$colspan = ($row->isLastElement($element) && $row->getElementCount() < $totalColumns)? 'colspan="'.($totalColumns + 1 - $row->getElementCount()).'"' : '';
+            // Output hidden values
+        foreach ($this->hiddenValues as $name => $value) {
+            $output .= '<input name="'.$name.'" value="'.$value.'" type="hidden">';
+        }
 
-						$output .= '<td class="'.$element->getClass().'" '.$colspan.'>';
-							$output .= $element->getOutput();
-						$output .= '</td>';
-					} 
-					$output .= '</tr>';
-				}
+            $output .= '<table class="'.$this->class.'" cellspacing="0">';
 
-			$output .= '</table>';
+                // Output form rows
+        foreach ($this->formRows as $row) {
+            $output .= '<tr id="'.$row->getID().'" class="'.$row->getClass().'">';
 
-			// Output the validation code, aggregated 
-			$output .= '<script type="text/javascript">'."\n";
+            // Output each element inside the row
+            foreach ($row->getElements() as $element) {
+                $colspan = ($row->isLastElement($element) && $row->getElementCount() < $totalColumns)? 'colspan="'.($totalColumns + 1 - $row->getElementCount()).'"' : '';
 
-			foreach ($this->formRows as $row) {
-				foreach ($row->getElements() as $element) {
-					if ($element instanceof ValidateableInterface) {
-						$output .= $element->getValidation();
-					}
-				} 
-			}
+                $output .= '<td class="'.$element->getClass().'" '.$colspan.'>';
+                    $output .= $element->getOutput();
+                $output .= '</td>';
+            }
+            $output .= '</tr>';
+        }
 
-			foreach ($this->formTriggers as $trigger) {
-				$output .= $trigger->getOutput();
-			}
+            $output .= '</table>';
 
-			$output .= '</script>';
+            // Output the validation code, aggregated
+            $output .= '<script type="text/javascript">'."\n";
 
-		$output .= '</form>';
+        foreach ($this->formRows as $row) {
+            foreach ($row->getElements() as $element) {
+                if ($element instanceof ValidateableInterface) {
+                    $output .= $element->getValidation();
+                }
+            }
+        }
 
-		return $output;
-	}
+        foreach (array_reverse($this->formTriggers) as $trigger) {
+            $output .= $trigger->getOutput();
+        }
 
-	protected function getColumnCount($rows) {
-		$count = 0;
-		foreach ($rows as $row) {
-			if ($row->getElementCount() > $count) {
-				$count = $row->getElementCount();
-			}
-		}
+            $output .= '</script>';
 
-		return max(2, $count);
-	}
+        $output .= '</form>';
+
+        return $output;
+    }
+
+    protected function getColumnCount($rows)
+    {
+        $count = 0;
+        foreach ($rows as $row) {
+            if ($row->getElementCount() > $count) {
+                $count = $row->getElementCount();
+            }
+        }
+
+        return max(2, $count);
+    }
 }
 
 /**
  * Define common interfaces for elements
  *
- * @version	v14
- * @since	v14
+ * @version     v14
+ * @since   v14
  */
-interface FormInterface {
-	public function addClass($value);
-	public function setClass($value);
-	public function getClass();
+interface FormInterface
+{
+    public function addClass($value);
+    public function setClass($value);
+    public function getClass();
 
-	public function addRow();
-	public function getRow();
+    public function addRow();
+    public function getRow();
 
-	public function addHiddenValue($name, $value);
+    public function addHiddenValue($name, $value);
 
     public function getOutput();
 }
 
-interface FormElementInterface {
-	public function getClass();
+interface FormElementInterface
+{
+    public function getClass();
     public function getOutput();
 }
 
-interface ValidateableInterface {
-	public function getValidation();
+interface ValidateableInterface
+{
+    public function getValidation();
+}
+
+interface OutputableInterface
+{
+    public function getOutput();
 }

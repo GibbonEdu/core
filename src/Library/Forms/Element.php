@@ -22,81 +22,95 @@ namespace Library\Forms;
 /**
  * Element
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-abstract class Element implements FormElementInterface, ValidateableInterface {
+abstract class Element implements FormElementInterface, ValidateableInterface
+{
+    protected $name;
+    protected $class;
+    protected $value;
 
-	protected $name;
-	protected $class;
-	protected $value;
+    protected $required = false;
 
-	protected $required = false;
+    protected $validation = array();
 
-	protected $validation = array();
+    public function __construct($name)
+    {
+        $this->name = $name;
+        $this->class = 'standardWidth';
+    }
 
-	public function __construct($name) {
-		$this->name = $name;
-		$this->class = 'standardWidth';
-	}
+    abstract protected function getElement();
 
-	protected abstract function getElement();
+    public function isRequired($value = true)
+    {
+        $this->required = $value;
+        return $this;
+    }
 
-	public function isRequired($value = true) {
-		$this->required = $value;
-		return $this;
-	}
+    public function addClass($value = '')
+    {
+        $this->class .= ' '.$value;
+        return $this;
+    }
 
-	public function addClass($value = '') {
-		$this->class .= ' '.$value;
-		return $this;
-	}
+    public function setClass($value = '')
+    {
+        $this->class = $value;
+        return $this;
+    }
 
-	public function setClass($value = '') {
-		$this->class = $value;
-		return $this;
-	}
+    public function setValue($value = '')
+    {
+        $this->value = $value;
+        return $this;
+    }
 
-	public function setValue($value = '') {
-		$this->value = $value;
-		return $this;
-	}
+    public function addValidation($type, $params = '')
+    {
+        $this->validation[$type] = $params;
+        return $this;
+    }
 
-	public function addValidation($type, $params = '') {
-		$this->validation[$type] = $params;
-		return $this;
-	}
+    public function getRequired()
+    {
+        return $this->required;
+    }
 
-	public function getRequired() {
-		return $this->required;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function getClass() {
-		return $this->class;
-	}
+    public function getClass()
+    {
+        return $this->class;
+    }
 
-	public function getOutput() {
-		return $this->getElement();
-	}
+    public function getOutput()
+    {
+        return $this->getElement();
+    }
 
-	public function getValidation() {
-		$output = '';
+    public function getValidation()
+    {
+        $output = '';
 
-		if ($this->required == true || !empty($this->validation)) {
+        if ($this->required == true || !empty($this->validation)) {
+            $output .= 'var '.$this->name.'Validate=new LiveValidation(\''.$this->name.'\'); '."\r";
 
-			$output .= 'var '.$this->name.'Validate=new LiveValidation(\''.$this->name.'\'); '."\r";
+            if ($this->required == true) {
+                $output .= $this->name.'Validate.add(Validate.Presence); '."\r";
+            }
 
-			if ($this->required == true) {
-				$output .= $this->name.'Validate.add(Validate.Presence); '."\r";
-			}
+            if (!empty($this->validation) && is_array($this->validation)) {
+                foreach ($this->validation as $type => $params) {
+                    $output .= $this->name.'Validate.add('.$type.', {'.$params.' } ); '."\r";
+                }
+            }
+        }
 
-			if (!empty($this->validation) && is_array($this->validation)) {
-				foreach ($this->validation as $type => $params) {
-					$output .= $this->name.'Validate.add('.$type.', {'.$params.' } ); '."\r";
-				}
-			}
-		}
-
-		return $output;
-	}
+        return $output;
+    }
 }
