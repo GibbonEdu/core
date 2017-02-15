@@ -27,14 +27,22 @@ namespace Library\Forms;
  */
 class FormFactory
 {
-    public function __construct()
+    public static function create()
     {
+        return new \Library\Forms\FormFactory();
+    }
+
+    public function createForm($id, $action)
+    {
+        return new \Library\Forms\Form($this, $id, $action);
     }
 
     public function createRow($id)
     {
         return new \Library\Forms\Row($this, $id);
     }
+
+    /* LAYOUT TYPES --------------------------- */
 
     public function createContent($content)
     {
@@ -45,6 +53,8 @@ class FormFactory
     {
         return new \Library\Forms\Layout\Label($row, $for, $label);
     }
+
+    /* BASIC INPUT --------------------------- */
 
     public function createTextArea($name)
     {
@@ -106,6 +116,41 @@ class FormFactory
         return new \Library\Forms\Input\Select($name);
     }
 
+    /* PRE-DEFINED LAYOUT --------------------------- */
+
+    public function createHeading($label)
+    {
+        //$this->setClass('break');
+        $content = sprintf('<h3>%s</h3>', __($label));
+        return $this->createContent($content);
+    }
+
+    public function createSubheading($label)
+    {
+        $content = sprintf('<h4>%s</h4>', __($label));
+        return $this->createContent($content);
+    }
+
+    public function createAlert($content, $level = 'warning')
+    {
+        $content = sprintf('<div class="%s">%s</div>', $level, $content);
+        return $this->createContent($content);
+    }
+
+    public function createSubmit($label = 'Submit')
+    {
+        $content = sprintf('<input type="submit" value="%s">', __($label));
+        return $this->createContent($content)->setClass('right');
+    }
+
+    public function createButton($label = 'Button', $onClick = '')
+    {
+        $content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
+        return $this->createContent($content)->setClass('right');
+    }
+
+    /* PRE-DEFINED INPUT --------------------------- */
+
     public function createSelectSchoolYear(\Gibbon\sqlConnection $pdo, $name)
     {
         $sql = 'SELECT gibbonSchoolYearID as `value`, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
@@ -142,36 +187,5 @@ class FormFactory
     public function createYesNo($name)
     {
         return $this->createSelect($name)->fromArray(array( 'Y' => 'Yes', 'N' => 'No'));
-    }
-
-    public function createHeading($label)
-    {
-        //$this->setClass('break');
-        $content = sprintf('<h3>%s</h3>', __($label));
-        return $this->createContent($content);
-    }
-
-    public function createSubheading($label)
-    {
-        $content = sprintf('<h4>%s</h4>', __($label));
-        return $this->createContent($content);
-    }
-
-    public function createAlert($content, $level = 'warning')
-    {
-        $content = sprintf('<div class="%s">%s</div>', $level, $content);
-        return $this->createContent($content);
-    }
-
-    public function createSubmit($label = 'Submit')
-    {
-        $content = sprintf('<input type="submit" value="%s">', __($label));
-        return $this->createContent($content)->setClass('right');
-    }
-
-    public function createButton($label = 'Button', $onClick = '')
-    {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
-        return $this->createContent($content)->setClass('right');
     }
 }

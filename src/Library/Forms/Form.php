@@ -39,7 +39,7 @@ class Form implements FormInterface
     protected $formTriggers = array();
     protected $hiddenValues = array();
 
-    public function __construct($id, $action, FormFactory $formFactory)
+    public function __construct(FormFactory $formFactory, $id, $action)
     {
         $this->formFactory = $formFactory;
         $this->id = $id;
@@ -48,10 +48,9 @@ class Form implements FormInterface
 
     public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm')
     {
+        $formFactory = FormFactory::create();
 
-        $formFactory = new \Library\Forms\FormFactory();
-
-        $form = new \Library\Forms\Form($id, $action, $formFactory);
+        $form = $formFactory->createForm($id, $action);
         $form->setClass($class);
 
         return $form;
@@ -81,7 +80,7 @@ class Form implements FormInterface
 
     public function addRow($id = '')
     {
-    	$row = $this->formFactory->createRow($id);
+        $row = $this->formFactory->createRow($id);
         $this->formRows[] = $row;
 
         return $row;
@@ -123,16 +122,16 @@ class Form implements FormInterface
 
         $totalColumns = $this->getColumnCount($this->formRows);
 
-        $output .= '<form id="'.$this->id.'" method="post" action="'.$this->action.'">';
+        $output .= '<form id="'.$this->id.'" method="post" action="'.$this->action.'" enctype="multipart/form-data">';
 
-            // Output hidden values
+        // Output hidden values
         foreach ($this->hiddenValues as $name => $value) {
             $output .= '<input name="'.$name.'" value="'.$value.'" type="hidden">';
         }
 
-            $output .= '<table class="'.$this->class.'" cellspacing="0">';
+        $output .= '<table class="'.$this->class.'" cellspacing="0">';
 
-                // Output form rows
+        // Output form rows
         foreach ($this->formRows as $row) {
             $output .= '<tr id="'.$row->getID().'" class="'.$row->getClass().'">';
 
@@ -147,10 +146,10 @@ class Form implements FormInterface
             $output .= '</tr>';
         }
 
-            $output .= '</table>';
+        $output .= '</table>';
 
-            // Output the validation code, aggregated
-            $output .= '<script type="text/javascript">'."\n";
+        // Output the validation code, aggregated
+        $output .= '<script type="text/javascript">'."\n";
 
         foreach ($this->formRows as $row) {
             foreach ($row->getElements() as $element) {
@@ -164,7 +163,7 @@ class Form implements FormInterface
             $output .= $trigger->getOutput();
         }
 
-            $output .= '</script>';
+        $output .= '</script>';
 
         $output .= '</form>';
 
