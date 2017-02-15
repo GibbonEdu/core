@@ -24,70 +24,82 @@ use Library\Forms\MultiElement;
 /**
  * Select
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Select extends MultiElement {
+class Select extends MultiElement
+{
+    protected $selected = null;
+    protected $placeholder;
+    protected $multiple = false;
 
-	protected $selected = null;
-	protected $placeholder;
-	protected $multiple = false;
+    public function selected($value)
+    {
+        $this->selected = $value;
 
-	public function selected($value) {
-		$this->selected = $value;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function placeholder($value = '')
+    {
+        $this->placeholder = $value;
 
-	public function placeholder($value) {
-		$this->placeholder = $value;
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	public function selectMultiple($value = true) {
-		$this->multiple = $value;
+    public function selectMultiple($value = true)
+    {
+        $this->multiple = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected function getElement() {
-		$output = '';
+    protected function isOptionSelected($value) {
+        if (is_array($this->selected)) {
+            return in_array($value, $this->selected);
+        } else {
+            return ($value == $this->selected);
+        }
+    }
 
-		if (!empty($this->multiple) && $this->multiple) {
-			$output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.count($this->getOptions()).'"';
-		} else {
-			$output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'" ';
-		}
+    protected function getElement()
+    {
+        $output = '';
 
-		$output .= '>';
+        if (!empty($this->multiple) && $this->multiple) {
+            $output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.count($this->getOptions()).'"';
+        } else {
+            $output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'" ';
+        }
 
-		if (isset($this->placeholder)) {
-			$output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
+        $output .= '>';
 
-			if ($this->required) {
-				$this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
-			}
-		}
+        if (isset($this->placeholder)) {
+            $output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
 
-		if (!empty($this->getOptions()) && is_array($this->getOptions())) {
-			foreach ($this->getOptions() as $value => $label) {
-				if (is_array($label)) {
-					$output .= '<optgroup label="'.$value.'">';
-					foreach ($label as $subvalue => $sublabel) {
-						$selected = ($this->selected == $subvalue)? 'selected' : '';
-						$output .= '<option value="'.$subvalue.'" '.$selected.'>'.__($sublabel).'</option>';
-					}
-					$output .= '</optgroup>';
-				} else {
-					$selected = ($this->selected == $value)? 'selected' : '';
-					$output .= '<option value="'.$value.'" '.$selected.'>'.__($label).'</option>';
-				}
-			}
-		}
+            if ($this->required) {
+                $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
+            }
+        }
 
-		$output .= '</select>';
+        if (!empty($this->getOptions()) && is_array($this->getOptions())) {
+            foreach ($this->getOptions() as $value => $label) {
+                if (is_array($label)) {
+                    $output .= '<optgroup label="'.$value.'">';
+                    foreach ($label as $subvalue => $sublabel) {
+                        $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
+                        $output .= '<option value="'.$subvalue.'" '.$selected.'>'.__($sublabel).'</option>';
+                    }
+                    $output .= '</optgroup>';
+                } else {
+                    $selected = ($this->isOptionSelected($value))? 'selected' : '';
+                    $output .= '<option value="'.$value.'" '.$selected.'>'.__($label).'</option>';
+                }
+            }
+        }
 
-		return $output;
-	}
+        $output .= '</select>';
+
+        return $output;
+    }
 }
