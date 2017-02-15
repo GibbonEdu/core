@@ -54,7 +54,8 @@ class Select extends MultiElement
         return $this;
     }
 
-    protected function isOptionSelected($value) {
+    protected function isOptionSelected($value)
+    {
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
@@ -67,12 +68,11 @@ class Select extends MultiElement
         $output = '';
 
         if (!empty($this->multiple) && $this->multiple) {
-            $output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.count($this->getOptions()).'"';
+            $totalOptions = count($this->getOptions(), COUNT_RECURSIVE);
+            $output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.$totalOptions.'">';
         } else {
-            $output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'" ';
+            $output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'">';
         }
-
-        $output .= '>';
 
         if (isset($this->placeholder)) {
             $output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
