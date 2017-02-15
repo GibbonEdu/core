@@ -22,6 +22,8 @@ namespace Library\Forms;
 /**
  * FormFactory
  *
+ * Handles Form object creation, including pre-defined elements. Default factory can be extended to add types.
+ *
  * @version v14
  * @since   v14
  */
@@ -29,51 +31,51 @@ class FormFactory
 {
     public static function create()
     {
-        return new \Library\Forms\FormFactory();
+        return new FormFactory();
     }
 
     public function createForm($id, $action)
     {
-        return new \Library\Forms\Form($this, $id, $action);
+        return new Form($this, $id, $action);
     }
 
     public function createRow($id)
     {
-        return new \Library\Forms\Row($this, $id);
+        return new Row($this, $id);
     }
 
     /* LAYOUT TYPES --------------------------- */
 
     public function createContent($content)
     {
-        return new \Library\Forms\Layout\Content($content);
+        return new Layout\Content($content);
     }
 
     public function createLabel($row, $for, $label)
     {
-        return new \Library\Forms\Layout\Label($row, $for, $label);
+        return new Layout\Label($row, $for, $label);
     }
 
     /* BASIC INPUT --------------------------- */
 
     public function createTextArea($name)
     {
-        return new \Library\Forms\Input\TextArea($name);
+        return new Input\TextArea($name);
     }
 
     public function createTextField($name)
     {
-        return new \Library\Forms\Input\TextField($name);
+        return new Input\TextField($name);
     }
 
     public function createEmail($name)
     {
-        return (new \Library\Forms\Input\TextField($name))->addValidation('Validate.Email');
+        return (new Input\TextField($name))->addValidation('Validate.Email');
     }
 
     public function createURL($name)
     {
-        return (new \Library\Forms\Input\TextField($name) )
+        return (new Input\TextField($name) )
             ->placeholder('http://')
             ->addValidation(
                 'Validate.Format',
@@ -83,37 +85,37 @@ class FormFactory
 
     public function createNumber($name)
     {
-        return new \Library\Forms\Input\Number($name);
+        return new Input\Number($name);
     }
 
     public function createPassword($name)
     {
-        return new \Library\Forms\Input\Password($name);
+        return new Input\Password($name);
     }
 
     public function createFileUpload($name)
     {
-        return new \Library\Forms\Input\FileUpload($name);
+        return new Input\FileUpload($name);
     }
 
     public function createDate($name)
     {
-        return new \Library\Forms\Input\Date($name);
+        return new Input\Date($name);
     }
 
     public function createCheckbox($name)
     {
-        return (new \Library\Forms\Input\Checkbox($name))->setClass('right');
+        return (new Input\Checkbox($name))->setClass('right');
     }
 
     public function createRadio($name)
     {
-        return (new \Library\Forms\Input\Radio($name))->setClass('right');
+        return (new Input\Radio($name))->setClass('right');
     }
 
     public function createSelect($name)
     {
-        return new \Library\Forms\Input\Select($name);
+        return new Input\Select($name);
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */
@@ -169,7 +171,6 @@ class FormFactory
 
     public function createSelectStaff(\Gibbon\sqlConnection $pdo, $name)
     {
-
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
 
         $results = $pdo->executeQuery(array(), $sql);

@@ -48,9 +48,7 @@ class Form implements FormInterface
 
     public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm')
     {
-        $formFactory = FormFactory::create();
-
-        $form = $formFactory->createForm($id, $action);
+        $form = FormFactory::create()->createForm($id, $action);
         $form->setClass($class);
 
         return $form;
