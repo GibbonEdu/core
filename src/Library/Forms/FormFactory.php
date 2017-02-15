@@ -44,6 +44,11 @@ class FormFactory
         return new Row($this, $id);
     }
 
+    public function createColumn()
+    {
+        return new Column($this);
+    }
+
     /* LAYOUT TYPES --------------------------- */
 
     public function createContent($content)

@@ -17,49 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Layout;
-
-use Library\Forms\FormElementInterface;
+namespace Library\Forms;
 
 /**
- * Content
+ * Column
  *
  * @version v14
  * @since   v14
  */
-class Content implements FormElementInterface
+class Column extends Row implements FormElementInterface
 {
-    protected $content;
     protected $class = '';
-
-    public function __construct($content)
-    {
-        $this->content = $content;
-    }
-
-    public function prepend($value)
-    {
-        $this->content = $value.$this->content;
-        return $this;
-    }
-
-    public function append($value)
-    {
-        $this->content .= $value;
-        return $this;
-    }
-
-    public function addClass($value = '')
-    {
-        $this->class .= ' '.$value;
-        return $this;
-    }
-
-    public function setClass($value = '')
-    {
-        $this->class = $value;
-        return $this;
-    }
 
     public function getClass()
     {
@@ -68,6 +36,14 @@ class Content implements FormElementInterface
 
     public function getOutput()
     {
-        return $this->content;
+        $output = '';
+
+        foreach ($this->getElements() as $element) {
+            $output .= '<div>';
+            $output .= $element->getOutput();
+            $output .= '</div>';
+        }
+
+        return $output;
     }
 }

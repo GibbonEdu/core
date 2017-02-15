@@ -43,17 +43,22 @@ class Row
 
     public function __call($function, $args)
     {
-        if (stripos($function, 'add') === false) return;
+        if (stripos($function, 'add') === false) {
+            return;
+        }
 
         $element = null;
         try {
             $function = str_replace('add', 'create', $function);
+
             if (method_exists($this->formFactory, $function)) {
-                $element = call_user_func_array( array($this->formFactory, $function), $args);
+                $element = call_user_func_array(array($this->formFactory, $function), $args);
+                $this->addElement($element, isset($args[0])? $args[0] : '');
             }
+
         } catch (Exception $e) {
         }
-        return $this->addElement($element, isset($args[0])? $args[0] : '');
+        return $element;
     }
 
     public function addLabel($for, $label)
