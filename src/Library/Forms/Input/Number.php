@@ -24,54 +24,62 @@ use Library\Forms\Element;
 /**
  * TextField
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Number extends TextField {
+class Number extends TextField
+{
+    protected $min;
+    protected $max;
+    protected $decimal;
 
-	protected $min;
-	protected $max;
-	protected $decimal;
+    public function minimum($value)
+    {
+        $this->min = $value;
+        return $this;
+    }
 
-	public function minimum($value) {
-		$this->min = $value;
-		return $this;
-	}
+    public function maximum($value)
+    {
+        $this->max = $value;
+        return $this;
+    }
 
-	public function maximum($value) {
-		$this->max = $value;
-		return $this;
-	}
+    public function decimalPlaces($value)
+    {
+        $this->decimal = $value;
+        return $this;
+    }
 
-	public function decimalPlaces($value) {
-		$this->decimal = $value;
-		return $this;
-	}
+    protected function getElement()
+    {
 
-	protected function getElement() {
+        $validateParams = array();
+        if (isset($this->min)) {
+            $validateParams[] = 'minimum: '.$this->min;
+        }
+        if (!empty($this->max)) {
+            $validateParams[] = 'maximum: '.$this->max;
+        }
 
-		$validateParams = array();
-		if (isset($this->min)) $validateParams[] = 'minimum: '.$this->min;
-		if (!empty($this->max)) $validateParams[] = 'maximum: '.$this->max;
+        $this->addValidation('Validate.Numericality', implode(', ', $validateParams));
 
-		$this->addValidation('Validate.Numericality', implode(', ', $validateParams));
+        if (!empty($this->decimal) && $this->decimal > 0) {
+            $this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{'.$this->decimal.'})+$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimal+2, '0')).'"');
+        }
 
-		if (!empty($this->decimal) && $this->decimal > 0) {
-			$this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{'.$this->decimal.'})+$/, failureMessage: "'.sprintf(__('Must be in format %1$s'),str_pad('0.', $this->decimal+2, '0')).'"');
-		}
+        $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
 
-		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+        if (!empty($this->maxLength)) {
+            $output .= ' maxlength="'.$this->maxLength.'"';
+        }
 
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
+        if (!empty($this->placeholder)) {
+            $output .= ' placeholder="'.$this->placeholder.'"';
+        }
 
-		if (!empty($this->placeholder)) {
-			$output .= ' placeholder="'.$this->placeholder.'"';
-		}
+        $output .= '>';
 
-		$output .= '>';
-
-		return $output;
-	}
+        return $output;
+    }
 }

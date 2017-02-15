@@ -19,66 +19,78 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Layout;
 
+use Library\Forms\Row;
 /**
  * Label
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Label extends Content {
+class Label extends Content
+{
+    protected $row;
 
-	protected $row;
+    protected $label;
+    protected $description;
+    protected $for = '';
 
-	protected $label;
-	protected $description;
-	protected $for = '';
+    public function __construct(Row $row, $for, $label)
+    {
+        $this->row = $row;
+        $this->label = $label;
+        $this->for = $for;
+    }
 
-	public function __construct( \Library\Forms\Row &$row, $for, $label) {
-		$this->row = &$row;
-		$this->label = $label;
-		$this->for = $for;
-	}
+    public function description($value = '')
+    {
+        $this->description = $value;
+        return $this;
+    }
 
-	public function description($value = '') {
-		$this->description = $value;
-		return $this;
-	}
+    public function getRequired()
+    {
+        if (empty($this->for)) {
+            return false;
+        }
 
-	public function getRequired() {
-		if (empty($this->for)) return false;
+        $element = $this->row->getElement($this->for);
 
-		$element = $this->row->getElement($this->for);
+        return (!empty($element))? $element->getRequired() : false;
+    }
 
-		return (!empty($element))? $element->getRequired() : false;
-	}
+    public function getReadOnly()
+    {
+        if (empty($this->for)) {
+            return false;
+        }
 
-	public function getReadOnly() {
-		if (empty($this->for)) return false;
+        $element = $this->row->getElement($this->for);
 
-		$element = $this->row->getElement($this->for);
+        return (!empty($element) && method_exists($element, 'getReadonly'))? $element->getReadonly() : false;
+    }
 
-		return (!empty($element) && method_exists($element, 'getReadonly'))? $element->getReadonly() : false;
-	}
+    public function getOutput()
+    {
+        $output = '';
 
-	public function getOutput() {
-		$output = '';
+        if (!empty($this->label)) {
+            $output .= '<label for="'.$this->for.'"><b>'.__($this->label).' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
+        }
 
-		if (!empty($this->label)) {
-			$output .= '<label for="'.$this->for.'"><b>'.__($this->label).' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
-		}
+        if ($this->getReadonly()) {
+            if (!empty($this->description)) {
+                $this->description .= ' ';
+            }
 
-		if ($this->getReadonly()) {
-			if (!empty($this->description)) $this->description .= ' ';
+            $this->description .= __('This value cannot be changed.');
+        }
 
-			$this->description .= __('This value cannot be changed.');
-		}
+        if (!empty($this->description)) {
+            $output .= '<span class="emphasis small">'.__($this->description).'</span><br/>';
+        }
 
-		if (!empty($this->description)) {
-			$output .= '<span class="emphasis small">'.__($this->description).'</span><br/>';
-		}
+        $output .= $this->content;
 
-		$output .= $this->content;
-
-		return $output;
-	}
+        return $output;
+    }
 }

@@ -24,43 +24,44 @@ use Library\Forms\Element;
 /**
  * Date
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Date extends TextField {
+class Date extends TextField
+{
+    protected function getElement()
+    {
 
-	protected function getElement() {
+        global $guid;
 
-		global $guid;
+        $validationFormat = '';
 
-		$validationFormat = '';
+        if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+            $validationFormat .= "pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+        } else {
+            $validationFormat .= 'pattern: '.$_SESSION[$guid]['i18n']['dateFormatRegEx'];
+        }
 
-		if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-			$validationFormat .= "pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-		} else {
-			$validationFormat .= 'pattern: '.$_SESSION[$guid]['i18n']['dateFormatRegEx'];
-		}
+        if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+            $validationFormat .= ', failureMessage: "Use dd/mm/yyyy"';
+        } else {
+            $validationFormat .= ', failureMessage: "Use '.$_SESSION[$guid]['i18n']['dateFormat'].'"';
+        }
 
-		if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-			$validationFormat .= ', failureMessage: "Use dd/mm/yyyy"';
-		} else {
-			$validationFormat .= ', failureMessage: "Use '.$_SESSION[$guid]['i18n']['dateFormat'].'"';
-		}
+        $this->addValidation('Validate.Format', $validationFormat);
 
-		$this->addValidation('Validate.Format', $validationFormat);
+        $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
 
-		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+        if (!empty($this->placeholder)) {
+            $output .= ' placeholder="'.$this->placeholder.'"';
+        }
 
-		if (!empty($this->placeholder)) {
-			$output .= ' placeholder="'.$this->placeholder.'"';
-		}
+        $output .= '>';
 
-		$output .= '>';
+        $output .= '<script type="text/javascript">';
+        $output .= '$(function() { $( "#'.$this->name.'" ).datepicker(); })';
+        $output .= '</script>';
 
-		$output .= '<script type="text/javascript">';
-		$output .= '$(function() { $( "#'.$this->name.'" ).datepicker(); })';
-		$output .= '</script>';
-
-		return $output;
-	}
+        return $output;
+    }
 }

@@ -24,38 +24,41 @@ use Library\Forms\Element;
 /**
  * TextArea
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class TextArea extends Element {
+class TextArea extends Element
+{
+    protected $rows = 4;
+    protected $maxLength;
 
-	protected $rows = 4;
-	protected $maxLength;
+    public function setRows($count)
+    {
+        $this->rows = $count;
+    }
 
-	public function setRows($count) {
-		$this->rows = $count;
-	}
+    public function maxLength($value = '')
+    {
+        $this->maxLength = $value;
 
-	public function maxLength($value = '') {
-		$this->maxLength = $value;
+        $this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
 
-		$this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
+        return $this;
+    }
 
-		return $this;
-	}
+    protected function getElement()
+    {
 
-	protected function getElement() {
+        $output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
 
-		$output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
+        if (!empty($this->maxLength)) {
+            $output .= ' maxlength="'.$this->maxLength.'"';
+        }
+        $output .= '>';
 
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
-		$output .= '>';
+        $output .= $this->value;
+        $output .= '</textarea>';
 
-		$output .= $this->value;
-		$output .= '</textarea>';
-
-		return $output;
-	}
+        return $output;
+    }
 }

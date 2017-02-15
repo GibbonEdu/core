@@ -24,21 +24,22 @@ use Library\Forms\Element;
 /**
  * Password
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Password extends TextField {
+class Password extends TextField
+{
+    protected function getElement()
+    {
 
-	protected function getElement() {
+        $output = '<input type="password" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
 
-		$output = '<input type="password" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+        if (!empty($this->maxLength)) {
+            $output .= ' maxlength="'.$this->maxLength.'"';
+        }
 
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
+        $output .= '>';
 
-		$output .= '>';
-
-		return $output;
-	}
+        return $output;
+    }
 }

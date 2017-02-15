@@ -24,56 +24,60 @@ use Library\Forms\MultiElement;
 /**
  * Checkbox
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Checkbox extends MultiElement {
+class Checkbox extends MultiElement
+{
+    protected $description;
 
-	protected $description;
+    public function description($value = '')
+    {
+        $this->description = $value;
+        return $this;
+    }
 
-	public function description($value = '') {
-		$this->description = $value;
-		return $this;
-	}
+    public function checked($value)
+    {
 
-	public function checked($value) {
+        if (empty($value) || !is_array($value)) {
+            throw new InvalidArgumentException(sprintf('Checkbox Options %s: checked expects value to be an Array, %s given.', $this->name, gettype($value)));
+        }
 
-		if (empty($value) || !is_array($value)) {
-			throw new InvalidArgumentException( sprintf('Checkbox Options %s: checked expects value to be an Array, %s given.', $this->name, gettype($value) ) );
-		}
+        if (count($this->options) != count($value)) {
+            throw new InvalidArgumentException(sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name));
+        }
 
-		if (count($this->options) != count($value)) {
-			throw new InvalidArgumentException( sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name) );
-		}
+        $this->value = $value;
 
-		$this->value = $value;
-		
-		return $this;
-	}
+        return $this;
+    }
 
-	protected function getIsChecked($value, $index = 0) {
+    protected function getIsChecked($value, $index = 0)
+    {
 
-		if (empty($value) || !isset($this->value[$index])) return '';
+        if (empty($value) || !isset($this->value[$index])) {
+            return '';
+        }
 
-		return ($this->value[$index] == 1 || $this->value[$index] == '1' || strtolower($this->value[$index]) == 'true' )? 'checked' : '';
-	}
+        return ($this->value[$index] == 1 || $this->value[$index] == '1' || strtolower($this->value[$index]) == 'true' )? 'checked' : '';
+    }
 
-	protected function getElement() {
-		$output = '';
+    protected function getElement()
+    {
+        $output = '';
 
-		$this->options = (!empty($this->options))? $this->options : array($this->value => $this->description);
+        $this->options = (!empty($this->options))? $this->options : array($this->value => $this->description);
 
-		if (!empty($this->options) && is_array($this->options)) {
+        if (!empty($this->options) && is_array($this->options)) {
+            $i = 0;
+            foreach ($this->options as $value => $label) {
+                $output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
+                $output .= '<input type="checkbox" class="'.$this->class.'" name="'.$this->name.'[]" value="'.$value.'" '.$this->getIsChecked($value, $i).'><br/>';
+                $i++;
+            }
+        }
 
-			$i = 0;
-			foreach ($this->options as $value => $label) {
-				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-				$output .= '<input type="checkbox" class="'.$this->class.'" name="'.$this->name.'[]" value="'.$value.'" '.$this->getIsChecked($value, $i).'><br/>';
-				$i++;
-			}
-
-		}
-
-		return $output;
-	}
+        return $output;
+    }
 }

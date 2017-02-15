@@ -24,36 +24,40 @@ use Library\Forms\Element;
 /**
  * TextField
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class FileUpload extends Element {
+class FileUpload extends Element
+{
+    protected $accepts = array();
 
-	protected $accepts = array();
+    public function accepts($value)
+    {
+        if (is_string($value)) {
+            $value = explode(',', $value);
+        }
+        $this->accepts = $value;
 
-	public function accepts($value) {
-		if (is_string($value)) {
-			$value = explode(',', $value);
-		}
-		$this->accepts = $value;
+        if (!empty($this->accepts) && is_array($this->accepts)) {
+            $within = implode(',', array_map(function ($str) {
+                return sprintf("'%s'", $str);
+            }, $this->accepts));
+            $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
+        }
+        return $this;
+    }
 
-		if (!empty($this->accepts) && is_array($this->accepts)) {
-			$within = implode(',', array_map(function($str) { return sprintf("'%s'", $str); }, $this->accepts));
-			$this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
-		}
-		return $this;
-	}
+    protected function getElement()
+    {
 
-	protected function getElement() {
+        $output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';
 
-		$output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';
+        if (!empty($this->accepts) && is_array($this->accepts)) {
+            $output .= ' accepts="'.implode(',', $this->accepts).'"';
+        }
 
-		if (!empty($this->accepts) && is_array($this->accepts)) {
-			$output .= ' accepts="'.implode(',', $this->accepts).'"';
-		}
+        $output .= '>';
 
-		$output .= '>';
-
-		return $output;
-	}
+        return $output;
+    }
 }

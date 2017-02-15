@@ -24,43 +24,50 @@ use Library\Forms\FormElementInterface as FormElementInterface;
 /**
  * Content
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Content implements FormElementInterface {
+class Content implements FormElementInterface
+{
+    protected $content;
+    protected $class = '';
 
-	protected $content;
-	protected $class = '';
+    public function __construct($content)
+    {
+        $this->content = $content;
+    }
 
-	public function __construct($content) {
-		$this->content = $content;
-	}
+    public function prepend($value)
+    {
+        $this->content = $value.$this->content;
+        return $this;
+    }
 
-	public function prepend($value) {
-		$this->content = $value.$this->content;
-		return $this;
-	}
+    public function append($value)
+    {
+        $this->content .= $value;
+        return $this;
+    }
 
-	public function append($value) {
-		$this->content .= $value;
-		return $this;
-	}
+    public function addClass($value = '')
+    {
+        $this->class .= ' '.$value;
+        return $this;
+    }
 
-	public function addClass($value = '') {
-		$this->class .= ' '.$value;
-		return $this;
-	}
-	
-	public function setClass($value = '') {
-		$this->class = $value;
-		return $this;
-	}
+    public function setClass($value = '')
+    {
+        $this->class = $value;
+        return $this;
+    }
 
-	public function getClass() {
-		return $this->class;
-	}
+    public function getClass()
+    {
+        return $this->class;
+    }
 
-	public function getOutput() {
-		return $this->content;
-	}
+    public function getOutput()
+    {
+        return $this->content;
+    }
 }

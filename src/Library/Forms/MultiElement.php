@@ -24,66 +24,73 @@ namespace Library\Forms;
  *
  * Extends the basic Element class to add functionaly for types of input that offer users multiple choices. Methods are provided for reading options from a variety of sources.
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-abstract class MultiElement extends Element {
+abstract class MultiElement extends Element
+{
+    protected $options = array();
 
-	protected $options = array();
+    public function fromString($value)
+    {
 
-	public function fromString($value) {
+        if (empty($value) || !is_string($value)) {
+            throw new InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->name, gettype($value)));
+        }
 
-		if (empty($value) || !is_string($value)) {
-			throw new InvalidArgumentException( sprintf('Element %s: fromString expects value to be a string, %s given.', $this->name, gettype($value) ) );
-		}
+        $pieces = str_getcsv($value);
 
-		$pieces = str_getcsv($value);
+        foreach ($pieces as $piece) {
+            $piece = trim($piece);
 
-		foreach ($pieces as $piece) {
-			$piece = trim($piece);
+            $this->options[$piece] = $piece;
+        }
 
-			$this->options[$piece] = $piece;
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    public function fromArray($value)
+    {
 
-	public function fromArray($value) {
+        if (empty($value) || !is_array($value)) {
+            throw new InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value)));
+        }
 
-		if (empty($value) || !is_array($value)) {
-			throw new InvalidArgumentException( sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value) ) );
-		}
+        $this->options = array_merge($this->options, $value);
 
-		$this->options = array_merge($this->options, $value);
+        return $this;
+    }
 
-		return $this;
-	}
+    public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array())
+    {
 
-	public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array() ) {
+        $results = $pdo->executeQuery($data, $sql);
 
-		$results = $pdo->executeQuery($data, $sql);
+        return $this->fromResults($results);
+    }
 
-		return $this->fromResults($results);
-	}
+    public function fromResults($results)
+    {
 
-	public function fromResults($results) {
+        if (empty($results) || !is_object($results)) {
+            throw new InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results)));
+        }
 
-		if (empty($results) || !is_object($results)) {
-			throw new InvalidArgumentException( sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results) ) );
-		}
-		
-		if ($results && $results->rowCount() > 0) {
-			while ($row = $results->fetch()) {
-				if (!isset($row['value']) || !isset($row['name'])) continue;
+        if ($results && $results->rowCount() > 0) {
+            while ($row = $results->fetch()) {
+                if (!isset($row['value']) || !isset($row['name'])) {
+                    continue;
+                }
 
-				$this->options[$row['value']] = $row['name'];
-			}
-		}
+                $this->options[$row['value']] = $row['name'];
+            }
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected function getOptions() {
-		return $this->options;
-	}
+    protected function getOptions()
+    {
+        return $this->options;
+    }
 }

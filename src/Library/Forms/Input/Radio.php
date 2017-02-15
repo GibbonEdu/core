@@ -24,32 +24,33 @@ use Library\Forms\MultiElement;
 /**
  * Checkbox
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Radio extends MultiElement {
+class Radio extends MultiElement
+{
+    public function checked($value)
+    {
+        $this->value = $value;
+        return $this;
+    }
 
-	public function checked($value) {
-		$this->value = $value;
-		return $this;
-	}
+    protected function getIsChecked($value)
+    {
+        return (!empty($value) && $value == $this->value )? 'checked' : '';
+    }
 
-	protected function getIsChecked($value) {
-		return (!empty($value) && $value == $this->value )? 'checked' : '';
-	}
+    protected function getElement()
+    {
+        $output = '';
 
-	protected function getElement() {
-		$output = '';
+        if (!empty($this->getOptions()) && is_array($this->getOptions())) {
+            foreach ($this->getOptions() as $value => $label) {
+                $output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
+                $output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
+            }
+        }
 
-		if (!empty($this->getOptions()) && is_array($this->getOptions())) {
-
-			foreach ($this->getOptions() as $value => $label) {
-				$output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-				$output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
-			}
-
-		}
-
-		return $output;
-	}
+        return $output;
+    }
 }
