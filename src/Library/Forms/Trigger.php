@@ -51,7 +51,7 @@ class Trigger
     public function onCheckbox($name)
     {
         $this->elementType = 'checkbox';
-        $this->sourceSelector = 'input[type="checkbox"][name="'.$name.'"]';
+        $this->sourceSelector = 'input[type="checkbox"][name="'.$name.'[]"]';
         $this->sourceValueSelector = $this->sourceSelector.':checked';
 
         return $this;
