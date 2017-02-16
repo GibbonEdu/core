@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms;
+namespace Library\Forms\Layout;
 
-use Library\Forms\FormFactory;
+use Library\Forms\FormFactoryInterface;
+use Library\Forms\OutputableInterface;
+use Library\Forms\Traits\BasicAttributesTrait;
 
 /**
  * Row
@@ -29,48 +31,46 @@ use Library\Forms\FormFactory;
  */
 class Row
 {
-    protected $id = '';
-    protected $class = '';
+    use BasicAttributesTrait;
 
-    protected $formFactory;
+    protected $factory;
     protected $formElements = array();
 
-    public function __construct(FormFactory $formFactory, $id = '')
+    public function __construct(FormFactoryInterface $factory, $id = '')
     {
-        $this->formFactory = $formFactory;
+        $this->factory = $factory;
         $this->id = $id;
     }
 
     public function __call($function, $args)
     {
-        if (stripos($function, 'add') === false) {
+        if (substr($function, 0, 3) != 'add') {
             return;
         }
 
-        $element = null;
         try {
-            $function = str_replace('add', 'create', $function);
+            $function = substr_replace($function, 'create', 0, 3);
 
-            if (method_exists($this->formFactory, $function)) {
-                $element = call_user_func_array(array($this->formFactory, $function), $args);
-                $this->addElement($element, isset($args[0])? $args[0] : '');
+            $reflectionMethod = new \ReflectionMethod($this->factory, $function);
+            $element = $reflectionMethod->invokeArgs($this->factory, $args);
+
+            if ($element instanceof RowDependancyInterface) {
+                $element->setRow($this);
             }
-
-        } catch (Exception $e) {
+        } catch (\ReflectionException $e) {
+            $element = $this->factory->createContent(sprintf('Cannot %1$s. This form element does not exist in the current FormFactory', $function).': '.$e->getMessage());
         }
-        return $element;
+
+        return $this->addElement($element);
     }
 
-    public function addLabel($for, $label)
+    public function addElement(OutputableInterface $element)
     {
-        return $this->addElement($this->formFactory->createLabel($this, $for, $label));
-    }
-
-    public function addElement(FormElementInterface $element, $id = '')
-    {
-        //if (empty($id)) {
+        if (method_exists($element, 'getName')) {
+            $id = $element->getName();
+        } else {
             $id = 'element-'.count($this->formElements);
-        //}
+        }
 
         $this->formElements[$id] = $element;
         return $element;
@@ -82,30 +82,6 @@ class Row
             return null;
         }
         return (isset($this->formElements[$id]))? $this->formElements[$id] : end($this->formElements);
-    }
-
-    public function addClass($value = '')
-    {
-        if (empty($this->class)) return $this->setClass($value);
-
-        $this->class .= ' '.$value;
-        return $this;
-    }
-
-    public function setClass($value = '')
-    {
-        $this->class = $value;
-        return $this;
-    }
-
-    public function getID()
-    {
-        return $this->id;
-    }
-
-    public function getClass()
-    {
-        return $this->class;
     }
 
     public function getElements()
@@ -122,4 +98,9 @@ class Row
     {
         return (end($this->formElements) == $element);
     }
+}
+
+interface RowDependancyInterface
+{
+    public function setRow(Row $row);
 }

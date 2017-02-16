@@ -17,33 +17,34 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms;
+namespace Library\Forms\Layout;
+
+use Library\Forms\OutputableInterface;
 
 /**
- * Column
+ * Content
  *
  * @version v14
  * @since   v14
  */
-class Column extends Row implements FormElementInterface
+class Heading extends Content implements OutputableInterface, RowDependancyInterface
 {
-    protected $class = '';
+    protected $row;
 
-    public function getClass()
+    public function __construct($content)
     {
-        return $this->class;
+        $this->content = $content;
+    }
+
+    public function setRow(Row $row)
+    {
+        $this->row = $row;
+
+        $this->row->setClass('break');
     }
 
     public function getOutput()
     {
-        $output = '';
-
-        foreach ($this->getElements() as $element) {
-            $output .= '<div>';
-            $output .= $element->getOutput();
-            $output .= '</div>';
-        }
-
-        return $output;
+        return '<h3>'.$this->content.'</h3>';
     }
 }
