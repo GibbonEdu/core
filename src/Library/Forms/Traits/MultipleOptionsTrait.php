@@ -17,23 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms;
+namespace Library\Forms\Traits;
 
 /**
- * MultiElement
+ * MultipleOptions
  *
- * Extends the basic Element class to add functionaly for types of input that offer users multiple choices. Methods are provided for reading options from a variety of sources.
+ * Adds functionaly for types of input that offer users multiple options. Methods are provided for reading options from a variety of sources.
  *
  * @version v14
  * @since   v14
  */
-abstract class MultiElement extends Element
+trait MultipleOptionsTrait
 {
     protected $options = array();
 
     public function fromString($value)
     {
-
         if (empty($value) || !is_string($value)) {
             throw new InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->name, gettype($value)));
         }
@@ -51,7 +50,6 @@ abstract class MultiElement extends Element
 
     public function fromArray($value)
     {
-
         if (empty($value) || !is_array($value)) {
             throw new InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value)));
         }
@@ -63,7 +61,6 @@ abstract class MultiElement extends Element
 
     public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array())
     {
-
         $results = $pdo->executeQuery($data, $sql);
 
         return $this->fromResults($results);
@@ -71,7 +68,6 @@ abstract class MultiElement extends Element
 
     public function fromResults($results)
     {
-
         if (empty($results) || !is_object($results)) {
             throw new InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results)));
         }

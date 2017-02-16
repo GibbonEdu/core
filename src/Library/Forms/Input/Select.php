@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use Library\Forms\MultiElement;
+use Library\Forms\Element;
+use Library\Forms\Traits\MultipleOptionsTrait;
 
 /**
  * Select
@@ -27,8 +28,10 @@ use Library\Forms\MultiElement;
  * @version v14
  * @since   v14
  */
-class Select extends MultiElement
+class Select extends Element
 {
+    use MultipleOptionsTrait;
+
     protected $selected = null;
     protected $placeholder;
     protected $multiple = false;

@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Input;
 
-use Library\Forms\MultiElement;
+use Library\Forms\Element;
+use Library\Forms\Traits\MultipleOptionsTrait;
 
 /**
  * Checkbox
@@ -27,8 +28,10 @@ use Library\Forms\MultiElement;
  * @version v14
  * @since   v14
  */
-class Checkbox extends MultiElement
+class Checkbox extends Element
 {
+    use MultipleOptionsTrait;
+
     protected $description;
 
     public function description($value = '')
@@ -39,11 +42,6 @@ class Checkbox extends MultiElement
 
     public function checked($value)
     {
-
-        if (empty($value) || !is_array($value)) {
-            throw new InvalidArgumentException(sprintf('Checkbox Options %s: checked expects value to be an Array, %s given.', $this->name, gettype($value)));
-        }
-
         if (count($this->options) != count($value)) {
             throw new InvalidArgumentException(sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name));
         }
@@ -67,7 +65,7 @@ class Checkbox extends MultiElement
     {
         $output = '';
 
-        $this->options = (!empty($this->options))? $this->options : array($this->value => $this->description);
+        $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->value => $this->description);
 
         if (!empty($this->options) && is_array($this->options)) {
             $i = 0;
