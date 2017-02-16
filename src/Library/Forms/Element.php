@@ -19,73 +19,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms;
 
+use Library\Forms\Traits\BasicAttributesTrait;
+use Library\Forms\Traits\InputAttributesTrait;
+
 /**
  * Element
  *
  * @version v14
  * @since   v14
  */
-abstract class Element implements FormElementInterface, ValidateableInterface
+abstract class Element implements OutputableInterface, ValidatableInterface
 {
-    protected $name;
-    protected $class;
-    protected $value;
-
-    protected $required = false;
+    use BasicAttributesTrait;
+    use InputAttributesTrait;
 
     protected $validation = array();
 
     public function __construct($name)
     {
         $this->name = $name;
-        $this->class = 'standardWidth';
+        $this->setClass('standardWidth');
     }
 
     abstract protected function getElement();
-
-    public function isRequired($value = true)
-    {
-        $this->required = $value;
-        return $this;
-    }
-
-    public function addClass($value = '')
-    {
-        $this->class .= ' '.$value;
-        return $this;
-    }
-
-    public function setClass($value = '')
-    {
-        $this->class = $value;
-        return $this;
-    }
-
-    public function setValue($value = '')
-    {
-        $this->value = $value;
-        return $this;
-    }
 
     public function addValidation($type, $params = '')
     {
         $this->validation[$type] = $params;
         return $this;
-    }
-
-    public function getRequired()
-    {
-        return $this->required;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getClass()
-    {
-        return $this->class;
     }
 
     public function getOutput()

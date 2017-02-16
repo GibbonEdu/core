@@ -19,14 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms\Layout;
 
-use Library\Forms\Row;
 /**
  * Label
  *
  * @version v14
  * @since   v14
  */
-class Label extends Content
+class Label extends Content implements RowDependancyInterface
 {
     protected $row;
 
@@ -34,11 +33,14 @@ class Label extends Content
     protected $description;
     protected $for = '';
 
-    public function __construct(Row $row, $for, $label)
+    public function __construct($for, $label)
     {
-        $this->row = $row;
         $this->label = $label;
         $this->for = $for;
+    }
+
+    public function setRow(Row $row) {
+        $this->row = $row;
     }
 
     public function description($value = '')
@@ -47,9 +49,9 @@ class Label extends Content
         return $this;
     }
 
-    public function getRequired()
+    protected function getRequired()
     {
-        if (empty($this->for)) {
+        if (empty($this->for) || empty($this->row)) {
             return false;
         }
 
@@ -58,7 +60,7 @@ class Label extends Content
         return (!empty($element))? $element->getRequired() : false;
     }
 
-    public function getReadOnly()
+    protected function getReadOnly()
     {
         if (empty($this->for)) {
             return false;

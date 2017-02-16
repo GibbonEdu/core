@@ -17,42 +17,44 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Layout;
-
-use Library\Forms\OutputableInterface;
-use Library\Forms\Traits\BasicAttributesTrait;
+namespace Library\Forms\Traits;
 
 /**
- * Content
+ * Basic HTML Attributes (id, class)
  *
  * @version v14
  * @since   v14
  */
-class Content implements OutputableInterface
+trait BasicAttributesTrait
 {
-    use BasicAttributesTrait;
+    protected $id = '';
+    protected $class = '';
 
-    protected $content;
-
-    public function __construct($content)
+    public function setID($id = '')
     {
-        $this->content = $content;
-    }
-
-    public function prepend($value)
-    {
-        $this->content = $value.$this->content;
+        $this->id = $id;
         return $this;
     }
 
-    public function append($value)
+    public function getID()
     {
-        $this->content .= $value;
+        return $this->id;
+    }
+
+    public function setClass($class = '')
+    {
+        $this->class = $class;
         return $this;
     }
 
-    public function getOutput()
+    public function addClass($class = '')
     {
-        return $this->content;
+        $this->class = (empty($this->class))? $class : $this->class.' '.$class;
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 }
