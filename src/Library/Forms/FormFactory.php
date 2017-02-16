@@ -19,46 +19,63 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Library\Forms;
 
+use Library\Forms\FormFactoryInterface;
+
 /**
  * FormFactory
  *
- * Handles Form object creation, including pre-defined elements. Default factory can be extended to add types.
+ * Handles Form object creation, including pre-defined elements. Replaceable component. Default factory can be extended to add types.
  *
  * @version v14
  * @since   v14
  */
-class FormFactory
+class FormFactory implements FormFactoryInterface
 {
     public static function create()
     {
         return new FormFactory();
     }
 
-    public function createForm($id, $action)
+    public function createForm($action)
     {
-        return new Form($this, $id, $action);
+        return new Form($this, $action);
     }
 
-    public function createRow($id)
+    public function createFormRenderer()
     {
-        return new Row($this, $id);
-    }
-
-    public function createColumn()
-    {
-        return new Column($this);
+        return new FormRenderer();
     }
 
     /* LAYOUT TYPES --------------------------- */
+
+    public function createRow($id = '')
+    {
+        return new Layout\Row($this, $id);
+    }
+
+    public function createColumn($id = '')
+    {
+        return new Layout\Column($this, $id);
+    }
+
+    public function createTrigger($selector)
+    {
+        return new Layout\Trigger($selector);
+    }
 
     public function createContent($content)
     {
         return new Layout\Content($content);
     }
 
-    public function createLabel($row, $for, $label)
+    public function createLabel($for, $label)
     {
-        return new Layout\Label($row, $for, $label);
+        return new Layout\Label($for, $label);
+    }
+
+    public function createHeading($content)
+    {
+        return new Layout\Heading($content);
     }
 
     /* BASIC INPUT --------------------------- */
@@ -125,13 +142,6 @@ class FormFactory
 
     /* PRE-DEFINED LAYOUT --------------------------- */
 
-    public function createHeading($label)
-    {
-        //$this->setClass('break');
-        $content = sprintf('<h3>%s</h3>', __($label));
-        return $this->createContent($content);
-    }
-
     public function createSubheading($label)
     {
         $content = sprintf('<h4>%s</h4>', __($label));
@@ -176,7 +186,9 @@ class FormFactory
 
     public function createSelectStaff(\Gibbon\sqlConnection $pdo, $name)
     {
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                WHERE status='Full' ORDER BY surname, preferredName";
 
         $results = $pdo->executeQuery(array(), $sql);
 
