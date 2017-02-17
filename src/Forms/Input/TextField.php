@@ -59,7 +59,7 @@ class TextField extends Input
         return $this->readonly;
     }
 
-    public function getOutput()
+    protected function getElement()
     {
 
         $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';

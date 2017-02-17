@@ -27,7 +27,7 @@ namespace Gibbon\Forms\Input;
  */
 class Password extends TextField
 {
-    public function getOutput()
+    protected function getElement()
     {
 
         $output = '<input type="password" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';

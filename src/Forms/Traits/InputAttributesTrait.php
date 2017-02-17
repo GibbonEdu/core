@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Traits;
 
 /**
- * Basic HTML Attributes (id, class)
+ * Basic HTML Input Attributes (name, type, value, required)
  *
  * @version v14
  * @since   v14

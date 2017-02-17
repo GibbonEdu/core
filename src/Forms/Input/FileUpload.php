@@ -45,7 +45,7 @@ class FileUpload extends Input
         return $this;
     }
 
-    public function getOutput()
+    protected function getElement()
     {
 
         $output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';

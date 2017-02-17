@@ -49,7 +49,7 @@ class Number extends TextField
         return $this;
     }
 
-    public function getOutput()
+    protected function getElement()
     {
 
         $validateParams = array();

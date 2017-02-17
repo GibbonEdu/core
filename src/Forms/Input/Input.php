@@ -19,9 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\ValidatableInterface;
-use Gibbon\Forms\Traits\BasicAttributesTrait;
 use Gibbon\Forms\Traits\InputAttributesTrait;
 
 /**
@@ -30,9 +29,8 @@ use Gibbon\Forms\Traits\InputAttributesTrait;
  * @version v14
  * @since   v14
  */
-abstract class Input implements OutputableInterface, ValidatableInterface
+abstract class Input extends Element implements ValidatableInterface
 {
-    use BasicAttributesTrait;
     use InputAttributesTrait;
 
     protected $validation = array();
@@ -42,8 +40,6 @@ abstract class Input implements OutputableInterface, ValidatableInterface
         $this->name = $name;
         $this->setClass('standardWidth');
     }
-
-    abstract public function getOutput();
 
     public function addValidation($type, $params = '')
     {

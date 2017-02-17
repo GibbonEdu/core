@@ -42,7 +42,7 @@ class Radio extends Input
         return (!empty($value) && $value == $this->value )? 'checked' : '';
     }
 
-    public function getOutput()
+    protected function getElement()
     {
         $output = '';
 

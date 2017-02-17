@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Layout;
 
-use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
 /**

@@ -44,7 +44,7 @@ class TextArea extends Input
         return $this;
     }
 
-    public function getOutput()
+    protected function getElement()
     {
 
         $output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';

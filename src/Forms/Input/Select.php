@@ -65,7 +65,7 @@ class Select extends Input
         }
     }
 
-    public function getOutput()
+    protected function getElement()
     {
         $output = '';
 

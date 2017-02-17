@@ -27,7 +27,7 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
-    public function getOutput()
+    protected function getElement()
     {
 
         global $guid;

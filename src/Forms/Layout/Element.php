@@ -33,6 +33,8 @@ class Element implements OutputableInterface
     use BasicAttributesTrait;
 
     protected $content;
+    protected $appended;
+    protected $prepended;
 
     public function __construct($content)
     {
@@ -41,18 +43,50 @@ class Element implements OutputableInterface
 
     public function prepend($value)
     {
-        $this->content = $value.$this->content;
+        $this->prepended .= $value;
         return $this;
     }
 
     public function append($value)
     {
-        $this->content .= $value;
+        $this->appended .= $value;
         return $this;
     }
 
     public function getOutput()
     {
+        return $this->prepended.$this->getElement().$this->appended;
+    }
+
+    protected function getElement()
+    {
         return $this->content;
+    }
+
+    /**
+     * getAttributeOutput
+     *
+     * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
+     * @version  v14
+     * @since    v14
+     * @param    [type]  $attributes
+     * @return   [type]
+     */
+    protected function getAttributeOutput($attributes)
+    {
+        $output = implode(' ', array_map(
+            function ($key) use ($attributes) {
+                if (is_bool($attributes[$key])) {
+                    return $attributes[$key]?$key:'';
+                }
+                if (!empty($attributes[$key])) {
+                    return $key.'="'.$attributes[$key].'"';
+                }
+                return '';
+            },
+            array_keys($attributes)
+        ));
+
+        return $output;
     }
 }

@@ -60,7 +60,7 @@ class Checkbox extends Input
         return ($this->value[$index] == 1 || $this->value[$index] == '1' || strtolower($this->value[$index]) == 'true' )? 'checked' : '';
     }
 
-    public function getOutput()
+    protected function getElement()
     {
         $output = '';
 
