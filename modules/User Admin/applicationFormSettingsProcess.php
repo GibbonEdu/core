@@ -54,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $notificationParentsMessage = $_POST['notificationParentsMessage'];
     $notificationParentsDefault = $_POST['notificationParentsDefault'];
     $languageOptionsActive = $_POST['languageOptionsActive'];
-    $languageOptionsBlurb = $_POST['languageOptionsBlurb'];
-    $languageOptionsLanguageList = $_POST['languageOptionsLanguageList'];
+    $languageOptionsBlurb = (isset($_POST['languageOptionsBlurb'])) ? $_POST['languageOptionsBlurb'] : null;
+    $languageOptionsLanguageList = (isset($_POST['languageOptionsLanguageList'])) ? $_POST['languageOptionsLanguageList'] : null;
     $studentDefaultEmail = $_POST['studentDefaultEmail'];
     $studentDefaultWebsite = $_POST['studentDefaultWebsite'];
     $autoHouseAssign = $_POST['autoHouseAssign'];
