@@ -39,7 +39,8 @@ class Label extends Element implements RowDependancyInterface
         $this->for = $for;
     }
 
-    public function setRow(Row $row) {
+    public function setRow(Row $row)
+    {
         $this->row = $row;
     }
 
@@ -88,7 +89,13 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<span class="emphasis small">'.__($this->description).'</span><br/>';
+            $output .= '<span class="emphasis small">';
+
+            $output .= (!empty($this->prepended))? __($this->prepended).' ' : '';
+            $output .=__($this->description);
+            $output .= (!empty($this->appended))? ' '.__($this->appended) : '';
+
+            $output .= '</span><br/>';
         }
 
         $output .= $this->content;
