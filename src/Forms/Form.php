@@ -33,6 +33,7 @@ class Form implements OutputableInterface
     use BasicAttributesTrait;
 
     protected $action;
+    protected $method;
     protected $factory;
     protected $renderer;
 
@@ -40,19 +41,23 @@ class Form implements OutputableInterface
     protected $triggers = array();
     protected $values = array();
 
-    public function __construct(FormFactoryInterface $factory, $action)
+    public function __construct(FormFactoryInterface $factory, FormRendererInterface $renderer, $action, $method)
     {
         $this->factory = $factory;
+        $this->renderer = $renderer;
         $this->action = ltrim($action, '/');
+        $this->method = $method;
     }
 
-    public static function create($id, $action, $class = 'smallIntBorder fullWidth standardForm')
+    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth standardForm')
     {
-        $form = FormFactory::create()->createForm($action);
+        $factory = FormFactory::create();
+        $renderer = FormRenderer::create();
 
-        $form->setRenderer($form->factory->createFormRenderer());
-        $form->setClass($class);
+        $form = new Form($factory, $renderer, $action, $method);
+
         $form->setID($id);
+        $form->setClass($class);
 
         return $form;
     }
@@ -65,6 +70,11 @@ class Form implements OutputableInterface
     public function setRenderer($renderer)
     {
         $this->renderer = $renderer;
+    }
+
+    public function getMethod()
+    {
+        return $method->method;
     }
 
     public function getAction()
@@ -126,21 +136,25 @@ class Form implements OutputableInterface
         return $this->addTrigger($selector, $this->factory->createTrigger($selector));
     }
 
-    public function getOutput() {
-        return $this->renderer->renderForm($this);
+    public function getOutput()
+    {
+        $output = '';
+
+        $output .= '<form id="'.$form->getID().'" method="post" action="'.$form->getAction().'" enctype="multipart/form-data">';
+        $output .= $this->renderer->renderForm($this);
+        $output .= '</form>';
+
+        return $output;
     }
 }
 
 /**
- * Define common interfaces for elements
+ * Define common interfaces for elements. PSR-2 aside, I really hate putting things this small in their own files ...
  *
  * @version v14
  * @since   v14
  */
 interface FormFactoryInterface {
-    public function createForm($action);
-    public function createFormRenderer();
-
     public function createRow($id);
     public function createColumn($id);
     public function createTrigger($selector);

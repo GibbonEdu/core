@@ -36,16 +36,6 @@ class FormFactory implements FormFactoryInterface
         return new FormFactory();
     }
 
-    public function createForm($action)
-    {
-        return new Form($this, $action);
-    }
-
-    public function createFormRenderer()
-    {
-        return new FormRenderer();
-    }
-
     /* LAYOUT TYPES --------------------------- */
 
     public function createRow($id = '')

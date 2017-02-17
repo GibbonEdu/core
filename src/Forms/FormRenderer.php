@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\FormRendererInterface;
 
 /**
@@ -32,6 +31,11 @@ use Gibbon\Forms\FormRendererInterface;
  */
 class FormRenderer implements FormRendererInterface
 {
+    public static function create()
+    {
+        return new FormRenderer();
+    }
+
     public function renderForm(Form $form)
     {
         $output = '';
@@ -75,6 +79,7 @@ class FormRenderer implements FormRendererInterface
             }
         }
 
+        // Output the trigger code
         foreach (array_reverse($form->getTriggers()) as $trigger) {
             $output .= $trigger->getOutput();
         }
