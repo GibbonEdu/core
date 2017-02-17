@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activitySettingsProcess.php');
+    $form = Form::create('activitySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activitySettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
