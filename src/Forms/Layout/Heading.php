@@ -45,6 +45,6 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
 
     protected function getElement()
     {
-        return '<h3>'.$this->content.'</h3>';
+        return '<h3>'.__($this->content).'</h3>';
     }
 }
