@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessmentSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -34,11 +36,61 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $form = Form::create('formalAssessmentSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formalAssessmentSettingsProcess.php');
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $form->addRow()->addHeading('Internal Assessment Settings');
+
+    $setting = getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+
+    $form->addRow()->addHeading('Primary External Assessement')->append('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).');
+
+    $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
+
+    $sql = "SELECT gibbonExternalAssessmentID as `value`, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
+    $results = $pdo->executeQuery(array(), $sql);
+    $externalAssessments = $results->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+    $sql = "SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID as `value`, category as `name` FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY value, category";
+    $resultExternalAssessmentFieldSet = $pdo->executeQuery(array(), $sql);
+
+    $row = $form->addRow()->setClass('break');
+        $row->addContent(__('Year Group'));
+        $row->addContent(__('External Assessment'));
+        $row->addContent(__('Field Set'));
+
+
+    $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
+    $result = $pdo->executeQuery(array(), $sql);
+
+    while ($yearGroup = $result->fetch()) {
+        $row = $form->addRow();
+        $row->addContent($yearGroup['name']);
+        $row->addSelect('gibbonExternalAssessmentID[]')
+            ->fromArray($externalAssessments)
+            ->placeholder()
+            ->selected($primaryExternalAssessmentByYearGroup[$yearGroup['gibbonYearGroupID']]);
+
+        $row->addSelect('category[]')
+            ->fromResults($resultExternalAssessmentFieldSet)
+            ->selected($primaryExternalAssessmentByYearGroup[$yearGroup['gibbonYearGroupID']]);
+    }
+
+    $row = $form->addRow();
+        $row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formalAssessmentSettingsProcess.php'?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=3> 
+				<td colspan=3>
 					<h3><?php echo __($guid, 'Internal Assessment Settings'); ?></h3>
 				</td>
 			</tr>
@@ -52,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -61,18 +113,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script> 
+					</script>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=3> 
+				<td colspan=3>
 					<h3><?php echo __($guid, 'Primary External Assessement'); ?></h3>
 					<?php echo __($guid, 'These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).'); ?>
 				</td>
 			</tr>
-			
-	
+
+
 			<?php
             try {
                 $data = array();
