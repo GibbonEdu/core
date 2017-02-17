@@ -17,44 +17,29 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Traits;
+namespace Gibbon\Forms\Input;
+
+use Gibbon\Forms\Element;
 
 /**
- * Basic HTML Attributes (id, class)
+ * Password
  *
  * @version v14
  * @since   v14
  */
-trait BasicAttributesTrait
+class Password extends TextField
 {
-    protected $id = '';
-    protected $class = '';
-
-    public function setID($id = '')
+    protected function getElement()
     {
-        $this->id = $id;
-        return $this;
-    }
 
-    public function getID()
-    {
-        return $this->id;
-    }
+        $output = '<input type="password" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
 
-    public function setClass($class = '')
-    {
-        $this->class = $class;
-        return $this;
-    }
+        if (!empty($this->maxLength)) {
+            $output .= ' maxlength="'.$this->maxLength.'"';
+        }
 
-    public function addClass($class = '')
-    {
-        $this->class = (empty($this->class))? $class : $this->class.' '.$class;
-        return $this;
-    }
+        $output .= '>';
 
-    public function getClass()
-    {
-        return $this->class;
+        return $output;
     }
 }

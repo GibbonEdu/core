@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Input;
+namespace Gibbon\Forms\Input;
 
-use Library\Forms\Element;
-use Library\Forms\Traits\MultipleOptionsTrait;
+use Gibbon\Forms\Element;
+use Gibbon\Forms\Traits\MultipleOptionsTrait;
 
 /**
  * Checkbox

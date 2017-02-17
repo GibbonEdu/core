@@ -35,6 +35,7 @@ require_once $basePath.'/src/Autoloader.php';
 
 $loader = new Autoloader($basePath);
 
+$loader->addNameSpace('Gibbon\\', 'src');
 $loader->addNameSpace('Gibbon\\', 'src/Gibbon');
 $loader->addNameSpace('Library\\', 'src/Library');
 

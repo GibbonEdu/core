@@ -17,34 +17,30 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Layout;
+namespace Gibbon\Forms\Layout;
 
-use Library\Forms\OutputableInterface;
+use Gibbon\Forms\OutputableInterface;
 
 /**
- * Content
+ * Column
  *
  * @version v14
  * @since   v14
  */
-class Heading extends Content implements OutputableInterface, RowDependancyInterface
+class Column extends Row implements OutputableInterface
 {
-    protected $row;
-
-    public function __construct($content)
-    {
-        $this->content = $content;
-    }
-
-    public function setRow(Row $row)
-    {
-        $this->row = $row;
-
-        $this->row->setClass('break');
-    }
+    protected $class = '';
 
     public function getOutput()
     {
-        return '<h3>'.$this->content.'</h3>';
+        $output = '';
+
+        foreach ($this->getElements() as $element) {
+            $output .= '<div style="clear:both;">';
+            $output .= $element->getOutput();
+            $output .= '</div>';
+        }
+
+        return $output;
     }
 }

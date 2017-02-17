@@ -17,10 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Layout;
+namespace Gibbon\Forms\Layout;
 
-use Library\Forms\OutputableInterface;
-use Library\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\OutputableInterface;
 
 /**
  * Content
@@ -28,31 +27,24 @@ use Library\Forms\Traits\BasicAttributesTrait;
  * @version v14
  * @since   v14
  */
-class Content implements OutputableInterface
+class Heading extends Content implements OutputableInterface, RowDependancyInterface
 {
-    use BasicAttributesTrait;
-
-    protected $content;
+    protected $row;
 
     public function __construct($content)
     {
         $this->content = $content;
     }
 
-    public function prepend($value)
+    public function setRow(Row $row)
     {
-        $this->content = $value.$this->content;
-        return $this;
-    }
+        $this->row = $row;
 
-    public function append($value)
-    {
-        $this->content .= $value;
-        return $this;
+        $this->row->setClass('break');
     }
 
     public function getOutput()
     {
-        return $this->content;
+        return '<h3>'.$this->content.'</h3>';
     }
 }

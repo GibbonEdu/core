@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms;
+namespace Gibbon\Forms;
 
-use Library\Forms\Traits\BasicAttributesTrait;
-use Library\Forms\Traits\InputAttributesTrait;
+use Gibbon\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\Traits\InputAttributesTrait;
 
 /**
  * Element

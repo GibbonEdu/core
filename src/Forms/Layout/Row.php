@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Layout;
+namespace Gibbon\Forms\Layout;
 
-use Library\Forms\FormFactoryInterface;
-use Library\Forms\OutputableInterface;
-use Library\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\Traits\BasicAttributesTrait;
 
 /**
  * Row

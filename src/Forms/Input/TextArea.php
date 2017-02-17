@@ -17,42 +17,47 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Input;
+namespace Gibbon\Forms\Input;
 
-use Library\Forms\Element;
-use Library\Forms\Traits\MultipleOptionsTrait;
+use Gibbon\Forms\Element;
 
 /**
- * Checkbox
+ * TextArea
  *
  * @version v14
  * @since   v14
  */
-class Radio extends Element
+class TextArea extends Element
 {
-    use MultipleOptionsTrait;
+    protected $rows = 4;
+    protected $maxLength;
 
-    public function checked($value)
+    public function setRows($count)
     {
-        $this->value = $value;
-        return $this;
+        $this->rows = $count;
     }
 
-    protected function getIsChecked($value)
+    public function maxLength($value = '')
     {
-        return (!empty($value) && $value == $this->value )? 'checked' : '';
+        $this->maxLength = $value;
+
+        $this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
+
+        return $this;
     }
 
     protected function getElement()
     {
-        $output = '';
 
-        if (!empty($this->getOptions()) && is_array($this->getOptions())) {
-            foreach ($this->getOptions() as $value => $label) {
-                $output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-                $output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
-            }
+        $output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
+
+        if (!empty($this->maxLength)) {
+            $output .= ' maxlength="'.$this->maxLength.'"';
         }
+        $output .= '>';
+
+        $output .= $this->value;
+        $output .= '</textarea>';
 
         return $output;
     }

@@ -17,30 +17,44 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Layout;
-
-use Library\Forms\OutputableInterface;
+namespace Gibbon\Forms\Traits;
 
 /**
- * Column
+ * Basic HTML Attributes (id, class)
  *
  * @version v14
  * @since   v14
  */
-class Column extends Row implements OutputableInterface
+trait BasicAttributesTrait
 {
+    protected $id = '';
     protected $class = '';
 
-    public function getOutput()
+    public function setID($id = '')
     {
-        $output = '';
+        $this->id = $id;
+        return $this;
+    }
 
-        foreach ($this->getElements() as $element) {
-            $output .= '<div>';
-            $output .= $element->getOutput();
-            $output .= '</div>';
-        }
+    public function getID()
+    {
+        return $this->id;
+    }
 
-        return $output;
+    public function setClass($class = '')
+    {
+        $this->class = $class;
+        return $this;
+    }
+
+    public function addClass($class = '')
+    {
+        $this->class = (empty($this->class))? $class : $this->class.' '.$class;
+        return $this;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 }
