@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
-
 /**
  * Password
  *
@@ -29,7 +27,7 @@ use Gibbon\Forms\Element;
  */
 class Password extends TextField
 {
-    protected function getElement()
+    public function getOutput()
     {
 
         $output = '<input type="password" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';

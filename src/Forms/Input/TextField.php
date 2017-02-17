@@ -24,56 +24,60 @@ use Gibbon\Forms\Element;
 /**
  * TextField
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class TextField extends Element {
+class TextField extends Input
+{
+    protected $maxLength;
+    protected $readonly = false;
 
-	protected $maxLength;
+    public function maxLength($value = '')
+    {
+        $this->maxLength = $value;
 
-	protected $readonly = false;
+        $this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
 
-	public function maxLength($value = '') {
-		$this->maxLength = $value;
+        return $this;
+    }
 
-		$this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
+    public function placeholder($value = '')
+    {
+        $this->placeholder = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function placeholder($value = '') {
-		$this->placeholder = $value;
+    public function readonly($value = true)
+    {
+        $this->readonly = $value;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getReadonly()
+    {
+        return $this->readonly;
+    }
 
-	public function readonly($value = true) {
-		$this->readonly = $value;
-		return $this;
-	}
+    public function getOutput()
+    {
 
-	public function getReadonly() {
-		return $this->readonly;
-	}
+        $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
 
-	protected function getElement() {
+        if (!empty($this->maxLength)) {
+            $output .= ' maxlength="'.$this->maxLength.'"';
+        }
 
-		$output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+        if (!empty($this->placeholder)) {
+            $output .= ' placeholder="'.$this->placeholder.'"';
+        }
 
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
+        if (!empty($this->readonly) && $this->readonly) {
+            $output .= ' readonly ';
+        }
 
-		if (!empty($this->placeholder)) {
-			$output .= ' placeholder="'.$this->placeholder.'"';
-		}
+        $output .= '>';
 
-		if (!empty($this->readonly) && $this->readonly) {
-			$output .= ' readonly ';
-		}
-
-		$output .= '>';
-
-		return $output;
-	}
+        return $output;
+    }
 }

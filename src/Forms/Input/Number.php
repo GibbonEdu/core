@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
-
 /**
  * TextField
  *
@@ -51,7 +49,7 @@ class Number extends TextField
         return $this;
     }
 
-    protected function getElement()
+    public function getOutput()
     {
 
         $validateParams = array();

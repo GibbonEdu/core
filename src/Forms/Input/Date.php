@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
-
 /**
  * Date
  *
@@ -29,7 +27,7 @@ use Gibbon\Forms\Element;
  */
 class Date extends TextField
 {
-    protected function getElement()
+    public function getOutput()
     {
 
         global $guid;

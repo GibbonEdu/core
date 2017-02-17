@@ -23,12 +23,12 @@ use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
 /**
- * Content
+ * Element
  *
  * @version v14
  * @since   v14
  */
-class Content implements OutputableInterface
+class Element implements OutputableInterface
 {
     use BasicAttributesTrait;
 

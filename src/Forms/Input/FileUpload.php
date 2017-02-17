@@ -19,15 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
-
 /**
  * TextField
  *
  * @version v14
  * @since   v14
  */
-class FileUpload extends Element
+class FileUpload extends Input
 {
     protected $accepts = array();
 
@@ -47,7 +45,7 @@ class FileUpload extends Element
         return $this;
     }
 
-    protected function getElement()
+    public function getOutput()
     {
 
         $output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';

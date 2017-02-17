@@ -25,7 +25,7 @@ namespace Gibbon\Forms\Layout;
  * @version v14
  * @since   v14
  */
-class Label extends Content implements RowDependancyInterface
+class Label extends Element implements RowDependancyInterface
 {
     protected $row;
 

@@ -19,13 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Layout;
 
+use Gibbon\Forms\OutputableInterface;
+
 /**
  * Trigger
  *
  * @version v14
  * @since   v14
  */
-class Trigger
+class Trigger implements OutputableInterface
 {
     protected $elementType;
     protected $elementValue;

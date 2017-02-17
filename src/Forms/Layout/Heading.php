@@ -27,7 +27,7 @@ use Gibbon\Forms\OutputableInterface;
  * @version v14
  * @since   v14
  */
-class Heading extends Content implements OutputableInterface, RowDependancyInterface
+class Heading extends Element implements OutputableInterface, RowDependancyInterface
 {
     protected $row;
 

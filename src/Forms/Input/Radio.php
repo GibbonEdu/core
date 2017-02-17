@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
 
 /**
@@ -28,7 +27,7 @@ use Gibbon\Forms\Traits\MultipleOptionsTrait;
  * @version v14
  * @since   v14
  */
-class Radio extends Element
+class Radio extends Input
 {
     use MultipleOptionsTrait;
 
@@ -43,7 +42,7 @@ class Radio extends Element
         return (!empty($value) && $value == $this->value )? 'checked' : '';
     }
 
-    protected function getElement()
+    public function getOutput()
     {
         $output = '';
 

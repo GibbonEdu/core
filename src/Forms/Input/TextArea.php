@@ -19,15 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
-
 /**
  * TextArea
  *
  * @version v14
  * @since   v14
  */
-class TextArea extends Element
+class TextArea extends Input
 {
     protected $rows = 4;
     protected $maxLength;
@@ -46,7 +44,7 @@ class TextArea extends Element
         return $this;
     }
 
-    protected function getElement()
+    public function getOutput()
     {
 
         $output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';

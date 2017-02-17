@@ -65,7 +65,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createContent($content)
     {
-        return new Layout\Content($content);
+        return new Layout\Element($content);
     }
 
     public function createLabel($for, $label)

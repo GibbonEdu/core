@@ -17,18 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms;
+namespace Gibbon\Forms\Input;
 
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 use Gibbon\Forms\Traits\InputAttributesTrait;
 
 /**
- * Element
+ * Input
  *
  * @version v14
  * @since   v14
  */
-abstract class Element implements OutputableInterface, ValidatableInterface
+abstract class Input implements OutputableInterface, ValidatableInterface
 {
     use BasicAttributesTrait;
     use InputAttributesTrait;
@@ -41,17 +43,12 @@ abstract class Element implements OutputableInterface, ValidatableInterface
         $this->setClass('standardWidth');
     }
 
-    abstract protected function getElement();
+    abstract public function getOutput();
 
     public function addValidation($type, $params = '')
     {
         $this->validation[$type] = $params;
         return $this;
-    }
-
-    public function getOutput()
-    {
-        return $this->getElement();
     }
 
     public function getValidation()

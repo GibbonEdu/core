@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
-use Gibbon\Forms\Element;
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
 
 /**
@@ -28,7 +27,7 @@ use Gibbon\Forms\Traits\MultipleOptionsTrait;
  * @version v14
  * @since   v14
  */
-class Select extends Element
+class Select extends Input
 {
     use MultipleOptionsTrait;
 
@@ -66,7 +65,7 @@ class Select extends Element
         }
     }
 
-    protected function getElement()
+    public function getOutput()
     {
         $output = '';
 
