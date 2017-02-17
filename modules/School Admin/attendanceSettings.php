@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-use Library\Forms\Form;
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
     //Acess denied
@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             if ($row['type'] != 'Core') {
-            	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-        	}
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$row['gibbonAttendanceCodeID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            }
             echo '</td>';
             echo '</tr>';
         }
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo __($guid, 'Miscellaneous');
     echo '</h3>';
 
-    $form = Form::create('attendanceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php' );
+    $form = Form::create('attendanceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -136,17 +136,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
 
+    $inRange = false;
     if ($settingByScope['value'] != '' && $settingByScope['value'] != null) {
-        $inRange = false ;
         foreach (explode(',', $settingByScope['value']) as $ipAddress) {
-            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR'])
+            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR']) {
                 $inRange = true ;
+            }
         }
     }
     if ($inRange) { //Current address is in range
         $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>"), 'success')->setClass('standardWidth');
-    }
-    else { //Current address is not in range
+    } else { //Current address is not in range
         $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>"), 'warning')->setClass('standardWidth');
     }
 
@@ -154,41 +154,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
     $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
-    /*
-
-
-    $roleGroup = '';
-
-
-    while ($rowSelect=$resultSelect->fetch()) {
-
-
-
-        if ($roleGroup != $rowSelect["roleName"]) {
-            if ($roleGroup != '') echo '</optgroup>';
-
-            $roleGroup = $rowSelect["roleName"];
-            echo '<optgroup label="-- '.__($guid, $roleGroup).' --">';
-        }
-
-        echo '<option '.$selected.' value="' . $rowSelect["gibbonPersonID"] . '">';
-            echo  formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
-        echo '</option>' ;
-    }
-    echo '</optgroup>';
-    ?>
-    */
 
     $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
-
     $inputs = array();
     try {
         $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
@@ -203,33 +178,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
         $resultSelect=$connection2->prepare($sql);
         $resultSelect->execute($data);
+    } catch (PDOException $e) {
     }
-    catch(PDOException $e) { }
-    $roleGroup = '';
-    $users = explode(',', $settingByScope['value'] );
+
+    $users = explode(',', $settingByScope['value']);
     $selected = array();
     while ($rowSelect=$resultSelect->fetch()) {
-        (in_array($rowSelect['gibbonPersonID'], $users) !== false)? array_push($selected,$rowSelect['gibbonPersonID']) : false;
-        if ($roleGroup != $rowSelect["roleName"]) {
-            $roleGroup = $rowSelect["roleName"] ;
+        if (in_array($rowSelect['gibbonPersonID'], $users) !== false) {
+            array_push($selected, $rowSelect['gibbonPersonID']);
         }
-        $inputs[$roleGroup][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+        $inputs[$rowSelect["roleName"]][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
     }
 
-    print_r($selected);
-
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])
             ->selectMultiple()
             ->fromArray($inputs)
-            ->selected('0000001101'); //THIS NEEDS WORK!
+            ->selected($selected);
 
     $row = $form->addRow();
-		$row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
-		$row->addSubmit();
+        $row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+        $row->addSubmit();
 
-	echo $form->getOutput();
-
+    echo $form->getOutput();
 }
-?>

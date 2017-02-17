@@ -17,28 +17,34 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Library\Forms\Input;
+namespace Gibbon\Forms\Layout;
 
-use Library\Forms\Element;
+use Gibbon\Forms\OutputableInterface;
 
 /**
- * Password
+ * Content
  *
- * @version	v14
- * @since	v14
+ * @version v14
+ * @since   v14
  */
-class Password extends TextField {
+class Heading extends Element implements OutputableInterface, RowDependancyInterface
+{
+    protected $row;
 
-	protected function getElement() {
+    public function __construct($content)
+    {
+        $this->content = $content;
+    }
 
-		$output = '<input type="password" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+    public function setRow(Row $row)
+    {
+        $this->row = $row;
 
-		if (!empty($this->maxLength)) {
-			$output .= ' maxlength="'.$this->maxLength.'"';
-		}
+        $this->row->setClass('break');
+    }
 
-		$output .= '>';
-
-		return $output;
-	}
+    public function getOutput()
+    {
+        return '<h3>'.$this->content.'</h3>';
+    }
 }

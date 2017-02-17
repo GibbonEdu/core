@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-use Library\Forms\Form;
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettings.php') == false) {
     //Acess denied
@@ -36,26 +36,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/financeSettingsProcess.php' );
+    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/financeSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow()->addHeading('General Settings');
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'email', true);
-	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addEmail($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addEmail($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+
+    $form->toggleVisibilityByClass('onlinePayment')->onSelect($settingByScope['name'])->when('Y');
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold', true);
-	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addNumber($settingByScope['name'])
+    $row = $form->addRow()->addClass('onlinePayment');
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addNumber($settingByScope['name'])
             ->setValue($settingByScope['value'])
             ->decimalPlaces(2);
 
@@ -73,12 +75,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])->fromString('"Surname, Preferred Name", Official Name')->selected($settingByScope['value'])->isRequired();
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])->fromString('Invoice ID, Person ID + Invoice ID, Student ID + Invoice ID')->selected($settingByScope['value'])->isRequired();
 
     $row = $form->addRow()->addHeading('Receipts');
@@ -95,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'hideItemisation', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
     $row = $form->addRow()->addHeading('Reminders');
@@ -144,22 +146,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'purchasingOfficer', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelectStaff($pdo, $settingByScope['name'])
             ->selected($settingByScope['value'])
             ->placeholder('');
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'reimbursementOfficer', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelectStaff($pdo, $settingByScope['name'])
             ->selected($settingByScope['value'])
             ->placeholder('');
 
     $row = $form->addRow();
-		$row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
-		$row->addSubmit();
+        $row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+        $row->addSubmit();
 
-	echo $form->getOutput();
+    echo $form->getOutput();
 }
-?>
