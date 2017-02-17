@@ -43,7 +43,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
         $this->row->setClass('break');
     }
 
-    public function getOutput()
+    protected function getElement()
     {
         return '<h3>'.$this->content.'</h3>';
     }
