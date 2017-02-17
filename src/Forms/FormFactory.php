@@ -140,7 +140,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, $content);
+        $content = sprintf('<div class="%s">%s</div>', $level, __($content) );
         return $this->createContent($content);
     }
 
@@ -194,6 +194,6 @@ class FormFactory implements FormFactoryInterface
 
     public function createYesNo($name)
     {
-        return $this->createSelect($name)->fromArray(array( 'Y' => 'Yes', 'N' => 'No'));
+        return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
     }
 }
