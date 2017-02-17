@@ -74,7 +74,7 @@ class Form implements OutputableInterface
 
     public function getMethod()
     {
-        return $method->method;
+        return $this->method;
     }
 
     public function getAction()
@@ -138,13 +138,7 @@ class Form implements OutputableInterface
 
     public function getOutput()
     {
-        $output = '';
-
-        $output .= '<form id="'.$form->getID().'" method="post" action="'.$form->getAction().'" enctype="multipart/form-data">';
-        $output .= $this->renderer->renderForm($this);
-        $output .= '</form>';
-
-        return $output;
+        return $this->renderer->renderForm($this);
     }
 }
 
