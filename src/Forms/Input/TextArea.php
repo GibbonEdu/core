@@ -33,12 +33,12 @@ class TextArea extends Input
     public function setRows($count)
     {
         $this->rows = $count;
+        return $this;
     }
 
     public function maxLength($value = '')
     {
         $this->maxLength = $value;
-
         $this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
 
         return $this;

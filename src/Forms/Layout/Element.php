@@ -43,13 +43,13 @@ class Element implements OutputableInterface
 
     public function prepend($value)
     {
-        $this->prepended .= $value;
+        $this->prepended .= __($value);
         return $this;
     }
 
     public function append($value)
     {
-        $this->appended .= $value;
+        $this->appended .= __($value);
         return $this;
     }
 
@@ -60,7 +60,7 @@ class Element implements OutputableInterface
 
     protected function getElement()
     {
-        return $this->content;
+        return __($this->content);
     }
 
     /**
