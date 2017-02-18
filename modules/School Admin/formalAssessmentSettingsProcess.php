@@ -40,25 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
         $internalAssessmentTypes .= trim($type).',';
     }
     $internalAssessmentTypes = substr($internalAssessmentTypes, 0, -1);
-    $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
-    $gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'];
-    $primaryExternalAssessmentByYearGroup = array();
-    $count = 0;
-    foreach ($gibbonYearGroupID as $year) {
-        $set = false;
 
-        if (isset($gibbonExternalAssessmentID[$count]) and $gibbonExternalAssessmentID[$count] != '') {
-            if (isset($_POST["category$count"])) {
-                if ($_POST["category$count"] != '') {
-                    $primaryExternalAssessmentByYearGroup[$year] = $gibbonExternalAssessmentID[$count].'-'.$_POST["category$count"];
-                    $set = true;
-                }
-            }
-        }
-        if ($set == false) {
+    $gibbonExternalAssessmentID = (isset($_POST['gibbonExternalAssessmentID']))? $_POST['gibbonExternalAssessmentID'] : array();
+    $primaryExternalAssessmentByYearGroup = (isset($_POST['category']))? $_POST['category'] : array();
+
+    foreach ($gibbonExternalAssessmentID as $year => $assessmentID) {
+        if (!isset($primaryExternalAssessmentByYearGroup[$year])) {
             $primaryExternalAssessmentByYearGroup[$year] = null;
         }
-        ++$count;
     }
 
     //Validate Inputs
