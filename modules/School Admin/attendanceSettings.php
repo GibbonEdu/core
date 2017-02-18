@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             ->selected($selected);
 
     $row = $form->addRow();
-        $row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+        $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();
