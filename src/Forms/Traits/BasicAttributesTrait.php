@@ -53,6 +53,12 @@ trait BasicAttributesTrait
         return $this;
     }
 
+    public function removeClass($class = '')
+    {
+        $this->class = (empty($this->class))? '' : str_replace($class, '', $this->class);
+        return $this;
+    }
+
     public function getClass()
     {
         return $this->class;
