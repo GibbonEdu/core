@@ -47,7 +47,7 @@ class TextArea extends Input
     protected function getElement()
     {
 
-        $output = '<textarea class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" rows="'.$this->rows.'"';
+        $output = '<textarea class="'.$this->class.'" id="'.$this->id.'" name="'.$this->name.'" rows="'.$this->rows.'"';
 
         if (!empty($this->maxLength)) {
             $output .= ' maxlength="'.$this->maxLength.'"';

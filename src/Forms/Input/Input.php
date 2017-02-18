@@ -37,6 +37,7 @@ abstract class Input extends Element implements ValidatableInterface
 
     public function __construct($name)
     {
+        $this->id = $name;
         $this->name = $name;
         $this->setClass('standardWidth');
     }

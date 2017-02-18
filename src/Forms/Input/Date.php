@@ -48,7 +48,7 @@ class Date extends TextField
 
         $this->addValidation('Validate.Format', $validationFormat);
 
-        $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+        $output = '<input type="text" class="'.$this->class.'" id="'.$this->id.'" name="'.$this->name.'" value="'.$this->value.'"';
 
         if (!empty($this->placeholder)) {
             $output .= ' placeholder="'.$this->placeholder.'"';

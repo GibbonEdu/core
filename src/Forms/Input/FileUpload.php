@@ -48,7 +48,7 @@ class FileUpload extends Input
     protected function getElement()
     {
 
-        $output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';
+        $output = '<input type="file" class="'.$this->class.'" id="'.$this->id.'" name="'.$this->name.'" ';
 
         if (!empty($this->accepts) && is_array($this->accepts)) {
             $output .= ' accepts="'.implode(',', $this->accepts).'"';

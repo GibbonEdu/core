@@ -66,7 +66,7 @@ class Number extends TextField
             $this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{'.$this->decimal.'})+$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimal+2, '0')).'"');
         }
 
-        $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
+        $output = '<input type="text" class="'.$this->class.'" id="'.$this->id.'" name="'.$this->name.'" value="'.$this->value.'"';
 
         if (!empty($this->maxLength)) {
             $output .= ' maxlength="'.$this->maxLength.'"';
