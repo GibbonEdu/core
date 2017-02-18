@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
     if (empty($yearGroups)) {
         $form->addRow()->addAlert('There are no records to display.', 'error');
     } else {
-
+        // EXTERNAL ASSESSMENT DATA POINTS
         $row = $form->addRow();
             $row->addHeading(__('Data Points').' - '.__('External Assessment'))
                 ->append('Use the options below to select the external assessments that you wish to include in your Data Points export.')
@@ -67,23 +67,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
             $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
             $externalAssessmentDataPoints = is_array($externalAssessmentDataPoints) ? $externalAssessmentDataPoints : array() ;
 
-            // Create a quicker lookup table for data points as gibbonExternalAssessmentID-category pair
+            // Create a lookup table for data points as gibbonExternalAssessmentID-category pair
             $externalDP = array();
             foreach ($externalAssessmentDataPoints as $dp) {
-                $externalDP[$dp['gibbonExternalAssessmentID'].'-'.$dp['category']] = $dp['gibbonYearGroupIDList'];
+                $key = $dp['gibbonExternalAssessmentID'].'-'.$dp['category'];
+                $externalDP[$key] = (isset($dp['gibbonYearGroupIDList']))? $dp['gibbonYearGroupIDList'] : '';
             }
 
             $count = 0;
             while ($assessment = $result->fetch()) {
-                
-                $checked = array();
-                if (isset($externalDP[$assessment['gibbonExternalAssessmentID'].'-'.$assessment['category']])) {
-                    // Explode the saved CSV data into an array
-                    $checked = explode(',', $externalDP[$assessment['gibbonExternalAssessmentID'].'-'.$assessment['category']]) ;
-                }
-
                 $name = 'externalDP['.$count.'][gibbonYearGroupIDList]';
                 $categoryLabel = substr($assessment['category'], (strpos($assessment['category'], '_') + 1));
+                $key = $assessment['gibbonExternalAssessmentID'].'-'.$assessment['category'];
+
+                $checked = array();
+                if (isset($externalDP[$key])) {
+                    // Explode the saved CSV data into an array
+                    $checked = explode(',', $externalDP[$key]) ;
+                }
 
                 // Add the checkbox group for this gibbonExternalAssessmentID-category pair
                 $row = $form->addRow();
@@ -97,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
             }
         }
 
+        // INTERNAL ASSESSMENT DATA POINTS
         $row = $form->addRow();
             $row->addHeading(__('Data Points').' - '.__('Internal Assessment'))
                 ->append('Use the options below to select the internal assessments that you wish to include in your Data Points export.')
@@ -112,16 +114,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
             $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
             $internalAssessmentDataPoints = is_array($internalAssessmentDataPoints) ? $internalAssessmentDataPoints : array() ;
 
+            // Create a lookup table for data points (CSV index order can change)
+            $internalDP = array();
+            foreach ($internalAssessmentDataPoints as $dp) {
+                $internalDP[$dp['type']] = (isset($dp['gibbonYearGroupIDList']))? $dp['gibbonYearGroupIDList'] : '';
+            }
+
             $count = 0;
             foreach ($internalAssessmentTypes as $internalAssessmentType) {
-
-                $checked = array();
-                if (isset($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'])) {
-                    // Explode the saved CSV data into an array
-                    $checked = explode(',', $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList']);
-                }
-
                 $name = 'internalDP['.$count.'][gibbonYearGroupIDList]';
+                $checked = array();
+                if (isset($internalDP[$internalAssessmentType])) {
+                    // Explode the saved CSV data into an array
+                    $checked = explode(',', $internalDP[$internalAssessmentType]);
+                }
 
                 // Add the checkbox group for this type
                 $row = $form->addRow();
