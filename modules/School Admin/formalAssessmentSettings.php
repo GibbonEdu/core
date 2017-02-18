@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $externalAssessmentsFieldSetIDs = array();
 
     // Build two arrays, one of $key => $value for the dropdown, one of $key => $class for the chainedTo method
-    if ($results && $results->rowCount() > 0 ) {
+    if ($results && $results->rowCount() > 0) {
         while ($assessment = $results->fetch()) {
             $key = $assessment['gibbonExternalAssessmentID'].'-'.$assessment['category'];
             $externalAssessmentsFieldSetNames[$key] = substr($assessment['category'], strpos($assessment['category'], '_') + 1);
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
     // Split the ID portion off of the ID-category pair, for the first dropdown
-    $primaryExternalAssessmentIDsByYearGroup = array_map( function($v) { return substr($v, 0, strpos($v, '-')); }, $primaryExternalAssessmentByYearGroup);
+    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return substr($v, 0, strpos($v, '-')); }, $primaryExternalAssessmentByYearGroup);
 
     $sql = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
     $result = $pdo->executeQuery(array(), $sql);
@@ -93,12 +93,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 
         $row->addSelect('gibbonExternalAssessmentID['.$id.']')
             ->setID('gibbonExternalAssessmentID'.$id)
+            ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessments)
             ->selected($primaryExternalAssessmentIDsByYearGroup[$id]);
 
         $row->addSelect('category['.$id.']')
             ->setID('category'.$id)
+            ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessmentsFieldSetNames)
             ->selected($primaryExternalAssessmentByYearGroup[$id])

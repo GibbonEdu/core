@@ -1272,6 +1272,10 @@ select[multiple] {
 
 .shortWidth {
 	width: 148px;
+}
+
+.mediumWidth {
+	width: 230px;
 } 
 
 .column div:after {
