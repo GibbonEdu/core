@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -49,218 +51,80 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         echo '</div>';
     } else {
         //Let's go!
-        ?>
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/daysOfWeek_manageProcess.php'?>">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<?php
-            while ($row = $result->fetch()) {
-                ?>
-				<tr class='break'>
-					<td colspan=2> 
-						<h3><?php echo __($guid, $row['name']).' ('.__($guid, $row['nameShort']).')' ?></h3>
-					</td>
-				</tr>
-				<input name="<?php echo $row['name']?>sequenceNumber" id="<?php echo $row['name']?>sequenceNumber" maxlength=2 value="<?php echo $row['sequenceNumber'] ?>" type="hidden" class="standardWidth">
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php echo __($guid, 'School Day') ?> *</b>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="<?php echo $row['name']?>schoolDay" id="<?php echo $row['name']?>schoolDay">
-							<?php
-                            if ($row['schoolDay'] == 'Y') {
-                                echo "<option selected value='Y'>".__($guid, 'Yes').'</option>';
-                                echo "<option value='N'>".__($guid, 'No').'</option>';
-                            } else {
-                                echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-                                echo "<option selected value='N'>".__($guid, 'No').'</option>';
-                            }
-                			?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'School Opens') ?></b>
-					</td>
-					<td class="right">
-						<select style="width:100px" name="<?php echo $row['name']?>schoolOpenM" id="<?php echo $row['name']?>schoolOpenM">
-							<?php
-                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-							for ($i = 0;$i < 60;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+        
+        $form = Form::create('daysOfWeek', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/daysOfWeek_manageProcess.php');
 
-								if (substr($row['schoolOpen'], 3, 2) == $i and $row['schoolOpen'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-						<select style="width:100px" name="<?php echo $row['name']?>schoolOpenH" id="<?php echo $row['name']?>schoolOpenH">
-							<?php
-                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-							for ($i = 0;$i < 24;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-								if (substr($row['schoolOpen'], 0, 2) == $i and $row['schoolOpen'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'School Starts') ?></b>
-					</td>
-					<td class="right">
-						<select style="width:100px" name="<?php echo $row['name']?>schoolStartM" id="<?php echo $row['name']?>schoolStartM">
-							<?php
-                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-							for ($i = 0;$i < 60;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+        $hoursArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 23));
+        $hours = 'Hours,'. implode(',', $hoursArray);
 
-								if (substr($row['schoolStart'], 3, 2) == $i and $row['schoolStart'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-						<select style="width:100px" name="<?php echo $row['name']?>schoolStartH" id="<?php echo $row['name']?>schoolStartH">
-							<?php
-                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-							for ($i = 0;$i < 24;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+        $minutesArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 59));
+        $minutes = 'Minutes,'. implode(',', $minutesArray);
 
-								if (substr($row['schoolStart'], 0, 2) == $i and $row['schoolStart'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'School Ends') ?></b>
-					</td>
-					<td class="right">
-						<select style="width:100px" name="<?php echo $row['name']?>schoolEndM" id="<?php echo $row['name']?>schoolEndM">
-							<?php
-                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-							for ($i = 0;$i < 60;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+        while ($day = $result->fetch()) {
+            $form->addHiddenValue($day['name'].'sequenceNumber', $day['sequenceNumber']);
 
-								if (substr($row['schoolEnd'], 3, 2) == $i and $row['schoolEnd'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-						<select style="width:100px" name="<?php echo $row['name']?>schoolEndH" id="<?php echo $row['name']?>schoolEndH">
-							<?php
-                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-							for ($i = 0;$i < 24;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+            $form->addRow()->addHeading($day['name'].' ('.$day['nameShort'].')');
 
-								if (substr($row['schoolEnd'], 0, 2) == $i and $row['schoolEnd'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'School Closes') ?></b>
-					</td>
-					<td class="right">
-						<select style="width:100px" name="<?php echo $row['name']?>schoolCloseM" id="<?php echo $row['name']?>schoolCloseM">
-							<?php
-                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-							for ($i = 0;$i < 60;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
+            $row = $form->addRow();
+                $row->addLabel($day['name'].'schoolDay', 'School Day');
+                $row->addYesNo($day['name'].'schoolDay')->isRequired()->selected($day['schoolDay']);
 
-								if (substr($row['schoolClose'], 3, 2) == $i and $row['schoolClose'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-						<select style="width:100px" name="<?php echo $row['name']?>schoolCloseH" id="<?php echo $row['name']?>schoolCloseH">
-							<?php
-                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-							for ($i = 0;$i < 24;++$i) {
-								$iPrint = $i;
-								if (strlen($i) == 1) {
-									$iPrint = '0'.$i;
-								}
 
-								if (substr($row['schoolClose'], 0, 2) == $i and $row['schoolClose'] != null) {
-									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-								} else {
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-			
-				<?php
+            $row = $form->addRow();
+                $row->addLabel($day['name'].'schoolOpen', 'School Opens');
+                $col = $row->addColumn()->addClass('right inline');
+                    $col->addSelect($day['name'].'schoolOpenH')
+                        ->fromString($hours)
+                        ->setClass('shortWidth')
+                        ->selected(substr($day['schoolOpen'], 0, 2));
+                    $col->addSelect($day['name'].'schoolOpenM')
+                        ->fromString($minutes)
+                        ->setClass('shortWidth')
+                        ->selected(substr($day['schoolOpen'], 3, 2));
 
-			}
-			?>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+            $row = $form->addRow();
+                $row->addLabel($day['name'].'schoolStart', 'School Starts');
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect($day['name'].'schoolStartH')
+                    ->fromString($hours)
+                    ->setClass('shortWidth')
+                    ->selected(substr($day['schoolStart'], 0, 2));
+                $col->addSelect($day['name'].'schoolStartM')
+                    ->fromString($minutes)
+                    ->setClass('shortWidth')
+                    ->selected(substr($day['schoolStart'], 3, 2));
 
+            $row = $form->addRow();
+                $row->addLabel($day['name'].'schoolEnd', 'School Ends');
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect($day['name'].'schoolEndH')
+                    ->fromString($hours)
+                    ->setClass('shortWidth')
+                    ->selected(substr($day['schoolEnd'], 0, 2));
+                $col->addSelect($day['name'].'schoolEndM')
+                    ->fromString($minutes)
+                    ->setClass('shortWidth')
+                    ->selected(substr($day['schoolEnd'], 3, 2));
+
+            $row = $form->addRow();
+                $row->addLabel($day['name'].'schoolClose', 'School Closes');
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect($day['name'].'schoolCloseH')
+                    ->fromString($hours)
+                    ->setClass('shortWidth')
+                    ->selected(substr($day['schoolClose'], 0, 2));
+                $col->addSelect($day['name'].'schoolCloseM')
+                    ->fromString($minutes)
+                    ->setClass('shortWidth')
+                    ->selected(substr($day['schoolClose'], 3, 2));
+        }
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
     }
 }
-?>

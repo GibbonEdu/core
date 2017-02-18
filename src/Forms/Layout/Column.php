@@ -29,14 +29,14 @@ use Gibbon\Forms\OutputableInterface;
  */
 class Column extends Row implements OutputableInterface
 {
-    protected $class = '';
+    protected $class = 'column';
 
     public function getOutput()
     {
         $output = '';
 
         foreach ($this->getElements() as $element) {
-            $output .= '<div style="clear:both;">';
+            $output .= '<div>';
             $output .= $element->getOutput();
             $output .= '</div>';
         }

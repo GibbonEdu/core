@@ -1261,11 +1261,26 @@ div.notificationTray a.inactive {
 
 /* v14 */
 
-table.standardForm td:last-child {
+table.standardForm td:last-child:nth-child(2) {
 	min-width: 450px;
 }
 
 select[multiple] {
 	height: auto;
 	max-height: 130px;
+}
+
+.shortWidth {
+	width: 148px;
+} 
+
+.column div:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.column.inline div {
+	display:inline-block;
+	width:auto;
 }
