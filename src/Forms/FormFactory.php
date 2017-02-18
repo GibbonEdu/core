@@ -80,6 +80,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createEditor($name, $guid)
+    {
+        return new Input\Editor($name, $guid);
+    }
+
     public function createEmail($name)
     {
         return (new Input\TextField($name))->addValidation('Validate.Email');
@@ -140,7 +145,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, __($content) );
+        $content = sprintf('<div class="%s">%s</div>', $level, __($content));
         return $this->createContent($content);
     }
 
@@ -154,6 +159,12 @@ class FormFactory implements FormFactoryInterface
     {
         $content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
         return $this->createContent($content)->setClass('right');
+    }
+
+    public function createFormFooter()
+    {
+        $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        return $this->createContent($content);
     }
 
     /* PRE-DEFINED INPUT --------------------------- */
