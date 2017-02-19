@@ -36,20 +36,31 @@ class Element implements OutputableInterface
     protected $appended;
     protected $prepended;
 
-    public function __construct($content)
+    public function __construct()
     {
-        $this->content = $content;
+    }
+
+    public function setContent($value)
+    {
+        $value = $this->getTranslatedText(func_get_args());
+
+        $this->content = $value;
+        return $this;
     }
 
     public function prepend($value)
     {
-        $this->prepended .= __($value);
+        $value = $this->getTranslatedText(func_get_args());
+
+        $this->prepended .= $value;
         return $this;
     }
 
     public function append($value)
     {
-        $this->appended .= __($value);
+        $value = $this->getTranslatedText(func_get_args());
+
+        $this->appended .= $value;
         return $this;
     }
 
@@ -60,7 +71,20 @@ class Element implements OutputableInterface
 
     protected function getElement()
     {
-        return __($this->content);
+        return $this->content;
+    }
+
+    protected function getTranslatedText($args)
+    {
+        $value = array_shift($args);
+
+        if (count($args) > 0) {
+            $value = vsprintf(__($value), $args);
+        } else {
+            $value = __($value);
+        }
+
+        return $value;
     }
 
     /**

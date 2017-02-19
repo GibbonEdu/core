@@ -29,7 +29,7 @@ use Gibbon\Forms\Element;
  */
 class TextField extends Input
 {
-    protected $maxLength;
+    protected $maxLength = 255;
     protected $readonly = false;
 
     public function maxLength($value = '')

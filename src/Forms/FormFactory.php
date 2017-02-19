@@ -48,14 +48,9 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Column($this, $id);
     }
 
-    public function createTrigger($selector)
+    public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
-    }
-
-    public function createContent($content)
-    {
-        return new Layout\Element($content);
     }
 
     public function createLabel($for, $label)
@@ -63,9 +58,14 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Label($for, $label);
     }
 
-    public function createHeading($content)
+    public function createHeading($content = '')
     {
         return new Layout\Heading($content);
+    }
+
+    public function createContent($content = '')
+    {
+        return (new Layout\Element())->setContent($content);
     }
 
     /* BASIC INPUT --------------------------- */
