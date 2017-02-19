@@ -34,7 +34,7 @@ trait MultipleOptionsTrait
     public function fromString($value)
     {
         if (empty($value) || !is_string($value)) {
-            throw new \InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->name, gettype($value)));
+            throw new \InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->getName(), gettype($value)));
         }
 
         $pieces = str_getcsv($value);
@@ -50,14 +50,18 @@ trait MultipleOptionsTrait
     public function fromArray($value)
     {
         if (empty($value) || !is_array($value)) {
-            throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->name, gettype($value)));
+            throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($value)));
         }
 
         if (array_values($value) === $value) {
-            throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to contain key => value pairs, generic Array given.', $this->name));
+            $assocArray = array();
+            foreach ($value as $v) {
+                $assocArray[strval($v)] = $v;
+            }
+            $value = $assocArray;
         }
 
-        $this->options = array_merge($this->options, $value);
+        $this->options = (!empty($this->options))? array_merge($this->options, $value) : $value;
 
         return $this;
     }
@@ -72,7 +76,7 @@ trait MultipleOptionsTrait
     public function fromResults($results)
     {
         if (empty($results) || !is_object($results)) {
-            throw new \InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->name, gettype($results)));
+            throw new \InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->getName(), gettype($results)));
         }
 
         if ($results && $results->rowCount() > 0) {

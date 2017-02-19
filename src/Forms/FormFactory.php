@@ -179,9 +179,14 @@ class FormFactory implements FormFactoryInterface
 
     /* PRE-DEFINED INPUT --------------------------- */
 
+    public function createYesNo($name)
+    {
+        return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+    }
+
     public function createSelectSchoolYear(\Gibbon\sqlConnection $pdo, $name)
     {
-        $sql = 'SELECT gibbonSchoolYearID as `value`, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
+        $sql = 'SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
         $results = $pdo->executeQuery(array(), $sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
@@ -189,7 +194,15 @@ class FormFactory implements FormFactoryInterface
 
     public function createSelectLanguage(\Gibbon\sqlConnection $pdo, $name)
     {
-        $sql = 'SELECT name as `value`, name FROM gibbonLanguage ORDER BY name';
+        $sql = 'SELECT name as value, name FROM gibbonLanguage ORDER BY name';
+        $results = $pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
+    }
+
+    public function createSelectCountry(\Gibbon\sqlConnection $pdo, $name)
+    {
+        $sql = 'SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name';
         $results = $pdo->executeQuery(array(), $sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
@@ -213,8 +226,58 @@ class FormFactory implements FormFactoryInterface
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createYesNo($name)
+    public function createSelectCurrency($name)
     {
-        return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+        // I hate doing this ... was there a YAML file at one point?
+        $currencies = array(
+            'PAYPAL SUPPORTED' => array(
+                'AUD $' => 'Australian Dollar (A$)',
+                'BRL R$' => 'Brazilian Real',
+                'GBP £' => 'British Pound (£)',
+                'CAD $' => 'Canadian Dollar (C$)',
+                'CZK Kč' => 'Czech Koruna',
+                'DKK kr' => 'Danish Krone',
+                'EUR €' => 'Euro (€)',
+                'HKD $' => 'Hong Kong Dollar ($)',
+                'HUF Ft' => 'Hungarian Forint',
+                'ILS ₪' => 'Israeli New Shekel',
+                'JPY ¥' => 'Japanese Yen (¥)',
+                'MYR RM' => 'Malaysian Ringgit',
+                'MXN $' => 'Mexican Peso',
+                'TWD $' => 'New Taiwan Dollar',
+                'NZD $' => 'New Zealand Dollar ($)',
+                'NOK kr' => 'Norwegian Krone',
+                'PHP ₱' => 'Philippine Peso',
+                'PLN zł' => 'Polish Zloty',
+                'SGD $' => 'Singapore Dollar ($)',
+                'CHF' => 'Swiss Franc',
+                'THB ฿' => 'Thai Baht',
+                'TRY' => 'Turkish Lira',
+                'USD $' => 'U.S. Dollar ($)',
+                ),
+            'OTHERS' => array(
+                'BDT ó' => 'Bangladeshi Taka (ó)',
+                'BTC' => 'Bitcoin',
+                'BGN лв.' => 'Bulgarian Lev (лв.)',
+                'XAF FCFA' => 'Central African Francs (FCFA)',
+                'EGP £' => 'Egyptian Pound (£)',
+                'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
+                'INR ₹' => 'Indian Rupee₹ (₹)',
+                'IDR Rp' => 'Indonesian Rupiah (Rp)',
+                'JMD $' => 'Jamaican Dollar ($)',
+                'KES KSh' => 'Kenyan Shilling (KSh)',
+                'MOP MOP$' => 'Macanese Pataca (MOP$)',
+                'MMK K' => 'Myanmar Kyat (K)',
+                'NAD N$' => 'Namibian Dollar (N$)',
+                'NPR ₨' => 'Nepalese Rupee (₨)',
+                'NGN ₦' => 'Nigerian Naira (₦)',
+                'PKR ₨' => 'Pakistani Rupee (₨)',
+                'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
+                'TZS TSh' => 'Tanzania Shilling (TSh)',
+                'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+            ),
+        );
+
+        return $this->createSelect($name)->fromArray($currencies)->placeholder('Please select...');
     }
 }
