@@ -102,6 +102,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
 
+    $settingByScope = getSettingByScope($connection2, 'Application Form', 'internalDocuments', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
     $settingByScope = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText', true);
     $row = $form->addRow();
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
