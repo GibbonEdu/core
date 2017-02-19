@@ -919,6 +919,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 							<option <?php if ($row['value'] == 'JMD $') {echo 'selected';}?> value='JMD $'>Jamaican Dollar ($)</option>
 							<option <?php if ($row['value'] == 'KES KSh') {echo 'selected';}?> value='KES KSh'>Kenyan Shilling (KSh)</option>
 							<option <?php if ($row['value'] == 'MOP MOP$') {echo 'selected';}?> value='MOP MOP$'>Macanese Pataca (MOP$)</option>
+                            <option <?php if ($row['value'] == 'MAD') {echo 'selected';}?> value='MAD'>Moroccan Dirham (MAD)</option>
 							<option <?php if ($row['value'] == 'MMK K') {echo 'selected';}?> value='MMK K'>Myanmar Kyat (K)</option>
                             <option <?php if ($row['value'] == 'NAD N$') {echo 'selected';}?> value='NAD N$'>Namibian Dollar (N$)</option>
 							<option <?php if ($row['value'] == 'NPR ₨') {echo 'selected';}?> value='NPR ₨'>Nepalese Rupee (₨)</option>
