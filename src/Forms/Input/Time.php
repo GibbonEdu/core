@@ -20,34 +20,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 /**
- * TextField
+ * Time
+ * Replace with a better UI? http://jonthornton.github.io/jquery-timepicker/
  *
  * @version v14
  * @since   v14
  */
-class FileUpload extends Input
+class Time extends TextField
 {
-    protected $accepts = array();
-
-    public function accepts($accepts)
-    {
-        if (is_string($accepts)) {
-            $accepts = explode(',', $accepts);
-        }
-
-        if (!empty($accepts) && is_array($accepts)) {
-            $this->setAttribute('accepts', implode(',', $accepts));
-
-            $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $accepts));
-            $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
-        }
-        return $this;
-    }
-
+    // TODO: Implement
     protected function getElement()
     {
-
-        $output = '<input type="file" '.$this->getAttributeString().'>';
+        $output = '';
 
         return $output;
     }

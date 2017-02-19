@@ -33,7 +33,7 @@ class Select extends Input
 
     protected $placeholder;
     protected $selected = null;
-    protected $multiple = false;
+
     protected $chainedToID;
     protected $chainedToValues;
 
@@ -53,7 +53,7 @@ class Select extends Input
 
     public function selectMultiple($value = true)
     {
-        $this->multiple = $value;
+        $this->setAttribute('multiple', $value);
 
         return $this;
     }
@@ -83,17 +83,16 @@ class Select extends Input
     {
         $output = '';
 
-        if (!empty($this->multiple) && $this->multiple) {
-            $totalOptions = count($this->getOptions(), COUNT_RECURSIVE);
-            $output .= '<select id="'.$this->id.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.$totalOptions.'">';
-        } else {
-            $output .= '<select id="'.$this->id.'" name="'.$this->name.'" class="'.$this->class.'">';
+        if (!empty($this->getAttribute('multiple'))) {
+            $this->setAttribute('size', $this->getOptionCount());
         }
+
+        $output .= '<select '.$this->getAttributeString().'>';
 
         if (isset($this->placeholder)) {
             $output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
 
-            if ($this->required) {
+            if ($this->getRequired()) {
                 $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
             }
         }
@@ -118,8 +117,8 @@ class Select extends Input
         $output .= '</select>';
 
         if (!empty($this->chainedToID)) {
-        $output .= '<script type="text/javascript">';
-            $output .= '$("#'.$this->id.'").chainedTo("#'.$this->chainedToID.'");';
+            $output .= '<script type="text/javascript">';
+            $output .= '$("#'.$this->getID().'").chainedTo("#'.$this->chainedToID.'");';
             $output .= '</script>';
         }
 

@@ -32,29 +32,25 @@ class TextArea extends Input
 
     public function setRows($count)
     {
-        $this->rows = $count;
+        $this->setAttribute('rows', $count);
+
         return $this;
     }
 
     public function maxLength($value = '')
     {
-        $this->maxLength = $value;
-        $this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
+        if (!empty($value)) {
+            $this->setAttribute('maxlength', $value);
+            $this->addValidation('Validate.Length', 'maximum: '.$value);
+        }
 
         return $this;
     }
 
     protected function getElement()
     {
-
-        $output = '<textarea class="'.$this->class.'" id="'.$this->id.'" name="'.$this->name.'" rows="'.$this->rows.'"';
-
-        if (!empty($this->maxLength)) {
-            $output .= ' maxlength="'.$this->maxLength.'"';
-        }
-        $output .= '>';
-
-        $output .= $this->value;
+        $output = '<textarea '.$this->getAttributeString().'>';
+        $output .= $this->getValue();
         $output .= '</textarea>';
 
         return $output;

@@ -37,8 +37,8 @@ abstract class Input extends Element implements ValidatableInterface
 
     public function __construct($name)
     {
-        $this->id = $name;
-        $this->name = $name;
+        $this->setID($name);
+        $this->setName($name);
         $this->setClass('standardWidth');
     }
 
@@ -52,16 +52,16 @@ abstract class Input extends Element implements ValidatableInterface
     {
         $output = '';
 
-        if ($this->required == true || !empty($this->validation)) {
-            $output .= 'var '.$this->name.'Validate=new LiveValidation(\''.$this->name.'\'); '."\r";
+        if ($this->getRequired() == true || !empty($this->validation)) {
+            $output .= 'var '.$this->getName().'Validate=new LiveValidation(\''.$this->getName().'\'); '."\r";
 
-            if ($this->required == true) {
-                $output .= $this->name.'Validate.add(Validate.Presence); '."\r";
+            if ($this->getRequired() == true) {
+                $output .= $this->getName().'Validate.add(Validate.Presence); '."\r";
             }
 
             if (!empty($this->validation) && is_array($this->validation)) {
                 foreach ($this->validation as $type => $params) {
-                    $output .= $this->name.'Validate.add('.$type.', {'.$params.' } ); '."\r";
+                    $output .= $this->getName().'Validate.add('.$type.', {'.$params.' } ); '."\r";
                 }
             }
         }

@@ -39,7 +39,7 @@ class Row
     public function __construct(FormFactoryInterface $factory, $id = '')
     {
         $this->factory = $factory;
-        $this->id = $id;
+        $this->setID($id);
     }
 
     public function __call($function, $args)

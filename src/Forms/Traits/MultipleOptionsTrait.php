@@ -92,4 +92,9 @@ trait MultipleOptionsTrait
     {
         return $this->options;
     }
+
+    protected function getOptionCount()
+    {
+        return count($this->options, COUNT_RECURSIVE);
+    }
 }

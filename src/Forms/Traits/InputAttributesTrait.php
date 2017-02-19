@@ -27,43 +27,26 @@ namespace Gibbon\Forms\Traits;
  */
 trait InputAttributesTrait
 {
-    protected $name = '';
-    protected $type = '';
-    protected $value = '';
-
-    protected $required = false;
-
     public function setName($name = '')
     {
-        $this->name = $name;
+        $this->setAttribute('name', $name);
         return $this;
     }
 
     public function getName()
     {
-        return $this->name;
-    }
-
-    public function setType($type = '')
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    public function getType()
-    {
-        return $this->type;
+        return $this->getAttribute('name');
     }
 
     public function setValue($value = '')
     {
-        $this->value = $value;
+        $this->setAttribute('value', $value);
         return $this;
     }
 
     public function getValue()
     {
-        return $this->value;
+        return $this->getAttribute('value');
     }
 
     public function isRequired($required = true)
@@ -74,12 +57,12 @@ trait InputAttributesTrait
 
     public function setRequired($required)
     {
-        $this->required = $required;
+        $this->setAttribute('required', $required);
         return $this;
     }
 
     public function getRequired()
     {
-        return $this->required;
+        return $this->getAttribute('required');
     }
 }

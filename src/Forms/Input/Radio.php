@@ -31,15 +31,21 @@ class Radio extends Input
 {
     use MultipleOptionsTrait;
 
+    public function __construct($name)
+    {
+        $this->setID('');
+        $this->setName($name);
+    }
+
     public function checked($value)
     {
-        $this->value = $value;
+        $this->setValue($value);
         return $this;
     }
 
     protected function getIsChecked($value)
     {
-        return (!empty($value) && $value == $this->value )? 'checked' : '';
+        return (!empty($value) && $value == $this->getValue());
     }
 
     protected function getElement()
@@ -48,8 +54,13 @@ class Radio extends Input
 
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
             foreach ($this->getOptions() as $value => $label) {
-                $output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-                $output .= '<input type="radio" class="'.$this->class.'" name="'.$this->name.'" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
+                if (!empty($label)) {
+                    $output .= '<label title="'.__($label).'">'.__($label).'</label> ';
+                }
+
+                $this->setAttribute('checked', $this->getIsChecked($value));
+
+                $output .= '<input type="radio" value="'.$value.'" '.$this->getAttributeString().'><br/>';
             }
         }
 

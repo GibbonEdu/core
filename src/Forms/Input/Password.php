@@ -29,14 +29,7 @@ class Password extends TextField
 {
     protected function getElement()
     {
-
-        $output = '<input type="password" class="'.$this->class.'" id="'.$this->id.'" name="'.$this->name.'" value="'.$this->value.'"';
-
-        if (!empty($this->maxLength)) {
-            $output .= ' maxlength="'.$this->maxLength.'"';
-        }
-
-        $output .= '>';
+        $output = '<input type="password" '.$this->getAttributeString().'>';
 
         return $output;
     }

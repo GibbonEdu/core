@@ -37,7 +37,7 @@ class Editor extends Input
 
     public function __construct($name, $guid)
     {
-        $this->name = $name;
+        $this->setName($name);
         $this->guid = $guid;
     }
 
@@ -78,6 +78,6 @@ class Editor extends Input
 
     protected function getElement()
     {
-        return getEditor($this->guid, true, $this->name, $this->value, $this->rows, $this->showMedia, $this->required, $this->initiallyHidden, $this->allowUpload, $this->initialFilter, $this->resourceAlphaSort);
+        return getEditor($this->guid, true, $this->getName(), $this->getValue(), $this->rows, $this->showMedia, $this->getRequired(), $this->initiallyHidden, $this->allowUpload, $this->initialFilter, $this->resourceAlphaSort);
     }
 }

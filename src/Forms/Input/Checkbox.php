@@ -42,7 +42,7 @@ class Checkbox extends Input
 
     public function checked($value)
     {
-        $this->value = (is_array($value))? $value : array($value);
+        $this->value = (!is_array($value))? array($value) : $value;
 
         return $this;
     }
@@ -64,8 +64,8 @@ class Checkbox extends Input
 
         if (!empty($this->options) && is_array($this->options)) {
             foreach ($this->options as $value => $label) {
-                $output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-                $output .= '<input type="checkbox" class="'.$this->class.'" name="'.$this->name.'[]" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
+                $output .= '<label title="'.__($label).'" for="'.$this->getName().'">'.__($label).'</label> ';
+                $output .= '<input type="checkbox" class="'.$this->getClass().'" name="'.$this->getName().'[]" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
             }
         }
 

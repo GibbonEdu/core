@@ -64,6 +64,14 @@ class Element implements OutputableInterface
         return $this;
     }
 
+    public function wrap($before, $after)
+    {
+        $this->prepend($before);
+        $this->append($after);
+
+        return $this;
+    }
+
     public function getOutput()
     {
         return $this->prepended.$this->getElement().$this->appended;
@@ -85,32 +93,5 @@ class Element implements OutputableInterface
         }
 
         return $value;
-    }
-
-    /**
-     * getAttributeOutput
-     *
-     * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
-     * @version  v14
-     * @since    v14
-     * @param    [type]  $attributes
-     * @return   [type]
-     */
-    protected function getAttributeOutput($attributes)
-    {
-        $output = implode(' ', array_map(
-            function ($key) use ($attributes) {
-                if (is_bool($attributes[$key])) {
-                    return $attributes[$key]?$key:'';
-                }
-                if (!empty($attributes[$key])) {
-                    return $key.'="'.$attributes[$key].'"';
-                }
-                return '';
-            },
-            array_keys($attributes)
-        ));
-
-        return $output;
     }
 }
