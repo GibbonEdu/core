@@ -56,7 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold', true);
     $row = $form->addRow()->addClass('onlinePayment');
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
+            ->description($settingByScope['description'])
+            ->append('In %1$s.', $_SESSION[$guid]['currency']);
         $row->addNumber($settingByScope['name'])
             ->setValue($settingByScope['value'])
             ->decimalPlaces(2);
