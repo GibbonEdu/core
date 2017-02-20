@@ -184,48 +184,6 @@ class FormFactory implements FormFactoryInterface
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
     }
 
-    public function createSelectSchoolYear(\Gibbon\sqlConnection $pdo, $name)
-    {
-        $sql = 'SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
-        $results = $pdo->executeQuery(array(), $sql);
-
-        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
-    }
-
-    public function createSelectLanguage(\Gibbon\sqlConnection $pdo, $name)
-    {
-        $sql = 'SELECT name as value, name FROM gibbonLanguage ORDER BY name';
-        $results = $pdo->executeQuery(array(), $sql);
-
-        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
-    }
-
-    public function createSelectCountry(\Gibbon\sqlConnection $pdo, $name)
-    {
-        $sql = 'SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name';
-        $results = $pdo->executeQuery(array(), $sql);
-
-        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
-    }
-
-    public function createSelectStaff(\Gibbon\sqlConnection $pdo, $name)
-    {
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
-                FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                WHERE status='Full' ORDER BY surname, preferredName";
-
-        $results = $pdo->executeQuery(array(), $sql);
-
-        $values = array();
-        if ($results && $results->rowCount() > 0) {
-            while ($row = $results->fetch()) {
-                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
-            }
-        }
-
-        return $this->createSelect($name)->fromArray($values);
-    }
-
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?

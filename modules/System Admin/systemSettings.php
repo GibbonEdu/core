@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -73,9 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     }
 
     $form = Form::create('systemSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/systemSettingsProcess.php');
-    
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    
+
     // SYSTEM SETTINGS
     $form->addRow()->addHeading('System Settings');
 
@@ -83,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
         $row->addURL($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
-    
+
     $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
@@ -116,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     // ORGANISATION
     $form->addRow()->addHeading('Organisation Settings');
-    
+
     $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
@@ -140,22 +142,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
-        $row->addSelectStaff($pdo, $setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationDBA', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
-        $row->addSelectStaff($pdo, $setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdmissions', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
-        $row->addSelectStaff($pdo, $setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationHR', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
-        $row->addSelectStaff($pdo, $setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     // SECURITY SETTINGS
     $form->addRow()->addHeading('Security Settings');
@@ -164,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
-        $row->addSelect($setting['name'])->fromArray(range(4,12))->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray(range(4, 12))->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha', true);
     $row = $form->addRow()->addClass('googleSettings');
@@ -195,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     // VALUE ADDED
     $form->addRow()->addHeading('gibbonedu.com Value Added Services');
-    
+
     $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
@@ -212,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'country', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
-        $row->addSelectCountry($pdo, $setting['name'])->selected($setting['value']);
+        $row->addSelectCountry($setting['name'])->selected($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek', true);
     $row = $form->addRow()->addClass('googleSettings');
@@ -262,6 +264,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
 }

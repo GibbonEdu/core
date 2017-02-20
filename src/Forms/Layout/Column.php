@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\FormFactoryInterface;
 
 /**
  * Column
@@ -30,6 +31,12 @@ use Gibbon\Forms\OutputableInterface;
 class Column extends Row implements OutputableInterface
 {
     protected $class = 'column';
+
+    public function __construct(FormFactoryInterface $factory, $id = '')
+    {
+        $this->setClass('column');
+        parent::__construct($factory, $id);
+    }
 
     public function getOutput()
     {

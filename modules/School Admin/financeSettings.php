@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettings.php') == false) {
     //Acess denied
@@ -38,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/financeSettingsProcess.php');
 
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow()->addHeading('General Settings');
@@ -149,14 +151,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $settingByScope = getSettingByScope($connection2, 'Finance', 'purchasingOfficer', true);
     $row = $form->addRow();
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelectStaff($pdo, $settingByScope['name'])
+        $row->addSelectStaff($settingByScope['name'])
             ->selected($settingByScope['value'])
             ->placeholder('');
 
     $settingByScope = getSettingByScope($connection2, 'Finance', 'reimbursementOfficer', true);
     $row = $form->addRow();
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelectStaff($pdo, $settingByScope['name'])
+        $row->addSelectStaff($settingByScope['name'])
             ->selected($settingByScope['value'])
             ->placeholder('');
 

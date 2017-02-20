@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -44,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
     $form = Form::create('departmentManageRecord', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_addProcess.php?address='.$_SESSION[$guid]['address']);
 
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
@@ -76,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
     $row = $form->addRow();
         $row->addLabel('staff', 'Staff')->description('Use Control, Command and/or Shift to select multiple.');
-        $row->addSelectStaff($pdo, 'staff')->selectMultiple();
+        $row->addSelectStaff('staff')->selectMultiple();
 
     $form->toggleVisibilityByClass('roleLARow')->onSelect('type')->when('Learning Area');
 
