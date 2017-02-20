@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
     // Split the ID portion off of the ID-category pair, for the first dropdown
-    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return substr($v, 0, strpos($v, '-')); }, $primaryExternalAssessmentByYearGroup);
+    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (stripos($v, '-') !== false? substr($v, 0, strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
 
     $sql = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
     $result = $pdo->executeQuery(array(), $sql);
@@ -87,7 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     // Add one row per year group
     while ($yearGroup = $result->fetch()) {
         $id = $yearGroup['gibbonYearGroupID'];
-        $selected = (isset($primaryExternalAssessmentIDsByYearGroup[$id]))? $primaryExternalAssessmentIDsByYearGroup[$id] : '';
+
+        $selectedID = (isset($primaryExternalAssessmentIDsByYearGroup[$id]))? $primaryExternalAssessmentIDsByYearGroup[$id] : '';
+        $selectedField = (isset($primaryExternalAssessmentByYearGroup[$id]))? $primaryExternalAssessmentByYearGroup[$id] : '';
 
         $row = $form->addRow();
         $row->addContent($yearGroup['name']);
@@ -97,14 +99,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
             ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessments)
-            ->selected($selected);
+            ->selected($selectedID);
 
         $row->addSelect('category['.$id.']')
             ->setID('category'.$id)
             ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessmentsFieldSetNames)
-            ->selected($selected)
+            ->selected($selectedField)
             ->chainedTo('gibbonExternalAssessmentID'.$id, $externalAssessmentsFieldSetIDs);
     }
 
