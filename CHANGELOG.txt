@@ -30,6 +30,9 @@ v14.0.00
 	Security
 		...
 
+	Changes With Important Notices
+		Attendance: Fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
+
 	Tweaks & Bug Fixes
 		System: Improved Fast Finder student search permissions
 		System: added Albanian as development language
