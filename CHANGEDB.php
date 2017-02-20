@@ -697,4 +697,5 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'internalDocuments', 'Internal Documents', 'Comma-separated list of documents for internal upload and use.', '');end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD `context` ENUM('Roll Group','Class','Person','Future','Self Registration') NULL DEFAULT NULL AFTER `reason`;end
 UPDATE gibbonAttendanceLogPerson SET context='Class' WHERE gibbonCourseClassID>0 OR NOT gibbonCourseClassID IS NULL;end
+UPDATE gibbonAttendanceLogPerson SET reason='' WHERE type='Present' AND reason='Pending';end
 ";
