@@ -285,7 +285,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
 
-                                    $rowLog = $resultLog->fetch();
+                                    if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                        $rowLog = $resultLog->fetch();
+                                    }
                                 }
                                 
                                 if ( $attendance->isTypeAbsent($rowLog["type"]) ) {

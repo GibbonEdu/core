@@ -338,7 +338,9 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 
-									$rowLog=$resultLog->fetch() ;
+									if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                        $rowLog = $resultLog->fetch();
+                                    }
 								}
 
 
