@@ -32,6 +32,7 @@ v14.0.00
 
 	Changes With Important Notices
 		Attendance: Fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
+		Attendance: dropped legacy tables gibbonPlannerEntryAttendance, gibbonPlannerEntryAttendanceLog
 
 	Tweaks & Bug Fixes
 		System: Improved Fast Finder student search permissions
@@ -39,6 +40,8 @@ v14.0.00
 		System: added Moroccan dirham as a currency option
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
+		Attendance: added settings to determine pre-filling of attendance in different contexts
+		Attendance: added settings to determine default type in different contexts
 		Students: added ability to store internal documents against student application forms
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 

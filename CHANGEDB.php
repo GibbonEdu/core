@@ -698,4 +698,11 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonAttendanceLogPerson` ADD `context` ENUM('Roll Group','Class','Person','Future','Self Registration') NULL DEFAULT NULL AFTER `reason`;end
 UPDATE gibbonAttendanceLogPerson SET context='Class' WHERE gibbonCourseClassID>0 OR NOT gibbonCourseClassID IS NULL;end
 UPDATE gibbonAttendanceLogPerson SET reason='' WHERE type='Present' AND reason='Pending';end
+DROP TABLE gibbonPlannerEntryAttendance;end
+DROP TABLE gibbonPlannerEntryAttendanceLog;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'prefillRollGroup', 'Pre-Fill Roll Group Attendance', 'Should Roll Group attendance be pre-filled with data available from other contexts?', 'N');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'prefillClass', 'Pre-Fill Class Attendance', 'Should Class attendance be pre-filled with data available from other contexts?', 'N');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'prefillPerson', 'Pre-Fill Person Attendance', 'Should Person attendance be pre-filled with data available from other contexts?', 'N');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'defaultRollGroupAttendanceType', 'Default Roll Group Attendance Type', 'The default selection for attendance type when taking Roll Group attendance', 'Present');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'defaultClassAttendanceType', 'Default Class Attendance Type', 'The default selection for attendance type when taking Class attendance', 'Present');end
 ";
