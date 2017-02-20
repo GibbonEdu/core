@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         try {
             $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$today-0-0-0"); //"$today-23-59-59"
-            $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
+            $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
             $resultLog = $connection2->prepare($sqlLog);
             $resultLog->execute($dataLog);
         } catch (PDOException $e) {
@@ -216,11 +216,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 	            echo '</td>';
 
 
-	            if ( empty($rowLog['gibbonCourseClassID']) || $rowLog['gibbonCourseClassID'] == 0 ) {
-	            	echo '<td>'.__($guid, 'Roll Group').'</td>';
-	            } else {
-	            	echo '<td>'.$rowLog['courseName'].'.'.$rowLog['className'].'</td>';
-	        	}
+                if ($rowLog['context'] != '') {
+                    if ($rowLog['context'] == 'Class' && $rowLog['gibbonCourseClassID'] > 0)
+                        echo '<td>'.__($guid, $rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
+                    else
+                        echo '<td>'.__($guid, $rowLog['context']).'</td>';
+                }
+                else {
+                    echo '<td>'.__($guid, 'Roll Group').'</td>';
+                }
 
 	            echo '<td>';
 	            	echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
