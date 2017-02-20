@@ -4006,7 +4006,7 @@ function getSettingByScope($connection2, $scope, $name, $returnRow = false )
         }
     }
 
-    return null;
+    return false;
 }
 
 //Converts date from language-specific format to YYYY-MM-DD
