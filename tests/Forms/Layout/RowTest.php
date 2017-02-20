@@ -10,21 +10,80 @@ file that was distributed with this source code.
 namespace Gibbon\Forms\Layout;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Forms\FormFactory;
 
 /**
  * @covers Row
  */
 class RowTest extends TestCase
 {
+    private $mockFactory;
+    private $mockElement;
+
+    public function setUp()
+    {
+        $this->mockFactory = $this->createMock('Gibbon\Forms\FormFactoryInterface');
+        $this->mockElement = $this->createMock('Gibbon\Forms\OutputableInterface');
+    }
+
     public function testCanAddElement()
     {
-        $factory = $this->createMock('Gibbon\Forms\FormFactoryInterface');
-        $row = new Row($factory, 'testID');
-
-        $element = $this->createMock('Gibbon\Forms\OutputableInterface');
-        $row->addElement($element);
+        $row = new Row($this->mockFactory, 'testID');
+        $row->addElement($this->mockElement);
 
         $this->assertTrue(count($row->getElements()) > 0);
-        $this->assertSame($element, $row->getElement());
+    }
+
+    public function testCanAddContent()
+    {
+        $factory = FormFactory::create();
+        $row = new Row($factory, 'testID');
+        $row->addContent('Testing');
+
+        $this->assertEquals($row->getElement()->getOutput(), 'Testing');
+    }
+
+    public function testCanHandleUnknownElements()
+    {
+        $factory = FormFactory::create();
+        $row = new Row($factory, 'testID');
+
+        $element = $row->addCompletelyBogusElement();
+
+        $this->assertTrue(count($row->getElements()) > 0);
+    }
+
+    public function testCanGetElement()
+    {
+        $row = new Row($this->mockFactory, 'testID');
+        $row->addElement($this->mockElement);
+
+        $this->assertSame($this->mockElement, $row->getElement());
+    }
+
+    public function testCanGetElements()
+    {
+        $row = new Row($this->mockFactory, 'testID');
+
+        $element1 = $row->addElement($this->mockElement);
+        $element2 = $row->addElement($this->mockElement);
+
+        $elements = $row->getElements();
+
+        $this->assertEquals(count($elements), 2);
+
+        $this->assertSame(reset($elements), $element1);
+        $this->assertSame(next($elements), $element2);
+    }
+
+    public function testCanCheckIfObjectIsLastElement()
+    {
+        $row = new Row($this->mockFactory, 'testID');
+
+        $element1 = $row->addElement(new Element('Foo'));
+        $element2 = $row->addElement(new Element('Bar'));
+
+        $this->assertNotTrue($row->isLastElement($element1));
+        $this->assertTrue($row->isLastElement($element2));
     }
 }

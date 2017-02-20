@@ -24,4 +24,5 @@ interface FormFactoryInterface
     public function createRow($id);
     public function createColumn($id);
     public function createTrigger($selector);
+    public function createContent($content);
 }
