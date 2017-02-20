@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         echo '</div>';
     } else {
         //Let's go!
-        
+
         $form = Form::create('daysOfWeek', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/daysOfWeek_manageProcess.php');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -71,8 +71,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $row->addLabel($day['name'].'schoolDay', 'School Day');
                 $row->addYesNo($day['name'].'schoolDay')->isRequired()->selected($day['schoolDay']);
 
+            $form->toggleVisibilityByClass($day['name'])->onSelect($day['name'].'schoolDay')->when('Y');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolOpen', 'School Opens');
                 $col = $row->addColumn()->addClass('right inline');
                     $col->addSelect($day['name'].'schoolOpenH')
@@ -84,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                         ->setClass('shortWidth')
                         ->selected(substr($day['schoolOpen'], 3, 2));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolStart', 'School Starts');
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolStartH')
@@ -96,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                     ->setClass('shortWidth')
                     ->selected(substr($day['schoolStart'], 3, 2));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolEnd', 'School Ends');
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolEndH')
@@ -108,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                     ->setClass('shortWidth')
                     ->selected(substr($day['schoolEnd'], 3, 2));
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolClose', 'School Closes');
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolCloseH')
