@@ -62,12 +62,22 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public function setFactory($factory)
+    public function getFactory()
+    {
+        return $this->factory;
+    }
+
+    public function setFactory(FormFactoryInterface $factory)
     {
         $this->factory = $factory;
     }
 
-    public function setRenderer($renderer)
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    public function setRenderer(FormRendererInterface $renderer)
     {
         $this->renderer = $renderer;
     }
