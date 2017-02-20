@@ -706,4 +706,7 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'defaultRollGroupAttendanceType', 'Default Roll Group Attendance Type', 'The default selection for attendance type when taking Roll Group attendance', 'Present');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'defaultClassAttendanceType', 'Default Class Attendance Type', 'The default selection for attendance type when taking Class attendance', 'Present');end
 UPDATE gibbonSetting SET value='Y' WHERE scope='Attendance' AND name='prefillRollGroup';end
+UPDATE gibbonSetting SET description='Should Attendance by Roll Group be pre-filled with data available from other contexts?' WHERE scope='Attendance' AND name='prefillRollGroup';end
+UPDATE gibbonSetting SET description='Should Attendance by Class be pre-filled with data available from other contexts?' WHERE scope='Attendance' AND name='prefillClass';end
+UPDATE gibbonSetting SET description='Should Attendance by Person be pre-filled with data available from other contexts?' WHERE scope='Attendance' AND name='prefillPerson';end
 ";
