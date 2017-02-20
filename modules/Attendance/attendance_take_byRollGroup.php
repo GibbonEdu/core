@@ -161,6 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 echo __($guid, 'School is closed on the specified date, and so attendance information cannot be recorded.');
                 echo '</div>';
             } else {
+                $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup');
+                $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType');
+
                 //Check roll group
                 $rollGroupFail = false;
                 $firstDay = null;
@@ -197,6 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
+
                     if ($resultLog->rowCount() < 1) {
                         echo "<div class='error'>";
                         echo __($guid, 'Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.');
@@ -255,26 +259,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 if ($count % $columns == 0) {
                                     echo '<tr>';
                                 }
-                                //Get student log data
+
+                                $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+
                                 try {
+                                    //Get student log data by context
                                     $dataLog = array('gibbonPersonID' => $rowRollGroup['gibbonPersonID'], 'date' => $currentDate.'%');
-                                    $sqlLog = 'SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC';
+                                    $sqlLog = "SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Roll Group' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC LIMIT 1";
                                     $resultLog = $connection2->prepare($sqlLog);
                                     $resultLog->execute($dataLog);
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-
-                                $rowLog = $resultLog->fetch();
-
-                                if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
-                                    // Orange/warning background for partial absense
-                                    if ( !empty($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] != 0) {
-                                        print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
-                                    } else {
-                                        echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                    $rowLog = $resultLog->fetch();
+                                } elseif ($prefillAttendanceType == 'Y') {
+                                    //Get any student log data
+                                    try {
+                                        $dataLog = array('gibbonPersonID' => $rowRollGroup['gibbonPersonID'], 'date' => $currentDate.'%');
+                                        $sqlLog = 'SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC LIMIT 1';
+                                        $resultLog = $connection2->prepare($sqlLog);
+                                        $resultLog->execute($dataLog);
+                                    } catch (PDOException $e) {
+                                        echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
+
+                                    $rowLog = $resultLog->fetch();
+                                }
+                                
+                                if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
+                                    echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                    
                                 } else {
                                     echo "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
                                 }
