@@ -150,6 +150,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 echo 'School is closed on the specified date, and so attendance information cannot be recorded.';
                 echo '</div>';
             } else {
+                $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillPerson');
+
                 //Get last 5 school days from currentDate within the last 100
                 $timestamp = dateConvertToTimestamp($currentDate);
 
@@ -231,15 +233,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 			            }
 
 
-			            $lastType = $rowLog['type'];
-			            $lastReason = $rowLog['reason'];
-			            $lastComment = $rowLog['comment'];
+			            $lastType = ($prefillAttendanceType == 'Y')? $rowLog['type'] : '';
+			            $lastReason = ($prefillAttendanceType == 'Y')? $rowLog['reason'] : '';
+			            $lastComment = ($prefillAttendanceType == 'Y')? $rowLog['comment'] : '';
 			            echo '</tr>';
 			        }
 			        echo '</table><br/>';
 			    }
-
-
 
                 //Show student form
                 echo "<script type='text/javascript'>
@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php echo $attendance->renderAttendanceTypeSelect(); ?>
+								<?php echo $attendance->renderAttendanceTypeSelect($lastType); ?>
 							</td>
 						</tr>
 						<tr>
@@ -284,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php echo $attendance->renderAttendanceReasonSelect(); ?>
+								<?php echo $attendance->renderAttendanceReasonSelect($lastReason); ?>
 							</td>
 						</tr>
 						<tr>
