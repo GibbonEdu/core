@@ -47,7 +47,12 @@ abstract class Input extends Element implements ValidatableInterface
         return $this;
     }
 
-    public function getValidation()
+    public function getValidation($type)
+    {
+        return (isset($this->validation[$type]))? $this->validation[$type] : null;
+    }
+
+    public function getValidationOutput()
     {
         $output = '';
 
