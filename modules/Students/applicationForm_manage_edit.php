@@ -2342,6 +2342,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<?php
             		}
 					$requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+                    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+                    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
+                    if ($internalDocuments != '') {
+                        $requiredDocuments .= ','.$internalDocuments;
+                    }
 					$requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
 					$count = 0;
 					if ($requiredDocuments != '' and $requiredDocuments != false) {
