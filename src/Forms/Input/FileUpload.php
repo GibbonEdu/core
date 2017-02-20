@@ -29,17 +29,16 @@ class FileUpload extends Input
 {
     protected $accepts = array();
 
-    public function accepts($value)
+    public function accepts($accepts)
     {
-        if (is_string($value)) {
-            $value = explode(',', $value);
+        if (is_string($accepts)) {
+            $accepts = explode(',', $accepts);
         }
-        $this->accepts = $value;
 
-        if (!empty($this->accepts) && is_array($this->accepts)) {
-            $within = implode(',', array_map(function ($str) {
-                return sprintf("'%s'", $str);
-            }, $this->accepts));
+        if (!empty($accepts) && is_array($accepts)) {
+            $this->setAttribute('accepts', implode(',', $accepts));
+
+            $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $accepts));
             $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
         }
         return $this;
@@ -48,13 +47,7 @@ class FileUpload extends Input
     protected function getElement()
     {
 
-        $output = '<input type="file" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" ';
-
-        if (!empty($this->accepts) && is_array($this->accepts)) {
-            $output .= ' accepts="'.implode(',', $this->accepts).'"';
-        }
-
-        $output .= '>';
+        $output = '<input type="file" '.$this->getAttributeString().'>';
 
         return $output;
     }

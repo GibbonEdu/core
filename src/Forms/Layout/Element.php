@@ -36,20 +36,39 @@ class Element implements OutputableInterface
     protected $appended;
     protected $prepended;
 
-    public function __construct($content)
+    public function __construct()
     {
-        $this->content = $content;
+    }
+
+    public function setContent($value)
+    {
+        $value = $this->getTranslatedText(func_get_args());
+
+        $this->content = $value;
+        return $this;
     }
 
     public function prepend($value)
     {
+        $value = $this->getTranslatedText(func_get_args());
+
         $this->prepended .= $value;
         return $this;
     }
 
     public function append($value)
     {
+        $value = $this->getTranslatedText(func_get_args());
+
         $this->appended .= $value;
+        return $this;
+    }
+
+    public function wrap($before, $after)
+    {
+        $this->prepend($before);
+        $this->append($after);
+
         return $this;
     }
 
@@ -63,30 +82,16 @@ class Element implements OutputableInterface
         return $this->content;
     }
 
-    /**
-     * getAttributeOutput
-     *
-     * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
-     * @version  v14
-     * @since    v14
-     * @param    [type]  $attributes
-     * @return   [type]
-     */
-    protected function getAttributeOutput($attributes)
+    protected function getTranslatedText($args)
     {
-        $output = implode(' ', array_map(
-            function ($key) use ($attributes) {
-                if (is_bool($attributes[$key])) {
-                    return $attributes[$key]?$key:'';
-                }
-                if (!empty($attributes[$key])) {
-                    return $key.'="'.$attributes[$key].'"';
-                }
-                return '';
-            },
-            array_keys($attributes)
-        ));
+        $value = array_shift($args);
 
-        return $output;
+        if (count($args) > 0) {
+            $value = vsprintf(__($value), $args);
+        } else {
+            $value = __($value);
+        }
+
+        return $value;
     }
 }

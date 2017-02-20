@@ -31,9 +31,11 @@ class Select extends Input
 {
     use MultipleOptionsTrait;
 
-    protected $selected = null;
     protected $placeholder;
-    protected $multiple = false;
+    protected $selected = null;
+
+    protected $chainedToID;
+    protected $chainedToValues;
 
     public function selected($value)
     {
@@ -51,7 +53,19 @@ class Select extends Input
 
     public function selectMultiple($value = true)
     {
-        $this->multiple = $value;
+        $this->setAttribute('multiple', $value);
+
+        return $this;
+    }
+
+    public function chainedTo($id, $values)
+    {
+        if (count($values) != count($this->options)) {
+            throw new \InvalidArgumentException(sprintf('Element %s: chainedTo expects the number of values to match the number of options, %s found.', $this->name, count($values)));
+        }
+
+        $this->chainedToID = $id;
+        $this->chainedToValues = $values;
 
         return $this;
     }
@@ -69,17 +83,16 @@ class Select extends Input
     {
         $output = '';
 
-        if (!empty($this->multiple) && $this->multiple) {
-            $totalOptions = count($this->getOptions(), COUNT_RECURSIVE);
-            $output .= '<select id="'.$this->name.'" name="'.$this->name.'[]" class="'.$this->class.'" multiple size="'.$totalOptions.'">';
-        } else {
-            $output .= '<select id="'.$this->name.'" name="'.$this->name.'" class="'.$this->class.'">';
+        if (!empty($this->getAttribute('multiple'))) {
+            $this->setAttribute('size', $this->getOptionCount());
         }
+
+        $output .= '<select '.$this->getAttributeString().'>';
 
         if (isset($this->placeholder)) {
             $output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
 
-            if ($this->required) {
+            if ($this->getRequired()) {
                 $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
             }
         }
@@ -95,12 +108,19 @@ class Select extends Input
                     $output .= '</optgroup>';
                 } else {
                     $selected = ($this->isOptionSelected($value))? 'selected' : '';
-                    $output .= '<option value="'.$value.'" '.$selected.'>'.__($label).'</option>';
+                    $class = (!empty($this->chainedToValues[$value]))? ' class="'.$this->chainedToValues[$value].'" ' : '';
+                    $output .= '<option value="'.$value.'" '.$selected.$class.'>'.__($label).'</option>';
                 }
             }
         }
 
         $output .= '</select>';
+
+        if (!empty($this->chainedToID)) {
+            $output .= '<script type="text/javascript">';
+            $output .= '$("#'.$this->getID().'").chainedTo("#'.$this->chainedToID.'");';
+            $output .= '</script>';
+        }
 
         return $output;
     }

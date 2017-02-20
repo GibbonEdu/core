@@ -39,7 +39,7 @@ class Row
     public function __construct(FormFactoryInterface $factory, $id = '')
     {
         $this->factory = $factory;
-        $this->id = $id;
+        $this->setID($id);
     }
 
     public function __call($function, $args)
@@ -59,9 +59,13 @@ class Row
             }
         } catch (\ReflectionException $e) {
             $element = $this->factory->createContent(sprintf('Cannot %1$s. This form element does not exist in the current FormFactory', $function).': '.$e->getMessage());
+        } catch (\Exception $e) {
+            $element = $this->factory->createContent(sprintf('Cannot %1$s. Error creating form element.', $function).': '.$e->getMessage());
+        } finally {
+            $this->addElement($element);
         }
 
-        return $this->addElement($element);
+        return $element;
     }
 
     public function addElement(OutputableInterface $element)
