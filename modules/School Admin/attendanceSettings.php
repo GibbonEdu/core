@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Pre-Fills & Pre-Fills')->append('The pre-fill settings below determine which Attendance contexts are preset by data available from other contexts. This allows, for example, for attendance taken in a class to be preset by attendance already taken in a Roll Group. The contexts for attendance include Roll Group, Class, Person, Future and Self Registration.');
+    $row = $form->addRow()->addHeading('Pre-Fills & Defaults')->append('The pre-fill settings below determine which Attendance contexts are preset by data available from other contexts. This allows, for example, for attendance taken in a class to be preset by attendance already taken in a Roll Group. The contexts for attendance include Roll Group, Class, Person, Future and Self Registration.');
 
     $settingByScope = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup', true);
     $row = $form->addRow();
