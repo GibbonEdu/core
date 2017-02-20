@@ -85,6 +85,7 @@ class Select extends Input
 
         if (!empty($this->getAttribute('multiple'))) {
             $this->setAttribute('size', $this->getOptionCount());
+            $this->setName($this->getName().'[]');
         }
 
         $output .= '<select '.$this->getAttributeString().'>';
