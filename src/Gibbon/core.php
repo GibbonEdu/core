@@ -241,9 +241,10 @@ class Core {
 
 		// Determine the base Gibbon URL
 		$http = (isset($_SERVER['HTTPS']))? 'https://' : 'http://';
-		$port = ($_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
+		$port = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80')? ':'.$_SERVER['SERVER_PORT'] : '';
+		$host = (isset($_SERVER['SERVER_NAME']))? $_SERVER['SERVER_NAME'] : '';
 
-		$this->baseURL = $http . $_SERVER['SERVER_NAME'] . $port . dirname($domain);
+		$this->baseURL = $http . $host. $port . dirname($domain);
 		$this->baseURL = rtrim($this->baseURL, '/ ');
 	}
 
