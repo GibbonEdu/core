@@ -65,9 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         $row->addTextField('subjectListing')->maxLength(255);
 
     $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('blurb', 'Blurb');
-        $column->addEditor('blurb', $guid);
+       $column = $row->addColumn()->setClass('');
+       $column->addLabel('blurb', 'Blurb');
+       $column->addEditor('blurb', $guid);
 
     $row = $form->addRow();
         $row->addLabel('file', 'Logo')->description('125x125px jpg/png/gif');
