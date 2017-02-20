@@ -695,6 +695,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 ALTER TABLE `gibbonAttendanceLogPerson` CHANGE `gibbonCourseClassID` `gibbonCourseClassID` INT(8) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('sq_AL', 'Shqip - Shqipëri', 'N', 'N', 'Jorida Shahinas', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'internalDocuments', 'Internal Documents', 'Comma-separated list of documents for internal upload and use.', '');end
+ALTER TABLE `gibbonAttendanceLogPerson` ADD `context` ENUM('Roll Group','Class','Person','Future','Self Registration') NULL DEFAULT NULL AFTER `reason`;end
+UPDATE gibbonAttendanceLogPerson SET context='Class' WHERE gibbonCourseClassID>0 OR NOT gibbonCourseClassID IS NULL;end
 UPDATE gibbonAttendanceLogPerson SET reason='' WHERE type='Present' AND reason='Pending';end
-
 ";
