@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     // External Assessment Field Sets
     $sql = "SELECT gibbonExternalAssessmentField.gibbonExternalAssessmentID, category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY gibbonExternalAssessmentID, category";
     $results = $pdo->executeQuery(array(), $sql);
-    
+
     $externalAssessmentsFieldSetNames = array();
     $externalAssessmentsFieldSetIDs = array();
 
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
             $externalAssessmentsFieldSetIDs[$key] = $assessment['gibbonExternalAssessmentID'];
         }
     }
-    
+
     // Get and unserialize the current settings value
     $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
@@ -87,6 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     // Add one row per year group
     while ($yearGroup = $result->fetch()) {
         $id = $yearGroup['gibbonYearGroupID'];
+        $selected = (isset($primaryExternalAssessmentIDsByYearGroup[$id]))? $primaryExternalAssessmentIDsByYearGroup[$id] : '';
 
         $row = $form->addRow();
         $row->addContent($yearGroup['name']);
@@ -96,14 +97,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
             ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessments)
-            ->selected($primaryExternalAssessmentIDsByYearGroup[$id]);
+            ->selected($selected);
 
         $row->addSelect('category['.$id.']')
             ->setID('category'.$id)
             ->setClass('mediumWidth')
             ->placeholder()
             ->fromArray($externalAssessmentsFieldSetNames)
-            ->selected($primaryExternalAssessmentByYearGroup[$id])
+            ->selected($selected)
             ->chainedTo('gibbonExternalAssessmentID'.$id, $externalAssessmentsFieldSetIDs);
     }
 
