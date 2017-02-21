@@ -40,8 +40,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	min-width: 40px;
 }
 
-.verticalText:before{ 
-	content:''; 
+.verticalText:before{
+	content:'';
 	float: left;
 	margin-top: 100%;
 }
@@ -124,4 +124,10 @@ td.center {
 
 .dayNoData {
 	border: 1px solid #555;
+}
+
+.historyCalendar .day a {
+	display: block;
+	color: inherit;
+	text-decoration: inherit;
 }

@@ -136,6 +136,8 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
+    $attendanceByPersonAccessible = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
+
     $output = '';
 
     if ($print) {
@@ -290,7 +292,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                     if ($dateStart != '' and date('Y-m-d', $i) < $dateStart) {
                         $output .= "<td class='dayClosed'>";
                         $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
-                        $output .= 'Before Start Date';
+                        $output .= __($guid, 'Before Start Date');
                         $output .= '</td>';
                         ++$count;
                     }
@@ -370,8 +372,13 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                             $title = '';
                                         }
                                     }
-                                    $output .= "<td class='$class'>";
-                                    $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
+                                    $formattedDate = date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i);
+
+                                    $output .= "<td class='day $class'>";
+                                    if ($attendanceByPersonAccessible) {
+                                        $output .= '<a href="index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$formattedDate.'">';
+                                    }
+                                    $output .= $formattedDate.'<br/>';
                                     if (count($log) > 0) {
                                         $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
 
@@ -386,6 +393,9 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                                 $output .= ' : ';
                                             }
                                         }
+                                    }
+                                    if ($attendanceByPersonAccessible) {
+                                        $output .= '</a>';
                                     }
                                     $output .= '</td>';
                                     ++$count;
