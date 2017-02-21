@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
         else
             $row->addLabel($settingByScope['name'], __($guid, "Staff Role").": ".__($guid, $type));
         $form->addHiddenValue("types[".$typeCount."]", $type);
-        $row->addURL("refereeLinks[]")->setValue(isset($applicationFormRefereeLink[$type]) ? $applicationFormRefereeLink[$type] : '');
+        $row->addURL("refereeLinks[]")->setID('refereeLink'.$typeCount)->setValue(isset($applicationFormRefereeLink[$type]) ? $applicationFormRefereeLink[$type] : '');
         $typeCount++;
     }
 
