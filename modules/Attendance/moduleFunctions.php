@@ -28,14 +28,21 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
-        $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = 'SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay
-            FROM gibbonAttendanceLogPerson
-                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type=\'School Closure\')
-            WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken';
+        if (!empty($gibbonCourseClassID)) {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay FROM gibbonAttendanceLogPerson
+                    LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+                WHERE gibbonPersonID=:gibbonPersonID AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) GROUP BY gibbonAttendanceLogPerson.date ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
+        } else {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
+            $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay FROM gibbonAttendanceLogPerson
+                    LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+                WHERE gibbonPersonID=:gibbonPersonID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) GROUP BY gibbonAttendanceLogPerson.date ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
+        }
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
+        echo $e->getMessage();
         $queryFail = true;
     }
 
