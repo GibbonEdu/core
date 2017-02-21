@@ -416,7 +416,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
     echo "<table cellspacing='0'>";
     echo '<tr>';
-    echo "<td style='vertical-align: top; width: 410px'>";
+    echo "<td style='vertical-align: top; width: 380px'>";
     echo '<h3>';
     echo __($guid, 'Summary');
     echo '</h3>';
@@ -452,9 +452,60 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo '<h3>';
     echo __($guid, 'Key');
     echo '</h2>';
-    echo '<p>';
-    echo "<img style='border: 1px solid #eee' alt='Data Key' src='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/img/dataKey.png'>";
-    echo '</p>';
+
+    // Student History Legend
+    echo "<table class='mini historyCalendar historyCalendarKey' cellspacing='8' style='width: 100%'>";
+    echo '<tr>';
+    echo '<td class="legend">'.__($guid, 'School Closed').'</td>';
+    echo '<td class="legend">'.__($guid, 'Present').' '.__($guid, 'Day').'</td>';
+    echo '<td class="legend">'.__($guid, 'Absent').' '.__($guid, 'Day').'</td>';
+    echo '<td class="legend">'.__($guid, 'No Data').' '.__($guid, 'Day').'</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<td class="day dayClosed">'.__($guid, 'School Closed').'</td>';
+    echo '<td class="day dayPresent">'.date($_SESSION[$guid]['i18n']['dateFormatPHP'], 1487667393).'<br/><b>'.__($guid, 'Left - Early').'</b><br/>P : L</td>';
+    echo '<td class="day dayAbsent">'.date($_SESSION[$guid]['i18n']['dateFormatPHP'], 1487767393).'<br/><b>'.__($guid, 'Absent').'</b><br/>A</td>';
+    echo '<td class="day dayNoData">'.__($guid, 'No Data').'</td>';
+    echo '</tr>';
+
+    try {
+        $data = array();
+        $sql = 'SELECT name, nameShort FROM gibbonAttendanceCode ORDER BY sequenceNumber ASC, name';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    if ($result && $result->rowCount() > 0) {
+        echo '<tr>';
+        echo '<td colspan="1">';
+            echo '<b class="legend">'.__($guid, 'End-of-Day Status').'</b>';
+        echo '</td>';
+        echo '<td colspan="3" style="border-left: 0px;">';
+            echo '<b class="legend">'.__($guid, 'Detailed Day Log Where:').'</b>';
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr>';
+        echo '</td>';
+        echo '<td colspan="4">';
+
+        echo '<div class="arrow-one">&#8599;</div>';
+        echo '<div class="arrow-two">&#8599;</div>';
+
+        echo '<ul>';
+        while ($code = $result->fetch()) {
+            $class = ($attendance->isTypeAbsent($code['name']))? 'highlightAbsent' : 'highlightPresent';
+            echo sprintf('<li><span class="%1$s">%2$s</span> = %3$s</li>', $class, $code['nameShort'], __($guid, $code['name']) );
+        }
+        echo '</ul>';
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</table>';
+
     echo '</td>';
     echo '</tr>';
     echo '</table>';
@@ -482,20 +533,6 @@ function getColourArray()
     $return[] = '75, 192, 192';
     $return[] = '255, 159, 64';
     $return[] = '152, 221, 95';
-
-
-    // $return[0] = '54, 175, 56';
-    // $return[1] = '192, 89, 203';
-    // $return[2] = '30, 30, 200';
-    // $return[3] = '65, 83, 84';
-    // $return[4] = '206, 169, 83';
-    // $return[5] = '30, 255, 30';
-    // $return[6] = '255, 40, 40';
-    // $return[7] = '146, 156, 163';
-    // $return[8] = '121, 126, 203';
-    // $return[9] = '86, 117, 57';
-    // $return[10] = '114, 66, 47';
-    // $return[11] = '93, 55, 98';
 
     return $return;
 }

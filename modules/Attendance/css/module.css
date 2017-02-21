@@ -131,3 +131,59 @@ td.center {
 	color: inherit;
 	text-decoration: inherit;
 }
+
+.historyCalendarKey,
+.historyCalendarKey td {
+	position: relative;
+	background:#ffffff;
+}
+
+.historyCalendarKey .day {
+	height: 40px;
+	padding: 5px 0px !important;
+	line-height: 12px;
+}
+
+.historyCalendarKey,
+.historyCalendarKey .day {
+	border-left-width: 1px !important;
+	border-left-style: solid !important;
+	border-bottom-width: 1px !important;
+	border-bottom-style: solid !important;
+	border-radius: 0 !important;
+}
+
+.historyCalendarKey .legend {
+	width: 25%;
+	border: 0 !important;
+	background: none !important;
+	font-size: 12px !important;
+}
+
+.historyCalendarKey ul {
+	font-size: 12px;
+	margin: -15px 0px 0px 80px;
+}
+
+.historyCalendarKey .highlightPresent,
+.historyCalendarKey .highlightAbsent {
+	min-width:15px;
+	padding: 2px;
+}
+
+.historyCalendarKey .arrow-one {
+	position: absolute;
+	top: -76px;
+	left: 61px;
+	font-size:32px;
+	color: #333333;
+}
+
+.historyCalendarKey .arrow-two {
+	position: absolute;
+	top: -68px;
+	left: 154px;
+	font-size: 32px;
+	color: #333333;
+}
+
