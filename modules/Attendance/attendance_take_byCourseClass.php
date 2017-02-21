@@ -315,7 +315,7 @@ else {
 								//Get any student log data by context
 								try {
 									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%", 'gibbonCourseClassID' => $gibbonCourseClassID);
-									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Class' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Class' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY timestampTaken DESC" ;
 									$resultLog=$connection2->prepare($sqlLog);
 									$resultLog->execute($dataLog);
 								}
@@ -345,11 +345,12 @@ else {
 
 
 								if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
-									// Orange/warning background for partial absense
-									// print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
-
-									print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
-									
+									// Orange/warning background for pre-filled absence coming from antoher class
+									if ($rowLog['context'] == 'Class' && isset($rowLog['gibbonCourseClassID']) && $rowLog['gibbonCourseClassID'] != $gibbonCourseClassID) {
+										print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>";
+									} else {
+										print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
+									}
 								}
 								else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
@@ -363,15 +364,17 @@ else {
 
 									print "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowCourseClass["gibbonPersonID"] . "&subpage=School Attendance'>" . formatName("", htmlPrep($rowCourseClass["preferredName"]), htmlPrep($rowCourseClass["surname"]), "Student", false) . "</a></b></div>" ;
 									print "<div style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
-										if ($firstDay!=NULL AND $lastDay!=NULL) {
-											$absenceCount=getAbsenceCount($guid, $rowCourseClass["gibbonPersonID"], $connection2, $firstDay, $lastDay) ;
-											if ($absenceCount!==FALSE) {
-												print sprintf(_('%1$s Days Absent'), $absenceCount) ;
+										if ($firstDay != NULL AND $lastDay != NULL) {
+											$absenceCount=getAbsenceCount($guid, $rowCourseClass["gibbonPersonID"], $connection2, $firstDay, $lastDay, $gibbonCourseClassID) ;
+											if ($absenceCount!==FALSE ) {
+												print '<br/>'.sprintf(__('%1$s Classes Absent'), $absenceCount) ;
 											}
 
 											// List partial absences
 		                                    if (isset($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] == $gibbonCourseClassID && $attendance->isTypeAbsent($rowLog["type"]) ) {
 		                                        printf( '<br/>'.__($guid, 'Recorded absence for this class'), $resultLog->rowCount() );
+		                                    } else {
+
 		                                    }
 										}
 									print "</div><br/>" ;
