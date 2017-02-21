@@ -32,6 +32,7 @@ class Checkbox extends Input
     use MultipleOptionsTrait;
 
     protected $description;
+    protected $value = array();
 
     public function description($value = '')
     {
@@ -41,23 +42,18 @@ class Checkbox extends Input
 
     public function checked($value)
     {
-        if (count($this->options) != count($value)) {
-            throw new InvalidArgumentException(sprintf('Checkbox Field %s: Number of checked values supplied does not match number of checkbox options.', $this->name));
-        }
-
-        $this->value = $value;
+        $this->value = (!is_array($value))? array($value) : $value;
 
         return $this;
     }
 
-    protected function getIsChecked($value, $index = 0)
+    protected function getIsChecked($value)
     {
-
-        if (empty($value) || !isset($this->value[$index])) {
+        if (empty($value) || empty($this->value)) {
             return '';
         }
-
-        return ($this->value[$index] == 1 || $this->value[$index] == '1' || strtolower($this->value[$index]) == 'true' )? 'checked' : '';
+        
+        return (in_array($value, $this->value, true))? 'checked' : '';
     }
 
     protected function getElement()
@@ -67,11 +63,9 @@ class Checkbox extends Input
         $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->value => $this->description);
 
         if (!empty($this->options) && is_array($this->options)) {
-            $i = 0;
             foreach ($this->options as $value => $label) {
-                $output .= '<label title="'.$this->name.'" for="'.$this->name.'">'.__($label).'</label> ';
-                $output .= '<input type="checkbox" class="'.$this->class.'" name="'.$this->name.'[]" value="'.$value.'" '.$this->getIsChecked($value, $i).'><br/>';
-                $i++;
+                $output .= '<label title="'.__($label).'" for="'.$this->getName().'">'.__($label).'</label> ';
+                $output .= '<input type="checkbox" class="'.$this->getClass().'" name="'.$this->getName().'[]" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
             }
         }
 

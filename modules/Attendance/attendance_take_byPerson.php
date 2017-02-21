@@ -55,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $today = date('Y-m-d');
 
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				</td
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Student') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -90,12 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-							?>." } ); 
+							?>." } );
 						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -150,6 +150,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 echo 'School is closed on the specified date, and so attendance information cannot be recorded.';
                 echo '</div>';
             } else {
+                $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillPerson');
+
                 //Get last 5 school days from currentDate within the last 100
                 $timestamp = dateConvertToTimestamp($currentDate);
 
@@ -160,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 //Show attendance log for the current day
 			    try {
 			        $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$currentDate%");
-			        $sqlLog = 'SELECT gibbonAttendanceLogPersonID, direction, type, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE  gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID';
+			        $sqlLog = 'SELECT gibbonAttendanceLogPersonID, direction, type, reason, context, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE  gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID';
 			        $resultLog = $connection2->prepare($sqlLog);
 			        $resultLog->execute($dataLog);
 			    } catch (PDOException $e) {
@@ -191,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 			        	}
 			        echo '</tr>';
 			        while ($rowLog = $resultLog->fetch()) {
-			        	$logTimestamp = strtotime($rowLog['timestampTaken']); 
+			        	$logTimestamp = strtotime($rowLog['timestampTaken']);
 
 			            echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
 
@@ -204,17 +206,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						echo '<td>';
 			            echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
 
-			            if ( !empty($rowLog['comment']) ) { 
+			            if ( !empty($rowLog['comment']) ) {
 			            	echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
 			        	}
 			            echo '</td>';
-			            
 
-			            if ( empty($rowLog['gibbonCourseClassID']) || $rowLog['gibbonCourseClassID'] == 0 ) {
-			            	echo '<td>'.__($guid, 'Roll Group').'</td>';
-			            } else {
-			            	echo '<td>'.$rowLog['courseName'].'.'.$rowLog['className'].'</td>';
-			        	}
+
+                        if ($rowLog['context'] != '') {
+                            if ($rowLog['context'] == 'Class' && $rowLog['gibbonCourseClassID'] > 0)
+                                echo '<td>'.__($guid, $rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
+                            else
+                                echo '<td>'.__($guid, $rowLog['context']).'</td>';
+                        }
+                        else {
+                            echo '<td>'.__($guid, 'Roll Group').'</td>';
+                        }
 
 			            echo '<td>';
 			            	echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
@@ -225,17 +231,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 					            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_edit.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
 				            echo '</td>';
 			            }
-	                    
 
-			            $lastType = $rowLog['type'];
-			            $lastReason = $rowLog['reason'];
-			            $lastComment = $rowLog['comment'];
+
+			            $lastType = ($prefillAttendanceType == 'Y')? $rowLog['type'] : '';
+			            $lastReason = ($prefillAttendanceType == 'Y')? $rowLog['reason'] : '';
+			            $lastComment = ($prefillAttendanceType == 'Y')? $rowLog['comment'] : '';
 			            echo '</tr>';
 			        }
 			        echo '</table><br/>';
 			    }
-
-
 
                 //Show student form
                 echo "<script type='text/javascript'>
@@ -246,9 +250,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						}
 					}
 				</script>'; ?>
-				
+
 				<form onsubmit="return dateCheck()" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
 							<td colspan=2>
 								<h3>
@@ -257,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Recent Attendance Summary') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -266,25 +270,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Type') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php echo $attendance->renderAttendanceTypeSelect(); ?>
+								<?php echo $attendance->renderAttendanceTypeSelect($lastType); ?>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Reason') ?></b><br/>
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php echo $attendance->renderAttendanceReasonSelect(); ?>
+								<?php echo $attendance->renderAttendanceReasonSelect($lastReason); ?>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Comment') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, '255 character limit') ?></span>
 							</td>

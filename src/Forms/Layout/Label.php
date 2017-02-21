@@ -46,6 +46,8 @@ class Label extends Element implements RowDependancyInterface
 
     public function description($value = '')
     {
+        $value = $this->getTranslatedText(func_get_args());
+        
         $this->description = $value;
         return $this;
     }
@@ -91,9 +93,9 @@ class Label extends Element implements RowDependancyInterface
         if (!empty($this->description)) {
             $output .= '<span class="emphasis small">';
 
-            $output .= (!empty($this->prepended))? __($this->prepended).' ' : '';
-            $output .=__($this->description);
-            $output .= (!empty($this->appended))? ' '.__($this->appended) : '';
+            $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
+            $output .= $this->description;
+            $output .= (!empty($this->appended))? ' '.$this->appended : '';
 
             $output .= '</span><br/>';
         }

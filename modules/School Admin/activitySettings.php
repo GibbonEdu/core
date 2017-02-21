@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
     $row = $form->addRow();
-        $row->addContent('<span class="emphasis small">* '.__('denotes a required field').'</span>');
+        $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();

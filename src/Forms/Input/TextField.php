@@ -29,54 +29,38 @@ use Gibbon\Forms\Element;
  */
 class TextField extends Input
 {
-    protected $maxLength;
-    protected $readonly = false;
-
     public function maxLength($value = '')
     {
-        $this->maxLength = $value;
-
-        $this->addValidation('Validate.Length', 'maximum: '.$this->maxLength);
+        if (!empty($value)) {
+            $this->setAttribute('maxlength', $value);
+            $this->addValidation('Validate.Length', 'maximum: '.$value);
+        }
 
         return $this;
     }
 
     public function placeholder($value = '')
     {
-        $this->placeholder = $value;
+        $this->setAttribute('placeholder', $value);
 
         return $this;
     }
 
     public function readonly($value = true)
     {
-        $this->readonly = $value;
+        $this->setAttribute('readonly', $value);
+
         return $this;
     }
 
     public function getReadonly()
     {
-        return $this->readonly;
+        return $this->getAttribute('readonly');
     }
 
     protected function getElement()
     {
-
-        $output = '<input type="text" class="'.$this->class.'" id="'.$this->name.'" name="'.$this->name.'" value="'.$this->value.'"';
-
-        if (!empty($this->maxLength)) {
-            $output .= ' maxlength="'.$this->maxLength.'"';
-        }
-
-        if (!empty($this->placeholder)) {
-            $output .= ' placeholder="'.$this->placeholder.'"';
-        }
-
-        if (!empty($this->readonly) && $this->readonly) {
-            $output .= ' readonly ';
-        }
-
-        $output .= '>';
+        $output = '<input type="text" '.$this->getAttributeString().'>';
 
         return $output;
     }

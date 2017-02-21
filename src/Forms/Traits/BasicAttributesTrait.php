@@ -27,34 +27,84 @@ namespace Gibbon\Forms\Traits;
  */
 trait BasicAttributesTrait
 {
-    protected $id = '';
-    protected $class = '';
+    private $attributes = array();
 
     public function setID($id = '')
     {
-        $this->id = $id;
+        $this->setAttribute('id', $id);
         return $this;
     }
 
     public function getID()
     {
-        return $this->id;
+        return $this->getAttribute('id');
     }
 
     public function setClass($class = '')
     {
-        $this->class = $class;
+        $this->setAttribute('class', $class);
         return $this;
     }
 
     public function addClass($class = '')
     {
-        $this->class = (empty($this->class))? $class : $this->class.' '.$class;
+        $class = (!empty($this->getClass()))? $this->getClass().' '.$class : $class;
+        $this->setAttribute('class', $class);
+        return $this;
+    }
+
+    public function removeClass($class = '')
+    {
+        $class = (!empty($this->getClass()))? str_replace($class, '', $this->getClass()) : '';
+        $this->setAttribute('class', $class);
         return $this;
     }
 
     public function getClass()
     {
-        return $this->class;
+        return $this->getAttribute('class');
+    }
+
+    protected function setAttribute($key, $value)
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    protected function getAttribute($key)
+    {
+        return (isset($this->attributes[$key]))? $this->attributes[$key] : null;
+    }
+
+    protected function getAttributeArray() {
+        return $this->attributes;
+    }
+
+    /**
+     * getAttributeString
+     *
+     * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
+     * @version  v14
+     * @since    v14
+     * @param    [type]  $attributes
+     * @return   [type]
+     */
+    protected function getAttributeString() {
+        $attributes = $this->getAttributeArray();
+
+        $output = implode(' ', array_map(
+            function ($key) use ($attributes) {
+                if (is_bool($attributes[$key])) {
+                    return $attributes[$key]? $key : '';
+                }
+                if (!empty($attributes[$key])) {
+                    return $key.'="'.$attributes[$key].'"';
+                }
+                return '';
+            },
+            array_keys($attributes)
+        ));
+
+        return $output;
     }
 }

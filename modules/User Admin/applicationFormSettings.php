@@ -74,7 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     $settingByScope = getSettingByScope($connection2, 'Application Form', 'applicationFee', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
+            ->description($settingByScope['description'])
+            ->append('In %1$s.', $_SESSION[$guid]['currency']);
         $row->addNumber($settingByScope['name'])
             ->setValue($settingByScope['value'])
             ->decimalPlaces(2)

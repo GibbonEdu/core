@@ -195,7 +195,10 @@ else {
 				print "</div>" ;
 			}
 			else {
-				//Check roll group
+				$prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
+                $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+
+				//Check class
 				$CourseClassFail=FALSE ;
 				$firstDay=NULL ;
 				$lastDay=NULL ;
@@ -229,6 +232,7 @@ else {
 					print "</div>" ;
 				}
 				else {
+
 					//Get last 5 school days from currentDate within the last 100
 					$timestamp=dateConvertToTimestamp($currentDate) ;
 					$count=0 ;
@@ -305,10 +309,13 @@ else {
 								if ($count%$columns==0) {
 									print "<tr>" ;
 								}
-								//Get student log data
+
+								$rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+
+								//Get any student log data by context
 								try {
 									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%", 'gibbonCourseClassID' => $gibbonCourseClassID);
-									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=0 OR gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Class' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
 									$resultLog=$connection2->prepare($sqlLog);
 									$resultLog->execute($dataLog);
 								}
@@ -316,16 +323,33 @@ else {
 									print "<div class='error'>" . $e->getMessage() . "</div>" ;
 								}
 
-								$rowLog=$resultLog->fetch() ;
+								if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                    $rowLog = $resultLog->fetch();
+                                }
+                                elseif ($prefillAttendanceType == 'Y') {
+									//Get any student log data
+									try {
+										$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%");
+										$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+										$resultLog=$connection2->prepare($sqlLog);
+										$resultLog->execute($dataLog);
+									}
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
+									}
+
+									if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                        $rowLog = $resultLog->fetch();
+                                    }
+								}
 
 
 								if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
 									// Orange/warning background for partial absense
-									if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID) {
-										print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
-									} else {
-										print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
-									}
+									// print "<td style='border: 1px solid #D65602!important; background: none; background-color: #FFD2A9; width:20%; text-align: center; vertical-align: top'>" ;
+
+									print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
+									
 								}
 								else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
@@ -346,7 +370,7 @@ else {
 											}
 
 											// List partial absences
-		                                    if ($rowLog["gibbonCourseClassID"] == $gibbonCourseClassID && $attendance->isTypeAbsent($rowLog["type"]) ) {
+		                                    if (isset($rowLog["gibbonCourseClassID"]) && $rowLog["gibbonCourseClassID"] == $gibbonCourseClassID && $attendance->isTypeAbsent($rowLog["type"]) ) {
 		                                        printf( '<br/>'.__($guid, 'Recorded absence for this class'), $resultLog->rowCount() );
 		                                    }
 										}

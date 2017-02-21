@@ -60,25 +60,25 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             $sequenceNumber = $_POST[$name.'sequenceNumber'];
             $schoolDay = $_POST[$name.'schoolDay'];
 
-            if (is_numeric($_POST[$name.'schoolOpenH']) and is_numeric($_POST[$name.'schoolOpenM'])) {
+            if (isset($_POST[$name.'schoolOpenH']) && isset($_POST[$name.'schoolOpenM']) && is_numeric($_POST[$name.'schoolOpenH']) && is_numeric($_POST[$name.'schoolOpenM'])) {
                 $schoolOpen = $_POST[$name.'schoolOpenH'].':'.$_POST[$name.'schoolOpenM'].':00';
             } else {
                 $schoolOpen = null;
             }
 
-            if (is_numeric($_POST[$name.'schoolStartH']) and is_numeric($_POST[$name.'schoolStartM'])) {
+            if (isset($_POST[$name.'schoolStartH']) && isset($_POST[$name.'schoolStartM']) && is_numeric($_POST[$name.'schoolStartH']) && is_numeric($_POST[$name.'schoolStartM'])) {
                 $schoolStart = $_POST[$name.'schoolStartH'].':'.$_POST[$name.'schoolStartM'].':00';
             } else {
                 $schoolStart = null;
             }
 
-            if (is_numeric($_POST[$name.'schoolEndH']) and is_numeric($_POST[$name.'schoolEndM'])) {
+            if (isset($_POST[$name.'schoolEndH']) && isset($_POST[$name.'schoolEndM']) && is_numeric($_POST[$name.'schoolEndH']) && is_numeric($_POST[$name.'schoolEndM'])) {
                 $schoolEnd = $_POST[$name.'schoolEndH'].':'.$_POST[$name.'schoolEndM'].':00';
             } else {
                 $schoolEnd = null;
             }
 
-            if (is_numeric($_POST[$name.'schoolCloseH']) and is_numeric($_POST[$name.'schoolCloseM'])) {
+            if (isset($_POST[$name.'schoolCloseH']) && isset($_POST[$name.'schoolCloseM']) && is_numeric($_POST[$name.'schoolCloseH']) && is_numeric($_POST[$name.'schoolCloseM'])) {
                 $schoolClose = $_POST[$name.'schoolCloseH'].':'.$_POST[$name.'schoolCloseM'].':00';
             } else {
                 $schoolClose = null;

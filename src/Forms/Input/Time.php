@@ -17,36 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Layout;
-
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Forms\FormFactoryInterface;
+namespace Gibbon\Forms\Input;
 
 /**
- * Column
+ * Time
+ * Replace with a better UI? http://jonthornton.github.io/jquery-timepicker/
  *
  * @version v14
  * @since   v14
  */
-class Column extends Row implements OutputableInterface
+class Time extends TextField
 {
-    protected $class = 'column';
-
-    public function __construct(FormFactoryInterface $factory, $id = '')
-    {
-        $this->setClass('column');
-        parent::__construct($factory, $id);
-    }
-
-    public function getOutput()
+    // TODO: Implement
+    protected function getElement()
     {
         $output = '';
-
-        foreach ($this->getElements() as $element) {
-            $output .= '<div>';
-            $output .= $element->getOutput();
-            $output .= '</div>';
-        }
 
         return $output;
     }

@@ -38,23 +38,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
     $fail = false;
 
    //DEAL WITH EXTERNAL ASSESSMENT DATA POINTS
-   $externalAssessmentDataPoints = array();
-    $assessmentCount = $_POST['external_gibbonExternalAssessmentID_count'];
-    $yearCount = $_POST['external_year_count'];
-    $count = 0;
-    for ($i = 0; $i < $assessmentCount; ++$i) {
-        $externalAssessmentDataPoints[$count]['gibbonExternalAssessmentID'] = $_POST['external_gibbonExternalAssessmentID_'.$i];
-        $externalAssessmentDataPoints[$count]['category'] = $_POST['external_category_'.$i];
-        $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = '';
-        for ($j = 0; $j < $yearCount; ++$j) {
-            if (isset($_POST['external_gibbonExternalAssessmentID_'.$i.'_gibbonYearGroupID_'.$j])) {
-                $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] .= $_POST['external_gibbonExternalAssessmentID_'.$i.'_gibbonYearGroupID_'.$j].',';
-            }
+   $externalAssessmentDataPoints = (isset($_POST['externalDP']))? $_POST['externalDP'] : null;
+
+    if (!empty($externalAssessmentDataPoints) && is_array($externalAssessmentDataPoints)) {
+      foreach ($externalAssessmentDataPoints as &$dp) {
+        if (!empty($dp['gibbonYearGroupIDList'])) {
+          $dp['category'] = filter_var($dp['category'], FILTER_SANITIZE_SPECIAL_CHARS);
+          $dp['gibbonExternalAssessmentID'] = filter_var($dp['gibbonExternalAssessmentID'], FILTER_SANITIZE_NUMBER_INT);
+          $dp['gibbonYearGroupIDList'] = implode(',', $dp['gibbonYearGroupIDList']);
         }
-        if ($externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] != '') {
-            $externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = substr($externalAssessmentDataPoints[$count]['gibbonYearGroupIDList'], 0, -1);
-        }
-        ++$count;
+      }
     }
 
    //Write setting to database
@@ -68,26 +61,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
    }
 
    //DEAL WITH INTERNAL ASSESSMENT DATA POINTS
-   $internalAssessmentDataPoints = array();
-    $assessmentCount = $_POST['internal_type_count'];
-    $yearCount = $_POST['internal_year_count'];
-    $count = 0;
-    for ($i = 0; $i < $assessmentCount; ++$i) {
-        $internalAssessmentDataPoints[$count]['type'] = null;
-        if (isset($_POST['internal_type_'.$i])) {
-            $internalAssessmentDataPoints[$count]['type'] = $_POST['internal_type_'.$i];
+   $internalAssessmentDataPoints = (isset($_POST['internalDP']))? $_POST['internalDP'] : null;
+
+    if (!empty($internalAssessmentDataPoints) && is_array($internalAssessmentDataPoints)) {
+      foreach ($internalAssessmentDataPoints as &$dp) {
+        if (!empty($dp['gibbonYearGroupIDList'])) {
+          $dp['type'] = filter_var($dp['type'], FILTER_SANITIZE_SPECIAL_CHARS);
+          $dp['gibbonYearGroupIDList'] = implode(',', $dp['gibbonYearGroupIDList']);
         }
-        $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = '';
-        for ($j = 0; $j < $yearCount; ++$j) {
-            if (isset($_POST['internal_type_'.$i.'_gibbonYearGroupID_'.$j])) {
-                $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] .= $_POST['internal_type_'.$i.'_gibbonYearGroupID_'.$j].',';
-            }
-        }
-        if ($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] != '') {
-            $internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'] = substr($internalAssessmentDataPoints[$count]['gibbonYearGroupIDList'], 0, -1);
-        }
-        ++$count;
+      }
     }
+
    //Write setting to database
    try {
        $data = array('value' => serialize($internalAssessmentDataPoints));
