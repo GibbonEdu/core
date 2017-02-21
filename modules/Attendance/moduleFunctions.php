@@ -28,14 +28,21 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
-        $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = 'SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay
-            FROM gibbonAttendanceLogPerson
-                LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type=\'School Closure\')
-            WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken';
+        if (!empty($gibbonCourseClassID)) {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay FROM gibbonAttendanceLogPerson
+                    LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+                WHERE gibbonPersonID=:gibbonPersonID AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) GROUP BY gibbonAttendanceLogPerson.date ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
+        } else {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
+            $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay FROM gibbonAttendanceLogPerson
+                    LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+                WHERE gibbonPersonID=:gibbonPersonID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) GROUP BY gibbonAttendanceLogPerson.date ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
+        }
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
+        echo $e->getMessage();
         $queryFail = true;
     }
 
@@ -128,6 +135,8 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     global $gibbon, $session, $pdo;
     require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+
+    $attendanceByPersonAccessible = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
 
     $output = '';
 
@@ -283,7 +292,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                     if ($dateStart != '' and date('Y-m-d', $i) < $dateStart) {
                         $output .= "<td class='dayClosed'>";
                         $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
-                        $output .= 'Before Start Date';
+                        $output .= __($guid, 'Before Start Date');
                         $output .= '</td>';
                         ++$count;
                     }
@@ -363,8 +372,13 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                             $title = '';
                                         }
                                     }
-                                    $output .= "<td class='$class'>";
-                                    $output .= date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i).'<br/>';
+                                    $formattedDate = date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i);
+
+                                    $output .= "<td class='day $class'>";
+                                    if ($attendanceByPersonAccessible) {
+                                        $output .= '<a href="index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$formattedDate.'">';
+                                    }
+                                    $output .= $formattedDate.'<br/>';
                                     if (count($log) > 0) {
                                         $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
 
@@ -379,6 +393,9 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                                 $output .= ' : ';
                                             }
                                         }
+                                    }
+                                    if ($attendanceByPersonAccessible) {
+                                        $output .= '</a>';
                                     }
                                     $output .= '</td>';
                                     ++$count;
@@ -399,7 +416,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 
     echo "<table cellspacing='0'>";
     echo '<tr>';
-    echo "<td style='vertical-align: top; width: 410px'>";
+    echo "<td style='vertical-align: top; width: 380px'>";
     echo '<h3>';
     echo __($guid, 'Summary');
     echo '</h3>';
@@ -435,9 +452,60 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo '<h3>';
     echo __($guid, 'Key');
     echo '</h2>';
-    echo '<p>';
-    echo "<img style='border: 1px solid #eee' alt='Data Key' src='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/img/dataKey.png'>";
-    echo '</p>';
+
+    // Student History Legend
+    echo "<table class='mini historyCalendar historyCalendarKey' cellspacing='8' style='width: 100%'>";
+    echo '<tr>';
+    echo '<td class="legend">'.__($guid, 'School Closed').'</td>';
+    echo '<td class="legend">'.__($guid, 'Present').' '.__($guid, 'Day').'</td>';
+    echo '<td class="legend">'.__($guid, 'Absent').' '.__($guid, 'Day').'</td>';
+    echo '<td class="legend">'.__($guid, 'No Data').' '.__($guid, 'Day').'</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<td class="day dayClosed">'.__($guid, 'School Closed').'</td>';
+    echo '<td class="day dayPresent">'.date($_SESSION[$guid]['i18n']['dateFormatPHP'], 1487667393).'<br/><b>'.__($guid, 'Left - Early').'</b><br/>P : L</td>';
+    echo '<td class="day dayAbsent">'.date($_SESSION[$guid]['i18n']['dateFormatPHP'], 1487767393).'<br/><b>'.__($guid, 'Absent').'</b><br/>A</td>';
+    echo '<td class="day dayNoData">'.__($guid, 'No Data').'</td>';
+    echo '</tr>';
+
+    try {
+        $data = array();
+        $sql = 'SELECT name, nameShort FROM gibbonAttendanceCode ORDER BY sequenceNumber ASC, name';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    if ($result && $result->rowCount() > 0) {
+        echo '<tr>';
+        echo '<td colspan="1">';
+            echo '<b class="legend">'.__($guid, 'End-of-Day Status').'</b>';
+        echo '</td>';
+        echo '<td colspan="3" style="border-left: 0px;">';
+            echo '<b class="legend">'.__($guid, 'Detailed Day Log Where:').'</b>';
+        echo '</td>';
+        echo '</tr>';
+
+        echo '<tr>';
+        echo '</td>';
+        echo '<td colspan="4">';
+
+        echo '<div class="arrow-one">&#8599;</div>';
+        echo '<div class="arrow-two">&#8599;</div>';
+
+        echo '<ul>';
+        while ($code = $result->fetch()) {
+            $class = ($attendance->isTypeAbsent($code['name']))? 'highlightAbsent' : 'highlightPresent';
+            echo sprintf('<li><span class="%1$s">%2$s</span> = %3$s</li>', $class, $code['nameShort'], __($guid, $code['name']) );
+        }
+        echo '</ul>';
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</table>';
+
     echo '</td>';
     echo '</tr>';
     echo '</table>';
@@ -465,20 +533,6 @@ function getColourArray()
     $return[] = '75, 192, 192';
     $return[] = '255, 159, 64';
     $return[] = '152, 221, 95';
-
-
-    // $return[0] = '54, 175, 56';
-    // $return[1] = '192, 89, 203';
-    // $return[2] = '30, 30, 200';
-    // $return[3] = '65, 83, 84';
-    // $return[4] = '206, 169, 83';
-    // $return[5] = '30, 255, 30';
-    // $return[6] = '255, 40, 40';
-    // $return[7] = '146, 156, 163';
-    // $return[8] = '121, 126, 203';
-    // $return[9] = '86, 117, 57';
-    // $return[10] = '114, 66, 47';
-    // $return[11] = '93, 55, 98';
 
     return $return;
 }

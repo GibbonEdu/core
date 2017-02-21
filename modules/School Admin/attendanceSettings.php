@@ -146,11 +146,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
+    $attendanceCodeQuery = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
+
     $settingByScope = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType', true);
     $row = $form->addRow();
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])
-            ->fromString('Present,Absent')
+            ->fromQuery($pdo, $attendanceCodeQuery)
             ->selected($settingByScope['value'])
             ->isRequired();
 
@@ -158,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $row = $form->addRow();
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addSelect($settingByScope['name'])
-            ->fromString('Present,Absent')
+            ->fromQuery($pdo, $attendanceCodeQuery)
             ->selected($settingByScope['value'])
             ->isRequired();
 
