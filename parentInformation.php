@@ -126,7 +126,7 @@ if ($step == 1) { ?>
     					Step 1 &nbsp;<small>Account Confirmation</small>
     				</h3>
     				<p>
-						Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be promted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.
+						Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.
 					</p>
     			</td>
     		</tr>

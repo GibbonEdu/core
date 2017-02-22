@@ -40,7 +40,7 @@ else
     $input = $_POST['email'];
 $step = $_GET['step'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php&sidebar=false';
 $URLSuccess1 = $_SESSION[$guid]['absoluteURL'].'/index.php';
 
 if ($input == '' or ($step != 1 and $step != 2)) {
