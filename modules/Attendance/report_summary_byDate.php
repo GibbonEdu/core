@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         $dateStart = $dateEnd;
         $dateEnd = $swapDates;
     }
-    
+
     // Limit date range to the current school year
     if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
         $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
@@ -302,23 +302,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo __($guid, 'Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
         echo '</p>';
 
-
+        $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sqlPieces = array();
 
         if ($reportType == 'types') {
             $attendanceCodes = array();
 
+            $i = 0;
             while( $type = $resultCodes->fetch() ) {
-                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.name='".$type['name']."' THEN date END) AS ".$type['nameShort'];
+                $data['type'.$i] = $type['name'];
+                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.name=:type".$i." THEN date END) AS ".escapeIdentifier($type['nameShort']);
                 $attendanceCodes[ $type['direction'] ][] = $type;
+                $i++;
             }
         }
         else if ($reportType == 'reasons') {
             $attendanceCodeInfo = $resultCodes->fetch();
             $attendanceReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceReasons') );
 
-            foreach( $attendanceReasons as $reason ) {
-                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason='".$reason."' THEN date END) AS `".$reason."`";
+            for($i = 0; $i < count($attendanceReasons); $i++) {
+                $data['reason'.$i] = $attendanceReasons[$i];
+                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason=:reason".$i." THEN date END) AS ".escapeIdentifier($attendanceReasons[$i]);
             }
 
             $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason='' THEN date END) AS `No Reason`";
@@ -329,8 +333,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
         //Produce array of attendance data
         try {
-            $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-
             $groupBy = 'GROUP BY gibbonAttendanceLogPerson.gibbonPersonID';
             $orderBy = 'ORDER BY surname, preferredName';
             if ($sort == 'preferredName')
