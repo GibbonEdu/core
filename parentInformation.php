@@ -114,12 +114,12 @@ $returns['success0'] = __($guid, 'Account confirmation successfully initiated, p
 if (isset($_GET['return'])) {
     returnProcess($guid, $_GET['return'], null, $returns);
     if (stripos($_GET['return'], 'success') !== false) return;
-}	
+}
 
 if ($step == 1) { ?>
 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/parentInformationProcess.php?step=1">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
+		<table class='smallIntBorder' cellspacing='0' <?php if (isset($_GET['sidebar']) && $_GET['sidebar'] == 'false') echo 'style="max-width:750px;margin: 0 auto;"'; ?>>
 			<tr class='break'>
     			<td colspan=2>
     				<h3>
@@ -154,7 +154,7 @@ if ($step == 1) { ?>
 					<b><?php echo __($guid, "Child's Birthdate");?></b>
 				</td>
 				<td class="right">
-					
+
 				<table class="blank mini">
 					<tr>
 						<td>
@@ -227,7 +227,7 @@ else {
 	    } else {
 	    	$message = 'The request could not proceed. Either your account is not currently active in our system, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>';
 	    }
-		
+
 	} else {
 		$input = (isset($_GET['input']))? $_GET['input'] : null;
 		$key = (isset($_GET['key']))? $_GET['key'] : null;
@@ -273,50 +273,45 @@ else {
 		//Show form
 		echo "<form id='photoupload' name='photoupload' method='post' action='".$_SESSION[$guid]['absoluteURL']."/parentInformationProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key' enctype='multipart/form-data'>";
 			?>
-			<table class='smallIntBorder' cellspacing='0' <?php if (isset($_GET['sidebar']) && $_GET['sidebar'] == 'false') echo 'style="width:65%;margin: 0 auto;"'; ?>>
+			<table class='smallIntBorder' cellspacing='0' <?php if (isset($_GET['sidebar']) && $_GET['sidebar'] == 'false') echo 'style="max-width:750px;margin: 0 auto;"'; ?>>
 				<tr class='break'>
 	    			<td colspan=3>
 	    				<?php if (empty($_SESSION[$guid]['username'])) : ?>
 		    				<h3>
 		    					Step 2 &nbsp;<small>Upload Family Member Photos</small>
 		    				</h3>
-		    				<p>
-		    					The addition of the new North Wing affords TIS the opportunity to review and enhance our security on campus. A Parent ID card system is being implemented at the school to ensure the safety of all TIS students and their families.
-		    				</p>
 		    			<?php endif; ?>
-	    				<h4>Parent ID Cards:</h4>
 	    				<p>
-	    					Please take the time now to upload a passport-sized photo for family members and helpers who may need an ID card. Parent ID cards will only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opporunity to upload it later. Please note, however, that your Parent IDs will be processed faster if the photos are included here.
+	    					Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opporunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.
 	    				</p>
 	    				<p>
-	    					<b style='color:#c0292d;'>Processing and issuing of Parent IDs will begin mid to late February 2017.</b>
+	    					<b style='color:#c0292d;'>Processing and issuing of Photo IDs will begin mid to late March 2017.</b>
 	    				</p>
 	    				<h4>Photo Instructions:</h4>
 	    				<p>
 	    					For the best results your photos should be <u>passport-sized, good quality and on a plain background</u>. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.
 	    				</p>
-	    				
+
 	    			</td>
 	    		</tr>
 	    		<?php
 	    			while ($familyAdult = $result->fetch()) :
 
-	    				$photoURL = file_exists($_SESSION[$guid]['absoluteURL'].'/'.$familyAdult['image_240'])? $familyAdult['image_240'] : '';
+	    				$photoURL = (!empty($familyAdult['image_240']) && file_exists($_SESSION[$guid]['absolutePath'].'/'.$familyAdult['image_240']))? $_SESSION[$guid]['absoluteURL'].'/'.$familyAdult['image_240'] : '';
 	    		?>
 		    		<tr>
 		    			<td rowspan=1 style="width:200px;">
 							<b><?php echo $familyAdult['officialName']; ?></b><br/>
 						</td>
-						
+
 						<?php if ( substr($familyAdult['username'], 0, 4) == '1000' && !empty($familyAdult['image_240'])) : ?>
 							<td style="width:210px;">
 								<b><?php echo __($guid, 'Photo'); ?></b><br/>
-								<span class="emphasis small">Staff photos cannot be changed.</span>
+								<span class="emphasis small">Staff photo on file - cannot be changed</span>
 							</td>
 							<td>
 								<div style="width:302px;float:right;">
 									<div class="cropit-photo-disabled" style="background-image:url(<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$familyAdult['image_240']; ?>);">&nbsp;</div>
-									
 								</div>
 							</td>
 						<?php else : ?>
@@ -343,11 +338,11 @@ else {
 
 								<script type="text/javascript">
 									var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
-									$('#'+photoName).cropit({ imageState: { src: '<?php echo $photoURL; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
+									$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
 								</script>
 							</td>
 						<?php endif; ?>
-						
+
 					</tr>
 				<?php endwhile; ?>
 
@@ -376,7 +371,7 @@ else {
 					    	$additionalPerson = array('name' => '', 'relationship' => '', 'image_240' => '');
 					    }
 
-					    $photoURL = file_exists($_SESSION[$guid]['absoluteURL'].'/'.$additionalPerson['image_240'])? $additionalPerson['image_240'] : '';
+					    $photoURL = (!empty($additionalPerson['image_240']) && file_exists($_SESSION[$guid]['absolutePath'].'/'.$additionalPerson['image_240']))? $_SESSION[$guid]['absoluteURL'].'/'.$additionalPerson['image_240'] : '';
 	    		?>
 					<tr>
 						<td rowspan=3 style="width:200px;">
@@ -407,7 +402,7 @@ else {
 
 							<script type="text/javascript">
 								var photoName = "<?php echo 'additionalPhoto'.$i;?>";
-								$('#'+photoName).cropit({ imageState: { src: '<?php echo $photoURL; ?>'}, width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } 
+								$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }
 								});
 							</script>
 						</td>
@@ -488,7 +483,7 @@ else {
 							});
 
 							// Disable upload of original files
-							$('input[name^="file"]').each( function() {
+							$('input[type="file"]').each( function() {
 								$(this).prop('disabled', true);
 							});
 

@@ -138,7 +138,7 @@ else {
         }
         else { //This is the confirmation/reset phase
             //Get URL parameters
-            
+
             $proceed = false;
 
             if (!empty($_SESSION[$guid]['username'])) {
@@ -299,21 +299,34 @@ else {
                             exit;
                         }
 
-                        require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
+                        require_once $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
 
                         //Send email
                         $email = $row['email'];
-                        $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Account Confirmed - You may now login');
-                        $body = sprintf(__($guid, 'You\'ve successfully confirmed your account. Below you will find your username and password which can be used to login to Gibbon for the first time.%1$sEmail:  %2$s%1$sUsername:  %3$s%1$sPassword:  %4$s%1$sIf you\'ve uploaded photos in the previous step, no further action needs taken at this time. If you\'d like to continue to Gibbon please use the link below:%1$s%5$s%1$s'), "\n\n", $row['email'], $row['username'], $passwordNew, $_SESSION[$guid]['absoluteURL']."/index.php", $_SESSION[$guid]['systemName']." Administrator");
+                        $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Photo upload complete: TIS login details enclosed');
+
+                        $body = sprintf('Thank you for confirming your account and uploading photos. If you\'re done uploading photos no further action needs taken at this time. Processing and issuing of Photo IDs will begin mid to late March 2017. If you need to continue uploading photos please see the login information below.
+
+We would like to welcome you to The International School of Macao’s new Student Information System - Gibbon.  Gibbon is used by teachers to take attendance & enter report card marks and Gibbon is used by Grade 7-12 students to view their timetable, access class resources and submit school work.  We are now opening Student Information System to parents for secure access.
+
+Login here: %1$s
+
+Email:  %2$s
+Password:  %3$s
+
+As a parent you will be able to access the following:
+<ul><li>Update your own and your child’s personal information</li><li>View your child’s attendance</li><li>View your child’s school timetable</li><li>View after school activities your child is involved in</li><li>View course outlines and unit plans of the subjects your child is studying (Grades 7-12)</li><li>View your child’s grades (Grades 7-12)</li></ul>
+
+Please follow this link <a href="https://goo.gl/711A1S">https://goo.gl/711A1S</a> for instructions on how to access these functions. If you have any questions or would like to have individual instruction please contact one of the following Gibbon administrators:
+<ul><li>Brian Avery - <a mailto="brian.avery@tis.edu.mo">brian.avery@tis.edu.mo</a></li><li>Mel Varga - <a mailto="mel.varga@tis.edu.mo">mel.varga@tis.edu.mo</a></li></ul>
+
+The TIS Gibbon team', $_SESSION[$guid]['absoluteURL'], $row['email'], $passwordNew);
 
                         $mail = getGibbonMailer($guid);
                         $mail->AddAddress($email);
 
-                        if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
-                            $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
-                        } else {
-                            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
-                        }
+                        $mail->AddReplyTo('mel.varga@tis.edu.mo', 'The TIS Gibbon team');
+                        $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
 
                         $mail->CharSet="UTF-8";
                         $mail->Encoding="base64" ;
@@ -328,7 +341,47 @@ else {
                         $URL = $URLSuccess1.'?return=success2';
                         header("Location: {$URL}");
                         exit;
-                        
+
+                    }
+                    elseif ($row['canLogin'] == 'Y' || !empty($_SESSION[$guid]['username'])) {
+                        require_once $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
+
+                        //Send email
+                        $email = $row['email'];
+                        $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Photo upload complete');
+                        $body = sprintf('Thank you for confirming your information and uploading photos. If you\'re done uploading photos no further action needs taken at this time. Processing and issuing of Photo IDs will begin mid to late March 2017. If you need to continue uploading photos please follow the login link below and use your existing account details.
+
+Login here: %1$s
+
+As a parent you will be able to access the following:
+<ul><li>Update your own and your child’s personal information</li><li>View your child’s attendance</li><li>View your child’s school timetable</li><li>View after school activities your child is involved in</li><li>View course outlines and unit plans of the subjects your child is studying (Grades 7-12)</li><li>View your child’s grades (Grades 7-12)</li></ul>
+
+Please follow this link <a href="https://goo.gl/711A1S">https://goo.gl/711A1S</a> for instructions on how to access these functions. If you have any questions or would like to have individual instruction please contact one of the following Gibbon administrators:
+<ul><li>Brian Avery - <a mailto="brian.avery@tis.edu.mo">brian.avery@tis.edu.mo</a></li><li>Mel Varga - <a mailto="mel.varga@tis.edu.mo">mel.varga@tis.edu.mo</a></li></ul>
+
+We hope you will find the system helpful and easy to use.
+
+The TIS Gibbon team', $_SESSION[$guid]['absoluteURL']);
+
+                        $mail = getGibbonMailer($guid);
+                        $mail->AddAddress($email);
+
+                        $mail->AddReplyTo('mel.varga@tis.edu.mo', 'The TIS Gibbon team');
+                        $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
+
+                        $mail->CharSet="UTF-8";
+                        $mail->Encoding="base64" ;
+                        $mail->IsHTML(true);
+                        $mail->Subject=$subject ;
+                        $mail->Body = nl2br($body) ;
+                        $mail->AltBody = emailBodyConvert($body) ;
+
+                        $mail->Send();
+
+                        //Return
+                        $URL = $URLSuccess1.'?return=success2';
+                        header("Location: {$URL}");
+                        exit;
                     }
 
                     //Return
