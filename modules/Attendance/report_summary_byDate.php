@@ -310,8 +310,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             $i = 0;
             while( $type = $resultCodes->fetch() ) {
+                $typeIdentifier = "`".str_replace("`","``",$type['nameShort'])."`";
                 $data['type'.$i] = $type['name'];
-                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.name=:type".$i." THEN date END) AS ".escapeIdentifier($type['nameShort']);
+                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceCode.name=:type".$i." THEN date END) AS ".$typeIdentifier;
                 $attendanceCodes[ $type['direction'] ][] = $type;
                 $i++;
             }
@@ -321,8 +322,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             $attendanceReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceReasons') );
 
             for($i = 0; $i < count($attendanceReasons); $i++) {
+                $reasonIdentifier = "`".str_replace("`","``",$attendanceReasons[$i])."`";
                 $data['reason'.$i] = $attendanceReasons[$i];
-                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason=:reason".$i." THEN date END) AS ".escapeIdentifier($attendanceReasons[$i]);
+                $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason=:reason".$i." THEN date END) AS ".$reasonIdentifier;
             }
 
             $sqlPieces[] = "COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.reason='' THEN date END) AS `No Reason`";

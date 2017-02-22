@@ -522,10 +522,6 @@ function num2alpha($n)
     return $r;
 }
 
-function escapeIdentifier($text) {
-    return "`".str_replace("`","``",$text)."`";
-}
-
 function getColourArray()
 {
     $return = array();
