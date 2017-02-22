@@ -96,28 +96,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                 //Write to database
                 try {
                     $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'DELETE FROM gibbonPlannerEntryAttendanceLog WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                try {
-                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'DELETE FROM gibbonPlannerEntryAttendance WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                try {
-                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                     $sql = 'DELETE FROM gibbonPlannerEntryOutcome WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
