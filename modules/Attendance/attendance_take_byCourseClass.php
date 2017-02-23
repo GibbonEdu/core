@@ -294,7 +294,7 @@ else {
 						$count=0 ;
 						$countPresent=0 ;
 						$columns=4 ;
-						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byCourseClassProcess.php'>" ;
+						print "<form autocomplete=\"off\" method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byCourseClassProcess.php'>" ;
 							print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
 							?>
 							<tr class='break'>

@@ -244,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							}
 						</script>';
 
-                        echo "<form onsubmit=\"return dateCheck()\" method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byRollGroupProcess.php'>";
+                        echo "<form autocomplete=\"off\" onsubmit=\"return dateCheck()\" method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byRollGroupProcess.php'>";
                         echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
                         ?>
 							<tr class='break'>
@@ -289,10 +289,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         $rowLog = $resultLog->fetch();
                                     }
                                 }
-                                
+
                                 if ( $attendance->isTypeAbsent($rowLog["type"]) ) {
                                     echo "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
-                                    
+
                                 } else {
                                     echo "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
                                 }

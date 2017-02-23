@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 					}
 				</script>'; ?>
 
-				<form onsubmit="return dateCheck()" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
+				<form autocomplete="off" onsubmit="return dateCheck()" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
 					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
 							<td colspan=2>
