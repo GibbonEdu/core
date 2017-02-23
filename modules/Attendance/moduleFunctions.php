@@ -510,6 +510,11 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo '</tr>';
     echo '</table>';
 
+    // Append the Attendance stylesheet to the current page - for Student Profile view of Attendance
+    echo '<script>';
+    echo "$('<link>').appendTo('head').attr({type: 'text/css', rel: 'stylesheet', href: '".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/css/module.css'})";
+    echo '</script>';
+
     echo $output;
 }
 
