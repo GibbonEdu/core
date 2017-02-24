@@ -58,15 +58,15 @@ abstract class Input extends Element implements ValidatableInterface
         $output = '';
 
         if ($this->getRequired() == true || !empty($this->validation)) {
-            $output .= 'var '.$this->getName().'Validate=new LiveValidation(\''.$this->getName().'\'); '."\r";
+            $output .= 'var '.$this->getID().'Validate=new LiveValidation(\''.$this->getID().'\'); '."\r";
 
             if ($this->getRequired() == true) {
-                $output .= $this->getName().'Validate.add(Validate.Presence); '."\r";
+                $output .= $this->getID().'Validate.add(Validate.Presence); '."\r";
             }
 
             if (!empty($this->validation) && is_array($this->validation)) {
                 foreach ($this->validation as $type => $params) {
-                    $output .= $this->getName().'Validate.add('.$type.', {'.$params.' } ); '."\r";
+                    $output .= $this->getID().'Validate.add('.$type.', {'.$params.' } ); '."\r";
                 }
             }
         }

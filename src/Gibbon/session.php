@@ -50,8 +50,8 @@ class Session
 		global $guid;
 
 		//Prevent breakage of back button on POST pages
-		ini_set('session.cache_limiter', 'nocache');
-		session_cache_limiter('nocache');
+		ini_set('session.cache_limiter', 'private');
+		session_cache_limiter(false);
 
 		// Start the session (this should be the first time called)
 		if (PHP_SESSION_ACTIVE !== session_status())

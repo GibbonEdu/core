@@ -27,8 +27,13 @@ namespace Gibbon\Forms\Input;
  */
 class TextArea extends Input
 {
-    protected $rows = 4;
     protected $maxLength;
+
+    public function __construct($name)
+    {
+        $this->setRows(6);
+        parent::__construct($name);
+    }
 
     public function setRows($count)
     {

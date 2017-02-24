@@ -1494,6 +1494,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
                         $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
 
+                        // Get attendance pre-fill and default settings
+                        $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
+                        $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+
                         require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
 
                         $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
@@ -1541,7 +1545,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
 
                         if ($attendanceEnabled && $row['role'] == 'Teacher' and $teacher == true) {
-                            $_SESSION[$guid]['sidebarExtra'] .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_take_byCourseClassProcess.php'>";
+                            $_SESSION[$guid]['sidebarExtra'] .= "<form autocomplete=\"off\" method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_take_byCourseClassProcess.php'>";
                         }
                         $_SESSION[$guid]['sidebarExtra'] .= "<table class='noIntBorder' cellspacing='0' style='width:260px; float: right; margin-bottom: 30px'>";
                         $count = 0;
@@ -1552,31 +1556,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
 
 							//Get attendance status for students
-							$status = 'Present';
-                            $reason = '';
-                            $comment = '';
+                            $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+
                             if ($rowClassGroup['role'] == 'Student') {
 
-								//Check for school attendance
-								try {
-									$dataAtt = array('date' => $row['date'], 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
-									$sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY timestampTaken DESC';
-									$resultAtt = $connection2->prepare($sqlAtt);
-									$resultAtt->execute($dataAtt);
-								} catch (PDOException $e) {
-									$_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-								}
-								if ($resultAtt->rowCount() > 0) {
-									$rowAtt = $resultAtt->fetch();
-                                    $status = $rowAtt['type'];
-                                    $reason = $rowAtt['reason'];
-                                    $comment = $rowAtt['comment'];
-								}
+                                //Get any student log data by context
+                                try {
+                                    $dataLog=array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $row['date'].'%', 'gibbonCourseClassID' => $gibbonCourseClassID);
+                                    $sqlLog="SELECT * FROM gibbonAttendanceLogPerson WHERE context='Class' AND gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
+                                    $resultLog=$connection2->prepare($sqlLog);
+                                    $resultLog->execute($dataLog);
+                                }
+                                catch(PDOException $e) {
+                                    print "<div class='error'>" . $e->getMessage() . "</div>" ;
+                                }
 
+                                if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                    $rowLog = $resultLog->fetch();
+                                }
+                                elseif ($prefillAttendanceType == 'Y') {
+                                    //Get any student log data
+                                    try {
+                                        $dataLog=array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $row['date'].'%');
+                                        $sqlLog="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+                                        $resultLog=$connection2->prepare($sqlLog);
+                                        $resultLog->execute($dataLog);
+                                    }
+                                    catch(PDOException $e) {
+                                        print "<div class='error'>" . $e->getMessage() . "</div>" ;
+                                    }
+
+                                    if ($resultLog && $resultLog->rowCount() > 0 ) {
+                                        $rowLog = $resultLog->fetch();
+                                    }
+                                }
                             }
 
-                            //$status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite'
-                            if ( $attendance->isTypeAbsent($status) ) {
+                            //$rowLog['type'] == 'Absent' or $rowLog['type'] == 'Left - Early' or $rowLog['type'] == 'Left' or $rowLog['type'] == 'Present - Offsite'
+                            if ( $attendance->isTypeAbsent($rowLog['type']) ) {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #CC0000; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
                             } else {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #rgba (1,1,1,0); width:20%; text-align: center; vertical-align: top'>";
@@ -1644,11 +1661,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $status, "$countStudents-type", '86px;margin-left:1px;');
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '86px;margin-left:1px;');
 
                                     $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
-                                        $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $reason, "$countStudents-reason", '84px');
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($comment)."'>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '84px');
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= "</div>";
 
                                 }
