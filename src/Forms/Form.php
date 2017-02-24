@@ -62,12 +62,22 @@ class Form implements OutputableInterface
         return $form;
     }
 
-    public function setFactory($factory)
+    public function getFactory()
+    {
+        return $this->factory;
+    }
+
+    public function setFactory(FormFactoryInterface $factory)
     {
         $this->factory = $factory;
     }
 
-    public function setRenderer($renderer)
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    public function setRenderer(FormRendererInterface $renderer)
     {
         $this->renderer = $renderer;
     }
@@ -148,16 +158,6 @@ class Form implements OutputableInterface
  * @version v14
  * @since   v14
  */
-interface FormFactoryInterface {
-    public function createRow($id);
-    public function createColumn($id);
-    public function createTrigger($selector);
-}
-
-interface FormRendererInterface {
-    public function renderForm(Form $form);
-}
-
 interface BasicAttributesInterface
 {
     public function getID();
@@ -166,7 +166,8 @@ interface BasicAttributesInterface
 
 interface ValidatableInterface
 {
-    public function getValidation();
+    public function addValidation($name);
+    public function getValidationOutput();
 }
 
 interface OutputableInterface

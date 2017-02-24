@@ -74,7 +74,7 @@ class FormRenderer implements FormRendererInterface
         foreach ($form->getRows() as $row) {
             foreach ($row->getElements() as $element) {
                 if ($element instanceof ValidatableInterface) {
-                    $output .= $element->getValidation();
+                    $output .= $element->getValidationOutput();
                 }
             }
         }

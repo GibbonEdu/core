@@ -36,8 +36,9 @@ class Element implements OutputableInterface
     protected $appended;
     protected $prepended;
 
-    public function __construct()
+    public function __construct($content = '')
     {
+        $this->content = $content;
     }
 
     public function setContent($value)
