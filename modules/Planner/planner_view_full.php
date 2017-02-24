@@ -1593,7 +1593,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
 
                             //$rowLog['type'] == 'Absent' or $rowLog['type'] == 'Left - Early' or $rowLog['type'] == 'Left' or $rowLog['type'] == 'Present - Offsite'
-                            if ( $attendance->isTypeAbsent($rowLog['type']) ) {
+                            if ( $attendance->isTypeAbsent($rowLog['type']) && $rowClassGroup['role'] == 'Student' ) {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #CC0000; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
                             } else {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #rgba (1,1,1,0); width:20%; text-align: center; vertical-align: top'>";
