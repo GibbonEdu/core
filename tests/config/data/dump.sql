@@ -1,6 +1,24 @@
 --
--- Dumping data for table `gibbonPerson`
+-- Data for table `gibbonPerson`
 --
 
-INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `gender`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`, `dob`, `email`, `emailAlternate`, `image_240`, `lastIPAddress`, `lastTimestamp`, `lastFailIPAddress`, `lastFailTimestamp`, `failCount`, `address1`, `address1District`, `address1Country`, `address2`, `address2District`, `address2Country`, `phone1Type`, `phone1CountryCode`, `phone1`, `phone3Type`, `phone3CountryCode`, `phone3`, `phone2Type`, `phone2CountryCode`, `phone2`, `phone4Type`, `phone4CountryCode`, `phone4`, `website`, `languageFirst`, `languageSecond`, `languageThird`, `countryOfBirth`, `birthCertificateScan`, `ethnicity`, `citizenship1`, `citizenship1Passport`, `citizenship1PassportScan`, `citizenship2`, `citizenship2Passport`, `religion`, `nationalIDCardNumber`, `nationalIDCardScan`, `residencyStatus`, `visaExpiryDate`, `profession`, `employer`, `jobTitle`, `emergency1Name`, `emergency1Number1`, `emergency1Number2`, `emergency1Relationship`, `emergency2Name`, `emergency2Number1`, `emergency2Number2`, `emergency2Relationship`, `gibbonHouseID`, `studentID`, `dateStart`, `dateEnd`, `gibbonSchoolYearIDClassOf`, `lastSchool`, `nextSchool`, `departureReason`, `transport`, `transportNotes`, `calendarFeedPersonal`, `viewCalendarSchool`, `viewCalendarPersonal`, `viewCalendarSpaceBooking`, `gibbonApplicationFormID`, `lockerNumber`, `vehicleRegistration`, `personalBackground`, `messengerLastBubble`, `privacy`, `dayType`, `gibbonThemeIDPersonal`, `gibboni18nIDPersonal`, `studentAgreements`, `googleAPIRefreshToken`, `receiveNotificationEmails`, `fields`) VALUES
-('Ms. ', 'McTest', 'Testing', 'Testing', 'Testing McTest', '', 'Unspecified', 'acceptancetester', '', '3487430ef8f60ab9f7bff058d26b155a12f764aa450ec51500cdd90b7985f83b', '/BeEFgKmnNpQrRuvX12568', 'N', 'Full', 'Y', 001, '001', NULL, '', '', NULL, '::1', '2017-02-25 07:08:32', '::1', '2017-02-25 07:08:32', 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', NULL, '', NULL, NULL, NULL, '', '', '', '', '', '', 'Y', 'Y', 'N', NULL, '', '', '', NULL, NULL, NULL, NULL, 0001, NULL, '', 'Y', '') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+--- User: testingadmin       7SSbB9FZN24Q
+INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
+('Ms. ', 'TestUser', 'Admin', 'Admin', 'Admin TestUser', 'testingadmin', '', '015261d879c7fc2789d19b9193d189364baac34a98561fa205cd5f37b313cdb0', '/aBcEHKLnNpPrsStTUyz47', 'N', 'Full', 'Y', 001, '001,002,003,004,006') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+
+--- User: testingteacher     m86GVNLH7DbV
+INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
+('Mr. ', 'TestUser', 'Teacher', 'Teacher', 'Teacher TestUser Admin', 'testingteacher', '', '3ea8c6a760d223038a96c900994410950057390a0e4a48a39e760d50cab68040', '.aBdegGhlNoqRxzZ012369', 'N', 'Full', 'Y', 002, '002') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+
+--- User: testingstudent     WKLm9ELHLJL5
+INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
+('Ms. ', 'TestUser', 'Student', 'Student', 'Student TestUser', 'testingstudent', '', '90ad15af1a18f0fcf9192997c93dda3731fa6d379bd25005711b659470fe0243', './aefFGhHIPrRTuvVwxz47', 'N', 'Full', 'Y', 003, '003') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+
+--- User: testingparent      UVSf5t7epNa7
+INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
+('Ms. ', 'TestUser', 'Parent', 'Parent', 'Parent TestUser', 'testingparent', '', '5562ca7b5775ed5678c3523035ec347da2b7e26b0f5bb5ad1d4ac6a9af0274d6', '/bceFHiIKmnOQRstVwxXZ2', 'N', 'Full', 'Y', 004, '004') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+
+--- User: testingsupport     84BNQAQfNyKa
+INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
+('Ms. ', 'TestUser', 'Support', 'Support', 'Support TestUser', 'testingsupport', '', 'bd0688e5ca1c86f1f03417556ed53b9b1deed66bd4a0e75f660efb0ba0cb4671', 'aCdHikKlnpPqRstvXyY026', 'N', 'Full', 'Y', 004, '004') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+
