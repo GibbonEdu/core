@@ -11,6 +11,7 @@ namespace Gibbon\Forms\Layout;
 
 use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\FormFactory;
+use Gibbon\Forms\OutputableInterface;
 
 /**
  * @covers Row

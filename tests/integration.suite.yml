@@ -1,0 +1,10 @@
+# Codeception Test Suite Configuration
+#
+# Suite for integration (database) tests.
+
+class_name: CodeTester
+modules:
+    enabled:
+        - Asserts
+        # - Db
+        - \Helper\Code
