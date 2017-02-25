@@ -32,15 +32,20 @@ settings:
 
     # This value controls whether PHPUnit attempts to backup global variables
     backup_globals: true
+params:
+    - env
+    - config/config.php
+includes:
+    - bootstrap.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
 modules:
     config:
         Db:
-            dsn: 'mysql:host=localhost;dbname=gibbon'
-            user: 'root'
-            password: 'root'
+            dsn: "mysql:host=%DB_HOST%;dbname=%DB_NAME%"
+            user: "%DB_USERNAME%"
+            password: "%DB_PASSWORD%"
             dump: 'config/data/dump.sql'
             populate: true
             cleanup: false
