@@ -5,8 +5,13 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 class_name: AcceptanceTester
+settings:
+    bootstrap: acceptance/bootstrap.php
 modules:
     enabled:
         - PhpBrowser:
             url: http://localhost/gibbon
         - \Helper\Acceptance
+        - Db
+groups:
+    admin: [acceptance/admin]

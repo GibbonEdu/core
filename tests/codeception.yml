@@ -38,7 +38,10 @@ extensions:
 modules:
     config:
         Db:
-            dsn: ''
-            user: ''
-            password: ''
-            dump: config/data/dump.sql
+            dsn: 'mysql:host=localhost;dbname=gibbon'
+            user: 'root'
+            password: 'root'
+            dump: 'config/data/dump.sql'
+            populate: true
+            cleanup: false
+            reconnect: true

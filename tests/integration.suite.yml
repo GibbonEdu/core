@@ -3,8 +3,12 @@
 # Suite for integration (database) tests.
 
 class_name: CodeTester
+settings:
+    bootstrap: integration/bootstrap.php
 modules:
     enabled:
-        - Asserts
-        # - Db
-        - \Helper\Code
+        - PhpBrowser:
+            url: http://localhost/gibbon
+        - Db
+        - Filesystem
+        - \Helper\Acceptance
