@@ -1,9 +1,8 @@
 <?php 
 
 $I = new AcceptanceTester($scenario);
-$I->wantTo('login to Gibbon as an admin');
-$I->loginAsAdmin();
+$I->wantTo('login to Gibbon as a teacher');
+$I->loginAsTeacher();
 
 // Logged In
 $I->see('Staff Dashboard', 'h2');
-$I->see('System Admin', 'a');
