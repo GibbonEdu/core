@@ -20,6 +20,8 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
+    protected $breadcrumbEnd = '.trailEnd';
+
    /**
     * Define custom actions here
     */
@@ -37,23 +39,41 @@ class AcceptanceTester extends \Codeception\Actor
         $I->see('Logout', 'a');
     }
 
-    public function loginAsAdmin() {
+    public function loginAsAdmin()
+    {
         $this->login('testingadmin', '7SSbB9FZN24Q');
     }
 
-    public function loginAsTeacher() {
+    public function loginAsTeacher()
+    {
         $this->login('testingteacher', 'm86GVNLH7DbV');
     }
 
-    public function loginAsStudent() {
+    public function loginAsStudent()
+    {
         $this->login('testingstudent', 'WKLm9ELHLJL5');
     }
 
-    public function loginAsParent() {
+    public function loginAsParent()
+    {
         $this->login('testingparent', 'UVSf5t7epNa7');
     }
 
-    public function loginAsSupport() {
+    public function loginAsSupport()
+    {
         $this->login('testingsupport', '84BNQAQfNyKa');
+    }
+
+    public function clickNavigation($text) {
+        return $this->click($text, '.linkTop a');
+    }
+
+    public function seeBreadcrumb($text)
+    {
+        return $this->see($text, $this->breadcrumbEnd);
+    }
+
+    public function grabEditIDFromURL() {
+        return $this->grabFromCurrentUrl('/editID=(\d+)/');
     }
 }

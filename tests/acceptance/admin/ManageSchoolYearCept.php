@@ -4,9 +4,9 @@ $I->wantTo('add, edit and delete a school year');
 $I->loginAsAdmin();
 $I->amOnPage('/index.php?q=/modules/School Admin/schoolYear_manage.php');
 
-// Add
-$I->click('Add', '.linkTop a');
-$I->see('Add School Year', '.trailEnd');
+// Add ------------------------------------------------
+$I->clickNavigation('Add');
+$I->seeBreadcrumb('Add School Year');
 
 $I->fillField('name', '2020-2021');
 $I->selectOption('status', 'Upcoming');
@@ -17,11 +17,11 @@ $I->click('Submit');
 
 $I->see('Your request was completed successfully.', '.success');
 
-$gibbonSchoolYearID = $I->grabFromCurrentUrl('/editID=(\d+)/');
+$gibbonSchoolYearID = $I->grabEditIDFromURL();
 
-// Edit
+// Edit ------------------------------------------------
 $I->amOnPage('/index.php?q=/modules/School Admin/schoolYear_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID);
-$I->see('Edit School Year', '.trailEnd');
+$I->seeBreadcrumb('Edit School Year');
 
 $I->fillField('name', '1920-1921');
 $I->selectOption('status', 'Past');
@@ -36,9 +36,9 @@ $I->seeInField('sequenceNumber', 90);
 $I->seeInField('firstDay', '01/01/1920');
 $I->seeInField('lastDay', '31/12/1920');
 
-// Delete
+// Delete ------------------------------------------------
 $I->amOnPage('/index.php?q=/modules/School Admin/schoolYear_manage_delete.php&gibbonSchoolYearID='.$gibbonSchoolYearID);
-$I->see('Delete School Year', '.trailEnd');
+$I->seeBreadcrumb('Delete School Year');
 
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
