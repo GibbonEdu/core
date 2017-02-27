@@ -8,6 +8,8 @@ $I->amOnPage('/index.php?q=/modules/Planner/planner.php');
 $I->clickNavigation('Add');
 $I->seeBreadcrumb('Add Lesson Plan');
 
+$date = $I->grabAttributeFrom('#date', 'value');
+
 $I->selectFromDropdown('gibbonCourseClassID', 2);
 $I->fillField('name', 'Testing Markbook');
 $I->fillField('timeStart', '09:00');
@@ -27,8 +29,8 @@ $I->seeInField('name', 'Testing Markbook');
 // Add Column ------------------------------------------------
 
 $I->fillField('description', 'Linked to Planner Lesson');
-$I->fillField('date', '27/02/2017');
 $I->selectFromDropdown('type', 2);
+$I->seeInField('date', $date);
 $I->selectOption('attainment', 'Y');
 $I->selectOption('effort', 'N');
 $I->selectOption('viewableStudents', 'N');

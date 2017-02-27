@@ -64,7 +64,8 @@ class AcceptanceTester extends \Codeception\Actor
         $this->login('testingsupport', '84BNQAQfNyKa');
     }
 
-    public function clickNavigation($text) {
+    public function clickNavigation($text)
+    {
         return $this->click($text, '.linkTop a');
     }
 
@@ -73,11 +74,13 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->see($text, $this->breadcrumbEnd);
     }
 
-    public function grabValueFromURL($param) {
+    public function grabValueFromURL($param)
+    {
         return $this->grabFromCurrentUrl('/'.$param.'=(\d+)/');
     }
 
-    public function grabEditIDFromURL() {
+    public function grabEditIDFromURL()
+    {
         return $this->grabFromCurrentUrl('/editID=(\d+)/');
     }
 
