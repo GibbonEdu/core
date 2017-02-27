@@ -2832,11 +2832,9 @@ function sidebar($gibbon, $pdo)
 		<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q']; } ?>">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
 				<tr>
-					<td>
-						<b><?php echo __($guid, 'Username'); ?></b>
-					</td>
-					<td class="right">
-						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
+					<td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Username or email'); ?>">
+						<input name="username" id="username" maxlength=50 type="text" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Username or email'); ?>">
 						<script type="text/javascript">
 							var username=new LiveValidation('username', {onlyOnSubmit: true });
 							username.add(Validate.Presence);
@@ -2844,11 +2842,9 @@ function sidebar($gibbon, $pdo)
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<b><?php echo __($guid, 'Password'); ?></b>
-					</td>
-					<td class="right">
-						<input name="password" id="password" maxlength=30 type="password" style="width:120px">
+					<td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/key.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Password'); ?>">
+						<input name="password" id="password" maxlength=30 type="password" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Password'); ?>">
 						<script type="text/javascript">
 							var password=new LiveValidation('password', {onlyOnSubmit: true });
 							password.add(Validate.Presence);
