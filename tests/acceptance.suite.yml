@@ -14,4 +14,4 @@ modules:
         - \Helper\Acceptance
         - Db
 groups:
-    admin: [acceptance/admin]
+    users: [acceptance/Users]
