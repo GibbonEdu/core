@@ -13,5 +13,6 @@ modules:
             url: http://localhost/gibbon
         - \Helper\Acceptance
         - Db
+        - DbHelper
 groups:
     users: [acceptance/Users]

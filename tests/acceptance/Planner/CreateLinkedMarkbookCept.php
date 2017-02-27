@@ -53,16 +53,21 @@ $I->seeInField('effort', 'N');
 $I->seeInField('viewableStudents', 'N');
 $I->seeInField('viewableParents', 'N');
 
-// Cleanup Markbook ------------------------------------------------
+// Delete Markbook -----------------------------------------------
 
 $I->amOnPage('/index.php?q=/modules/Markbook/markbook_edit_delete.php&.php&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID);
 $I->seeBreadcrumb('Delete Column');
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
 
-// Cleanup Planner ------------------------------------------------
+// Delete Planner ------------------------------------------------
 
 $I->amOnPage('/index.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$gibbonPlannerEntryID);
 $I->seeBreadcrumb('Delete Lesson Plan');
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
+
+// Force Cleanup (for failed tests) ------------------------------
+
+$I->deleteFromDatabase('gibbonMarkbookColumn', ['gibbonMarkbookColumnID' => $gibbonMarkbookColumnID]);
+$I->deleteFromDatabase('gibbonPlannerEntry', ['gibbonPlannerEntryID' => $gibbonPlannerEntryID]);
