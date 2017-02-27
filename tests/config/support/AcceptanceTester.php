@@ -25,7 +25,7 @@ class AcceptanceTester extends \Codeception\Actor
    /**
     * Define custom actions here
     */
-   
+
     public function login($name, $password)
     {
         $I = $this;
@@ -73,7 +73,17 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->see($text, $this->breadcrumbEnd);
     }
 
+    public function grabValueFromURL($param) {
+        return $this->grabFromCurrentUrl('/'.$param.'=(\d+)/');
+    }
+
     public function grabEditIDFromURL() {
         return $this->grabFromCurrentUrl('/editID=(\d+)/');
+    }
+
+    public function selectFromDropdown($selector, $n)
+    {
+        $option = $this->grabTextFrom('select[name='.$selector.'] option:nth-child(' . $n . ')');
+        $this->selectOption($selector, $option);
     }
 }
