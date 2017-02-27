@@ -68,6 +68,23 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
 }
 
+// Allow the URL to override system default from the i18l param
+if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
+    try {
+        $data = array('code' => $_GET['i18n']);
+        $sql = "SELECT * FROM gibboni18n WHERE code=:code LIMIT 1";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {}
+
+    if ($result->rowCount() == 1) {
+        setLanguageSession($guid, $result->fetch(), false);
+        $gibbon->locale->setLocale($_GET['i18n']);
+        $gibbon->locale->setTextDomain($pdo);
+        $cacheLoad = true;
+    }
+}
+
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
     if ($_SESSION[$guid]['calendarFeedPersonal'] == '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {

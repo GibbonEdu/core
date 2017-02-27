@@ -381,6 +381,15 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
     $return = false;
 
     if (isset($_SESSION[$guid]['username']) == false) {
+
+        // Add a link to go back to the system/personal default language, if we're not using it
+        if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
+            if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
+                $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
+                $return .= "<a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a> . ';
+            }
+        }
+
         if ($_SESSION[$guid]['webLink'] != '') {
             $return .= __($guid, 'Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
         }
@@ -395,6 +404,15 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             }
         }
         $return .= $name.' . ';
+
+        // Add a link to go back to the system/personal default language, if we're not using it
+        if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
+            if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
+                $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
+                $return .= "<a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a> . ';
+            }
+        }
+
         $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
@@ -3978,7 +3996,7 @@ function getSystemSettings($guid, $connection2)
 }
 
 //Set language session variables
-function setLanguageSession($guid, $row)
+function setLanguageSession($guid, $row, $defaultLanguage= true)
 {
     $_SESSION[$guid]['i18n']['gibboni18nID'] = $row['gibboni18nID'];
     $_SESSION[$guid]['i18n']['code'] = $row['code'];
@@ -3989,6 +4007,11 @@ function setLanguageSession($guid, $row)
     $_SESSION[$guid]['i18n']['maintainerName'] = $row['maintainerName'];
     $_SESSION[$guid]['i18n']['maintainerWebsite'] = $row['maintainerWebsite'];
     $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
+
+    if ($defaultLanguage) {
+        $_SESSION[$guid]['i18n']['default']['code'] = $row['code'];
+        $_SESSION[$guid]['i18n']['default']['name'] = $row['name'];
+    }
 }
 
 //Gets the desired setting, specified by name and scope.
