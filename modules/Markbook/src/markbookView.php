@@ -275,11 +275,11 @@ class markbookView
                 if ( !empty($column->getData('gibbonPlannerEntryID'))) {
                     try {
                         $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') );
-                        $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y' LIMIT 1" ;
-                        $resultSub=$this->pdo->executeQuery($data, $sql);
+                        $sqlSub="SELECT homeworkDueDateTime, date, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID LIMIT 1" ;
+                        $resultSub=$this->pdo->executeQuery($dataSub, $sqlSub);
                     } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
-                    if ($resultSub->rowCount()>=1) {
+                    if ($resultSub && $resultSub->rowCount()>0) {
                         $column->setSubmissionDetails( $resultSub->fetch() );
                     }
                 }
