@@ -80,6 +80,11 @@ th.dataColumn {
 	border-left: 1px solid #666;
 }
 
+.dataColumn.dataDividerTop {
+	border-top: 2px solid #bbbbbb;
+	background: #FBFBFB;
+}
+
 .marksColumn {
 	padding: 0px !important;
 	text-align: center;
