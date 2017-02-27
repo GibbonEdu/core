@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 
                     $time = time();
                     //Move attached file, if there is one
-                    if ($_FILES['file']['tmp_name'] != '') {
+                    if (!empty($_FILES['file']['tmp_name'])) {
                         //Check for folder in uploads based on today's date
                         $path = $_SESSION[$guid]['absolutePath'];
                         if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
