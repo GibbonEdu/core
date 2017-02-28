@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     //Check if school year specified
-    if ($gibbonActivityID == 'Y') {
+    if ($gibbonActivityID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
