@@ -41,11 +41,13 @@ v14.0.00
 		System: upgraded jQuery to v2.2.4 and jQuery Migrate to v1.4.1
 		System: fixed bug preventing jQuery Chained from working properly
 		System: allow user login with either username or email, if email is unique
+		Activities: Added optional permission for activity organisers to manage their activities enrolment
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts
 		Attendance: added settings to determine default type in different contexts
 		Attendance: added dynamic legend for Student History report
+		Markbook: Added a class average row to the bottom of markbook views (when Weighting is enabled)
 		Students: added ability to store internal documents against student application forms
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 
