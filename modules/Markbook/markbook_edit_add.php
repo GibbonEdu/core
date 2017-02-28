@@ -437,7 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                         <?php else: ?>
 
-                        	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo (isset($_GET['date']))? $_GET['date'] : dateConvertBack($guid, date('Y-m-d')); ?>" >
+                        	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, (isset($_GET['date'])? $_GET['date'] : date('Y-m-d')) ); ?>" >
 
 						<?php endif; ?>
 
