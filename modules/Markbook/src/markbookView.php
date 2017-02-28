@@ -551,11 +551,31 @@ class markbookView
                 $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : '';
 
                 $weightedAverages['term'][$termID] = $termAverage;
-
-                // Add the term averages to the overall average
-                $overallTotal += $termWeight;
-                $overallCumulative += ($termAverage * $termWeight);
             }
+
+            $terms = array_keys($averages);
+
+            // Calculate the overall cumulative type averages, separate from terms
+            foreach ($this->types['term'] as $type) {
+                $typeTotal = 0;
+                $typeCumulative = 0;
+
+                $typeWeight = $this->getWeightingByType( $type );
+
+                foreach ($terms as $term) {
+                    if (!isset($averages[$term][$type])) continue;
+                    $weighted = $averages[$term][$type];
+
+                    $typeTotal += $weighted['total'];
+                    $typeCumulative += $weighted['cumulative'];
+                }
+
+                $typeAverage = ( $typeCumulative / $typeTotal );
+
+                $overallTotal += $typeWeight;
+                $overallCumulative += ($typeAverage * $typeWeight);
+            }
+
 
             $finalTotal = 0;
             $finalCumulative = 0;
