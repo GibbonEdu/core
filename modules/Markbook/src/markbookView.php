@@ -555,7 +555,7 @@ class markbookView
                     if ($weighted['total'] <= 0) continue;
 
                     $typeWeight = $this->getWeightingByType( $type );
-                    $typeAverage = ($weighted['total'] > 0)? ( $weighted['cumulative'] / $weighted['total'] ) : 0;
+                    $typeAverage = ($weighted['total'] > 0)? ( $weighted['cumulative'] / $weighted['total'] ) : '';
 
                     $termTotal += $typeWeight;
                     $termCumulative += ($typeAverage * $typeWeight);
@@ -563,32 +563,48 @@ class markbookView
                     $weightedAverages['type'][$termID][$type] = $typeAverage;
                 }
 
-                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : 0;
+                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : '';
 
                 $weightedAverages['term'][$termID] = $termAverage;
             }
 
             $terms = array_keys($averages);
 
-            // Calculate the overall cumulative type averages, separate from terms
-            foreach ($this->types['term'] as $type) {
-                $typeTotal = 0;
-                $typeCumulative = 0;
+            if (!empty($terms) && is_array($terms)) {
+                // Get the type names used in all terms (or whole year for now terms)
+                $types = array();
+                if (isset($this->types['term'])) $types = array_merge($types, $this->types['term']);
+                if (isset($this->types['year'])) $types = array_merge($types, $this->types['year']);
+                if (isset($this->types['all'])) $types = array_merge($types, $this->types['all']);
 
-                $typeWeight = $this->getWeightingByType( $type );
+                // Calculate the overall cumulative type averages, separate from terms
+                foreach ($types as $type) {
+                    $typeTotal = null;
+                    $typeCumulative = null;
 
-                foreach ($terms as $term) {
-                    if (!isset($averages[$term][$type])) continue;
-                    $weighted = $averages[$term][$type];
+                    $typeWeight = $this->getWeightingByType( $type );
 
-                    $typeTotal += $weighted['total'];
-                    $typeCumulative += $weighted['cumulative'];
+                    foreach ($terms as $term) {
+                        // Dont include final term marks in the cumulative average
+                        if ($term == 'final') continue;
+
+                        if (!isset($averages[$term][$type])) continue;
+                        $weighted = $averages[$term][$type];
+
+                        if ($weighted['total'] <= 0) continue;
+
+                        $typeTotal += $weighted['total'];
+                        $typeCumulative += $weighted['cumulative'];
+                    }
+
+                    // Skip weighting types that have no marks (not marks of zero, but absence of marks)
+                    if ($typeTotal == null || $typeCumulative == null) continue;
+
+                    $typeAverage = ($typeTotal > 0)? ( $typeCumulative / $typeTotal ) : 0;
+
+                    $overallTotal += $typeWeight;
+                    $overallCumulative += ($typeAverage * $typeWeight);
                 }
-
-                $typeAverage = ($typeTotal > 0)? ( $typeCumulative / $typeTotal ) : 0;
-
-                $overallTotal += $typeWeight;
-                $overallCumulative += ($typeAverage * $typeWeight);
             }
 
             $finalTotal = 0;
