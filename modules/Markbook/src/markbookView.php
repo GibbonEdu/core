@@ -555,7 +555,7 @@ class markbookView
                     if ($weighted['total'] <= 0) continue;
 
                     $typeWeight = $this->getWeightingByType( $type );
-                    $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
+                    $typeAverage = ($weighted['total'] > 0)? ( $weighted['cumulative'] / $weighted['total'] ) : 0;
 
                     $termTotal += $typeWeight;
                     $termCumulative += ($typeAverage * $typeWeight);
@@ -563,7 +563,7 @@ class markbookView
                     $weightedAverages['type'][$termID][$type] = $typeAverage;
                 }
 
-                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : '';
+                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : 0;
 
                 $weightedAverages['term'][$termID] = $termAverage;
             }
@@ -585,7 +585,7 @@ class markbookView
                     $typeCumulative += $weighted['cumulative'];
                 }
 
-                $typeAverage = ( $typeCumulative / $typeTotal );
+                $typeAverage = ($typeTotal > 0)? ( $typeCumulative / $typeTotal ) : 0;
 
                 $overallTotal += $typeWeight;
                 $overallCumulative += ($typeAverage * $typeWeight);
@@ -601,7 +601,7 @@ class markbookView
                     if ($weighted['total'] <= 0) continue;
 
                     $typeWeight = $this->getWeightingByType( $type );
-                    $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
+                    $typeAverage = ($weighted['total'] > 0)? ( $weighted['cumulative'] / $weighted['total'] ) : 0;
 
                     $finalTotal += $typeWeight;
                     $finalCumulative += ($typeAverage * $typeWeight);
