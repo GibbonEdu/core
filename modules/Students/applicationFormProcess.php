@@ -27,6 +27,11 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
+//Check to see if system settings are set from databases
+if ($_SESSION[$guid]['systemSettingsSet'] == false) {
+    getSystemSettings($guid, $connection2);
+}
+
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
