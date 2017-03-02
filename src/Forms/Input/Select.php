@@ -72,6 +72,8 @@ class Select extends Input
 
     protected function isOptionSelected($value)
     {
+        if ($value === '') return false;
+
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
