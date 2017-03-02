@@ -683,7 +683,7 @@ if ($proceed == false) {
                             //Check for folder in uploads based on today's date
                             $path = $_SESSION[$guid]['absolutePath'];
                             if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
+                                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0775, true);
                             }
                             $unique = false;
                             $count = 0;
