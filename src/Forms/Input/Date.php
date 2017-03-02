@@ -51,7 +51,7 @@ class Date extends TextField
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() { $( "#'.$this->getName().'" ).datepicker(); })';
+        $output .= '$(function() { $( "#'.$this->getID().'" ).datepicker(); })';
         $output .= '</script>';
 
         return $output;
