@@ -28,7 +28,7 @@ $connection2 = $pdo->getConnection();
 @session_start();
 
 //Check to see if system settings are set from databases
-if ($_SESSION[$guid]['systemSettingsSet'] == false) {
+if (empty($_SESSION[$guid]['systemSettingsSet'])) {
     getSystemSettings($guid, $connection2);
 }
 
