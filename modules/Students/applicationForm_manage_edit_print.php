@@ -205,11 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $school = $row['schoolName1'];
             }
             if ($school != '') {
-                if (strlen($school) <= 15) {
-                    echo '<i>'.htmlPrep($school).'</i>';
-                } else {
-                    echo "<i><span title='".$school."'>".substr($school, 0, 15).'...</span></i>';
-                }
+                echo '<i>'.htmlPrep($school).'</i>';
             } else {
                 echo '<i>'.__($guid, 'Unspecified').'</i>';
             }
@@ -318,6 +314,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '</tr>';
             }
             echo '</table>';
+
+
+            if (!empty($row['schoolName1']) || !empty($row['schoolName2'])) {
+                echo '<h4>'.__($guid, 'Previous Schools').'</h4>';
+                echo "<table cellspacing='0' style='width: 100%'>";
+                echo '<tr>';
+                for ($i = 1; $i <= 2; $i++) {
+                    if (empty($row['schoolName'.$i])) continue;
+
+                    echo "<td style='width: 25%; padding-top: 15px; vertical-align: top'>";
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'School Name').'</span><br/>';
+                    if (!empty($row['schoolName'.$i])) echo '<i>'.htmlPrep($row['schoolName'.$i]).'</i>';
+                    echo '</td>';
+
+                    echo "<td style='width: 30%; padding-top: 15px; vertical-align: top'>";
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Address').'</span><br/>';
+                    if (!empty($row['schoolAddress'.$i])) echo '<i>'.htmlPrep($row['schoolAddress'.$i]).'</i>';
+                    echo '</td>';
+
+                    echo "<td style='width: 15%; padding-top: 15px; vertical-align: top'>";
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Grades Attended').'</span><br/>';
+                    if (!empty($row['schoolGrades'.$i])) echo '<i>'.htmlPrep($row['schoolGrades'.$i]).'</i>';
+                    echo '</td>';
+
+                    echo "<td style='width: 15%; padding-top: 15px; vertical-align: top'>";
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Language of Instruction').'</span><br/>';
+                    if (!empty($row['schoolLanguage'.$i])) echo '<i>'.htmlPrep($row['schoolLanguage'.$i]).'</i>';
+                    echo '</td>';
+
+                    echo "<td style='width: 15%; padding-top: 15px; vertical-align: top'>";
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Joining Date').'</span><br/><br/>';
+                    if (!empty($row['schoolDate'.$i])) echo '<i>'.htmlPrep($row['schoolDate'.$i]).'</i>';
+                    echo '</td>';
+                }
+
+                echo '</tr>';
+                echo '</table>';
+            }
 
             echo '<h4>'.__($guid, 'Parents/Guardians').'</h4>';
             //No family in Gibbon
@@ -491,7 +525,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             //Yes family
             else {
-                //Spit out parent1/parent2 data from Gibbon 
+                //Spit out parent1/parent2 data from Gibbon
                 try {
                     $dataFamily = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                     $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
