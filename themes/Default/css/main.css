@@ -1276,7 +1276,19 @@ select[multiple] {
 
 .mediumWidth {
 	width: 230px;
-} 
+}
+
+.phoneNumber input {
+	width: 160px;
+}
+
+.phoneNumber select[name$="CountryCode"] {
+	width: 60px;
+}
+
+.phoneNumber select[name$="Type"] {
+	width: 70px;
+}
 
 .column div:after {
   content: "";
