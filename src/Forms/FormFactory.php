@@ -122,12 +122,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createTime($name)
     {
-        return (new Input\TextField($name) )
-            ->placeholder('00:00')
-            ->addValidation(
-                'Validate.Format',
-                'pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm"'
-            );
+        return new Input\Time($name);
     }
 
     public function createCheckbox($name)

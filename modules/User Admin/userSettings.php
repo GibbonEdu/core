@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -33,266 +35,80 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    ?>
-	
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'Field Values') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='nationality'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='ethnicity'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='religions'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='residencyStatus'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='departureReasons'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'Privacy Options') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='privacy'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='privacyBlurb'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='privacyOptions'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'User Interface Options') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='personalBackground'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-					</select>
-				</td>
-			</tr>
-			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'Day-Type Options') ?></h3>
-					<p><?php echo __($guid, 'Allows for choice of different day-types (e.g. full-day, half-day).') ?></p>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='dayTypeOptions'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='User Admin' AND name='dayTypeText'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			
-			
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-<?php
 
+    $form = Form::create('userSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettingsProcess.php');
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow()->addHeading('Field Values');
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'nationality', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'ethnicity', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'religions', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'residencyStatus', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'departureReasons', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $row = $form->addRow()->addHeading('Privacy Options');
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'privacy', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+
+    $form->toggleVisibilityByClass('privacy')->onSelect($settingByScope['name'])->when('Y');
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'privacyBlurb', true);
+    $row = $form->addRow()->addClass('privacy');
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'privacyOptions', true);
+    $row = $form->addRow()->addClass('privacy');
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $row = $form->addRow()->addHeading('User Interface Options');
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'personalBackground', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+
+    $row = $form->addRow()->addHeading('Day-Type Options');
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $settingByScope = getSettingByScope($connection2, 'User Admin', 'dayTypeText', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
 ?>

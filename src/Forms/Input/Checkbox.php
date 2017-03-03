@@ -32,7 +32,13 @@ class Checkbox extends Input
     use MultipleOptionsTrait;
 
     protected $description;
-    protected $value = array();
+    protected $checked = array();
+
+    public function __construct($name)
+    {
+        $this->setName($name);
+        $this->setValue('on');
+    }
 
     public function description($value = '')
     {
@@ -42,30 +48,36 @@ class Checkbox extends Input
 
     public function checked($value)
     {
-        $this->value = (!is_array($value))? array($value) : $value;
+        if ($value === 1 || $value === true) $value = 'on';
+        $this->checked = (!is_array($value))? array($value) : $value;
 
         return $this;
     }
 
     protected function getIsChecked($value)
     {
-        if (empty($value) || empty($this->value)) {
+        if (empty($value) || empty($this->checked)) {
             return '';
         }
         
-        return (in_array($value, $this->value, true))? 'checked' : '';
+        return (in_array($value, $this->checked, true))? 'checked' : '';
     }
 
     protected function getElement()
     {
         $output = '';
 
-        $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->value => $this->description);
+        $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->getValue() => $this->description);
+        $name = (count($this->options)>1 && stripos($this->getName(), '[]') === false)? $this->getName().'[]' : $this->getName();
 
         if (!empty($this->options) && is_array($this->options)) {
             foreach ($this->options as $value => $label) {
-                $output .= '<label title="'.__($label).'" for="'.$this->getName().'">'.__($label).'</label> ';
-                $output .= '<input type="checkbox" class="'.$this->getClass().'" name="'.$this->getName().'[]" value="'.$value.'" '.$this->getIsChecked($value).'><br/>';
+                $this->setName($name);
+                $this->setAttribute('checked', $this->getIsChecked($value));
+                if ($value != 'on') $this->setValue($value);
+
+                $output .= '<label title="'.__($label).'">'.__($label).'</label> ';
+                $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
             }
         }
 

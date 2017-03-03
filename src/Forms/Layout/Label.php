@@ -47,7 +47,7 @@ class Label extends Element implements RowDependancyInterface
     public function description($value = '')
     {
         $value = $this->getTranslatedText(func_get_args());
-        
+
         $this->description = $value;
         return $this;
     }
@@ -60,7 +60,7 @@ class Label extends Element implements RowDependancyInterface
 
         $element = $this->row->getElement($this->for);
 
-        return (!empty($element))? $element->getRequired() : false;
+        return (!empty($element) && method_exists($element, 'getRequired'))? $element->getRequired() : false;
     }
 
     protected function getReadOnly()

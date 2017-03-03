@@ -2832,11 +2832,9 @@ function sidebar($gibbon, $pdo)
 		<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q']; } ?>">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
 				<tr>
-					<td>
-						<b><?php echo __($guid, 'Username'); ?></b>
-					</td>
-					<td class="right">
-						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
+					<td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Username or email'); ?>">
+						<input name="username" id="username" maxlength=50 type="text" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Username or email'); ?>">
 						<script type="text/javascript">
 							var username=new LiveValidation('username', {onlyOnSubmit: true });
 							username.add(Validate.Presence);
@@ -2844,24 +2842,20 @@ function sidebar($gibbon, $pdo)
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<b><?php echo __($guid, 'Password'); ?></b>
-					</td>
-					<td class="right">
-						<input name="password" id="password" maxlength=30 type="password" style="width:120px">
+					<td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/key.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Password'); ?>">
+						<input name="password" id="password" maxlength=30 type="password" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Password'); ?>">
 						<script type="text/javascript">
 							var password=new LiveValidation('password', {onlyOnSubmit: true });
 							password.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>
-				<tr class='schoolYear' id='schoolYear'>
-					<td>
-						<b><?php echo __($guid, 'School Year'); ?></b>
-					</td>
-					<td class="right">
-						<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
-							<?php
+                <tr class='schoolYear' id='schoolYear'>
+                    <td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/planner.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'School Year'); ?>">
+                        <select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width:207px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'School Year'); ?>">
+                            <?php
                             try {
                                 $dataSelect = array();
                                 $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
@@ -2878,15 +2872,13 @@ function sidebar($gibbon, $pdo)
                                 echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
                             }
                             ?>
-						</select>
+                        </select>
 					</td>
 				</tr>
-				<tr class='language' id='language'>
-					<td>
-						<b><?php echo __($guid, 'Language'); ?></b>
-					</td>
-					<td class="right">
-						<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+                	<tr class='language' id='language'>
+                    <td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/language.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Language'); ?>">
+                        <select name="gibboni18nID" id="gibboni18nID" style="width:207px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'School Year'); ?>">
 							<?php
                             try {
                                 $dataSelect = array();
@@ -2907,10 +2899,8 @@ function sidebar($gibbon, $pdo)
 						</select>
 					</td>
 				</tr>
-				<tr>
-					<td>
-					</td>
-					<td class="right">
+                <tr>
+    				<td colspan=2 class="right">
 						<?php
                         echo "<script type='text/javascript'>";
                             echo '$(document).ready(function(){';
