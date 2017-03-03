@@ -40,7 +40,7 @@ else
     $input = $_POST['email'];
 $step = $_GET['step'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php&sidebar=false';
 $URLSuccess1 = $_SESSION[$guid]['absoluteURL'].'/index.php';
 
 if ($input == '' or ($step != 1 and $step != 2)) {
@@ -87,7 +87,7 @@ else {
             }
 
             // Format birthday in in YYYY-MM-DD
-            $birthdate = $birthyear.'-'.$birthmonth.'-'.str_pad( intval(trim($birthday)), 2, '0');
+            $birthdate = $birthyear.'-'.$birthmonth.'-'.str_pad( intval(trim($birthday)), 2, '0', STR_PAD_LEFT);
 
             // Find a currently enroled child in this family that matches the same birthdate
             try {
