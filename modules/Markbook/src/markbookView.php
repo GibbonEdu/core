@@ -598,7 +598,7 @@ class markbookView
                     }
 
                     // Skip weighting types that have no marks (not marks of zero, but absence of marks)
-                    if ($typeTotal == null || $typeCumulative == null) continue;
+                    if ($typeTotal === null || $typeCumulative === null) continue;
 
                     $typeAverage = ($typeTotal > 0)? ( $typeCumulative / $typeTotal ) : 0;
 
