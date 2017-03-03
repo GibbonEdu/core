@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $milestones = $_POST['milestones'];
     $howDidYouHear = $_POST['howDidYouHear'];
     $requiredDocuments = $_POST['requiredDocuments'];
+    $internalDocuments = $_POST['internalDocuments'];
     $requiredDocumentsText = $_POST['requiredDocumentsText'];
     $requiredDocumentsCompulsory = $_POST['requiredDocumentsCompulsory'];
     $notificationStudentMessage = $_POST['notificationStudentMessage'];
@@ -54,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $notificationParentsMessage = $_POST['notificationParentsMessage'];
     $notificationParentsDefault = $_POST['notificationParentsDefault'];
     $languageOptionsActive = $_POST['languageOptionsActive'];
-    $languageOptionsBlurb = $_POST['languageOptionsBlurb'];
-    $languageOptionsLanguageList = $_POST['languageOptionsLanguageList'];
+    $languageOptionsBlurb = (isset($_POST['languageOptionsBlurb'])) ? $_POST['languageOptionsBlurb'] : null;
+    $languageOptionsLanguageList = (isset($_POST['languageOptionsLanguageList'])) ? $_POST['languageOptionsLanguageList'] : null;
     $studentDefaultEmail = $_POST['studentDefaultEmail'];
     $studentDefaultWebsite = $_POST['studentDefaultWebsite'];
     $autoHouseAssign = $_POST['autoHouseAssign'];
@@ -157,6 +158,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     try {
         $data = array('value' => $requiredDocuments);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='requiredDocuments'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $internalDocuments);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='internalDocuments'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

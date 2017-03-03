@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     //Proceed!
     $email = $_POST['email'];
     $financeOnlinePaymentEnabled = $_POST['financeOnlinePaymentEnabled'];
-    $financeOnlinePaymentThreshold = $_POST['financeOnlinePaymentThreshold'];
+    $financeOnlinePaymentThreshold = (isset($_POST['financeOnlinePaymentThreshold'])) ? $_POST['financeOnlinePaymentThreshold'] : null;
     $invoiceeNameStyle = $_POST['invoiceeNameStyle'];
     $invoiceText = $_POST['invoiceText'];
     $invoiceNotes = $_POST['invoiceNotes'];

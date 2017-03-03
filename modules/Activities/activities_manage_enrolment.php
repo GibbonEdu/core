@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
-        if ($result->rowCount() == 0) {
+        if (!$result || $result->rowCount() == 0) {
             //Acess denied
             echo "<div class='error'>";
             echo __($guid, 'You do not have access to this action.');
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     //Check if school year specified
-    if ($gibbonActivityID == 'Y') {
+    if ($gibbonActivityID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'].'&search='.$_GET['search'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Name') ?></b><br/>
 						</td>
 						<td class="right">
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     if ($dateType == 'Date') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     } else {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Terms') ?></b><br/>
 							</td>
 							<td class="right">
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             		?>
 				</table>
 			</form>
-			
+
 			<?php
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
             try {

@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $residencyStatus = $_POST['residencyStatus'];
     $departureReasons = $_POST['departureReasons'];
     $privacy = $_POST['privacy'];
-    $privacyBlurb = $_POST['privacyBlurb'];
-    $privacyOptions = $_POST['privacyOptions'];
+    $privacyBlurb = (isset($_POST['privacyBlurb'])) ? $_POST['privacyBlurb'] : null;
+    $privacyOptions = (isset($_POST['privacyOptions'])) ? $_POST['privacyOptions'] : null;
     $personalBackground = $_POST['personalBackground'];
     $dayTypeOptions = $_POST['dayTypeOptions'];
     $dayTypeText = $_POST['dayTypeText'];

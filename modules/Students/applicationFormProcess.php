@@ -27,6 +27,11 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
+//Check to see if system settings are set from databases
+if (empty($_SESSION[$guid]['systemSettingsSet'])) {
+    getSystemSettings($guid, $connection2);
+}
+
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
@@ -677,20 +682,27 @@ if ($proceed == false) {
                         if ($_FILES["file$i"]['tmp_name'] != '') {
                             //Check for folder in uploads based on today's date
                             $path = $_SESSION[$guid]['absolutePath'];
-                            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
+                            $directory = 'uploads/'.date('Y', $time).'/'.date('m', $time);
+                            if (is_dir($path.'/'.$directory) == false) {
+                                mkdir($path.'/'.$directory, 0775, true);
                             }
                             $unique = false;
                             $count = 0;
                             while ($unique == false and $count < 100) {
                                 $suffix = randomPassword(16);
-                                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
+                                $attachment = $directory."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
                                 if (!(file_exists($path.'/'.$attachment))) {
                                     $unique = true;
                                 }
                                 ++$count;
                             }
                             if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
+                                // Make one more attempt at moving the file, using gibbon root path
+                                $basePath = str_replace('\\', '/', dirname(__FILE__));
+                                $basePath = str_replace('modules/Students', '', $basePath);
+                                $basePath = rtrim($basePath, '/');
+
+                                move_uploaded_file($_FILES["file$i"]['tmp_name'], $basePath.'/'.$attachment);
                             }
 
                             //Write files to database

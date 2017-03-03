@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
-        if ($result->rowCount() == 0) {
+        if (!$result || $result->rowCount() == 0) {
             //Acess denied
             echo "<div class='error'>";
             echo __($guid, 'You do not have access to this action.');
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             return;
         }
     }
-    
+
     echo "<div class='trail'>";
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_manage.php'>Manage Activities</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$_GET['gibbonActivityID'].'&search='.$_GET['search']."'>Activity Enrolment</a> > </div><div class='trailEnd'>Edit Enrolment</div>";
     echo '</div>';

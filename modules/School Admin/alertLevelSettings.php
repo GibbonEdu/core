@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -44,101 +46,66 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     }
 
     //Let's go!
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php'?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<?php
-            $count = 0;
-    while ($row = $result->fetch()) {
-        ?>
-				<tr class='break'>
-					<td colspan=2> 
-						<h3><?php echo __($guid, $row['name']) ?></h3>
-					</td>
-				</tr>
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php echo __($guid, 'Name') ?> *</b>
-					</td>
-					<td class="right">
-						<input type='hidden' name="<?php echo 'gibbonAlertLevelID'.$count ?>" id="<?php echo 'gibbonAlertLevelID'.$count ?>" value="<?php echo $row['gibbonAlertLevelID'] ?>">
-						<input type='text' name="<?php echo 'name'.$count ?>" id="<?php echo 'name'.$count ?>" maxlength=50 value="<?php echo __($guid, $row['name']) ?>" class="standardWidth">
-						<script type="text/javascript">
-							var <?php echo 'name'.$count ?>=new LiveValidation('<?php echo 'name'.$count ?>');
-							<?php echo 'name'.$count ?>.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Short Name') ?> *</b>
-					</td>
-					<td class="right">
-						<input type='text' name="<?php echo 'nameShort'.$count ?>" id="<?php echo 'nameShort'.$count ?>" maxlength=4 value="<?php echo $row['nameShort'] ?>" class="standardWidth">
-						<script type="text/javascript">
-							var <?php echo 'nameShort'.$count ?>=new LiveValidation('<?php echo 'nameShort'.$count ?>');
-							<?php echo 'nameShort'.$count ?>.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Font/Border Color') ?> *</b><br/>
-						<span class="emphasis small">RGB Hex value, without leading #.</span>
-					</td>
-					<td class="right">
-						<input type='text' name="<?php echo 'color'.$count ?>" id="<?php echo 'color'.$count ?>" maxlength=6 value="<?php echo $row['color'] ?>" class="standardWidth">
-						<script type="text/javascript">
-							var <?php echo 'color'.$count ?>=new LiveValidation('<?php echo 'color'.$count ?>');
-							<?php echo 'color'.$count ?>.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Background Color') ?> *</b><br/>
-						<span class="emphasis small">RGB Hex value, without leading #.</span>
-					</td>
-					<td class="right">
-						<input type='text' name="<?php echo 'colorBG'.$count ?>" id="<?php echo 'colorBG'.$count ?>" maxlength=6 value="<?php echo $row['colorBG'] ?>" class="standardWidth">
-						<script type="text/javascript">
-							var <?php echo 'colorBG'.$count ?>=new LiveValidation('<?php echo 'colorBG'.$count ?>');
-							<?php echo 'colorBG'.$count ?>.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-					</td>
-					<td class="right">
-						<input readonly type='text' name="<?php echo 'sequenceNumber'.$count ?>" id="<?php echo 'sequenceNumber'.$count ?>" maxlength=4 value="<?php echo $row['sequenceNumber'] ?>" class="standardWidth">
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2> 
-						<b>Description </b> 
-						<textarea name='<?php echo 'description'.$count ?>' id='<?php echo 'description'.$count ?>' rows=5 style='width: 300px'><?php echo __($guid, $row['description']) ?></textarea>
-					</td>
-				</tr>
-				<?php
-                ++$count;
-			}
-			?>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="count" value="<?php echo $count ?>">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $count = 0;
+    while ($rowSQL = $result->fetch()) {
+        $row = $form->addRow()->addHeading($rowSQL['name']);
+
+        $form->addHiddenValue('gibbonAlertLevelID'.$count, $rowSQL['gibbonAlertLevelID']);
+
+        $row = $form->addRow();
+        	$row->addLabel('name'.$count, 'Name');
+    		$row->addTextField('name'.$count)
+            ->setValue($rowSQL['name'])
+            ->maxLength(50)
+            ->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel('nameShort'.$count, 'Short Name');
+    		$row->addTextField('nameShort'.$count)
+            ->setValue($rowSQL['nameShort'])
+            ->maxLength(4)
+            ->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel('color'.$count, 'Font/Border Color')->description('RGB Hex value, without leading #.');
+    		$row->addTextField('color'.$count)
+                ->setValue($rowSQL['color'])
+                ->maxLength(6)
+                ->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel('colorBG'.$count, 'Background Color')->description('RGB Hex value, without leading #.');
+    		$row->addTextField('colorBG'.$count)
+                ->setValue($rowSQL['colorBG'])
+                ->maxLength(6)
+                ->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel('sequenceNumber'.$count, 'Sequence Number');
+    		$row->addTextField('sequenceNumber'.$count)
+            ->setValue($rowSQL['sequenceNumber'])
+            ->maxLength(4)
+            ->readonly()
+            ->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel('description'.$count, 'Description');
+            $row->addTextArea('description'.$count)->setValue($rowSQL['description']);
+
+        $count++;
+    }
+
+    $form->addHiddenValue('count', $count);
+
+    $row = $form->addRow();
+		$row->addFooter();
+		$row->addSubmit();
+
+	echo $form->getOutput();
 
 }
 ?>

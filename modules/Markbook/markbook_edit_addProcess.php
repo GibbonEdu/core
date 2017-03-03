@@ -172,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
         // Build the initial column counts for this class
         try {
-            $dataSequence = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
-            $sqlSequence = 'SELECT max(sequenceNumber) as max FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
+            $dataSequence = array('gibbonCourseClassID' => $gibbonCourseClassID);
+            $sqlSequence = 'SELECT max(sequenceNumber) as max FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID';
             $resultSequence = $connection2->prepare($sqlSequence);
             $resultSequence->execute($dataSequence);
         } catch (PDOException $e) {
@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             exit();
         }
 
-        if ($resultSequence->rowCount() == 1) {
+        if ($resultSequence && $resultSequence->rowCount() > 0) {
             $sequenceNumber = $resultSequence->fetchColumn() + 1;
         }
 

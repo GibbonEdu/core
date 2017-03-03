@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 $enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
@@ -37,434 +39,76 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    ?>
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviourSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Descriptors') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableDescriptors'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<script type="text/javascript">
-				$(document).ready(function(){
-					 $("#enableDescriptors").click(function(){
-						if ($('#enableDescriptors').val()=="Y" ) {
-							$("#positiveRow").slideDown("fast", $("#positiveRow").css("display","table-row"));
-							$("#negativeRow").slideDown("fast", $("#negativeRow").css("display","table-row"));
+    $form = Form::create('behaviourSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviourSettingsProcess.php');
 
-						} else {
-							$("#positiveRow").css("display","none");
-							$("#negativeRow").css("display","none");
-						}
-					 });
-				});
-			</script>
-			<tr id='positiveRow' <?php if ($enableDescriptors == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr id='negativeRow' <?php if ($enableDescriptors == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $row = $form->addRow()->addHeading('Descriptors');
 
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Levels') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableLevels'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<script type="text/javascript">
-				$(document).ready(function(){
-					 $("#enableLevels").click(function(){
-						if ($('#enableLevels').val()=="Y" ) {
-							$("#levelsRow").slideDown("fast", $("#levelsRow").css("display","table-row"));
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
-						} else {
-							$("#levelsRow").css("display","none");
-						}
-					 });
-				});
-			</script>
-			<tr id='levelsRow' <?php if ($enableLevels == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='levels'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
+    $form->toggleVisibilityByClass('descriptors')->onSelect($settingByScope['name'])->when('Y');
 
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors', true);
+    $row = $form->addRow()->addClass('descriptors');
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
 
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Behaviour Letters') ?></h3>
-					<p><?php echo sprintf(__($guid, 'By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]') ?></p>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableBehaviourLetters'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<script type="text/javascript">
-				$(document).ready(function(){
-					 $("#enableBehaviourLetters").click(function(){
-						if ($('#enableBehaviourLetters').val()=="Y" ) {
-							$("#behaviourLettersLetter1CountRow").slideDown("fast", $("#behaviourLettersLetter1CountRow").css("display","table-row"));
-							$("#behaviourLettersLetter1TextRow").slideDown("fast", $("#behaviourLettersLetter1TextRow").css("display","table-row"));
-							$("#behaviourLettersLetter2CountRow").slideDown("fast", $("#behaviourLettersLetter2CountRow").css("display","table-row"));
-							$("#behaviourLettersLetter2TextRow").slideDown("fast", $("#behaviourLettersLetter2TextRow").css("display","table-row"));
-							$("#behaviourLettersLetter3CountRow").slideDown("fast", $("#behaviourLettersLetter3CountRow").css("display","table-row"));
-							$("#behaviourLettersLetter3TextRow").slideDown("fast", $("#behaviourLettersLetter3TextRow").css("display","table-row"));
-							behaviourLettersLetter1Count.enable() ;
-							behaviourLettersLetter1Text.enable() ;
-							behaviourLettersLetter2Count.enable() ;
-							behaviourLettersLetter2Text.enable() ;
-							behaviourLettersLetter3Count.enable() ;
-							behaviourLettersLetter3Text.enable() ;
-						} else {
-							$("#behaviourLettersLetter1CountRow").css("display","none");
-							$("#behaviourLettersLetter1TextRow").css("display","none");
-							$("#behaviourLettersLetter2CountRow").css("display","none");
-							$("#behaviourLettersLetter2TextRow").css("display","none");
-							$("#behaviourLettersLetter3CountRow").css("display","none");
-							$("#behaviourLettersLetter3TextRow").css("display","none");
-							behaviourLettersLetter1Count.disable() ;
-							behaviourLettersLetter1Text.disable() ;
-							behaviourLettersLetter2Count.disable() ;
-							behaviourLettersLetter2Text.disable() ;
-							behaviourLettersLetter3Count.disable() ;
-							behaviourLettersLetter3Text.disable() ;
-						}
-					 });
-				});
-			</script>
-			<tr id='behaviourLettersLetter1CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Count'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-						<?php
-                        for ($i = 1; $i <= 20; ++$i) {
-                            ?>
-							<option <?php if ($i == $row['value']) { echo 'selected'; } ?> value="<?php echo $i ?>"><?php echo $i ?></option>
-						<?php
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors', true);
+    $row = $form->addRow()->addClass('descriptors');
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
 
-                        }
-   				 		?>
-					</select>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script>
-				</td>
-			</tr>
-			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Text'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script>
-				</td>
-			</tr>
-			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Count'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-						<?php
-                        for ($i = 1; $i <= 20; ++$i) {
-                            ?>
-							<option <?php if ($i == $row['value']) { echo 'selected'; } ?> value="<?php echo $i ?>"><?php echo $i ?></option>
-						<?php
+    $row = $form->addRow()->addHeading('Levels');
 
-                        }
-   				 		?>
-					</select>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script>
-				</td>
-			</tr>
-			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Text'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script>
-				</td>
-			</tr>
-			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Count'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-						<?php
-                        for ($i = 1; $i <= 20; ++$i) {
-                            ?>
-							<option <?php if ($i == $row['value']) { echo 'selected'; } ?> value="<?php echo $i ?>"><?php echo $i ?></option>
-						<?php
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'enableLevels', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
-                        }
-   				 		?>
-					</select>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script>
-				</td>
-			</tr>
-			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Text'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
-					</script>
-				</td>
-			</tr>
+    $form->toggleVisibilityByClass('levels')->onSelect($settingByScope['name'])->when('Y');
 
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'levels', true);
+    $row = $form->addRow()->addClass('levels');
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
 
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='policyLink'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
-					<script type="text/javascript">
-						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-						<?php echo $row['name'] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script>
-				</td>
-			</tr>
+    $row = $form->addRow()->addHeading('Behaviour Letters')->append(sprintf(__($guid, 'By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]'));
 
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-<?php
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
 
+    $form->toggleVisibilityByClass('behaviourLetters')->onSelect($settingByScope['name'])->when('Y');
+
+    for ($i = 1;$i < 4;++$i) {
+        $settingByScope = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Count', true);
+        $row = $form->addRow()->addClass('behaviourLetters');
+            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+            $row->addSelect($settingByScope['name'])->fromString('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')->selected($settingByScope['value'])->isRequired();
+
+        $settingByScope = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Text', true);
+        $row = $form->addRow()->addClass('behaviourLetters');
+            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+            $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+    }
+
+    $row = $form->addRow()->addHeading('Miscellaneous');
+
+    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'policyLink', true);
+    $row = $form->addRow();
+        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
+        $row->addURL($settingByScope['name'])->setValue($settingByScope['value']);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
 ?>

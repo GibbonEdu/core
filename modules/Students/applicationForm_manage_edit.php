@@ -2342,6 +2342,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<?php
             		}
 					$requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+                    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
+                    if ($internalDocuments != '') {
+                        $requiredDocuments .= ','.$internalDocuments;
+                    }
 					$requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
 					$count = 0;
 					if ($requiredDocuments != '' and $requiredDocuments != false) {
@@ -2368,60 +2372,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
 						$requiredDocumentsList = explode(',', $requiredDocuments);
 						foreach ($requiredDocumentsList as $document) {
-							try {
-								$dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $document);
-								$sqlFile = 'SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name';
-								$resultFile = $connection2->prepare($sqlFile);
-								$resultFile->execute($dataFile);
-							} catch (PDOException $e) {
-							}
-							if ($resultFile->rowCount() == 0) {
-								?>
-								<tr>
-									<td>
-										<b><?php echo $document;
-										if ($requiredDocumentsCompulsory == 'Y') {
-											echo ' *';
-										}
-										?></b><br/>
-									</td>
-									<td class="right">
-										<?php
-                                        echo "<input type='file' name='file$count' id='file$count'><br/>";
-										echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
-										if ($requiredDocumentsCompulsory == 'Y') {
-											echo "<script type='text/javascript'>";
-											echo "var file$count=new LiveValidation('file$count');";
-											echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
-											echo "file$count.add(Validate.Presence);";
-											echo '</script>';
-										}
-										++$count;
-										?>
-									</td>
-								</tr>
-								<?php
+                            	?>
+							<tr>
+								<td>
+									<b><?php echo $document;
+									if ($requiredDocumentsCompulsory == 'Y') {
+										echo ' *';
+									}
+									?></b><br/>
+								</td>
+								<td class="right">
+									<?php
+                                    try {
+        								$dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $document);
+        								$sqlFile = 'SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name';
+        								$resultFile = $connection2->prepare($sqlFile);
+        								$resultFile->execute($dataFile);
+        							} catch (PDOException $e) { }
+        							while ($rowFile = $resultFile->fetch()) {
+                                        echo "<div style='margin-bottom: 5px'><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowFile['path']."'>".__('Download Document')."</a></div>";
+                                    }
 
-							} elseif ($resultFile->rowCount() == 1) {
-								$rowFile = $resultFile->fetch();
-								?>
-								<tr>
-									<td>
-										<?php echo '<b>'.$rowFile['name'].'</b><br/>' ?>
-										<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-									</td>
-									<td class="right">
-										<?php
-                                        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowFile['path']."'>Download</a>";
-                       					 ?>
-									</td>
-								</tr>
-								<?php
-
-							} else {
-								//Error
-							}
-						}
+                                    echo "<input type='file' name='file$count' id='file$count'><br/>";
+									echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
+									if ($requiredDocumentsCompulsory == 'Y') {
+										echo "<script type='text/javascript'>";
+										echo "var file$count=new LiveValidation('file$count');";
+										echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
+										echo "file$count.add(Validate.Presence);";
+										echo '</script>';
+									}
+									++$count;
+									?>
+								</td>
+							</tr>
+							<?php
+                        }
 					}
 					if ($count > 0) {
 						?>

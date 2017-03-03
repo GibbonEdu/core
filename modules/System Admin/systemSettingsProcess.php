@@ -37,6 +37,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     //Proceed!
     $absoluteURL = $_POST['absoluteURL'];
@@ -75,9 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationEmail == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
+        exit;
     } else {
         //Write to database
         $fail = false;
+        $partialFail = false;
 
         try {
             $data = array('absoluteURL' => $absoluteURL);
@@ -310,13 +313,24 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         }
 
+        // Validate before changing
+        $validTimezone = true;
         try {
-            $data = array('timezone' => $timezone);
-            $sql = "UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
+            new DateTimeZone($timezone);
+        } catch(Exception $e) {
+            $validTimezone = false;
+            $partialFail = true;
+        }
+
+        if ($validTimezone) {
+            try {
+                $data = array('timezone' => $timezone);
+                $sql = "UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
         }
 
         try {
@@ -425,11 +439,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         if ($fail == true) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
+            exit;
+        } elseif ($partialFail == true) {
+            $URL .= '&return=warning1';
+            header("Location: {$URL}");
+            exit;
         } else {
             getSystemSettings($guid, $connection2);
             $_SESSION[$guid]['pageLoads'] = null;
             $URL .= '&return=success0';
             header("Location: {$URL}");
+            exit;
         }
     }
 }

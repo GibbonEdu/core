@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             if ($row['role'] == '') {
                 echo 'Student';
             } else {
-                echo $row['role'];
+                echo __($guid, $row['role']);
             }
             echo '</td>';
             echo '<td>';
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             }
             echo '</td>';
             echo '<td>';
-            if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php')) {
+            if ($row['role'] == 'Organiser' && isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php')) {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID']."&search='><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             }
 
