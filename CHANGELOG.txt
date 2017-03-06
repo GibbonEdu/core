@@ -47,6 +47,7 @@ v14.0.00
 		Attendance: added settings to determine pre-filling of attendance in different contexts
 		Attendance: added settings to determine default type in different contexts
 		Attendance: added dynamic legend for Student History report
+		Finance: added ability to bulk issue invoices without sending email
 		Library: added new type to store Audio/Visual equipment
 		Markbook: Added a class average row to the bottom of markbook views (when Weighting is enabled)
 		Students: added ability to store internal documents against student application forms

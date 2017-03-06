@@ -825,15 +825,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									} catch (PDOException $e) {
 									}
 									while ($rowSelect = $resultSelect->fetch()) {
-										echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep($rowSelect['printable_name']).'</option>';
+										$selected = ($rowSelect['printable_name'] == $row['citizenship1'])? 'selected' : '';
+										echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep($rowSelect['printable_name']).'</option>';
 									}
 								} else {
 									$nationalities = explode(',', $nationalityList);
 									foreach ($nationalities as $nationality) {
-										$selected = '';
-										if (trim($nationality) == $row['citizenship1']) {
-											$selected = 'selected';
-										}
+										$selected = (trim($nationality) == $row['citizenship1'])? 'selected' : '';
 										echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 									}
 								}
@@ -1657,15 +1655,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 											} catch (PDOException $e) {
 											}
 											while ($rowSelect = $resultSelect->fetch()) {
-												echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+												$selected = ($rowSelect['printable_name'] == $row['parent'.$i.'citizenship1'])? 'selected' : '';
+												echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 											}
 										} else {
 											$nationalities = explode(',', $nationalityList);
 											foreach ($nationalities as $nationality) {
-												$selected = '';
-												if (trim($nationality) == $row['parent'.$i.'citizenship1']) {
-													$selected = 'selected';
-												}
+												$selected = (trim($nationality) == $row['parent'.$i.'citizenship1'])? 'selected' : '';
 												echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 											}
 										}
@@ -1701,7 +1697,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<?php
                                     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 									if ($residencyStatusList == '') {
-										echo "<input name='parent".$i."residencyStatus' id='parent".$i."residencyStatus' maxlength=30 value='".$row['residencyStatus']."' type='text' style='width: 300px'>";
+										echo "<input name='parent".$i."residencyStatus' id='parent".$i."residencyStatus' maxlength=30 value='".$row['parent'.$i.'residencyStatus']."' type='text' style='width: 300px'>";
 									} else {
 										echo "<select name='parent".$i."residencyStatus' id='parent".$i."residencyStatus' style='width: 302px'>";
 										echo "<option value=''></option>";
