@@ -282,7 +282,7 @@ else {
 		    				</h3>
 		    			<?php endif; ?>
 	    				<p>
-	    					Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opporunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.
+	    					Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.
 	    				</p>
 	    				<p>
 	    					<b style='color:#c0292d;'>Processing and issuing of Photo IDs will begin mid to late March 2017.</b>
