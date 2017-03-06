@@ -76,7 +76,7 @@ class AcceptanceTester extends \Codeception\Actor
 
     public function grabValueFromURL($param)
     {
-        return $this->grabFromCurrentUrl('/'.$param.'=(\d+)/');
+        return $this->grabFromCurrentUrl('/'.$param.'=([^=&\s]+)/');
     }
 
     public function grabEditIDFromURL()
