@@ -3,7 +3,6 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('submit a student application form');
 
 $I->amOnPage('/index.php?q=/modules/Students/applicationForm.php');
-
 $I->seeBreadcrumb('Application Form');
 
 // Fill in Form ------------------------------------------------
@@ -137,10 +136,20 @@ $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your application was successfully submitted', '.success');
 
 $applicationFormHash = $I->grabValueFromURL('id');
-$applicationFormID = $I->grabTextFrom('.success b u');
+$gibbonApplicationFormID = $I->grabTextFrom('.success b u');
+$gibbonSchoolYearID = $I->grabFromDatabase('gibbonApplicationForm', 'gibbonSchoolYearIDEntry', array('gibbonApplicationFormID' => $gibbonApplicationFormID));
 
 // Verify ------------------------------------------------
 $I->loginAsAdmin();
-$I->amOnPage('/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID='.$applicationFormID.'&gibbonSchoolYearID=011');
+$I->amOnPage('/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID='.$gibbonApplicationFormID.'&gibbonSchoolYearID='.$gibbonSchoolYearID);
+$I->seeBreadcrumb('Edit Form');
 
 $I->seeInFormFields('#content form', $formValues);
+
+// Cleanup ------------------------------------------------
+
+$I->amOnPage('/index.php?q=/modules/Students/applicationForm_manage_delete.php&gibbonApplicationFormID='.$gibbonApplicationFormID.'&gibbonSchoolYearID='.$gibbonSchoolYearID);
+$I->seeBreadcrumb('Delete Form');
+
+$I->click('Yes');
+$I->see('Your request was completed successfully.', '.success');
