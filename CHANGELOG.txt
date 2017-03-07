@@ -54,7 +54,8 @@ v14.0.00
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
-		Students: added settable thresholds for issue academic alerts
+		Students: added settable thresholds for issuing academic alerts
+		Students: added settable thresholds for issuing behaviour alerts
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 
 v13.0.01
