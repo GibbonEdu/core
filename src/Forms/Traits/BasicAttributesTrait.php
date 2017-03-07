@@ -89,7 +89,7 @@ trait BasicAttributesTrait
      * @param    [type]  $attributes
      * @return   [type]
      */
-    protected function getAttributeString() {
+    public function getAttributeString() {
         $attributes = $this->getAttributeArray();
 
         $output = implode(' ', array_map(
