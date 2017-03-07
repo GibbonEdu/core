@@ -48,6 +48,7 @@ v14.0.00
 		Attendance: added settings to determine default type in different contexts
 		Attendance: added dynamic legend for Student History report
 		Finance: added ability to bulk issue invoices without sending email
+		Finance: tweaked interface for display of payment log to make it more usable
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: Added a class average row to the bottom of markbook views (when Weighting is enabled)
