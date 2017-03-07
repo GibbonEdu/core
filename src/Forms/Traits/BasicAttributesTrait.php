@@ -40,6 +40,17 @@ trait BasicAttributesTrait
         return $this->getAttribute('id');
     }
 
+    public function setTitle($title = '')
+    {
+        $this->setAttribute('title', $title);
+        return $this;
+    }
+
+    public function getTitle()
+    {
+        return $this->getAttribute('title');
+    }
+
     public function setClass($class = '')
     {
         $this->setAttribute('class', $class);
