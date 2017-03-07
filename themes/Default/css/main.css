@@ -1301,6 +1301,12 @@ select[multiple] {
 	width:auto;
 }
 
+.formTable input,
+.formTable select,
+.formTable textarea {
+	float: left;
+}
+
 
 table tr.heading td {
 	padding:15px 5px 15px 5px !important;
