@@ -40,6 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     $noteCreationNotification = 'Tutors';
     if ($_POST['noteCreationNotification'] == 'Tutors & Teachers')
         $noteCreationNotification = 'Tutors & Teachers';
+    $academicAlertLowThreshold = $_POST['academicAlertLowThreshold'];
+    $academicAlertMediumThreshold = $_POST['academicAlertMediumThreshold'];
+    $academicAlertHighThreshold = $_POST['academicAlertHighThreshold'];
     $extendedBriefProfile = $_POST['extendedBriefProfile'];
     $studentAgreementOptions = '';
     foreach (explode(',', $_POST['studentAgreementOptions']) as $agreement) {
@@ -62,6 +65,33 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     try {
         $data = array('value' => $noteCreationNotification);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='noteCreationNotification'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $academicAlertLowThreshold);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='academicAlertLowThreshold'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $academicAlertMediumThreshold);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='academicAlertMediumThreshold'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $academicAlertHighThreshold);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='academicAlertHighThreshold'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
