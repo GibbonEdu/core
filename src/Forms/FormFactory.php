@@ -75,6 +75,11 @@ class FormFactory implements FormFactoryInterface
 
     /* BASIC INPUT --------------------------- */
 
+    public function createCustomField($name, $fields = array())
+    {
+        return new Input\CustomField($this, $name, $fields);
+    }
+
     public function createTextArea($name)
     {
         return new Input\TextArea($name);

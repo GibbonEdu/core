@@ -318,29 +318,39 @@ if ($proceed == false) {
 
     // PREVIOUS SCHOOLS TABLE
     $table = $form->addRow()->addTable();
-        $header = $table->addHeaderRow();
-        $header->addContent(__('School Name'));
-        $header->addContent(__('Address'));
-        $header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
-        $header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
-        $header->addContent(__('Joining Date'))->append('<br/>'.$_SESSION[$guid]['i18n']['dateFormat']);
 
-        // Grab some languages, for auto-complete
-        $results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
-        $languages = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
+    $header = $table->addHeaderRow();
+    $header->addContent(__('School Name'));
+    $header->addContent(__('Address'));
+    $header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
+    $header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
+    $header->addContent(__('Joining Date'))->append('<br/>'.$_SESSION[$guid]['i18n']['dateFormat']);
 
-        for ($i = 1; $i < 3; ++$i) {
-            $row = $table->addRow();
-            $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(20);
-            $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
-            $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
-            $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
-            $row->addDate('schoolDate'.$i)->setSize(10);
-        }
+    // Grab some languages, for auto-complete
+    $results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
+    $languages = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
+
+    for ($i = 1; $i < 3; ++$i) {
+        $row = $table->addRow();
+        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(20);
+        $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
+        $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
+        $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
+        $row->addDate('schoolDate'.$i)->setSize(10);
+    }
 
     //CUSTOM FIELDS FOR STUDENT
+    $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
+    if ($resultFields->rowCount() > 0) {
+        $heading = $form->addRow()->addSubheading('Other Information');
 
-    echo 'FOOOOO';
+        while ($rowFields = $resultFields->fetch()) {
+            $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+            $row = $form->addRow();
+                $row->addLabel($name, $rowFields['name']);
+                $row->addCustomField($name, $rowFields);
+        }
+    }
 
     $row = $form->addRow();
         $row->addLabel('', __(''))->description('');
