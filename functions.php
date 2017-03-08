@@ -382,16 +382,16 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
 
     if (isset($_SESSION[$guid]['username']) == false) {
 
+        if ($_SESSION[$guid]['webLink'] != '') {
+            $return .= __($guid, 'Return to')." <a target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
+        }
+
         // Add a link to go back to the system/personal default language, if we're not using it
         if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
             if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
                 $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
-                $return .= "<a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a> . ';
+                $return .= " . <a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a>';
             }
-        }
-
-        if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= __($guid, 'Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
         }
     } else {
         $name = $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
@@ -405,14 +405,6 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
         }
         $return .= $name.' . ';
 
-        // Add a link to go back to the system/personal default language, if we're not using it
-        if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
-            if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
-                $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
-                $return .= "<a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a> . ';
-            }
-        }
-
         $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
@@ -422,6 +414,14 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
         }
         if ($_SESSION[$guid]['website'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__($guid, 'My Website').'</a>';
+        }
+
+        // Add a link to go back to the system/personal default language, if we're not using it
+        if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
+            if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
+                $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
+                $return .= " . <a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a>';
+            }
         }
 
         //Check for house logo (needed to get bubble, below, in right spot)
