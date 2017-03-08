@@ -48,13 +48,15 @@ v14.0.00
 		Attendance: added settings to determine default type in different contexts
 		Attendance: added dynamic legend for Student History report
 		Finance: added ability to bulk issue invoices without sending email
+		Finance: tweaked interface for display of payment log to make it more usable
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: Added a class average row to the bottom of markbook views (when Weighting is enabled)
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
-		Students: added settable thresholds for issue academic alerts
+		Students: added settable thresholds for issuing academic alerts
+		Students: added settable thresholds for issuing behaviour alerts
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 
 v13.0.01
