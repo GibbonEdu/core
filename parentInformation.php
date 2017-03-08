@@ -101,6 +101,67 @@ if (!empty($_SESSION[$guid]['username'])) {
 	$email = $_SESSION[$guid]['email'];
 }
 
+
+$translation = array();
+
+if ($gibbon->locale->getLocale() == 'zh_HK') {
+	$translation['step1']            	   = "第一步";
+	$translation['step1-subheading'] 	   = "確認帳戶";
+	$translation['step1-message']          = "於登入前請先提供以下幾項資料以便確認帳號。資料獲確認後，  閣下會收到學校發出之電郵，通知家長登入Gibbon帳戶上載家庭成員照片。";
+	$translation['step1-email']            = "家長電郵地址";
+	$translation['step1-birthday']         = "子女生日日期";
+	$translation['step1-birthday-message'] = "登入之帳號將設定為  貴子女之生日日期。若  閣下有多於一位孩子就讀本校，請以最年長的子女之生日日期為登入帳號。";
+	$translation['step2']                  = "第二步";
+	$translation['step2-subheading']       = "上載家庭成員照片";
+	$translation['step2-message']          = "請為需要申請家長證之家庭成員及家務助理上傳照片（照片規格為「證件照」），家長證只供有相片上載之人士申請。當前沒有照片可供上傳者，可於稍後再行上傳。請注意：有上傳照片之家庭成員可快速辦理家長證。";
+	$translation['step2-dates']            = "家長證將於2017年3月底前開始辦理。";
+	$translation['step2-photo-heading']    = "照片規格：";
+	$translation['step2-photo-message']    = "上載之照片最好為證件照大小、人像清晰、背景簡單。照片上傳後可自行縮放大小，以符合要求之尺寸。若上傳之照片人像不清晰，將不能辦理家長證。";
+	$translation['step2-add-heading']      = "附加照片";
+	$translation['step2-add-message']      = "家長可為會前來學校接送子女之家庭成員或家務助理申請家長證，家長證僅發放予有相片存檔的人士。而學校已有學生照片存檔，家長無須上傳  貴子女之照片。";
+	$translation['step2-add-person']      = "申請者照片";
+	$translation['step2-photo']            = "照片";
+	$translation['step2-name']             = "姓名（身份證明文件姓名）";
+	$translation['step2-relationship']     = "關係";
+	$translation['step2-helper']           = "助理";
+	$translation['step2-driver']           = "司機";
+	$translation['step2-family']           = "家人";
+	$translation['step2-other']            = "其他";
+	$translation['step2-final-message']    = "提交帳號資料後，<b style='color:#c0292d;'>會即時收到學校發出之電郵</b>。若數分鐘後仍未收到有關電郵，請查看  閣下電子電箱內之「垃圾郵件」。";
+	$translation['required-message']       = "* 必需填寫";
+	$translation['submit']                 = "提交";
+	$translation['confirm-success']        = "成功確認帳戶，請繼續下一步。完成資料輸入後請按「提交」按鍵";
+	$translation['confirm-error']          = '若資料提交出現錯誤，由於  閣下所填寫之電郵地址與學校紀錄之電郵地址資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+} else {
+	$translation['step1']                  = "Step 1";
+	$translation['step1-subheading']       = "Account Confirmation";
+	$translation['step1-message']          = "Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.";
+	$translation['step1-email']            = "Your Email Address";
+	$translation['step1-birthday']         = "Child's Birthdate";
+	$translation['step1-birthday-message'] = "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.";
+	$translation['step2']                  = "Step 2";
+	$translation['step2-subheading']       = "Upload Family Member Photos";
+	$translation['step2-message']          = "Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.";
+	$translation['step2-dates']            = "Processing and issuing of Photo IDs will begin mid to late March 2017.";
+	$translation['step2-photo-heading']    = "Photo Instructions:";
+	$translation['step2-photo-message']    = "For the best results your photos should be passport-sized, good quality and on a plain background. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.";
+	$translation['step2-add-heading']      = "Additional Photos";
+	$translation['step2-add-message']      = "You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.";
+	$translation['step2-add-person']      = "Additional Person";
+	$translation['step2-photo']            = "Photo";
+	$translation['step2-name']             = "Name (Legal name)";
+	$translation['step2-relationship']     = "Relationship";
+	$translation['step2-helper']           = "Helper";
+	$translation['step2-driver']           = "Driver";
+	$translation['step2-family']           = "Family";
+	$translation['step2-other']            = "Other";
+	$translation['step2-final-message']    = "After pressing submit <b style='color:#c0292d;'>your login details will be emailed to you</b>. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there. ";
+	$translation['required-message']       = "* denotes a required field";
+	$translation['submit']                 = "Submit";
+	$translation['confirm-success']        = "Account confirmation successful, please continue. Be sure to click Submit when you've completed this form.";
+	$translation['confirm-error']          = 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
+}
+
 $returns = array();
 $returns['error0'] = __($guid, 'Email address not set.');
 $returns['error3'] = __($guid, 'Failed to send update email.');
@@ -109,12 +170,14 @@ $returns['error5'] = __($guid, 'Your request failed due to incorrect or non-exis
 $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
 $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
 $returns['error8'] = __($guid, 'Your request failed because the birthdate supplied does not match the one in our records, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
-$returns['error9'] = __($guid, 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
-$returns['success0'] = __($guid, 'Account confirmation successfully initiated, please check your email. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.');
+$returns['error9'] = sprintf($translation['confirm-error'], '<a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
+$returns['success0'] = $translation['confirm-success'];
 if (isset($_GET['return'])) {
     returnProcess($guid, $_GET['return'], null, $returns);
     if (stripos($_GET['return'], 'success') !== false) return;
 }
+
+
 
 if ($step == 1) { ?>
 
@@ -123,16 +186,16 @@ if ($step == 1) { ?>
 			<tr class='break'>
     			<td colspan=2>
     				<h3>
-    					Step 1 &nbsp;<small>Account Confirmation</small>
+    					<?php echo $translation['step1']; ?> &nbsp;<small><?php echo $translation['step1-subheading']; ?></small>
     				</h3>
     				<p>
-						Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.
+						<?php echo $translation['step1-message']; ?>
 					</p>
     			</td>
     		</tr>
 			<tr>
 				<td style="width:160px;">
-					<b><?php echo __($guid, "Your Email Address");?></b>
+					<b><?php echo $translation['step1-email']; ?></b>
 				</td>
 				<td class="right">
 					<input name="email" id="email" type="text" style="width:97.5%" value="<?php echo $email; ?>">
@@ -145,13 +208,13 @@ if ($step == 1) { ?>
 			<tr>
 				<td colspan="2">
 				<br/><p>
-					<?php echo __($guid, "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.");?>
+					<?php echo $translation['step1-birthday-message']; ?>
 					</td>
 				</p>
 			</tr>
 			<tr>
 				<td>
-					<b><?php echo __($guid, "Child's Birthdate");?></b>
+					<b><?php echo $translation['step1-birthday']; ?></b>
 				</td>
 				<td class="right">
 
@@ -196,7 +259,7 @@ if ($step == 1) { ?>
 			<tr>
 				<td colspan="2" class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>"  style='font-size: 16px;padding:6px 10px;height:auto;'>
+					<input type="submit" value="<?php echo $translation['submit']; ?>"  style='font-size: 16px;padding:6px 10px;height:auto;'>
 				</td>
 			</tr>
 		</table>
@@ -257,7 +320,7 @@ else {
 
 		if (empty($_SESSION[$guid]['username'])) {
 			echo "<div class='success'>";
-			echo __($guid, 'Account confirmation successfull, please continue. Be sure to click <b>Submit</b> when you\'ve completed this form.');
+			echo $translation['confirm-success'];
 			echo '</div>';
 		}
 
@@ -278,18 +341,18 @@ else {
 	    			<td colspan=3>
 	    				<?php if (empty($_SESSION[$guid]['username'])) : ?>
 		    				<h3>
-		    					Step 2 &nbsp;<small>Upload Family Member Photos</small>
+		    					<?php echo $translation['step2']; ?> &nbsp;<small><?php echo $translation['step2-subheading']; ?></small>
 		    				</h3>
 		    			<?php endif; ?>
 	    				<p>
-	    					Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.
+	    					<?php echo $translation['step2-message']; ?>
 	    				</p>
 	    				<p>
-	    					<b style='color:#c0292d;'>Processing and issuing of Photo IDs will begin mid to late March 2017.</b>
+	    					<b style='color:#c0292d;'><?php echo $translation['step2-dates']; ?></b>
 	    				</p>
-	    				<h4>Photo Instructions:</h4>
+	    				<h4><?php echo $translation['step2-photo-heading']; ?></h4>
 	    				<p>
-	    					For the best results your photos should be <u>passport-sized, good quality and on a plain background</u>. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.
+	    					<?php echo $translation['step2-photo-message']; ?>
 	    				</p>
 
 	    			</td>
@@ -316,7 +379,7 @@ else {
 							</td>
 						<?php else : ?>
 							<td style="width:210px;">
-								<b><?php echo __($guid, 'Photo'); ?></b>
+								<b><?php echo $translation['step2-photo']; ?></b>
 								</td>
 								<td>
 								<div id="photo<?php echo $familyAdult['username'];?>" class="cropit-photo" style="width:302px;float:right;">
@@ -349,9 +412,9 @@ else {
 				<tr class='break'>
 	    			<td colspan=3>
 	    				<h3>
-	    					<?php echo __($guid, 'Additional Photos'); ?>
+	    					<?php echo $translation['step2-add-heading']; ?>
 	    				</h3>
-	    				<p>You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.</p>
+	    				<p><?php echo $translation['step2-add-message']; ?></p>
 	    			</td>
 	    		</tr>
 
@@ -375,10 +438,10 @@ else {
 	    		?>
 					<tr>
 						<td rowspan=3 style="width:200px;">
-							<b><?php echo __($guid, 'Additional Person').' '.($i+1); ?></b>
+							<b><?php echo $translation['step2-add-person'].' '.($i+1); ?></b>
 						</td>
 						<td style="width:210px;">
-							<b><?php echo __($guid, 'Photo'); ?></b><br/>
+							<b><?php echo $translation['step2-photo']; ?></b><br/>
 							<span class="emphasis small">
 							</span>
 						</td>
@@ -409,7 +472,7 @@ else {
 					</tr>
 					<tr>
 						<td style="width:160px;">
-							<b><?php echo __($guid, "Name");?></b>
+							<b><?php echo $translation['step2-name']; ?></b>
 						</td>
 						<td class="right">
 							<input class="standardWidth" name="additionalName[<?php echo $i;?>]" type="text" value="<?php echo $additionalPerson['name'];?>">
@@ -417,16 +480,16 @@ else {
 					</tr>
 					<tr>
 						<td style="width:160px;">
-							<b><?php echo __($guid, "Relationship");?></b>
+							<b><?php echo $translation['step2-relationship']; ?></b>
 						</td>
 						<td class="right">
 							<!-- <input class="standardWidth" name="additionalRelationship[<?php echo $i;?>]" type="text" value="<?php echo $additionalPerson['relationship'];?>"> -->
 							<select name="additionalRelationship[<?php echo $i;?>]" class="standardWidth">
 								<option value="" <?php if ($additionalPerson['relationship'] == '') echo 'selected';?>></option>
-								<option value="Helper" <?php if ($additionalPerson['relationship'] == 'Helper') echo 'selected';?>>Helper</option>
-								<option value="Driver" <?php if ($additionalPerson['relationship'] == 'Driver') echo 'selected';?>>Driver</option>
-								<option value="Family" <?php if ($additionalPerson['relationship'] == 'Family') echo 'selected';?>>Family</option>
-								<option value="Other" <?php if ($additionalPerson['relationship'] == 'Other') echo 'selected';?>>Other</option>
+								<option value="Helper" <?php if ($additionalPerson['relationship'] == 'Helper') echo 'selected';?>><?php echo $translation['step2-helper']; ?></option>
+								<option value="Driver" <?php if ($additionalPerson['relationship'] == 'Driver') echo 'selected';?>><?php echo $translation['step2-driver']; ?></option>
+								<option value="Family" <?php if ($additionalPerson['relationship'] == 'Family') echo 'selected';?>><?php echo $translation['step2-family']; ?></option>
+								<option value="Other" <?php if ($additionalPerson['relationship'] == 'Other') echo 'selected';?>><?php echo $translation['step2-other']; ?></option>
 							</select>
 						</td>
 					</tr>
@@ -444,18 +507,10 @@ else {
 						$('.delete-btn').click(function() {
 							var parent = $(this).parent();
 
-							//parent.cropit('imageSrc', ' ');
-							//$('input[name^="file"]', parent).val('');
-							//$('input[name^="attachment"]', parent).val('');
 							$('.cropit-preview', parent).removeClass('cropit-image-loaded');
-							//$('.cropit-preview-image-container', parent).remove();
-							//$('.cropit-preview-image', parent).removeAttr('style');
 							$('.cropit-preview-image', parent).attr('src','');
 
 							parent.cropit('destroy');
-							//parent.cropit({ width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2.25, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); } });
-
-							//parent.cropit('reenable');
 						});
 
 
@@ -496,18 +551,18 @@ else {
 					<tr class="break">
 						<td colspan="3"><br/>
 						<p>
-						After pressing submit <b style='color:#c0292d;'>your login details will be emailed to you</b>. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.
+						<?php echo $translation['step2-final-message']; ?>
 						</p>
 						</td>
 					</tr>
 				<?php endif; ?>
 	    		<tr>
 	    			<td colspan=2>
-	    				<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+	    				<span class="emphasis small"><?php echo $translation['required-message']; ?></span>
 	    			</td>
 	    			<td class="right">
 	    				<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-	    				<input type="submit" value="<?php echo __($guid, 'Submit'); ?>"  onclick='if(confirm("<?php echo 'Are you ready to complete your form? Click cancel if you wish to go back and make changes.'; ?>")) document.forms[0].submit(); else return false;' style='font-size: 16px;padding:6px 10px;height:auto;'>
+	    				<input type="submit" value="<?php echo $translation['submit']; ?>"  onclick='if(confirm("<?php echo 'Are you ready to complete your form? Click cancel if you wish to go back and make changes.'; ?>")) document.forms[0].submit(); else return false;' style='font-size: 16px;padding:6px 10px;height:auto;'>
 	    			</td>
 	    		</tr>
 	    	</table><br/>
