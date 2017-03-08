@@ -401,7 +401,7 @@ else {
 
 								<script type="text/javascript">
 									var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
-									$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
+									$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 3, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
 								</script>
 							</td>
 						<?php endif; ?>
@@ -465,7 +465,7 @@ else {
 
 							<script type="text/javascript">
 								var photoName = "<?php echo 'additionalPhoto'.$i;?>";
-								$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 2, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }
+								$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 3, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }
 								});
 							</script>
 						</td>
