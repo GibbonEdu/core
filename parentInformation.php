@@ -20,6 +20,72 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 echo "<div class='trail'>";
 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Parent Information').'</div>';
 echo '</div>';
+
+
+$translation = array();
+
+if ($gibbon->locale->getLocale() == 'zh_HK') {
+	$translation['step1']            	   = "第一步";
+	$translation['step1-subheading'] 	   = "確認帳戶";
+	$translation['step1-message']          = "於登入前請先提供以下幾項資料以便確認帳號。資料獲確認後，  閣下會收到學校發出之電郵，通知家長登入Gibbon帳戶上載家庭成員照片。";
+	$translation['step1-email']            = "家長電郵地址";
+	$translation['step1-birthday']         = "子女生日日期";
+	$translation['step1-birthday-message'] = "登入之帳號將設定為  貴子女之生日日期。若  閣下有多於一位孩子就讀本校，請以最年長的子女之生日日期為登入帳號。";
+	$translation['step2']                  = "第二步";
+	$translation['step2-subheading']       = "上載家庭成員照片";
+	$translation['step2-message']          = "請為需要申請家長證之家庭成員及家務助理上傳照片（照片規格為「證件照」），家長證只供有相片上載之人士申請。當前沒有照片可供上傳者，可於稍後再行上傳。請注意：有上傳照片之家庭成員可快速辦理家長證。";
+	$translation['step2-dates']            = "家長證將於2017年3月底前開始辦理。";
+	$translation['step2-photo-heading']    = "照片規格：";
+	$translation['step2-photo-message']    = "上載之照片最好為證件照大小、人像清晰、背景簡單。照片上傳後可自行縮放大小，以符合要求之尺寸。若上傳之照片人像不清晰，將不能辦理家長證。";
+	$translation['step2-add-heading']      = "附加照片";
+	$translation['step2-add-message']      = "家長可為會前來學校接送子女之家庭成員或家務助理申請家長證，家長證僅發放予有相片存檔的人士。而學校已有學生照片存檔，家長無須上傳  貴子女之照片。";
+	$translation['step2-add-person']      = "申請者照片";
+	$translation['step2-photo']            = "照片";
+	$translation['step2-photo-button']     = "照片";
+	$translation['step2-name']             = "姓名（身份證明文件姓名）";
+	$translation['step2-relationship']     = "關係";
+	$translation['step2-helper']           = "助理";
+	$translation['step2-driver']           = "司機";
+	$translation['step2-family']           = "家人";
+	$translation['step2-other']            = "其他";
+	$translation['step2-final-message']    = "提交帳號資料後，<b style='color:#c0292d;'>會即時收到學校發出之電郵</b>。若數分鐘後仍未收到有關電郵，請查看  閣下電子電箱內之「垃圾郵件」。";
+	$translation['required-message']       = "* 必需填寫";
+	$translation['submit']                 = "提交";
+	$translation['confirm-success']        = "成功確認帳戶，請繼續下一步。完成資料輸入後請按「提交」按鍵";
+	$translation['confirm-error1']          = '若資料提交出現錯誤，由於  閣下所填寫之子女生日日期與學校紀錄之子女生日日期資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+	$translation['confirm-error2']          = '若資料提交出現錯誤，由於  閣下所填寫之電郵地址與學校紀錄之電郵地址資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+} else {
+	$translation['step1']                  = "Step 1";
+	$translation['step1-subheading']       = "Account Confirmation";
+	$translation['step1-message']          = "Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.";
+	$translation['step1-email']            = "Your Email Address";
+	$translation['step1-birthday']         = "Child's Birthdate";
+	$translation['step1-birthday-message'] = "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.";
+	$translation['step2']                  = "Step 2";
+	$translation['step2-subheading']       = "Upload Family Member Photos";
+	$translation['step2-message']          = "Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.";
+	$translation['step2-dates']            = "Processing and issuing of Photo IDs will begin mid to late March 2017.";
+	$translation['step2-photo-heading']    = "Photo Instructions:";
+	$translation['step2-photo-message']    = "For the best results your photos should be passport-sized, good quality and on a plain background. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.";
+	$translation['step2-add-heading']      = "Additional Photos";
+	$translation['step2-add-message']      = "You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.";
+	$translation['step2-add-person']      = "Additional Person";
+	$translation['step2-photo']            = "Photo";
+	$translation['step2-photo-button']     = "Upload a Photo";
+	$translation['step2-name']             = "Name (Legal name)";
+	$translation['step2-relationship']     = "Relationship";
+	$translation['step2-helper']           = "Helper";
+	$translation['step2-driver']           = "Driver";
+	$translation['step2-family']           = "Family";
+	$translation['step2-other']            = "Other";
+	$translation['step2-final-message']    = "After pressing submit <b style='color:#c0292d;'>your login details will be emailed to you</b>. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there. ";
+	$translation['required-message']       = "* denotes a required field";
+	$translation['submit']                 = "Submit";
+	$translation['confirm-success']        = "Account confirmation successful, please continue. Be sure to click Submit when you've completed this form.";
+	$translation['confirm-error1']          = 'Your request failed because the birthdate supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
+	$translation['confirm-error2']          = 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
+}
+
 ?>
 <script type="text/javascript">
 function dataURItoBlob(dataURI) {
@@ -67,7 +133,7 @@ function dataURItoBlob(dataURI) {
 
 	/* Show upload photo text */
 	.cropit-preview:not(.cropit-image-loading)::before {
-		content: "Upload a Photo";
+		content: "<?php echo $translation['step2-photo-button']; ?>";
 		border: 2px dashed #dddddd;
 		border-radius: 8px;
 		padding: 20px;
@@ -102,75 +168,11 @@ if (!empty($_SESSION[$guid]['username'])) {
 }
 
 
-$translation = array();
-
-if ($gibbon->locale->getLocale() == 'zh_HK') {
-	$translation['step1']            	   = "第一步";
-	$translation['step1-subheading'] 	   = "確認帳戶";
-	$translation['step1-message']          = "於登入前請先提供以下幾項資料以便確認帳號。資料獲確認後，  閣下會收到學校發出之電郵，通知家長登入Gibbon帳戶上載家庭成員照片。";
-	$translation['step1-email']            = "家長電郵地址";
-	$translation['step1-birthday']         = "子女生日日期";
-	$translation['step1-birthday-message'] = "登入之帳號將設定為  貴子女之生日日期。若  閣下有多於一位孩子就讀本校，請以最年長的子女之生日日期為登入帳號。";
-	$translation['step2']                  = "第二步";
-	$translation['step2-subheading']       = "上載家庭成員照片";
-	$translation['step2-message']          = "請為需要申請家長證之家庭成員及家務助理上傳照片（照片規格為「證件照」），家長證只供有相片上載之人士申請。當前沒有照片可供上傳者，可於稍後再行上傳。請注意：有上傳照片之家庭成員可快速辦理家長證。";
-	$translation['step2-dates']            = "家長證將於2017年3月底前開始辦理。";
-	$translation['step2-photo-heading']    = "照片規格：";
-	$translation['step2-photo-message']    = "上載之照片最好為證件照大小、人像清晰、背景簡單。照片上傳後可自行縮放大小，以符合要求之尺寸。若上傳之照片人像不清晰，將不能辦理家長證。";
-	$translation['step2-add-heading']      = "附加照片";
-	$translation['step2-add-message']      = "家長可為會前來學校接送子女之家庭成員或家務助理申請家長證，家長證僅發放予有相片存檔的人士。而學校已有學生照片存檔，家長無須上傳  貴子女之照片。";
-	$translation['step2-add-person']      = "申請者照片";
-	$translation['step2-photo']            = "照片";
-	$translation['step2-name']             = "姓名（身份證明文件姓名）";
-	$translation['step2-relationship']     = "關係";
-	$translation['step2-helper']           = "助理";
-	$translation['step2-driver']           = "司機";
-	$translation['step2-family']           = "家人";
-	$translation['step2-other']            = "其他";
-	$translation['step2-final-message']    = "提交帳號資料後，<b style='color:#c0292d;'>會即時收到學校發出之電郵</b>。若數分鐘後仍未收到有關電郵，請查看  閣下電子電箱內之「垃圾郵件」。";
-	$translation['required-message']       = "* 必需填寫";
-	$translation['submit']                 = "提交";
-	$translation['confirm-success']        = "成功確認帳戶，請繼續下一步。完成資料輸入後請按「提交」按鍵";
-	$translation['confirm-error']          = '若資料提交出現錯誤，由於  閣下所填寫之電郵地址與學校紀錄之電郵地址資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
-} else {
-	$translation['step1']                  = "Step 1";
-	$translation['step1-subheading']       = "Account Confirmation";
-	$translation['step1-message']          = "Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.";
-	$translation['step1-email']            = "Your Email Address";
-	$translation['step1-birthday']         = "Child's Birthdate";
-	$translation['step1-birthday-message'] = "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.";
-	$translation['step2']                  = "Step 2";
-	$translation['step2-subheading']       = "Upload Family Member Photos";
-	$translation['step2-message']          = "Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.";
-	$translation['step2-dates']            = "Processing and issuing of Photo IDs will begin mid to late March 2017.";
-	$translation['step2-photo-heading']    = "Photo Instructions:";
-	$translation['step2-photo-message']    = "For the best results your photos should be passport-sized, good quality and on a plain background. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.";
-	$translation['step2-add-heading']      = "Additional Photos";
-	$translation['step2-add-message']      = "You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.";
-	$translation['step2-add-person']      = "Additional Person";
-	$translation['step2-photo']            = "Photo";
-	$translation['step2-name']             = "Name (Legal name)";
-	$translation['step2-relationship']     = "Relationship";
-	$translation['step2-helper']           = "Helper";
-	$translation['step2-driver']           = "Driver";
-	$translation['step2-family']           = "Family";
-	$translation['step2-other']            = "Other";
-	$translation['step2-final-message']    = "After pressing submit <b style='color:#c0292d;'>your login details will be emailed to you</b>. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there. ";
-	$translation['required-message']       = "* denotes a required field";
-	$translation['submit']                 = "Submit";
-	$translation['confirm-success']        = "Account confirmation successful, please continue. Be sure to click Submit when you've completed this form.";
-	$translation['confirm-error']          = 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
-}
 
 $returns = array();
 $returns['error0'] = __($guid, 'Email address not set.');
-$returns['error3'] = __($guid, 'Failed to send update email.');
-$returns['error4'] = __($guid, 'Your request failed due to non-matching passwords.');
-$returns['error5'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
-$returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
-$returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
-$returns['error8'] = __($guid, 'Your request failed because the birthdate supplied does not match the one in our records, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
-$returns['error9'] = sprintf($translation['confirm-error'], '<a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
+$returns['error8'] = sprintf($translation['confirm-error1'], '<a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
+$returns['error9'] = sprintf($translation['confirm-error2'], '<a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
 $returns['success0'] = $translation['confirm-success'];
 if (isset($_GET['return'])) {
     returnProcess($guid, $_GET['return'], null, $returns);

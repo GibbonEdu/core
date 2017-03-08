@@ -320,6 +320,8 @@ As a parent you will be able to access the following:
 Please follow this link <a href="https://goo.gl/711A1S">https://goo.gl/711A1S</a> for instructions on how to access these functions. If you have any questions or would like to have individual instruction please contact one of the following Gibbon administrators:
 <ul><li>Brian Avery - <a mailto="brian.avery@tis.edu.mo">brian.avery@tis.edu.mo</a></li><li>Mel Varga - <a mailto="mel.varga@tis.edu.mo">mel.varga@tis.edu.mo</a></li></ul>
 
+We hope you will find the system helpful and easy to use.
+
 The TIS Gibbon team', $_SESSION[$guid]['absoluteURL'], $row['email'], $passwordNew);
 
                         $mail = getGibbonMailer($guid);
