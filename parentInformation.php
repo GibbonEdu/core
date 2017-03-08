@@ -344,6 +344,7 @@ else {
 		    					<?php echo $translation['step2']; ?> &nbsp;<small><?php echo $translation['step2-subheading']; ?></small>
 		    				</h3>
 		    			<?php endif; ?>
+		    			<img src="http://gibbon.tis.edu.mo/uploads/passport-graphic.png" style="float:right;margin-left: 20px;">
 	    				<p>
 	    					<?php echo $translation['step2-message']; ?>
 	    				</p>
