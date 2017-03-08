@@ -379,7 +379,7 @@ The TIS Gibbon team', $_SESSION[$guid]['absoluteURL']);
                         $mail->Send();
 
                         //Return
-                        $URL = $URLSuccess1.'?return=success2';
+                        $URL = $URLSuccess1.'?return=success3';
                         header("Location: {$URL}");
                         exit;
                     }
