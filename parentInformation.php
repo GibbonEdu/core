@@ -25,6 +25,18 @@ echo '</div>';
 $translation = array();
 
 if ($gibbon->locale->getLocale() == 'zh_HK') {
+	$translation['jan']                    = "一月";
+	$translation['feb']                    = "二月";
+	$translation['mar']                    = "三月";
+	$translation['apr']                    = "四月";
+	$translation['may']                    = "五月";
+	$translation['jun']                    = "六月";
+	$translation['jul']                    = "七月";
+	$translation['aug']                    = "八月";
+	$translation['sep']                    = "九月";
+	$translation['oct']                    = "十月";
+	$translation['nov']                    = "十一月";
+	$translation['dec']                    = "十二月";
 	$translation['step1']            	   = "第一步";
 	$translation['step1-subheading'] 	   = "確認帳戶";
 	$translation['step1-message']          = "於登入前請先提供以下幾項資料以便確認帳號。資料獲確認後，  閣下會收到學校發出之電郵，通知家長登入Gibbon帳戶上載家庭成員照片。";
@@ -52,9 +64,27 @@ if ($gibbon->locale->getLocale() == 'zh_HK') {
 	$translation['required-message']       = "* 必需填寫";
 	$translation['submit']                 = "提交";
 	$translation['confirm-success']        = "成功確認帳戶，請繼續下一步。完成資料輸入後請按「提交」按鍵";
-	$translation['confirm-error1']          = '若資料提交出現錯誤，由於  閣下所填寫之子女生日日期與學校紀錄之子女生日日期資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
-	$translation['confirm-error2']          = '若資料提交出現錯誤，由於  閣下所填寫之電郵地址與學校紀錄之電郵地址資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+	$translation['confirm-error1']         = '若資料提交出現錯誤，由於  閣下所填寫之子女生日日期與學校紀錄之子女生日日期資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+	$translation['confirm-error2']         = '若資料提交出現錯誤，由於  閣下所填寫之電郵地址與學校紀錄之電郵地址資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+	$translation['step1-invalid']          = "無法執行此操作。文件已提交或對話窗口逾期操作，請返回上一步。";
+	$translation['step1-noaccount']        = '無法執行此操作。閣下之帳戶尚未激活，或提供之資訊與系統不匹配。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
+	$translation['step2-error-photo']      = '圖像處理出錯。請確認上載之相片為以下文件類型：PNG、JPG或GIF';
+	$translation['step2-success-new']      = "帳號已確認成功，請查看  閣下之電郵以獲取登入資訊。倘若未有收到確認電郵，請查看電子郵箱中的「垃圾郵件」。";
+	$translation['step2-success-exist']    = "相片上載成功。  閣下之帳戶已確認成功，歡迎登入。";
+
 } else {
+	$translation['jan']                    = "January";
+	$translation['feb']                    = "February";
+	$translation['mar']                    = "March";
+	$translation['apr']                    = "April";
+	$translation['may']                    = "May";
+	$translation['jun']                    = "June";
+	$translation['jul']                    = "July";
+	$translation['aug']                    = "August";
+	$translation['sep']                    = "September";
+	$translation['oct']                    = "October";
+	$translation['nov']                    = "November";
+	$translation['dec']                    = "December";
 	$translation['step1']                  = "Step 1";
 	$translation['step1-subheading']       = "Account Confirmation";
 	$translation['step1-message']          = "Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.";
@@ -69,7 +99,7 @@ if ($gibbon->locale->getLocale() == 'zh_HK') {
 	$translation['step2-photo-message']    = "For the best results your photos should be passport-sized, good quality and on a plain background. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.";
 	$translation['step2-add-heading']      = "Additional Photos";
 	$translation['step2-add-message']      = "You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.";
-	$translation['step2-add-person']      = "Additional Person";
+	$translation['step2-add-person']       = "Additional Person";
 	$translation['step2-photo']            = "Photo";
 	$translation['step2-photo-button']     = "Upload a Photo";
 	$translation['step2-name']             = "Name (Legal name)";
@@ -82,8 +112,13 @@ if ($gibbon->locale->getLocale() == 'zh_HK') {
 	$translation['required-message']       = "* denotes a required field";
 	$translation['submit']                 = "Submit";
 	$translation['confirm-success']        = "Account confirmation successful, please continue. Be sure to click Submit when you've completed this form.";
-	$translation['confirm-error1']          = 'Your request failed because the birthdate supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
-	$translation['confirm-error2']          = 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
+	$translation['confirm-error1']         = 'Your request failed because the birthdate supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
+	$translation['confirm-error2']         = 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
+	$translation['step1-invalid']          = "The request could not proceed. Either the form has already been submitted or session has expired. Please go back to Step 1.";
+	$translation['step1-noaccount']        = 'The request could not proceed. Either your account is not currently active in our system, or your family data could not be located. Please try again, and if the problem persists contact support at %1$s';
+	$translation['step2-error-photo']      = 'There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.';
+	$translation['step2-success-new']      = "Account confirmation was successful: you may now log in. Please check your email for login details. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.";
+	$translation['step2-success-exist']    = "Photo upload successful. Your account has already been confirmed: you may now log in with your existing account details.";
 }
 
 ?>
@@ -233,18 +268,18 @@ if ($step == 1) { ?>
 						</td>
 						<td>
 							<select id="birthmonth" name="birthmonth">
-								<option value="01">January</option>
-								<option value="02">February</option>
-								<option value="03">March</option>
-								<option value="04">April</option>
-								<option value="05">May</option>
-								<option value="06">June</option>
-								<option value="07">July</option>
-								<option value="08">August</option>
-								<option value="09">September</option>
-								<option value="10">October</option>
-								<option value="11">November</option>
-								<option value="12">December</option>
+								<option value="01"><?php echo $translation['jan']; ?></option>
+								<option value="02"><?php echo $translation['feb']; ?></option>
+								<option value="03"><?php echo $translation['mar']; ?></option>
+								<option value="04"><?php echo $translation['apr']; ?></option>
+								<option value="05"><?php echo $translation['may']; ?></option>
+								<option value="06"><?php echo $translation['jun']; ?></option>
+								<option value="07"><?php echo $translation['jul']; ?></option>
+								<option value="08"><?php echo $translation['aug']; ?></option>
+								<option value="09"><?php echo $translation['sep']; ?></option>
+								<option value="10"><?php echo $translation['oct']; ?></option>
+								<option value="11"><?php echo $translation['nov']; ?></option>
+								<option value="12"><?php echo $translation['dec']; ?></option>
 							</select>
 						</td>
 						<td>
@@ -271,7 +306,7 @@ if ($step == 1) { ?>
 else {
 	//Get URL parameters
 	$proceed = false;
-	$message = 'This request is invalid: either the form has already been submitted or session has expired. Please go back to <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">Step 1</a>';
+	$message = $translation['step1-invalid'];
 
 	if (!empty($_SESSION[$guid]['username'])) {
 		// Logged in users
@@ -290,7 +325,7 @@ else {
 	    if ($result->rowCount() >= 1) {
 	    	$proceed = true;
 	    } else {
-	    	$message = 'The request could not proceed. Either your account is not currently active in our system, or your family data could not be located. Please try again, and if the problem persists contact support at <a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>';
+	    	$message = sprintf($translation['step1-noaccount'], '<a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
 	    }
 
 	} else {
@@ -404,7 +439,7 @@ else {
 
 								<script type="text/javascript">
 									var photoName = "<?php echo 'photo'.$familyAdult['username'];?>";
-									$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 3, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }});
+									$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 3, onImageError: function() { alert('<?php echo $translation['step2-error-photo']; ?>'); }});
 								</script>
 							</td>
 						<?php endif; ?>
@@ -468,7 +503,7 @@ else {
 
 							<script type="text/javascript">
 								var photoName = "<?php echo 'additionalPhoto'.$i;?>";
-								$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 3, onImageError: function() { alert('There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.'); }
+								$('#'+photoName).cropit({ <?php echo (!empty($photoURL))? 'imageState: { src:"'.$photoURL.'"},' : ''; ?> width: 180, height: 240, exportZoom: 2, smallImage: 'allow', initialZoom: 'min' , minZoom: 'fit', maxZoom: 3, onImageError: function() { alert('<?php echo $translation['step2-error-photo']; ?>'); }
 								});
 							</script>
 						</td>
@@ -565,7 +600,7 @@ else {
 	    			</td>
 	    			<td class="right">
 	    				<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-	    				<input type="submit" value="<?php echo $translation['submit']; ?>"  onclick='if(confirm("<?php echo 'Are you ready to complete your form? Click cancel if you wish to go back and make changes.'; ?>")) document.forms[0].submit(); else return false;' style='font-size: 16px;padding:6px 10px;height:auto;'>
+	    				<input type="submit" value="<?php echo $translation['submit']; ?>" style='font-size: 16px;padding:6px 10px;height:auto;'>
 	    			</td>
 	    		</tr>
 	    	</table><br/>

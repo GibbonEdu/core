@@ -402,8 +402,15 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						if ($_SESSION[$guid]['address'] == '') {
                             $returns = array();
                         	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
-                            $returns['success2'] = __($guid, 'Account confirmation was successful: you may now log in. Please check your email for login details. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.');
-                            $returns['success3'] = __($guid, 'Photo upload successful. Your account has already been confirmed: you may now log in with your existing account details.');
+
+                            if ($gibbon->locale->getLocale() == 'zh_HK') {
+                                $returns['success2'] = __($guid, '帳號已確認成功，請查看  閣下之電郵以獲取登入資訊。倘若未有收到確認電郵，請查看電子郵箱中的「垃圾郵件」。');
+                                $returns['success3'] = __($guid, '相片上載成功。  閣下之帳戶已確認成功，歡迎登入。');
+                            } else {
+                                $returns['success2'] = __($guid, 'Account confirmation was successful: you may now log in. Please check your email for login details. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.');
+                                $returns['success3'] = __($guid, 'Photo upload successful. Your account has already been confirmed: you may now log in with your existing account details.');
+                            }
+
                         	if (isset($_GET['return'])) {
                         	    returnProcess($guid, $_GET['return'], null, $returns);
                         	}
