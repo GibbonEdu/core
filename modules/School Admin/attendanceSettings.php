@@ -171,18 +171,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
         $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
 
+    $realIP = getIPAddress();
     $inRange = false;
     if ($settingByScope['value'] != '' && $settingByScope['value'] != null) {
         foreach (explode(',', $settingByScope['value']) as $ipAddress) {
-            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR']) {
+            if (trim($ipAddress) == $realIP) {
                 $inRange = true ;
             }
         }
     }
     if ($inRange) { //Current address is in range
-        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>"), 'success')->setClass('standardWidth');
+        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$realIP."</b>"), 'success')->setClass('standardWidth');
     } else { //Current address is not in range
-        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$_SERVER['REMOTE_ADDR']."</b>"), 'warning')->setClass('standardWidth');
+        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$realIP."</b>"), 'warning')->setClass('standardWidth');
     }
 
     $row = $form->addRow()->addHeading('Attendance CLI');
