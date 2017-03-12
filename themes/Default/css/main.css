@@ -1216,7 +1216,7 @@ input.standardWidth, textarea.standardWidth, div.standardWidth {
 select.standardWidth {
 	width: 302px ;
 }
-table.fullWidth {
+.fullWidth {
 	width: 100% ;
 }
 div.blockOuter {
@@ -1299,6 +1299,13 @@ select[multiple] {
 .column.inline div {
 	display:inline-block;
 	width:auto;
+}
+
+.formTable input,
+.formTable select,
+.formTable textarea {
+	float: left;
+	margin-left: 0px;
 }
 
 

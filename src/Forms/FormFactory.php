@@ -48,6 +48,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Column($this, $id);
     }
 
+    public function createTable($id = '')
+    {
+        return new Layout\Table($this, $id);
+    }
+
     public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
@@ -69,6 +74,11 @@ class FormFactory implements FormFactoryInterface
     }
 
     /* BASIC INPUT --------------------------- */
+
+    public function createCustomField($name, $fields = array())
+    {
+        return new Input\CustomField($this, $name, $fields);
+    }
 
     public function createTextArea($name)
     {
