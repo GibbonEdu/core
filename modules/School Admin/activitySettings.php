@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Activities', 'payment', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromString('None, Singe, Per Activity, Single + Per Activity')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromString('None, Single, Per Activity, Single + Per Activity')->selected($setting['value'])->isRequired();
 
 
     $setting = getSettingByScope($connection2, 'Activities', 'enrolmentType', true);
