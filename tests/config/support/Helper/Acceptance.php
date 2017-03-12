@@ -8,6 +8,7 @@ class Acceptance extends \Codeception\Module
 {
     /**
      * Grab all values from a form (generally for the purposes of restoring later)
+     * Itterates over an array of DOMElement objects
      *
      * @param    string  $selector
      * @return   [type]
@@ -17,15 +18,28 @@ class Acceptance extends \Codeception\Module
 
         $formValues = array();
         foreach ($elements as $element) {
-            $type = $element->getAttribute('type');
+            $type = ($element->tagName == 'input')? $element->getAttribute('type') : $element->tagName;
+            
             if ($type == 'submit' || $type == 'button') continue;
 
             $name = $element->getAttribute('name');
-            $value = $element->getAttribute('value');
+            $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : '';
 
             switch($type) {
                 case 'checkbox':    if ($element->hasAttribute('checked')) {
                                         $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : 'on';
+                                    }
+                                    break;
+
+                case 'textarea':    $value = $element->nodeValue;
+                                    break;
+
+                case 'select':      $optionTags = $element->getElementsByTagName('option');
+                                    for ($i = 0; $i < $optionTags->length; $i++ ) {
+                                        if ($optionTags->item($i)->hasAttribute('selected') 
+                                        && $optionTags->item($i)->getAttribute('selected') === "selected") {
+                                            $value = $optionTags->item($i)->getAttribute('value');
+                                        }
                                     }
                                     break;
             }
