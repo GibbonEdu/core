@@ -2,10 +2,9 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('create a lesson with a linked markbook column');
 $I->loginAsAdmin();
-$I->amOnPage('/index.php?q=/modules/Planner/planner.php');
+$I->amOnPage('/index.php?q=/modules/Planner/planner_add.php');
 
 // Add Lesson ------------------------------------------------
-$I->clickNavigation('Add');
 $I->seeBreadcrumb('Add Lesson Plan');
 
 $date = $I->grabAttributeFrom('#date', 'value');

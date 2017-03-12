@@ -20,5 +20,5 @@ INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `o
 
 --- User: testingsupport     84BNQAQfNyKa
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
-('Ms. ', 'TestUser', 'Support', 'Support', 'Support TestUser', 'testingsupport', '', 'bd0688e5ca1c86f1f03417556ed53b9b1deed66bd4a0e75f660efb0ba0cb4671', 'aCdHikKlnpPqRstvXyY026', 'N', 'Full', 'Y', 004, '004') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
+('Ms. ', 'TestUser', 'Support', 'Support', 'Support TestUser', 'testingsupport', '', 'bd0688e5ca1c86f1f03417556ed53b9b1deed66bd4a0e75f660efb0ba0cb4671', 'aCdHikKlnpPqRstvXyY026', 'N', 'Full', 'Y', 006, '006') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
 
