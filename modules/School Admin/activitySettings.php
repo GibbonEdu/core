@@ -40,55 +40,55 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'dateType', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'dateType', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('Date, Term')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromString('Date, Term')->selected($setting['value'])->isRequired();
 
-    $form->toggleVisibilityByClass('perTerm')->onSelect($settingByScope['name'])->when('Term');
+    $form->toggleVisibilityByClass('perTerm')->onSelect($setting['name'])->when('Term');
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'maxPerTerm', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'maxPerTerm', true);
     $row = $form->addRow()->addClass('perTerm');
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('0,1,2,3,4,5')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5')->selected($setting['value'])->isRequired();
 
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'access', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'access', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('None, View, Register')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromString('None, View, Register')->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'payment', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'payment', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('None, Singe, Per Activity, Single + Per Activity')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromString('None, Singe, Per Activity, Single + Per Activity')->selected($setting['value'])->isRequired();
 
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'enrolmentType', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'enrolmentType', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('Competitive, Selection')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromString('Competitive, Selection')->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'backupChoice', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'backupChoice', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'activityTypes', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'activityTypes', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextarea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addTextarea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Activities', 'hideExternalProviderCost', true);
+    $setting = getSettingByScope($connection2, 'Activities', 'hideExternalProviderCost', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $row = $form->addRow();
         $row->addFooter();

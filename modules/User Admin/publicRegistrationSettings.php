@@ -40,53 +40,53 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('General Settings');
+    $row = $form->addRow()->addHeading(__('General Settings'));
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addNumber($settingByScope['name'])->setValue($settingByScope['value'])->minimum(0)->maxLength(99);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(0)->maxLength(99);
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('Full, Pending Approval')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('Full, Pending Approval')->selected($setting['value'])->isRequired();
 
     $sql = "SELECT gibbonRoleID AS value, name FROM gibbonRole ORDER BY name";
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
             ->fromQuery($pdo, $sql)
-            ->selected($settingByScope['value'])
+            ->selected($setting['value'])
             ->isRequired();
 
-    $row = $form->addRow()->addHeading('Interface Options');
+    $row = $form->addRow()->addHeading(__('Interface Options'));
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement', true);
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

@@ -44,66 +44,66 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('Descriptors');
+    $row = $form->addRow()->addHeading(__('Descriptors'));
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $form->toggleVisibilityByClass('descriptors')->onSelect($settingByScope['name'])->when('Y');
+    $form->toggleVisibilityByClass('descriptors')->onSelect($setting['name'])->when('Y');
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors', true);
     $row = $form->addRow()->addClass('descriptors');
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors', true);
     $row = $form->addRow()->addClass('descriptors');
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Levels');
+    $row = $form->addRow()->addHeading(__('Levels'));
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'enableLevels', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableLevels', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $form->toggleVisibilityByClass('levels')->onSelect($settingByScope['name'])->when('Y');
+    $form->toggleVisibilityByClass('levels')->onSelect($setting['name'])->when('Y');
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'levels', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'levels', true);
     $row = $form->addRow()->addClass('levels');
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Behaviour Letters')->append(sprintf(__($guid, 'By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]'));
+    $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(sprintf(__('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]'));
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $form->toggleVisibilityByClass('behaviourLetters')->onSelect($settingByScope['name'])->when('Y');
+    $form->toggleVisibilityByClass('behaviourLetters')->onSelect($setting['name'])->when('Y');
 
     for ($i = 1;$i < 4;++$i) {
-        $settingByScope = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Count', true);
+        $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Count', true);
         $row = $form->addRow()->addClass('behaviourLetters');
-            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-            $row->addSelect($settingByScope['name'])->fromString('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')->selected($settingByScope['value'])->isRequired();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelect($setting['name'])->fromString('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')->selected($setting['value'])->isRequired();
 
-        $settingByScope = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Text', true);
+        $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Text', true);
         $row = $form->addRow()->addClass('behaviourLetters');
-            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-            $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
     }
 
-    $row = $form->addRow()->addHeading('Miscellaneous');
+    $row = $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $settingByScope = getSettingByScope($connection2, 'Behaviour', 'policyLink', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'policyLink', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addURL($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addURL($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

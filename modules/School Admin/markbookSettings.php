@@ -40,93 +40,93 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('Features');
+    $row = $form->addRow()->addHeading(__('Features'));
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'enableEffort', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableEffort', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'enableRubrics', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableRubrics', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Interface');
+    $row = $form->addRow()->addHeading(__('Interface'));
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'markbookType', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'markbookType', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading('Warnings');
+    $row = $form->addRow()->addHeading(__('Warnings'));
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'showStudentAttainmentWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showStudentAttainmentWarning', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'showStudentEffortWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showStudentEffortWarning', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Miscellaneous');
+    $row = $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $settingByScope = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush', true);
     $row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('On, Off')->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('On, Off')->selected($setting['value'])->isRequired();
 
 	$row = $form->addRow();
 		$row->addFooter();

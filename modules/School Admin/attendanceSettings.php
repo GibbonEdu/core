@@ -115,91 +115,91 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     }
 
     echo '<h3>';
-    echo __($guid, 'Miscellaneous');
+    echo __($guid, __('Miscellaneous'));
     echo '</h3>';
 
     $form = Form::create('attendanceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('Reasons');
+    $row = $form->addRow()->addHeading(__('Reasons'));
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceReasons', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceReasons', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Pre-Fills & Defaults')->append('The pre-fill settings below determine which Attendance contexts are preset by data available from other contexts. This allows, for example, for attendance taken in a class to be preset by attendance already taken in a Roll Group. The contexts for attendance include Roll Group, Class, Person, Future and Self Registration.');
+    $row = $form->addRow()->addHeading(__('Pre-Fills & Defaults'))->append(__('The pre-fill settings below determine which Attendance contexts are preset by data available from other contexts. This allows, for example, for attendance taken in a class to be preset by attendance already taken in a Roll Group. The contexts for attendance include Roll Group, Class, Person, Future and Self Registration.'));
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'prefillClass', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'prefillClass', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'prefillPerson', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'prefillPerson', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
             ->fromQuery($pdo, $sql)
-            ->selected($settingByScope['value'])
+            ->selected($setting['value'])
             ->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
             ->fromQuery($pdo, $sql)
-            ->selected($settingByScope['value'])
+            ->selected($setting['value'])
             ->isRequired();
 
 
-    $row = $form->addRow()->addHeading('Student Self Registration');
+    $row = $form->addRow()->addHeading(__('Student Self Registration'));
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $realIP = getIPAddress();
     $inRange = false;
-    if ($settingByScope['value'] != '' && $settingByScope['value'] != null) {
-        foreach (explode(',', $settingByScope['value']) as $ipAddress) {
+    if ($setting['value'] != '' && $setting['value'] != null) {
+        foreach (explode(',', $setting['value']) as $ipAddress) {
             if (trim($ipAddress) == $realIP) {
                 $inRange = true ;
             }
         }
     }
     if ($inRange) { //Current address is in range
-        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is included in the saved list.'), "<b>".$realIP."</b>"), 'success')->setClass('standardWidth');
+        $form->addRow()->addAlert(sprintf(__('Your current IP address (%1$s) is included in the saved list.'), "<b>".$realIP."</b>"), 'success')->setClass('standardWidth');
     } else { //Current address is not in range
-        $form->addRow()->addAlert(sprintf(__($guid, 'Your current IP address (%1$s) is not included in the saved list.'), "<b>".$realIP."</b>"), 'warning')->setClass('standardWidth');
+        $form->addRow()->addAlert(sprintf(__('Your current IP address (%1$s) is not included in the saved list.'), "<b>".$realIP."</b>"), 'warning')->setClass('standardWidth');
     }
 
-    $row = $form->addRow()->addHeading('Attendance CLI');
+    $row = $form->addRow()->addHeading(__('Attendance CLI'));
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
 
-    $settingByScope = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
     $inputs = array();
     try {
         $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     } catch (PDOException $e) {
     }
 
-    $users = explode(',', $settingByScope['value']);
+    $users = explode(',', $setting['value']);
     $selected = array();
     while ($rowSelect=$resultSelect->fetch()) {
         if (in_array($rowSelect['gibbonPersonID'], $users) !== false) {
@@ -227,8 +227,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     }
 
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
             ->selectMultiple()
             ->fromArray($inputs)
             ->selected($selected);

@@ -40,22 +40,22 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('Descriptors');
+    $row = $form->addRow()->addHeading(__('Descriptors'));
 
-    $settingByScope = getSettingByScope($connection2, 'Library', 'defaultLoanLength', true);
+    $setting = getSettingByScope($connection2, 'Library', 'defaultLoanLength', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31')->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Library', 'browseBGColor', true);
+    $setting = getSettingByScope($connection2, 'Library', 'browseBGColor', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value'])->maxLength(6);
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(6);
 
-    $settingByScope = getSettingByScope($connection2, 'Library', 'browseBGImage', true);
+    $setting = getSettingByScope($connection2, 'Library', 'browseBGImage', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextField($settingByScope['name'])->setValue($settingByScope['value'])->maxLength(6);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(6);
 
     $row = $form->addRow();
         $row->addFooter();

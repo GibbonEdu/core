@@ -40,14 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $form->addRow()->addHeading('Internal Assessment Settings');
+    $form->addRow()->addHeading(__('Internal Assessment Settings'));
 
     $setting = getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $form->addRow()->addHeading('Primary External Assessement')->append('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). You are required to select a particular field category can be chosen from which to draw data (if no category is chosen, the data will not be saved).');
+    $form->addRow()->addHeading(__('Primary External Assessement'))->append(__('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). You are required to select a particular field category can be chosen from which to draw data (if no category is chosen, the data will not be saved).'));
 
     $row = $form->addRow()->setClass('break');
         $row->addContent(__('Year Group'));

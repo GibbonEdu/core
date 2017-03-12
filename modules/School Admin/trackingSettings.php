@@ -47,21 +47,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
     $yearGroups = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
 
     if (empty($yearGroups)) {
-        $form->addRow()->addAlert('There are no records to display.', 'error');
+        $form->addRow()->addAlert(__('There are no records to display.'), 'error');
     } else {
         // EXTERNAL ASSESSMENT DATA POINTS
         $row = $form->addRow();
             $row->addHeading(__('Data Points').' - '.__('External Assessment'))
-                ->append('Use the options below to select the external assessments that you wish to include in your Data Points export.')
+                ->append(__('Use the options below to select the external assessments that you wish to include in your Data Points export.'))
                 ->append(' ')
-                ->append('If duplicates of any assessment exist, only the most recent entry will be shown.');
+                ->append(__('If duplicates of any assessment exist, only the most recent entry will be shown.'));
 
         // Get the existing External Assesment IDs and categories
         $sql = "SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort, gibbonExternalAssessmentField.category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY nameShort, category";
         $result = $pdo->executeQuery(array(), $sql);
 
         if ($result->rowCount() < 1) {
-            $form->addRow()->addAlert('There are no records to display.', 'error');
+            $form->addRow()->addAlert(__('There are no records to display.'), 'error');
         } else {
             // Get the external data points from Settings, if any exist
             $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
@@ -101,14 +101,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
         // INTERNAL ASSESSMENT DATA POINTS
         $row = $form->addRow();
             $row->addHeading(__('Data Points').' - '.__('Internal Assessment'))
-                ->append('Use the options below to select the internal assessments that you wish to include in your Data Points export.')
+                ->append(__('Use the options below to select the internal assessments that you wish to include in your Data Points export.'))
                 ->append(' ')
-                ->append('If duplicates of any assessment exist, only the most recent entry will be shown.');
+                ->append(__('If duplicates of any assessment exist, only the most recent entry will be shown.'));
 
         $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
 
         if (empty($internalAssessmentTypes)) {
-            $form->addRow()->addAlert('There are no records to display.', 'error');
+            $form->addRow()->addAlert(__('There are no records to display.'), 'error');
         } else {
             // Get the internal data points from Settings, if any exist
             $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
