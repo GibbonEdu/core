@@ -149,25 +149,25 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubheading($label)
     {
-        $content = sprintf('<h4>%s</h4>', __($label));
+        $content = sprintf('<h4>%s</h4>', $label);
         return $this->createContent($content);
     }
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, __($content));
+        $content = sprintf('<div class="%s">%s</div>', $level, $content);
         return $this->createContent($content);
     }
 
     public function createSubmit($label = 'Submit')
     {
-        $content = sprintf('<input type="submit" value="%s">', __($label));
+        $content = sprintf('<input type="submit" value="%s">', $label);
         return $this->createContent($content)->setClass('right');
     }
 
     public function createButton($label = 'Button', $onClick = '')
     {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
+        $content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
         return $this->createContent($content)->setClass('right');
     }
 
