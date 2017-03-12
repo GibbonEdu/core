@@ -89,4 +89,19 @@ class AcceptanceTester extends \Codeception\Actor
         $option = $this->grabTextFrom('select[name='.$selector.'] option:nth-child(' . $n . ')');
         $this->selectOption($selector, $option);
     }
+
+    public function amOnModulePage($module, $page, $params = null)
+    {
+        if (mb_stripos($page, '.php') === false) {
+            $page .= '.php';
+        }
+        
+        $url = sprintf('/index.php?q=/modules/%1$s/%2$s', $module, $page);
+
+        if (!empty($params)) {
+            $url .= '&'.http_build_query($params);
+        }
+
+        return $this->amOnPage($url);
+    }
 }

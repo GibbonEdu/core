@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Data Updater Settings');
 $I->loginAsAdmin();
-$I->amOnPage('/index.php?q=/modules/User Admin/dataUpdaterSettings.php');
+$I->amOnModulePage('User Admin', 'dataUpdaterSettings.php');
 
 $originalFormValues = $I->grabAllFormValues();
 

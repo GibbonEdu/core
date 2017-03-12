@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('create a lesson with a linked markbook column');
 $I->loginAsAdmin();
-$I->amOnPage('/index.php?q=/modules/Planner/planner_add.php');
+$I->amOnModulePage('Planner', 'planner_add.php');
 
 // Add Lesson ------------------------------------------------
 $I->seeBreadcrumb('Add Lesson Plan');
@@ -54,14 +54,18 @@ $I->seeInField('viewableParents', 'N');
 
 // Delete Markbook -----------------------------------------------
 
-$I->amOnPage('/index.php?q=/modules/Markbook/markbook_edit_delete.php&.php&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID);
+$urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
+$I->amOnModulePage('Markbook', 'markbook_edit_delete.php', $urlParams );
+
 $I->seeBreadcrumb('Delete Column');
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete Planner ------------------------------------------------
 
-$I->amOnPage('/index.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$gibbonPlannerEntryID);
+$urlParams = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+$I->amOnModulePage('Planner', 'planner_delete.php', $urlParams );
+
 $I->seeBreadcrumb('Delete Lesson Plan');
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');

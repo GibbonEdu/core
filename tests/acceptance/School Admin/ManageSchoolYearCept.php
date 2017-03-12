@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete a school year');
 $I->loginAsAdmin();
-$I->amOnPage('/index.php?q=/modules/School Admin/schoolYear_manage.php');
+$I->amOnModulePage('School Admin', 'schoolYear_manage.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
@@ -20,7 +20,7 @@ $I->see('Your request was completed successfully.', '.success');
 $gibbonSchoolYearID = $I->grabEditIDFromURL();
 
 // Edit ------------------------------------------------
-$I->amOnPage('/index.php?q=/modules/School Admin/schoolYear_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID);
+$I->amOnModulePage('School Admin', 'schoolYear_manage_edit.php', array('gibbonSchoolYearID' => $gibbonSchoolYearID));
 $I->seeBreadcrumb('Edit School Year');
 
 $I->fillField('name', '1920-1921');
@@ -37,7 +37,7 @@ $I->seeInField('firstDay', '01/01/1920');
 $I->seeInField('lastDay', '31/12/1920');
 
 // Delete ------------------------------------------------
-$I->amOnPage('/index.php?q=/modules/School Admin/schoolYear_manage_delete.php&gibbonSchoolYearID='.$gibbonSchoolYearID);
+$I->amOnModulePage('School Admin', 'schoolYear_manage_delete.php', array('gibbonSchoolYearID' => $gibbonSchoolYearID));
 $I->seeBreadcrumb('Delete School Year');
 
 $I->click('Yes');
