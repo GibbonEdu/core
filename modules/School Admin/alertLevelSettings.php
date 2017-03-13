@@ -46,46 +46,46 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     }
 
     //Let's go!
-    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
+    $form = Form::create('alertLevelSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $count = 0;
     while ($rowSQL = $result->fetch()) {
-        $row = $form->addRow()->addHeading($rowSQL['name']);
+        $row = $form->addRow()->addHeading(__($rowSQL['name']));
 
         $form->addHiddenValue('gibbonAlertLevelID'.$count, $rowSQL['gibbonAlertLevelID']);
 
         $row = $form->addRow();
-        	$row->addLabel('name'.$count, 'Name');
+        	$row->addLabel('name'.$count, __('Name'));
     		$row->addTextField('name'.$count)
             ->setValue($rowSQL['name'])
             ->maxLength(50)
             ->isRequired();
 
         $row = $form->addRow();
-        	$row->addLabel('nameShort'.$count, 'Short Name');
+        	$row->addLabel('nameShort'.$count, __('Short Name'));
     		$row->addTextField('nameShort'.$count)
             ->setValue($rowSQL['nameShort'])
             ->maxLength(4)
             ->isRequired();
 
         $row = $form->addRow();
-        	$row->addLabel('color'.$count, 'Font/Border Color')->description('RGB Hex value, without leading #.');
+        	$row->addLabel('color'.$count, __('Font/Border Color'))->description(__('RGB Hex value, without leading #.'));
     		$row->addTextField('color'.$count)
                 ->setValue($rowSQL['color'])
                 ->maxLength(6)
                 ->isRequired();
 
         $row = $form->addRow();
-        	$row->addLabel('colorBG'.$count, 'Background Color')->description('RGB Hex value, without leading #.');
+        	$row->addLabel('colorBG'.$count, __('Background Color'))->description(__('RGB Hex value, without leading #.'));
     		$row->addTextField('colorBG'.$count)
                 ->setValue($rowSQL['colorBG'])
                 ->maxLength(6)
                 ->isRequired();
 
         $row = $form->addRow();
-        	$row->addLabel('sequenceNumber'.$count, 'Sequence Number');
+        	$row->addLabel('sequenceNumber'.$count, __('Sequence Number'));
     		$row->addTextField('sequenceNumber'.$count)
             ->setValue($rowSQL['sequenceNumber'])
             ->maxLength(4)
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             ->isRequired();
 
         $row = $form->addRow();
-        	$row->addLabel('description'.$count, 'Description');
+        	$row->addLabel('description'.$count, __('Description'));
             $row->addTextArea('description'.$count)->setValue($rowSQL['description']);
 
         $count++;

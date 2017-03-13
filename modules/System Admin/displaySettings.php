@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     
     $setting = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
     
     $row = $form->addRow();

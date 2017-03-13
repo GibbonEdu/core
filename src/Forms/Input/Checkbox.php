@@ -76,7 +76,7 @@ class Checkbox extends Input
                 $this->setAttribute('checked', $this->getIsChecked($value));
                 if ($value != 'on') $this->setValue($value);
 
-                $output .= '<label title="'.__($label).'">'.__($label).'</label> ';
+                $output .= '<label title="'.$label.'">'.$label.'</label> ';
                 $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
             }
         }

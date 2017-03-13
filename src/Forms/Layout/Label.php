@@ -79,7 +79,7 @@ class Label extends Element implements RowDependancyInterface
         $output = '';
 
         if (!empty($this->label)) {
-            $output .= '<label for="'.$this->for.'"><b>'.__($this->label).' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
+            $output .= '<label for="'.$this->for.'"><b>'.$this->label.' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
         }
 
         if ($this->getReadonly()) {

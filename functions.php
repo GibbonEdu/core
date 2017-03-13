@@ -18,6 +18,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 require_once dirname(__FILE__).'/gibbon.php';
 
+function getIPAddress() {
+    $return = false;
+
+    if (getenv('HTTP_CLIENT_IP'))
+       $return = getenv('HTTP_CLIENT_IP');
+    else if(getenv('HTTP_X_FORWARDED_FOR'))
+       $return = getenv('HTTP_X_FORWARDED_FOR');
+    else if(getenv('HTTP_X_FORWARDED'))
+       $return = getenv('HTTP_X_FORWARDED');
+    else if(getenv('HTTP_FORWARDED_FOR'))
+       $return = getenv('HTTP_FORWARDED_FOR');
+    else if(getenv('HTTP_FORWARDED'))
+      $return = getenv('HTTP_FORWARDED');
+    else if(getenv('REMOTE_ADDR'))
+       $return = getenv('REMOTE_ADDR');
+
+    return $return;
+}
 
 //Convert an HTML email body into a plain text email body
 function emailBodyConvert($body)
@@ -3798,15 +3816,20 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         } catch (PDOException $e) {
             $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
         }
-        if ($resultAlert->rowCount() > 1 and $resultAlert->rowCount() <= 4) {
-            $gibbonAlertLevelID = 003;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 2 and 4 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 4 and $resultAlert->rowCount() <= 8) {
-            $gibbonAlertLevelID = 002;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 5 and 8 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 8) {
+
+        $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
+        $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
+        $academicAlertHighThreshold = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold');
+
+        if ($resultAlert->rowCount() >= $academicAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are more than 8 events recorded for a student.');
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
+        } elseif ($resultAlert->rowCount() >= $academicAlertMediumThreshold) {
+            $gibbonAlertLevelID = 002;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold-1));
+        } elseif ($resultAlert->rowCount() >= $academicAlertLowThreshold) {
+            $gibbonAlertLevelID = 003;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
@@ -3827,16 +3850,22 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         } catch (PDOException $e) {
             $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
         }
-        if ($resultAlert->rowCount() > 1 and $resultAlert->rowCount() <= 4) {
-            $gibbonAlertLevelID = 003;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 2 and 4 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 4 and $resultAlert->rowCount() <= 8) {
-            $gibbonAlertLevelID = 002;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 5 and 8 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 8) {
+
+        $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
+        $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
+        $behaviourAlertHighThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold');
+
+        if ($resultAlert->rowCount() >= $behaviourAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are more than 8 events recorded for a student.');
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
+        } elseif ($resultAlert->rowCount() >= $behaviourAlertMediumThreshold) {
+            $gibbonAlertLevelID = 002;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold-1));
+        } elseif ($resultAlert->rowCount() >= $behaviourAlertLowThreshold) {
+            $gibbonAlertLevelID = 003;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold-1));
         }
+
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
