@@ -46,8 +46,6 @@ class Label extends Element implements RowDependancyInterface
 
     public function description($value = '')
     {
-        $value = $this->getTranslatedText(func_get_args());
-        
         $this->description = $value;
         return $this;
     }
