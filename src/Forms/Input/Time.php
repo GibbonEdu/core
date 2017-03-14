@@ -21,17 +21,50 @@ namespace Gibbon\Forms\Input;
 
 /**
  * Time
- * Replace with a better UI? http://jonthornton.github.io/jquery-timepicker/
+ *
+ * Interface for jQuery-timepicker http://jonthornton.github.io/jquery-timepicker/
  *
  * @version v14
  * @since   v14
  */
 class Time extends TextField
 {
-    // TODO: Implement
+    protected $format = 'H:i'; // Default to 24 hour clock
+    protected $chained;
+
+    public function setFormat($format)
+    {
+        $this->format = $format;
+        return $this;
+    }
+
+    public function chainedTo($chained)
+    {
+        $this->chained = $chained;
+        return $this;
+    }
+
     protected function getElement()
     {
+        $this->addValidation(
+            'Validate.Format',
+            'pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm"'
+        );
+
         $output = '';
+
+        $output = '<input type="text" '.$this->getAttributeString().'>';
+
+        $output .= '<script type="text/javascript">';
+        $output .= '$("#'.$this->getID().'").timepicker({ "scrollDefault": "now", "timeFormat" : "'.$this->format.'"});';
+        if (!empty($this->chained)) {
+            // On change, update this time and set duration
+            $output .= '$("#'.$this->chained.'").on("changeTime", function() {';
+            $output .= 'if ($("#'.$this->getID().'").val() == "") $("#'.$this->getID().'").val($(this).val());';
+            $output .= '$("#'.$this->getID().'").timepicker({ "minTime": $(this).val(), "timeFormat" : "'.$this->format.'", "showDuration" : true});';
+            $output .= '});';
+        }
+        $output .= '</script>';
 
         return $output;
     }

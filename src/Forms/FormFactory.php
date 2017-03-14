@@ -48,6 +48,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Column($this, $id);
     }
 
+    public function createTable($id = '')
+    {
+        return new Layout\Table($this, $id);
+    }
+
     public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
@@ -69,6 +74,11 @@ class FormFactory implements FormFactoryInterface
     }
 
     /* BASIC INPUT --------------------------- */
+
+    public function createCustomField($name, $fields = array())
+    {
+        return new Input\CustomField($this, $name, $fields);
+    }
 
     public function createTextArea($name)
     {
@@ -122,12 +132,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createTime($name)
     {
-        return (new Input\TextField($name) )
-            ->placeholder('00:00')
-            ->addValidation(
-                'Validate.Format',
-                'pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm"'
-            );
+        return new Input\Time($name);
     }
 
     public function createCheckbox($name)
