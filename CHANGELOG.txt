@@ -42,6 +42,7 @@ v14.0.00
 		System: fixed bug preventing jQuery Chained from working properly
 		System: allow user login with either username or email, if email is unique
 		Activities: Added optional permission for activity organisers to manage their activities enrolment
+		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts
@@ -57,6 +58,7 @@ v14.0.00
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
 		Students: added settable thresholds for issuing academic alerts
 		Students: added settable thresholds for issuing behaviour alerts
+		Timetable: Fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 
 v13.0.01
