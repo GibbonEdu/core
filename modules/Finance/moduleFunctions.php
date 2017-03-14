@@ -62,9 +62,6 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $return .= "<table cellspacing='0' style='width: 100%'>";
         $return .= "<tr class='head'>";
         $return .= '<th>';
-        $return .= __($guid, 'Person');
-        $return .= '</th>';
-        $return .= '<th>';
         $return .= __($guid, 'Date');
         $return .= '</th>';
         $return .= '<th>';
@@ -78,6 +75,9 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $return .= '</th>';
         $return .= '<th>';
         $return .= __($guid, 'Type');
+        $return .= '</th>';
+        $return .= '<th>';
+        $return .= __($guid, 'Paid/Recorded By');
         $return .= '</th>';
         $return .= "<th style='width: 150px'>";
         $return .= __($guid, 'Transaction ID');
@@ -99,11 +99,8 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    $return .= "<tr class=$rowNum>";
-                $return .= '<td>';
-                $return .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-                $return .= '</td>';
+                //COLOR ROW BY STATUS!
+                $return .= "<tr class=$rowNum>";
                 $return .= '<td>';
                 $return .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
                 $return .= '</td>';
@@ -119,6 +116,9 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 $return .= '</td>';
                 $return .= '<td>';
                 $return .= $row['type'];
+                $return .= '</td>';
+                $return .= '<td>';
+                $return .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
                 $return .= '</td>';
                 $return .= '<td>';
                 $return .= $row['paymentTransactionID'];

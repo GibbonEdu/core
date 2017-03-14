@@ -984,7 +984,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Can Login?').'</span><br/>';
-                        echo $row['canLogin'];
+                        echo ynExpander($guid, $row['canLogin']);
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Last IP Address').'</span><br/>';

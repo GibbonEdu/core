@@ -490,6 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                             if ($status == 'Pending') {
                                 echo '<option value="delete">'.__($guid, 'Delete').'</option>';
                                 echo '<option value="issue">'.__($guid, 'Issue').'</option>';
+                                echo '<option value="issueNoEmail">'.__($guid, 'Issue (Without Email)').'</option>';
                             }
 							if ($status == 'Issued - Overdue') {
 								echo '<option value="reminders">'.__($guid, 'Issue Reminders').'</option>';
