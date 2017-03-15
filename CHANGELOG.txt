@@ -36,7 +36,7 @@ v14.0.00
 
 	Tweaks & Bug Fixes
 		System: Improved Fast Finder student search permissions
-		System: added Albanian as development language
+		System: added Albanian and Thai as development languages
 		System: added Moroccan dirham as a currency option
 		System: upgraded jQuery to v2.2.4 and jQuery Migrate to v1.4.1
 		System: fixed bug preventing jQuery Chained from working properly
