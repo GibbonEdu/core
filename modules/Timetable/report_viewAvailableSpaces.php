@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -53,103 +55,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $ttDate = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
 
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Timetable') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="gibbonTTID" id="gibbonTTID" class="standardWidth">
-						<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>
-						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'].' ORDER BY name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($resultSelect->rowCount() == 1) {
-								$gibbonTTID = $rowSelect['gibbonTTID'];
-							}
-							$selected = '';
-							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".$rowSelect['name'].'</option>';
-						}
-						?>
-					</select>
-					<script type="text/javascript">
-						var gibbonTTID=new LiveValidation('gibbonTTID');
-						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>	
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Facility Type') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="spaceType" id="spaceType" class="standardWidth">
-						<option <?php if ($spaceType == '') { echo 'selected'; } ?> value=''><?php echo __($guid, 'All') ?></option>
-						<option <?php if ($spaceType == 'Classroom') { echo 'selected'; } ?> value='Classroom'><?php echo __($guid, 'Classroom') ?></option>
-						<option <?php if ($spaceType == 'Performance') { echo 'selected'; } ?> value='Performance'><?php echo __($guid, 'Performance') ?></option>
-						<option <?php if ($spaceType == 'Hall') { echo 'selected'; } ?> value='Hall'><?php echo __($guid, 'Hall') ?></option>
-						<option <?php if ($spaceType == 'Outdoor') { echo 'selected'; } ?> value='Outdoor'><?php echo __($guid, 'Outdoor') ?></option>
-						<option <?php if ($spaceType == 'Undercover') { echo 'selected'; } ?> value='Undercover'><?php echo __($guid, 'Undercover') ?></option>
-						<option <?php if ($spaceType == 'Storage') { echo 'selected'; } ?> value='Storage'><?php echo __($guid, 'Storage') ?></option>
-						<option <?php if ($spaceType == 'Office') { echo 'selected'; } ?> value='Office'><?php echo __($guid, 'Office') ?></option>
-						<option <?php if ($spaceType == 'Staffroom') { echo 'selected'; } ?> value='Staffroom'><?php echo __($guid, 'Staffroom') ?></option>
-						<option <?php if ($spaceType == 'Study') { echo 'selected'; } ?> value='Study'><?php echo __($guid, 'Study') ?></option>
-						<option <?php if ($spaceType == 'Library') { echo 'selected'; } ?> value='Library'><?php echo __($guid, 'Library') ?></option>
-						<option <?php if ($spaceType == 'Other') { echo 'selected'; } ?> value='Other'><?php echo __($guid, 'Other') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Date') ?></b><br/>
-				</td>
-				<td class="right">
-					<input name="ttDate" id="ttDate" maxlength=10 value="<?php echo $ttDate ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var ttDate=new LiveValidation('ttDate');
-						ttDate.add(Validate.Presence);
-						ttDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#ttDate" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewAvailableSpaces.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_viewAvailableSpaces.php');
+
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sql = 'SELECT gibbonTTID as value, name FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonTTID', __('Timetable'));
+        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder(__('Please select...'))->selected($gibbonTTID);
+
+    $facilityTypes = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
+    $facilityTypes = (!empty($facilityTypes))? explode(',', $facilityTypes) : array();
+
+    $row = $form->addRow();
+        $row->addLabel('spaceType', __('Facility Type'));
+        $row->addSelect('spaceType')->fromArray(array('' => __('All')))->fromArray($facilityTypes)->selected($spaceType);
+
+    $row = $form->addRow();
+        $row->addLabel('ttDate', __('Date'));
+        $row->addDate('ttDate')->setValue($ttDate);
+
+    $row = $form->addRow();
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
 
     if ($gibbonTTID != '') {
         echo '<h2>';
