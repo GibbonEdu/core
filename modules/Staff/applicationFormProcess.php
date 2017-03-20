@@ -27,6 +27,11 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
+//Check to see if system settings are set from databases
+if (empty($_SESSION[$guid]['systemSettingsSet'])) {
+    getSystemSettings($guid, $connection2);
+}
+
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
@@ -278,6 +283,12 @@ if ($proceed == false) {
                                         ++$count;
                                     }
                                     if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
+                                        // Make one more attempt at moving the file, using gibbon root path
+                                        $basePath = str_replace('\\', '/', dirname(__FILE__));
+                                        $basePath = str_replace('modules/Staff', '', $basePath);
+                                        $basePath = rtrim($basePath, '/');
+
+                                        move_uploaded_file($_FILES["file$i"]['tmp_name'], $basePath.'/'.$attachment);
                                     }
 
                                     //Write files to database
