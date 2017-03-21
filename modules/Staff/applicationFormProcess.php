@@ -218,6 +218,49 @@ if ($proceed == false) {
             $partialFail = false;
             $ids = '';
 
+            //Deal with required documents
+            $uploadedDocuments = array();
+            $requiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
+            if (!empty($requiredDocuments)) {
+                $fileCount = 0;
+                if (isset($_POST['fileCount'])) {
+                    $fileCount = $_POST['fileCount'];
+                }
+                for ($i = 0; $i < $fileCount; ++$i) {
+                    $fileName = $_POST["fileName$i"];
+                    $time = time();
+                    //Move attached file, if there is one
+                    if ($_FILES["file$i"]['tmp_name'] != '') {
+                        //Check for folder in uploads based on today's date
+                        $path = $_SESSION[$guid]['absolutePath'];
+                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
+                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
+                        }
+                        $unique = false;
+                        $count = 0;
+                        while ($unique == false and $count < 100) {
+                            $suffix = randomPassword(16);
+                            $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
+                            if (!(file_exists($path.'/'.$attachment))) {
+                                $unique = true;
+                            }
+                            ++$count;
+                        }
+                        if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
+                            // Make one more attempt at moving the file, using gibbon root path
+                            $basePath = str_replace('\\', '/', dirname(__FILE__));
+                            $basePath = str_replace('modules/Staff', '', $basePath);
+                            $basePath = rtrim($basePath, '/');
+
+                            move_uploaded_file($_FILES["file$i"]['tmp_name'], $basePath.'/'.$attachment);
+                        }
+
+                        // Create an array of uploaded files
+                        $uploadedDocuments[$fileName] = $attachment;
+                    }
+                }
+            }
+
             //Submit one copy for each job opening checking
             foreach ($gibbonStaffJobOpeningIDs as $gibbonStaffJobOpeningID) {
                 $thisFail = false;
@@ -255,50 +298,16 @@ if ($proceed == false) {
                         $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
                         $ids .= $AI.', ';
 
-                        //Deal with required documents
-                        $requiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
-                        if ($requiredDocuments != '' and $requiredDocuments != false) {
-                            $fileCount = 0;
-                            if (isset($_POST['fileCount'])) {
-                                $fileCount = $_POST['fileCount'];
-                            }
-                            for ($i = 0; $i < $fileCount; ++$i) {
-                                $fileName = $_POST["fileName$i"];
-                                $time = time();
-                                //Move attached file, if there is one
-                                if ($_FILES["file$i"]['tmp_name'] != '') {
-                                    //Check for folder in uploads based on today's date
-                                    $path = $_SESSION[$guid]['absolutePath'];
-                                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                                    }
-                                    $unique = false;
-                                    $count = 0;
-                                    while ($unique == false and $count < 100) {
-                                        $suffix = randomPassword(16);
-                                        $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
-                                        if (!(file_exists($path.'/'.$attachment))) {
-                                            $unique = true;
-                                        }
-                                        ++$count;
-                                    }
-                                    if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
-                                        // Make one more attempt at moving the file, using gibbon root path
-                                        $basePath = str_replace('\\', '/', dirname(__FILE__));
-                                        $basePath = str_replace('modules/Staff', '', $basePath);
-                                        $basePath = rtrim($basePath, '/');
-
-                                        move_uploaded_file($_FILES["file$i"]['tmp_name'], $basePath.'/'.$attachment);
-                                    }
-
-                                    //Write files to database
-                                    try {
-                                        $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
-                                        $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
-                                        $resultFile = $connection2->prepare($sqlFile);
-                                        $resultFile->execute($dataFile);
-                                    } catch (PDOException $e) {
-                                    }
+                        // Attach required documents
+                        if ($requiredDocuments != false && !empty($uploadedDocuments) && is_array($uploadedDocuments)) {
+                            foreach ($uploadedDocuments as $fileName => $attachment) {
+                                //Write files to database, one for each attachment
+                                try {
+                                    $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
+                                    $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
+                                    $resultFile = $connection2->prepare($sqlFile);
+                                    $resultFile->execute($dataFile);
+                                } catch (PDOException $e) {
                                 }
                             }
                         }
