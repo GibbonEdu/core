@@ -41,52 +41,52 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('SMS Settings');
+    $row = $form->addRow()->addHeading(__('SMS Settings'));
 
     $row = $form->addRow()->addAlert( sprintf(__($guid, 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", '</a>') );
 
-    $settingByScope = getSettingByScope($connection2, 'Messenger', 'smsUsername', true);
+    $setting = getSettingByScope($connection2, 'Messenger', 'smsUsername', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addTextField($setting['name'])->setValue($setting['value']);
 
-	$settingByScope = getSettingByScope($connection2, 'Messenger', 'smsPassword', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'smsPassword', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addPassword($settingByScope['name'])->setValue($settingByScope['value']);
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addPassword($setting['name'])->setValue($setting['value']);
 
-	$settingByScope = getSettingByScope($connection2, 'Messenger', 'smsURL', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'smsURL', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addTextField($setting['name'])->setValue($setting['value']);
 
-	$settingByScope = getSettingByScope($connection2, 'Messenger', 'smsURLCredit', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'smsURLCredit', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value']);
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addTextField($setting['name'])->setValue($setting['value']);
 
 
-	$row = $form->addRow()->addHeading('Message Wall Settings');
+	$row = $form->addRow()->addHeading(__('Message Wall Settings'));
 
-	$settingByScope = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-    	$row->addSelect($settingByScope['name'])->fromString('Regular, Wide')->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addSelect($setting['name'])->fromString('Regular, Wide')->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor', true);
+    $setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addTextField($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
 
-	$settingByScope = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-	$settingByScope = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget', true);
+	$setting = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget', true);
 	$row = $form->addRow();
-    	$row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-		$row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
 
 	$row = $form->addRow();

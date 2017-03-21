@@ -46,11 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     
     $row = $form->addRow()->setClass('heading head');
-        $row->addContent('Name');
-        $row->addContent('Code');
-        $row->addContent('Active');
-        $row->addContent('Maintainer');
-        $row->addContent('Default');
+        $row->addContent(__('Name'));
+        $row->addContent(__('Code'));
+        $row->addContent(__('Active'));
+        $row->addContent(__('Maintainer'));
+        $row->addContent(__('Default'));
 
     try {
         $data = array();
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     }
 
     if (!$result || $result->rowCount() == 0) {
-        $form->addRow()->addAlert('There are no records to display.', 'error');
+        $form->addRow()->addAlert(__('There are no records to display.'), 'error');
     } else {
         while ($i18n = $result->fetch()) {
             $class = ($i18n['active'] == 'N')? 'error' : '';

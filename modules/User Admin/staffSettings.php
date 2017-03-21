@@ -40,22 +40,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('Field Values');
+    $row = $form->addRow()->addHeading(__('Field Values'));
 
-    $settingByScope = getSettingByScope($connection2, 'Staff', 'salaryScalePositions', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'salaryScalePositions', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Staff', 'responsibilityPosts', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'responsibilityPosts', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate', true);
+    $setting = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

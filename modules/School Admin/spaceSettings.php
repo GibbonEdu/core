@@ -40,10 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/spaceSettings
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $settingByScope = getSettingByScope($connection2, 'School Admin', 'facilityTypes', true);
+    $setting = getSettingByScope($connection2, 'School Admin', 'facilityTypes', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
     $row = $form->addRow();
 		$row->addFooter();

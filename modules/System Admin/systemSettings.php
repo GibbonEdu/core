@@ -79,186 +79,186 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     // SYSTEM SETTINGS
-    $form->addRow()->addHeading('System Settings');
+    $form->addRow()->addHeading(__('System Settings'));
 
     $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'systemName', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'indexText', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'installType', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue(ynExpander($guid, $setting['value']))->readonly();
 
     $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     // ORGANISATION
-    $form->addRow()->addHeading('Organisation Settings');
+    $form->addRow()->addHeading(__('Organisation Settings'));
 
     $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationNameShort', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationEmail', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addEmail($setting['name'])->setValue($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationLogo', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationDBA', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdmissions', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationHR', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
 
     // SECURITY SETTINGS
-    $form->addRow()->addHeading('Security Settings');
-    $form->addRow()->addSubheading('Password Policy');
+    $form->addRow()->addHeading(__('Security Settings'));
+    $form->addRow()->addSubheading(__('Password Policy'));
 
     $setting = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray(range(4, 12))->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $form->addRow()->addSubheading('Miscellaneous');
+    $form->addRow()->addSubheading(__('Miscellaneous'));
 
     $setting = getSettingByScope($connection2, 'System', 'sessionDuration', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'allowableHTML', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8);
 
     // VALUE ADDED
-    $form->addRow()->addHeading('gibbonedu.com Value Added Services');
+    $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
 
     $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     // LOCALISATION
-    $form->addRow()->addHeading('Localisation');
+    $form->addRow()->addHeading(__('Localisation'));
 
     $setting = getSettingByScope($connection2, 'System', 'country', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectCountry($setting['name'])->selected($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('Monday, Sunday')->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'timezone', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'currency', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectCurrency($setting['name'])->selected($setting['value'])->isRequired();
 
     // MISCELLANEOUS
-    $form->addRow()->addHeading('Miscellaneous');
+    $form->addRow()->addHeading(__('Miscellaneous'));
 
     $setting = getSettingByScope($connection2, 'System', 'emailLink', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'webLink', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'pagination', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(5)->maxLength(50)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'analytics', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8);
 
     $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE active='Y' ORDER BY name";
 
     $setting = getSettingByScope($connection2, 'System', 'defaultAssessmentScale', true);
     $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
 
     $row = $form->addRow();

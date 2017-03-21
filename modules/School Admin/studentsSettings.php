@@ -113,96 +113,96 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $form->addRow()->addHeading('Student Notes');
+    $form->addRow()->addHeading(__('Student Notes'));
 
     $setting = getSettingByScope($connection2, 'Students', 'enableStudentNotes', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'Students', 'noteCreationNotification', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('Tutors, Tutors & Teachers')->selected($setting['value'])->isRequired();
 
-    $form->addRow()->addHeading('Alerts');
+    $form->addRow()->addHeading(__('Alerts'));
 
-    $settingByScope = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold', true);
+    $setting = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-            ->description($settingByScope['description']);
-        $row->addNumber($settingByScope['name'])
-            ->setValue($settingByScope['value'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
             ->decimalPlaces(0)
             ->minimum(0)
             ->maximum(50)
             ->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold', true);
+    $setting = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-            ->description($settingByScope['description']);
-        $row->addNumber($settingByScope['name'])
-            ->setValue($settingByScope['value'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
             ->decimalPlaces(0)
             ->minimum(0)
             ->maximum(50)
             ->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold', true);
+    $setting = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-            ->description($settingByScope['description']);
-        $row->addNumber($settingByScope['name'])
-            ->setValue($settingByScope['value'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
             ->decimalPlaces(0)
             ->minimum(0)
             ->maximum(50)
             ->isRequired();
 
-        $settingByScope = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold', true);
+        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold', true);
         $row = $form->addRow();
-            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-                ->description($settingByScope['description']);
-            $row->addNumber($settingByScope['name'])
-                ->setValue($settingByScope['value'])
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))
+                ->description(__($setting['description']));
+            $row->addNumber($setting['name'])
+                ->setValue($setting['value'])
                 ->decimalPlaces(0)
                 ->minimum(0)
                 ->maximum(50)
                 ->isRequired();
 
-        $settingByScope = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold', true);
+        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold', true);
         $row = $form->addRow();
-            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-                ->description($settingByScope['description']);
-            $row->addNumber($settingByScope['name'])
-                ->setValue($settingByScope['value'])
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))
+                ->description(__($setting['description']));
+            $row->addNumber($setting['name'])
+                ->setValue($setting['value'])
                 ->decimalPlaces(0)
                 ->minimum(0)
                 ->maximum(50)
                 ->isRequired();
 
-        $settingByScope = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold', true);
+        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold', true);
         $row = $form->addRow();
-            $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-                ->description($settingByScope['description']);
-            $row->addNumber($settingByScope['name'])
-                ->setValue($settingByScope['value'])
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))
+                ->description(__($setting['description']));
+            $row->addNumber($setting['name'])
+                ->setValue($setting['value'])
                 ->decimalPlaces(0)
                 ->minimum(0)
                 ->maximum(50)
                 ->isRequired();
 
-    $form->addRow()->addHeading('Miscellaneous');
+    $form->addRow()->addHeading(__('Miscellaneous'));
 
     $setting = getSettingByScope($connection2, 'Students', 'extendedBriefProfile', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();

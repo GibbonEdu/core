@@ -42,124 +42,124 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow()->addHeading('General Settings');
+    $row = $form->addRow()->addHeading(__('General Settings'));
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'email', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'email', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addEmail($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addEmail($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $form->toggleVisibilityByClass('onlinePayment')->onSelect($settingByScope['name'])->when('Y');
+    $form->toggleVisibilityByClass('onlinePayment')->onSelect($setting['name'])->when('Y');
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold', true);
     $row = $form->addRow()->addClass('onlinePayment');
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])
-            ->description($settingByScope['description'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']))
             ->append('In %1$s.', $_SESSION[$guid]['currency']);
-        $row->addNumber($settingByScope['name'])
-            ->setValue($settingByScope['value'])
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
             ->decimalPlaces(2);
 
-    $row = $form->addRow()->addHeading('Invoices');
+    $row = $form->addRow()->addHeading(__('Invoices'));
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'invoiceText', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'invoiceText', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'invoiceNotes', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'invoiceNotes', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('"Surname, Preferred Name", Official Name')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('"Surname, Preferred Name", Official Name')->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('Invoice ID, Person ID + Invoice ID, Student ID + Invoice ID')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('Invoice ID, Person ID + Invoice ID, Student ID + Invoice ID')->selected($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Receipts');
+    $row = $form->addRow()->addHeading(__('Receipts'));
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'receiptText', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'receiptText', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'receiptNotes', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'receiptNotes', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'hideItemisation', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'hideItemisation', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading('Reminders');
+    $row = $form->addRow()->addHeading(__('Reminders'));
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'reminder1Text', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'reminder1Text', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'reminder2Text', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'reminder2Text', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'reminder3Text', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'reminder3Text', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading('Expenses');
+    $row = $form->addRow()->addHeading(__('Expenses'));
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'budgetCategories', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'budgetCategories', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'expenseApprovalType', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'expenseApprovalType', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelect($settingByScope['name'])->fromString('One Of, Two Of, Chain Of All')->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('One Of, Two Of, Chain Of All')->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addTextArea($settingByScope['name'])->setValue($settingByScope['value']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addYesNo($settingByScope['name'])->selected($settingByScope['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'purchasingOfficer', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'purchasingOfficer', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelectStaff($settingByScope['name'])
-            ->selected($settingByScope['value'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelectStaff($setting['name'])
+            ->selected($setting['value'])
             ->placeholder('');
 
-    $settingByScope = getSettingByScope($connection2, 'Finance', 'reimbursementOfficer', true);
+    $setting = getSettingByScope($connection2, 'Finance', 'reimbursementOfficer', true);
     $row = $form->addRow();
-        $row->addLabel($settingByScope['name'], $settingByScope['nameDisplay'])->description($settingByScope['description']);
-        $row->addSelectStaff($settingByScope['name'])
-            ->selected($settingByScope['value'])
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelectStaff($setting['name'])
+            ->selected($setting['value'])
             ->placeholder('');
 
     $row = $form->addRow();

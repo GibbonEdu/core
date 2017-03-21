@@ -55,7 +55,7 @@ class Radio extends Input
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
             foreach ($this->getOptions() as $value => $label) {
                 if (!empty($label)) {
-                    $output .= '<label title="'.__($label).'">'.__($label).'</label> ';
+                    $output .= '<label title="'.$label.'">'.$label.'</label> ';
                 }
 
                 $this->setAttribute('checked', $this->getIsChecked($value));

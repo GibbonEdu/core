@@ -93,7 +93,7 @@ class Select extends Input
         $output .= '<select '.$this->getAttributeString().'>';
 
         if (isset($this->placeholder)) {
-            $output .= '<option value="'.$this->placeholder.'">'.__($this->placeholder).'</option>';
+            $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
 
             if ($this->getRequired()) {
                 $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
@@ -106,13 +106,13 @@ class Select extends Input
                     $output .= '<optgroup label="'.$value.'">';
                     foreach ($label as $subvalue => $sublabel) {
                         $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
-                        $output .= '<option value="'.$subvalue.'" '.$selected.'>'.__($sublabel).'</option>';
+                        $output .= '<option value="'.$subvalue.'" '.$selected.'>'.$sublabel.'</option>';
                     }
                     $output .= '</optgroup>';
                 } else {
                     $selected = ($this->isOptionSelected($value))? 'selected' : '';
                     $class = (!empty($this->chainedToValues[$value]))? ' class="'.$this->chainedToValues[$value].'" ' : '';
-                    $output .= '<option value="'.$value.'" '.$selected.$class.'>'.__($label).'</option>';
+                    $output .= '<option value="'.$value.'" '.$selected.$class.'>'.$label.'</option>';
                 }
             }
         }
