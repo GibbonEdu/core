@@ -719,5 +719,6 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'behaviourAlertLowThreshold', 'Low Behaviour Alert Threshold', 'The number of Behaviour concerns needed in the past 60 days to raise a low level alert on a student.', '3');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'behaviourAlertMediumThreshold', 'Medium Behaviour Alert Threshold', 'The number of Behaviour concerns needed in the past 60 days to raise a medium level alert on a student.', '5');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'behaviourAlertHighThreshold', 'High Behaviour Alert Threshold', 'The number of Behaviour concerns needed in the past 60 days to raise a high level alert on a student.', '9');end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('th_TH', 'ภาษาไทย - ราชอาณาจักรไทย', 'N', 'N', 'Wattana Hinchaisri', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 
 ";
