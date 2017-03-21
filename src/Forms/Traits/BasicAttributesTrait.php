@@ -40,6 +40,17 @@ trait BasicAttributesTrait
         return $this->getAttribute('id');
     }
 
+    public function setTitle($title = '')
+    {
+        $this->setAttribute('title', $title);
+        return $this;
+    }
+
+    public function getTitle()
+    {
+        return $this->getAttribute('title');
+    }
+
     public function setClass($class = '')
     {
         $this->setAttribute('class', $class);
@@ -89,7 +100,7 @@ trait BasicAttributesTrait
      * @param    [type]  $attributes
      * @return   [type]
      */
-    protected function getAttributeString() {
+    public function getAttributeString() {
         $attributes = $this->getAttributeArray();
 
         $output = implode(' ', array_map(

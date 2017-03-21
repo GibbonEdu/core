@@ -48,7 +48,7 @@ class Date extends TextField
 
         $this->addValidation('Validate.Format', $validationFormat);
 
-        $output = '<input type="text" '.$this->getAttributeString().'>';
+        $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 
         $output .= '<script type="text/javascript">';
         $output .= '$(function() { $( "#'.$this->getID().'" ).datepicker(); })';

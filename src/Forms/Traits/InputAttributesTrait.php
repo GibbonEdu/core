@@ -49,6 +49,34 @@ trait InputAttributesTrait
         return $this->getAttribute('value');
     }
 
+    public function setSize($size = '')
+    {
+        $this->setAttribute('size', $size);
+        return $this;
+    }
+
+    public function getSize()
+    {
+        return $this->getAttribute('size');
+    }
+
+    public function isDisabled($disabled = true)
+    {
+        $this->setDisabled('disabled', $disabled);
+        return $this;
+    }
+
+    public function setDisabled($disabled)
+    {
+        $this->setAttribute('disabled', $disabled);
+        return $this;
+    }
+
+    public function getDisabled()
+    {
+        return $this->getAttribute('disabled');
+    }
+
     public function isRequired($required = true)
     {
         $this->setRequired($required);

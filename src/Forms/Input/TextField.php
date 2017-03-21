@@ -29,6 +29,8 @@ use Gibbon\Forms\Element;
  */
 class TextField extends Input
 {
+    protected $autocomplete;
+
     public function maxLength($value = '')
     {
         if (!empty($value)) {
@@ -53,6 +55,14 @@ class TextField extends Input
         return $this;
     }
 
+    public function autocomplete($value = '')
+    {
+        $this->autocomplete = (is_array($value))? $value : array($value);
+        $this->setAttribute('autocomplete', 'on');
+
+        return $this;
+    }
+
     public function getReadonly()
     {
         return $this->getAttribute('readonly');
@@ -61,6 +71,13 @@ class TextField extends Input
     protected function getElement()
     {
         $output = '<input type="text" '.$this->getAttributeString().'>';
+
+        if (!empty($this->autocomplete)) {
+            $source = implode(',', array_map(function ($str) { return sprintf('"%s"', $str); }, $this->autocomplete));
+            $output .= '<script type="text/javascript">';
+            $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
+            $output .= '</script>';
+        }
 
         return $output;
     }

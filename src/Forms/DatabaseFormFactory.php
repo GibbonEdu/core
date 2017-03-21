@@ -33,6 +33,8 @@ class DatabaseFormFactory extends FormFactory
 {
     protected $pdo;
 
+    protected $cachedQueries = array();
+
     public function __construct(\Gibbon\sqlConnection $pdo)
     {
         $this->pdo = $pdo;
@@ -48,7 +50,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = 'SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
+        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
     }
 
     public function createSelectLanguage($name)
@@ -56,7 +58,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = 'SELECT name as value, name FROM gibbonLanguage ORDER BY name';
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
+        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
     }
 
     public function createSelectCountry($name)
@@ -64,7 +66,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = 'SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name';
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder('Please select...');
+        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
     }
 
     public function createSelectStaff($name)
@@ -83,5 +85,32 @@ class DatabaseFormFactory extends FormFactory
         }
 
         return $this->createSelect($name)->fromArray($values);
+    }
+
+    public function createPhoneNumber($name)
+    {
+        $countryCodes = $this->getCachedQuery('phoneNumber');
+
+        if (empty($countryCodes)) {
+            $sql = 'SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY printable_name';
+            $results = $this->pdo->executeQuery(array(), $sql);
+            if ($results && $results->rowCount() > 0) {
+                $countryCodes = $results->fetchAll();
+            }
+            $this->setCachedQuery('phoneNumber', $countryCodes);
+        }
+
+        $phoneNumberField = new Input\PhoneNumber($name);
+        return $phoneNumberField->setCountryCodes($countryCodes);
+    }
+
+    protected function getCachedQuery($name)
+    {
+        return (isset($this->cachedQueries[$name]))? $this->cachedQueries[$name] : array();
+    }
+
+    protected function setCachedQuery($name, $results)
+    {
+        $this->cachedQueries[$name] = $results;
     }
 }

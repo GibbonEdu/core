@@ -58,7 +58,7 @@ class Label extends Element implements RowDependancyInterface
 
         $element = $this->row->getElement($this->for);
 
-        return (!empty($element))? $element->getRequired() : false;
+        return (!empty($element) && method_exists($element, 'getRequired'))? $element->getRequired() : false;
     }
 
     protected function getReadOnly()
