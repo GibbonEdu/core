@@ -70,7 +70,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createContent($content = '')
     {
-        return (new Layout\Element())->setContent($content);
+        return new Layout\Element($content);
     }
 
     /* BASIC INPUT --------------------------- */

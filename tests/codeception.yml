@@ -1,0 +1,52 @@
+actor: Tester
+paths:
+    # where the tests stored
+    tests: ''
+
+    # directory for output
+    log: log
+
+    # directory for fixture data
+    data: config/data
+
+    # directory for support code
+    support: config/support
+
+    # directory for environment configuration
+    envs: config/envs
+settings:
+    # name of bootstrap that will be used
+    bootstrap: bootstrap.php
+
+    # randomize test order
+    shuffle: false
+
+    # by default it's false on Windows
+    colors: true
+
+    # Generate XML JUnit report using strict schema
+    strict_xml: false
+
+    # Tests can take a lot of memory
+    memory_limit: 1024M
+
+    # This value controls whether PHPUnit attempts to backup global variables
+    backup_globals: true
+params:
+    - env
+    - config/config.php
+includes:
+    - bootstrap.php
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+modules:
+    config:
+        Db:
+            dsn: "mysql:host=%DB_HOST%;dbname=%DB_NAME%"
+            user: "%DB_USERNAME%"
+            password: "%DB_PASSWORD%"
+            dump: 'config/data/dump.sql'
+            populate: true
+            cleanup: false
+            reconnect: true
