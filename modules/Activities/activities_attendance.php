@@ -42,7 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo '</h2>';
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
-    print $highestAction;
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
         $gibbonActivityID = $_GET['gibbonActivityID'];
