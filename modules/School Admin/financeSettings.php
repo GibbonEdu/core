@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $row = $form->addRow()->addClass('onlinePayment');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']))
-            ->append('In %1$s.', $_SESSION[$guid]['currency']);
+            ->append(sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']));
         $row->addNumber($setting['name'])
             ->setValue($setting['value'])
             ->decimalPlaces(2);
