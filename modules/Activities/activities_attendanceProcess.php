@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 }
             } else {
                 $URL .= '&return=error0';
-                header("Location: {$URL}");\
+                header("Location: {$URL}");
                 exit();
             }
         } catch (PDOException $e) {
