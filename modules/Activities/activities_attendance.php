@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     							$sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
                             } elseif($highestAction == "Enter Activity Attendance_leader") {
                                 $dataSelect["gibbonPersonID"] = $_SESSION[$guid]["gibbonPersonID"];
-                                $sqlSelect = "SELECT gibbonActivity.gibbonActivityID, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant') ORDER BY name, programStart";
+                                $sqlSelect = "SELECT gibbonActivity.gibbonActivityID, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant' OR gibbonActivityStaff.role='Coach') ORDER BY name, programStart";
                             }
 							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);

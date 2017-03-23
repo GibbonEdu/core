@@ -56,14 +56,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
             if ($resultCheck->rowCount() > 0) {
                 $row = $resultCheck->fetch();
-                if ($row["role"] != "Organiser" && $row["role"] != "Assistant") {
+                if ($row["role"] != "Organiser" && $row["role"] != "Assistant" && $row["role"] != "Coach") {
                     $URL .= '&return=error0';
                     header("Location: {$URL}");
                     exit();
                 }
             } else {
                 $URL .= '&return=error0';
-                header("Location: {$URL}");\
+                header("Location: {$URL}");
                 exit();
             }
         } catch (PDOException $e) {
