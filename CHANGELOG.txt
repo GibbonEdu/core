@@ -63,6 +63,7 @@ v14.0.00
 		Students: added settable thresholds for issuing behaviour alerts
 		Timetable: Fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
+		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 
 v13.0.01
 --------
