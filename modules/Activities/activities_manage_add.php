@@ -640,11 +640,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					} catch (PDOException $e) {
 					}
 					while ($rowSelect = $resultSelect->fetch()) {
-						$selected = '';
-						if ($row['gibbonPersonIDStatusResponsible'] == $rowSelect['gibbonPersonID']) {
-							$selected = 'selected';
-						}
-						echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."$expected</option>";
+						echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."</option>";
 					}
 					echo '</optgroup>';?>
 				</select>
@@ -668,7 +664,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
-					<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>

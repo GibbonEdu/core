@@ -48,6 +48,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Column($this, $id);
     }
 
+    public function createTable($id = '')
+    {
+        return new Layout\Table($this, $id);
+    }
+
     public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
@@ -65,10 +70,15 @@ class FormFactory implements FormFactoryInterface
 
     public function createContent($content = '')
     {
-        return (new Layout\Element())->setContent($content);
+        return new Layout\Element($content);
     }
 
     /* BASIC INPUT --------------------------- */
+
+    public function createCustomField($name, $fields = array())
+    {
+        return new Input\CustomField($this, $name, $fields);
+    }
 
     public function createTextArea($name)
     {
@@ -122,12 +132,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createTime($name)
     {
-        return (new Input\TextField($name) )
-            ->placeholder('00:00')
-            ->addValidation(
-                'Validate.Format',
-                'pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm"'
-            );
+        return new Input\Time($name);
     }
 
     public function createCheckbox($name)
@@ -149,25 +154,25 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubheading($label)
     {
-        $content = sprintf('<h4>%s</h4>', __($label));
+        $content = sprintf('<h4>%s</h4>', $label);
         return $this->createContent($content);
     }
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, __($content));
+        $content = sprintf('<div class="%s">%s</div>', $level, $content);
         return $this->createContent($content);
     }
 
     public function createSubmit($label = 'Submit')
     {
-        $content = sprintf('<input type="submit" value="%s">', __($label));
+        $content = sprintf('<input type="submit" value="%s">', $label);
         return $this->createContent($content)->setClass('right');
     }
 
     public function createButton($label = 'Button', $onClick = '')
     {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', __($label), $onClick);
+        $content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
         return $this->createContent($content)->setClass('right');
     }
 

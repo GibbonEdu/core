@@ -40,13 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     header("Location: {$URL}");
 } else {
     $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+    $realIP = getIPAddress();
     if ($studentSelfRegistrationIPAddresses == '' || is_null($studentSelfRegistrationIPAddresses)) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
         $inRange = false ;
         foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
-            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR'])
+            if (trim($ipAddress) == $realIP)
                 $inRange = true ;
         }
 

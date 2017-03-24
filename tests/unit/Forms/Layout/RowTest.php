@@ -11,6 +11,7 @@ namespace Gibbon\Forms\Layout;
 
 use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\FormFactory;
+use Gibbon\Forms\OutputableInterface;
 
 /**
  * @covers Row
@@ -38,9 +39,9 @@ class RowTest extends TestCase
     {
         $factory = FormFactory::create();
         $row = new Row($factory, 'testID');
-        $row->addContent('Testing');
+        $element = $row->addContent('Testing');
 
-        $this->assertEquals($row->getElement()->getOutput(), 'Testing');
+        $this->assertEquals($element->getOutput(), 'Testing');
     }
 
     public function testCanHandleUnknownElements()
@@ -55,10 +56,11 @@ class RowTest extends TestCase
 
     public function testCanGetElement()
     {
-        $row = new Row($this->mockFactory, 'testID');
-        $row->addElement($this->mockElement);
+        $factory = FormFactory::create();
+        $row = new Row($factory, 'testID');
+        $element = $row->addTextField('testElement');
 
-        $this->assertSame($this->mockElement, $row->getElement());
+        $this->assertSame($element, $row->getElement('testElement'));
     }
 
     public function testCanGetElements()

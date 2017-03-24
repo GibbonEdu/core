@@ -85,7 +85,7 @@ class Row
         if (empty($this->formElements) || count($this->formElements) == 0) {
             return null;
         }
-        return (isset($this->formElements[$id]))? $this->formElements[$id] : end($this->formElements);
+        return (isset($this->formElements[$id]))? $this->formElements[$id] : null;
     }
 
     public function getElements()

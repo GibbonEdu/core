@@ -36,12 +36,15 @@ v14.0.00
 
 	Tweaks & Bug Fixes
 		System: Improved Fast Finder student search permissions
-		System: added Albanian as development language
+		System: added Albanian and Thai as development languages
 		System: added Moroccan dirham as a currency option
 		System: upgraded jQuery to v2.2.4 and jQuery Migrate to v1.4.1
 		System: fixed bug preventing jQuery Chained from working properly
 		System: allow user login with either username or email, if email is unique
-		Activities: Added optional permission for activity organisers to manage their activities enrolment
+		System: added Myanmar, Burmese, Filipino to list of languages, fixed Croatian, Ukrainian, Swedish spelling
+		Activities: added optional permission for activity organisers to manage their activities enrolment
+		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
+		Activities: added optional permission for activity organisers to take attendance only within their activities
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts
@@ -52,12 +55,15 @@ v14.0.00
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: Added a class average row to the bottom of markbook views (when Weighting is enabled)
+		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
 		Students: added settable thresholds for issuing academic alerts
 		Students: added settable thresholds for issuing behaviour alerts
+		Timetable: Fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
+		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 
 v13.0.01
 --------

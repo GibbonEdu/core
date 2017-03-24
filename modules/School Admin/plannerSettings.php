@@ -40,60 +40,60 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $form->addRow()->addHeading('Planner Templates');
+    $form->addRow()->addHeading(__('Planner Templates'));
 
     $setting = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'unitOutlineTemplate', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
-    $form->addRow()->addHeading('Access Settings');
+    $form->addRow()->addHeading(__('Access Settings'));
 
     $setting = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'shareUnitOutline', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
-    $form->addRow()->addHeading('Miscellaneous');
+    $form->addRow()->addHeading(__('Miscellaneous'));
 
     $setting = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], $setting['nameDisplay'])->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
     $row = $form->addRow();

@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
 
     //Check to see if IP addresses are set
     $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+    $realIP = getIPAddress();
     if ($studentSelfRegistrationIPAddresses == '' || is_null($studentSelfRegistrationIPAddresses)) {
         echo "<div class='error'>";
         echo __($guid, 'You do not have access to this action.');
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     } else {
         $inRange = false ;
         foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
-            if (trim($ipAddress) == $_SERVER['REMOTE_ADDR'])
+            if (trim($ipAddress) == $realIP)
                 $inRange = true ;
         }
 

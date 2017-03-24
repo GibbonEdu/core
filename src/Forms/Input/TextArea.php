@@ -54,8 +54,12 @@ class TextArea extends Input
 
     protected function getElement()
     {
+        // Unset the value attribute, textarea doesn't use them
+        $text = $this->getValue();
+        $this->setValue('');
+
         $output = '<textarea '.$this->getAttributeString().'>';
-        $output .= $this->getValue();
+        $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
         $output .= '</textarea>';
 
         return $output;

@@ -181,6 +181,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-autosize/jquery.autosize.min.js"></script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js"></script>
+            <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-timepicker/jquery.timepicker.min.js"></script>
+            <link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-timepicker/jquery.timepicker.css" type="text/css" media="screen" />
             <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-cropit/jquery.cropit.js"></script>
 			<?php
             if (isset($_SESSION[$guid]['username'])) {
