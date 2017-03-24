@@ -167,30 +167,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Activity');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Provider');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Roll Group');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Attendance');
-            echo '</th>';
-            echo '</tr>';
-
             if (!$attendanceResult || $attendanceResult->rowCount() == 0) {
                 echo "<div class='error'>";
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
+                echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Activity');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Provider');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Name');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Roll Group');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Attendance');
+                echo '</th>';
+                echo '</tr>';
+
                 while ($row = $attendanceResult->fetch()) {
                     // ROW
                     echo '<tr class="'.(($row['attendance'] == 'Absent')? 'error' : '').'">';
@@ -211,9 +211,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                     echo '</td>';
                     echo '</tr>';
                 }
-            }
 
-            echo '</table>';
+                echo '</table>';
+            }
         }
     }
 }
