@@ -41,6 +41,7 @@ v14.0.00
 		System: upgraded jQuery to v2.2.4 and jQuery Migrate to v1.4.1
 		System: fixed bug preventing jQuery Chained from working properly
 		System: allow user login with either username or email, if email is unique
+		System: added Myanmar, Burmese, Filipino to list of languages, fixed Croatian, Ukrainian, Swedish spelling
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
