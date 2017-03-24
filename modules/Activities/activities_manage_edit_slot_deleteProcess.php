@@ -31,7 +31,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $gibbonActivitySlotID = $_GET['gibbonActivitySlotID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
     $URL .= '&return=error0';
