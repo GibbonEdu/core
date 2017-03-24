@@ -269,7 +269,6 @@ function dataURItoBlob(dataURI) {
                         <h3>
                             <?php echo $translation['step2-add-heading']; ?>
                         </h3>
-                        <p><?php echo $translation['step2-add-message']; ?></p>
                     </td>
                 </tr>
 
