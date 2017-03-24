@@ -42,8 +42,11 @@ v14.0.00
 		System: upgraded jQuery to v2.2.4 and jQuery Migrate to v1.4.1
 		System: fixed bug preventing jQuery Chained from working properly
 		System: allow user login with either username or email, if email is unique
+		System: added Myanmar, Burmese, Filipino to list of languages, fixed Croatian, Ukrainian, Swedish spelling
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
+		Activities: added optional permission for activity organisers to take attendance only within their activities
+		Activities: added term filter to manage view
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts
@@ -62,6 +65,7 @@ v14.0.00
 		Students: added settable thresholds for issuing behaviour alerts
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
+		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 
 v13.0.01
 --------

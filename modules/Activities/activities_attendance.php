@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo __($guid, 'Choose Activity');
     echo '</h2>';
 
+    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
     $gibbonActivityID = null;
     if (isset($_GET['gibbonActivityID'])) {
         $gibbonActivityID = $_GET['gibbonActivityID'];
@@ -59,8 +60,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 						<?php
                         echo "<option value=''></option>";
 						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                            $sqlSelect = "";
+                            if($highestAction == "Enter Activity Attendance") {
+    							$sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+                            } elseif($highestAction == "Enter Activity Attendance_leader") {
+                                $dataSelect["gibbonPersonID"] = $_SESSION[$guid]["gibbonPersonID"];
+                                $sqlSelect = "SELECT gibbonActivity.gibbonActivityID, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant' OR gibbonActivityStaff.role='Coach') ORDER BY name, programStart";
+                            }
 							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						} catch (PDOException $e) {
