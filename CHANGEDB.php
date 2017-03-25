@@ -726,9 +726,9 @@ UPDATE `gibbonAction` SET precedence = 1 WHERE name = 'Enter Activity Attendance
 UPDATE gibbonAction SET description='Record student attendance for activities you organise, coach or assist in.' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND (name='Enter Activity Attendance_leader');end
 ALTER TABLE `gibbonLanguage` ADD UNIQUE (`name`);end
 INSERT IGNORE INTO `gibbonLanguage` (`name`) VALUES ('Myanmar'), ('Burmese'), ('Filipino');end
-UPDATE `gibbonLanguage` SET `name`='Croatian' WHERE `gibbonLanguageID`='0012';end
-UPDATE `gibbonLanguage` SET `name`='Ukrainian' WHERE `gibbonLanguageID`='0068';end
-UPDATE `gibbonLanguage` SET `name` = 'Swedish' WHERE `gibbonLanguageID` = 0060;end
+UPDATE `gibbonLanguage` SET `name`='Croatian' WHERE `name`='Croation';end
+UPDATE `gibbonLanguage` SET `name`='Ukrainian' WHERE `name`='Ukranian';end
+UPDATE `gibbonLanguage` SET `name` = 'Swedish' WHERE `name`='Swedish ';end
 UPDATE `gibbonCountry` SET iddCountryCode='95' WHERE `printable_name`='Myanmar';end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities'), 'Activity Attendance by Date', 0, 'Reports', 'Record student attendance for activities.', 'report_attendance_byDate.php,report_attendance_byDate_print.php', 'report_attendance_byDate.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Activity Attendance by Date'));end
