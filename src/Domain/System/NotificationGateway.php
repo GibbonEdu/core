@@ -78,6 +78,14 @@ class NotificationGateway
         return ($result && $result->rowCount() > 0)? $result->fetch() : null;
     }
 
+    public function selectNotificationEventByID($gibbonNotificationEventID)
+    {
+        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
+        $sql = "SELECT * FROM gibbonNotificationEvent WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
     public function selectNotificationEventByName($moduleName, $event)
     {
         $data = array('moduleName' => $moduleName, 'event' => $event);
@@ -105,6 +113,52 @@ class NotificationGateway
         } else {
             $sql .= " AND scopeType='All'";
         }
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    public function selectAllNotificationListeners($gibbonNotificationEventID)
+    {
+        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
+        $sql = "SELECT gibbonNotificationListener.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title FROM gibbonNotificationListener JOIN gibbonPerson ON (gibbonNotificationListener.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    public function selectAllNotificationEvents()
+    {
+        $sql = "SELECT gibbonNotificationEvent.*, COUNT(gibbonNotificationListenerID) as listenerCount FROM gibbonNotificationEvent JOIN gibbonModule ON (gibbonNotificationEvent.moduleName=gibbonModule.name) JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonModule.active='Y' GROUP BY gibbonNotificationEvent.gibbonNotificationEventID ORDER BY gibbonModule.name, gibbonNotificationEvent.event";
+
+        return $this->pdo->executeQuery(array(), $sql);
+    }
+
+    public function updateNotificationEvent($update)
+    {
+        $data = array('gibbonNotificationEventID' => $update['gibbonNotificationEventID'], 'active' => $update['active']);
+        $sql = "UPDATE gibbonNotificationEvent SET active=:active WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    public function selectNotificationListener($gibbonNotificationListenerID)
+    {
+        $data = array('gibbonNotificationListenerID' => $gibbonNotificationListenerID);
+        $sql = "SELECT * FROM gibbonNotificationListener WHERE gibbonNotificationListenerID=:gibbonNotificationListenerID";
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    public function insertNotificationListener($data)
+    {
+        $sql = 'INSERT INTO gibbonNotificationListener SET gibbonNotificationEventID=:gibbonNotificationEventID, gibbonPersonID=:gibbonPersonID, scopeType=:scopeType, scopeID=:scopeID';
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    public function deleteNotificationListener($gibbonNotificationListenerID)
+    {
+        $data = array('gibbonNotificationListenerID' => $gibbonNotificationListenerID);
+        $sql = 'DELETE FROM gibbonNotificationListener WHERE gibbonNotificationListenerID=:gibbonNotificationListenerID';
 
         return $this->pdo->executeQuery($data, $sql);
     }
