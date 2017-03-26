@@ -78,10 +78,10 @@ class NotificationGateway
         return ($result && $result->rowCount() > 0)? $result->fetch() : null;
     }
 
-    public function selectNotificationEventByName($moduleName, $event, $active = 'Y')
+    public function selectNotificationEventByName($moduleName, $event)
     {
-        $data = array('moduleName' => $moduleName, 'event' => $event, 'active' => $active);
-        $sql = "SELECT * FROM gibbonNotificationEvent WHERE moduleName=:moduleName AND event=:event AND active=:active";
+        $data = array('moduleName' => $moduleName, 'event' => $event);
+        $sql = "SELECT * FROM gibbonNotificationEvent WHERE moduleName=:moduleName AND event=:event";
 
         return $this->pdo->executeQuery($data, $sql);
     }

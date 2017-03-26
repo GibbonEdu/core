@@ -33,6 +33,7 @@ require_once $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.
 class GibbonMailer extends \PHPMailer
 {
     protected $session;
+
     public function __construct(session $session)
     {
         $this->session = $session;
@@ -53,7 +54,6 @@ class GibbonMailer extends \PHPMailer
         $port = $session->get('mailerSMTPPort');
 
         if ( !empty($host) && !empty($port) ) {
-
             $username = $session->get('mailerSMTPUsername');
             $password = $session->get('mailerSMTPPassword');
             $auth = ( !empty($username) && !empty($password) );

@@ -25,7 +25,9 @@ use Gibbon\Domain\System\NotificationGateway;
 /**
  * Notification Sender
  *
- * Holds a collection of notifications and sends them.
+ * Holds a collection of notifications. Sends notifications by inserting in the database and optionally sends 
+ * by email based on the recipient's notification settings.
+ * 
  * TODO: Add background processing for notification emails.
  *
  * @version v14
@@ -38,12 +40,26 @@ class NotificationSender
     protected $gateway;
     protected $session;
 
+    /**
+     * Injects a gateway and session dependency, used for database inserts and email formatting.
+     *
+     * @param  NotificationGateway  $gateway
+     * @param  session              $session
+     */
     public function __construct(NotificationGateway $gateway, session $session)
     {
         $this->gateway = $gateway;
         $this->session = $session;
     }
 
+    /**
+     * Adds a notification to the collection as an array.
+     *
+     * @param  int|string  $gibbonPersonID
+     * @param  string  $text
+     * @param  string  $moduleName
+     * @param  string  $actionLink
+     */
     public function addNotification($gibbonPersonID, $text, $moduleName, $actionLink)
     {
         $this->notifications[] = array(
@@ -54,71 +70,104 @@ class NotificationSender
         );
     }
 
+    /**
+     * Gets the current notification count.
+     *
+     * @return  int
+     */
     public function getNotificationCount()
     {
         return count($this->notifications);
     }
 
+    /**
+     * Delivers all notifications by inserting/updating in database, and optionally by sends by email.
+     *
+     * @return  array Send report with success/fail counts.
+     */
     public function sendNotifications()
     {
+        $sendReport = array(
+            'count' => $this->getNotificationCount(),
+            'inserts' => 0,
+            'updates' => 0,
+            'emailSent' => 0,
+            'emailFailed' => 0
+        );
+
         if ($this->getNotificationCount() == 0) {
-            return false;
+            return $sendReport;
         }
 
         $mail = new GibbonMailer($this->session);
 
-        foreach ($this->notifications as $row) {
-            //Check for existence of notification in new status
-            $result = $this->gateway->selectNotificationByStatus($row, 'New');
+        foreach ($this->notifications as $notification) {
+            // Check for existence of notification in new status
+            $result = $this->gateway->selectNotificationByStatus($notification, 'New');
 
             if ($result && $result->rowCount() > 0) {
-                $notification = $result->fetch();
-                $this->gateway->updateNotificationCount($notification['gibbonNotificationID'], $notification['count']+1);
+                $row = $result->fetch();
+                $this->gateway->updateNotificationCount($row['gibbonNotificationID'], $row['count']+1);
+                $sendReport['updates']++;
             } else {
-                $this->gateway->insertNotification($row);
+                $this->gateway->insertNotification($notification);
+                $sendReport['inserts']++;
             }
 
-            //Check for email notification preference and email address, and send if required
-            $emailPreference = $this->gateway->getNotificationPreference($row['gibbonPersonID']);
+            // Check for email notification preference and email address, and send if required
+            $emailPreference = $this->gateway->getNotificationPreference($notification['gibbonPersonID']);
 
             if (!empty($emailPreference) && $emailPreference['receiveNotificationEmails'] == 'Y') {
-                $guid = $this->session->guid();
-                $absoluteURL = $this->session->get('absoluteURL');
-                $systemName = $this->session->get('systemName');
-
                 $organisationName = $this->session->get('organisationName');
-                $organisationNameShort = $this->session->get('organisationNameShort');
                 $organisationEmail = $this->session->get('organisationEmail');
                 $organisationAdministratorEmail = $this->session->get('organisationAdministratorEmail');
 
-                //Attempt email send
-                $subject = sprintf(__('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $systemName, $organisationNameShort, date('H:i'), dateConvertBack($guid, date('Y-m-d')));
-                
-                $body = __('Notification').': '.$row['text'].'<br/><br/>';
+                // Format the email content
+                $body = __('Notification').': '.$notification['text'].'<br/><br/>';
                 $body .= $this->getNotificationLink();
                 $body .= $this->getNotificationFooter();
                 
-                $bodyPlain = emailBodyConvert($body);
-
-                if (!empty($organisationEmail)) {
-                    $mail->SetFrom($organisationEmail, $organisationName);
-                } else {
-                    $mail->SetFrom($organisationAdministratorEmail, $organisationName);
-                }
+                $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
+                $mail->SetFrom($fromEmail, $organisationName);
                 $mail->AddAddress($emailPreference['email']);
-                $mail->Subject = $subject;
+                $mail->Subject = $this->getNotificationSubject();
                 $mail->Body = $body;
-                $mail->AltBody = $bodyPlain;
-                $mail->Send();
+                $mail->AltBody = emailBodyConvert($body);
+
+                // Attempt email send
+                if ($mail->Send()) {
+                    $sendReport['emailSent']++;
+                } else {
+                    $sendReport['emailFailed']++;
+                }
             }
         }
+
+        return $sendReport;
     }
 
+    /**
+     * Formatted notification subject.
+     * @return  string
+     */
+    protected function getNotificationSubject()
+    {
+        return sprintf(__('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $this->session->get('systemName'), $this->session->get('organisationNameShort'), date('H:i'), dateConvertBack($this->session->guid(), date('Y-m-d')));
+    }
+
+    /**
+     * Formatted notification link.
+     * @return  string
+     */
     protected function getNotificationLink()
     {
         return sprintf(__('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'), $this->session->get('systemName'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=notifications.php'>", '</a>');
     }
 
+    /**
+     * Formatted notification footer.
+     * @return  string
+     */
     protected function getNotificationFooter()
     {
         $output = '<br/><br/>';
