@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Comms;
 
 use Gibbon\sqlConnection;
+use Gibbon\session;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -42,7 +43,7 @@ class NotificationEvent
     protected $recipients = array();
 
     /**
-     * Create a new notification event which must correlate to an event type defined in gibbonNotificationEvents.
+     * Create a new notification event which correlates to an event type defined in gibbonNotificationEvents.
      *
      * @param  string  $moduleName
      * @param  string  $event
@@ -54,14 +55,22 @@ class NotificationEvent
     }
 
     /**
-     * Defines the body text and link of the notification, added to the notifications page and optionally emailed to recipients.
+     * Defines the body text of the notification, added to the notifications page and optionally emailed to recipients.
      *
      * @param  string  $text
-     * @param  string  $actionLink
      */
-    public function setNotificationText($text, $actionLink)
+    public function setNotificationText($text)
     {
         $this->text = $text;
+    }
+
+    /**
+     * Sets the link that opens when the notification is viewed and archived.
+     *
+     * @param  string  $actionLink
+     */
+    public function setActionLink($actionLink)
+    {
         $this->actionLink = $actionLink;
     }
 
@@ -78,7 +87,7 @@ class NotificationEvent
     }
  
     /**
-     * Adds a recipient to the list. Avoids duplicates by checking presence in the the array. 
+     * Adds a recipient to the list. Avoids duplicates by checking presence in the the array.
      *
      * @param  int|string  $gibbonPersonID
      */
@@ -102,7 +111,25 @@ class NotificationEvent
     }
 
     /**
+     * Collects and sends all notifications for this event, returning a send report array.
+     *
+     * @param   NotificationGateway  $gateway
+     * @param   NotificationSender   $sender
+     * @return  array Send report with success/fail counts.
+     */
+    public function sendNotifications(sqlConnection $pdo, session $session)
+    {
+        $gateway = new NotificationGateway($pdo);
+        $sender = new NotificationSender($gateway, $session);
+
+        $this->pushNotifications($gateway, $sender);
+        
+        return $sender->sendNotifications();
+    }
+
+    /**
      * Adds event listeners to the recipients list, then pushes a notification for each recipient to the notification sender.
+     * Does not perform the sending of notifications (can be used for bulk processing).
      *
      * @param   NotificationGateway  $gateway
      * @param   NotificationSender   $sender
@@ -125,7 +152,7 @@ class NotificationEvent
         foreach ($this->recipients as $gibbonPersonID) {
             $sender->addNotification($gibbonPersonID, $this->text, $this->moduleName, $this->actionLink);
         }
-        
+
         return $this->getRecipientCount();
     }
 
@@ -143,8 +170,8 @@ class NotificationEvent
     }
 
     /**
-     * Finds all listeners for this event and adds them as recipients. The returned set of listeners are
-     * filtered by the event scopes.
+     * Finds all listeners in the database for this event and adds them as recipients. The returned set 
+     * of listeners are filtered by the event scopes.
      *
      * @param    NotificationGateway  $gateway
      * @param    int                  $gibbonNotificationEventID
