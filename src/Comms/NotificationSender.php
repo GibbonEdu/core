@@ -37,21 +37,19 @@ class NotificationSender
 
     protected $gateway;
     protected $session;
-    protected $mailer;
 
     public function __construct(NotificationGateway $gateway, session $session)
     {
         $this->gateway = $gateway;
         $this->session = $session;
-        $this->mailer = new GibbonMailer($session);
     }
 
     public function addNotification($gibbonPersonID, $text, $moduleName, $actionLink)
     {
         $this->notifications[] = array(
-            'gibbonPersonID' => $gibbonPersonID, 
-            'text'           => $text, 
-            'moduleName'     => $moduleName, 
+            'gibbonPersonID' => $gibbonPersonID,
+            'text'           => $text,
+            'moduleName'     => $moduleName,
             'actionLink'     => $actionLink
         );
     }
@@ -66,6 +64,8 @@ class NotificationSender
         if ($this->getNotificationCount() == 0) {
             return false;
         }
+
+        $mail = new GibbonMailer($this->session);
 
         foreach ($this->notifications as $row) {
             //Check for existence of notification in new status
@@ -95,28 +95,40 @@ class NotificationSender
                 $subject = sprintf(__('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $systemName, $organisationNameShort, date('H:i'), dateConvertBack($guid, date('Y-m-d')));
                 
                 $body = __('Notification').': '.$row['text'].'<br/><br/>';
-                $body .= sprintf(__('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'), $systemName, "<a href='".$absoluteURL."/index.php?q=notifications.php'>", '</a>');
-                $body .= '<br/><br/>';
-                $body .= '<hr/>';
-                $body .= "<p style='font-style: italic; font-size: 85%'>";
-                $body .= sprintf(__('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $systemName, "<a href='".$absoluteURL."/index.php?q=preferences.php'>", '</a>');
-                $body .= '<br/><br/>';
-                $body .= sprintf(__('Email sent via %1$s at %2$s.'), $systemName, $organisationName);
-                $body .= '</p>';
+                $body .= $this->getNotificationLink();
+                $body .= $this->getNotificationFooter();
+                
                 $bodyPlain = emailBodyConvert($body);
 
-                //$this->mailer->IsSMTP();
                 if (!empty($organisationEmail)) {
-                    $this->mailer->SetFrom($organisationEmail, $organisationName);
+                    $mail->SetFrom($organisationEmail, $organisationName);
                 } else {
-                    $this->mailer->SetFrom($organisationAdministratorEmail, $organisationName);
+                    $mail->SetFrom($organisationAdministratorEmail, $organisationName);
                 }
-                $this->mailer->AddAddress($emailPreference['email']);
-                $this->mailer->Subject = $subject;
-                $this->mailer->Body = $body;
-                $this->mailer->AltBody = $bodyPlain;
-                $this->mailer->Send();
+                $mail->AddAddress($emailPreference['email']);
+                $mail->Subject = $subject;
+                $mail->Body = $body;
+                $mail->AltBody = $bodyPlain;
+                $mail->Send();
             }
         }
+    }
+
+    protected function getNotificationLink()
+    {
+        return sprintf(__('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'), $this->session->get('systemName'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=notifications.php'>", '</a>');
+    }
+
+    protected function getNotificationFooter()
+    {
+        $output = '<br/><br/>';
+        $output .= '<hr/>';
+        $output .= "<p style='font-style: italic; font-size: 85%'>";
+        $output .= sprintf(__('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $this->session->get('systemName'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=preferences.php'>", '</a>');
+        $output .= '<br/><br/>';
+        $output .= sprintf(__('Email sent via %1$s at %2$s.'), $this->session->get('systemName'), $this->session->get('organisationName'));
+        $output .= '</p>';
+
+        return $output;
     }
 }

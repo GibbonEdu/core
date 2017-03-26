@@ -77,4 +77,35 @@ class NotificationGateway
 
         return ($result && $result->rowCount() > 0)? $result->fetch() : null;
     }
+
+    public function selectNotificationEventByName($moduleName, $event, $active = 'Y')
+    {
+        $data = array('moduleName' => $moduleName, 'event' => $event, 'active' => $active);
+        $sql = "SELECT * FROM gibbonNotificationEvent WHERE moduleName=:moduleName AND event=:event AND active=:active";
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    public function selectNotificationEventListenersByScope($gibbonNotificationEventID, $scopes = array())
+    {
+        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
+        $sql = "SELECT DISTINCT gibbonPersonID FROM gibbonNotificationListener WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+
+        if (is_array($scopes) && count($scopes) > 0) {
+            $sql .= " AND (scopeType='All' ";
+
+            $count = 0;
+            foreach ($scopes as $scopeType => $scopeID) {
+                $data['scopeType'.$count] = $scopeType;
+                $data['scopeTypeID'.$count] = $scopeID;
+                $sql .= " OR (scopeType=:scopeType{$count} AND scopeID=:scopeTypeID{$count})";
+                $count++;
+            }
+            $sql .= ")";
+        } else {
+            $sql .= " AND scopeType='All'";
+        }
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
 }

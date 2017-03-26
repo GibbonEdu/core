@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Comms;
 
 use Gibbon\sqlConnection;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
 
 /**
  * Notification Event
@@ -33,9 +35,11 @@ class NotificationEvent
 {
     protected $moduleName;
     protected $event;
+    protected $text;
+    protected $actionLink;
 
-    protected $scope = array();
-    protected $listeners = array();
+    protected $scopes = array();
+    protected $recipients = array();
 
     public function __construct($moduleName, $event)
     {
@@ -43,20 +47,67 @@ class NotificationEvent
         $this->event = $event;
     }
 
+    public function setNotificationText($text, $actionLink)
+    {
+        $this->text = $text;
+        $this->actionLink = $actionLink;
+    }
+
     public function addScope($type, $id)
     {
-        $scope[$type] = $id;
+        $this->scopes[$type] = $id;
     }
 
-    public function findEventListeners(NotificationGateway $gateway)
+    public function addRecipient($gibbonPersonID)
     {
-        // Do stuff
-        return true;
+        $gibbonPersonID = intval($gibbonPersonID);
+
+        if (in_array($gibbonPersonID, $this->recipients) == false) {
+            $this->recipients[] = $gibbonPersonID;
+        }
     }
 
-    public function pushNotifications(NotificationsSender $sender)
+    public function getRecipientCount()
     {
-        // Do stuff
-        return true;
+        return (isset($this->recipients) && is_array($this->recipients))? count($this->recipients) : 0;
+    }
+
+    public function pushNotifications(NotificationGateway $gateway, NotificationSender $sender)
+    {
+        $eventDetails = $this->getEventDetails($gateway);
+
+        if (empty($eventDetails) || $eventDetails['active'] == 'N') {
+            return false;
+        }
+
+        $this->addEventListeners($gateway, $eventDetails['gibbonNotificationEventID'], $this->scopes);
+
+        if ($this->getRecipientCount() == 0) {
+            return false;
+        }
+
+        foreach ($this->recipients as $gibbonPersonID) {
+            $sender->addNotification($gibbonPersonID, $this->text, $this->moduleName, $this->actionLink);
+        }
+        
+        return $this->getRecipientCount();
+    }
+
+    protected function getEventDetails(NotificationGateway $gateway)
+    {
+        $result = $gateway->selectNotificationEventByName($this->moduleName, $this->event);
+
+        return ($result && $result->rowCount() == 1)? $result->fetch() : null;
+    }
+
+    protected function addEventListeners(NotificationGateway $gateway, $gibbonNotificationEventID, $scopes)
+    {
+        $result = $gateway->selectNotificationEventListenersByScope($gibbonNotificationEventID, $scopes);
+
+        if ($result && $result->rowCount() > 0) {
+            while ($listener = $result->fetch()) {
+                $this->addRecipient($listener['gibbonPersonID']);
+            }
+        }
     }
 }
