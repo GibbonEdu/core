@@ -383,6 +383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 							<select class="standardWidth" name="canLogin">
 								<option <?php if ($row['canLogin'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 								<option <?php if ($row['canLogin'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+                                <option <?php if ($row['canLogin'] == 'A') { echo 'selected '; } ?>value="A"><?php echo __($guid, 'Activation Required') ?></option>
 							</select>
 						</td>
 					</tr>

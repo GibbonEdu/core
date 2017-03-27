@@ -350,6 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select class="standardWidth" name="canLogin">
 						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
 						<option value="N"><?php echo __($guid, 'No') ?></option>
+						<option value="A"><?php echo __($guid, 'Activation Required') ?></option>
 					</select>
 				</td>
 			</tr>
