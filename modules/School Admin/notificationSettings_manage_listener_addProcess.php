@@ -54,17 +54,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             exit;
         }
 
-        $listener = array(
-            'gibbonNotificationEventID' => $gibbonNotificationEventID,
-            'gibbonPersonID'            => $_POST['gibbonPersonID'],
-            'scopeType'                 => $_POST['scopeType'],
-            'scopeID'                   => ''
-        );
+        $gibbonPersonID = (isset($_POST['gibbonPersonID']))? $_POST['gibbonPersonID'] : '';
+        $scopeType = (isset($_POST['scopeType']))? $_POST['scopeType'] : '';
+        $scopeID = (isset($_POST[$scopeType]))? $_POST[$scopeType] : 0;
 
-        $result = $gateway->insertNotificationListener($listener);
+        if (empty($gibbonPersonID) || empty($scopeType)) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        } else {
+            $listener = array(
+                'gibbonNotificationEventID' => $gibbonNotificationEventID,
+                'gibbonPersonID'            => $gibbonPersonID,
+                'scopeType'                 => $scopeType,
+                'scopeID'                   => $scopeID
+            );
 
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-        exit;
+            $result = $gateway->insertNotificationListener($listener);
+
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+            exit;
+        }
     }
 }

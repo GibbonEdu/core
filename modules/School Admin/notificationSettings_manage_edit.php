@@ -97,6 +97,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 echo '<th>';
                 echo __('Name');
                 echo '</th>';
+                echo '<th style="width: 120px;" title="'.__('Notifications can always be viewed on screen.').'">';
+                echo __('Receive Email Notifications?');
+                echo '</th>';
                 echo '<th>';
                 echo __('Scope');
                 echo '</th>';
@@ -106,12 +109,38 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 echo '</tr>';
 
                 while ($listener = $result->fetch()) {
-                    echo '<tr>';
+                    echo '<tr class="'.(($listener['receiveNotificationEmails'] == 'N')? 'warning' : '').'">';
                     echo '<td>';
                     echo formatName($listener['title'], $listener['preferredName'], $listener['surname'], 'Staff', false, true);
                     echo '</td>';
                     echo '<td>';
-                    echo $listener['scopeType'];
+                    echo ynExpander($guid, $listener['receiveNotificationEmails']);
+                    echo '</td>';
+                    echo '<td>';
+
+                    if ($listener['scopeType'] == 'All') {
+                        echo __('All');
+                    } else {
+                        switch($listener['scopeType']) {
+                            case 'gibbonPersonIDStudent':   $data = array('gibbonPersonID' => $listener['scopeID']);
+                                                            $sql = "SELECT 'Student' as scopeTypeName, CONCAT(surname, ' ', preferredName) as scopeIDName FROM gibbonperson WHERE gibbonPersonID=:gibbonPersonID";
+                                                            break;
+
+                            case 'gibbonYearGroupID':       $data = array('gibbonYearGroupID' => $listener['scopeID']);
+                                                            $sql = "SELECT 'Year Group' as scopeTypeName, name as scopeIDName FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID";
+                                                            break;
+
+                            default:                        $data = array();
+                                                            $sql = "SELECT 'Scope' as scopeTypeName, 'Unknown' as scopeIDName";
+                        }
+
+                        $resultScope = $pdo->executeQuery($data, $sql);
+                        if ($resultScope && $resultScope->rowCount() > 0) {
+                            $scopeDetails = $resultScope->fetch();
+                            echo __($scopeDetails['scopeTypeName']).' - '.$scopeDetails['scopeIDName'];
+                        }
+                    }
+
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/notificationSettings_manage_listener_deleteProcess.php?gibbonNotificationEventID=".$listener['gibbonNotificationEventID']."&gibbonNotificationListenerID=".$listener['gibbonNotificationListenerID']."&address=".$_SESSION[$guid]['address']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
@@ -121,25 +150,71 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 echo '</table>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_listener_addProcess.php');
-            $form->setFactory(DatabaseFormFactory::create($pdo));
+            // Select staff members who can have permissions for the notification event's action
+            $staffMembers = array();
+            $data=array( 'action' => $event['actionName']);
+            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
+                    FROM gibbonPerson
+                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)
+                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                    WHERE status='Full'
+                    AND (gibbonAction.name=:action)
+                    GROUP BY gibbonPerson.gibbonPersonID
+                    ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
+            $resultSelect=$pdo->executeQuery($data, $sql);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-            $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
+            if ($resultSelect && $resultSelect->rowCount() > 0) {
 
-            $row = $form->addRow();
-                $row->addLabel('gibbonPersonID', __('Person'));
-                $row->addSelectStaff('gibbonPersonID');
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_listener_addProcess.php');
+                $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $row = $form->addRow();
-                $row->addLabel('scopeType', __('Scope'));
-                $row->addSelect('scopeType')->fromArray(array('All' => __('All')));
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
 
-            $row = $form->addRow();
-                $row->addFooter();
-                $row->addSubmit();
+                while ($rowSelect = $resultSelect->fetch()) {
+                    $staffMembers[$rowSelect['roleName']][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+                }
 
-            echo $form->getOutput();
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPersonID', __('Person'));
+                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->isRequired();
+
+                $allScopes = array(
+                    'All'                   => __('All'),
+                    'gibbonPersonIDStudent' => __('Student'),
+                    'gibbonPersonIDStaff'   => __('Staff'),
+                    'gibbonYearGroupID'     => __('Year Group'),
+                );
+
+                $eventScopes = array_combine(explode(',', $event['scopes']), explode(',', trim($event['scopes'])));
+                $availableScopes = array_intersect_key($allScopes, $eventScopes);
+
+                $row = $form->addRow();
+                    $row->addLabel('scopeType', __('Scope'));
+                    $row->addSelect('scopeType')->fromArray($availableScopes)->isRequired();
+
+                $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
+                $row = $form->addRow()->addClass('scopeTypeStudent');
+                    $row->addLabel('gibbonPersonIDStudent', __('Student'));
+                    $row->addSelectStudent('gibbonPersonIDStudent')->isRequired();
+
+                $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
+                $row = $form->addRow()->addClass('scopeTypeStaff');
+                    $row->addLabel('gibbonPersonIDStaff', __('Student'));
+                    $row->addSelectStaff('gibbonPersonIDStaff')->isRequired();
+
+                $form->toggleVisibilityByClass('scopeTypeYearGroup')->onSelect('scopeType')->when('gibbonYearGroupID');
+                $row = $form->addRow()->addClass('scopeTypeYearGroup');
+                    $row->addLabel('gibbonYearGroupID', __('Year Group'));
+                    $row->addSelectYearGroup('gibbonYearGroupID')->isRequired();
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                echo $form->getOutput();
+            }
         }
     }
 }
