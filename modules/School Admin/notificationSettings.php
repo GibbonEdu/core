@@ -41,6 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
     echo __('Notification Events');
     echo '</h3>';
 
+    echo '<p>';
+    echo __('This section allows you to manage system-wide notifications. When a notification event occurs, any users subscribed to that event will receive a notification. Each event below can optionally be turned off to prevent all notifications of that type.');
+    echo '</p>';
+
     $gateway = new NotificationGateway($pdo);
     $result = $gateway->selectAllNotificationEvents();
 
@@ -58,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
         echo __('Name');
         echo '</th>';
         echo '<th>';
-        echo __('Recipients');
+        echo __('Subscribers');
         echo '</th>';
         echo '<th>';
         echo __('Active');

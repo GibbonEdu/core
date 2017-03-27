@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Notification Settings').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/notificationSettings.php'>".__($guid, 'Manage Notification Settings')."</a> > </div><div class='trailEnd'>".__('Edit Notification Event').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -64,6 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 $row->addLabel('event', __('Event'));
                 $row->addTextField('event')->setValue($event['moduleName'].': '.$event['event'])->readOnly();
 
+                $row = $form->addRow();
+                $row->addLabel('permission', __('Permission Required'));
+                $row->addTextField('permission')->setValue($event['actionName'])->readOnly();
+
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->selected($event['active']);
@@ -75,12 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             echo $form->getOutput();
 
             echo '<h3>';
-            echo __('Notification Recipients');
+            echo __('Edit Subscribers');
             echo '</h3>';
 
             if ($event['active'] == 'N') {
                 echo "<div class='warning'>";
-                echo __('This notification event is not active. The following recipients will not receive any notifications until the event is set to active.');
+                echo __('This notification event is not active. The following subscribers will not receive any notifications until the event is set to active.');
                 echo '</div>';
             }
 
@@ -156,12 +160,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 echo '</table>';
             }
 
-            // Select staff members who can have permissions for the notification event's action
+            // Filter users who can have permissions for the notification event action
             $staffMembers = array();
             $data=array( 'action' => $event['actionName']);
             $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                     FROM gibbonPerson
-                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)
+                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID OR gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonPermission.gibbonRoleID, '%'))
                     JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                     JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                     WHERE status='Full'
@@ -171,7 +175,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             $resultSelect=$pdo->executeQuery($data, $sql);
 
             if ($resultSelect && $resultSelect->rowCount() > 0) {
-
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_listener_addProcess.php');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -183,8 +186,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 }
 
                 $row = $form->addRow();
-                    $row->addLabel('gibbonPersonID', __('Person'));
-                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->isRequired();
+                    $row->addLabel('gibbonPersonID', __('Person'))->description(__('Available only to users with the required permission.'));
+                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->placeholder(__('Please select...'))->isRequired();
 
                 $allScopes = array(
                     'All'                   => __('All'),
@@ -197,8 +200,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 $availableScopes = array_intersect_key($allScopes, $eventScopes);
 
                 $row = $form->addRow();
-                    $row->addLabel('scopeType', __('Scope'));
-                    $row->addSelect('scopeType')->fromArray($availableScopes)->isRequired();
+                    $row->addLabel('scopeType', __('Scope'))->description(__('Apply an optional filter to notifications received.'));
+                    $row->addSelect('scopeType')->fromArray($availableScopes);
 
                 $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
                 $row = $form->addRow()->addClass('scopeTypeStudent');
