@@ -1,6 +1,6 @@
 <?php 
 $I = new AcceptanceTester($scenario);
-$I->wantTo('update Markbook Settings');
+$I->wantTo('update Behaviour Settings');
 $I->loginAsAdmin();
 $I->amOnModulePage('School Admin', 'behaviourSettings.php');
 
@@ -33,6 +33,14 @@ $I->submitForm('#content form', $newFormValues, 'Submit');
 
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $newFormValues);
+
+// Reset ----------------------------------------------
+
+$resetFormValues = $originalFormValues;
+$resetFormValues['enableDescriptors'] = 'Y';
+$resetFormValues['enableLevels'] = 'Y';
+$resetFormValues['enableBehaviourLetters'] = 'Y';
+$I->submitForm('#content form', $resetFormValues, 'Submit');
 
 // Restore Original Settings -----------------------------------
 

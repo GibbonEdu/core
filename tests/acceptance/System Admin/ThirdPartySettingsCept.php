@@ -41,6 +41,14 @@ $I->submitForm('#content form', $newFormValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $newFormValues);
 
+// Reset ----------------------------------------------
+
+$resetFormValues = $originalFormValues;
+$resetFormValues['googleOAuth'] = 'Y';
+$resetFormValues['enablePayments'] = 'Y';
+$resetFormValues['enableMailerSMTP'] = 'Y';
+$I->submitForm('#content form', $resetFormValues, 'Submit');
+
 // Restore Original Settings -----------------------------------
 
 $I->submitForm('#content form', $originalFormValues, 'Submit');
