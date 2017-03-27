@@ -29,9 +29,17 @@ class Acceptance extends \Codeception\Module
                 case 'checkbox':    if ($element->hasAttribute('checked')) {
                                         $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : 'on';
                                     }
+                                    $formValues[$name] = $value;
+                                    break;
+
+                case 'radio':       if ($element->hasAttribute('checked')) {
+                                        $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : '';
+                                        $formValues[$name] = $value;
+                                    }
                                     break;
 
                 case 'textarea':    $value = $element->nodeValue;
+                                    $formValues[$name] = $value;
                                     break;
 
                 case 'select':      $optionTags = $element->getElementsByTagName('option');
@@ -41,10 +49,9 @@ class Acceptance extends \Codeception\Module
                                             $value = $optionTags->item($i)->getAttribute('value');
                                         }
                                     }
+                                    $formValues[$name] = $value;
                                     break;
             }
-            
-            $formValues[$name] = $value;
         }
         
         return $formValues;
