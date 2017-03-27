@@ -95,15 +95,15 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectStudent($name, $currentStudentsOnly = true)
+    public function createSelectStudent($name, $allStudents = false)
     {
-        if ($currentStudentsOnly) {
+        if ($allStudents) {
+            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
+        } else {
             $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
                 FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY surname, preferredName";
-        } else {
-            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
-                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
         }
 
         $results = $this->pdo->executeQuery(array(), $sql);
