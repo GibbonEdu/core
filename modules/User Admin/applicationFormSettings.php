@@ -170,11 +170,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addEmail($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'studentDefaultEmail', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addEmail($setting['name'])->setValue($setting['value']);
-
     $setting = getSettingByScope($connection2, 'Application Form', 'studentDefaultWebsite', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
