@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\NotificationGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -45,7 +45,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-
         $gateway = new NotificationGateway($pdo);
         $result = $gateway->selectNotificationEventByID($gibbonNotificationEventID);
 
@@ -57,10 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             $event = $result->fetch();
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_editProcess.php');
-            
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
-            
+
             $row = $form->addRow();
                 $row->addLabel('event', __('Event'));
                 $row->addTextField('event')->setValue($event['moduleName'].': '.$event['event'])->readOnly();
@@ -68,11 +67,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->selected($event['active']);
-            
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-            
+
             echo $form->getOutput();
 
             echo '<h3>';
@@ -115,19 +114,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                     echo $listener['scopeType'];
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/notificationSettings_manage_deleteProcess.php?gibbonNotificationEventID=".$listener['gibbonNotificationEventID']."&gibbonNotificationListenerID=".$listener['gibbonNotificationListenerID']."&address=".$_SESSION[$guid]['address']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/notificationSettings_manage_listener_deleteProcess.php?gibbonNotificationEventID=".$listener['gibbonNotificationEventID']."&gibbonNotificationListenerID=".$listener['gibbonNotificationListenerID']."&address=".$_SESSION[$guid]['address']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                     echo '</td>';
                     echo '</tr>';
                 }
                 echo '</table>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_addProcess.php');
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_listener_addProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
-            
+
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Person'));
                 $row->addSelectStaff('gibbonPersonID');
@@ -135,11 +134,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             $row = $form->addRow();
                 $row->addLabel('scopeType', __('Scope'));
                 $row->addSelect('scopeType')->fromArray(array('All' => __('All')));
-            
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-            
+
             echo $form->getOutput();
         }
     }

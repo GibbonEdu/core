@@ -31,31 +31,37 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonNotificationEventID = (isset($_GET['gibbonNotificationEventID']))? $_GET['gibbonNotificationEventID'] : null;
-$gibbonNotificationListenerID = (isset($_GET['gibbonNotificationListenerID']))? $_GET['gibbonNotificationListenerID'] : null;
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
+$gibbonNotificationEventID = (isset($_POST['gibbonNotificationEventID']))? $_POST['gibbonNotificationEventID'] : null;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 } else {
     //Proceed!
-    if (empty($gibbonNotificationEventID) || empty($gibbonNotificationListenerID)) {
+    if ($gibbonNotificationEventID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     } else {
         $gateway = new NotificationGateway($pdo);
 
-        $result = $gateway->selectNotificationListener($gibbonNotificationListenerID);
+        $result = $gateway->selectNotificationEventByID($gibbonNotificationEventID);
         if ($result->rowCount() != 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
             exit;
         }
 
-        $result = $gateway->deleteNotificationListener($gibbonNotificationListenerID);
+        $listener = array(
+            'gibbonNotificationEventID' => $gibbonNotificationEventID,
+            'gibbonPersonID'            => $_POST['gibbonPersonID'],
+            'scopeType'                 => $_POST['scopeType'],
+            'scopeID'                   => ''
+        );
+
+        $result = $gateway->insertNotificationListener($listener);
 
         $URL .= '&return=success0';
         header("Location: {$URL}");

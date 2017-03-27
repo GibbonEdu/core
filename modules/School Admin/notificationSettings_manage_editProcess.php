@@ -34,7 +34,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonNotificationEventID = (isset($_POST['gibbonNotificationEventID']))? $_POST['gibbonNotificationEventID'] : null;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/notificationSettings.php";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
