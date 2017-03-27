@@ -78,14 +78,22 @@ class NotificationEvent
      * Add a scopeType => scopeID pair to the list. This defines which filters will match when looking for event listeners.
      * Eg: a scopeType of gibbonYearGroupID will only match listeners for that specific year group ID.
      *
-     * @param  string  $type
-     * @param  int     $id
+     * @param  string     $type
+     * @param  int|array  $id
      */
     public function addScope($type, $id)
     {
-        $this->scopes[$type] = $id;
+        if (empty($type) || empty($id)) return;
+
+        if (is_array($id)) {
+            foreach ($id as $idSingle) {
+                $this->scopes[] = array('type' => $type, 'id' => $idSingle);
+            }
+        } else {
+            $this->scopes[] = array('type' => $type, 'id' => $id);
+        }
     }
- 
+
     /**
      * Adds a recipient to the list. Avoids duplicates by checking presence in the the array.
      *
@@ -123,7 +131,7 @@ class NotificationEvent
         $sender = new NotificationSender($gateway, $session);
 
         $this->pushNotifications($gateway, $sender);
-        
+
         return $sender->sendNotifications();
     }
 
@@ -170,7 +178,7 @@ class NotificationEvent
     }
 
     /**
-     * Finds all listeners in the database for this event and adds them as recipients. The returned set 
+     * Finds all listeners in the database for this event and adds them as recipients. The returned set
      * of listeners are filtered by the event scopes.
      *
      * @param    NotificationGateway  $gateway

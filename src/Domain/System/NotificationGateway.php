@@ -103,9 +103,9 @@ class NotificationGateway
             $sql .= " AND (scopeType='All' ";
 
             $count = 0;
-            foreach ($scopes as $scopeType => $scopeID) {
-                $data['scopeType'.$count] = $scopeType;
-                $data['scopeTypeID'.$count] = $scopeID;
+            foreach ($scopes as $scope) {
+                $data['scopeType'.$count] = $scope['type'];
+                $data['scopeTypeID'.$count] = $scope['id'];
                 $sql .= " OR (scopeType=:scopeType{$count} AND scopeID=:scopeTypeID{$count})";
                 $count++;
             }
@@ -127,7 +127,7 @@ class NotificationGateway
 
     public function selectAllNotificationEvents()
     {
-        $sql = "SELECT gibbonNotificationEvent.*, COUNT(gibbonNotificationListenerID) as listenerCount FROM gibbonNotificationEvent JOIN gibbonModule ON (gibbonNotificationEvent.moduleName=gibbonModule.name) JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonModule.active='Y' GROUP BY gibbonNotificationEvent.gibbonNotificationEventID ORDER BY gibbonModule.name, gibbonNotificationEvent.event";
+        $sql = "SELECT gibbonNotificationEvent.*, COUNT(gibbonNotificationListenerID) as listenerCount FROM gibbonNotificationEvent JOIN gibbonModule ON (gibbonNotificationEvent.moduleName=gibbonModule.name) LEFT JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonModule.active='Y' GROUP BY gibbonNotificationEvent.gibbonNotificationEventID ORDER BY gibbonModule.name, gibbonNotificationEvent.event";
 
         return $this->pdo->executeQuery(array(), $sql);
     }
