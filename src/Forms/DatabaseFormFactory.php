@@ -53,6 +53,14 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
     }
 
+    public function createSelectYearGroup($name)
+    {
+        $sql = 'SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+    }
+
     public function createSelectLanguage($name)
     {
         $sql = 'SELECT name as value, name FROM gibbonLanguage ORDER BY name';
@@ -81,6 +89,29 @@ class DatabaseFormFactory extends FormFactory
         if ($results && $results->rowCount() > 0) {
             while ($row = $results->fetch()) {
                 $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
+            }
+        }
+
+        return $this->createSelect($name)->fromArray($values);
+    }
+
+    public function createSelectStudent($name, $currentStudentsOnly = true)
+    {
+        if ($currentStudentsOnly) {
+            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY surname, preferredName";
+        } else {
+            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
+        }
+
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        $values = array();
+        if ($results && $results->rowCount() > 0) {
+            while ($row = $results->fetch()) {
+                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
             }
         }
 
