@@ -84,6 +84,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                 echo '</div>';
             }
 
+            if ($event['type'] == 'CLI') {
+                echo "<div class='message'>";
+                echo __('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.');
+                echo '</div>';
+            }
+
             $gateway = new NotificationGateway($pdo);
             $result = $gateway->selectAllNotificationListeners($gibbonNotificationEventID);
 
