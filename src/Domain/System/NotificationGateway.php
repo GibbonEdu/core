@@ -111,7 +111,7 @@ class NotificationGateway
         return $this->pdo->executeQuery($data, $sql);
     }
 
-    public function selectAllNotificationListeners($gibbonNotificationEventID)
+    public function selectAllNotificationListeners($gibbonNotificationEventID, $groupByPerson = true)
     {
         $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
         $sql = "SELECT gibbonNotificationListener.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title, gibbonPerson.receiveNotificationEmails
@@ -122,8 +122,13 @@ class NotificationGateway
                 JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                 WHERE gibbonNotificationListener.gibbonNotificationEventID=:gibbonNotificationEventID
-                AND gibbonNotificationEvent.actionName=gibbonAction.name
-                GROUP BY gibbonNotificationListener.gibbonPersonID";
+                AND gibbonNotificationEvent.actionName=gibbonAction.name";
+
+        if ($groupByPerson) {
+            $sql .= " GROUP BY gibbonNotificationListener.gibbonPersonID";
+        } else {
+            $sql .= " GROUP BY gibbonNotificationListener.gibbonNotificationListenerID";
+        }
 
         return $this->pdo->executeQuery($data, $sql);
     }

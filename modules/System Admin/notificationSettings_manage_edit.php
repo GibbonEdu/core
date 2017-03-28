@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
             }
 
             $gateway = new NotificationGateway($pdo);
-            $result = $gateway->selectAllNotificationListeners($gibbonNotificationEventID);
+            $result = $gateway->selectAllNotificationListeners($gibbonNotificationEventID, false);
 
             if ($result->rowCount() == 0) {
                 echo "<div class='error'>";
