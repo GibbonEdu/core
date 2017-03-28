@@ -85,23 +85,14 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
 
                 $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
                 $staffName = formatName('', $row['staffPreferredName'], $row['staffSurname'], 'Staff', false, true);
-                $comment = (mb_strlen($row['comment']) > 240)? mb_substr($row['comment'], 0, 240).'...' : $row['comment'];
 
                 $report .= date('g:i a', strtotime($row['timestamp'])).' - '.__('Negative').' '.__('Behaviour').' - '.$row['level'];
                 $report .= '<br/>';
 
                 $report .= sprintf(__('%1$s (%2$s) received a report for %3$s from %4$s'), '<b>'.$studentName.'</b>', $row['rollGroup'], $row['descriptor'], $staffName);
                 $report .= ' &raquo; <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$row['gibbonBehaviourID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&gibbonRollGroupID=&gibbonYearGroupID=&type=">'.__('View').'</a>';
-                $report .= '<br/>';
 
-                $report .= '<p style="margin-left: 32px;">';
-                $report .= '<u>'.__('Incident').'</u>: '.$comment.'<br/>';
-
-                if (!empty($row['followup'])) {
-                    $followup = (mb_strlen($row['followup']) > 240)? mb_substr($row['followup'], 0, 240).'...' : $row['followup'];
-                    $report .= '<u>'.__('Follow Up').'</u>: '.$followup.'<br/>';
-                }
-                $report .= '</p><br/>';
+                $report .= '<br/><br/>';
             }
 
             // Raise a new notification event
