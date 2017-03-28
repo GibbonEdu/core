@@ -80,7 +80,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         }
 
         if ($result && $result->rowCount() > 0) {
-            $report .= '<h2>'.__('Daily Behaviour Summary').'</h2>';
+            $report .= __('Daily Behaviour Summary').': '.$result->rowCount().' '.__('Records').'<br/><br/>';
             while ($row = $result->fetch()) {
 
                 $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
