@@ -79,6 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             echo '</td>';
             echo '<td>';
             echo $row['event'];
+            if ($row['type'] == 'CLI') {
+                echo " <img title='".__('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/ style='float: right; width:20px; height:20px;margin: -4px 0 -4px 4px;opacity: 0.6;'>";
+            }
             echo '</td>';
             echo '<td>';
             echo $row['listenerCount'];
