@@ -196,7 +196,7 @@ class NotificationEvent
      */
     protected function addEventListeners(NotificationGateway $gateway, $gibbonNotificationEventID, $scopes)
     {
-        $result = $gateway->selectNotificationEventListenersByScope($gibbonNotificationEventID, $scopes);
+        $result = $gateway->selectNotificationListenersByScope($gibbonNotificationEventID, $scopes);
 
         if ($result && $result->rowCount() > 0) {
             while ($listener = $result->fetch()) {

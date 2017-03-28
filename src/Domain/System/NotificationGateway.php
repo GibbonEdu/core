@@ -38,6 +38,7 @@ class NotificationGateway
         $this->pdo = $pdo;
     }
 
+    /* NOTIFICATIONS */
     public function selectNotification($gibbonNotificationID)
     {
         $data = array('gibbonNotificationID' => $gibbonNotificationID);
@@ -69,15 +70,7 @@ class NotificationGateway
         return $this->pdo->executeQuery($data, $sql);
     }
 
-    public function getNotificationPreference($gibbonPersonID)
-    {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT email, receiveNotificationEmails FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND receiveNotificationEmails='Y' AND NOT email=''";
-        $result = $this->pdo->executeQuery($data, $sql);
-
-        return ($result && $result->rowCount() > 0)? $result->fetch() : null;
-    }
-
+    /* NOTIFICATION EVENTS */
     public function selectNotificationEventByID($gibbonNotificationEventID)
     {
         $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
@@ -94,25 +87,26 @@ class NotificationGateway
         return $this->pdo->executeQuery($data, $sql);
     }
 
-    public function selectNotificationEventListenersByScope($gibbonNotificationEventID, $scopes = array())
+    public function selectAllNotificationEvents()
     {
-        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
-        $sql = "SELECT DISTINCT gibbonPersonID FROM gibbonNotificationListener WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+        $sql = "SELECT gibbonNotificationEvent.*, COUNT(gibbonNotificationListenerID) as listenerCount FROM gibbonNotificationEvent JOIN gibbonModule ON (gibbonNotificationEvent.moduleName=gibbonModule.name) LEFT JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonModule.active='Y' GROUP BY gibbonNotificationEvent.gibbonNotificationEventID ORDER BY gibbonModule.name, gibbonNotificationEvent.event";
 
-        if (is_array($scopes) && count($scopes) > 0) {
-            $sql .= " AND (scopeType='All' ";
+        return $this->pdo->executeQuery(array(), $sql);
+    }
 
-            $count = 0;
-            foreach ($scopes as $scope) {
-                $data['scopeType'.$count] = $scope['type'];
-                $data['scopeTypeID'.$count] = $scope['id'];
-                $sql .= " OR (scopeType=:scopeType{$count} AND scopeID=:scopeTypeID{$count})";
-                $count++;
-            }
-            $sql .= ")";
-        } else {
-            $sql .= " AND scopeType='All'";
-        }
+    public function updateNotificationEvent($update)
+    {
+        $data = array('gibbonNotificationEventID' => $update['gibbonNotificationEventID'], 'active' => $update['active']);
+        $sql = "UPDATE gibbonNotificationEvent SET active=:active WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    /* NOTIFICATION LISTENERS */
+    public function selectNotificationListener($gibbonNotificationListenerID)
+    {
+        $data = array('gibbonNotificationListenerID' => $gibbonNotificationListenerID);
+        $sql = "SELECT * FROM gibbonNotificationListener WHERE gibbonNotificationListenerID=:gibbonNotificationListenerID";
 
         return $this->pdo->executeQuery($data, $sql);
     }
@@ -134,25 +128,22 @@ class NotificationGateway
         return $this->pdo->executeQuery($data, $sql);
     }
 
-    public function selectAllNotificationEvents()
+    public function selectNotificationListenersByScope($gibbonNotificationEventID, $scopes = array())
     {
-        $sql = "SELECT gibbonNotificationEvent.*, COUNT(gibbonNotificationListenerID) as listenerCount FROM gibbonNotificationEvent JOIN gibbonModule ON (gibbonNotificationEvent.moduleName=gibbonModule.name) LEFT JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonModule.active='Y' GROUP BY gibbonNotificationEvent.gibbonNotificationEventID ORDER BY gibbonModule.name, gibbonNotificationEvent.event";
+        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
+        $sql = "SELECT DISTINCT gibbonPersonID FROM gibbonNotificationListener WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
 
-        return $this->pdo->executeQuery(array(), $sql);
-    }
-
-    public function updateNotificationEvent($update)
-    {
-        $data = array('gibbonNotificationEventID' => $update['gibbonNotificationEventID'], 'active' => $update['active']);
-        $sql = "UPDATE gibbonNotificationEvent SET active=:active WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
-
-        return $this->pdo->executeQuery($data, $sql);
-    }
-
-    public function selectNotificationListener($gibbonNotificationListenerID)
-    {
-        $data = array('gibbonNotificationListenerID' => $gibbonNotificationListenerID);
-        $sql = "SELECT * FROM gibbonNotificationListener WHERE gibbonNotificationListenerID=:gibbonNotificationListenerID";
+        if (is_array($scopes) && count($scopes) > 0) {
+            $sql .= " AND (scopeType='All' ";
+            for ($i = 0; $i < count($scopes); $i++) {
+                $data['scopeType'.$i] = $scopes[$i]['type'];
+                $data['scopeTypeID'.$i] = $scopes[$i]['id'];
+                $sql .= " OR (scopeType=:scopeType{$i} AND scopeID=:scopeTypeID{$i})";
+            }
+            $sql .= ")";
+        } else {
+            $sql .= " AND scopeType='All'";
+        }
 
         return $this->pdo->executeQuery($data, $sql);
     }
@@ -170,5 +161,15 @@ class NotificationGateway
         $sql = 'DELETE FROM gibbonNotificationListener WHERE gibbonNotificationListenerID=:gibbonNotificationListenerID';
 
         return $this->pdo->executeQuery($data, $sql);
+    }
+
+    /* NOTIFICATION PREFERENCES */
+    public function getNotificationPreference($gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT email, receiveNotificationEmails FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND receiveNotificationEmails='Y' AND NOT email=''";
+        $result = $this->pdo->executeQuery($data, $sql);
+
+        return ($result && $result->rowCount() > 0)? $result->fetch() : null;
     }
 }
