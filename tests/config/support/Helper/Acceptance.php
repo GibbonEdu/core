@@ -16,6 +16,7 @@ class Acceptance extends \Codeception\Module
     public function grabAllFormValues($selector = '#content form') {
         $elements = $this->getModule('PhpBrowser')->_findElements("$selector input, $selector textarea, $selector select");
 
+        $typeCounts = array();
         $formValues = array();
         foreach ($elements as $element) {
             $type = ($element->tagName == 'input')? $element->getAttribute('type') : $element->tagName;
@@ -25,13 +26,24 @@ class Acceptance extends \Codeception\Module
             $name = $element->getAttribute('name');
             $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : '';
 
+            if (empty($name) || $name == 'address') continue;
+            if ($element->hasAttribute('readonly')) continue;
+
             switch($type) {
                 case 'checkbox':    if ($element->hasAttribute('checked')) {
                                         $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : 'on';
                                     }
+                                    $formValues[$name] = $value;
+                                    break;
+
+                case 'radio':       if ($element->hasAttribute('checked')) {
+                                        $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : '';
+                                        $formValues[$name] = $value;
+                                    }
                                     break;
 
                 case 'textarea':    $value = $element->nodeValue;
+                                    $formValues[$name] = $value;
                                     break;
 
                 case 'select':      $optionTags = $element->getElementsByTagName('option');
@@ -41,10 +53,12 @@ class Acceptance extends \Codeception\Module
                                             $value = $optionTags->item($i)->getAttribute('value');
                                         }
                                     }
+                                    $formValues[$name] = $value;
+                                    break;
+
+                default:            $formValues[$name] = $value;
                                     break;
             }
-            
-            $formValues[$name] = $value;
         }
         
         return $formValues;

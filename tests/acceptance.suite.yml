@@ -7,10 +7,12 @@
 class_name: AcceptanceTester
 settings:
     bootstrap: acceptance/bootstrap.php
+params:
+    - config/environment.php
 modules:
     enabled:
         - PhpBrowser:
-            url: http://localhost/gibbon
+            url: "%ABSOLUTE_URL%"
         - \Helper\Acceptance
         - Db
         - DbHelper

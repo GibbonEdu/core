@@ -31,11 +31,12 @@ v14.0.00
 		...
 
 	Changes With Important Notices
-		Attendance: Fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
+		System: added unit and acceptance testing environments for Gibbon developers
+		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
 		Attendance: dropped legacy tables gibbonPlannerEntryAttendance, gibbonPlannerEntryAttendanceLog
 
 	Tweaks & Bug Fixes
-		System: Improved Fast Finder student search permissions
+		System: improved Fast Finder student search permissions
 		System: added Albanian and Thai as development languages
 		System: added Moroccan dirham as a currency option
 		System: upgraded jQuery to v2.2.4 and jQuery Migrate to v1.4.1
@@ -55,14 +56,14 @@ v14.0.00
 		Finance: tweaked interface for display of payment log to make it more usable
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
-		Markbook: Added a class average row to the bottom of markbook views (when Weighting is enabled)
+		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
 		Students: added settable thresholds for issuing academic alerts
 		Students: added settable thresholds for issuing behaviour alerts
-		Timetable: Fixed TT not being navigable if user is not involved in any timetable
+		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 
