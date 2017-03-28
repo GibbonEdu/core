@@ -110,8 +110,6 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
             $event->setNotificationText(__($guid, 'A Behaviour CLI script has run.').'<br/><br/>'.$report);
             $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_pattern.php&minimumCount=1&fromDate='.dateConvertBack($guid, $currentDate));
 
-            $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
-
             // Send all notifications
             $sendReport = $event->sendNotifications($pdo, $gibbon->session);
 
