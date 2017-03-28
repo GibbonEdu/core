@@ -189,38 +189,42 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
                     $row->addLabel('gibbonPersonID', __('Person'))->description(__('Available only to users with the required permission.'));
                     $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->placeholder(__('Please select...'))->isRequired();
 
-                $allScopes = array(
-                    'All'                   => __('All'),
-                    'gibbonPersonIDStudent' => __('Student'),
-                    'gibbonPersonIDStaff'   => __('Staff'),
-                    'gibbonYearGroupID'     => __('Year Group'),
-                );
+                if ($event['scopes'] == 'All') {
+                    $form->addHiddenValue('scopeType', 'All');
+                } else {
+                    $allScopes = array(
+                        'All'                   => __('All'),
+                        'gibbonPersonIDStudent' => __('Student'),
+                        'gibbonPersonIDStaff'   => __('Staff'),
+                        'gibbonYearGroupID'     => __('Year Group'),
+                    );
 
-                $eventScopes = array_combine(explode(',', $event['scopes']), explode(',', trim($event['scopes'])));
-                $availableScopes = array_intersect_key($allScopes, $eventScopes);
+                    $eventScopes = array_combine(explode(',', $event['scopes']), explode(',', trim($event['scopes'])));
+                    $availableScopes = array_intersect_key($allScopes, $eventScopes);
 
-                $row = $form->addRow();
-                    $row->addLabel('scopeType', __('Scope'))->description(__('Apply an optional filter to notifications received.'));
-                    $row->addSelect('scopeType')->fromArray($availableScopes);
+                    $row = $form->addRow();
+                        $row->addLabel('scopeType', __('Scope'))->description(__('Apply an optional filter to notifications received.'));
+                        $row->addSelect('scopeType')->fromArray($availableScopes);
 
-                $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
-                $row = $form->addRow()->addClass('scopeTypeStudent');
-                    $row->addLabel('gibbonPersonIDStudent', __('Student'));
-                    $row->addSelectStudent('gibbonPersonIDStudent')->isRequired();
+                    $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
+                    $row = $form->addRow()->addClass('scopeTypeStudent');
+                        $row->addLabel('gibbonPersonIDStudent', __('Student'));
+                        $row->addSelectStudent('gibbonPersonIDStudent')->isRequired();
 
-                $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
-                $row = $form->addRow()->addClass('scopeTypeStaff');
-                    $row->addLabel('gibbonPersonIDStaff', __('Student'));
-                    $row->addSelectStaff('gibbonPersonIDStaff')->isRequired();
+                    $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
+                    $row = $form->addRow()->addClass('scopeTypeStaff');
+                        $row->addLabel('gibbonPersonIDStaff', __('Student'));
+                        $row->addSelectStaff('gibbonPersonIDStaff')->isRequired();
 
-                $form->toggleVisibilityByClass('scopeTypeYearGroup')->onSelect('scopeType')->when('gibbonYearGroupID');
-                $row = $form->addRow()->addClass('scopeTypeYearGroup');
-                    $row->addLabel('gibbonYearGroupID', __('Year Group'));
-                    $row->addSelectYearGroup('gibbonYearGroupID')->isRequired();
+                    $form->toggleVisibilityByClass('scopeTypeYearGroup')->onSelect('scopeType')->when('gibbonYearGroupID');
+                    $row = $form->addRow()->addClass('scopeTypeYearGroup');
+                        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+                        $row->addSelectYearGroup('gibbonYearGroupID')->isRequired();
+                }
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addSubmit();
+                    $row->addSubmit('Add');
 
                 echo $form->getOutput();
             }
