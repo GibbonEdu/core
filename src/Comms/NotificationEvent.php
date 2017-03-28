@@ -77,6 +77,7 @@ class NotificationEvent
     /**
      * Add a scopeType => scopeID pair to the list. This defines which filters will match when looking for event listeners.
      * Eg: a scopeType of gibbonYearGroupID will only match listeners for that specific year group ID.
+     * Prevent duplicates using a type+id array key
      *
      * @param  string     $type
      * @param  int|array  $id
@@ -87,10 +88,12 @@ class NotificationEvent
 
         if (is_array($id)) {
             foreach ($id as $idSingle) {
-                $this->scopes[] = array('type' => $type, 'id' => $idSingle);
+                $arrayKey = $type.intval($idSingle);
+                $this->scopes[$arrayKey] = array('type' => $type, 'id' => $idSingle);
             }
         } else {
-            $this->scopes[] = array('type' => $type, 'id' => $id);
+            $arrayKey = $type.intval($id);
+            $this->scopes[$arrayKey] = array('type' => $type, 'id' => $id);
         }
     }
 
