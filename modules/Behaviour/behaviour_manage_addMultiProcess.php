@@ -116,18 +116,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $rowDetail = $resultDetail->fetch();
 
                     $studentName = formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
-                    $notificationText = sprintf(__($guid, 'Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
-                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
-                    if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
-                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
-                    }
-                    if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
-                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
-                    }
-                    if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
-                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
-                    }
+                    $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
                     // Raise a new notification event
                     $event = new NotificationEvent('Behaviour', 'New Negative Record');
@@ -140,6 +130,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     // Add event listeners to the notification sender
                     $event->pushNotifications($notificationGateway, $notificationSender);
+
+                    // Add direct notifications to roll group tutors
+                    if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+                        $notificationText = sprintf(__($guid, 'Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
+
+                        if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
+                        }
+                        if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
+                        }
+                        if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                        }
+                    }
                 }
             }
         }

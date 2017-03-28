@@ -42,6 +42,8 @@ class NotificationEvent
     protected $scopes = array();
     protected $recipients = array();
 
+    protected $eventDetails;
+
     /**
      * Create a new notification event which correlates to an event type defined in gibbonNotificationEvents.
      *
@@ -168,16 +170,19 @@ class NotificationEvent
     }
 
     /**
-     * Get the event row from the database
+     * Get the event row from the database (lazy-load)
      *
      * @param   NotificationGateway  $gateway
      * @return  array Datbase row, null on failure
      */
-    protected function getEventDetails(NotificationGateway $gateway)
+    public function getEventDetails(NotificationGateway $gateway, $key = null)
     {
-        $result = $gateway->selectNotificationEventByName($this->moduleName, $this->event);
+        if (empty($this->eventDetails)) {
+            $result = $gateway->selectNotificationEventByName($this->moduleName, $this->event);
+            $this->eventDetails = ($result && $result->rowCount() == 1)? $result->fetch() : null;
+        }
 
-        return ($result && $result->rowCount() == 1)? $result->fetch() : null;
+        return (!empty($key) && isset($this->eventDetails[$key]))? $this->eventDetails[$key] : $this->eventDetails;
     }
 
     /**
