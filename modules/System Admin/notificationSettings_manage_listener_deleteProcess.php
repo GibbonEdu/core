@@ -35,7 +35,7 @@ $gibbonNotificationEventID = (isset($_GET['gibbonNotificationEventID']))? $_GET[
 $gibbonNotificationListenerID = (isset($_GET['gibbonNotificationListenerID']))? $_GET['gibbonNotificationListenerID'] : null;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

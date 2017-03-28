@@ -32,9 +32,9 @@ $connection2 = $pdo->getConnection();
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonNotificationEventID = (isset($_POST['gibbonNotificationEventID']))? $_POST['gibbonNotificationEventID'] : null;
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/notificationSettings.php";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationSettings_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -54,27 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/notificationS
             exit;
         }
 
-        $gibbonPersonID = (isset($_POST['gibbonPersonID']))? $_POST['gibbonPersonID'] : '';
-        $scopeType = (isset($_POST['scopeType']))? $_POST['scopeType'] : '';
-        $scopeID = (isset($_POST[$scopeType]))? $_POST[$scopeType] : 0;
+        $event = $result->fetch();
 
-        if (empty($gibbonPersonID) || empty($scopeType)) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-            exit;
-        } else {
-            $listener = array(
-                'gibbonNotificationEventID' => $gibbonNotificationEventID,
-                'gibbonPersonID'            => $gibbonPersonID,
-                'scopeType'                 => $scopeType,
-                'scopeID'                   => $scopeID
-            );
+        $event['active'] = (isset($_POST['active']))? $_POST['active'] : $event['active'];
 
-            $result = $gateway->insertNotificationListener($listener);
+        $result = $gateway->updateNotificationEvent($event);
 
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-            exit;
-        }
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
+        exit;
     }
 }

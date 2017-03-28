@@ -135,10 +135,12 @@ class NotificationGateway
 
         if (is_array($scopes) && count($scopes) > 0) {
             $sql .= " AND (scopeType='All' ";
-            for ($i = 0; $i < count($scopes); $i++) {
-                $data['scopeType'.$i] = $scopes[$i]['type'];
-                $data['scopeTypeID'.$i] = $scopes[$i]['id'];
+            $i = 0;
+            foreach ($scopes as $scope) {
+                $data['scopeType'.$i] = $scope['type'];
+                $data['scopeTypeID'.$i] = $scope['id'];
                 $sql .= " OR (scopeType=:scopeType{$i} AND scopeID=:scopeTypeID{$i})";
+                $i++;
             }
             $sql .= ")";
         } else {
