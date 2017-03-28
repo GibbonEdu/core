@@ -25,21 +25,22 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
     try {
         $data = array();
         $where = '';
+        $whereInner = '';
         if ($student) {
             $data['student'] = $student;
-            $where .= ' AND activePersonStudent=:student';
+            $whereInner .= 'activePersonStudent=:student OR ';
         }
         if ($staff) {
             $data['staff'] = $staff;
-            $where .= ' AND activePersonStaff=:staff';
+            $whereInner .= 'activePersonStaff=:staff OR ';
         }
         if ($parent) {
             $data['parent'] = $parent;
-            $where .= ' AND activePersonParent=:parent';
+            $whereInner .= 'activePersonParent=:parent OR ';
         }
         if ($other) {
             $data['other'] = $other;
-            $where .= ' AND activePersonOther=:other';
+            $whereInner .= 'activePersonOther=:other OR ';
         }
         if ($applicationForm) {
             $data['applicationForm'] = $applicationForm;
@@ -50,7 +51,11 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
             $where .= ' AND activeDataUpdater=:dataUpdater';
         }
 
-        $sql = "SELECT * FROM gibbonPersonField WHERE active='Y' $where";
+        if ($whereInner != '') {
+            $whereInner = ' AND ('.substr($whereInner, 0, -4).') ';
+        }
+
+        $sql = "SELECT * FROM gibbonPersonField WHERE active='Y' $whereInner $where";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

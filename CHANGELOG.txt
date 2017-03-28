@@ -65,6 +65,7 @@ v14.0.00
 		Timetable: Fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
+		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 
 v13.0.01
 --------
