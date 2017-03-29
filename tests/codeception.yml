@@ -34,7 +34,7 @@ settings:
     backup_globals: true
 params:
     - env
-    - config/config.php
+    - config/environment.php
 includes:
     - bootstrap.php
 extensions:

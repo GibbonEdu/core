@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_manage.php'>".__($guid, 'Manage Activities')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$_GET['gibbonActivityID'].'&search='.$_GET['search']."'>".__($guid, 'Activity Enrolment')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Student').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_manage.php'>".__($guid, 'Manage Activities')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$_GET['gibbonActivityID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Activity Enrolment')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Student').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -83,13 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             $row = $result->fetch();
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
-            if ($_GET['search'] != '') {
+            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonActivityID=$gibbonActivityID'>".__($guid, 'Back').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__($guid, 'Back').'</a>';
                 echo '</div>';
             }
             ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search'] ?>">
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
 						<td style='width: 275px'>

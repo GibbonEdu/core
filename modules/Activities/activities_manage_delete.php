@@ -60,25 +60,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             } else {
                 //Let's go!
                 $row = $result->fetch();
-                if ($_GET['search'] != '') {
+                if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
                     echo '</div>';
                 }
                 ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search'] ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'] ?>">
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
 								<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 							</td>
 							<td class="right">
-								
+
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
 								<input name="date" id="date" value="<?php echo $date ?>" type="hidden">
 								<input name="gibbonActivityID" id="gibbonActivityID" value="<?php echo $gibbonActivityID ?>" type="hidden">
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 								<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 							</td>
 							<td class="right">
-								
+
 							</td>
 						</tr>
 					</table>

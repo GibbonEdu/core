@@ -83,13 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             //Let's go!
             $row = $result->fetch();
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
-            if ($_GET['search'] != '') {
+            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
             ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'].'&search='.$_GET['search'] ?>">
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
 						<td style='width: 275px'>
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
 
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
             echo '</div>';
 
             if ($result->rowCount() < 1) {
@@ -212,8 +212,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).' at '.substr($row['timestamp'], 11, 5);
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_edit.php&gibbonActivityID='.$row['gibbonActivityID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&search='.$_GET['search']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&search='.$_GET['search']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_edit.php&gibbonActivityID='.$row['gibbonActivityID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
                 }

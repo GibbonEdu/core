@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'];
             $gibbonRoleIDAll = '';
             $containsPrimary = false;
-            $choices = $_POST['gibbonRoleIDAll'];
+            $choices = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
             if (count($choices) > 0) {
                 foreach ($choices as $t) {
                     $gibbonRoleIDAll .= $t.',';
