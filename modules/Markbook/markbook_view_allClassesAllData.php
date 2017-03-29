@@ -421,7 +421,7 @@
                     $scale = '';
                     if ($markbook->getSetting('enableRawAttainment') == 'Y' && isset($_SESSION[$guid]['markbookFilter']) ) {
                         if ($_SESSION[$guid]['markbookFilter'] == 'raw' && $column->displayRawMarks() and $column->hasAttainmentRawMax()) {
-                            $scale = ' - ' . __($guid, 'Raw Marks') .' '. __($guid, 'out of') .': '. $column->getData('attainmentRawMax');
+                            $scale = ' - ' . __($guid, 'Raw Marks') .' '. __($guid, 'out of') .': '. floatval($column->getData('attainmentRawMax') );
                         }
                     }
 
@@ -686,7 +686,7 @@
                                         if (isset($_SESSION[$guid]['markbookFilter']) && $_SESSION[$guid]['markbookFilter'] == 'raw') {
                                             $attainment = $rowEntry['attainmentValueRaw'];
                                         } else {
-                                            $attainmentDesc .= '<br/>'. $rowEntry['attainmentValueRaw'] . ' / ' . $column->getData('attainmentRawMax');
+                                            $attainmentDesc .= '<br/>'. $rowEntry['attainmentValueRaw'] . ' / ' . floatval($column->getData('attainmentRawMax'));
                                         }
                                     }
                                 }
