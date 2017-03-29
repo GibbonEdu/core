@@ -36,6 +36,8 @@ class Trigger implements OutputableInterface
     protected $sourceSelector;
     protected $sourceValueSelector;
 
+    protected $negate;
+
     public function __construct($selector)
     {
         $this->targetSelector = $selector;
@@ -53,7 +55,7 @@ class Trigger implements OutputableInterface
     public function onCheckbox($name)
     {
         $this->elementType = 'checkbox';
-        $this->sourceSelector = 'input[type="checkbox"][name="'.$name.'[]"]';
+        $this->sourceSelector = 'input[type="checkbox"][name^="'.$name.'"]';
         $this->sourceValueSelector = $this->sourceSelector.':checked';
 
         return $this;
@@ -78,15 +80,24 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    public function whenNot($value)
+    {
+        $this->negate = true;
+        return $this->when($value);
+    }
+
     public function getOutput()
     {
         $output = '';
+
+        $opSame = ($this->negate)? '!=' : '==';
+        $opDiff = ($this->negate)? '==' : '!=';
 
         // Change target visibility if source value equals trigger value
         // Handles LiveValidation by also disabling/enabling inputs
         // The change() call activates any nested triggers
         $output .= "$('{$this->sourceSelector}').change(function(){ \n";
-            $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && $('{$this->sourceValueSelector}').val() == '{$this->elementValue}' ) { \n";
+            $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && $('{$this->sourceValueSelector}').val() {$opSame} '{$this->elementValue}' ) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
                 $output .= "$('{$this->targetSelector} :input').prop('disabled', false).change(); \n";
             $output .= "} else { \n";
@@ -96,7 +107,7 @@ class Trigger implements OutputableInterface
         $output .= "}); \n";
 
         // Hide all initial targets if the source value does not equal the trigger value
-        $output .= "if ( $('{$this->sourceValueSelector}').val() != '{$this->elementValue}') { \n";
+        $output .= "if ( $('{$this->sourceValueSelector}').val() {$opDiff} '{$this->elementValue}') { \n";
             $output .= "$('{$this->targetSelector}').hide(); \n";
             $output .= "$('{$this->targetSelector} :input').prop('disabled', true).change(); \n";
         $output .= "} \n\n";
