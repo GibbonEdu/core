@@ -916,6 +916,10 @@
             echo '<tr>';
             echo '<td class="firstColumn right dataDividerTop">'.__($guid, 'Class Average').':</td>';
 
+            if ($markbook->hasPersonalizedTargets()) {
+                echo '<td class="dataColumn dataDividerTop"></td>';
+            }
+
             // Assignment Attainment Averages
             for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
                 $attainmentCount = (isset($totals['attainment'][$i]['count']))? $totals['attainment'][$i]['count'] : 0;
@@ -950,7 +954,7 @@
                     echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($termAverage).'</td>';
                 }
             }
-            
+
             // Cumulative Average
             $cumulativeAverage = ($count > 0 && $totals['cumulativeAverage'] > 0)? ($totals['cumulativeAverage'] / $count) : '';
             echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($cumulativeAverage).'</td>';
