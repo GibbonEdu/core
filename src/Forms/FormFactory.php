@@ -189,6 +189,25 @@ class FormFactory implements FormFactoryInterface
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
     }
 
+    public function createSelectTitle($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Ms.'  => __('Ms.'),
+            'Miss' => __('Miss'),
+            'Mr.'  => __('Mr.'),
+            'Mrs.' => __('Mrs.'),
+            'Dr.'  => __('Dr.'),
+        ))->placeholder(__('Please select...'));
+    }
+
+    public function createSelectGender($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'F' => __('Female'),
+            'M' => __('Male'),
+        ))->placeholder(__('Please select...'));
+    }
+
     public function createSelectRelationship($name)
     {
         return $this->createSelect($name)->fromArray(array(
