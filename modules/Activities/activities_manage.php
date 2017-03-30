@@ -38,13 +38,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     echo '<h2>';
-    echo __($guid, 'Search');
+    echo __($guid, 'Search & Filter');
     echo '</h2>';
 
     $search = null;
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
+
+    $gibbonSchoolYearTermID = null;
+    if (isset($_GET['gibbonSchoolYearTermID'])) {
+        $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
+    }
+
+    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 
     $paymentOn = true;
     if (getSettingByScope($connection2, 'Activities', 'payment') == 'None' or getSettingByScope($connection2, 'Activities', 'payment') == 'Single') {
@@ -57,13 +64,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td>
-					<b><?php echo __($guid, 'Search For Activity') ?></b><br/>
+					<b><?php echo __($guid, 'Search') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Activity name.') ?></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
+            <?php
+                if ($dateType != 'Date') {
+                ?>
+    			<tr>
+    				<td>
+    					<b><?php echo __($guid, 'Term') ?></b><br/>
+    				</td>
+    				<td class="right">
+                        <select class="standardWidth" name="gibbonSchoolYearTermID">
+    						<?php
+                            echo "<option value=''></option>";
+    						try {
+                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                $sqlSelect = "SELECT gibbonSchoolYearTermID, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+    							$resultSelect = $connection2->prepare($sqlSelect);
+    							$resultSelect->execute($dataSelect);
+    						} catch (PDOException $e) {
+    						}
+    						while ($rowSelect = $resultSelect->fetch()) {
+    							$selected = '';
+    							if ($gibbonSchoolYearTermID == $rowSelect['gibbonSchoolYearTermID']) {
+    								$selected = 'selected';
+    							}
+    							echo "<option $selected value='".$rowSelect['gibbonSchoolYearTermID']."'>".htmlPrep($rowSelect['name']).'</option>';
+    						}
+    						?>
+    					</select>
+    				</td>
+    			</tr>
+                <?php
+            }
+            ?>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_manage.php">
@@ -91,24 +130,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     //Should we show date as term or date?
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sqlOrderBy = 'ORDER BY programStart DESC, name';
     if ($dateType != 'Date') {
-        if ($search == '') {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonActivity.*, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonSchoolYearTermIDList, name";
-        } else {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search' => "%$search%");
-            $sql = "SELECT gibbonActivity.*, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND name LIKE :search ORDER BY gibbonSchoolYearTermIDList, name";
-        }
-    } else {
-        if ($search == '') {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonActivity.*, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY programStart DESC, name";
-        } else {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search' => "%$search%");
-            $sql = "SELECT gibbonActivity.*, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND name LIKE :search ORDER BY programStart DESC, name";
-        }
+        $sqlOrderBy = 'ORDER BY gibbonSchoolYearTermIDList, name';
     }
+    $sqlWhere = '';
+    if ($search != '') {
+        $data['search'] = "%$search%";
+        $sqlWhere = ' AND name LIKE :search';
+    }
+    if ($gibbonSchoolYearTermID != '') {
+        $data['gibbonSchoolYearTermID'] = "%$gibbonSchoolYearTermID%";
+        $sqlWhere .= ' AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermID';
+    }
+
+    $sql = "SELECT gibbonActivity.*, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere $sqlOrderBy";
+
     $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
     try {
         $result = $connection2->prepare($sql);
@@ -121,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     if ($result) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_add.php&search='.$search."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_add.php&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
@@ -336,9 +374,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo $row['waiting'];
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
                     echo '</td>';
                     echo '<td>';
                     echo "<input name='gibbonActivityID-$count' value='".$row['gibbonActivityID']."' type='hidden'>";

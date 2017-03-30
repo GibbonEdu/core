@@ -30,8 +30,8 @@ $connection2 = $pdo->getConnection();
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonActivityID = $_POST['gibbonActivityID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_delete.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'];
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage.php&search='.$_GET['search'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_delete.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_delete.php') == false) {
     $URL .= '&return=error0';

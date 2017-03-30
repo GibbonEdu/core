@@ -548,7 +548,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                     		<span class="emphasis small"><?php echo __($guid, 'Leave blank to omit raw marks.') ?></span>
 										</td>
 										<td class="right">
-											<input name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="<?php echo $row2['attainmentRawMax'] ?>" type="text" class="standardWidth">
+											<input name="attainmentRawMax" id="attainmentRawMax" maxlength=8 value="<?php echo floatval($row2['attainmentRawMax']); ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
 												var attainmentRawMax=new LiveValidation('attainmentRawMax');
 												attainmentRawMax.add(Validate.Numericality);
@@ -558,7 +558,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									<?php
                                 } else {
                                 	?>
-                                	<input type="hidden" name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="<?php echo $row2['attainmentRawMax'] ?>" >
+                                	<input type="hidden" name="attainmentRawMax" id="attainmentRawMax" value="<?php echo floatval($row2['attainmentRawMax']); ?>" >
                                 	<?php
                                 }
 
@@ -783,7 +783,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                                             $resultSelect = $connection2->prepare($sqlSelect);
                                                             $resultSelect->execute($dataSelect);
                                                         } catch (PDOException $e) { }
-                                                        
+
         												while ($rowSelect = $resultSelect->fetch()) {
         													$label = '';
         													if ($rowSelect['category'] == '') {

@@ -421,7 +421,7 @@
                     $scale = '';
                     if ($markbook->getSetting('enableRawAttainment') == 'Y' && isset($_SESSION[$guid]['markbookFilter']) ) {
                         if ($_SESSION[$guid]['markbookFilter'] == 'raw' && $column->displayRawMarks() and $column->hasAttainmentRawMax()) {
-                            $scale = ' - ' . __($guid, 'Raw Marks') .' '. __($guid, 'out of') .': '. $column->getData('attainmentRawMax');
+                            $scale = ' - ' . __($guid, 'Raw Marks') .' '. __($guid, 'out of') .': '. floatval($column->getData('attainmentRawMax') );
                         }
                     }
 
@@ -686,7 +686,7 @@
                                         if (isset($_SESSION[$guid]['markbookFilter']) && $_SESSION[$guid]['markbookFilter'] == 'raw') {
                                             $attainment = $rowEntry['attainmentValueRaw'];
                                         } else {
-                                            $attainmentDesc .= '<br/>'. $rowEntry['attainmentValueRaw'] . ' / ' . $column->getData('attainmentRawMax');
+                                            $attainmentDesc .= '<br/>'. $rowEntry['attainmentValueRaw'] . ' / ' . floatval($column->getData('attainmentRawMax'));
                                         }
                                     }
                                 }
@@ -915,6 +915,10 @@
         if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
             echo '<tr>';
             echo '<td class="firstColumn right dataDividerTop">'.__($guid, 'Class Average').':</td>';
+
+            if ($markbook->hasPersonalizedTargets()) {
+                echo '<td class="dataColumn dataDividerTop"></td>';
+            }
 
             // Assignment Attainment Averages
             for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {

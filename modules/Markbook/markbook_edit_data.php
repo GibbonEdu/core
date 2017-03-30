@@ -567,7 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                                         echo "<td style='text-align: center; white-space: nowrap'>";
                                             echo "<input name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw' type='text' maxlength=10 class='$attainmentClass'>";
-                                            echo ' / ' . $row2['attainmentRawMax'];
+                                            echo ' / ' . floatval($row2['attainmentRawMax']);
                                         echo '</td>';
                                         ?>
                                         <script type="text/javascript">
