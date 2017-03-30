@@ -58,6 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            $row = $result->fetch();
+
             //Write to database
             try {
                 $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
@@ -69,6 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 header("Location: {$URL}");
                 exit();
             }
+
+            //Attempt to write logo
+            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Application Form - Delete', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'applicationFormContents' => serialize($row)), $_SERVER['REMOTE_ADDR']);
+
 
             // Clean up the application form relationships
             try {
