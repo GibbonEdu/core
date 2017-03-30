@@ -66,6 +66,7 @@ v14.0.00
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
 		Students: added settable thresholds for issuing academic alerts
 		Students: added settable thresholds for issuing behaviour alerts
+		Students: added extra action to allow deleting of application forms to be disabled
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
