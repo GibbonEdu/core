@@ -568,13 +568,13 @@
         try {
             if ($studentOrderBy == 'rollOrder') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
+                $sqlStudents = "SELECT title, surname, preferredName, officialName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
             } else if ($studentOrderBy == 'preferredName') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
+                $sqlStudents = "SELECT title, surname, preferredName, officialName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
             } else {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                $sqlStudents = "SELECT title, surname, preferredName, officialName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
             }
 
             $resultStudents = $connection2->prepare($sqlStudents);
@@ -603,7 +603,7 @@
                     echo $rowStudents['rollOrder'].') ';
                 }
 
-                echo "<a class='studentName' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>";
+                echo "<a title='".$rowStudents['officialName']."' class='studentName' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>";
 
                 $reverseName = ( $studentOrderBy == 'surname' or $studentOrderBy == 'rollOrder' or empty($studentOrderBy) );
                 echo formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', $reverseName);
@@ -950,7 +950,7 @@
                     echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($termAverage).'</td>';
                 }
             }
-            
+
             // Cumulative Average
             $cumulativeAverage = ($count > 0 && $totals['cumulativeAverage'] > 0)? ($totals['cumulativeAverage'] / $count) : '';
             echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($cumulativeAverage).'</td>';
