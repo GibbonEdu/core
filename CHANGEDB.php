@@ -739,7 +739,4 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Notification Settings'));end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Daily Behaviour Summary', 'Behaviour', 'Find Behaviour Patterns', 'CLI', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Negative Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
-ALTER TABLE `gibbonAttendanceLogPerson` CHANGE `gibbonAttendanceCodeID` `gibbonAttendanceCodeID` INT(3) UNSIGNED ZEROFILL NULL;end
-ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX `dateAndPerson` (`date`, `gibbonPersonID`) USING BTREE;end
-UPDATE `gibbonAttendanceLogPerson` SET `gibbonAttendanceCodeID`=NULL WHERE gibbonAttendanceCodeID='000';end
 ";
