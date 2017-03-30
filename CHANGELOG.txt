@@ -57,6 +57,8 @@ v14.0.00
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
+		Markbook: fixed order for first markbook column not saving properly
+		Markbook: allow decimal values for markbook column attainment raw max
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		School Admin: added notification settings page for managing system-wide notification events
 		Students: added ability to store internal documents against student application forms

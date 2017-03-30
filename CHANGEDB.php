@@ -744,4 +744,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 ALTER TABLE `gibbonAttendanceLogPerson` CHANGE `gibbonAttendanceCodeID` `gibbonAttendanceCodeID` INT(3) UNSIGNED ZEROFILL NULL;end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX `dateAndPerson` (`date`, `gibbonPersonID`) USING BTREE;end
 UPDATE `gibbonAttendanceLogPerson` SET `gibbonAttendanceCodeID`=NULL WHERE gibbonAttendanceCodeID='000';end
+ALTER TABLE `gibbonMarkbookColumn` CHANGE `attainmentRawMax` `attainmentRawMax` DECIMAL(8,2) NULL DEFAULT NULL;end
 ";
