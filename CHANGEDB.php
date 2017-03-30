@@ -741,4 +741,5 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Negative Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonAttendanceLogPerson` CHANGE `gibbonAttendanceCodeID` `gibbonAttendanceCodeID` INT(3) UNSIGNED ZEROFILL NULL;end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD INDEX `dateAndPerson` (`date`, `gibbonPersonID`) USING BTREE;end
+UPDATE `gibbonAttendanceLogPerson` SET `gibbonAttendanceCodeID`=NULL WHERE gibbonAttendanceCodeID='000';end
 ";
