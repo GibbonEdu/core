@@ -57,11 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         $themesSQL[$row['name']][1] = 'orphaned';
     }
 
-    //Get list of modules in /modules directory
+    //Get list of themes in /themes directory
     $themesFS = glob($_SESSION[$guid]['absolutePath'].'/themes/*', GLOB_ONLYDIR);
 
     echo "<div class='warning'>";
-    echo sprintf(__($guid, 'To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/modules/</u></b>');
+    echo sprintf(__($guid, 'To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');
     echo '</div>';
 
     if (count($themesFS) < 1) {
