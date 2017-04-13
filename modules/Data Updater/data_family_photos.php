@@ -273,7 +273,9 @@ function dataURItoBlob(dataURI) {
                 </tr>
 
                 <?php
-                    for ($i = 0; $i < 3;$i++) :
+
+                    $count = ($gibbonFamilyID == 2460 || $gibbonFamilyID == 2180)? 14 : 3;
+                    for ($i = 0; $i < $count;$i++) :
 
                         try {
                             $data = array( 'sequenceNumber' => $i, 'gibbonFamilyID' => $gibbonFamilyID);
