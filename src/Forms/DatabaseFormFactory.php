@@ -61,6 +61,22 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
     }
 
+    public function createSelectDepartment($name)
+    {
+        $sql = 'SELECT type, gibbonDepartmentID as value, name FROM gibbonDepartment ORDER BY name';
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        $departments = array();
+
+        if ($results && $results->rowCount() > 0) {
+            while ($row = $results->fetch()) {
+                $departments[$row['type']][$row['value']] = $row['name'];
+            }
+        }
+
+        return $this->createSelect($name)->fromArray($departments)->placeholder(__('Please select...'));
+    }
+
     public function createSelectLanguage($name)
     {
         $sql = 'SELECT name as value, name FROM gibbonLanguage ORDER BY name';
