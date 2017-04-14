@@ -64,7 +64,7 @@ class DatabaseFormFactory extends FormFactory
         }
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectYearGroup($name)
@@ -72,7 +72,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectDepartment($name)
@@ -88,7 +88,7 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        return $this->createSelect($name)->fromArray($departments)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromArray($departments)->placeholder();
     }
 
     public function createSelectLanguage($name)
@@ -96,7 +96,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectCountry($name)
@@ -104,7 +104,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = "SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectStaff($name)

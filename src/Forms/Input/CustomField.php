@@ -58,12 +58,7 @@ class CustomField extends Input
             case 'select':
                 $this->customField = $this->factory->createSelect($name);
                 if (!empty($options)) {
-                    $this->customField->fromString($options);
-                }
-                if ($fields['required'] == 'Y') {
-                    $this->customField->placeholder(__('Please select...'));
-                } else {
-                    $this->customField->placeholder('');
+                    $this->customField->fromString($options)->placeholder();
                 }
                 break;
 
