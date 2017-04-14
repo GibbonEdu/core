@@ -75,6 +75,17 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
+    public function createCheckboxYearGroup($name)
+    {
+        $sql = "SELECT gibbonYearGroupID as `value`, name FROM gibbonYearGroup ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        // Get the yearGroups in a $key => $value array
+        $yearGroups = ($results && $results->rowCount() > 0)? $results->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+        return $this->createCheckbox($name)->fromArray($yearGroups);
+    }
+
     public function createSelectDepartment($name)
     {
         $sql = "SELECT type, gibbonDepartmentID as value, name FROM gibbonDepartment ORDER BY name";
@@ -102,6 +113,14 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectCountry($name)
     {
         $sql = "SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
+    public function createSelectRole($name)
+    {
+        $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY name";
         $results = $this->pdo->executeQuery(array(), $sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
