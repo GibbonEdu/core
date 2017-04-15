@@ -96,7 +96,7 @@ class Select extends Input
             $this->placeholder(__('Please select...'));
         }
 
-        if (isset($this->placeholder)) {
+        if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
             $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
 
             if ($this->getRequired() && !empty($this->placeholder)) {
