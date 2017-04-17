@@ -92,10 +92,14 @@ class Select extends Input
 
         $output .= '<select '.$this->getAttributeString().'>';
 
-        if (isset($this->placeholder)) {
+        if ($this->getRequired() && $this->placeholder === '') {
+            $this->placeholder(__('Please select...'));
+        }
+
+        if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
             $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
 
-            if ($this->getRequired()) {
+            if ($this->getRequired() && !empty($this->placeholder)) {
                 $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
             }
         }

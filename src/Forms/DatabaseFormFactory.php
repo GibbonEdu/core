@@ -45,36 +45,85 @@ class DatabaseFormFactory extends FormFactory
         return new DatabaseFormFactory($pdo);
     }
 
-    public function createSelectSchoolYear($name)
+    public function createSelectSchoolYear($name, $status = 'All')
     {
-        $sql = 'SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber';
+        switch ($status) {
+            case 'Active':
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Current' OR status='Upcoming' ORDER BY sequenceNumber"; break;
+
+            case 'Upcoming':
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Upcoming' ORDER BY sequenceNumber"; break;
+
+            case 'Past':
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber"; break;
+
+            case 'All':
+            case 'Any':
+            default:
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber"; break;
+        }
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectYearGroup($name)
     {
-        $sql = 'SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+        $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
+    public function createCheckboxYearGroup($name)
+    {
+        $sql = "SELECT gibbonYearGroupID as `value`, name FROM gibbonYearGroup ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        // Get the yearGroups in a $key => $value array
+        $yearGroups = ($results && $results->rowCount() > 0)? $results->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+        return $this->createCheckbox($name)->fromArray($yearGroups);
+    }
+
+    public function createSelectDepartment($name)
+    {
+        $sql = "SELECT type, gibbonDepartmentID as value, name FROM gibbonDepartment ORDER BY name";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        $departments = array();
+
+        if ($results && $results->rowCount() > 0) {
+            while ($row = $results->fetch()) {
+                $departments[$row['type']][$row['value']] = $row['name'];
+            }
+        }
+
+        return $this->createSelect($name)->fromArray($departments)->placeholder();
     }
 
     public function createSelectLanguage($name)
     {
-        $sql = 'SELECT name as value, name FROM gibbonLanguage ORDER BY name';
+        $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectCountry($name)
     {
-        $sql = 'SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name';
+        $sql = "SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder(__('Please select...'));
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
+    public function createSelectRole($name)
+    {
+        $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY name";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectStaff($name)

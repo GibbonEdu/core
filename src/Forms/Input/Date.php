@@ -48,10 +48,12 @@ class Date extends TextField
 
         $this->addValidation('Validate.Format', $validationFormat);
 
+        $today = dateConvertBack($guid, date('Y-m-d'));
+
         $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() { $( "#'.$this->getID().'" ).datepicker(); })';
+        $output .= '$(function() {  $( "#'.$this->getID().'" ).datepicker({onSelect: function(){$(this).blur();} });  })';
         $output .= '</script>';
 
         return $output;
