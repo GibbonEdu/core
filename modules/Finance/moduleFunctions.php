@@ -1518,7 +1518,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Display balance
-        if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
+        if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial' or $row['status'] == 'Refunded') {
             if (@$rowPayment['status'] == 'Partial') {
                 if ($receiptNumber != null) { //New style receipt, with multiple payments
                     $balanceFail = false;
@@ -1541,7 +1541,24 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                         }
                     }
 
-                    if ($balanceFail == false) {
+                    if ($paymentFail == false && $balanceFail == false && $row['status'] == 'Refunded') {
+                        $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
+                        $return .= __($guid, 'Refund Issued');
+                        $return .= '</h3>';
+                        $return .= '<table cellspacing="0" style="width: 100%; $style4">';
+                        $return .= "<tr style='height: 35px' class='current error'>";
+                        $return .= "<td style='text-align: right; $style2'>";
+                        $return .= '<b>'.__($guid, 'Refund Total:').'</b>';
+                        $return .= '</td>';
+                        $return .= "<td style='width: 135px; $style2'>";
+                        if (substr($currency, 4) != '') {
+                            $return .= substr($currency, 4).' ';
+                        }
+                        $return .= '<b>'.number_format($amountPaid, 2, '.', ',').'</b>';
+                        $return .= '</td>';
+                        $return .= '</tr>';
+                        $return .= '</table>';
+                    } else if ($balanceFail == false) {
                         $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
                         $return .= __($guid, 'Outstanding Balance');
                         $return .= '</h3>';
