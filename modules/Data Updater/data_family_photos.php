@@ -274,7 +274,7 @@ function dataURItoBlob(dataURI) {
 
                 <?php
 
-                    $count = ($gibbonFamilyID == 2460 || $gibbonFamilyID == 2180)? 14 : 3;
+                    $count = ($gibbonFamilyID == 2460 || $gibbonFamilyID == 2180)? 14 : 5;
                     for ($i = 0; $i < $count;$i++) :
 
                         try {
