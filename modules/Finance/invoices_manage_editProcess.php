@@ -96,17 +96,21 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 if (isset($_POST['order'])) {
                     $order = $_POST['order'];
                 }
-                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete' or $_POST['status'] == 'Refunded') {
+                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
                     $paidDate = dateConvert($guid, $_POST['paidDate']);
+                } else if ($_POST['status'] == 'Refunded') {
+                    $paidDate = $row['paidDate'];
                 } else {
                     $paidDate = null;
                 }
-                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete' or $_POST['status'] == 'Refunded') {
+                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
                     $paidAmountLog = $_POST['paidAmount'];
                     $paidAmount = $_POST['paidAmount'];
                     //If some paid already, work out amount, and add it to total
                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
                     $paidAmount += $alreadyPaid;
+                } else if ($_POST['status'] == 'Refunded') {
+                    $paidAmount = $row['paidAmount'];
                 } else {
                     $paidAmount = null;
                 }
