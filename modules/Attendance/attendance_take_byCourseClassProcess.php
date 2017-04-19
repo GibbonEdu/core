@@ -36,9 +36,6 @@ catch(PDOException $e) {
 
 @session_start() ;
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
-
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
 $currentDate=$_POST["currentDate"] ;
 $today=date("Y-m-d");

@@ -36,8 +36,5 @@ mysql_set_charset('utf8');
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonRubricID = $_GET['gibbonRubricID'];
 echo rubricEdit($guid, $connection, $gibbonRubricID);

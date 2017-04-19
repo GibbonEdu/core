@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonCourseID = $_POST['gibbonCourseID'];
 $gibbonCourseIDCopyTo = $_POST['gibbonCourseIDCopyTo'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];

@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonRoleID = $_GET['gibbonRoleID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/role_manage.php&gibbonRoleID=$gibbonRoleID";
 

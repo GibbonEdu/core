@@ -36,9 +36,6 @@ try {
     echo $e->getMessage();
 }
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Module includes
 include './moduleFunctions.php';
 

@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'];
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $search = isset($_GET['search'])? $_GET['search'] : '';

@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $search = $_GET['search'];

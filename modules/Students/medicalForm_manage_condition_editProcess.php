@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
 $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'];
 $search = $_GET['search'];

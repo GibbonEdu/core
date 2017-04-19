@@ -22,9 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == false) {
     //Acess denied
     echo "<div class='error'>";

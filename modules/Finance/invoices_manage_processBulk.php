@@ -33,9 +33,6 @@ $from = getSettingByScope($connection2, 'Finance', 'email');
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $action = $_POST['action'];
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $status = $_GET['status'];

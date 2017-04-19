@@ -255,9 +255,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                 }
             }
 
-            //Set timezone from session variable
-            date_default_timezone_set($_SESSION[$guid]['timezone']);
-
+            
             //Initialise tinymce
             ?>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/tinymce/tinymce.min.js"></script>
