@@ -56,7 +56,7 @@ class Locale
 		$this->setLocale($this->i18n['code']);
 
 		// Set timezone from session variable
-		date_default_timezone_set($this->session->get('timezone'));
+		date_default_timezone_set($this->session->get('timezone', 'UTC'));
 	}
 
 	/**
