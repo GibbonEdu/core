@@ -70,7 +70,7 @@ if (empty($_POST) or empty($_FILES)) {
                 if (empty($attachment)) {
                     echo "<span style='font-weight: bold; color: #ff0000'>";
                         echo __($guid, 'Your request failed due to an attachment error.');
-                        echo $fileUploader->getLastError();
+                        echo ' '.$fileUploader->getLastError();
                     echo '</span>';
                 } else {
                     $extension = strrchr($attachment, '.');
