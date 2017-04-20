@@ -83,13 +83,13 @@ class FileUploader
         $destinationFolder = trim($destinationFolder, '/');
 
         // Check the existence of the temp file to upload
-        if (!file_exists($sourcePath)) {
+        if (empty($sourcePath) || !file_exists($sourcePath)) {
             $this->errorCode = UPLOAD_ERR_NO_FILE;
             return false;
         }
 
         // Validate the file extensions
-        if (!$this->isFileTypeValid($filename)) {
+        if (empty($filename) || !$this->isFileTypeValid($filename)) {
             $this->errorCode = UPLOAD_ERR_EXTENSION;
             return false;
         }
@@ -133,6 +133,11 @@ class FileUploader
      */
     public function uploadFromPost($file)
     {
+        // Check for empty data
+        if (empty($file)) {
+            return false;
+        }
+        
         // Pull any existing error code from the PHP upload
         $this->errorCode = (isset($file['error']))? $file['error'] : UPLOAD_ERR_OK;
         if ($this->errorCode != UPLOAD_ERR_OK) {
@@ -171,7 +176,7 @@ class FileUploader
      */
     public function getRandomizedFilename($filename, $destinationFolder)
     {
-        $extension = mb_substr(mb_strrchr($filename, '.'), 1);
+        $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         $name = mb_substr($filename, 0, mb_strpos($filename, '.'));
         $name = preg_replace('/[^a-zA-Z0-9]/', '', $name);
@@ -210,6 +215,18 @@ class FileUploader
 
         return $this->fileExtensions;
     }
+    
+    /**
+     * Get the valid extensions as CSV; helper method for validation fields.
+     *
+     * @version  v14
+     * @since    v14
+     * @return   array
+     */
+    public function getFileExtensionsCSV()
+    {
+        return implode(',', array_map(function ($str) { return "'.".$str."'"; }, $this->getFileExtensions()));
+    }
 
     /**
      * Checks the extension of the filename provided against the list of valid extensions.
@@ -221,8 +238,8 @@ class FileUploader
      */
     public function isFileTypeValid($filename)
     {
-        $extension = mb_substr(mb_strrchr($filename, '.'), 1);
-
+        $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
+        
         return in_array($extension, $this->getFileExtensions());
     }
 
