@@ -619,7 +619,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                                     }
                                 }
                             } else {
-                                if (strstr($_SESSION[$guid]['address'], '..') == true or strstr($_SESSION[$guid]['address'], 'installer') == true or strstr($_SESSION[$guid]['address'], 'uploads') == true) {
+                                if (strstr($_SESSION[$guid]['address'], '..') || strstr($_SESSION[$guid]['address'], 'installer') || strstr($_SESSION[$guid]['address'], 'uploads') || in_array($_SESSION[$guid]['address'] , array('index.php', '/index.php', './index.php')) || substr($_SESSION[$guid]['address'], -11) == '//index.php') {
                                     echo "<div class='error'>";
                                     echo __($guid, 'Illegal address detected: access denied.');
                                     echo '</div>';
