@@ -30,9 +30,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
 $currentDate = $_POST['currentDate'];
 $today = date('Y-m-d');

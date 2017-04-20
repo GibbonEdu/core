@@ -24,9 +24,6 @@ include './moduleFunctions.php';
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $location = $_POST['location'];
 $count = $_POST['count'];
 

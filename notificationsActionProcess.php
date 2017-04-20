@@ -27,9 +27,6 @@ $connection2 = $pdo->getConnection();
 //Start session
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URLBack = $_SESSION[$guid]['absoluteURL'].'/index.php?q=notifications.php';
 
 if (isset($_GET['action']) == false or isset($_GET['gibbonNotificationID']) == false) {

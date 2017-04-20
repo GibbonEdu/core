@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 

@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include $_SESSION[$guid]['absolutePath'].'/modules/'.getModuleName($_GET['address']).'/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
 $viewBy = null;

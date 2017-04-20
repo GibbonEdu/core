@@ -35,9 +35,6 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/applicationForm.php';
 
 $proceed = false;

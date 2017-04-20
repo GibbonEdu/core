@@ -84,8 +84,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			echo $moduleCSS;
 			echo $moduleJS;
 
-            //Set timezone from session variable
-            date_default_timezone_set($_SESSION[$guid]['timezone']);
+            
    			?>
 
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>

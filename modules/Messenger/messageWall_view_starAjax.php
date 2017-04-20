@@ -28,9 +28,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $gibbonMessengerID = $_POST['gibbonMessengerID'];
 $mode = $_POST['mode']; //can be "add" or "remove"
