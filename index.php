@@ -648,7 +648,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 					<div id="footer">
 						<?php echo __($guid, 'Powered by') ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?><?php if ($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') { echo 'dev';} ?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
 						<span style='font-size: 90%; '>
-							<?php echo __($guid, 'Created under the') ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php echo __($guid, 'Credits'); ?></a><br/>
+							<?php echo __($guid, 'Created under the') ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/about/#ourTeam'><?php echo __($guid, 'Credits'); ?></a><br/>
 							<?php
                                 $seperator = false;
 								$thirdLine = false;
