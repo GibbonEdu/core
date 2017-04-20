@@ -1,4 +1,5 @@
 uploads/*
+!uploads/.htaccess
 /config.php
 Thumb.db
 .DS_Store
