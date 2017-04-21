@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 } else {
                     //Lock markbook column table
                     try {
-                        $sql = 'LOCK TABLES gibbonUnit WRITE, gibbonUnitClass WRITE, gibbonUnitBlock WRITE,  gibbonUnitOutcome WRITE';
+                        $sql = 'LOCK TABLES gibbonUnit WRITE, gibbonUnitClass WRITE, gibbonUnitBlock WRITE,  gibbonUnitOutcome WRITE, gibbonFileExtension READ';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
@@ -113,29 +113,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                     //Move attached file, if there is one
                     if ($_FILES['file']['tmp_name'] != '') {
-                        //Move attached file, if there is one
-                        if ($_FILES['file']['tmp_name'] != '') {
-                            $time = time();
-                            //Check for folder in uploads based on today's date
-                            $path = $_SESSION[$guid]['absolutePath'];
-                            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                            }
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                                if (!(file_exists($path.'/'.$attachment))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                            if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                                $URL .= '&return=warning1';
-                                header("Location: {$URL}");
-                            }
+                        $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+                        // Upload the file, return the /uploads relative path
+                        $attachment = $fileUploader->uploadFromPost($file, $name);
+
+                        if (empty($attachment)) {
+                            $URL .= '&return=warning1';
+                            header("Location: {$URL}");
+                            exit;
                         }
                     } else {
                         $attachment = '';
