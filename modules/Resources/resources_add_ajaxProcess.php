@@ -77,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
                 if ($_FILES[$id.'file']['tmp_name'] != '') {
                     $file = $_FILES[$id.'file'];
-                    $file['name'] = $name.strrchr($_FILES[$id.'file']['name'], '.');
 
-                    $attachment = $fileUploader->uploadFromPost($file);
+                    // Upload the file, return the /uploads relative path
+                    $attachment = $fileUploader->uploadFromPost($file, $name);
 
                     if (empty($attachment)) {
                         echo "<span style='font-weight: bold; color: #ff0000'>";

@@ -680,11 +680,10 @@ if ($proceed == false) {
 
                     for ($i = 0; $i < $fileCount; ++$i) {
                         $file = $_FILES["file$i"];
-                        $file['name'] = 'ApplicationDocument'.strrchr($_FILES["file$i"]['name'], '.');
                         $fileName = $_POST["fileName$i"];
 
                         // Upload the file, return the /uploads relative path
-                        $attachment = $fileUploader->uploadFromPost($file);
+                        $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
 
                         // Write files to database, if there is one
                         if (!empty($attachment)) {

@@ -65,8 +65,9 @@ if (empty($_POST) or empty($_FILES)) {
         for ($i = 1; $i < 5; ++$i) {
             $html = '';
             if (isset($_FILES[$id.'file'.$i])) {
-
                 $file = $_FILES[$id.'file'.$i];
+
+                // Upload the file, return the /uploads relative path
                 $attachment = $fileUploader->uploadFromPost($file);
 
                 if (empty($attachment)) {
