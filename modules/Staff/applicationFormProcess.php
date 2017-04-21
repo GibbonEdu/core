@@ -230,6 +230,8 @@ if ($proceed == false) {
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
                 for ($i = 0; $i < $fileCount; ++$i) {
+                    if (empty($_FILES["file$i"]['tmp_name'])) continue;
+
                     $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
                     $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
 
