@@ -121,9 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $attachment = $fileUploader->uploadFromPost($file, $name);
 
                         if (empty($attachment)) {
-                            $URL .= '&return=warning1';
-                            header("Location: {$URL}");
-                            exit;
+                            $partialFail = true;
                         }
                     } else {
                         $attachment = '';

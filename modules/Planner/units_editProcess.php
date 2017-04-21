@@ -117,9 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             $attachment = $fileUploader->uploadFromPost($file, $name);
 
                             if (empty($attachment)) {
-                                $URL .= '&return=error1';
-                                header("Location: {$URL}");
-                                exit;
+                                $partialFail = true;
                             } else {
                                 $content = $attachment;
                             }
