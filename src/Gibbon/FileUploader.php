@@ -235,6 +235,22 @@ class FileUploader
     }
 
     /**
+     * Set the file extensions from an array. Overrides the list normally retrieved from the database.
+     *
+     * @version  v14
+     * @since    v14
+     * @param    array  $extensions
+     */
+    public function setFileExtensions($extensions)
+    {
+        if (empty($extensions) || !is_array($extensions)) return false;
+
+        $this->fileExtensions = $extensions;
+
+        return true;
+    }
+
+    /**
      * Checks the extension of the filename provided against the list of valid extensions.
      *
      * @version  v14
