@@ -96,28 +96,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                                         $partialFail = true;
                                     }
                                 } elseif ($resourceType == 'File') {
-                                    $time = time();
-                                    //Move attached file, if there is one
-                                    if ($_FILES['file'.$i]['tmp_name'] != '') {
-                                        //Check for folder in uploads based on today's date
-                                        $path = $_SESSION[$guid]['absolutePath'];
-                                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                                        }
-                                        $unique = false;
-                                        $count = 0;
-                                        while ($unique == false and $count < 100) {
-                                            $suffix = randomPassword(16);
-                                            $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $resourceName)."_$suffix".strrchr($_FILES['file'.$i]['name'], '.');
-                                            if (!(file_exists($path.'/'.$attachment))) {
-                                                $unique = true;
-                                            }
-                                            ++$count;
-                                        }
+                                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                                        if (!(move_uploaded_file($_FILES['file'.$i]['tmp_name'], $path.'/'.$attachment))) {
+                                    // Handle the attached file, if there is one
+                                    if ($_FILES['file'.$i]['tmp_name'] != '') {
+                                        $file = $_FILES['file'.$i];
+                                        $file['name'] = $resourceName.strrchr($_FILES['file'.$i]['name'], '.');
+
+                                        // Upload the file, return the /uploads relative path
+                                        $attachment = $fileUploader->uploadFromPost($file);
+
+                                        if (empty($attachment)) {
                                             $URL .= '&return=warning1';
                                             header("Location: {$URL}");
+                                            exit();
                                         } else {
                                             try {
                                                 $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'resourceType' => $resourceType, 'resourceName' => $resourceName, 'attachment' => $attachment);
