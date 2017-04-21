@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 if ($type == 'File') {
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                    $file = (isset($_FILES['file'.$i]))? $_FILES['file'.$i] : null;
+                    $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                     // Upload the file, return the /uploads relative path
                     $attachment = $fileUploader->uploadFromPost($file, $name);
