@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         header("Location: {$URL}");
                     } else {
                         $row = $result->fetch();
-
+                        $partialFail = false;
                         //Move attached file, if there is one
                         if ($_FILES['file']['tmp_name'] != '') {
                             $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
@@ -126,7 +126,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         }
 
                         //Update classes
-                        $partialFail = false;
                         if ($classCount > 0) {
                             for ($i = 0;$i < $classCount;++$i) {
                                 $running = $_POST['running'.$i];
