@@ -112,7 +112,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                        $file = $_FILES['file'];
+                        $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                         // Upload the file, return the /uploads relative path
                         $attachment = $fileUploader->uploadFromPost($file, $row['title']);

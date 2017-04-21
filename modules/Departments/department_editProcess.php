@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 
                                     // Handle the attached file, if there is one
                                     if ($_FILES['file'.$i]['tmp_name'] != '') {
-                                        $file = $_FILES['file'.$i];
+                                        $file = (isset($_FILES['file'.$i]))? $_FILES['file'.$i] : null;
 
                                         // Upload the file, return the /uploads relative path
                                         $attachment = $fileUploader->uploadFromPost($file, $resourceName);

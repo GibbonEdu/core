@@ -230,8 +230,8 @@ if ($proceed == false) {
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
                 for ($i = 0; $i < $fileCount; ++$i) {
-                    $file = $_FILES["file$i"];
-                    $fileName = $_POST["fileName$i"];
+                    $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
+                    $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
 
                     // Upload the file, return the /uploads relative path
                     $attachment = $fileUploader->uploadFromPost($file, 'StaffApplicationDocument');
