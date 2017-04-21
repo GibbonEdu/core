@@ -64,29 +64,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             $logo = '';
             $imageFail = false;
             if ($_FILES['file1']['tmp_name'] != '') {
-                $time = time();
-                //Check for folder in uploads based on today's date
-                $path = $_SESSION[$guid]['absolutePath'];
-                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                }
-                $unique = false;
-                $count = 0;
-                while ($unique == false and $count < 100) {
-                    $suffix = randomPassword(16);
-                    if ($count == 0) {
-                        $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file1']['name'], '.');
-                    } else {
-                        $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix"."_$count".strrchr($_FILES['file1']['name'], '.');
-                    }
+                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                
+                $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
-                    if (!(file_exists($path.'/'.$logo))) {
-                        $unique = true;
-                    }
-                    ++$count;
-                }
-                if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$logo))) {
-                    $logo = '';
+                // Upload the file, return the /uploads relative path
+                $logo = $fileUploader->uploadFromPost($file, $name);
+
+                if (empty($logo)) {
                     $imageFail = true;
                 }
             }
