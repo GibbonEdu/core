@@ -142,30 +142,16 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 }
                 $contractUpload = $row['contractUpload'];
                 if ($_FILES['file1']['tmp_name'] != '') {
-                    $time = time();
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
                     //Move 240 attached file, if there is one
                     if ($_FILES['file1']['tmp_name'] != '') {
-                        $unique = false;
-                        $count = 0;
-                        while ($unique == false and $count < 100) {
-                            $suffix = randomPassword(16);
-                            if ($count == 0) {
-                                $contractUpload = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_'.$suffix.strrchr($_FILES['file1']['name'], '.');
-                            } else {
-                                $contractUpload = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.''."_$count_".$suffix.strrchr($_FILES['file1']['name'], '.');
-                            }
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                            if (!(file_exists($path.'/'.$contractUpload))) {
-                                $unique = true;
-                            }
-                            ++$count;
-                        }
-                        if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$contractUpload))) {
+                        $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+
+                        // Upload the file, return the /uploads relative path
+                        $attachment = $fileUploader->uploadFromPost($file, $username);
+
+                        if (empty($attachment)) {
                             $contractUpload = '';
                             $imageFail = true;
                         }
