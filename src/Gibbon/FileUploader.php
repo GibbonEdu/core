@@ -30,6 +30,10 @@ use Gibbon\session;
  */
 class FileUploader
 {
+    const FILE_SUFFIX_NONE = 0;
+    const FILE_SUFFIX_INCREMENTAL = 1;
+    const FILE_SUFFIX_ALPHANUMERIC = 2;
+
     /**
      * Gibbon/sqlConnection
      */
@@ -51,6 +55,12 @@ class FileUploader
      * @var  int
      */
     protected $errorCode = 0;
+
+    /**
+     * Should a suffix be added to filenames?
+     * @var  bool
+     */
+    protected $fileSuffixType = self::FILE_SUFFIX_ALPHANUMERIC;
 
     /**
      * @version  v14
@@ -182,14 +192,23 @@ class FileUploader
      */
     public function getRandomizedFilename($filename, $destinationFolder)
     {
+        if ($this->fileSuffixType == self::FILE_SUFFIX_NONE) {
+            return $filename;
+        }
+
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         $name = mb_substr($filename, 0, mb_strpos($filename, '.'));
-        $name = preg_replace('/[^a-zA-Z0-9]/', '', $name);
+        $name = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
 
         for ($count = 0; $count < 100; $count++) {
-            $suffix = randomPassword(16);
-            $randomizedFilename = $name.'_'.$suffix.'.'.$extension;
+            if ($this->fileSuffixType == self::FILE_SUFFIX_INCREMENTAL) {
+                $suffix = ($count > 0)? '_'.$count : '';
+            } else {
+                $suffix = '_'.randomPassword(16);
+            }
+
+            $randomizedFilename = $name.$suffix.'.'.$extension;
 
             if (!(file_exists($destinationFolder.'/'.$randomizedFilename))) {
                 return $randomizedFilename;
@@ -263,6 +282,11 @@ class FileUploader
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
         return in_array($extension, $this->getFileExtensions());
+    }
+
+    public function setFileSuffixType($value)
+    {
+        $this->fileSuffixType = $value;
     }
 
     /**
