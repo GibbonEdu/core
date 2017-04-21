@@ -675,20 +675,21 @@ if ($proceed == false) {
                     if (isset($_POST['fileCount'])) {
                         $fileCount = $_POST['fileCount'];
                     }
-                    
+
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                    
+
                     for ($i = 0; $i < $fileCount; ++$i) {
                         $file = $_FILES["file$i"];
                         $file['name'] = 'ApplicationDocument'.strrchr($_FILES["file$i"]['name'], '.');
-                        $fileType = $_POST["fileName$i"];
-                        
+                        $fileName = $_POST["fileName$i"];
+
+                        // Upload the file, return the /uploads relative path
                         $attachment = $fileUploader->uploadFromPost($file);
-                        
+
                         // Write files to database, if there is one
                         if (!empty($attachment)) {
                             try {
-                                $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileType, 'path' => $attachment);
+                                $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                 $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
                                 $resultFile = $connection2->prepare($sqlFile);
                                 $resultFile->execute($dataFile);
