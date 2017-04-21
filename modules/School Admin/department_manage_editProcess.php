@@ -35,12 +35,14 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit();
 } else {
     //Proceed!
     //Check if school year specified
     if ($gibbonDepartmentID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit();
     } else {
         try {
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
@@ -56,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         if ($result->rowCount() != 1) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
+            exit();
         } else {
             $row = $result->fetch();
             //Validate Inputs
@@ -67,36 +70,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             if ($name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
+                exit();
             } else {
+                $partialFail = false;
+                
                 //Move attached file, if there is one
-                $time = time();
-                if ($_FILES['file']['tmp_name'] != '') {
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    $unique = false;
-                    $count = 0;
-                    while ($unique == false and $count < 100) {
-                        $suffix = randomPassword(16);
-                        $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                        if (!(file_exists($path.'/'.$attachment))) {
-                            $unique = true;
-                        }
-                        ++$count;
-                    }
+                if (!empty($_FILES['file']['tmp_name'])) {
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            
+                    $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
-                    if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                        $URL .= '&return=warning1';
-                        header("Location: {$URL}");
+                    // Upload the file, return the /uploads relative path
+                    $attachment = $fileUploader->uploadFromPost($file, $name);
+
+                    if (empty($attachment)) {
+                        $partialFail = true;
                     }
                 } else {
                     $attachment = $row['logo'];
                 }
 
                 //Scan through staff
-                $partialFail = false;
                 $staff = array();
                 if (isset($_POST['staff'])) {
                     $staff = $_POST['staff'];
