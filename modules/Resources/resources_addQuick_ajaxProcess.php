@@ -32,6 +32,7 @@ if (empty($_POST) or empty($_FILES)) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
     echo __($guid, 'Your request failed due to an attachment error.');
     echo '</span>';
+    exit();
 } else {
     //Proceed!
     $id = $_POST['id'];
@@ -44,6 +45,7 @@ if (empty($_POST) or empty($_FILES)) {
         echo "<span style='font-weight: bold; color: #ff0000'>";
         echo __($guid, 'Your request failed because your inputs were invalid.');
         echo '</span>';
+        exit();
     } else {
         //Check if multiple files
         $multiple = false;
@@ -72,6 +74,7 @@ if (empty($_POST) or empty($_FILES)) {
                         echo __($guid, 'Your request failed due to an attachment error.');
                         echo ' '.$fileUploader->getLastError();
                     echo '</span>';
+                    exit();
                 } else {
                     $extension = strrchr($attachment, '.');
                     $name = mb_substr(basename($file['name']), 0, mb_strpos(basename($file['name']), '.'));

@@ -35,11 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
     echo "<span style='font-weight: bold; color: #ff0000'>";
     echo __($guid, 'Your request failed because you do not have access to this action.');
     echo '</span>';
+    exit();
 } else {
     if (empty($_POST)) {
         echo "<span style='font-weight: bold; color: #ff0000'>";
         echo 'Your request failed due to an attachment error.';
         echo '</span>';
+        exit();
     } else {
         //Proceed!
         $id = $_POST['id'];
@@ -68,31 +70,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
             echo "<span style='font-weight: bold; color: #ff0000'>";
             echo __($guid, 'Your request failed because your inputs were invalid.');
             echo '</span>';
+            exit();
         } else {
             if ($type == 'File') {
+                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
                 if ($_FILES[$id.'file']['tmp_name'] != '') {
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    $unique = false;
-                    $count = 0;
-                    while ($unique == false and $count < 100) {
-                        $suffix = randomPassword(16);
-                        $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES[$id.'file']['name'], '.');
-                        if (!(file_exists($path.'/'.$attachment))) {
-                            $unique = true;
-                        }
-                        ++$count;
-                    }
-                    if (!(move_uploaded_file($_FILES[$id.'file']['tmp_name'], $path.'/'.$attachment))) {
+                    $file = $_FILES[$id.'file'];
+                    $file['name'] = $name.strrchr($_FILES[$id.'file']['name'], '.');
+
+                    $attachment = $fileUploader->uploadFromPost($file);
+
+                    if (empty($attachment)) {
                         echo "<span style='font-weight: bold; color: #ff0000'>";
-                        echo 'Your request failed due to an attachment error.';
+                            echo __($guid, 'Your request failed due to an attachment error.');
+                            echo ' '.$fileUploader->getLastError();
                         echo '</span>';
+                        exit();
+                    } else {
+                        $content = $attachment;
                     }
                 }
-                $content = $attachment;
             }
 
             //Deal with tags
