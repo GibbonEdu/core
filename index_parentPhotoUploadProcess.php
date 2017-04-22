@@ -55,35 +55,23 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
         header("Location: {$URL}");
     } else {
         $attachment1 = null;
-        if ($_FILES['file1']['tmp_name'] != '') {
-            $time = time();
-            //Check for folder in uploads based on today's date
-            $path = $_SESSION[$guid]['absolutePath'];
-            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-            }
+        if (!empty($_FILES['file1']['tmp_name'])) {
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
 
-            $unique = false;
-            $count = 0;
-            while ($unique == false and $count < 100) {
-                if ($count == 0) {
-                    $attachment1 = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$_SESSION[$guid]['username'].'_240'.strrchr($_FILES['file1']['name'], '.');
-                } else {
-                    $attachment1 = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$_SESSION[$guid]['username'].'_240'."_$count".strrchr($_FILES['file1']['name'], '.');
-                }
+            $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
-                if (!(file_exists($path.'/'.$attachment1))) {
-                    $unique = true;
-                }
-                ++$count;
-            }
+            // Upload the file, return the /uploads relative path
+            $attachment1 = $fileUploader->uploadFromPost($file, $_SESSION[$guid]['username'].'_240');
 
-            if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$attachment1))) {
+            if (empty($attachment1)) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
                 exit();
             }
         }
+        
+        $path = $_SESSION[$guid]['absolutePath'];
 
         //Check for reasonable image
         $size = getimagesize($path.'/'.$attachment1);
