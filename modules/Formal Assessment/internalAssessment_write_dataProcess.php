@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             } else {
                 $row = $result->fetch();
                 $attachmentCurrent = $row['attachment'];
-                $name = $row['name' ];
+                $name = $row['name'];
                 $count = $_POST['count'];
                 $partialFail = false;
                 $attainment = $row['attainment'];
@@ -162,24 +162,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $time = time();
                     //Move attached file, if there is one
                     if ($uploadedResponse == 'Y') {
-                        if (@$_FILES["response$i"]['tmp_name'] != '') {
-                            //Check for folder in uploads based on today's date
-                            $path = $_SESSION[$guid]['absolutePath'];
-                            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                            }
-                            $unique = false;
-                            $count2 = 0;
-                            while ($unique == false and $count2 < 100) {
-                                $suffix = randomPassword(16);
-                                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_Uploaded Response_$suffix".strrchr($_FILES["response$i"]['name'], '.');
-                                if (!(file_exists($path.'/'.$attachment))) {
-                                    $unique = true;
-                                }
-                                ++$count2;
-                            }
+                        if (!empty($_FILES["response$i"]['tmp_name'])) {
+                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                
+                            $file = (isset($_FILES["response$i"]))? $_FILES["response$i"] : null;
 
-                            if (!(move_uploaded_file($_FILES["response$i"]['tmp_name'], $path.'/'.$attachment))) {
+                            // Upload the file, return the /uploads relative path
+                            $attachment = $fileUploader->uploadFromPost($file, $name.'_Uploaded Response');
+
+                            if (empty($attachment)) {
                                 $partialFail = true;
                             }
                         } else {
@@ -231,26 +222,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $description = $_POST['description'];
                 $time = time();
                 //Move attached file, if there is one
-                if ($_FILES['file']['tmp_name'] != '') {
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    $unique = false;
-                    $count3 = 0;
-                    while ($unique == false and $count3 < 100) {
-                        $suffix = randomPassword(16);
-                        $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                        if (!(file_exists($path.'/'.$attachment))) {
-                            $unique = true;
-                        }
-                        ++$count3;
-                    }
+                if (!empty($_FILES['file']['tmp_name'])) {
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                
+                    $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
-                    if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                        $URL .= '&return=error3';
-                        header("Location: {$URL}");
+                    // Upload the file, return the /uploads relative path
+                    $attachment = $fileUploader->uploadFromPost($file, $name);
+
+                    if (empty($attachment)) {
+                        $partialFail = true;
                     }
                 } else {
                     $attachment = $attachmentCurrent;
@@ -274,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 //Return!
                 if ($partialFail == true) {
-                    $URL .= '&return=error1';
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
                     $URL .= '&return=success0';
