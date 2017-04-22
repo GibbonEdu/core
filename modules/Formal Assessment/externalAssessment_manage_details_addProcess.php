@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     } else {
         //Lock markbook column table
         try {
-            $sqlLock = 'LOCK TABLES gibbonExternalAssessmentStudent WRITE, gibbonExternalAssessmentStudentEntry WRITE';
+            $sqlLock = 'LOCK TABLES gibbonExternalAssessmentStudent WRITE, gibbonExternalAssessmentStudentEntry WRITE, gibbonFileExtension READ';
             $resultLock = $connection2->query($sqlLock);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
@@ -77,31 +77,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         $rowAI = $resultAI->fetch();
         $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
 
-        $time = time();
-        //Move attached file, if there is one
         $attachment = '';
-        if (isset($_FILES['file'])) {
-            if ($_FILES['file']['tmp_name'] != '') {
-                //Check for folder in uploads based on today's date
-                $path = $_SESSION[$guid]['absolutePath'];
-                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                }
-                $unique = false;
-                $count = 0;
-                while ($unique == false and $count < 100) {
-                    $suffix = randomPassword(16);
-                    $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/externalAssessmentUpload_$suffix".strrchr($_FILES['file']['name'], '.');
-                    if (!(file_exists($path.'/'.$attachment))) {
-                        $unique = true;
-                    }
-                    ++$count;
-                }
+        //Move attached image  file, if there is one
+        if (!empty($_FILES['file']['tmp_name'])) {
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
-                }
+            $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+            // Upload the file, return the /uploads relative path
+            $attachment = $fileUploader->uploadFromPost($file, 'externalAssessmentUpload');
+
+            if (empty($attachment)) {
+                $partialFail = true;
             }
         }
 
