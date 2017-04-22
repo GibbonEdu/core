@@ -51,24 +51,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         $time = time();
         //Move attached file, if there is one
         if ($_FILES['file']['tmp_name'] != '') {
-            //Check for folder in uploads based on today's date
-            $path = $_SESSION[$guid]['absolutePath'];
-            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-            }
-            $unique = false;
-            $count = 0;
-            while ($unique == false and $count < 100) {
-                $suffix = randomPassword(16);
-                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/alarmSound_$suffix".strrchr($_FILES['file']['name'], '.');
-                if (!(file_exists($path.'/'.$attachment))) {
-                    $unique = true;
-                }
-                ++$count;
-            }
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                
+            $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
-            if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                $fail = true;
+            // Upload the file, return the /uploads relative path
+            $attachment = $fileUploader->uploadFromPost($file, 'alarmSound');
+                
+            if (empty($attachment)) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
             }
         } else {
             $attachment = $attachmentCurrent;
