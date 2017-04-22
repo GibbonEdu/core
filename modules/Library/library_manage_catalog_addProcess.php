@@ -132,33 +132,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
-            //Move attached image  file, if there is one
-            if (isset($_FILES['imageFile'])) {
-                if ($_FILES['imageFile']['tmp_name'] != '' and $imageType == 'File') {
-                    //Move attached file, if there is one
-                    if ($_FILES['imageFile']['tmp_name'] != '') {
-                        $time = time();
-                        //Check for folder in uploads based on today's date
-                        $path = $_SESSION[$guid]['absolutePath'];
-                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                        }
-                        $unique = false;
-                        $count = 0;
-                        while ($unique == false and $count < 100) {
-                            $suffix = randomPassword(16);
-                            $imageLocation = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $id)."_$suffix".strrchr($_FILES['imageFile']['name'], '.');
-                            if (!(file_exists($path.'/'.$imageLocation))) {
-                                $unique = true;
-                            }
-                            ++$count;
-                        }
+            $partialFail = false;
 
-                        if (!(move_uploaded_file($_FILES['imageFile']['tmp_name'], $path.'/'.$imageLocation))) {
-                            $URL .= '&return=warning1';
-                            header("Location: {$URL}");
-                        }
-                    }
+            //Move attached image  file, if there is one
+            if (!empty($_FILES['imageFile']['tmp_name']) && $imageType == 'File') {
+                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                $fileUploader->getFileExtensions('Image');
+
+                $file = (isset($_FILES['imageFile']))? $_FILES['imageFile'] : null;
+
+                // Upload the file, return the /uploads relative path
+                $imageLocation = $fileUploader->uploadFromPost($file, $id);
+
+                if (empty($imageLocation)) {
+                    $partialFail = true;
                 }
             }
 
@@ -177,8 +164,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
-            $URL .= "&return=success0&editID=$AI";
-            header("Location: {$URL}");
+            if ($partialFail == true) {
+                $URL .= '&return=warning1';
+                header("Location: {$URL}");
+            } else {
+                $URL .= "&return=success0&editID=$AI";
+                header("Location: {$URL}");
+            }
         }
     }
 }
