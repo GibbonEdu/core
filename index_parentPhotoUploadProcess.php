@@ -38,6 +38,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
 if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID'] or $_FILES['file1']['tmp_name'] == '') {
     $URL .= '?return=error1';
     header("Location: {$URL}");
+    exit();
 } else {
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -53,6 +54,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
     if ($result->rowCount() != 1) {
         $URL .= '?return=error2';
         header("Location: {$URL}");
+        exit();
     } else {
         $attachment1 = null;
         if (!empty($_FILES['file1']['tmp_name'])) {
@@ -65,7 +67,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
             $attachment1 = $fileUploader->uploadFromPost($file, $_SESSION[$guid]['username'].'_240');
 
             if (empty($attachment1)) {
-                $URL .= '&return=warning1';
+                $URL .= '?return=warning1';
                 header("Location: {$URL}");
                 exit();
             }
@@ -80,12 +82,15 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
         if ($width < 240 or $height < 320) {
             $URL .= '?return=error6';
             header("Location: {$URL}");
+            exit();
         } elseif ($width > 480 or $height > 640) {
             $URL .= '?return=error6';
             header("Location: {$URL}");
+            exit();
         } elseif (($width / $height) < 0.60 or ($width / $height) > 0.8) {
             $URL .= '?return=error6';
             header("Location: {$URL}");
+            exit();
         } else {
             //UPDATE
             try {
