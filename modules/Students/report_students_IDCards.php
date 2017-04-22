@@ -93,14 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                     echo getMaxUpload($guid);
 
                     //Get list of acceptable file extensions
-                    try {
-                        $dataExt = array();
-                        $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                        $resultExt = $connection2->prepare($sqlExt);
-                        $resultExt->execute($dataExt);
-                    } catch (PDOException $e) {
-                    }
-    				$ext = ".png','.jpg','.jpeg"; ?>
+    				$ext = "'.png','.jpg','.jpeg'";
+                    
+                    ?>
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
 						file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
@@ -154,23 +149,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             //Get background image
             $bg = '';
             if ($_FILES['file']['tmp_name'] != '') {
-                $time = time();
-                //Check for folder in uploads based on today's date
-                $path = $_SESSION[$guid]['absolutePath'];
-                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                }
-                $unique = false;
-                $count = 0;
-                while ($unique == false and $count < 100) {
-                    $suffix = randomPassword(16);
-                    $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/Card BG_$suffix".strrchr($_FILES['file']['name'], '.');
-                    if (!(file_exists($path.'/'.$attachment))) {
-                        $unique = true;
-                    }
-                    ++$count;
-                }
-                if (move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment)) {
+                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                
+                $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+                // Upload the file, return the /uploads relative path
+                $attachment = $fileUploader->uploadFromPost($file, 'Card_BG');
+                
+                if (empty($attachment)) {
+                    echo '<div class="error">';
+                        echo __($guid, 'Your request failed due to an attachment error.');
+                        echo ' '.$fileUploader->getLastError();
+                    echo '</div>';
+                } else {
                     $bg = 'background: url("'.$_SESSION[$guid]['absoluteURL']."/$attachment\") repeat left top #fff;";
                 }
             }
