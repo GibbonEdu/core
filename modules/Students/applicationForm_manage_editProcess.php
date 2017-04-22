@@ -688,7 +688,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         header("Location: {$URL}");
                     } else {
                        $URL .= '&return=success0';
-                        header("Location: {$URL}");
+                       header("Location: {$URL}");
                     }
                 }
             }
