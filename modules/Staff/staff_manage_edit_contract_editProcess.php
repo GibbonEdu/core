@@ -141,22 +141,17 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $notes = $_POST['notes'];
                 }
                 $contractUpload = $row['contractUpload'];
-                if ($_FILES['file1']['tmp_name'] != '') {
-                    //Move 240 attached file, if there is one
-                    if ($_FILES['file1']['tmp_name'] != '') {
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                if (!empty($_FILES['file1']['tmp_name'])) {
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                        $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+                    $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
-                        // Upload the file, return the /uploads relative path
-                        $attachment = $fileUploader->uploadFromPost($file, $username);
+                    // Upload the file, return the /uploads relative path
+                    $contractUpload = $fileUploader->uploadFromPost($file, $username);
 
-                        if (empty($attachment)) {
-                            $contractUpload = '';
-                            $imageFail = true;
-                        }
-                    } else {
+                    if (empty($contractUpload)) {
                         $contractUpload = '';
+                        $imageFail = true;
                     }
                 }
 
