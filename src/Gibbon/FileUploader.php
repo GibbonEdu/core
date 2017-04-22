@@ -219,19 +219,26 @@ class FileUploader
     }
 
     /**
-     * Lazy load an array of the File Extensions from DB.
+     * Lazy load an array of the File Extensions from DB. Optionally loads a specific Type of extension.
      *
      * @version  v14
      * @since    v14
      * @return   array
      */
-    public function getFileExtensions()
+    public function getFileExtensions($type = '')
     {
-        if (!isset($this->fileExtensions)) {
+        if (!isset($this->fileExtensions) || !empty($type)) {
             $this->fileExtensions = array();
 
-            $sql = "SELECT extension FROM gibbonFileExtension ORDER BY type, name";
-            $result = $this->pdo->executeQuery(array(), $sql);
+            if (!empty($type)) {
+                $data = array('type' => strtolower($type));
+                $sql = "SELECT extension FROM gibbonFileExtension WHERE LOWER(type)=:type ORDER BY type, name";
+            } else {
+                $data = array();
+                $sql = "SELECT extension FROM gibbonFileExtension ORDER BY type, name";
+            }
+            
+            $result = $this->pdo->executeQuery($data, $sql);
 
             if ($result && $result->rowCount() > 0) {
                 $this->fileExtensions = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
