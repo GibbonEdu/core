@@ -16,6 +16,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v13.0.02
+--------
+Security
+	System: fixed PHP code execution vulnerability
+	System: fixed infinite nested index reload bug
+
 v13.0.01
 --------
 Tweaks & Bug Fixes
