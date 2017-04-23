@@ -232,10 +232,10 @@ class FileUploader
 
             if (!empty($type)) {
                 $data = array('type' => strtolower($type));
-                $sql = "SELECT extension FROM gibbonFileExtension WHERE LOWER(type)=:type ORDER BY type, name";
+                $sql = "SELECT LOWER(extension) FROM gibbonFileExtension WHERE LOWER(type)=:type ORDER BY type, name";
             } else {
                 $data = array();
-                $sql = "SELECT extension FROM gibbonFileExtension ORDER BY type, name";
+                $sql = "SELECT LOWER(extension) FROM gibbonFileExtension ORDER BY type, name";
             }
             
             $result = $this->pdo->executeQuery($data, $sql);
