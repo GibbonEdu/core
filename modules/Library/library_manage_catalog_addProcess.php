@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             //Move attached image  file, if there is one
             if (!empty($_FILES['imageFile']['tmp_name']) && $imageType == 'File') {
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                $fileUploader->getFileExtensions('Image');
+                $fileUploader->getFileExtensions('Graphics/Design');
 
                 $file = (isset($_FILES['imageFile']))? $_FILES['imageFile'] : null;
 

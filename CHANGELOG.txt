@@ -76,6 +76,12 @@ v14.0.00
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when not addition roles chosen in user edit
 
+v13.0.02
+--------
+Security
+	System: fixed PHP code execution vulnerability
+	System: fixed infinite nested index reload bug
+
 v13.0.01
 --------
 Tweaks & Bug Fixes

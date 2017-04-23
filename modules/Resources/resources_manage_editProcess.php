@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
                     $type = $_POST['type'];
                     if ($type == 'File') {
-                        $content = $_FILES['file'];
+                        $content = $row['content'];
                     } elseif ($type == 'HTML') {
                         $content = $_POST['html'];
                     } elseif ($type == 'Link') {
@@ -104,20 +104,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         header("Location: {$URL}");
                         exit;
                     } else {
-                        if ($type == 'File') {
+                        $partialFail = false;
+
+                        if ($type == 'File' && !empty($_FILES['file']['tmp_name'])) {
                             $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
                             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                             // Upload the file, return the /uploads relative path
-                            $attachment = $fileUploader->uploadFromPost($file, $name);
+                            $content = $fileUploader->uploadFromPost($file, $name);
 
                             if (empty($attachment)) {
-                                $URL .= '&return=error1';
-                                header("Location: {$URL}");
-                                exit;
-                            } else {
-                                $content = $attachment;
+                                $partialFail = true;
                             }
                         }
 
@@ -219,8 +217,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                        $URL .= "&return=success0";
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }
