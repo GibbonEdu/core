@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                 } else {
                     //Lock markbook column table
                     try {
-                        $sql = 'LOCK TABLES gibbonPerson, gibbonFileExtension WRITE';
+                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonFileExtension WRITE';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
