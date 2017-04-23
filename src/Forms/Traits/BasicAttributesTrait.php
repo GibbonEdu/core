@@ -108,7 +108,7 @@ trait BasicAttributesTrait
                 if (is_bool($attributes[$key])) {
                     return $attributes[$key]? $key : '';
                 }
-                if (!empty($attributes[$key])) {
+                if (isset($attributes[$key]) && $attributes[$key] != '') {
                     return $key.'="'.$attributes[$key].'"';
                 }
                 return '';

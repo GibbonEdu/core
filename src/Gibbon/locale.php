@@ -54,11 +54,14 @@ class Locale
 		// Setup the Internationalization code from session
 		$this->i18n = $this->session->get('i18n');
 		$this->setLocale($this->i18n['code']);
+
+		// Set timezone from session variable
+		date_default_timezone_set($this->session->get('timezone', 'UTC'));
 	}
 
 	/**
 	 * Set the current i18n code
-	 * 
+	 *
 	 * @param   string $i18ncode
 	 */
 	public function setLocale($i18ncode)
@@ -74,7 +77,7 @@ class Locale
 
 	/**
 	 * Get the current i18n code
-	 * 
+	 *
 	 * @return  string
 	 */
 	public function getLocale() {
@@ -83,7 +86,7 @@ class Locale
 
 	/**
 	 * Set the default domain and load module domains
-	 * 
+	 *
 	 * @param   Gibbon/sqlConnection  $pdo
 	 */
 	public function setTextDomain($pdo) {
@@ -114,12 +117,12 @@ class Locale
 	 * @param   Gibbon/sqlConnection  $pdo
 	 */
 	public function setStringReplacementList($pdo, $forceRefresh = false)
-	{	
+	{
 		$stringReplacements = $this->session->get('stringReplacement', null);
 
 		// Do this once per session, only if the value doesn't exist
 		if ($forceRefresh || $stringReplacements === null) {
-		
+
 			$stringReplacements = array();
 
 			if ($pdo->getConnection() != null) {
@@ -144,12 +147,12 @@ class Locale
 	 *
 	 * @param	string	Text to Translate
 	 * @param	boolean	Use guid.
-	 * 
+	 *
 	 * @return	string	Translated Text
 	 */
 	public function translate($text, $domain = null)
     {
-    	if ($text === '') return $text; 
+    	if ($text === '') return $text;
 
         if (empty($domain))
             $text=_($text);
@@ -192,7 +195,7 @@ class Locale
 				}
 
 			}
-			
+
 		}
 
 		return $text;

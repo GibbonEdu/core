@@ -142,22 +142,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationDBA', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdmissions', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationHR', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     // SECURITY SETTINGS
     $form->addRow()->addHeading(__('Security Settings'));

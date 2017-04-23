@@ -33,9 +33,6 @@ $connection2 = $pdo->getConnection();
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/behaviour_manage_add.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
@@ -110,6 +107,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $likeComment .= $comment;
                     }
                     $return = setLike($connection2, 'Behaviour', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID', $gibbonBehaviourID, $_SESSION[$guid]['gibbonPersonID'], $gibbonPersonID, 'Positive Behaviour', $likeComment);
+
+
+                    try {
+                        $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                        $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
+                        $resultDetail = $connection2->prepare($sqlDetail);
+                        $resultDetail->execute($dataDetail);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    if ($resultDetail->rowCount() == 1) {
+                        $rowDetail = $resultDetail->fetch();
+
+                        $studentName = formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
+                        $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
+
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Behaviour', 'New Positive Record');
+
+                        $event->setNotificationText(sprintf(__('Someone has created a positive behaviour record for %1$s.'), $studentName));
+                        $event->setActionLink($actionLink);
+
+                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                        $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+
+                        $event->sendNotifications($pdo, $gibbon->session);
+                    }
                 }
 
                 //Attempt to notify tutor(s) on negative behaviour

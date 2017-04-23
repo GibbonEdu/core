@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
                         }
                     }
-                	if ($row['status'] == 'Paid' OR $row['status'] == 'Paid - Partial') {
+                	if ($row['status'] == 'Paid' OR $row['status'] == 'Paid - Partial' OR $row['status'] == 'Refunded') {
                     //Get individual payments that make up receipt
                         try {
                             $data = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
