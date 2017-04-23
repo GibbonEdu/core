@@ -49,7 +49,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
         header("Location: {$URL}");
         exit();
     } else {
-        if ($gibbonFinanceExpenseID == '' or $status == '' or $status != 'Paid' or $_FILES['file']['tmp_name'] == '') {
+        if ($gibbonFinanceExpenseID == '' or $status == '' or $status != 'Paid' or empty($_FILES['file']['tmp_name'])) {
             $URL .= '&return=error0';
             header("Location: {$URL}");
             exit();

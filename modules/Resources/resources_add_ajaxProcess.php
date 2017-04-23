@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
             if ($type == 'File') {
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                if ($_FILES[$id.'file']['tmp_name'] != '') {
+                if (!empty($_FILES[$id.'file']['tmp_name'])) {
                     $file = (isset($_FILES[$id.'file']))? $_FILES[$id.'file'] : null;
 
                     // Upload the file, return the /uploads relative path

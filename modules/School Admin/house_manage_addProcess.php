@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             //Deal with file upload
             $logo = '';
             $imageFail = false;
-            if ($_FILES['file1']['tmp_name'] != '') {
+            if (!empty($_FILES['file1']['tmp_name'])) {
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
                 
                 $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;

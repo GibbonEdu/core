@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                         $resourceURL = $_POST["url$i"];
 
                         if ($resourceName != '' and $resourceType != '' and ($resourceType == 'File' or $resourceType == 'Link')) {
-                            if (($resourceType == 'Link' and $resourceURL != '') or ($resourceType == 'File' and $_FILES['file'.$i]['tmp_name'] != '')) {
+                            if (($resourceType == 'Link' and $resourceURL != '') or ($resourceType == 'File' and !empty($_FILES['file'.$i]['tmp_name']))) {
                                 if ($resourceType == 'Link') {
                                     try {
                                         $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'resourceType' => $resourceType, 'resourceName' => $resourceName, 'resourceURL' => $resourceURL);
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
                                     // Handle the attached file, if there is one
-                                    if ($_FILES['file'.$i]['tmp_name'] != '') {
+                                    if (!empty($_FILES['file'.$i]['tmp_name'])) {
                                         $file = (isset($_FILES['file'.$i]))? $_FILES['file'.$i] : null;
 
                                         // Upload the file, return the /uploads relative path

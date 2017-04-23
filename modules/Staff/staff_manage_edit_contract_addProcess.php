@@ -142,25 +142,16 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 }
 
                 $contractUpload = null;
-                if ($_FILES['file1']['tmp_name'] != '') {
-                    $time = time();
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    $contractUpload = '';
-                    if (!empty($_FILES['file1']['tmp_name'])) {
-                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                if (!empty($_FILES['file1']['tmp_name'])) {
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                        $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+                    $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
-                        // Upload the file, return the /uploads relative path
-                        $contractUpload = $fileUploader->uploadFromPost($file, $username);
+                    // Upload the file, return the /uploads relative path
+                    $contractUpload = $fileUploader->uploadFromPost($file, $username);
 
-                        if (empty($contractUpload)) {
-                            $imageFail = true;
-                        }
+                    if (empty($contractUpload)) {
+                        $imageFail = true;
                     }
                 }
 

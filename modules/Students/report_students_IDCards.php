@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
             //Get background image
             $bg = '';
-            if ($_FILES['file']['tmp_name'] != '') {
+            if (!empty($_FILES['file']['tmp_name'])) {
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
                 
                 $file = (isset($_FILES['file']))? $_FILES['file'] : null;
