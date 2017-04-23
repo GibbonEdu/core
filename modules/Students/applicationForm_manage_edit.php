@@ -2389,13 +2389,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										<?php
                                         echo "<input type='file' name='file$count' id='file$count'><br/>";
 										echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
-										if ($requiredDocumentsCompulsory == 'Y') {
-											echo "<script type='text/javascript'>";
-											echo "var file$count=new LiveValidation('file$count');";
-											echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
-											echo "file$count.add(Validate.Presence);";
-											echo '</script>';
-										}
+										echo "<script type='text/javascript'>";
+										echo "var file$count=new LiveValidation('file$count');";
+										echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
+                                        if ($requiredDocumentsCompulsory == 'Y') {
+                                            echo "file$count.add(Validate.Presence);";
+                                        }
+										echo '</script>';
 										++$count;
 										?>
 									</td>

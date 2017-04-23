@@ -141,9 +141,12 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $notes = $_POST['notes'];
                 }
 
+                $partialFail = false;
+
                 $contractUpload = null;
                 if (!empty($_FILES['file1']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader->getFileExtensions('Document');
 
                     $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
@@ -151,7 +154,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $contractUpload = $fileUploader->uploadFromPost($file, $username);
 
                     if (empty($contractUpload)) {
-                        $imageFail = true;
+                        $partialFail = true;
                     }
                 }
 
@@ -174,8 +177,13 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID(), 14, '0', STR_PAD_LEFT);
 
-                    $URL .= "&return=success0&editID=$AI";
-                    header("Location: {$URL}");
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                        $URL .= "&return=success0&editID=$AI";
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }
