@@ -31,9 +31,6 @@ try {
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
 
@@ -44,6 +41,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     //Proceed!
 
     $gibbonPersonID = $_POST['gibbonPersonID'];
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+
+    if($highestAction == "Enter Activity Attendance_leader") {
+        try {
+            $dataCheck = array("gibbonPersonID" => $gibbonPersonID, "gibbonActivityID" => $gibbonActivityID);
+            $sqlCheck = "SELECT role FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID";
+            $resultCheck = $connection2->prepare($sqlCheck);
+            $resultCheck->execute($dataCheck);
+
+            if ($resultCheck->rowCount() > 0) {
+                $row = $resultCheck->fetch();
+                if ($row["role"] != "Organiser" && $row["role"] != "Assistant" && $row["role"] != "Coach") {
+                    $URL .= '&return=error0';
+                    header("Location: {$URL}");
+                    exit();
+                }
+            } else {
+                $URL .= '&return=error0';
+                header("Location: {$URL}");
+                exit();
+            }
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+    }
 
     $sessions = (isset($_POST['sessions'])) ? $_POST['sessions'] : null;
     $attendance = (isset($_POST['attendance'])) ? $_POST['attendance'] : null;

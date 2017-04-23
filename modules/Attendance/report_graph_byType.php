@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $dateStart = $dateEnd;
         $dateEnd = $swapDates;
     }
-    
+
     // Limit date range to the current school year
     if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
         $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
@@ -72,10 +74,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
         $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
     }
-    
-    $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
-    
+    $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
+    $mode = !empty($_POST['mode'])? $_POST['mode'] : 'endofday';
+
+    // Get the roll groups - revert to All if it's selected
+    $rollGroups = !empty($_POST['gibbonRollGroupID'])? $_POST['gibbonRollGroupID'] : array('all');
+    if (in_array('all', $rollGroups)) $rollGroups = array('all');
+
     require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
@@ -92,123 +98,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     $reasons = (isset($_POST['reasons']))? $_POST['reasons'] : array();
 
-    ?>
-	
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_graph_byType.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-						echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?></span>
-				</td>
-				<td class="right">
-                    <input name="dateStart" id="dateStart" maxlength=10 value="<?php echo dateConvertBack($guid, $dateStart) ?>" type="text" class="standardWidth">
-                    <script type="text/javascript">
-                        var dateStart=new LiveValidation('dateStart');
-                        dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-                        }
-                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                            echo 'dd/mm/yyyy';
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                        }
-                        ?>." } ); 
-                        dateStart.add(Validate.Presence);
-                    </script>
-                     <script type="text/javascript">
-                        $(function() {
-                            $( "#dateStart" ).datepicker();
-                        });
-                    </script>
-                </td>
-            </tr>
-            <tr>
-                <td style='width: 275px'> 
-                    <b><?php echo __($guid, 'End Date') ?> *</b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-                </td>
-                <td class="right">
-                    <input name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $dateEnd) ?>" type="text" class="standardWidth">
-                    <script type="text/javascript">
-                        var dateEnd=new LiveValidation('dateEnd');
-                        dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-                        }
-                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                            echo 'dd/mm/yyyy';
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                        }
-                        ?>." } ); 
-                        dateEnd.add(Validate.Presence);
-                    </script>
-                     <script type="text/javascript">
-                        $(function() {
-                            $( "#dateEnd" ).datepicker();
-                        });
-                    </script>
-                </td>
-            </tr>
-            <tr>
-                <td> 
-                    <b><?php echo __($guid, 'Types') ?></b><br/>
-                    <span class="emphasis small"></span>
-                </td>
-                <td class="right">
-                    <select multiple name="types[]" id="types[]" style="width: 302px; height: 100px">
-                        <?php
-                        $typeOptions = $attendance->getAttendanceTypes();
-                        foreach ($typeOptions as $type) {
+    // Options & Filters
+    $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_graph_byType.php');
 
-                            $selected = ( in_array($type['name'], $types) )? 'selected' : '';
-                        
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                            echo "<option $selected value='".$type['name']."'>".htmlPrep(__($guid, $type['name'] )).'</option>';
-                        }
-                        ?>          
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td> 
-                    <b><?php echo __($guid, 'Reasons') ?></b><br/>
-                    <span class="emphasis small"></span>
-                </td>
-                <td class="right">
-                    <select multiple name="reasons[]" id="reasons[]" style="width: 302px; height: 100px">
-                        <?php
-                        $reasonOptions = $attendance->getAttendanceReasons();
-                        foreach ($reasonOptions as $reason) {
-                            if (empty($reason)) continue;
-                            $selected = ( in_array($reason, $reasons) )? 'selected' : '';
-                        
+    $row = $form->addRow();
+        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
 
-                            echo "<option $selected value='".$reason."'>".htmlPrep(__($guid, $reason )).'</option>';
-                        }
-                        ?>          
-                    </select>
-                </td>
-            </tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="address" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_graph_byType.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $row = $form->addRow();
+        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+
+    $typeOptions = array_column($attendance->getAttendanceTypes(), 'name');
+    $row = $form->addRow();
+        $row->addLabel('types', __('Types'));
+        $row->addSelect('types')->fromArray($typeOptions)->selectMultiple()->selected($types);
+
+    $reasonOptions = $attendance->getAttendanceReasons();
+    $row = $form->addRow();
+        $row->addLabel('reasons', __('Reasons'));
+        $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
+
+    $row = $form->addRow();
+        $row->addLabel('mode', __('Mode'));
+        $row->addSelect('mode')->fromArray( array('endofday' => __('End of Day Only'), 'all' => __('All Attendance Logs')) )->selected($mode);
+
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
+    $row = $form->addRow();
+        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addSelect('gibbonRollGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
+
+    $form->addRow()->addSubmit();
+
+    echo $form->getOutput();
+
 
     if ($dateStart != '') {
         echo '<h2>';
@@ -219,8 +145,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
         //Produce array of attendance data
         try {
+
             $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-            $sql = "SELECT c.name, l.reason, count( DISTINCT l.gibbonPersonID) as count, l.date FROM gibbonAttendanceLogPerson l JOIN gibbonAttendanceCode c ON (l.type=c.name) WHERE l.date>=:dateStart AND l.date<=:dateEnd GROUP BY l.date, c.name, l.reason ORDER BY l.date, c.direction DESC, c.name";
+            $rollGroupJoin = '';
+
+            // If any roll groups are selected, use a MySQL IN() on gibboNRollGroupID to determing the subset of students to select
+            if ($rollGroups != array('all')) {
+                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                $rollGroupString = implode(',', array_map(function ($str) { return intval($str); }, $rollGroups)); // Implode and cast to numbers only
+                $rollGroupJoin = "JOIN gibbonStudentEnrolment e ON (l.gibbonPersonID=e.gibbonPersonID AND e.gibbonSchoolYearID=:gibbonSchoolYearID AND e.gibbonRollGroupID IN (".$rollGroupString."))";
+            }
+
+
+            if ($mode == 'endofday') {
+                // End of Day filters attendance logs by the last timestamp for a student on a given day
+                $sql = "SELECT c.name, l.reason, count(DISTINCT l.gibbonPersonID) as count, l.date FROM gibbonAttendanceLogPerson l JOIN gibbonAttendanceCode c ON (l.type=c.name) INNER JOIN (SELECT gibbonPersonID, date, MAX(timestampTaken) as maxTimestamp FROM gibbonAttendanceLogPerson WHERE date>=:dateStart AND date<=:dateEnd GROUP BY gibbonPersonID, date) AS log ON (l.gibbonPersonID=log.gibbonPersonID AND l.date=log.date) ".$rollGroupJoin." WHERE l.timestampTaken=log.maxTimestamp AND l.date>=:dateStart AND l.date<=:dateEnd GROUP BY l.date, c.name, l.reason ORDER BY l.date, c.direction DESC, c.name";
+            } else {
+                // Count all records
+                $sql = "SELECT c.name, l.reason, count(DISTINCT l.gibbonPersonID) as count, l.date FROM gibbonAttendanceLogPerson l JOIN gibbonAttendanceCode c ON (l.type=c.name) ".$rollGroupJoin." WHERE l.date>=:dateStart AND l.date<=:dateEnd GROUP BY l.date, c.name, l.reason ORDER BY l.date, c.direction DESC, c.name";
+            }
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -246,8 +190,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
             foreach ($rows as $row) {
                 if ( isset($data[ $row['name'] ][ $row['date'] ]) ) {
                     $data[ $row['name'] ][ $row['date'] ] += $row['count'];
-                }  
-                
+                }
+
             }
 
             foreach ($reasons as $reason) {
@@ -260,8 +204,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
             foreach ($rows as $row) {
                 if ( isset($data[ $row['reason'] ][ $row['date'] ]) ) {
                     $data[ $row['reason'] ][ $row['date'] ] += $row['count'];
-                }  
-                
+                }
+
             }
 
             // print '<pre>';
@@ -288,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                         foreach ( $days as $date) {
                             echo "'".date('M j', strtotime($date) )."',";
                         }
-                    ?>  
+                    ?>
                 ],
                 datasets: [
                     <?php
@@ -308,10 +252,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                             foreach ($dates as $dateName => $count) {
                                 echo "'".$count."',";
                             }
-                        ?>  
+                        ?>
                         ],
                     },
-                    <?php 
+                    <?php
                     $datasetCount++;
                     endforeach;
                     ?>
@@ -324,8 +268,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                 var myLineChart = new Chart(ctx, {
                     type: 'line',
                     data: chartData,
-                    options: 
-                        {   
+                    options:
+                        {
                             fill: false,
                             responsive: true,
                             showTooltips: true,
@@ -344,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                                     //        'day': 'MMM DD'
                                     //     }
                                     // },
-                                    
+
                                     ticks: {
                                         autoSkip: true,
                                         maxRotation: 0,
@@ -358,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
             }
         </script>
         <?php
-        
+
         }
     }
 }

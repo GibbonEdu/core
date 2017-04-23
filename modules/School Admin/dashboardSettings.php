@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -33,138 +35,39 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    ?>
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dashboardSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='staffDashboardDefaultTab'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == '') { echo 'selected '; } ?>value=""></option>
-						<option <?php if ($row['value'] == 'Planner') { echo 'selected '; } ?>value="Planner"><?php echo __($guid, 'Planner') ?></option>
-                        <?php
-                        try {
-                            $dataHooks = array();
-                            $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Staff Dashboard'";
-                            $resultHooks = $connection2->prepare($sqlHooks);
-                            $resultHooks->execute($dataHooks);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        while ($rowHooks = $resultHooks->fetch()) {
-                            $selected = '';
-                            if ($row['value'] == $rowHooks['name'])
-                                $selected = 'selected';
-                            print '<option '.$selected.' value="'.$rowHooks['name'].'">'.__($guid, $rowHooks['name']).'</option>';
-                        }
-                        ?>
-                    </select>
-				</td>
-			</tr>
+    $form = Form::create('dashboardSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dashboardSettingsProcess.php' );
 
-            <tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='studentDashboardDefaultTab'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == '') { echo 'selected '; } ?>value=""></option>
-						<option <?php if ($row['value'] == 'Planner') { echo 'selected '; } ?>value="Planner"><?php echo __($guid, 'Planner') ?></option>
-                        <?php
-                        try {
-                            $dataHooks = array();
-                            $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Student Dashboard'";
-                            $resultHooks = $connection2->prepare($sqlHooks);
-                            $resultHooks->execute($dataHooks);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        while ($rowHooks = $resultHooks->fetch()) {
-                            $selected = '';
-                            if ($row['value'] == $rowHooks['name'])
-                                $selected = 'selected';
-                            print '<option '.$selected.' value="'.$rowHooks['name'].'">'.__($guid, $rowHooks['name']).'</option>';
-                        }
-                        ?>
-                    </select>
-				</td>
-			</tr>
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-            <tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='parentDashboardDefaultTab'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == '') { echo 'selected '; } ?>value=""></option>
-						<option <?php if ($row['value'] == 'Learning Overview') { echo 'selected '; } ?>value="Learning Overview"><?php echo __($guid, 'Learning Overview') ?></option>
-						<option <?php if ($row['value'] == 'Timetable') { echo 'selected '; } ?>value="Timetable"><?php echo __($guid, 'Timetable') ?></option>
-                        <option <?php if ($row['value'] == 'Activities') { echo 'selected '; } ?>value="Activities"><?php echo __($guid, 'Activities') ?></option>
-                        <?php
-                        try {
-                            $dataHooks = array();
-                            $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Parental Dashboard'";
-                            $resultHooks = $connection2->prepare($sqlHooks);
-                            $resultHooks->execute($dataHooks);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        while ($rowHooks = $resultHooks->fetch()) {
-                            $selected = '';
-                            if ($row['value'] == $rowHooks['name'])
-                                $selected = 'selected';
-                            print '<option '.$selected.' value="'.$rowHooks['name'].'">'.__($guid, $rowHooks['name']).'</option>';
-                        }
-                        ?>
-                    </select>
-				</td>
-			</tr>
+    $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab', true);
+    $row = $form->addRow();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
+            ->fromString(', Planner')
+            ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Staff Dashboard'")
+            ->selected($setting['value']);
 
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-<?php
+    $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab', true);
+    $row = $form->addRow();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
+            ->fromString(', Planner')
+            ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Student Dashboard'")
+            ->selected($setting['value']);
 
+    $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab', true);
+    $row = $form->addRow();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
+            ->fromString(', Learning Overview, Timetable, Activities')
+            ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Parental Dashboard'")
+            ->selected($setting['value']);
+
+    $row = $form->addRow();
+		$row->addFooter();
+		$row->addSubmit();
+
+	echo $form->getOutput();
 }
 ?>

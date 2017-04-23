@@ -1,0 +1,20 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+class_name: AcceptanceTester
+settings:
+    bootstrap: acceptance/bootstrap.php
+params:
+    - config/environment.php
+modules:
+    enabled:
+        - PhpBrowser:
+            url: "%ABSOLUTE_URL%"
+        - \Helper\Acceptance
+        - Db
+        - DbHelper
+groups:
+    users: [acceptance/Users]

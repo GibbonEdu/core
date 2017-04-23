@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -90,13 +87,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 	            	echo "<div class='trail'>";
 	            	echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'Edit').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Copy Columns').'</div>';
                     echo '</div>';
-	            
-	            	//Print mark
-		            // echo '<h3>';
-		            // echo __($guid, 'Copy Columns');
-		            // echo '</h3>';
-
-                    
 
 
 		            try {
@@ -107,8 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 			        } catch (PDOException $e) {
 			            echo "<div class='error'>".$e->getMessage().'</div>';
 			        }
-
-
 
 			        if ($result->rowCount() < 1) {
 	                    echo "<div class='error'>";
@@ -135,8 +123,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
 	                    echo "<table cellspacing='0' style='width: 100%' class='fullwidth colorOddEven'>";
 	                    echo "<tr class='head'>";
-	                    echo '<th style="width:40px">';
-	  
+	                    echo '<th style="width:40px; padding-left: 20px;">';
+                        ?>
+	                   <script type="text/javascript">
+                            $(function () {
+                                $('.checkall').click(function () {
+                                    $(this).parents('form').find('input[name^="copyColumnID"]:checkbox').attr('checked', this.checked);
+                                });
+                            });
+                        </script>
+                        <?php
+                        echo '<input class="checkall" type="checkbox" checked>';
 	                    echo '</th>';
 	                    echo '<th>';
 	                    echo __($guid, 'Name');
@@ -154,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
 	                    $count = 0;
 	                    while ($row = $result->fetch()) {
-	                      
+
 	                        //COLOR ROW BY STATUS!
 	                        echo "<tr>";
 	                        echo '<td>';
@@ -174,10 +171,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 	                            echo dateConvertBack($guid, $row['date']);
 	                        }
 	                        echo '</td>';
-	                        
+
 	                        echo '</tr>';
 
-	                        
+
 
 							$count++;
 	                    }
@@ -195,9 +192,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
 
 		    }
-                
 
-            
+
+
         }
     }
 

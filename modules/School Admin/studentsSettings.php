@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -107,112 +109,105 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     echo __($guid, 'Settings');
     echo '</h3>';
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-            <tr class='break'>
-                <td colspan=2>
-                    <h3><?php echo __($guid, 'Student Notes'); ?></h3>
-                </td>
-            </tr>
-            <tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='enableStudentNotes'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-					</select>
-				</td>
-			</tr>
-            <tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='noteCreationNotification'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-                        <option <?php if ($row['value'] == 'Tutors') { echo 'selected '; } ?>value="Tutors"><?php echo __($guid, 'Tutors') ?></option>
-						<option <?php if ($row['value'] == 'Tutors & Teachers') { echo 'selected '; } ?>value="Tutors & Teachers"><?php echo __($guid, 'Tutors & Teachers') ?></option>
-					</select>
-				</td>
-			</tr>
-            <tr class='break'>
-                <td colspan=2>
-                    <h3><?php echo __($guid, 'Miscellaneous'); ?></h3>
-                </td>
-            </tr>
-            <tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='extendedBriefProfile'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='studentAgreementOptions'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('studentsSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettingsProcess.php');
 
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $form->addRow()->addHeading(__('Student Notes'));
+
+    $setting = getSettingByScope($connection2, 'Students', 'enableStudentNotes', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
+    $setting = getSettingByScope($connection2, 'Students', 'noteCreationNotification', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromString('Tutors, Tutors & Teachers')->selected($setting['value'])->isRequired();
+
+    $form->addRow()->addHeading(__('Alerts'));
+
+    $setting = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
+            ->decimalPlaces(0)
+            ->minimum(0)
+            ->maximum(50)
+            ->isRequired();
+
+    $setting = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
+            ->decimalPlaces(0)
+            ->minimum(0)
+            ->maximum(50)
+            ->isRequired();
+
+    $setting = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addNumber($setting['name'])
+            ->setValue($setting['value'])
+            ->decimalPlaces(0)
+            ->minimum(0)
+            ->maximum(50)
+            ->isRequired();
+
+        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))
+                ->description(__($setting['description']));
+            $row->addNumber($setting['name'])
+                ->setValue($setting['value'])
+                ->decimalPlaces(0)
+                ->minimum(0)
+                ->maximum(50)
+                ->isRequired();
+
+        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))
+                ->description(__($setting['description']));
+            $row->addNumber($setting['name'])
+                ->setValue($setting['value'])
+                ->decimalPlaces(0)
+                ->minimum(0)
+                ->maximum(50)
+                ->isRequired();
+
+        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))
+                ->description(__($setting['description']));
+            $row->addNumber($setting['name'])
+                ->setValue($setting['value'])
+                ->decimalPlaces(0)
+                ->minimum(0)
+                ->maximum(50)
+                ->isRequired();
+
+    $form->addRow()->addHeading(__('Miscellaneous'));
+
+    $setting = getSettingByScope($connection2, 'Students', 'extendedBriefProfile', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
+    $setting = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>

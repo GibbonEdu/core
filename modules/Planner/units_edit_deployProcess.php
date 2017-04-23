@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonCourseID = $_GET['gibbonCourseID'];
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
@@ -188,7 +185,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                $e->getMessage();
                                 $partialFail = true;
                             }
                             ++$lessonCount;
@@ -225,7 +221,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo $e->getMessage();
                                 $partialFail = true;
                             }
                             ++$sequenceNumber;

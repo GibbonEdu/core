@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/report_transport_student.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {

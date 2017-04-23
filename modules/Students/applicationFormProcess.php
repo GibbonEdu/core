@@ -38,9 +38,6 @@ include '../User Admin/moduleFunctions.php';
 //Module includes from Finance (for setting payment log)
 include '../Finance/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/applicationForm.php';
 
 $proceed = false;

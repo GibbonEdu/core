@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include '../User Admin/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";

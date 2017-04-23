@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Get URL from calling page, and set returning URL
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/theme_manage.php';
 

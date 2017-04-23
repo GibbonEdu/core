@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
@@ -41,6 +38,72 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     try {
         $data = array('value' => $attendanceReasons);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $prefillRollGroup = (isset($_POST['prefillRollGroup'])) ? $_POST['prefillRollGroup'] : NULL;
+    try {
+        $data = array('value' => $prefillRollGroup);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='prefillRollGroup'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $prefillClass = (isset($_POST['prefillClass'])) ? $_POST['prefillClass'] : NULL;
+    try {
+        $data = array('value' => $prefillClass);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='prefillClass'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $prefillPerson = (isset($_POST['prefillPerson'])) ? $_POST['prefillPerson'] : NULL;
+    try {
+        $data = array('value' => $prefillPerson);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='prefillPerson'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $defaultRollGroupAttendanceType = (isset($_POST['defaultRollGroupAttendanceType'])) ? $_POST['defaultRollGroupAttendanceType'] : NULL;
+    try {
+        $data = array('value' => $defaultRollGroupAttendanceType);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='defaultRollGroupAttendanceType'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $defaultClassAttendanceType = (isset($_POST['defaultClassAttendanceType'])) ? $_POST['defaultClassAttendanceType'] : NULL;
+    try {
+        $data = array('value' => $defaultClassAttendanceType);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='defaultClassAttendanceType'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+
+    $studentSelfRegistrationIPAddresses = '';
+    foreach (explode(',', $_POST['studentSelfRegistrationIPAddresses']) as $ipAddress) {
+        $studentSelfRegistrationIPAddresses .= trim($ipAddress).',';
+    }
+    $studentSelfRegistrationIPAddresses = substr($studentSelfRegistrationIPAddresses, 0, -1);
+
+    try {
+        $data = array('value' => $studentSelfRegistrationIPAddresses);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='studentSelfRegistrationIPAddresses'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

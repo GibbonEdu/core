@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $viewBy = $_POST['viewBy'];
 $subView = $_POST['subView'];
@@ -94,28 +91,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                 header("Location: {$URL}");
             } else {
                 //Write to database
-                try {
-                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'DELETE FROM gibbonPlannerEntryAttendanceLog WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                try {
-                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'DELETE FROM gibbonPlannerEntryAttendance WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
-
                 try {
                     $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                     $sql = 'DELETE FROM gibbonPlannerEntryOutcome WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';

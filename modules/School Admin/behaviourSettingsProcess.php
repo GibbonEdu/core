@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/behaviourSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
@@ -59,20 +56,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         }
         $levels = substr($levels, 0, -1);
     }
-    $behaviourLettersLetter1Count = '';
-    $behaviourLettersLetter1Text = '';
-    $behaviourLettersLetter2Count = '';
-    $behaviourLettersLetter2Text = '';
-    $behaviourLettersLetter3Count = '';
-    $behaviourLettersLetter3Text = '';
-    if ($enableBehaviourLetters == 'Y') {
-        $behaviourLettersLetter1Count = $_POST['behaviourLettersLetter1Count'];
-        $behaviourLettersLetter1Text = $_POST['behaviourLettersLetter1Text'];
-        $behaviourLettersLetter2Count = $_POST['behaviourLettersLetter2Count'];
-        $behaviourLettersLetter2Text = $_POST['behaviourLettersLetter2Text'];
-        $behaviourLettersLetter3Count = $_POST['behaviourLettersLetter3Count'];
-        $behaviourLettersLetter3Text = $_POST['behaviourLettersLetter3Text'];
-    }
+
+    $behaviourLettersLetter1Count = (isset($_POST['behaviourLettersLetter1Count']))? $_POST['behaviourLettersLetter1Count'] : '';
+    $behaviourLettersLetter1Text = (isset($_POST['behaviourLettersLetter1Text']))? $_POST['behaviourLettersLetter1Text'] : '';
+    $behaviourLettersLetter2Count = (isset($_POST['behaviourLettersLetter2Count']))? $_POST['behaviourLettersLetter2Count'] : '';
+    $behaviourLettersLetter2Text = (isset($_POST['behaviourLettersLetter2Text']))? $_POST['behaviourLettersLetter2Text'] : '';
+    $behaviourLettersLetter3Count = (isset($_POST['behaviourLettersLetter3Count']))? $_POST['behaviourLettersLetter3Count'] : '';
+    $behaviourLettersLetter3Text = (isset($_POST['behaviourLettersLetter3Text']))? $_POST['behaviourLettersLetter3Text'] : '';
+    
     $policyLink = $_POST['policyLink'];
 
     //Validate Inputs

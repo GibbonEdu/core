@@ -60,13 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             //Let's go!
             $row = $result->fetch();
-            if ($_GET['search'] != '') {
+            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
             ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search'] ?>">
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
@@ -472,7 +472,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 									}
 									echo '</td>';
 									echo '<td>';
-									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_slot_deleteProcess.php?address='.$_GET['q'].'&gibbonActivitySlotID='.$row['gibbonActivitySlotID']."&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_slot_deleteProcess.php?address='.$_GET['q'].'&gibbonActivitySlotID='.$row['gibbonActivitySlotID']."&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 									echo '</td>';
 									echo '</tr>';
 								}
@@ -735,7 +735,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 									echo $row['role'];
 									echo '</td>';
 									echo '<td>';
-									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonActivityStaffID='.$row['gibbonActivityStaffID']."&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonActivityStaffID='.$row['gibbonActivityStaffID']."&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 									echo '</td>';
 									echo '</tr>';
 								}
@@ -778,11 +778,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							} catch (PDOException $e) {
 							}
 							while ($rowSelect = $resultSelect->fetch()) {
-								$selected = '';
-								if ($row['gibbonPersonIDStatusResponsible'] == $rowSelect['gibbonPersonID']) {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."$expected</option>";
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."</option>";
 							}
 							echo '</optgroup>'; ?>
 						</select>

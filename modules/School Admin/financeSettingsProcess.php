@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/financeSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettings.php') == false) {
@@ -38,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     //Proceed!
     $email = $_POST['email'];
     $financeOnlinePaymentEnabled = $_POST['financeOnlinePaymentEnabled'];
-    $financeOnlinePaymentThreshold = $_POST['financeOnlinePaymentThreshold'];
+    $financeOnlinePaymentThreshold = (isset($_POST['financeOnlinePaymentThreshold'])) ? $_POST['financeOnlinePaymentThreshold'] : null;
     $invoiceeNameStyle = $_POST['invoiceeNameStyle'];
     $invoiceText = $_POST['invoiceText'];
     $invoiceNotes = $_POST['invoiceNotes'];

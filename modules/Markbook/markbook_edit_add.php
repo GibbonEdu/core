@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -410,7 +407,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                     ?></span>
                                 </td>
                                 <td class="right">
-                                    <input name="date" id="date" maxlength=10 value="<?php echo (isset($_GET['date']))? $_GET['date'] : dateConvertBack($guid, date('Y-m-d')); ?>" type="text" class="standardWidth">
+                                    <input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, (isset($_GET['date'])? $_GET['date'] : date('Y-m-d')) ); ?>" type="text" class="standardWidth">
                                     <script type="text/javascript">
                                         var date=new LiveValidation('date');
                                         date.add(Validate.Presence);
@@ -437,7 +434,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                         <?php else: ?>
 
-                        	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo (isset($_GET['date']))? $_GET['date'] : dateConvertBack($guid, date('Y-m-d')); ?>" >
+                        	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, (isset($_GET['date'])? $_GET['date'] : date('Y-m-d')) ); ?>" >
 
 						<?php endif; ?>
 

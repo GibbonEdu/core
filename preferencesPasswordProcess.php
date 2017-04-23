@@ -27,9 +27,6 @@ $connection2 = $pdo->getConnection();
 //Start session
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Check to see if academic year id variables are set, if not set them
 if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
     setCurrentSchoolYear($guid, $connection2);

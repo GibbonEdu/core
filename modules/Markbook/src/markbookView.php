@@ -25,47 +25,47 @@ use Gibbon\sqlConnection;
 /**
  * Markbook display & edit class
  *
- * @version	3rd May 2016
- * @since	3rd May 2016
- * @author	Sandra Kuipers
+ * @version 3rd May 2016
+ * @since   3rd May 2016
+ * @author  Sandra Kuipers
  */
 class markbookView
 {
 
-	/**
-	 * Gibbon\sqlConnection
-	 */
-	protected $pdo ;
+    /**
+     * Gibbon\sqlConnection
+     */
+    protected $pdo ;
 
-	/**
-	 * Gibbon\session
-	 */
-	protected $session ;
+    /**
+     * Gibbon\session
+     */
+    protected $session ;
 
-	/**
-	 * guid
-	 */
-	protected $guid ;
+    /**
+     * guid
+     */
+    protected $guid ;
 
-	/**
-	 * Gibbon Settings - preloaded
-	 */
-	protected $settings = array();
+    /**
+     * Gibbon Settings - preloaded
+     */
+    protected $settings = array();
 
-	/**
-	 * Markbook Values
-	 */
-	protected $columnsPerPage = 20;
-	protected $columnsThisPage = -1;
-	protected $columnCountTotal = -1;
-	protected $minSequenceNumber = -1;
+    /**
+     * Markbook Values
+     */
+    protected $columnsPerPage = 30;
+    protected $columnsThisPage = -1;
+    protected $columnCountTotal = -1;
+    protected $minSequenceNumber = -1;
 
-	/**
-	 * Cache markbook values to reduce queries
-	 */
-	protected $defaultAssessmentScale;
-	protected $externalAssessmentFields;
-	protected $personalizedTargets;
+    /**
+     * Cache markbook values to reduce queries
+     */
+    protected $defaultAssessmentScale;
+    protected $externalAssessmentFields;
+    protected $personalizedTargets;
 
     /**
      * Row data from gibbonMarkbookWeight
@@ -108,9 +108,9 @@ class markbookView
      * The database ID of the gibbonCourseClass
      * @var [type]
      */
-	public $gibbonCourseClassID;
+    public $gibbonCourseClassID;
 
-	/**
+    /**
      * Constructor
      *
      * @version  3rd May 2016
@@ -129,27 +129,27 @@ class markbookView
         $this->gibbonCourseClassID = $gibbonCourseClassID;
 
         // Preload Gibbon settings - we check them a lot
-		$this->settings['enableColumnWeighting'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
+        $this->settings['enableColumnWeighting'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
         $this->settings['enableRawAttainment'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRawAttainment');
         $this->settings['enableGroupByTerm'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
         $this->settings['enableTypeWeighting'] = 'N';
 
-		// Get settings
-		$enableEffort = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableEffort');
-		$enableRubrics = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRubrics');
-		$attainmentAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeName');
-		$attainmentAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeNameAbrev');
-		$effortAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeName');
-		$effortAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeNameAbrev');
+        // Get settings
+        $enableEffort = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableEffort');
+        $enableRubrics = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRubrics');
+        $attainmentAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeName');
+        $attainmentAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeNameAbrev');
+        $effortAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeName');
+        $effortAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeNameAbrev');
 
-		$this->settings['enableEffort'] = (!empty($enableEffort))? $enableEffort : 'N';
-		$this->settings['enableRubrics'] = (!empty($enableRubrics))? $enableRubrics : 'N';
+        $this->settings['enableEffort'] = (!empty($enableEffort))? $enableEffort : 'N';
+        $this->settings['enableRubrics'] = (!empty($enableRubrics))? $enableRubrics : 'N';
 
-		$this->settings['attainmentName'] = (!empty($attainmentAltName))? $attainmentAltName : __($this->guid, 'Attainment');
-		$this->settings['attainmentAbrev'] = (!empty($attainmentAltNameAbrev))? $attainmentAltNameAbrev : __($this->guid, 'Att');
+        $this->settings['attainmentName'] = (!empty($attainmentAltName))? $attainmentAltName : __($this->guid, 'Attainment');
+        $this->settings['attainmentAbrev'] = (!empty($attainmentAltNameAbrev))? $attainmentAltNameAbrev : __($this->guid, 'Att');
 
-		$this->settings['effortName'] = (!empty($effortAltName))? $effortAltName : __($this->guid, 'Effort');
-		$this->settings['effortAbrev'] = (!empty($effortAltNameAbrev))? $effortAltNameAbrev : __($this->guid, 'Eff');
+        $this->settings['effortName'] = (!empty($effortAltName))? $effortAltName : __($this->guid, 'Effort');
+        $this->settings['effortAbrev'] = (!empty($effortAltNameAbrev))? $effortAltNameAbrev : __($this->guid, 'Eff');
     }
 
     /**
@@ -161,7 +161,7 @@ class markbookView
      * @return  string  Y or N
      */
     public function getSetting( $key ) {
-    	return (isset($this->settings[$key]))? $this->settings[$key] : NULL;
+        return (isset($this->settings[$key]))? $this->settings[$key] : NULL;
     }
 
     /**
@@ -172,7 +172,7 @@ class markbookView
      * @return   int
      */
     public function getMinimumSequenceNumber() {
-    	return $this->minSequenceNumber;
+        return $this->minSequenceNumber;
     }
 
     /**
@@ -183,7 +183,7 @@ class markbookView
      * @return   int
      */
     public function getColumnsPerPage() {
-    	return $this->columnsPerPage;
+        return $this->columnsPerPage;
     }
 
     /**
@@ -251,16 +251,16 @@ class markbookView
         }
 
         // Query the markbook columns, applying any filters that have been added
-    	try {
-    		$data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-    		$where = $this->getColumnFilters();
+        try {
+            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+            $where = $this->getColumnFilters();
 
-    		$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE '.$where.' ORDER BY sequenceNumber, date, complete, completeDate LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage;
+            $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE '.$where.' ORDER BY sequenceNumber, date, complete, completeDate LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage;
 
-	        $result=$this->pdo->executeQuery($data, $sql);
-	    } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+            $result=$this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
-	    $this->columnsThisPage = $result->rowCount();
+        $this->columnsThisPage = $result->rowCount();
         $this->columns = array();
 
         // Build a markbookColumn object for each row
@@ -275,11 +275,11 @@ class markbookView
                 if ( !empty($column->getData('gibbonPlannerEntryID'))) {
                     try {
                         $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') );
-                        $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y' LIMIT 1" ;
-                        $resultSub=$this->pdo->executeQuery($data, $sql);
+                        $sqlSub="SELECT homeworkDueDateTime, date, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID LIMIT 1" ;
+                        $resultSub=$this->pdo->executeQuery($dataSub, $sqlSub);
                     } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
-                    if ($resultSub->rowCount()>=1) {
+                    if ($resultSub && $resultSub->rowCount()>0) {
                         $column->setSubmissionDetails( $resultSub->fetch() );
                     }
                 }
@@ -290,7 +290,7 @@ class markbookView
             $this->error( "Column count mismatch. Something went horribly wrong loading column data." );
         }
 
-	    return (count($this->columns) > 0);
+        return (count($this->columns) > 0);
     }
 
     /**
@@ -341,7 +341,7 @@ class markbookView
      * @return  int
      */
     public function getTargetForStudent( $gibbonPersonID ) {
-    	return (isset($this->personalizedTargets[$gibbonPersonID]))? $this->personalizedTargets[$gibbonPersonID] : '';
+        return (isset($this->personalizedTargets[$gibbonPersonID]))? $this->personalizedTargets[$gibbonPersonID] : '';
     }
 
     /**
@@ -351,7 +351,7 @@ class markbookView
      * @return  bool
      */
     public function hasPersonalizedTargets() {
-    	return (isset($this->personalizedTargets))? (count($this->personalizedTargets) > 0) : false;
+        return (isset($this->personalizedTargets))? (count($this->personalizedTargets) > 0) : false;
     }
 
     /**
@@ -362,19 +362,19 @@ class markbookView
      */
     public function cachePersonalizedTargets( ) {
 
-    	$this->personalizedTargets = array();
+        $this->personalizedTargets = array();
 
-     	try {
+        try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $sql = 'SELECT gibbonPersonIDStudent, value FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
             $result=$this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
         if ($result->rowCount() > 0) {
-	        while ($row = $result->fetch() ) {
-	        	$this->personalizedTargets[ $row['gibbonPersonIDStudent'] ] = $row['value'];
-	        }
-	    }
+            while ($row = $result->fetch() ) {
+                $this->personalizedTargets[ $row['gibbonPersonIDStudent'] ] = $row['value'];
+            }
+        }
     }
 
     /**
@@ -404,6 +404,7 @@ class markbookView
      */
     public function getTypeAverage( $gibbonPersonID, $gibbonSchoolYearTermID, $type ) {
         if ($gibbonSchoolYearTermID == '0') $gibbonSchoolYearTermID = 'all';
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type]))? $this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type] : '';
     }
 
@@ -417,6 +418,7 @@ class markbookView
      */
     public function getTermAverage( $gibbonPersonID, $gibbonSchoolYearTermID ) {
         if ($gibbonSchoolYearTermID == '0') $gibbonSchoolYearTermID = 'all';
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID]))? $this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID] : '';
     }
 
@@ -428,7 +430,20 @@ class markbookView
      * @return  int|string
      */
     public function getCumulativeAverage( $gibbonPersonID ) {
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['cumulative']))? $this->weightedAverages[$gibbonPersonID]['cumulative'] : '';
+    }
+
+    /**
+     * Get the overall Final Grade for all marks (from pre-calculated values)
+     * @version 7th May 2016
+     * @since   7th May 2016
+     * @param   string $gibbonPersonID
+     * @return  int|string
+     */
+    public function getExamAverage( $gibbonPersonID ) {
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
+        return (isset($this->weightedAverages[$gibbonPersonID]['final']))? $this->weightedAverages[$gibbonPersonID]['final'] : '';
     }
 
     /**
@@ -439,6 +454,7 @@ class markbookView
      * @return  int|string
      */
     public function getFinalGradeAverage( $gibbonPersonID ) {
+        $gibbonPersonID = str_pad($gibbonPersonID, 10, '0', STR_PAD_LEFT);
         return (isset($this->weightedAverages[$gibbonPersonID]['finalGrade']))? $this->weightedAverages[$gibbonPersonID]['finalGrade'] : '';
     }
 
@@ -539,7 +555,7 @@ class markbookView
                     if ($weighted['total'] <= 0) continue;
 
                     $typeWeight = $this->getWeightingByType( $type );
-                    $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
+                    $typeAverage = ($weighted['total'] > 0)? ( $weighted['cumulative'] / $weighted['total'] ) : '';
 
                     $termTotal += $typeWeight;
                     $termCumulative += ($typeAverage * $typeWeight);
@@ -547,14 +563,48 @@ class markbookView
                     $weightedAverages['type'][$termID][$type] = $typeAverage;
                 }
 
-                $termWeight = 1;
                 $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : '';
 
                 $weightedAverages['term'][$termID] = $termAverage;
+            }
 
-                // Add the term averages to the overall average
-                $overallTotal += $termWeight;
-                $overallCumulative += ($termAverage * $termWeight);
+            $terms = array_keys($averages);
+
+            if (!empty($terms) && is_array($terms)) {
+                // Get the type names used in all terms (or whole year for now terms)
+                $types = array();
+                if (isset($this->types['term'])) $types = array_merge($types, $this->types['term']);
+                if (isset($this->types['year'])) $types = array_merge($types, $this->types['year']);
+                if (isset($this->types['all'])) $types = array_merge($types, $this->types['all']);
+
+                // Calculate the overall cumulative type averages, separate from terms
+                foreach ($types as $type) {
+                    $typeTotal = null;
+                    $typeCumulative = null;
+
+                    $typeWeight = $this->getWeightingByType( $type );
+
+                    foreach ($terms as $term) {
+                        // Dont include final term marks in the cumulative average
+                        if ($term == 'final') continue;
+
+                        if (!isset($averages[$term][$type])) continue;
+                        $weighted = $averages[$term][$type];
+
+                        if ($weighted['total'] <= 0) continue;
+
+                        $typeTotal += $weighted['total'];
+                        $typeCumulative += $weighted['cumulative'];
+                    }
+
+                    // Skip weighting types that have no marks (not marks of zero, but absence of marks)
+                    if ($typeTotal === null || $typeCumulative === null) continue;
+
+                    $typeAverage = ($typeTotal > 0)? ( $typeCumulative / $typeTotal ) : 0;
+
+                    $overallTotal += $typeWeight;
+                    $overallCumulative += ($typeAverage * $typeWeight);
+                }
             }
 
             $finalTotal = 0;
@@ -567,7 +617,7 @@ class markbookView
                     if ($weighted['total'] <= 0) continue;
 
                     $typeWeight = $this->getWeightingByType( $type );
-                    $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
+                    $typeAverage = ($weighted['total'] > 0)? ( $weighted['cumulative'] / $weighted['total'] ) : 0;
 
                     $finalTotal += $typeWeight;
                     $finalCumulative += ($typeAverage * $typeWeight);
@@ -600,7 +650,7 @@ class markbookView
      * @version 7th May 2016
      * @since   7th May 2016
      */
-    public function cacheWeightings( ) {
+    public function cacheWeightings( $gibbonPersonIDStudent = NULL ) {
 
         $this->markbookWeights = array();
 
@@ -626,11 +676,25 @@ class markbookView
         $typesUsed = array();
         $termsUsed = array();
 
-        try {
-            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-            $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
-            $result=$this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        // Lookup a single student
+        if ( !empty($gibbonPersonIDStudent) ) {
+
+            $gibbonPersonIDStudent = str_pad($gibbonPersonIDStudent, 10, '0', STR_PAD_LEFT);
+
+            try {
+                $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
+                $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' AND gibbonPersonIDStudent=:gibbonPersonIDStudent ORDER BY gibbonPersonIDStudent, completeDate";
+                $result=$this->pdo->executeQuery($data, $sql);
+            } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        } else {
+            try {
+                $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+                $sql = "SELECT attainmentWeighting, attainmentRaw, attainmentRawMax, attainmentValue, attainmentValueRaw, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='defaultAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent, completeDate";
+                $result=$this->pdo->executeQuery($data, $sql);
+            } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        }
+
+
 
         if ($result->rowCount() > 0) {
             while ($entry = $result->fetch()) {
@@ -740,10 +804,10 @@ class markbookView
      * @return  bool
      */
     public function hasExternalAssessments() {
-    	return (isset($this->externalAssessmentFields))? (count($this->externalAssessmentFields) > 0) : false;
+        return (isset($this->externalAssessmentFields))? (count($this->externalAssessmentFields) > 0) : false;
     }
 
-	/**
+    /**
      * Get External Assessments
      *
      * @version 14th August 2016
@@ -751,7 +815,7 @@ class markbookView
      * @return  bool
      */
     public function getExternalAssessments() {
-    	return (isset($this->externalAssessmentFields))? $this->externalAssessmentFields : false;
+        return (isset($this->externalAssessmentFields))? $this->externalAssessmentFields : false;
     }
 
     /**
@@ -764,54 +828,54 @@ class markbookView
      */
     public function cacheExternalAssessments( $courseName, $gibbonYearGroupIDList ) {
 
-		$gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
-		if (count($gibbonYearGroupIDListArray) == 1) {
-		    $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($this->pdo->getConnection(), 'School Admin', 'primaryExternalAssessmentByYearGroup'));
+        $gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
+        if (count($gibbonYearGroupIDListArray) == 1) {
+            $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($this->pdo->getConnection(), 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
             if (!isset($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]])) return;
 
-		    if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '' and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
+            if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '' and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
 
-		        $gibbonExternalAssessmentID = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], 0, strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-'));
-		        $gibbonExternalAssessmentIDCategory = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], (strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-') + 1));
+                $gibbonExternalAssessmentID = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], 0, strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-'));
+                $gibbonExternalAssessmentIDCategory = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], (strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-') + 1));
 
-		        try {
-		            $dataExternalAssessment = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'category' => $gibbonExternalAssessmentIDCategory);
-		            $courseNameTokens = explode(' ', $courseName);
-		            $courseWhere = ' AND (';
-		            $whereCount = 1;
-		            foreach ($courseNameTokens as $courseNameToken) {
-		                if (strlen($courseNameToken) > 3) {
-		                    $dataExternalAssessment['token'.$whereCount] = '%'.$courseNameToken.'%';
-		                    $courseWhere .= "gibbonExternalAssessmentField.name LIKE :token$whereCount OR ";
-		                    ++$whereCount;
-		                }
-		            }
+                try {
+                    $dataExternalAssessment = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'category' => $gibbonExternalAssessmentIDCategory);
+                    $courseNameTokens = explode(' ', $courseName);
+                    $courseWhere = ' AND (';
+                    $whereCount = 1;
+                    foreach ($courseNameTokens as $courseNameToken) {
+                        if (strlen($courseNameToken) > 3) {
+                            $dataExternalAssessment['token'.$whereCount] = '%'.$courseNameToken.'%';
+                            $courseWhere .= "gibbonExternalAssessmentField.name LIKE :token$whereCount OR ";
+                            ++$whereCount;
+                        }
+                    }
 
-		            $courseWhere = ($whereCount < 1)? '' : substr($courseWhere, 0, -4).')';
+                    $courseWhere = ($whereCount < 1)? '' : substr($courseWhere, 0, -4).')';
 
-		            $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category, gibbonScale.name AS scale
-						FROM gibbonExternalAssessmentField
-							JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
-							JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID)
-						WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID
-							AND category=:category $courseWhere
-						ORDER BY name
-						LIMIT 1";
-		            $resultExternalAssessment = $this->pdo->executeQuery($dataExternalAssessment, $sqlExternalAssessment);
-		        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+                    $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category, gibbonScale.name AS scale
+                        FROM gibbonExternalAssessmentField
+                            JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
+                            JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID)
+                        WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID
+                            AND category=:category $courseWhere
+                        ORDER BY name
+                        LIMIT 1";
+                    $resultExternalAssessment = $this->pdo->executeQuery($dataExternalAssessment, $sqlExternalAssessment);
+                } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
-		        if ($resultExternalAssessment->rowCount() >= 1) {
-		            $rowExternalAssessment = $resultExternalAssessment->fetch();
-		            $this->externalAssessmentFields = array();
-		            $this->externalAssessmentFields[0] = $rowExternalAssessment['gibbonExternalAssessmentFieldID'];
-		            $this->externalAssessmentFields[1] = $rowExternalAssessment['name'];
-		            $this->externalAssessmentFields[2] = $rowExternalAssessment['assessment'];
-		            $this->externalAssessmentFields[3] = $rowExternalAssessment['category'];
-		            $this->externalAssessmentFields[4] = $rowExternalAssessment['scale'];
-		        }
-		    }
-		}
+                if ($resultExternalAssessment->rowCount() >= 1) {
+                    $rowExternalAssessment = $resultExternalAssessment->fetch();
+                    $this->externalAssessmentFields = array();
+                    $this->externalAssessmentFields[0] = $rowExternalAssessment['gibbonExternalAssessmentFieldID'];
+                    $this->externalAssessmentFields[1] = $rowExternalAssessment['name'];
+                    $this->externalAssessmentFields[2] = $rowExternalAssessment['assessment'];
+                    $this->externalAssessmentFields[3] = $rowExternalAssessment['category'];
+                    $this->externalAssessmentFields[4] = $rowExternalAssessment['scale'];
+                }
+            }
+        }
 
     }
 
@@ -927,7 +991,7 @@ class markbookView
      * @param   string $message
      */
     protected function error( $message ) {
-    	echo "<div class='error'>".$e->getMessage().'</div>';
+        echo "<div class='error'>".$e->getMessage().'</div>';
     }
 }
 

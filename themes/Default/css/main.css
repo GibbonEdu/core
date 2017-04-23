@@ -770,13 +770,13 @@ input[type="submit"].buttonLink:hover {
 
 /* MESSAGES */
 div.message {
-	border: 1px solid #3B73AF;
+	border-left: 6px solid #3B73AF;
 	color: #3B73AF;
 	background-color: #D0EAFD;
 	font-size: 12px;
-	padding: 5px;
-	margin: 10px 0px 5px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.05);
+	padding: 10px;
+	margin: 10px 0px 15px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
 div.message a {
 	color: #3B73AF;
@@ -1210,13 +1210,13 @@ p.emphasis, span.emphasis {
 span.small {
 	font-size: 93% ;
 }
-input.standardWidth, textarea.standardWidth {
+input.standardWidth, textarea.standardWidth, div.standardWidth {
 	width: 300px ;
 }
 select.standardWidth {
 	width: 302px ;
 }
-table.fullWidth {
+.fullWidth {
 	width: 100% ;
 }
 div.blockOuter {
@@ -1257,4 +1257,81 @@ div.notificationTray a.inactive {
 	color: #C0C0C0;
 	cursor: default;
 	text-decoration: none;
+}
+
+/* v14 */
+
+table.standardForm td:last-child:nth-child(2) {
+	min-width: 450px;
+}
+
+select[multiple] {
+	height: auto;
+	max-height: 130px;
+}
+
+.shortWidth {
+	width: 148px;
+}
+
+.mediumWidth {
+	width: 230px;
+}
+
+.phoneNumber input {
+	width: 160px;
+}
+
+.phoneNumber select[name$="CountryCode"] {
+	width: 60px;
+}
+
+.phoneNumber select[name$="Type"] {
+	width: 70px;
+}
+
+.column div:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.column.inline div {
+	display:inline-block;
+	width:auto;
+}
+
+.formTable input,
+.formTable select,
+.formTable textarea {
+	float: left;
+	margin-left: 0px;
+}
+
+
+table tr.heading td {
+	padding:15px 5px 15px 5px !important;
+	border-top:1px solid #fafafa;
+	border-bottom:1px solid #e0e0e0;
+	font-size: 110% !important;
+	font-weight: bold;
+	background: #ebebeb;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#dfdfdf));
+	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
+	text-align: left;
+}
+
+table tr.heading:first-child td:first-child {
+	-moz-border-radius-topleft:3px;
+	-webkit-border-top-left-radius:3px;
+	border-top-left-radius:3px;
+	text-align: left;
+	padding-left: 15px !important;
+}
+
+table tr.heading:first-child td:last-child {
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-right-radius:3px;
+	padding-left: 5px !important;
 }

@@ -33,9 +33,6 @@ $from = getSettingByScope($connection2, 'Finance', 'email');
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $action = $_POST['action'];
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $status = $_GET['status'];
@@ -46,7 +43,7 @@ $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
 if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {
-    if ($action == 'issue') {
+    if ($action == 'issue' or $action == 'issueNoEmail') {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=Issued&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
     } else {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
@@ -84,7 +81,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                     }
                 }
                 if ($partialFail == true) {
-                    $URL .= '&return=error?';
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
                     $URL .= '&return=success0';
@@ -92,7 +89,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 }
             }
             //ISSUE
-            elseif ($action == 'issue') {
+            elseif ($action == 'issue' or $action == 'issueNoEmail') {
                 $thisLockFail = false;
                 //LOCK INVOICE TABLES
                 try {
@@ -220,125 +217,126 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 try {
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                }
+                } catch (PDOException $e) {}
 
-                //Loop through invoices again, this time to send invoices....they can not be sent in first loop due to table locking issues.
-                foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                    try {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-                        $sql = 'SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                    }
+                if ($action == 'issue') {
+                    //Loop through invoices again, this time to send invoices....they can not be sent in first loop due to table locking issues.
+                    foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
+                        try {
+                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                            $sql = 'SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                        }
 
-                    if ($result->rowCount() != 1) {
-                        $emailFail = true;
-                    } else {
-                        $row = $result->fetch();
+                        if ($result->rowCount() != 1) {
+                            $emailFail = true;
+                        } else {
+                            $row = $result->fetch();
 
-                        //DEAL WITH EMAILS
-                        $emails = array();
-                        $emailsCount = 0;
-                        if ($row['invoiceTo'] == 'Company') {
-                            try {
-                                $dataCompany = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                                $sqlCompany = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
-                                $resultCompany = $connection2->prepare($sqlCompany);
-                                $resultCompany->execute($dataCompany);
-                            } catch (PDOException $e) {
-                                $emailFail = true;
-                            }
-                            if ($resultCompany->rowCount() != 1) {
-                                $emailFail = true;
-                            } else {
-                                $rowCompany = $resultCompany->fetch();
-                                if ($rowCompany['companyEmail'] != '' and $rowCompany['companyContact'] != '' and $rowCompany['companyName'] != '') {
-                                    $emailsInner = explode(',', $rowCompany['companyEmail']);
-                                    for ($n = 0; $n < count($emailsInner); ++$n) {
-                                        if ($n == 0) {
-                                            $emails[$emailsCount] = trim($emailsInner[$n]);
-                                            ++$emailsCount;
-                                        } else {
-                                            array_push($emails, trim($emailsInner[$n]));
-                                            ++$emailsCount;
+                            //DEAL WITH EMAILS
+                            $emails = array();
+                            $emailsCount = 0;
+                            if ($row['invoiceTo'] == 'Company') {
+                                try {
+                                    $dataCompany = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
+                                    $sqlCompany = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
+                                    $resultCompany = $connection2->prepare($sqlCompany);
+                                    $resultCompany->execute($dataCompany);
+                                } catch (PDOException $e) {
+                                    $emailFail = true;
+                                }
+                                if ($resultCompany->rowCount() != 1) {
+                                    $emailFail = true;
+                                } else {
+                                    $rowCompany = $resultCompany->fetch();
+                                    if ($rowCompany['companyEmail'] != '' and $rowCompany['companyContact'] != '' and $rowCompany['companyName'] != '') {
+                                        $emailsInner = explode(',', $rowCompany['companyEmail']);
+                                        for ($n = 0; $n < count($emailsInner); ++$n) {
+                                            if ($n == 0) {
+                                                $emails[$emailsCount] = trim($emailsInner[$n]);
+                                                ++$emailsCount;
+                                            } else {
+                                                array_push($emails, trim($emailsInner[$n]));
+                                                ++$emailsCount;
+                                            }
                                         }
-                                    }
-                                    if ($rowCompany['companyCCFamily'] == 'Y') {
-                                        try {
-                                            $dataParents = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                                            $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
-                                            $resultParents = $connection2->prepare($sqlParents);
-                                            $resultParents->execute($dataParents);
-                                        } catch (PDOException $e) {
-                                            $emailFail = true;
-                                        }
-                                        if ($resultParents->rowCount() < 1) {
-                                            $emailFail = true;
-                                        } else {
-                                            while ($rowParents = $resultParents->fetch()) {
-                                                if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
-                                                    $emails[$emailsCount] = $rowParents['email'];
-                                                    ++$emailsCount;
+                                        if ($rowCompany['companyCCFamily'] == 'Y') {
+                                            try {
+                                                $dataParents = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
+                                                $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
+                                                $resultParents = $connection2->prepare($sqlParents);
+                                                $resultParents->execute($dataParents);
+                                            } catch (PDOException $e) {
+                                                $emailFail = true;
+                                            }
+                                            if ($resultParents->rowCount() < 1) {
+                                                $emailFail = true;
+                                            } else {
+                                                while ($rowParents = $resultParents->fetch()) {
+                                                    if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
+                                                        $emails[$emailsCount] = $rowParents['email'];
+                                                        ++$emailsCount;
+                                                    }
                                                 }
                                             }
                                         }
+                                    } else {
+                                        $emailFail = true;
                                     }
-                                } else {
+                                }
+                            } else {
+                                try {
+                                    $dataParents = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
+                                    $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
+                                    $resultParents = $connection2->prepare($sqlParents);
+                                    $resultParents->execute($dataParents);
+                                } catch (PDOException $e) {
                                     $emailFail = true;
                                 }
-                            }
-                        } else {
-                            try {
-                                $dataParents = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                                $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
-                                $resultParents = $connection2->prepare($sqlParents);
-                                $resultParents->execute($dataParents);
-                            } catch (PDOException $e) {
-                                $emailFail = true;
-                            }
-                            if ($resultParents->rowCount() < 1) {
-                                $emailFail = true;
-                            } else {
-                                while ($rowParents = $resultParents->fetch()) {
-                                    if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
-                                        $emails[$emailsCount] = $rowParents['email'];
-                                        ++$emailsCount;
+                                if ($resultParents->rowCount() < 1) {
+                                    $emailFail = true;
+                                } else {
+                                    while ($rowParents = $resultParents->fetch()) {
+                                        if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
+                                            $emails[$emailsCount] = $rowParents['email'];
+                                            ++$emailsCount;
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        if ($from == '' or count($emails) < 1) {
-                            $emailFail = true;
-                        } else {
-                            //Prep message
-                            $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
-                            $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
-
-                            $mail = getGibbonMailer($guid);
-                            $mail->IsSMTP();
-                            $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
-                            foreach ($emails as $address) {
-                                $mail->AddBCC($address);
-                            }
-                            $mail->CharSet = 'UTF-8';
-                            $mail->Encoding = 'base64';
-                            $mail->IsHTML(true);
-                            $mail->Subject = 'Invoice From '.$_SESSION[$guid]['organisationNameShort'].' via '.$_SESSION[$guid]['systemName'];
-                            $mail->Body = $body;
-                            $mail->AltBody = $bodyPlain;
-
-                            if (!$mail->Send()) {
+                            if ($from == '' or count($emails) < 1) {
                                 $emailFail = true;
+                            } else {
+                                //Prep message
+                                $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                                $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
+
+                                $mail = getGibbonMailer($guid);
+                                $mail->IsSMTP();
+                                $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
+                                foreach ($emails as $address) {
+                                    $mail->AddBCC($address);
+                                }
+                                $mail->CharSet = 'UTF-8';
+                                $mail->Encoding = 'base64';
+                                $mail->IsHTML(true);
+                                $mail->Subject = 'Invoice From '.$_SESSION[$guid]['organisationNameShort'].' via '.$_SESSION[$guid]['systemName'];
+                                $mail->Body = $body;
+                                $mail->AltBody = $bodyPlain;
+
+                                if (!$mail->Send()) {
+                                    $emailFail = true;
+                                }
                             }
                         }
                     }
                 }
 
                 if ($partialFail == true) {
-                    $URL .= '&return=error?';
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } elseif ($emailFail == true) {
                     $URL .= '&return=success1';
@@ -483,7 +481,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 }
 
                 if ($partialFail == true) {
-                    $URL .= '&return=error?';
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } elseif ($emailFail == true) {
                     $URL .= '&return=success1';

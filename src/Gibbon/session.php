@@ -85,7 +85,7 @@ class Session
 	 *
 	 * @param	string	Session Value Name
 	 * @param	mixed	default Define a value to return if the variable is empty
-	 * 
+	 *
 	 * @return	mixed
 	 */
 	public function get($name, $default = null)
@@ -98,7 +98,7 @@ class Session
 	 *
 	 * @param	string	Session Value Name
 	 * @param	mixed	Session Value
-	 * 
+	 *
 	 * @return	object	Gibbon\session
 	 */
 	public function set($name, $value)
@@ -112,7 +112,7 @@ class Session
 	 * Set Multiple Session Values
 	 *
 	 * @param	array	Array of name => value pairs
-	 * 
+	 *
 	 * @return	object	Gibbon\session
 	 */
 	public function setAll( array $values )
@@ -170,7 +170,7 @@ class Session
 	 * @param    Gibbon/sqlConnection  $pdo
 	 */
 	public function cacheFastFinderActions($gibbonRoleIDCurrent) {
-		
+
 		// Get the accesible actions for the current user
         $data = array( 'gibbonRoleID' => $gibbonRoleIDCurrent );
         $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, gibbonModule.type, gibbonModule.name AS module
@@ -181,7 +181,7 @@ class Session
                 AND menuShow='Y'
                 AND gibbonPermission.gibbonRoleID=:gibbonRoleID
                 ORDER BY name";
-            
+
         $result = $this->pdo->executeQuery($data, $sql);
 
         if ($result->rowCount() > 0) {

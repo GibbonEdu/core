@@ -18,6 +18,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 require_once dirname(__FILE__).'/gibbon.php';
 
+function getIPAddress() {
+    $return = false;
+
+    if (getenv('HTTP_CLIENT_IP'))
+       $return = getenv('HTTP_CLIENT_IP');
+    else if(getenv('HTTP_X_FORWARDED_FOR'))
+       $return = getenv('HTTP_X_FORWARDED_FOR');
+    else if(getenv('HTTP_X_FORWARDED'))
+       $return = getenv('HTTP_X_FORWARDED');
+    else if(getenv('HTTP_FORWARDED_FOR'))
+       $return = getenv('HTTP_FORWARDED_FOR');
+    else if(getenv('HTTP_FORWARDED'))
+      $return = getenv('HTTP_FORWARDED');
+    else if(getenv('REMOTE_ADDR'))
+       $return = getenv('REMOTE_ADDR');
+
+    return $return;
+}
 
 //Convert an HTML email body into a plain text email body
 function emailBodyConvert($body)
@@ -2155,12 +2173,13 @@ function getFastFinder($connection2, $guid)
     }
 
     $output .= '<style>';
-    $output .= 'ul.token-input-list-facebook { width: 320px; float: left; height: 25px!important; margin-right: -5px }';
+    $output .= 'ul.token-input-list-facebook { width: 310px; float: right; height: 25px!important; margin-right: -5px }';
     $output .= 'div.token-input-dropdown-facebook { width: 320px; z-index: 99999999 }';
+    $output .= 'table.fastFinder td { border-top: none }';
     $output .= '</style>';
     $output .= "<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>";
     $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/indexFindRedirect.php'>";
-    $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>";
+    $output .= "<table class='smallIntBorder fastFinder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>";
     $output .= '<tr>';
     $output .= "<td style='vertical-align: top; padding: 0px' colspan=2>";
     $output .= "<h2 style='padding-bottom: 0px'>";
@@ -2185,7 +2204,9 @@ function getFastFinder($connection2, $guid)
         $output .= '$(document).ready(function() {';
         $output .= '$("#id").tokenInput("'.$_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php",';
         $output .= '{theme: "facebook",';
-        $output .= 'hintText: "Start typing a name...",';
+        $output .= 'hintText: "'.__($guid, 'Start typing a name...').'",';
+        $output .= 'noResultsText: "'.__($guid, 'No results').'",';
+        $output .= 'searchingText: "'.__($guid, 'Searching...').'",';
         $output .= 'allowCreation: false,';
         $output .= 'preventDuplicates: true,';
         $output .= 'tokenLimit: 1});';
@@ -2214,7 +2235,7 @@ function getFastFinder($connection2, $guid)
 
             $output .= '<tr>';
             $output .= "<td style='vertical-align: top' colspan=2>";
-            $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
+            $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
             $output .= '</td>';
             $output .= '</tr>';
         }
@@ -2829,11 +2850,9 @@ function sidebar($gibbon, $pdo)
 		<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q']; } ?>">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
 				<tr>
-					<td>
-						<b><?php echo __($guid, 'Username'); ?></b>
-					</td>
-					<td class="right">
-						<input name="username" id="username" maxlength=20 type="text" style="width:120px">
+					<td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Username or email'); ?>">
+						<input name="username" id="username" maxlength=50 type="text" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Username or email'); ?>">
 						<script type="text/javascript">
 							var username=new LiveValidation('username', {onlyOnSubmit: true });
 							username.add(Validate.Presence);
@@ -2841,24 +2860,20 @@ function sidebar($gibbon, $pdo)
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<b><?php echo __($guid, 'Password'); ?></b>
-					</td>
-					<td class="right">
-						<input name="password" id="password" maxlength=30 type="password" style="width:120px">
+					<td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/key.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Password'); ?>">
+						<input name="password" id="password" maxlength=30 type="password" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Password'); ?>">
 						<script type="text/javascript">
 							var password=new LiveValidation('password', {onlyOnSubmit: true });
 							password.add(Validate.Presence);
 						</script>
 					</td>
 				</tr>
-				<tr class='schoolYear' id='schoolYear'>
-					<td>
-						<b><?php echo __($guid, 'School Year'); ?></b>
-					</td>
-					<td class="right">
-						<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
-							<?php
+                <tr class='schoolYear' id='schoolYear'>
+                    <td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/planner.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'School Year'); ?>">
+                        <select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width:207px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'School Year'); ?>">
+                            <?php
                             try {
                                 $dataSelect = array();
                                 $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
@@ -2875,15 +2890,13 @@ function sidebar($gibbon, $pdo)
                                 echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
                             }
                             ?>
-						</select>
+                        </select>
 					</td>
 				</tr>
-				<tr class='language' id='language'>
-					<td>
-						<b><?php echo __($guid, 'Language'); ?></b>
-					</td>
-					<td class="right">
-						<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
+                	<tr class='language' id='language'>
+                    <td colspan="2">
+                        <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/language.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Language'); ?>">
+                        <select name="gibboni18nID" id="gibboni18nID" style="width:207px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'School Year'); ?>">
 							<?php
                             try {
                                 $dataSelect = array();
@@ -2904,10 +2917,8 @@ function sidebar($gibbon, $pdo)
 						</select>
 					</td>
 				</tr>
-				<tr>
-					<td>
-					</td>
-					<td class="right">
+                <tr>
+    				<td colspan=2 class="right">
 						<?php
                         echo "<script type='text/javascript'>";
                             echo '$(document).ready(function(){';
@@ -3805,15 +3816,20 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         } catch (PDOException $e) {
             $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
         }
-        if ($resultAlert->rowCount() > 1 and $resultAlert->rowCount() <= 4) {
-            $gibbonAlertLevelID = 003;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 2 and 4 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 4 and $resultAlert->rowCount() <= 8) {
-            $gibbonAlertLevelID = 002;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 5 and 8 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 8) {
+
+        $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
+        $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
+        $academicAlertHighThreshold = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold');
+
+        if ($resultAlert->rowCount() >= $academicAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are more than 8 events recorded for a student.');
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
+        } elseif ($resultAlert->rowCount() >= $academicAlertMediumThreshold) {
+            $gibbonAlertLevelID = 002;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold-1));
+        } elseif ($resultAlert->rowCount() >= $academicAlertLowThreshold) {
+            $gibbonAlertLevelID = 003;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
@@ -3834,16 +3850,22 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         } catch (PDOException $e) {
             $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
         }
-        if ($resultAlert->rowCount() > 1 and $resultAlert->rowCount() <= 4) {
-            $gibbonAlertLevelID = 003;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 2 and 4 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 4 and $resultAlert->rowCount() <= 8) {
-            $gibbonAlertLevelID = 002;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are between 5 and 8 events recorded for a student.');
-        } elseif ($resultAlert->rowCount() > 8) {
+
+        $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
+        $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
+        $behaviourAlertHighThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold');
+
+        if ($resultAlert->rowCount() >= $behaviourAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
-            $alertThresholdText = __($guid, 'This alert level occurs when there are more than 8 events recorded for a student.');
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
+        } elseif ($resultAlert->rowCount() >= $behaviourAlertMediumThreshold) {
+            $gibbonAlertLevelID = 002;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold-1));
+        } elseif ($resultAlert->rowCount() >= $behaviourAlertLowThreshold) {
+            $gibbonAlertLevelID = 003;
+            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold-1));
         }
+
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
@@ -3983,10 +4005,8 @@ function setLanguageSession($guid, $row)
 }
 
 //Gets the desired setting, specified by name and scope.
-function getSettingByScope($connection2, $scope, $name)
+function getSettingByScope($connection2, $scope, $name, $returnRow = false )
 {
-    $output = false;
-
     try {
         $data = array('scope' => $scope, 'name' => $name);
         $sql = 'SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name';
@@ -3994,12 +4014,18 @@ function getSettingByScope($connection2, $scope, $name)
         $result->execute($data);
     } catch (PDOException $e) {
     }
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-        $output = $row['value'];
+
+    if ($result && $result->rowCount() == 1) {
+
+        if ($returnRow) {
+            return $result->fetch();
+        } else {
+            $row = $result->fetch();
+            return $row['value'];
+        }
     }
 
-    return $output;
+    return false;
 }
 
 //Converts date from language-specific format to YYYY-MM-DD

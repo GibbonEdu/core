@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -34,6 +36,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    echo '<p>';
+    echo __($guid, 'Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.');
+    echo '</p>';
+
+    $form = Form::create('i18n_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/i18n_manageProcess.php');
+    
+    $form->setClass('fullWidth');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    
+    $row = $form->addRow()->setClass('heading head');
+        $row->addContent(__('Name'));
+        $row->addContent(__('Code'));
+        $row->addContent(__('Active'));
+        $row->addContent(__('Maintainer'));
+        $row->addContent(__('Default'));
+
     try {
         $data = array();
         $sql = 'SELECT * FROM gibboni18n ORDER BY name';
@@ -43,89 +61,36 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    echo '<p>';
-    echo __($guid, 'Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.');
-    echo '</p>';
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
+    if (!$result || $result->rowCount() == 0) {
+        $form->addRow()->addAlert(__('There are no records to display.'), 'error');
     } else {
-        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/i18n_manageProcess.php'>";
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Code');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Active');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Maintainer');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Default');
-        echo '</th>';
-        echo '</tr>';
+        while ($i18n = $result->fetch()) {
+            $class = ($i18n['active'] == 'N')? 'error' : '';
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
+            $row = $form->addRow()->addClass($class);
+            $row->addContent($i18n['name'])->wrap('<b>', '</b>');
+            $row->addContent($i18n['code']);
+            $row->addContent(ynExpander($guid, $i18n['active']));
+
+            $maintainer = $row->addContent($i18n['maintainerName']);
+            if (!empty($i18n['maintainerWebsite'])) {
+                $maintainer->wrap("<a href='".$i18n['maintainerWebsite']."'>", '</a>');
+            }
+
+            if ($i18n['active'] == 'Y') {
+                $checked = ($i18n['systemDefault'] == 'Y')? $i18n['gibboni18nID'] : '';
+
+                $row->addRadio('gibboni18nID')
+                    ->setClass('')
+                    ->fromArray(array($i18n['gibboni18nID'] => ''))
+                    ->checked($checked);
             } else {
-                $rowNum = 'odd';
+                $row->addContent();
             }
-            ++$count;
-
-            if ($row['active'] == 'N') {
-                $rowNum = 'error';
-            }
-
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo '<b>'.$row['name'].'<b/>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['code'];
-            echo '</td>';
-            echo '<td>';
-            echo ynExpander($guid, $row['active']);
-            echo '</td>';
-            echo '<td>';
-            if ($row['maintainerWebsite'] != '') {
-                echo "<a href='".$row['maintainerWebsite']."'>".$row['maintainerName'].'</a>';
-            } else {
-                echo $row['maintainerName'];
-            }
-            echo '</td>';
-            echo '<td>';
-            if ($row['active'] == 'Y') {
-                if ($row['systemDefault'] == 'Y') {
-                    echo "<input checked type='radio' name='gibboni18nID' value='".$row['gibboni18nID']."'>";
-                } else {
-                    echo "<input type='radio' name='gibboni18nID' value='".$row['gibboni18nID']."'>";
-                }
-            }
-            echo '</td>';
-            echo '</tr>';
         }
-        echo '<tr>';
-        echo "<td colspan=6 class='right'>";
-        	?>
-			<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-			<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-			<?php
-        echo '</td>';
-        echo '</tr>';
-        echo '</table>';
-
-        echo '</form>';
     }
+    
+    $form->addRow()->addSubmit();
+    
+    echo $form->getOutput();
 }
-?>

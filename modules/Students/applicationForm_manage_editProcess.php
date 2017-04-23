@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $search = $_GET['search'];
@@ -631,6 +628,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     //Deal with required documents
                     $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+                    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
+                    if ($internalDocuments != '') {
+                        $requiredDocuments .= ','.$internalDocuments;
+                    }
                     if ($requiredDocuments != '' and $requiredDocuments != false) {
                         $fileCount = 0;
                         if (isset($_POST['fileCount'])) {

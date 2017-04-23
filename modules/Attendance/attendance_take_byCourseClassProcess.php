@@ -36,9 +36,6 @@ catch(PDOException $e) {
 
 @session_start() ;
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
-
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
 $currentDate=$_POST["currentDate"] ;
 $today=date("Y-m-d");
@@ -69,25 +66,25 @@ else {
 	}
 	else {
 		try {
-			$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
+			$data=array("gibbonCourseClassID"=>$gibbonCourseClassID);
 			$sql="SELECT * FROM gibbonCourseClass WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
+		catch(PDOException $e) {
 			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			die();
 		}
-		
+
 		if ($result->rowCount()!=1) {
 			//Fail 2
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 			die();
 		}
-		else {	
+		else {
 			//Check that date is not in the future
 			if ($currentDate>$today) {
 				//Fail 4
@@ -109,12 +106,12 @@ else {
 					$attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
 					try {
-						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate); 
+						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate);
 						$sql="SELECT gibbonAttendanceLogCourseClassID FROM gibbonAttendanceLogCourseClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY gibbonAttendanceLogCourseClassID DESC" ;
 						$resultLog=$connection2->prepare($sql);
 						$resultLog->execute($data);
 					}
-					catch(PDOException $e) { 
+					catch(PDOException $e) {
 						//Fail 2
 						$URL.="&return=error2" ;
 						header("Location: {$URL}");
@@ -122,12 +119,12 @@ else {
 					}
 
 					if ($resultLog->rowCount()<1) {
-						$data=array("gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s")); 
+						$data=array("gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
 						$sql="INSERT INTO gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
-						
+
 					} else {
 						$resultUpdate=$resultLog->fetch() ;
-						$data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s")); 
+						$data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
 						$sql="UPDATE gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogCourseClassID=:gibbonAttendanceLogCourseClassID" ;
 					}
 
@@ -135,7 +132,7 @@ else {
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
-					catch(PDOException $e) { 
+					catch(PDOException $e) {
 						//Fail 2
 						$URL.="&return=error2" ;
 						header("Location: {$URL}");
@@ -144,7 +141,7 @@ else {
 
 					$count=$_POST["count"] ;
 					$partialFail=FALSE ;
-					
+
 					for ($i=0; $i<$count; $i++) {
 						$gibbonPersonID=$_POST[$i . "-gibbonPersonID"] ;
 
@@ -154,47 +151,57 @@ else {
 
 						$attendanceCode = $attendance->getAttendanceCodeByType($type);
 						$direction = $attendanceCode['direction'];
-						
+
 						//Check for last record on same day
 						try {
-							$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonID"=>$gibbonPersonID, "date"=>$currentDate . "%"); 
-							$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
+							$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>$currentDate . "%");
+							$sql="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}
-						catch(PDOException $e) { 
+						catch(PDOException $e) {
 							//Fail 2
 							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							die();
 						}
-						
-						if ($result->rowCount()<1) {
+
+                        //Check context, gibbonCourseClassID and type, updating only if not a match
+                        $existing = false ;
+                        $gibbonAttendanceLogPersonID = '';
+                        if ($result->rowCount()>0) {
+                            $row=$result->fetch() ;
+                            if ($row['context'] == 'Class' && $row['gibbonCourseClassID'] == $gibbonCourseClassID && $row['type'] == $type) {
+                                $existing = true ;
+                                $gibbonAttendanceLogPersonID = $row['gibbonAttendanceLogPersonID'];
+                            }
+                        }
+
+						if (!$existing) {
 							//If no records then create one
 							try {
-								$dataUpdate=array("gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s")); 
-								$sqlUpdate="INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
+								$dataUpdate=array("gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
+								$sqlUpdate="INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context='Class', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
 								$resultUpdate=$connection2->prepare($sqlUpdate);
 								$resultUpdate->execute($dataUpdate);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								$partialFail=TRUE ;
 							}
 						}
 						else {
-							$row=$result->fetch() ;
 							try {
-								$dataUpdate=array("gibbonAttendanceLogPersonID"=>$row["gibbonAttendanceLogPersonID"], "gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s")); 
-								$sqlUpdate="UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID" ;
+								$dataUpdate=array("gibbonAttendanceLogPersonID"=>$gibbonAttendanceLogPersonID, "gibbonPersonID"=>$gibbonPersonID, "direction"=>$direction, "type"=>$type, "reason"=>$reason, "comment"=>$comment, "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
+								$sqlUpdate="UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context='Class', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID" ;
 								$resultUpdate=$connection2->prepare($sqlUpdate);
 								$resultUpdate->execute($dataUpdate);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								$partialFail=TRUE ;
 							}
 						}
 					}
-				
+
 					if ($partialFail==TRUE) {
 						//Fail 3
 						$URL.="&return=warning1" ;

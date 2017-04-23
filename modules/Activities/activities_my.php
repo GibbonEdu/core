@@ -40,12 +40,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
     } catch (PDOException $e) {
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
-
+    
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
+        $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
@@ -93,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             if ($row['role'] == '') {
                 echo 'Student';
             } else {
-                echo $row['role'];
+                echo __($guid, $row['role']);
             }
             echo '</td>';
             echo '<td>';
@@ -104,9 +105,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             }
             echo '</td>';
             echo '<td>';
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_my_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            if ($row['role'] == 'Organiser' && isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php')) {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID']."&search='><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_attendance.php')) {
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_my_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+    
+            if ($highestAction == "Enter Activity Attendance" || ($highestAction == "Enter Activity Attendance_leader" && ($row['role'] == 'Organiser' || $row['role'] == 'Assistant' || $row['role'] == 'Coach'))) {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_attendance.php&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
             }
             echo '</td>';

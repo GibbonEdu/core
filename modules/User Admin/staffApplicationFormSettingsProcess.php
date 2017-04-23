@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffApplicationFormSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicationFormSettings.php') == false) {
@@ -53,8 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     //Deal with reference links
     $refereeLinks=array() ;
     if (isset($_POST['refereeLinks']) AND isset($_POST['types'])) {
-        for ($i=0; $i<count($_POST['refereeLinks']); $i++) {
-            $refereeLinks[$_POST['types'][$i]] = $_POST['refereeLinks'][$i] ;
+        for ($i=0; $i<count($_POST['types']); $i++) {
+            $refereeLinks[$_POST['types'][$i]] = (isset($_POST['refereeLinks'][$i]))? $_POST['refereeLinks'][$i] : '';
         }
         $applicationFormRefereeLink = serialize($refereeLinks) ;
     }

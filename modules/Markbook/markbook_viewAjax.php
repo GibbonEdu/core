@@ -28,20 +28,17 @@ include './moduleFunctions.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $order = (isset($_POST['order']))? $_POST['order'] : '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {
 
     echo __($guid, 'Your request failed because you do not have access to this action.');
-    
+
 } else {
 
     if ($order != '') {
 
-        $columnOrder = array_slice($order, 2 );
+        $columnOrder = array_slice($order, 1 );
         $minSequence = (isset($_POST['sequence']))? $_POST['sequence'] : 0;
 
         for ($i = 0; $i < count($columnOrder); $i++) {

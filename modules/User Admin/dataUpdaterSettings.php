@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationFormSettings.php') == false) {
+use Gibbon\Forms\Form;
+
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -33,586 +35,199 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    ?>
-	
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php' ?>">
-		<h2><?php echo __($guid, 'Required Fields for Personal Updates') ?></h2>
-		<p><?php echo __($guid, 'These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).') ?></p>
-		<?php
 
-        //Get setting and unserialize
-        $required = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
+    echo '<h2>'.__($guid, 'Required Fields for Personal Updates').'</h2>';
+	echo '<p>'.__($guid, 'These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
-		echo "<table cellspacing='0' style='width: 100%'>";
-		echo "<tr class='head'>";
-		echo '<th>';
-		echo __($guid, 'Field');
-		echo '</th>';
-		echo '<th>';
-		echo __($guid, 'Required');
-		echo '</th>';
-		echo '</tr>';
+    $form = Form::create('dataUpdaterSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php');
+    
+    $form->setClass('fullWidth');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    
+    // Default settings
+    $settingDefaults = array('title' => 'N', 'surname' => 'Y', 'firstName' => 'N', 'preferredName' => 'Y', 'officialName' => 'Y', 'nameInCharacters' => 'N', 'dob' => 'N', 'email' => 'N', 'emailAlternate' => 'N', 'phone1' => 'N', 'phone2' => 'N', 'phone3' => 'N', 'phone4' => 'N', 'languageFirst' => 'N', 'languageSecond' => 'N', 'languageThird' => 'N', 'countryOfBirth' => 'N', 'ethnicity' => 'N', 'citizenship1' => 'N', 'citizenship1Passport' => 'N', 'citizenship2' => 'N', 'citizenship2Passport' => 'N', 'religion' => 'N', 'nationalIDCardNumber' => 'N', 'residencyStatus' => 'N', 'visaExpiryDate' => 'N', 'profession' => 'N', 'employer' => 'N', 'jobTitle' => 'N', 'emergency1Name' => 'N', 'emergency1Number1' => 'N', 'emergency1Number2' => 'N', 'emergency1Relationship' => 'N', 'emergency2Name' => 'N', 'emergency2Number1' => 'N', 'emergency2Number2' => 'N', 'emergency2Relationship' => 'N', 'vehicleRegistration' => 'N');
 
-		$rowNum = 'even';
+    //Get setting and unserialize
+    $settings = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
+    $required = array();
 
-		//COLOR ROW BY STATUS!
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Title');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['title'])) {
-			if (is_array($required) and $required['title'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='title'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Surname');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['surname'])) {
-			if (is_array($required) and $required['surname'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='surname'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'First Name');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['firstName'])) {
-			if (is_array($required) and $required['firstName'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='firstName'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Preferred Names');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['preferredName'])) {
-			if (is_array($required) and $required['preferredName'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='preferredName'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Official Name');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['officialName'])) {
-			if (is_array($required) and $required['officialName'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='officialName'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Name In Characters');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['nameInCharacters'])) {
-			if (is_array($required) and $required['nameInCharacters'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='nameInCharacters'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Date of Birth');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['dob'])) {
-			if (is_array($required) and $required['dob'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='dob'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Email');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['email'])) {
-			if (is_array($required) and $required['email'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='email'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Alternate Email');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emailAlternate'])) {
-			if (is_array($required) and $required['emailAlternate'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emailAlternate'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Address 1');
-		echo '</td>';
-		echo '<td>';
-		echo "<input disabled='disabled' type='checkbox' name='address1'> <i>".__($guid, 'This field cannot be required').'</i>.';
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Address 1 District');
-		echo '</td>';
-		echo '<td>';
-		echo "<input disabled='disabled' type='checkbox' name='address1District'> <i>".__($guid, 'This field cannot be required').'</i>.';
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Address 1 Country');
-		echo '</td>';
-		echo '<td>';
-		echo "<input disabled='disabled' type='checkbox' name='address1Country'> <i>".__($guid, 'This field cannot be required').'</i>.';
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Address 2');
-		echo '</td>';
-		echo '<td>';
-		echo "<input disabled='disabled' type='checkbox' name='address2'> <i>".__($guid, 'This field cannot be required').'</i>.';
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Address 2 District');
-		echo '</td>';
-		echo '<td>';
-		echo "<input disabled='disabled' type='checkbox' name='address2District'> <i>".__($guid, 'This field cannot be required').'</i>.';
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Address 2 Country');
-		echo '</td>';
-		echo '<td>';
-		echo "<input disabled='disabled' type='checkbox' name='address2Country'> <i>".__($guid, 'This field cannot be required').'</i>.';
-		echo '</td>';
-		echo '</tr>';
-		$phoneCount = 0;
-		for ($i = 1; $i < 5; ++$i) {
-			++$phoneCount;
-			$class = 'odd';
-			if ($phoneCount % 2 == 0) {
-				$class = 'even';
-			}
-			echo "<tr class='$class'>";
-			echo '<td>';
-			echo sprintf(__($guid, 'Phone %1$s'), $i);
-			echo '</td>';
-			echo '<td>';
-			$checked = '';
-			if (isset($required['phone'.$i])) {
-				if (is_array($required) and $required['phone'.$i] == 'Y') {
-					$checked = 'checked';
-				}
-			}
-			echo "<input $checked type='checkbox' name='phone".$i."'>";
-			echo '</td>';
-			echo '</tr>';
-		}
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'First Language');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['languageFirst'])) {
-			if (is_array($required) and $required['languageFirst'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='languageFirst'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Second Language');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['languageSecond'])) {
-			if (is_array($required) and $required['languageSecond'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='languageSecond'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Third Language');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['languageThird'])) {
-			if (is_array($required) and $required['languageThird'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='languageThird'>";
-		echo '</td>';
-		echo '</tr>';
+    foreach ($settingDefaults as $name => $defaultValue) {
+        $required[$name] = (isset($settings[$name]))? $settings[$name] : $defaultValue;
+    }
 
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Country of Birth');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['countryOfBirth'])) {
-			if (is_array($required) and $required['countryOfBirth'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='countryOfBirth'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Ethnicity');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['ethnicity'])) {
-			if (is_array($required) and $required['ethnicity'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='ethnicity'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Citizenship 1');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['citizenship1'])) {
-			if (is_array($required) and $required['citizenship1'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='citizenship1'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Citizenship 1 Passport');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['citizenship1Passport'])) {
-			if (is_array($required) and $required['citizenship1Passport'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='citizenship1Passport'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Citizenship 2');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['citizenship2'])) {
-			if (is_array($required) and $required['citizenship2'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='citizenship2'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Citizenship 2 Passport');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['citizenship2Passport'])) {
-			if (is_array($required) and $required['citizenship2Passport'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='citizenship2Passport'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Religion');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['religion'])) {
-			if (is_array($required) and $required['religion'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='religion'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'National ID Card Number');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['nationalIDCardNumber'])) {
-			if (is_array($required) and $required['nationalIDCardNumber'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='nationalIDCardNumber'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Residency Status');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['residencyStatus'])) {
-			if (is_array($required) and $required['residencyStatus'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='residencyStatus'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Visa Expiry Date');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['visaExpiryDate'])) {
-			if (is_array($required) and $required['visaExpiryDate'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='visaExpiryDate'>";
-		echo '</td>';
-		echo '</tr>';
+    $row = $form->addRow()->setClass('break heading');
+    	$row->addContent(__('Field')); $row->addContent(__('Required'));
+    
+    $row = $form->addRow();
+    	$row->addLabel('title', __('Title'));
+    	$row->addCheckbox('title')->setValue('Y')->checked($required['title'])->setClass();
 
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Profession');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['profession'])) {
-			if (is_array($required) and $required['profession'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='profession'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Employer');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['employer'])) {
-			if (is_array($required) and $required['employer'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='employer'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Job Title');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['jobTitle'])) {
-			if (is_array($required) and $required['jobTitle'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='jobTitle'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 1 Name');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency1Name'])) {
-			if (is_array($required) and $required['emergency1Name'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency1Name'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 1 Number 1');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency1Number1'])) {
-			if (is_array($required) and $required['emergency1Number1'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency1Number1'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 1 Number 2');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency1Number2'])) {
-			if (is_array($required) and $required['emergency1Number2'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency1Number2'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 1 Relationship');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency1Relationship'])) {
-			if (is_array($required) and $required['emergency1Relationship'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency1Relationship'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 2 Name');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency2Name'])) {
-			if (is_array($required) and $required['emergency2Name'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency2Name'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 2 Number 1');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency2Number1'])) {
-			if (is_array($required) and $required['emergency2Number1'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency2Number1'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 2 Number 2');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency2Number2'])) {
-			if (is_array($required) and $required['emergency2Number2'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency2Number2'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='even'>";
-		echo '<td>';
-		echo __($guid, 'Emergency 2 Relationship');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['emergency2Relationship'])) {
-			if (is_array($required) and $required['emergency2Relationship'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='emergency2Relationship'>";
-		echo '</td>';
-		echo '</tr>';
-		echo "<tr class='odd'>";
-		echo '<td>';
-		echo __($guid, 'Vehicle Registration');
-		echo '</td>';
-		echo '<td>';
-		$checked = '';
-		if (isset($required['vehicleRegistration'])) {
-			if (is_array($required) and $required['vehicleRegistration'] == 'Y') {
-				$checked = 'checked';
-			}
-		}
-		echo "<input $checked type='checkbox' name='vehicleRegistration'>";
-		echo '</td>';
-		echo '</tr>';
-		echo '<tr>';
-		echo "<td class='right' colspan=2>";
-		echo "<input name='address' type='hidden' value='".$_GET['q']."'>";
-		echo "<input type='submit' value='Submit'>";
-		echo '</td>';
-		echo '</tr>';
-		echo '</table>';?>
-	</form>
-<?php
+    $row = $form->addRow();
+    	$row->addLabel('surname', __('Surname'));
+    	$row->addCheckbox('surname')->setValue('Y')->checked($required['surname'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('firstName', __('First Name'));
+    	$row->addCheckbox('firstName')->setValue('Y')->checked($required['firstName'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('preferredName', __('Preferred Names'));
+    	$row->addCheckbox('preferredName')->setValue('Y')->checked($required['preferredName'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('officialName', __('Official Name'));
+    	$row->addCheckbox('officialName')->setValue('Y')->checked($required['officialName'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('nameInCharacters', __('Name In Characters'));
+    	$row->addCheckbox('nameInCharacters')->setValue('Y')->checked($required['nameInCharacters'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('dob', __('Date of Birth'));
+    	$row->addCheckbox('dob')->setValue('Y')->checked($required['dob'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('email', __('Email'));
+    	$row->addCheckbox('email')->setValue('Y')->checked($required['email'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emailAlternate', __('Alternate Email'));
+    	$row->addCheckbox('emailAlternate')->setValue('Y')->checked($required['emailAlternate'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('', __('Address 1'));
+    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
+
+    $row = $form->addRow();
+    	$row->addLabel('', __('Address 1 District'));
+    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
+
+    $row = $form->addRow();
+    	$row->addLabel('', __('Address 1 Country'));
+    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
+
+    $row = $form->addRow();
+    	$row->addLabel('', __('Address 2'));
+    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
+
+    $row = $form->addRow();
+    	$row->addLabel('', __('Address 2 District'));
+    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
+
+    $row = $form->addRow();
+    	$row->addLabel('', __('Address 2 Country'));
+    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
+
+    for ($i = 1; $i < 5; ++$i) {
+    	$row = $form->addRow();
+    	$row->addLabel('phone'.$i, sprintf(__('Phone %1$s'), $i));
+    	$row->addCheckbox('phone'.$i)->setValue('Y')->checked($required['phone'.$i])->setClass();
+    }
+
+    $row = $form->addRow();
+    	$row->addLabel('languageFirst', __('First Language'));
+    	$row->addCheckbox('languageFirst')->setValue('Y')->checked($required['languageFirst'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('languageSecond', __('Second Language'));
+    	$row->addCheckbox('languageSecond')->setValue('Y')->checked($required['languageSecond'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('languageThird', __('Third Language'));
+    	$row->addCheckbox('languageThird')->setValue('Y')->checked($required['languageThird'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('countryOfBirth', __('Country of Birth'));
+    	$row->addCheckbox('countryOfBirth')->setValue('Y')->checked($required['countryOfBirth'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('ethnicity', __('Ethnicity'));
+    	$row->addCheckbox('ethnicity')->setValue('Y')->checked($required['ethnicity'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('citizenship1', __('Citizenship 1'));
+    	$row->addCheckbox('citizenship1')->setValue('Y')->checked($required['citizenship1'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport'));
+    	$row->addCheckbox('citizenship1Passport')->setValue('Y')->checked($required['citizenship1Passport'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('citizenship2', __('Citizenship 2'));
+    	$row->addCheckbox('citizenship2')->setValue('Y')->checked($required['citizenship2'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport'));
+    	$row->addCheckbox('citizenship2Passport')->setValue('Y')->checked($required['citizenship2Passport'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('religion', __('Religion'));
+    	$row->addCheckbox('religion')->setValue('Y')->checked($required['religion'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('nationalIDCardNumber', __('National ID Card Number'));
+    	$row->addCheckbox('nationalIDCardNumber')->setValue('Y')->checked($required['nationalIDCardNumber'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('residencyStatus', __('Residency Status'));
+    	$row->addCheckbox('residencyStatus')->setValue('Y')->checked($required['residencyStatus'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('visaExpiryDate', __('Visa Expiry Date'));
+    	$row->addCheckbox('visaExpiryDate')->setValue('Y')->checked($required['visaExpiryDate'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('profession', __('Profession'));
+    	$row->addCheckbox('profession')->setValue('Y')->checked($required['profession'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('employer', __('Employer'));
+    	$row->addCheckbox('employer')->setValue('Y')->checked($required['employer'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('jobTitle', __('Job Title'));
+    	$row->addCheckbox('jobTitle')->setValue('Y')->checked($required['jobTitle'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency1Name', __('Emergency 1 Name'));
+    	$row->addCheckbox('emergency1Name')->setValue('Y')->checked($required['emergency1Name'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency1Number1', __('Emergency 1 Number 1'));
+    	$row->addCheckbox('emergency1Number1')->setValue('Y')->checked($required['emergency1Number1'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency1Number2', __('Emergency 1 Number 2'));
+    	$row->addCheckbox('emergency1Number2')->setValue('Y')->checked($required['emergency1Number2'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency1Relationship', __('Emergency 1 Relationship'));
+    	$row->addCheckbox('emergency1Relationship')->setValue('Y')->checked($required['emergency1Relationship'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency2Name', __('Emergency 2 Name'));
+    	$row->addCheckbox('emergency2Name')->setValue('Y')->checked($required['emergency2Name'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency2Number1', __('Emergency 2 Number 1'));
+    	$row->addCheckbox('emergency2Number1')->setValue('Y')->checked($required['emergency2Number1'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency2Number2', __('Emergency 2 Number 2'));
+    	$row->addCheckbox('emergency2Number2')->setValue('Y')->checked($required['emergency2Number2'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('emergency2Relationship', __('Emergency 2 Relationship'));
+    	$row->addCheckbox('emergency2Relationship')->setValue('Y')->checked($required['emergency2Relationship'])->setClass();
+
+    $row = $form->addRow();
+    	$row->addLabel('vehicleRegistration', __('Vehicle Registration'));
+    	$row->addCheckbox('vehicleRegistration')->setValue('Y')->checked($required['vehicleRegistration'])->setClass();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+    
+    echo $form->getOutput();
 
 }
-?>

@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/thirdPartySettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySettings.php') == false) {
@@ -36,28 +33,28 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enablePayments = $_POST['enablePayments'];
-    $paypalAPIUsername = $_POST['paypalAPIUsername'];
-    $paypalAPIPassword = $_POST['paypalAPIPassword'];
-    $paypalAPISignature = $_POST['paypalAPISignature'];
-    $googleOAuth = $_POST['googleOAuth'];
-    $googleClientName = $_POST['googleClientName'];
-    $googleClientID = $_POST['googleClientID'];
-    $googleClientSecret = $_POST['googleClientSecret'];
-    $googleRedirectUri = $_POST['googleRedirectUri'];
-    $googleDeveloperKey = $_POST['googleDeveloperKey'];
-    $calendarFeed = $_POST['calendarFeed'];
-    $smsUsername = $_POST['smsUsername'];
-    $smsPassword = $_POST['smsPassword'];
-    $smsURL = $_POST['smsURL'];
-    $smsURLCredit = $_POST['smsURLCredit'];
+    $enablePayments = (isset($_POST['enablePayments']))? $_POST['enablePayments'] : '';
+    $paypalAPIUsername = (isset($_POST['paypalAPIUsername']))? $_POST['paypalAPIUsername'] : '';
+    $paypalAPIPassword = (isset($_POST['paypalAPIPassword']))? $_POST['paypalAPIPassword'] : '';
+    $paypalAPISignature = (isset($_POST['paypalAPISignature']))? $_POST['paypalAPISignature'] : '';
+    $googleOAuth = (isset($_POST['googleOAuth']))? $_POST['googleOAuth'] : '';
+    $googleClientName = (isset($_POST['googleClientName']))? $_POST['googleClientName'] : '';
+    $googleClientID = (isset($_POST['googleClientID']))? $_POST['googleClientID'] : '';
+    $googleClientSecret = (isset($_POST['googleClientSecret']))? $_POST['googleClientSecret'] : '';
+    $googleRedirectUri = (isset($_POST['googleRedirectUri']))? $_POST['googleRedirectUri'] : '';
+    $googleDeveloperKey = (isset($_POST['googleDeveloperKey']))? $_POST['googleDeveloperKey'] : '';
+    $calendarFeed = (isset($_POST['calendarFeed']))? $_POST['calendarFeed'] : '';
+    $smsUsername = (isset($_POST['smsUsername']))? $_POST['smsUsername'] : '';
+    $smsPassword = (isset($_POST['smsPassword']))? $_POST['smsPassword'] : '';
+    $smsURL = (isset($_POST['smsURL']))? $_POST['smsURL'] : '';
+    $smsURLCredit = (isset($_POST['smsURLCredit']))? $_POST['smsURLCredit'] : '';
 
     // SMTP Mail Settings
-    $enableMailerSMTP = $_POST['enableMailerSMTP'];
-    $mailerSMTPHost = $_POST['mailerSMTPHost'];
-    $mailerSMTPPort = $_POST['mailerSMTPPort'];
-    $mailerSMTPUsername = $_POST['mailerSMTPUsername'];
-    $mailerSMTPPassword = $_POST['mailerSMTPPassword'];
+    $enableMailerSMTP = (isset($_POST['enableMailerSMTP']))? $_POST['enableMailerSMTP'] : '';
+    $mailerSMTPHost = (isset($_POST['mailerSMTPHost']))? $_POST['mailerSMTPHost'] : '';
+    $mailerSMTPPort = (isset($_POST['mailerSMTPPort']))? $_POST['mailerSMTPPort'] : '';
+    $mailerSMTPUsername = (isset($_POST['mailerSMTPUsername']))? $_POST['mailerSMTPUsername'] : '';
+    $mailerSMTPPassword = (isset($_POST['mailerSMTPPassword']))? $_POST['mailerSMTPPassword'] : '';
 
     //Validate Inputs
     if ($enablePayments == '' or $googleOAuth == '') {
@@ -68,15 +65,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $fail = false;
 
         try {
-            $data = array('calendarFeed' => $calendarFeed);
-            $sql = "UPDATE gibbonSetting SET value=:calendarFeed WHERE scope='System' AND name='calendarFeed'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
             $data = array('value' => $googleOAuth);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleOAuth'";
             $result = $connection2->prepare($sql);
@@ -85,49 +73,60 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $fail = true;
         }
 
-        try {
-            $data = array('value' => $googleClientName);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientName'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+        if ($googleOAuth == 'Y') {
+            try {
+                $data = array('value' => $googleClientName);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientName'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $googleClientID);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientID'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            try {
+                $data = array('value' => $googleClientID);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientID'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $googleClientSecret);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientSecret'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            try {
+                $data = array('value' => $googleClientSecret);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleClientSecret'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $googleRedirectUri);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleRedirectUri'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            try {
+                $data = array('value' => $googleRedirectUri);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleRedirectUri'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $googleDeveloperKey);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleDeveloperKey'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
+            try {
+                $data = array('value' => $googleDeveloperKey);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='googleDeveloperKey'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
+
+            try {
+                $data = array('calendarFeed' => $calendarFeed);
+                $sql = "UPDATE gibbonSetting SET value=:calendarFeed WHERE scope='System' AND name='calendarFeed'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
         }
 
         try {
@@ -139,31 +138,33 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $fail = true;
         }
 
-        try {
-            $data = array('paypalAPIUsername' => $paypalAPIUsername);
-            $sql = "UPDATE gibbonSetting SET value=:paypalAPIUsername WHERE scope='System' AND name='paypalAPIUsername'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+        if ($enablePayments == 'Y') {
+            try {
+                $data = array('paypalAPIUsername' => $paypalAPIUsername);
+                $sql = "UPDATE gibbonSetting SET value=:paypalAPIUsername WHERE scope='System' AND name='paypalAPIUsername'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('paypalAPIPassword' => $paypalAPIPassword);
-            $sql = "UPDATE gibbonSetting SET value=:paypalAPIPassword WHERE scope='System' AND name='paypalAPIPassword'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            try {
+                $data = array('paypalAPIPassword' => $paypalAPIPassword);
+                $sql = "UPDATE gibbonSetting SET value=:paypalAPIPassword WHERE scope='System' AND name='paypalAPIPassword'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('paypalAPISignature' => $paypalAPISignature);
-            $sql = "UPDATE gibbonSetting SET value=:paypalAPISignature WHERE scope='System' AND name='paypalAPISignature'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
+            try {
+                $data = array('paypalAPISignature' => $paypalAPISignature);
+                $sql = "UPDATE gibbonSetting SET value=:paypalAPISignature WHERE scope='System' AND name='paypalAPISignature'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
         }
 
         try {
@@ -212,40 +213,42 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $fail = true;
         }
 
-        try {
-            $data = array('value' => $mailerSMTPHost);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPHost'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+        if ($enableMailerSMTP == 'Y') {
+            try {
+                $data = array('value' => $mailerSMTPHost);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPHost'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $mailerSMTPPort);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPort'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            try {
+                $data = array('value' => $mailerSMTPPort);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPort'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $mailerSMTPUsername);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPUsername'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+            try {
+                $data = array('value' => $mailerSMTPUsername);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPUsername'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
 
-        try {
-            $data = array('value' => $mailerSMTPPassword);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPassword'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
+            try {
+                $data = array('value' => $mailerSMTPPassword);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPassword'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
         }
 
         if ($fail == true) {

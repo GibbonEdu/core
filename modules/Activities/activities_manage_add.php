@@ -34,19 +34,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_edit.php&gibbonActivityID='.$_GET['editID'].'&search='.$_GET['search'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_edit.php&gibbonActivityID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    if ($_GET['search'] != '') {
+    if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
     ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$_GET['search'] ?>">
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'] ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
 				<td colspan=2>
@@ -640,11 +640,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					} catch (PDOException $e) {
 					}
 					while ($rowSelect = $resultSelect->fetch()) {
-						$selected = '';
-						if ($row['gibbonPersonIDStatusResponsible'] == $rowSelect['gibbonPersonID']) {
-							$selected = 'selected';
-						}
-						echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."$expected</option>";
+						echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."</option>";
 					}
 					echo '</optgroup>';?>
 				</select>
@@ -668,7 +664,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
-					<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
