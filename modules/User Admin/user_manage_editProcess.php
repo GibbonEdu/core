@@ -337,12 +337,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
-                    if ($_FILES['file1']['tmp_name'] != '' or $_FILES['birthCertificateScan']['tmp_name'] != '' or $_FILES['nationalIDCardScan']['tmp_name'] != '' or $_FILES['citizenship1PassportScan']['tmp_name'] != '')
+                    if (!empty($_FILES['file1']['tmp_name']) or !empty($_FILES['birthCertificateScan']['tmp_name']) or !empty($_FILES['nationalIDCardScan']['tmp_name']) or !empty($_FILES['citizenship1PassportScan']['tmp_name']))
                     {
+                        $path = $_SESSION[$guid]['absolutePath'];
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-
+                        
                         //Move 240 attached file, if there is one
-                        if ($_FILES['file1']['tmp_name'] != '') {
+                        if (!empty($_FILES['file1']['tmp_name'])) {
                             $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
                             // Upload the file, return the /uploads relative path
@@ -351,11 +352,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size1 = getimagesize($path.'/'.$attachment1);
+                                $width1 = $size1[0];
+                                $height1 = $size1[1];
+                                $aspect1 = $height1 / $width1;
+                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
+                                    $attachment1 = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
 
                         //Move birth certificate scan if there is one
-                        if ($_FILES['birthCertificateScan']['tmp_name'] != '') {
+                        if (!empty($_FILES['birthCertificateScan']['tmp_name'])) {
                             $file = (isset($_FILES['birthCertificateScan']))? $_FILES['birthCertificateScan'] : null;
 
                             // Upload the file, return the /uploads relative path
@@ -364,11 +375,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             if (empty($birthCertificateScan)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size2 = getimagesize($path.'/'.$birthCertificateScan);
+                                $width2 = $size2[0];
+                                $height2 = $size2[1];
+                                if ($width2 > 1440 or $height2 > 900) {
+                                    $birthCertificateScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
 
                         //Move ID Card scan file, if there is one
-                        if ($_FILES['nationalIDCardScan']['tmp_name'] != '') {
+                        if (!empty($_FILES['nationalIDCardScan']['tmp_name'])) {
                             $file = (isset($_FILES['nationalIDCardScan']))? $_FILES['nationalIDCardScan'] : null;
 
                             // Upload the file, return the /uploads relative path
@@ -377,11 +397,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             if (empty($nationalIDCardScan)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size3 = getimagesize($path.'/'.$nationalIDCardScan);
+                                $width3 = $size3[0];
+                                $height3 = $size3[1];
+                                if ($width3 > 1440 or $height3 > 900) {
+                                    $nationalIDCardScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
 
                         //Move passport scan file, if there is one
-                        if ($_FILES['citizenship1PassportScan']['tmp_name'] != '') {
+                        if (!empty($_FILES['citizenship1PassportScan']['tmp_name'])) {
                             $file = (isset($_FILES['citizenship1PassportScan']))? $_FILES['citizenship1PassportScan'] : null;
 
                             // Upload the file, return the /uploads relative path
@@ -390,47 +419,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                             if (empty($citizenship1PassportScan)) {
                                 $imageFail = true;
-                            }
-                        }
-
-                        $path = $_SESSION[$guid]['absolutePath'];
-
-                        //Check image sizes
-                        if ($attachment1 != '') {
-                            $size1 = getimagesize($path.'/'.$attachment1);
-                            $width1 = $size1[0];
-                            $height1 = $size1[1];
-                            $aspect1 = $height1 / $width1;
-                            if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
-                                $attachment1 = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($birthCertificateScan != '') {
-                            $size3 = getimagesize($path.'/'.$birthCertificateScan);
-                            $width3 = $size3[0];
-                            $height3 = $size3[1];
-                            if ($width3 > 1440 or $height3 > 900) {
-                                $birthCertificateScan = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($nationalIDCardScan != '') {
-                            $size3 = getimagesize($path.'/'.$nationalIDCardScan);
-                            $width3 = $size3[0];
-                            $height3 = $size3[1];
-                            if ($width3 > 1440 or $height3 > 900) {
-                                $nationalIDCardScan = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($citizenship1PassportScan != '') {
-                            $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
-                            $width4 = $size4[0];
-                            $height4 = $size4[1];
-                            if ($width4 > 1440 or $height4 > 900) {
-                                $citizenship1PassportScan = '';
-                                $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
+                                $width4 = $size4[0];
+                                $height4 = $size4[1];
+                                if ($width4 > 1440 or $height4 > 900) {
+                                    $citizenship1PassportScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
                     }
