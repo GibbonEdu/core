@@ -2176,20 +2176,9 @@ if ($proceed == false) {
                         ?>
                     </td>
                 </tr>
-                <?php
+            <?php
 
-                //Get list of acceptable file extensions
-                try {
-                    $dataExt = array();
-                    $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                    $resultExt = $connection2->prepare($sqlExt);
-                    $resultExt->execute($dataExt);
-                } catch (PDOException $e) {
-            }
-            $ext = '';
-            while ($rowExt = $resultExt->fetch()) {
-                $ext = $ext."'.".$rowExt['extension']."',";
-            }
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
             $requiredDocumentsList = explode(',', $requiredDocuments);
             $count = 0;
@@ -2207,13 +2196,13 @@ if ($proceed == false) {
                         <?php
                         echo "<input type='file' name='file$count' id='file$count'><br/>";
                         echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
+                        echo "<script type='text/javascript'>";
+                        echo "var file$count=new LiveValidation('file$count');";
+                        echo "file$count.add( Validate.Inclusion, { within: [".$fileUploader->getFileExtensionsCSV()."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
                         if ($requiredDocumentsCompulsory == 'Y') {
-                            echo "<script type='text/javascript'>";
-                            echo "var file$count=new LiveValidation('file$count');";
-                            echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
                             echo "file$count.add(Validate.Presence);";
-                            echo '</script>';
                         }
+                        echo '</script>';
                         ++$count; ?>
                     </td>
                 </tr>

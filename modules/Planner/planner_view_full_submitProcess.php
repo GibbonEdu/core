@@ -109,50 +109,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if (substr($link, 0, 7) != 'http://' and substr($link, 0, 8) != 'https://') {
                                     $partialFail = true;
                                 } else {
-                                    $location = $link;
+                                    $attachment = $link;
                                 }
                             }
                             if ($type == 'File') {
-                                //Check extension to see if allow
-                                try {
-                                    $ext = explode('.', $_FILES['file']['name']);
-                                    $dataExt = array('extension' => end($ext));
-                                    $sqlExt = 'SELECT * FROM gibbonFileExtension WHERE extension=:extension';
-                                    $resultExt = $connection2->prepare($sqlExt);
-                                    $resultExt->execute($dataExt);
-                                } catch (PDOException $e) {
-                                    $partialFail = true;
-                                }
+                                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                                if ($resultExt->rowCount() != 1) {
-                                    $partialFail = true;
-                                } else {
-                                    //Attempt file upload
-                                    $time = time();
-                                    if ($_FILES['file']['tmp_name'] != '') {
-                                        //Check for folder in uploads based on today's date
-                                        $path = $_SESSION[$guid]['absolutePath'];
-                                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                                        }
-                                        $unique = false;
-                                        $count2 = 0;
-                                        while ($unique == false and $count2 < 100) {
-                                            $suffix = randomPassword(16);
-                                            $location = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$_SESSION[$guid]['username'].'_'.preg_replace('/[^a-zA-Z0-9]/', '', $lesson)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                                            if (!(file_exists($path.'/'.$location))) {
-                                                $unique = true;
-                                            }
-                                            ++$count2;
-                                        }
+                                $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
-                                        if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$location))) {
-                                            $URL .= '&return=warning1';
-                                            header("Location: {$URL}");
-                                        }
-                                    } else {
-                                        $partialFail = true;
-                                    }
+                                // Upload the file, return the /uploads relative path
+                                $attachment = $fileUploader->uploadFromPost($file, $_SESSION[$guid]['username'].'_'.$lesson);
+
+                                if (empty($attachment)) {
+                                    $partialFail = true;
                                 }
                             }
 
@@ -163,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             } else {
                                 //Write to database
                                 try {
-                                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $location, 'count' => ($count + 1), 'timestamp' => $timestamp);
+                                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => $timestamp);
                                     $sql = 'INSERT INTO gibbonPlannerEntryHomework SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, type=:type, version=:version, status=:status, location=:location, count=:count, timestamp=:timestamp';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);

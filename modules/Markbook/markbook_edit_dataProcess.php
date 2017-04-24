@@ -235,27 +235,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
                     }
 
-                    $time = time();
                     //Move attached file, if there is one
                     if ($uploadedResponse == 'Y') {
-                        if (@$_FILES["response$i"]['tmp_name'] != '') {
-                            //Check for folder in uploads based on today's date
-                            $path = $_SESSION[$guid]['absolutePath'];
-                            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                            }
-                            $unique = false;
-                            $count2 = 0;
-                            while ($unique == false and $count2 < 100) {
-                                $suffix = randomPassword(16);
-                                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_Uploaded Response_$suffix".strrchr($_FILES["response$i"]['name'], '.');
-                                if (!(file_exists($path.'/'.$attachment))) {
-                                    $unique = true;
-                                }
-                                ++$count2;
-                            }
+                        //Move attached image  file, if there is one
+                        if (!empty($_FILES['response'.$i]['tmp_name'])) {
+                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                            if (!(move_uploaded_file($_FILES["response$i"]['tmp_name'], $path.'/'.$attachment))) {
+                            $file = (isset($_FILES['response'.$i]))? $_FILES['response'.$i] : null;
+
+                            // Upload the file, return the /uploads relative path
+                            $attachment = $fileUploader->uploadFromPost($file, $name."_Uploaded Response");
+
+                            if (empty($attachment)) {
                                 $partialFail = true;
                             }
                         } else {

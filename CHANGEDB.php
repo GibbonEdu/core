@@ -686,6 +686,11 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 $sql[$count][0] = '13.0.01';
 $sql[$count][1] = "";
 
+//v13.0.02
+++$count;
+$sql[$count][0] = '13.0.02';
+$sql[$count][1] = "";
+
 //v14.0.00
 ++$count;
 $sql[$count][0] = '14.0.00';

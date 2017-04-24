@@ -51,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
 					<script type="text/javascript">
 						var extension=new LiveValidation('extension');
 						extension.add(Validate.Presence);
+						extension.add(Validate.Exclusion, { within: ['php', '.'], failureMessage: "<?php echo __('Illegal file type!') ?>", partialMatch: true, caseSensitive: false});
 					</script> 
 				</td>
 			</tr>
