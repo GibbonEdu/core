@@ -150,8 +150,10 @@ class DatabaseFormFactory extends FormFactory
             $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
                 FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
         } else {
-            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
-                FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonRollGroup.nameShort AS rollGroupName
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
                 WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY surname, preferredName";
         }
 
@@ -161,6 +163,10 @@ class DatabaseFormFactory extends FormFactory
         if ($results && $results->rowCount() > 0) {
             while ($row = $results->fetch()) {
                 $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+
+                if (!empty($row['rollGroupName'])) {
+                    $values[$row['gibbonPersonID']] .= ' ('.$row['rollGroupName'].')';
+                }
             }
         }
 
