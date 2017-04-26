@@ -73,6 +73,7 @@ v14.0.00
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
+		Timetable: added option to display either Day Of The Week or Timetable Day Short Name in column header of timetables
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when not addition roles chosen in user edit
 

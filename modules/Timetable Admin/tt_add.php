@@ -64,9 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
         } else {
             $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this school year.') ?></span>
 						</td>
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -105,24 +105,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 						</td>
 					</tr>
 					<tr>
-						<td> 
-							<b>Active</b><br/>
+						<td>
+							<b><?php echo __($guid, 'Day Column Name') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<select class="standardWidth" name="nameShortDisplay">
+								<?php
+                                echo "<option value='Day Of The Week'>".__($guid, 'Day Of The Week').'</option>';
+            					echo "<option value='Timetable Day Short Name'>".__($guid, 'Timetable Day Short Name').'</option>'; ?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b><?php echo __($guid, 'Active') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="active">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            					echo "<option value='N'>".__($guid, 'No').'</option>'; ?>				
+            					echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Groups not in an active TT this year.') ?></span>
 						</td>
 						<td class="right">
-							<?php 
+							<?php
                             $yearGroups = getNonTTYearGroups($connection2, $gibbonSchoolYearID);
 							if ($yearGroups == '') {
 								echo '<i>'.__($guid, 'No year groups available.').'</i>';

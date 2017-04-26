@@ -268,7 +268,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 				plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen, media',
 			 	statusbar: false,
 			 	valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
-			 	apply_source_formatting : true,
+                apply_source_formatting : true,
 			 	browser_spellcheck: true,
 			 	convert_urls: false,
 			 	relative_urls: false,
