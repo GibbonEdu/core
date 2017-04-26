@@ -237,8 +237,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         exit();
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    $partialFail = false;
+
+                    //Deal with required documents
+                    $requiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
+                    if ($requiredDocuments != '' and $requiredDocuments != false) {
+                        $fileCount = 0;
+                        if (isset($_POST['fileCount'])) {
+                            $fileCount = $_POST['fileCount'];
+                        }
+
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+                        for ($i = 0; $i < $fileCount; ++$i) {
+                            if (empty($_FILES["file$i"]['tmp_name'])) continue;
+
+                            $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
+                            $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
+
+                            // Upload the file, return the /uploads relative path
+                            $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
+
+                            // Write files to database, if there is one
+                            if (!empty($attachment)) {
+                                try {
+                                    $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $fileName, 'path' => $attachment);
+                                    $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
+                                    $resultFile = $connection2->prepare($sqlFile);
+                                    $resultFile->execute($dataFile);
+                                } catch (PDOException $e) {
+                                }
+                            } else {
+                                $partialFail = true;
+                            }
+                        }
+                    }
+
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                       $URL .= '&return=success0';
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }

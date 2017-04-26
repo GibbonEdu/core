@@ -68,17 +68,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
                     //Get list of acceptable file extensions
-                    try {
-                        $dataExt = array();
-                        $sqlExt = "SELECT * FROM gibbonFileExtension WHERE type='Audio'";
-                        $resultExt = $connection2->prepare($sqlExt);
-                        $resultExt->execute($dataExt);
-                    } catch (PDOException $e) {
-                    }
-					$ext = '';
-					while ($rowExt = $resultExt->fetch()) {
-						$ext = $ext."'.".$rowExt['extension']."',";
-					}
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader->getFileExtensions('Audio');
+                    $ext = $fileUploader->getFileExtensionsCSV();
 					?>
 			
 					<script type="text/javascript">

@@ -672,37 +672,20 @@ if ($proceed == false) {
                     if (isset($_POST['fileCount'])) {
                         $fileCount = $_POST['fileCount'];
                     }
+
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
                     for ($i = 0; $i < $fileCount; ++$i) {
-                        $fileName = $_POST["fileName$i"];
-                        $time = time();
-                        //Move attached file, if there is one
-                        if (isset($_FILES["file$i"]['tmp_name']) && $_FILES["file$i"]['tmp_name'] != '') {
-                            //Check for folder in uploads based on today's date
-                            $path = $_SESSION[$guid]['absolutePath'];
-                            $directory = 'uploads/'.date('Y', $time).'/'.date('m', $time);
-                            if (is_dir($path.'/'.$directory) == false) {
-                                mkdir($path.'/'.$directory, 0775, true);
-                            }
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                $attachment = $directory."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
-                                if (!(file_exists($path.'/'.$attachment))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
-                                // Make one more attempt at moving the file, using gibbon root path
-                                $basePath = str_replace('\\', '/', dirname(__FILE__));
-                                $basePath = str_replace('modules/Students', '', $basePath);
-                                $basePath = rtrim($basePath, '/');
+                        if (empty($_FILES["file$i"]['tmp_name'])) continue;
 
-                                move_uploaded_file($_FILES["file$i"]['tmp_name'], $basePath.'/'.$attachment);
-                            }
+                        $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
+                        $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
 
-                            //Write files to database
+                        // Upload the file, return the /uploads relative path
+                        $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
+
+                        // Write files to database, if there is one
+                        if (!empty($attachment)) {
                             try {
                                 $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                 $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';

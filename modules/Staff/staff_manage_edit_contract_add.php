@@ -356,13 +356,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					<tr>
 						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Contract File') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Accepts PDF, ODT, DOC, DOCX, RTF.') ?></span>
+							<span class="emphasis small">
+                                <?php
+                                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                                echo sprintf(__($guid, 'Accepts %1$s.'), implode(', ', $fileUploader->getFileExtensions('Document')));
+                                ?>
+                            </span>
 						</td>
 						<td class="right">
 							<input type="file" name="file1" id="file1"><br/><br/>
 							<script type="text/javascript">
 								var file1=new LiveValidation('file1');
-								file1.add( Validate.Inclusion, { within: ['pdf','odt','doc','docx','rtf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								file1.add( Validate.Inclusion, { within: [<?php echo $fileUploader->getFileExtensionsCSV() ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>

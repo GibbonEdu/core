@@ -83,6 +83,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
         $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
+        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader->getFileExtensions();
+        
         //Lock markbook column table
         try {
             $sqlLock = 'LOCK TABLES gibbonInternalAssessmentColumn WRITE';
@@ -112,25 +115,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
         $time = time();
         //Move attached file, if there is one
-        if ($_FILES['file']['tmp_name'] != '') {
-            //Check for folder in uploads based on today's date
-            $path = $_SESSION[$guid]['absolutePath'];
-            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-            }
-            $unique = false;
-            $count = 0;
-            while ($unique == false and $count < 100) {
-                $suffix = randomPassword(16);
-                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                if (!(file_exists($path.'/'.$attachment))) {
-                    $unique = true;
-                }
-                ++$count;
-            }
-            if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                $URL .= '&return=error3';
-                header("Location: {$URL}");
+        if (!empty($_FILES['file']['tmp_name'])) {   
+            $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+            // Upload the file, return the /uploads relative path
+            $attachment = $fileUploader->uploadFromPost($file, $name);
+                    
+            if (empty($attachment)) {
+                $partialFail = true;
             }
         } else {
             $attachment = '';
@@ -163,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             } catch (PDOException $e) {
             }
 
-            if ($partialFail != false) {
+            if ($partialFail == true) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
             } else {

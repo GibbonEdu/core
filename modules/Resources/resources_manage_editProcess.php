@@ -33,21 +33,25 @@ $time = time();
 if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     if (empty($_POST)) {
         $URL .= '&return=warning1';
         header("Location: {$URL}");
+        exit;
     } else {
         $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
         if ($highestAction == false) {
             $URL .= "&return=error0$params";
             header("Location: {$URL}");
+            exit;
         } else {
             //Proceed!
             //Check if school year specified
             if ($gibbonResourceID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
+                exit;
             } else {
                 try {
                     if ($highestAction == 'Manage Resources_all') {
@@ -68,12 +72,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 if ($result->rowCount() != 1) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     $row = $result->fetch();
 
                     $type = $_POST['type'];
                     if ($type == 'File') {
-                        $content = $_FILES['file'];
+                        $content = $row['content'];
                     } elseif ($type == 'HTML') {
                         $content = $_POST['html'];
                     } elseif ($type == 'Link') {
@@ -97,35 +102,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                     if (($type != 'File' and $type != 'HTML' and $type != 'Link') or (is_null($content) and $type != 'File') or $name == '' or $category == '' or $tags == '') {
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
+                        exit;
                     } else {
-                        if ($type == 'File') {
-                            $attachment = '';
-                            if ($_FILES['file']['tmp_name'] != '') {
-                                //Check for folder in uploads based on today's date
-                                $path = $_SESSION[$guid]['absolutePath'];
-                                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                                }
-                                $unique = false;
-                                $count = 0;
-                                while ($unique == false and $count < 100) {
-                                    $suffix = randomPassword(16);
-                                    $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                                    if (!(file_exists($path.'/'.$attachment))) {
-                                        $unique = true;
-                                    }
-                                    ++$count;
-                                }
+                        $partialFail = false;
 
-                                if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                                    $URL .= '&return=warning1';
-                                    header("Location: {$URL}");
-                                }
-                            }
-                            if ($attachment == '') {
-                                $content = $row['content'];
-                            } else {
-                                $content = $attachment;
+                        if ($type == 'File' && !empty($_FILES['file']['tmp_name'])) {
+                            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+                            $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+                            // Upload the file, return the /uploads relative path
+                            $content = $fileUploader->uploadFromPost($file, $name);
+
+                            if (empty($attachment)) {
+                                $partialFail = true;
                             }
                         }
 
@@ -227,8 +217,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                        $URL .= "&return=success0";
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }

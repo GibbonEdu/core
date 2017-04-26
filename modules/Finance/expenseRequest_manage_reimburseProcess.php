@@ -44,10 +44,12 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_manage_reimburse.php') == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
+        exit();
     } else {
-        if ($gibbonFinanceExpenseID == '' or $status == '' or $status != 'Paid' or $_FILES['file']['tmp_name'] == '') {
+        if ($gibbonFinanceExpenseID == '' or $status == '' or $status != 'Paid' or empty($_FILES['file']['tmp_name'])) {
             $URL .= '&return=error0';
             header("Location: {$URL}");
+            exit();
         } else {
             //Get and check settings
             $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
@@ -56,6 +58,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                 $URL .= '&return=error0';
                 header("Location: {$URL}");
+                exit();
             } else {
                 //Check if there are approvers
                 try {
@@ -64,21 +67,24 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo $e->getMessage();
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
                 }
 
                 if ($result->rowCount() < 1) {
                     $URL .= '&return=error0';
                     header("Location: {$URL}");
+                    exit();
                 } else {
                     //Ready to go! Just check record exists and we have access, and load it ready to use...
                     try {
                         //Set Up filter wheres
                         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                        $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-							FROM gibbonFinanceExpense 
-							JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-							JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+                        $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+							FROM gibbonFinanceExpense
+							JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+							JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 							WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceExpense.status='Approved'";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -91,35 +97,24 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                     if ($result->rowCount() != 1) {
                         $URL .= '&return=error0';
                         header("Location: {$URL}");
+                        exit();
                     } else {
                         $row = $result->fetch();
 
-                        //Get relevant 
+                        //Get relevant
                         $paymentDate = dateConvert($guid, $_POST['paymentDate']);
                         $paymentAmount = $_POST['paymentAmount'];
                         $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'];
                         $paymentMethod = $_POST['paymentMethod'];
 
-                        //Move attached file
-                        $time = time();
-                        $attachment = '';
-                        //Check for folder in uploads based on today's date
-                        $path = $_SESSION[$guid]['absolutePath'];
-                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                        }
-                        $unique = false;
-                        $count = 0;
-                        while ($unique == false and $count < 100) {
-                            $suffix = randomPassword(16);
-                            $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $row['title'])."_$suffix".strrchr($_FILES['file']['name'], '.');
-                            if (!(file_exists($path.'/'.$attachment))) {
-                                $unique = true;
-                            }
-                            ++$count;
-                        }
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-                        if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
+                        $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+                        // Upload the file, return the /uploads relative path
+                        $attachment = $fileUploader->uploadFromPost($file, $row['title']);
+
+                        if (empty($attachment)) {
                             $URL .= '&return=error5';
                             header("Location: {$URL}");
                             exit();
