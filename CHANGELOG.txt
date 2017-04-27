@@ -28,6 +28,7 @@ v14.0.00
 		...
 
 	Security
+		System: fixed PHP code execution vulnerability
 		System: fixed infinite nested index reload bug
 
 	Changes With Important Notices
