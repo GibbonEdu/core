@@ -752,4 +752,5 @@ UPDATE `gibbonAttendanceLogPerson` SET `gibbonAttendanceCodeID`=NULL WHERE gibbo
 ALTER TABLE `gibbonMarkbookColumn` CHANGE `attainmentRawMax` `attainmentRawMax` DECIMAL(8,2) NULL DEFAULT NULL;end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Positive Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonTT` ADD `nameShortDisplay` ENUM('Day Of The Week','Timetable Day Short Name','','') NOT NULL DEFAULT 'Day Of The Week' AFTER `nameShort`;end
+DELETE FROM gibbonFileExtension WHERE extension='scpt';end
 ";
