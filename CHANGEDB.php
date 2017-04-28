@@ -753,4 +753,7 @@ ALTER TABLE `gibbonMarkbookColumn` CHANGE `attainmentRawMax` `attainmentRawMax` 
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Positive Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonTT` ADD `nameShortDisplay` ENUM('Day Of The Week','Timetable Day Short Name','','') NOT NULL DEFAULT 'Day Of The Week' AFTER `nameShort`;end
 DELETE FROM gibbonFileExtension WHERE extension='scpt';end
+UPDATE gibbonAction SET name='Attendance By Roll Group_all', precedence=1 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance') AND name='Attendance By Roll Group';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Attendance By Roll Group_myGroups', 0, 'Take Attendance', 'Take attendance for a teacher\'s own roll groups', 'attendance_take_byRollGroup.php', 'attendance_take_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N', 'Y');end
+
 ";
