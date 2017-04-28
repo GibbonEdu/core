@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $extension = $_POST['extension'];
+            $extension = strtolower($_POST['extension']);
             $name = $_POST['name'];
             $type = $_POST['type'];
 
