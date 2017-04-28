@@ -243,7 +243,7 @@ class FileUploader
             if ($result && $result->rowCount() > 0) {
                 //Filter out illegal extensions
                 $fileExtensionsPreFilter = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
-                $illegals = array('htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py');
+                $illegals = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py');
 
                 foreach ($fileExtensionsPreFilter AS $extension) {
                     if (!in_array($extension, $illegals)) {
