@@ -155,4 +155,26 @@ class FileUploaderTest extends TestCase
 
         $this->assertFalse($this->fileUploader->upload($filename, $sourcePath));
     }
+
+    public function testCannotSetIllegalExtensionsFromArray()
+    {
+        $this->fileUploader->setFileExtensions(array('foo','php','bar','js','baz','py'));
+
+        $this->assertFalse($this->fileUploader->isFileTypeValid('somefile.php'));
+    }
+
+    public function testCannotSetIllegalExtensionsFromDatabase()
+    {
+        $mockResults = $this->createMock(\PDOStatement::class);
+        $mockResults->method('rowCount')->willReturn(6);
+        $mockResults->method('fetchAll')->willReturn(array('foo','php','bar','js','baz','py'));
+
+        $mockPDO = $this->createMock(sqlConnection::class);
+        $mockPDO->method('executeQuery')
+                ->willReturn($mockResults);
+
+        $fileUploaderMock = new FileUploader($mockPDO, $this->mockSession);
+
+        $this->assertEquals($fileUploaderMock->getFileExtensions(), array('foo','bar','baz'));
+    }
 }
