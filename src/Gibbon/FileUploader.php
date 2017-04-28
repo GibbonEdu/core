@@ -237,11 +237,19 @@ class FileUploader
                 $data = array();
                 $sql = "SELECT LOWER(extension) FROM gibbonFileExtension ORDER BY type, name";
             }
-            
+
             $result = $this->pdo->executeQuery($data, $sql);
 
             if ($result && $result->rowCount() > 0) {
-                $this->fileExtensions = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
+                //Filter out illegal extensions
+                $fileExtensionsPreFilter = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
+                $illegals = array('htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py');
+
+                foreach ($fileExtensionsPreFilter AS $extension) {
+                    if (!in_array($extension, $illegals)) {
+                        array_push($this->fileExtensions, $extension);
+                    }
+                }
             }
         }
 
