@@ -338,7 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     {
                         $path = $_SESSION[$guid]['absolutePath'];
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                        
+
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
                             $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
@@ -515,7 +515,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
-                                if ($_POST[$i.'-matchAddress'] != '') {
+                                if (!empty($_POST[$i.'-matchAddress'])) {
                                     try {
                                         $dataAddress = array('address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonID' => $_POST[$i.'-matchAddress']);
                                         $sqlAddress = 'UPDATE gibbonPerson SET address1=:address1, address1District=:address1District, address1Country=:address1Country WHERE gibbonPersonID=:gibbonPersonID';
