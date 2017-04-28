@@ -259,7 +259,14 @@ class FileUploader
             $result = $this->pdo->executeQuery($data, $sql);
 
             if ($result && $result->rowCount() > 0) {
-                $this->fileExtensions = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
+                $fileExtensionsPreFilter = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+                foreach ($fileExtensionsPreFilter as $extension) {
+                    // Prevent illegal file extensions
+                    if (!in_array($extension, $this->getIllegalFileExtensions())) {
+                        array_push($this->fileExtensions, $extension);
+                    }
+                }
             }
         }
 
@@ -289,7 +296,13 @@ class FileUploader
     {
         if (empty($extensions) || !is_array($extensions)) return false;
 
-        $this->fileExtensions = $extensions;
+        $this->fileExtensions = array();
+
+        foreach ($extensions as $extension) {
+            if (!in_array($extension, $this->getIllegalFileExtensions())) {
+                array_push($this->fileExtensions, $extension);
+            }
+        }
 
         return true;
     }
