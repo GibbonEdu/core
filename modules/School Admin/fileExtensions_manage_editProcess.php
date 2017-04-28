@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
             $name = $_POST['name'];
             $type = $_POST['type'];
 
-            if ($extension == '' or $name == '' or $type == '' or stripos($extension, 'php') !== false) {
+            if ($extension == '' or $name == '' or $type == '' or in_array($extension, array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py'))) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
