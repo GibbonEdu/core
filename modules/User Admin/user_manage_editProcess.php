@@ -98,22 +98,44 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $status = $_POST['status'];
             $canLogin = $_POST['canLogin'];
             $passwordForceReset = $_POST['passwordForceReset'];
-            $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'];
-            $gibbonRoleIDAll = '';
-            $containsPrimary = false;
-            $choices = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
-            if (count($choices) > 0) {
-                foreach ($choices as $t) {
-                    $gibbonRoleIDAll .= $t.',';
-                    if ($t == $gibbonRoleIDPrimary) {
-                        $containsPrimary = true;
+            $gibbonRoleIDPrimary = (isset($_POST['gibbonRoleIDPrimary'])) ? $_POST['gibbonRoleIDPrimary'] : $row['gibbonRoleIDPrimary'];
+            $selectedRoles = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
+
+            // Put together an array of this user's current roles
+            $currentUserRoles = $_SESSION[$guid]['gibbonRoleIDAll'];
+            $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
+            try {
+                $dataRoles = array('gibbonRoleIDAll' => $row['gibbonRoleIDAll']);
+                $sqlRoles = 'SELECT gibbonRoleID, restriction, name FROM gibbonRole WHERE FIND_IN_SET(gibbonRoleID, :gibbonRoleIDAll)';
+                $resultRoles = $connection2->prepare($sqlRoles);
+                $resultRoles->execute($dataRoles);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            // Loop through _existing_ roles and add the ones that cannot be removed back to the selected roles
+            if ($resultRoles && $resultRoles->rowCount() > 0) {
+                while ($rowSelect = $resultRoles->fetch()) {
+                    if ($rowSelect['restriction'] == 'Admin Only') {
+                        if (!in_array('001', $currentUserRoles, true)) {
+                            $selectedRoles[] = $rowSelect['gibbonRoleID'];
+                        }
+                    } else if ($rowSelect['restriction'] == 'Same Role') {
+                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) {
+                            $selectedRoles[] = $rowSelect['gibbonRoleID'];
+                        }
                     }
                 }
             }
-            if ($containsPrimary == false) {
-                $gibbonRoleIDAll = $gibbonRoleIDPrimary.','.$gibbonRoleIDAll;
+
+            // Ensure the primary role is always in the all roles list
+            if (!in_array($gibbonRoleIDPrimary, $selectedRoles)) {
+                $selectedRoles[] = $gibbonRoleIDPrimary;
             }
-            $gibbonRoleIDAll = substr($gibbonRoleIDAll, 0, -1);
+
+            $gibbonRoleIDAll = (is_array($selectedRoles))? implode(',', array_unique($selectedRoles)) : '';
+
             $dob = $_POST['dob'];
             if ($dob == '') {
                 $dob = null;

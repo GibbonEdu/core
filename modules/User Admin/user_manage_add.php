@@ -214,7 +214,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 							$resultSelect->execute($dataSelect);
 						} catch (PDOException $e) {
 						}
+
+						// Put together an array of this user's current roles
+                        $currentUserRoles = $_SESSION[$guid]['gibbonRoleIDAll'];
+                        $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
 						while ($rowSelect = $resultSelect->fetch()) {
+							// Check for and remove restricted roles from this list
+							if ($rowSelect['restriction'] == 'Admin Only') {
+								if (!in_array('001', $currentUserRoles, true)) continue;
+							} else if ($rowSelect['restriction'] == 'Same Role') {
+								if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) continue;
+							}
+
 							echo "<option value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
 						?>
