@@ -288,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $roleRestriction = $roleDetails['restriction'];
 
                             // Display a readonly field if the current role cannot be changed
-                            if (empty($roleRestriction) || ($roleRestriction == 'Admin Only' && !in_array('001', $currentUserRoles, true)) || ($roleRestriction == 'Same Role' && !in_array($row['gibbonRoleIDPrimary'], $currentUserRoles, true)) ) {
+                            if (empty($roleRestriction) || ($roleRestriction == 'Admin Only' && !in_array('001', $currentUserRoles, true)) || ($roleRestriction == 'Same Role' && !in_array($row['gibbonRoleIDPrimary'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) ) {
                                 echo '<input type="text" name="gibbonRoleIDPrimaryName" value="'.$roleDetails['name'].'" class="standardWidth" readonly>';
                             } else {
 
