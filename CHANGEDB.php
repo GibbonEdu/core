@@ -759,5 +759,6 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Finance Data Updates', 'Data Updater', 'Finance Data Updates', 'Core', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Medical Form Updates', 'Data Updater', 'Medical Form Updates', 'Core', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Personal Data Updates', 'Data Updater', 'Personal Data Updates', 'Core', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Login - Failed', 'User Admin', 'Manage Users', 'Core', 'All', 'Y');end
 
 ";
