@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -76,12 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 $languageHomePrimary = $_POST['languageHomePrimary'];
                 $languageHomeSecondary = $_POST['languageHomeSecondary'];
 
-                //Attempt to send email to DBA
-                if ($_SESSION[$guid]['organisationDBA'] != '') {
-                    $notificationText = sprintf(__($guid, 'A family data update request has been submitted.'));
-                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/Data Updater/data_family_manage.php');
-                }
-
                 //Write to database
                 $existing = $_POST['existing'];
 
@@ -100,6 +96,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     header("Location: {$URL}");
                     exit();
                 }
+
+                // Raise a new notification event
+                $event = new NotificationEvent('Data Updater', 'Family Data Updates');
+
+                $event->setNotificationText(__('A family data update request has been submitted.'));
+                $event->setActionLink('/index.php?q=/modules/Data Updater/data_family_manage.php');
+
+                if (!empty($_SESSION[$guid]['organisationDBA'])) {
+                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                }
+
+                $event->sendNotifications($pdo, $gibbon->session);
 
                 $URL .= '&return=success0';
                 header("Location: {$URL}");

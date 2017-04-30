@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -291,12 +293,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     } else {
                         $fields = serialize($fields);
 
-                        //Attempt to notify to DBA
-                        if ($_SESSION[$guid]['organisationDBA'] != '') {
-                            $notificationText = sprintf(__($guid, 'A personal data update request has been submitted.'));
-                            setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/Data Updater/data_personal_manage.php');
-                        }
-
                         //Write to database
                         $existing = $_POST['existing'];
 
@@ -356,8 +352,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 }
                             }
                         }
+
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Data Updater', 'Personal Data Updates');
+
+                        $event->setNotificationText(__('A personal data update request has been submitted.'));
+                        $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
+
+                        if (!empty($_SESSION[$guid]['organisationDBA'])) {
+                            $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                        }
+
+                        $event->sendNotifications($pdo, $gibbon->session);
+
                         if ($partialFail == true) {
-                            $URL .= '&return=error3';
+                            $URL .= '&return=warning1';
                             header("Location: {$URL}");
                         } else {
                             $URL .= '&return=success0';
