@@ -702,12 +702,9 @@ if ($proceed == false) {
                 // Raise a new notification event
                 $event = new NotificationEvent('Students', 'New Application Form');
 
+                $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
                 $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student')));
                 $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
-
-                if (!empty($_SESSION[$guid]['organisationAdmissions'])) {
-                    $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
-                }
 
                 $event->sendNotifications($pdo, $gibbon->session);
 

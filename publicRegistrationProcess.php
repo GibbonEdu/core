@@ -143,12 +143,9 @@ if ($proceed == false) {
                         // Raise a new notification event
                         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
+                        $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
                         $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is pending approval.'), formatName('', $preferredName, $surname, 'Student')));
                         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
-
-                        if (!empty($_SESSION[$guid]['organisationAdmissions'])) {
-                            $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
-                        }
 
                         $event->sendNotifications($pdo, $gibbon->session);
 

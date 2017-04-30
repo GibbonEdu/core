@@ -91,12 +91,9 @@ else {
                 // Raise a new notification event
                 $event = new NotificationEvent('User Admin', 'Login - Failed');
 
+                $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
                 $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
                 $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
-
-                if (!empty($_SESSION[$guid]['organisationAdministrator'])) {
-                    $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
-                }
 
                 $event->sendNotifications($pdo, $gibbon->session);
             }

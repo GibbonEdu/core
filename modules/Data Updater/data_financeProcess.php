@@ -140,12 +140,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 // Raise a new notification event
                 $event = new NotificationEvent('Data Updater', 'Finance Data Updates');
 
+                $event->addRecipient($_SESSION[$guid]['organisationDBA']);
                 $event->setNotificationText(__('A finance data update request has been submitted.'));
                 $event->setActionLink('/index.php?q=/modules/Data Updater/data_finance_manage.php');
-
-                if (!empty($_SESSION[$guid]['organisationDBA'])) {
-                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
-                }
 
                 $event->sendNotifications($pdo, $gibbon->session);
 

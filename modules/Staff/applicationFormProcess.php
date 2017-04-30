@@ -298,12 +298,9 @@ if ($proceed == false) {
                         // Raise a new notification event
                         $event = new NotificationEvent('Staff', 'New Application Form');
 
+                        $event->addRecipient($_SESSION[$guid]['organisationHR']);
                         $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student')));
                         $event->setActionLink("/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
-
-                        if (!empty($_SESSION[$guid]['organisationHR'])) {
-                            $event->addRecipient($_SESSION[$guid]['organisationHR']);
-                        }
 
                         $event->sendNotifications($pdo, $gibbon->session);
 
