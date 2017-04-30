@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 require '../../lib/PHPMailer/PHPMailerAutoload.php';
@@ -293,11 +295,17 @@ if ($proceed == false) {
                             }
                         }
 
-                        //Attempt to notify HR administrator
-                        if ($_SESSION[$guid]['organisationHR']) {
-                            $notificationText = sprintf(__($guid, 'An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student'));
-                            setNotification($connection2, $guid, $_SESSION[$guid]['organisationHR'], $notificationText, 'Staff Application Form', "/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Staff', 'New Application Form');
+
+                        $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student')));
+                        $event->setActionLink("/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
+
+                        if (!empty($_SESSION[$guid]['organisationHR'])) {
+                            $event->addRecipient($_SESSION[$guid]['organisationHR']);
                         }
+
+                        $event->sendNotifications($pdo, $gibbon->session);
 
                         //Email reference form link to referee
                         $applicationFormRefereeLink = unserialize(getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink'));

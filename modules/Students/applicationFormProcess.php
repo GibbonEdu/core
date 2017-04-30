@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 require '../../lib/PHPMailer/PHPMailerAutoload.php';
@@ -697,11 +699,18 @@ if ($proceed == false) {
                     }
                 }
 
-                //Attempt to notify admissions administrator
-                if ($_SESSION[$guid]['organisationAdmissions'] != '') {
-                    $notificationText = sprintf(__($guid, 'An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student'));
-                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdmissions'], $notificationText, 'Application Form', "/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
+                // Raise a new notification event
+                $event = new NotificationEvent('Students', 'New Application Form');
+
+                $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student')));
+                $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
+
+                if (!empty($_SESSION[$guid]['organisationAdmissions'])) {
+                    $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
                 }
+
+                $event->sendNotifications($pdo, $gibbon->session);
+
 
                 //Email reference form link to referee
                 $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
