@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -38,109 +40,58 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/role_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Category') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="category" id="category" class="standardWidth">
-						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-						<option value="Staff"><?php echo __($guid, 'Staff') ?></option>
-						<option value="Student"><?php echo __($guid, 'Student') ?></option>
-						<option value="Parent"><?php echo __($guid, 'Parent') ?></option>
-						<option value="Other"><?php echo __($guid, 'Other') ?></option>
-					</select>
-					<script type="text/javascript">
-						var category=new LiveValidation('category');
-						category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var name2=new LiveValidation('name');
-						name2.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var nameShort=new LiveValidation('nameShort');
-						nameShort.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Description') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input name="description" id="description" maxlength=60 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var description=new LiveValidation('description');
-						description.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Type') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-				</td>
-				<td class="right">
-					<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" class="standardWidth">
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Login To Past Years') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="pastYearsLogin" id="pastYearsLogin" class="standardWidth">
-						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Login To Future Years') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="futureYearsLogin" id="futureYearsLogin" class="standardWidth">
-						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('addRole', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/role_manage_addProcess.php');
 
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $categories = array(
+        'Staff'   => __('Staff'),
+        'Student' => __('Student'),
+        'Parent'  => __('Parent'),
+        'Other'   => __('Other'),
+    );
+
+    $restrictions = array(
+        'None'       => __('None'),
+        'Same Role'  => __('Users with the same role'),
+        'Admin Only' => __('Administrators only'),
+    );
+
+    $row = $form->addRow();
+        $row->addLabel('category', __('Category'));
+        $row->addSelect('category')->fromArray($categories)->isRequired()->placeholder();
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'));
+        $row->addTextField('name')->isRequired()->maxLength(20);
+
+    $row = $form->addRow();
+        $row->addLabel('nameShort', __('Short Name'));
+        $row->addTextField('nameShort')->isRequired()->maxLength(4);
+
+    $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextField('description')->isRequired()->maxLength(60);
+
+    $row = $form->addRow();
+        $row->addLabel('type', __('Type'));
+        $row->addTextField('type')->isRequired()->readonly()->setValue('Additional');
+
+    $row = $form->addRow();
+        $row->addLabel('pastYearsLogin', __('Login To Past Years'));
+        $row->addYesNo('pastYearsLogin')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('futureYearsLogin', __('Login To Future Years'));
+        $row->addYesNo('futureYearsLogin')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('restriction', __('Restriction'))->description('Determines who can grant or remove this role in Manage Users.');
+        $row->addSelect('restriction')->fromArray($restrictions)->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>

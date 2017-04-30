@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -56,179 +58,71 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            $type = $row['type']; ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/role_manage_editProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Category') ?> *</b><br/>
-							<?php
-                            if ($type == 'Core') {
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
-                            }
-            				?>
-						</td>
-						<td class="right">
-							<?php
-                            if ($type == 'Core') {
-                                ?>
-								<input name="category" id="category" readonly="readonly" maxlength=20 value="<?php echo __($guid, $row['category']) ?>" type="text" class="standardWidth">
-								<?php
+            $role = $result->fetch();
+            $isReadOnly = ($role['type'] == 'Core');
 
-                            } else {
-                                ?>
-								<select name="category" id="category" class="standardWidth">
-									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<option <?php if ($row['category'] == 'Staff') { echo 'selected '; } ?>value="Staff"><?php echo __($guid, 'Staff') ?></option>
-									<option <?php if ($row['category'] == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-									<option <?php if ($row['category'] == 'Parent') { echo 'selected '; } ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
-									<option <?php if ($row['category'] == 'Other') { echo 'selected '; } ?>value="Other"><?php echo __($guid, 'Other') ?></option>
-								</select>
-								<script type="text/javascript">
-									var category=new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								</script>
-								<?php
+            $form = Form::create('addRole', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/role_manage_editProcess.php?gibbonRoleID='.$gibbonRoleID);
 
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span><br/>
-							<?php
-                            if ($type == 'Core') {
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
-                            }
-            				?>
-							
-						</td>
-						<td class="right">
-							<?php
-                            if ($type == 'Core') {
-                                ?>
-								<input name="name" id="name" readonly="readonly" maxlength=20 value="<?php echo __($guid, $row['name']) ?>" type="text" class="standardWidth">
-								<?php
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                            } else {
-                                ?>
-								<input name="name" id="name" maxlength=20 value="<?php echo htmlPrep(__($guid, $row['name'])) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var name2=new LiveValidation('name');
-									name2.add(Validate.Presence);
-								</script> 
-								<?php
+            $categories = array(
+                'Staff'   => __('Staff'),
+                'Student' => __('Student'),
+                'Parent'  => __('Parent'),
+                'Other'   => __('Other'),
+            );
 
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span><br/>
-							<?php
-                            if ($type == 'Core') {
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
-                            }
-            				?>
-						</td>
-						<td class="right">
-							<?php
-                            if ($type == 'Core') {
-                                ?>
-								<input name="nameShort" id="nameShort" readonly="readonly" maxlength=20 value="<?php echo __($guid, $row['nameShort']) ?>" type="text" class="standardWidth">
-								<?php
+            $restrictions = array(
+                'None'       => __('None'),
+                'Same Role'  => __('Users with the same role'),
+                'Admin Only' => __('Administrators only'),
+            );
 
-                            } else {
-                                ?>
-								<input name="nameShort" id="nameShort" maxlength=4 value="<?php echo htmlPrep(__($guid, $row['nameShort'])) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var nameShort=new LiveValidation('nameShort');
-									nameShort.add(Validate.Presence);
-								</script> 
-								<?php
+            $row = $form->addRow();
+                $row->addLabel('category', __('Category'));
+            if ($isReadOnly) {
+                $row->addTextField('category')->isRequired()->readonly()->setValue($role['category']);
+            } else {
+                $row->addSelect('category')->fromArray($categories)->isRequired()->placeholder()->selected($role['category']);
+            }
 
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Description') ?> *</b><br/>
-							<?php
-                            if ($type == 'Core') {
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
-                            }
-            				?>
-						</td>
-						<td class="right">
-							<?php
-                            if ($type == 'Core') {
-                                ?>
-								<input name="description" id="description" readonly="readonly" maxlength=60 value="<?php echo __($guid, $row['description']) ?>" type="text" class="standardWidth">
-								<?php
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'));
+                $row->addTextField('name')->isRequired()->maxLength(20)->readonly($isReadOnly)->setValue($role['name']);
 
-                            } else {
-                                ?>
-								<input name="description" id="description" maxlength=60 value="<?php echo htmlPrep(__($guid, $row['description'])) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var description=new LiveValidation('description');
-									description.add(Validate.Presence);
-								</script> 
-								<?php
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'));
+                $row->addTextField('nameShort')->isRequired()->maxLength(4)->readonly($isReadOnly)->setValue($role['nameShort']);
 
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Type') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php echo __($guid, $row['type']) ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-						<td> 
-							<b><?php echo __($guid, 'Login To Past Years') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="pastYearsLogin" id="pastYearsLogin" class="standardWidth">
-								<option <?php if ($row['pastYearsLogin'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['pastYearsLogin'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Login To Future Years') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="futureYearsLogin" id="futureYearsLogin" class="standardWidth">
-								<option <?php if ($row['futureYearsLogin'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['futureYearsLogin'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('description', __('Description'));
+                $row->addTextField('description')->isRequired()->maxLength(60)->readonly($isReadOnly)->setValue($role['description']);
 
+            $row = $form->addRow();
+                $row->addLabel('type', __('Type'));
+                $row->addTextField('type')->isRequired()->readonly()->setValue($role['type']);
+
+            $row = $form->addRow();
+                $row->addLabel('pastYearsLogin', __('Login To Past Years'));
+                $row->addYesNo('pastYearsLogin')->isRequired()->selected($role['pastYearsLogin']);
+
+            $row = $form->addRow();
+                $row->addLabel('futureYearsLogin', __('Login To Future Years'));
+                $row->addYesNo('futureYearsLogin')->isRequired()->selected($role['futureYearsLogin']);
+
+            $row = $form->addRow();
+                $row->addLabel('restriction', __('Restriction'))->description('Determines who can grant or remove this role in Manage Users.');
+            if ($role['name'] == 'Administrator') {
+                $row->addTextField('restriction')->isRequired()->readonly()->setValue('Admin Only');
+            } else {
+                $row->addSelect('restriction')->fromArray($restrictions)->isRequired()->selected($role['restriction']);
+            }
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
-?>
