@@ -16,7 +16,7 @@ $formValues = array(
     'type'             => 'Additional',
     'pastYearsLogin'   => 'N',
     'futureYearsLogin' => 'N',
-    //'restriction'      => 'Same Role',
+    'restriction'      => 'Same Role',
 );
 
 $I->submitForm('#content form', $formValues, 'Submit');
@@ -38,7 +38,7 @@ $formValues = array(
     'type'             => 'Additional',
     'pastYearsLogin'   => 'Y',
     'futureYearsLogin' => 'Y',
-    //'restriction'      => 'None',
+    'restriction'      => 'None',
 );
 
 $I->submitForm('#content form', $formValues, 'Submit');
