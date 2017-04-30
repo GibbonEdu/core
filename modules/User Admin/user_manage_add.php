@@ -216,8 +216,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						}
 
 						// Put together an array of this user's current roles
-                        $currentUserRoles = $_SESSION[$guid]['gibbonRoleIDAll'];
-                        $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+						$currentUserRoles = $_SESSION[$guid]['gibbonRoleIDAll'];
+						$currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
 
 						while ($rowSelect = $resultSelect->fetch()) {
 							// Check for and remove restricted roles from this list

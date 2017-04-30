@@ -368,7 +368,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                         }
                                     }
 
-									echo "<option $selected $disabled value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									echo "<option $selected value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 								}
 								?>
 							</select>
@@ -380,10 +380,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                     echo '<span class="emphasis small">'.__('Resticted roles.').' '.__('This value cannot be changed.').'</span>';
                                     echo '<input type="text" name="gibbonRoleIDAllNames" value="'.$restrictedRolesList.'" class="standardWidth" readonly>';
                                 echo '</div>';
-
-                                // foreach ($restrictedRoles as $rowSelect) {
-                                //     echo '<input type="hidden" name="gibbonRoleIDAll[]" value="'.$rowSelect['gibbonRoleID'].'">';
-                                // }
                             }
                             ?>
 						</td>
