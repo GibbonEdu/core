@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTerm_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -38,163 +41,39 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearTerm_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
-						<?php
-                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-						try {
-							$data = array();
-							$sql = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-							$result = $connection2->prepare($sql);
-							$result->execute($data);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
-						while ($row = $result->fetch()) {
-							echo "<option value='".$row['gibbonSchoolYearID']."'>".htmlPrep($row['name']).'</option>';
-						}
-						?>				
-					</select>
-					<script type="text/javascript">
-						var gibbonSchoolYearID=new LiveValidation('gibbonSchoolYearID');
-						gibbonSchoolYearID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
-				</td>
-				<td class="right">
-					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php echo $row['sequenceNumber'] ?>" type="text" class="standardWidth">
-					<?php
-                    $idList = '';
-					try {
-						$dataSelect = array();
-						$sqlSelect = 'SELECT sequenceNumber FROM gibbonSchoolYearTerm ORDER BY sequenceNumber';
-						$resultSelect = $connection2->prepare($sqlSelect);
-						$resultSelect->execute($dataSelect);
-					} catch (PDOException $e) {
-					}
-					while ($rowSelect = $resultSelect->fetch()) {
-						$idList .= "'".$rowSelect['sequenceNumber']."',";
-					}
-					?>
-					
-					<script type="text/javascript">
-						var sequenceNumber=new LiveValidation('sequenceNumber');
-						sequenceNumber.add(Validate.Numericality);
-						sequenceNumber.add(Validate.Presence);
-						sequenceNumber.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
-						
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input name="name" id="name" maxlength=20 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var name2=new LiveValidation('name');
-						name2.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var nameShort=new LiveValidation('nameShort');
-						nameShort.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'First Day') ?> *</b><br/>
-					<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="firstDay" id="firstDay" maxlength=10 value="<?php echo $row['firstDay'] ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var firstDay=new LiveValidation('firstDay');
-						firstDay.add(Validate.Presence);
-						firstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#firstDay" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Last Day') ?> *</b><br/>
-					<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="lastDay" id="lastDay" maxlength=10 value="<?php echo $row['lastDay'] ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var lastDay=new LiveValidation('lastDay');
-						lastDay.add(Validate.Presence);
-						lastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#lastDay" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('schoolYearTerm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearTerm_manage_addProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
 
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonSchoolYearID', __('School Year'));
+        $row->addSelectSchoolYear('gibbonSchoolYearID')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
+        $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYearTerm')->isRequired()->maxLength(3);
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'));
+        $row->addTextField('name')->isRequired()->maxLength(20);
+
+    $row = $form->addRow();
+        $row->addLabel('nameShort', __('Short Name'));
+        $row->addTextField('nameShort')->isRequired()->maxLength(4);
+
+    $row = $form->addRow();
+        $row->addLabel('firstDay', __('First Day'));
+        $row->addDate('firstDay')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('lastDay', __('Last Day'));
+        $row->addDate('lastDay')->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>
+
