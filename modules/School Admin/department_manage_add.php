@@ -48,9 +48,29 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $types = array(
+        'Learning Area' => __('Learning Area'),
+        'Administration' => __('Administration'),
+    );
+
+    $typesLA = array(
+        'Coordinator'           => __('Coordinator'),
+        'Assistant Coordinator' => __('Assistant Coordinator'),
+        'Teacher (Curriculum)'  => __('Teacher (Curriculum)'),
+        'Teacher'               => __('Teacher'),
+        'Other'                 => __('Other'),
+    );
+
+    $typesAdmin = array(
+        'Director'      => __('Director'),
+        'Manager'       => __('Manager'),
+        'Administrator' => __('Administrator'),
+        'Other'         => __('Other'),
+    );
+
     $row = $form->addRow();
-        $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromString('Learning Area, Administration')->isRequired();
+        $row->addLabel('type', 'Type');
+        $row->addSelect('type')->fromArray($types)->isRequired();
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
@@ -83,14 +103,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $form->toggleVisibilityByClass('roleLARow')->onSelect('type')->when('Learning Area');
 
     $row = $form->addRow()->setClass('roleLARow');
-        $row->addLabel('roleLA', __('Role'));
-        $row->addSelect('roleLA')->fromString('Coordinator, Assistant Coordinator, Teacher (Curriculum), Teacher, Other');
+        $row->addLabel('roleLA', 'Role');
+        $row->addSelect('roleLA')->fromArray($typesLA);
 
     $form->toggleVisibilityByClass('roleAdmin')->onSelect('type')->when('Administration');
 
     $row = $form->addRow()->setClass('roleAdmin');
-        $row->addLabel('roleAdmin', __('Role'));
-        $row->addSelect('roleAdmin')->fromString('Director, Manager, Administrator, Other');
+        $row->addLabel('roleAdmin', 'Role');
+        $row->addSelect('roleAdmin')->fromArray($typesAdmin);
 
     $row = $form->addRow();
         $row->addFooter();

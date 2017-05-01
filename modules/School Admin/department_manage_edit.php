@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -59,7 +62,86 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
+            $values = $result->fetch();
+
+            $form = Form::create('departmentManageRecord', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$_SESSION[$guid]['address']);
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $types = array(
+                'Learning Area' => __('Learning Area'),
+                'Administration' => __('Administration'),
+            );
+
+            $typesLA = array(
+                'Coordinator'           => __('Coordinator'),
+                'Assistant Coordinator' => __('Assistant Coordinator'),
+                'Teacher (Curriculum)'  => __('Teacher (Curriculum)'),
+                'Teacher'               => __('Teacher'),
+                'Other'                 => __('Other'),
+            );
+
+            $typesAdmin = array(
+                'Director'      => __('Director'),
+                'Manager'       => __('Manager'),
+                'Administrator' => __('Administrator'),
+                'Other'         => __('Other'),
+            );
+
+            $row = $form->addRow();
+                $row->addLabel('type', 'Type');
+                $row->addSelect('type')->fromArray($types)->isRequired()->selected($values['type']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', 'Name');
+                $row->addTextField('name')->maxLength(40)->isRequired()->setValue($values['name']);
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', 'Short Name');
+                $row->addTextField('nameShort')->maxLength(4)->isRequired()->setValue($values['nameShort']);
+
+            $row = $form->addRow();
+                $row->addLabel('subjectListing', 'Subject Listing');
+                $row->addTextField('subjectListing')->maxLength(255)->setValue($values['subjectListing']);
+
+            $row = $form->addRow();
+               $column = $row->addColumn()->setClass('');
+               $column->addLabel('blurb', 'Blurb');
+               $column->addEditor('blurb', $guid)->setValue($values['blurb']);
+
+            $row = $form->addRow();
+                $row->addLabel('file', 'Logo')->description('125x125px jpg/png/gif');
+                $row->addFileUpload('file')
+                    ->accepts('.jpg,.jpeg,.gif,.png')
+                    ->append('<br/><br/>'.getMaxUpload($guid))
+                    ->addClass('right')
+                    ->setValue($values['logo']);
+
+            $row = $form->addRow();
+                $row->addLabel('staff', 'Staff')->description('Use Control, Command and/or Shift to select multiple.');
+                $row->addSelectStaff('staff')->selectMultiple();
+
+            $form->toggleVisibilityByClass('roleLARow')->onSelect('type')->when('Learning Area');
+
+            $row = $form->addRow()->setClass('roleLARow');
+                $row->addLabel('roleLA', 'Role');
+                $row->addSelect('roleLA')->fromArray($typesLA)->selected($values['roleLA']);
+
+            $form->toggleVisibilityByClass('roleAdmin')->onSelect('type')->when('Administration');
+
+            $row = $form->addRow()->setClass('roleAdmin');
+                $row->addLabel('roleAdmin', 'Role');
+                $row->addSelect('roleAdmin')->fromArray($typesAdmin)->selected($values['roleAdmin']);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
+
+
+            ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
