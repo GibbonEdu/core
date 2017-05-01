@@ -57,7 +57,7 @@ class FileUpload extends Input
     {
         $output = '';
 
-        if (!empty($this->absolutePath)) {
+        if (!empty($this->absolutePath) && !empty($this->getValue())) {
             $output .= '<div class="right">';
             $output .= __('Current attachment:').' ';
             $output .= '<a href="'.$this->absolutePath.'/'.$this->getValue().'">'.$this->getValue().'</a><br/><br/>';
