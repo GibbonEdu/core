@@ -20,6 +20,7 @@ v14.0.00
 --------
 	Headlines
 		Object oriented form API
+		Added the ability to manage system notifications and send specific notices to different users
 
 	Changes With Important Notices
 		...
@@ -67,7 +68,6 @@ v14.0.00
 		Markbook: fixed order for first markbook column not saving properly
 		Markbook: allow decimal values for markbook column attainment raw max
 		School Admin: fixed timezone issue in display of dates in Special Days view
-		School Admin: added notification settings page for managing system-wide notification events
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
