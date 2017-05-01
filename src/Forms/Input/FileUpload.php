@@ -28,6 +28,7 @@ namespace Gibbon\Forms\Input;
 class FileUpload extends Input
 {
     protected $accepts = array();
+    protected $absolutePath = '';
 
     public function accepts($accepts)
     {
@@ -44,10 +45,24 @@ class FileUpload extends Input
         return $this;
     }
 
+    public function setAttachment($absolutePath, $filePath)
+    {
+        $this->absolutePath = $absolutePath;
+        $this->setValue($filePath);
+    }
+
     protected function getElement()
     {
+        $output = '';
 
-        $output = '<input type="file" '.$this->getAttributeString().'>';
+        if (!empty($this->absolutePath)) {
+            $output .= '<div class="right">';
+            $output .= __('Current attachment:').' ';
+            $output .= '<a href="'.$this->absolutePath.'/'.$this->getValue().'">'.$this->getValue().'</a><br/><br/>';
+            $output .= '</div>';
+        }
+
+        $output .= '<input type="file" '.$this->getAttributeString().'>';
 
         return $output;
     }
