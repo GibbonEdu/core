@@ -59,6 +59,7 @@ v14.0.00
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
+		Finance: fixed bug preventing reminder emails from being sent
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
