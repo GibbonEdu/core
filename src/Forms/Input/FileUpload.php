@@ -49,6 +49,8 @@ class FileUpload extends Input
     {
         $this->absolutePath = $absolutePath;
         $this->setValue($filePath);
+
+        return $this;
     }
 
     protected function getElement()
