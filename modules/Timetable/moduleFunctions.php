@@ -1408,13 +1408,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 					if ($event[3] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
 						$height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60).'px';
 						$top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
-						if ($height < 45) {
-							$label = $event[1];
-							$title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5)."'";
-						} else {
-							$label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/></span>';
-							$title = '';
-						}
+                        if ($height < 45) {
+    						$label = $event[1];
+    						$title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
+    					} else {
+    						$label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
+    						$title = '';
+    					}
 						$output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
 						$output .= $label;
 						$output .= '</div>';
@@ -2115,9 +2115,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 					$top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
 					if ($height < 45) {
 						$label = $event[1];
-						$title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' by '.$event[6]."'";
+						$title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
 					} else {
-						$label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>by '.$event[6].'</span>';
+						$label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
 						$title = '';
 					}
 					$output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";

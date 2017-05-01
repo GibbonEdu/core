@@ -59,6 +59,8 @@ v14.0.00
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
+		Finance: fixed bug preventing reminder emails from being sent
+		Finance: fixed bug leading to invoice values changing (in print view only) after issue
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
@@ -76,6 +78,7 @@ v14.0.00
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 		Timetable: added option to display either Day Of The Week or Timetable Day Short Name in column header of timetables
+		Timetable: added name of person making a facility booking to timetable view by Person
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when not addition roles chosen in user edit
 

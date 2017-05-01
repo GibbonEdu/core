@@ -31,8 +31,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
     $type = $_GET['type'];
-    $preview = null;
-    if (isset($_GET['preview'])) {
+    $preview = false;
+    if (isset($_GET['preview']) && $_GET['preview'] == 'true') {
         $preview = $_GET['preview'];
     }
     $receiptNumber = null;
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                     echo '</p>';
                 }
 
-                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, true);
+                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $preview);
                 if ($invoiceContents == false) {
                     echo "<div class='error'>";
                     echo __($guid, 'An error occurred.');
