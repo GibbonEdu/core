@@ -74,6 +74,21 @@ class AcceptanceTester extends \Codeception\Actor
         return $this->see($text, $this->breadcrumbEnd);
     }
 
+    public function seeSuccessMessage($text = 'Your request was completed successfully.')
+    {
+        return $this->see($text, '.success');
+    }
+
+    public function seeErrorMessage($text = '')
+    {
+        return $this->see($text, '.error');
+    }
+
+    public function seeWarningMessage($text = '')
+    {
+        return $this->see($text, '.warning');
+    }
+
     public function grabValueFromURL($param)
     {
         return $this->grabFromCurrentUrl('/'.$param.'=([^=&\s]+)/');
@@ -95,7 +110,7 @@ class AcceptanceTester extends \Codeception\Actor
         if (mb_stripos($page, '.php') === false) {
             $page .= '.php';
         }
-        
+
         $url = sprintf('/index.php?q=/modules/%1$s/%2$s', $module, $page);
 
         if (!empty($params)) {
