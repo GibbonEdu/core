@@ -184,6 +184,28 @@ class DatabaseFormFactory extends FormFactory
         return $phoneNumberField->setCountryCodes($countryCodes);
     }
 
+    public function createSequenceNumber($name, $tableName, $prefill = false)
+    {
+        $sql = "SELECT GROUP_CONCAT(DISTINCT {$name} SEPARATOR '\',\'') FROM {$tableName} WHERE ({$name} IS NOT NULL AND {$name} <> '') ORDER BY {$name}";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        $field = $this->createTextField($name);
+
+        if ($results && $results->rowCount() > 0) {
+            $field->addValidation('Validate.Exclusion', 'within: [\''.$results->fetchColumn(0).'\'], failureMessage: "'.__('Value already in use!').'", partialMatch: false, caseSensitive: false');
+        }
+
+        if ($prefill) {
+            $sql = "SELECT MAX({$name}) FROM {$tableName}";
+            $results = $this->pdo->executeQuery(array(), $sql);
+            $sequenceNumber = ($results && $results->rowCount() > 0)? $results->fetchColumn(0) : 1;
+
+            $field->setValue($sequenceNumber+1);
+        }
+
+        return $field;
+    }
+
     protected function getCachedQuery($name)
     {
         return (isset($this->cachedQueries[$name]))? $this->cachedQueries[$name] : array();
