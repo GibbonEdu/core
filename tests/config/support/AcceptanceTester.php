@@ -101,7 +101,14 @@ class AcceptanceTester extends \Codeception\Actor
 
     public function selectFromDropdown($selector, $n)
     {
-        $option = $this->grabTextFrom('select[name='.$selector.'] option:nth-child(' . $n . ')');
+        $n = intval($n);
+
+        if ($n < 0) {
+            $option = $this->grabTextFrom('select[name='.$selector.'] option:nth-last-of-type('.abs($n).')');
+        } else {
+            $option = $this->grabTextFrom('select[name='.$selector.'] option:nth-of-type('.$n.')');
+        }
+
         $this->selectOption($selector, $option);
     }
 
