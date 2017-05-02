@@ -31,6 +31,7 @@ v14.0.00
 	Security
 		System: fixed PHP code execution vulnerability
 		System: fixed infinite nested index reload bug
+		System: tightened rules for valid elements in TinyMCE text fields
 
 	Changes With Important Notices
 		System: added unit and acceptance testing environments for Gibbon developers
