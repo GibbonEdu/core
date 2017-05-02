@@ -64,7 +64,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $passwordPolicyNumeric = $_POST['passwordPolicyNumeric'];
     $passwordPolicyNonAlphaNumeric = $_POST['passwordPolicyNonAlphaNumeric'];
     $sessionDuration = $_POST['sessionDuration'];
-    $allowableHTML = $_POST['allowableHTML'];
     $currency = $_POST['currency'];
     $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
@@ -411,14 +410,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         try {
             $data = array('passwordPolicyNonAlphaNumeric' => $passwordPolicyNonAlphaNumeric);
             $sql = "UPDATE gibbonSetting SET value=:passwordPolicyNonAlphaNumeric WHERE scope='System' AND name='passwordPolicyNonAlphaNumeric'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('allowableHTML' => $allowableHTML);
-            $sql = "UPDATE gibbonSetting SET value=:allowableHTML WHERE scope='System' AND name='allowableHTML'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
