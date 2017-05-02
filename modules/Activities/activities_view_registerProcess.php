@@ -89,7 +89,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 } else {
                     $row = $result->fetch();
 
-                     //Check for existing registration
+                    // Grab organizer info for notifications
+                    try {
+                        $dataStaff = array('gibbonActivityID' => $gibbonActivityID);
+                        $sqlStaff = "SELECT gibbonPersonID FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND role='Organiser'";
+                        $resultStaff = $connection2->prepare($sqlStaff);
+                        $resultStaff->execute($dataStaff);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $gibbonActivityStaffIDs = ($resultStaff->rowCount() > 0)? $resultStaff->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+
+                    //Check for existing registration
                     try {
                         $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
                         $sqlReg = 'SELECT gibbonActivityStudentID, status FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
@@ -190,6 +204,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                                     $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
 
+                                    foreach ($gibbonActivityStaffIDs as $gibbonPersonIDStaff) {
+                                        $event->addRecipient($gibbonPersonIDStaff);
+                                    }
+
                                     $event->sendNotifications($pdo, $gibbon->session);
                                 }
 
@@ -239,6 +257,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                     $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                                     $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
+
+                                    foreach ($gibbonActivityStaffIDs as $gibbonPersonIDStaff) {
+                                        $event->addRecipient($gibbonPersonIDStaff);
+                                    }
 
                                     $event->sendNotifications($pdo, $gibbon->session);
                                 }
