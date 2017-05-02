@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\FileUploader;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -38,59 +41,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/house_manage_addProcess.php' ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="name" id="name" maxlength=10 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var name2=new LiveValidation('name');
-						name2.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var nameShort=new LiveValidation('nameShort');
-						nameShort.add(Validate.Presence);
-					</script> 
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Logo') ?></b><br/>
-				</td>
-				<td class="right">
-					<input type="file" name="file1" id="file1"><br/><br/>
-					<script type="text/javascript">
-						var file1=new LiveValidation('file1');
-						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('houses', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/house_manage_addProcess.php');
 
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+        $row->addTextField('name')->isRequired()->maxLength(10);
+
+    $row = $form->addRow();
+        $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+        $row->addTextField('nameShort')->isRequired()->maxLength(4);
+
+    $fileUploader = new FileUploader($pdo, $gibbon->session);
+
+    $row = $form->addRow();
+        $row->addLabel('file1', __('Logo'));
+        $row->addFileUpload('file1')->accepts($fileUploader->getFileExtensions('Graphics/Design'));
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>
