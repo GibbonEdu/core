@@ -69,6 +69,7 @@ v14.0.00
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
 		Markbook: fixed order for first markbook column not saving properly
 		Markbook: allow decimal values for markbook column attainment raw max
+		Markbook: fixed custom Attainment label for Total Mark field
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
