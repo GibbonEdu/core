@@ -58,7 +58,7 @@ class NotificationGateway
     public function updateNotificationCount($gibbonNotificationID, $count)
     {
         $data = array('gibbonNotificationID' => $gibbonNotificationID, 'count' => $count);
-        $sql = "UPDATE gibbonNotification SET count=:count WHERE gibbonNotificationID=:gibbonNotificationID";
+        $sql = "UPDATE gibbonNotification SET count=:count, timestamp=now() WHERE gibbonNotificationID=:gibbonNotificationID";
         $result = $this->pdo->executeQuery($data, $sql);
 
         return $this->pdo->getQuerySuccess();

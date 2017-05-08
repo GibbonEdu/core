@@ -1859,7 +1859,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
     if ($resultCheck->rowCount() == 1) { //If exists, increment count
         $rowCheck = $resultCheck->fetch();
         $dataInsert = array('count' => ($rowCheck['count'] + 1), 'gibbonPersonID' => $gibbonPersonID, 'text' => $text, 'name' => $moduleName);
-        $sqlInsert = "UPDATE gibbonNotification SET count=:count WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'";
+        $sqlInsert = "UPDATE gibbonNotification SET count=:count, timestamp=now() WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'";
         $resultInsert = $connection2->prepare($sqlInsert);
         $resultInsert->execute($dataInsert);
     } else { //If not exists, create

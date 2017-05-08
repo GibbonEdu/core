@@ -50,6 +50,7 @@ v14.0.00
 		System: added logging to Google OAuth login
 		System: fixed broken Credits link in footer
 		System: removed Media plugin from tinyMCE
+		System: added timestamp update when incrementing notification count
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
