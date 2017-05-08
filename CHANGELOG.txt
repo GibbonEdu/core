@@ -20,6 +20,7 @@ v14.0.00
 --------
 	Headlines
 		Object oriented form API
+		Added the ability to manage system notifications and send specific notices to different users
 
 	Changes With Important Notices
 		...
@@ -30,6 +31,8 @@ v14.0.00
 	Security
 		System: fixed PHP code execution vulnerability
 		System: fixed infinite nested index reload bug
+		System: tightened rules for valid elements in TinyMCE text fields
+		System: removed Allowable HTML from System Settings interface
 
 	Changes With Important Notices
 		System: added unit and acceptance testing environments for Gibbon developers
@@ -59,13 +62,15 @@ v14.0.00
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
+		Finance: fixed bug preventing reminder emails from being sent
+		Finance: fixed bug leading to invoice values changing (in print view only) after issue
 		Formal Assessment: added subject name column to Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
 		Markbook: fixed order for first markbook column not saving properly
 		Markbook: allow decimal values for markbook column attainment raw max
+		Markbook: fixed custom Attainment label for Total Mark field
 		School Admin: fixed timezone issue in display of dates in Special Days view
-		School Admin: added notification settings page for managing system-wide notification events
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved
@@ -76,6 +81,7 @@ v14.0.00
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 		Timetable: added option to display either Day Of The Week or Timetable Day Short Name in column header of timetables
+		Timetable: added name of person making a facility booking to timetable view by Person
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit
 		User Admin: added ability to restrict which roles can be assigned in Manage Users

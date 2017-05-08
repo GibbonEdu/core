@@ -537,7 +537,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                     ?>
 									<tr id="attainmentRawMaxRow" <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
 										<td>
-											<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+											<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Total Mark');
 											} else {
 												echo __($guid, 'Attainment Total Mark');
 											}

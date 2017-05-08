@@ -370,7 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                             ?>
 							<tr id="attainmentRawMaxRow">
 								<td>
-									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Total Mark');
 									} else {
 										echo __($guid, 'Attainment Total Mark');
 									}

@@ -55,11 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $extension = $_POST['extension'];
+            $extension = strtolower($_POST['extension']);
             $name = $_POST['name'];
             $type = $_POST['type'];
 
-            if ($extension == '' or $name == '' or $type == '' or in_array($extension, array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py'))) {
+            $illegalFileExtensions = Gibbon\FileUploader::getIllegalFileExtensions();
+
+            if ($extension == '' or $name == '' or $type == '' or in_array($extension, $illegalFileExtensions)) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
