@@ -84,7 +84,8 @@ v14.0.00
 		Timetable: added option to display either Day Of The Week or Timetable Day Short Name in column header of timetables
 		Timetable: added name of person making a facility booking to timetable view by Person
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
-		User Admin: fixed PHP Notice error caused when not addition roles chosen in user edit
+		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit
+		User Admin: added ability to restrict which roles can be assigned in Manage Users
 
 v13.0.02
 --------

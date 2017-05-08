@@ -40,8 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
     $description = $_POST['description'];
     $futureYearsLogin = $_POST['futureYearsLogin'];
     $pastYearsLogin = $_POST['pastYearsLogin'];
+    $restriction = $_POST['restriction'];
 
-    if ($category == '' or $name == '' or $nameShort == '' or $description == '' or $futureYearsLogin == '' or $pastYearsLogin == '') {
+    if (empty($category) or empty($name) or empty($nameShort) or empty($description) or empty($futureYearsLogin) or empty($pastYearsLogin) or empty($restriction) ) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -63,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
         } else {
             //Write to database
             try {
-                $data = array('category' => $category, 'name' => $name, 'nameShort' => $nameShort, 'description' => $description, 'futureYearsLogin' => $futureYearsLogin, 'pastYearsLogin' => $pastYearsLogin);
-                $sql = "INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin";
+                $data = array('category' => $category, 'name' => $name, 'nameShort' => $nameShort, 'description' => $description, 'futureYearsLogin' => $futureYearsLogin, 'pastYearsLogin' => $pastYearsLogin, 'restriction' => $restriction);
+                $sql = "INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin, restriction=:restriction";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

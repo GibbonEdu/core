@@ -98,22 +98,75 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $status = $_POST['status'];
             $canLogin = $_POST['canLogin'];
             $passwordForceReset = $_POST['passwordForceReset'];
-            $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'];
-            $gibbonRoleIDAll = '';
-            $containsPrimary = false;
-            $choices = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
-            if (count($choices) > 0) {
-                foreach ($choices as $t) {
-                    $gibbonRoleIDAll .= $t.',';
-                    if ($t == $gibbonRoleIDPrimary) {
-                        $containsPrimary = true;
+
+            // Put together an array of this user's current roles
+            $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
+            $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
+            try {
+                $dataRoles = array('gibbonRoleIDAll' => $row['gibbonRoleIDAll']);
+                $sqlRoles = 'SELECT gibbonRoleID, restriction, name FROM gibbonRole';
+                $resultRoles = $connection2->prepare($sqlRoles);
+                $resultRoles->execute($dataRoles);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            $gibbonRoleIDAll = array();
+            $gibbonRoleIDPrimary = $row['gibbonRoleIDPrimary'];
+
+            $selectedRoleIDPrimary = (isset($_POST['gibbonRoleIDPrimary'])) ? $_POST['gibbonRoleIDPrimary'] : null;
+            $selectedRoleIDAll = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
+
+            if ($resultRoles && $resultRoles->rowCount() > 0) {
+                while ($rowRole = $resultRoles->fetch()) {
+
+                    if ($rowRole['restriction'] == 'Admin Only') {
+                        if (in_array('001', $currentUserRoles, true)) {
+                            // Add selected roles only if they meet the restriction
+                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                                $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                            }
+
+                            if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
+                                // Prevent primary role being changed to a restricted role (via modified POST)
+                                $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
+                            }
+                        } else if (in_array($rowRole['gibbonRoleID'], $roles, true)) {
+                            // Add existing restricted roles because they cannot be removed by this user
+                            $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                        }
+                    } else if ($rowRole['restriction'] == 'Same Role') {
+                        if (in_array($rowRole['gibbonRoleID'], $currentUserRoles, true) || in_array('001', $currentUserRoles, true)) {
+                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                                $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                            }
+
+                            if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
+                                $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
+                            }
+                        } else if (in_array($rowRole['gibbonRoleID'], $roles, true)) {
+                            $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                        }
+                    } else {
+                        if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                            $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                        }
+
+                        if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
+                            $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
+                        }
                     }
                 }
             }
-            if ($containsPrimary == false) {
-                $gibbonRoleIDAll = $gibbonRoleIDPrimary.','.$gibbonRoleIDAll;
+
+            // Ensure the primary role is always in the all roles list
+            if (!in_array($gibbonRoleIDPrimary, $gibbonRoleIDAll)) {
+                $gibbonRoleIDAll[] = $gibbonRoleIDPrimary;
             }
-            $gibbonRoleIDAll = substr($gibbonRoleIDAll, 0, -1);
+
+            $gibbonRoleIDAll = (is_array($gibbonRoleIDAll))? implode(',', array_unique($gibbonRoleIDAll)) : $row['gibbonRoleIDAll'];
+
             $dob = $_POST['dob'];
             if ($dob == '') {
                 $dob = null;
@@ -338,7 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     {
                         $path = $_SESSION[$guid]['absolutePath'];
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                        
+
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
                             $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
@@ -515,7 +568,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
-                                if ($_POST[$i.'-matchAddress'] != '') {
+                                if (!empty($_POST[$i.'-matchAddress'])) {
                                     try {
                                         $dataAddress = array('address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonID' => $_POST[$i.'-matchAddress']);
                                         $sqlAddress = 'UPDATE gibbonPerson SET address1=:address1, address1District=:address1District, address1Country=:address1Country WHERE gibbonPersonID=:gibbonPersonID';

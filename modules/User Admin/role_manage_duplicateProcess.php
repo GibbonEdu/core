@@ -91,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
             } else {
                 $row = $result->fetch();
                 try {
-                    $data = array('gibbonRoleID' => $AI, 'category' => $row['category'], 'name' => $name, 'nameShort' => $nameShort, 'description' => $row['description']);
-                    $sql = "INSERT INTO gibbonRole SET gibbonRoleID=:gibbonRoleID, category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional'";
+                    $data = array('gibbonRoleID' => $AI, 'category' => $row['category'], 'name' => $name, 'nameShort' => $nameShort, 'description' => $row['description'], 'restriction' => $row['restriction']);
+                    $sql = "INSERT INTO gibbonRole SET gibbonRoleID=:gibbonRoleID, category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', restriction=:restriction";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

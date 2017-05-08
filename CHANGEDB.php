@@ -766,4 +766,7 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 UPDATE gibbonSetting SET value='br[style],strong[style],em[style],span[style],p[style],address[style],pre[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style]' WHERE name='allowableHTML' AND scope='System';end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Student Withdrawn', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Activity Registration', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
+ALTER TABLE `gibbonRole` ADD `restriction` ENUM('None','Same Role','Admin Only') NOT NULL DEFAULT 'None' AFTER `pastYearsLogin`;end
+UPDATE `gibbonRole` SET `restriction` = 'Admin Only' WHERE (`name` = 'Administrator' AND `type` = 'Core' );end
+
 ";
