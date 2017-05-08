@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $passwordForceReset = $_POST['passwordForceReset'];
 
             // Put together an array of this user's current roles
-            $currentUserRoles = $_SESSION[$guid]['gibbonRoleIDAll'];
+            $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
             $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
 
             try {
