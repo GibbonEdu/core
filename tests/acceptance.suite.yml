@@ -16,5 +16,6 @@ modules:
         - \Helper\Acceptance
         - Db
         - DbHelper
+        - Filesystem
 groups:
     users: [acceptance/Users]

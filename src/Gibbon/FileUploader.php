@@ -63,6 +63,12 @@ class FileUploader
     protected $fileSuffixType = self::FILE_SUFFIX_ALPHANUMERIC;
 
     /**
+     * Internal hard-coded array of file types that should never be allowed
+     * @var  array
+     */
+    protected static $illegalFileExtensions = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py');
+
+    /**
      * @version  v14
      * @since    v14
      * @param    sqlConnection  $pdo
@@ -72,6 +78,18 @@ class FileUploader
     {
         $this->pdo = $pdo;
         $this->session = $session;
+    }
+
+    /**
+     * Get the list of hard-coded illegal extensions.
+     *
+     * @version  v14
+     * @since    v14
+     * @return   array
+     */
+    public static function getIllegalFileExtensions()
+    {
+        return self::$illegalFileExtensions;
     }
 
     /**
@@ -241,12 +259,11 @@ class FileUploader
             $result = $this->pdo->executeQuery($data, $sql);
 
             if ($result && $result->rowCount() > 0) {
-                //Filter out illegal extensions
                 $fileExtensionsPreFilter = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
-                $illegals = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py');
 
-                foreach ($fileExtensionsPreFilter AS $extension) {
-                    if (!in_array($extension, $illegals)) {
+                foreach ($fileExtensionsPreFilter as $extension) {
+                    // Prevent illegal file extensions
+                    if (!in_array($extension, $this->getIllegalFileExtensions())) {
                         array_push($this->fileExtensions, $extension);
                     }
                 }
@@ -279,13 +296,19 @@ class FileUploader
     {
         if (empty($extensions) || !is_array($extensions)) return false;
 
-        $this->fileExtensions = $extensions;
+        $this->fileExtensions = array();
+
+        foreach ($extensions as $extension) {
+            if (!in_array($extension, $this->getIllegalFileExtensions())) {
+                array_push($this->fileExtensions, $extension);
+            }
+        }
 
         return true;
     }
 
     /**
-     * Checks the extension of the filename provided against the list of valid extensions.
+     * Checks the extension of the filename provided against the list of valid extensions. Handle extensions without full filename.
      *
      * @version  v14
      * @since    v14
@@ -294,7 +317,15 @@ class FileUploader
      */
     public function isFileTypeValid($filename)
     {
-        $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
+        if (mb_stripos($filename, '.') !== false) {
+            $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
+        } else {
+            $extension = strtolower($filename);
+        }
+
+        if (in_array($extension, $this->getIllegalFileExtensions())) {
+            return false;
+        }
 
         return in_array($extension, $this->getFileExtensions());
     }

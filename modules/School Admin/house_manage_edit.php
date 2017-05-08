@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\FileUploader;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -56,66 +59,39 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/house_manage_editProcess.php?gibbonHouseID=$gibbonHouseID" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=30 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script> 
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=6 value="<?php echo htmlPrep($row['nameShort']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script> 
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Logo') ?></b><br/>
-						</td>
-						<td class="right">
-							<?php
-                            if ($row['logo'] != '') {
-                                echo __($guid, 'Current attachment:')." <a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['logo']."'>".$row['logo']."</a> <a href='".$_SESSION[$guid]['absoluteURL']."/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID=$gibbonHouseID' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/><br/>";
-                            }
-            				?>
-							<input type="file" name="file1" id="file1"><br/><br/>
-							<input type="hidden" name="attachment1" value='<?php echo $row['image_240'] ?>'>
-							<script type="text/javascript">
-								var file1=new LiveValidation('file1');
-								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
 
+            $form = Form::create('houses', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/house_manage_editProcess.php?gibbonHouseID='.$gibbonHouseID);
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('attachment1', $values['logo']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('name')->isRequired()->maxLength(30)->setValue($values['name']);
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+                $row->addTextField('nameShort')->isRequired()->maxLength(6)->setValue($values['nameShort']);
+
+            $fileUploader = new FileUploader($pdo, $gibbon->session);
+
+            $row = $form->addRow();
+                $row->addLabel('file1', __('Logo'));
+                $file = $row->addFileUpload('file1')
+                    ->addClass('right')
+                    ->accepts($fileUploader->getFileExtensions('Graphics/Design'))
+                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $values['logo']);
+
+                if (!empty($values['logo'])) {
+                    $file->prepend("<a href='".$_SESSION[$guid]['absoluteURL']."/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID=$gibbonHouseID' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px;float: right;' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/>");
+                }
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }

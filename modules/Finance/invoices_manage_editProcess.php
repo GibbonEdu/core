@@ -270,8 +270,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
-                            if (isset($_POST['emails2'])) {
-                                $emails = $_POST['emails2'];
+                            if (isset($_POST['emails'])) {
+                                $emails = $_POST['emails'];
                                 for ($i = 0; $i < count($emails); ++$i) {
                                     $emailsInner = explode(',', $emails[$i]);
                                     for ($n = 0; $n < count($emailsInner); ++$n) {

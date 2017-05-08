@@ -2485,7 +2485,7 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
             if ($reverse == true) {
                 $output = $title.' '.$surname.', '.strtoupper(mb_substr($preferredName, 0, 1)).'.';
             } else {
-                $output = $title.' '.strtoupper(substr($preferredName, 0, 1)).'. '.$surname;
+                $output = $title.' '.strtoupper(mb_substr($preferredName, 0, 1)).'. '.$surname;
             }
         } else {
             if ($reverse == true) {
