@@ -2225,10 +2225,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         } else {
                                                             echo nl2br($rowEntry['comment']);
                                                         }
+                                                    }
                                                         if ($rowEntry['response'] != '') {
                                                             echo "<a title='Uploaded Response' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__($guid, 'Uploaded Response').'</a><br/>';
                                                         }
-                                                    }
                                                     echo '</td>';
                                                 }
                                                 if ($rowEntry['gibbonPlannerEntryID'] == 0) {
