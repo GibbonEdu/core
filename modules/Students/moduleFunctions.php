@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function renderStudentCourseMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
+function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
 
     require_once $gibbon->session->get('absolutePath').'/modules/Markbook/src/markbookView.php';
 
@@ -32,10 +32,10 @@ function renderStudentCourseMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseC
 
     // Calculate & get the cumulative average
     $markbook->cacheWeightings($gibbonPersonID);
-    $courseMark = round($markbook->getCumulativeAverage($gibbonPersonID));
+    $cumulativeMark = round($markbook->getCumulativeAverage($gibbonPersonID));
 
     // Only display if there are marks
-    if (!empty($courseMark)) {
+    if (!empty($cumulativeMark)) {
         // Divider
         echo '<tr class="break">';
             echo '<th colspan="7" style="height: 4px; padding: 0px;"></th>';
@@ -47,7 +47,7 @@ function renderStudentCourseMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseC
                 echo '<b>'.__('Cumulative Average').'</b>';
             echo '</td>';
             echo '<td style="padding: 10px !important; text-align: center;">';
-                echo round( $courseMark ).'%';
+                echo round( $cumulativeMark ).'%';
             echo '</td>';
             echo '<td colspan="3" class="dull"></td>';
          echo '</tr>';

@@ -2320,7 +2320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $enableMarksOnStudentProfile = getSettingByScope($connection2, 'Markbook', 'enableMarksOnStudentProfile');
 
                                             if ($enableColumnWeighting == 'Y' && $enableMarksOnStudentProfile == 'Y') {
-                                                renderStudentCourseMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
                                             }
 
                                             echo '</table>';
