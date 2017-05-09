@@ -1,4 +1,4 @@
-<?php 
+<?php
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Markbook Settings');
 $I->loginAsAdmin();
@@ -15,6 +15,7 @@ $newFormValues = array(
     'enableEffort'                   => 'Y',
     'enableRubrics'                  => 'Y',
     'enableColumnWeighting'          => 'Y',
+    'enableMarksOnStudentProfile'    => 'Y',
     'enableRawAttainment'            => 'Y',
     'markbookType'                   => 'Test1,Test2,Test3',
     'enableGroupByTerm'              => 'Y',
