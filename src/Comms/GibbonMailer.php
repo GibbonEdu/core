@@ -21,9 +21,8 @@ namespace Gibbon\Comms;
 
 use Gibbon\session;
 
-global $guid;
-
 if (!function_exists('PHPMailerAutoload')) {
+    global $guid;
     require_once $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 }
 
