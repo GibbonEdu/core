@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 
     $form->toggleVisibilityByClass('columnWeighting')->onSelect('enableColumnWeighting')->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Markbook', 'enableMarksOnStudentProfile', true);
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks', true);
     $row = $form->addRow()->addClass('columnWeighting');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);

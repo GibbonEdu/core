@@ -568,9 +568,9 @@
                             }
 
                             $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
-                            $enableMarksOnStudentProfile = getSettingByScope($connection2, 'Markbook', 'enableMarksOnStudentProfile');
+                            $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
 
-                            if ($enableColumnWeighting == 'Y' && $enableMarksOnStudentProfile == 'Y') {
+                            if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
                                 renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID']);
                             }
 

@@ -73,7 +73,7 @@ v14.0.00
 		Markbook: allow decimal values for markbook column attainment raw max
 		Markbook: fixed custom Attainment label for Total Mark field
 		School Admin: fixed timezone issue in display of dates in Special Days view
-		School Admin: added a markbook setting to enable display of cumulative marks on Student Profile markbook page
+		School Admin: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
 		Students: fixed bug preventing some application form language/citizenship fields from not being saved

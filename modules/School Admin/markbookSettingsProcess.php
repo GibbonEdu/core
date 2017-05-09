@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $enableEffort = $_POST['enableEffort'];
     $enableRubrics = $_POST['enableRubrics'];
     $enableColumnWeighting = $_POST['enableColumnWeighting'];
-    $enableMarksOnStudentProfile = (isset($_POST['enableMarksOnStudentProfile']))? $_POST['enableMarksOnStudentProfile'] : 'N';
+    $enableDisplayCumulativeMarks = (isset($_POST['enableDisplayCumulativeMarks']))? $_POST['enableDisplayCumulativeMarks'] : 'N';
     $enableRawAttainment = $_POST['enableRawAttainment'];
     $enableGroupByTerm = $_POST['enableGroupByTerm'];
     $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
@@ -100,8 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         }
 
         try {
-            $data = array('value' => $enableMarksOnStudentProfile);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableMarksOnStudentProfile'";
+            $data = array('value' => $enableDisplayCumulativeMarks);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableDisplayCumulativeMarks'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

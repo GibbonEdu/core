@@ -2317,9 +2317,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             }
 
                                             $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
-                                            $enableMarksOnStudentProfile = getSettingByScope($connection2, 'Markbook', 'enableMarksOnStudentProfile');
+                                            $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
 
-                                            if ($enableColumnWeighting == 'Y' && $enableMarksOnStudentProfile == 'Y') {
+                                            if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
                                                 renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
                                             }
 
