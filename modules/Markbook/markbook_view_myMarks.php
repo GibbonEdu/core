@@ -453,6 +453,14 @@
                         echo '</tr>';
                     }
                 }
+
+                $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+                $enableMarksOnStudentProfile = getSettingByScope($connection2, 'Markbook', 'enableMarksOnStudentProfile');
+
+                if ($enableColumnWeighting == 'Y' && $enableMarksOnStudentProfile == 'Y') {
+                    renderStudentCumulativeMarks($gibbon, $pdo, $_SESSION[$guid]['gibbonPersonID'], $rowList['gibbonCourseClassID']);
+                }
+
                 echo '</table>';
             }
         }
