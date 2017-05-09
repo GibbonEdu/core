@@ -768,5 +768,6 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Activity Registration', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonRole` ADD `restriction` ENUM('None','Same Role','Admin Only') NOT NULL DEFAULT 'None' AFTER `pastYearsLogin`;end
 UPDATE `gibbonRole` SET `restriction` = 'Admin Only' WHERE (`name` = 'Administrator' AND `type` = 'Core' );end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Markbook', 'enableMarksOnStudentProfile', 'Enable Marks on Student Profile', 'Should cumulative marks display on the Markbook page in Student Profiles?', 'N');end
 
 ";
