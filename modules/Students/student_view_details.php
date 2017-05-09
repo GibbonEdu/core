@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
+include './modules/Markbook/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == false) {
     //Acess denied
@@ -2225,9 +2226,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         } else {
                                                             echo nl2br($rowEntry['comment']);
                                                         }
-                                                        if ($rowEntry['response'] != '') {
-                                                            echo "<a title='Uploaded Response' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__($guid, 'Uploaded Response').'</a><br/>';
-                                                        }
+                                                    }
+                                                    if ($rowEntry['response'] != '') {
+                                                        echo "<a title='Uploaded Response' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__($guid, 'Uploaded Response').'</a><br/>';
                                                     }
                                                     echo '</td>';
                                                 }
@@ -2314,6 +2315,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     echo '</tr>';
                                                 }
                                             }
+
+                                            $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+                                            $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
+
+                                            if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
+                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
+                                            }
+
                                             echo '</table>';
                                         }
                                     }

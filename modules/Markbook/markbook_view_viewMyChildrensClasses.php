@@ -566,6 +566,14 @@
                                     echo '</tr>';
                                 }
                             }
+
+                            $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+                            $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
+
+                            if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
+                                renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID']);
+                            }
+
                             echo '</table>';
 
                             try {
