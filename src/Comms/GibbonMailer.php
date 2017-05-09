@@ -22,7 +22,10 @@ namespace Gibbon\Comms;
 use Gibbon\session;
 
 global $guid;
-require_once $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
+
+if (!function_exists('PHPMailerAutoload')) {
+    require_once $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
+}
 
 /**
  * Mailer class
