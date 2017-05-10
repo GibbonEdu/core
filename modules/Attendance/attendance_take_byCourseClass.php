@@ -356,9 +356,6 @@ else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 								}
 
-									//Alerts, if permission allows
-        							echo getAlertBar($guid, $connection2, $rowCourseClass['gibbonPersonID'], $rowCourseClass['privacy']);
-
         							//User photo
 									print getUserPhoto($guid, $rowCourseClass["image_240"], 75) ;
 
