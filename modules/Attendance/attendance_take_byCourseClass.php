@@ -204,7 +204,7 @@ else {
 				$lastDay=NULL ;
 				try {
 					$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
-					$sql="SELECT gibbonCourseClass.*, gibbonCourse.gibbonSchoolYearID, firstDay, lastDay,
+					$sql="SELECT gibbonCourseClass.*, gibbonCourse.gibbonSchoolYearID,firstDay, lastDay,
 					gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse
 					JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
 					JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
