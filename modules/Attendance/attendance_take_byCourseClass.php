@@ -284,8 +284,8 @@ else {
 							WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
 							AND status='Full' AND role='Student'
 							AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-							AND gibbonTTDayRowClassExceptionID IS NULL
 							GROUP BY gibbonCourseClassPerson.gibbonPersonID
+							HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
 							ORDER BY surname, preferredName" ;
 						$resultCourseClass=$connection2->prepare($sqlCourseClass);
 						$resultCourseClass->execute($dataCourseClass);
