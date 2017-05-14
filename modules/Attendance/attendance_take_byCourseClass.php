@@ -276,8 +276,17 @@ else {
 
 					//Show roll group grid
 					try {
-						$dataCourseClass=array("gibbonCourseClassID"=>$gibbonCourseClassID);
-						$sqlCourseClass="SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND role='Student' ORDER BY surname, preferredName" ;
+						$dataCourseClass=array("gibbonCourseClassID"=>$gibbonCourseClassID, 'date' => $currentDate, 'today' => date('Y-m-d') );
+						$sqlCourseClass="SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240 FROM gibbonCourseClassPerson
+							INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
+							LEFT JOIN (SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+							LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+							WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+							AND status='Full' AND role='Student'
+							AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
+							GROUP BY gibbonCourseClassPerson.gibbonPersonID
+							HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
+							ORDER BY surname, preferredName" ;
 						$resultCourseClass=$connection2->prepare($sqlCourseClass);
 						$resultCourseClass->execute($dataCourseClass);
 					}
