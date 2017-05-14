@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             } else {
                 //Check unique inputs for uniquness
                 try {
-                    $data = array('name' => $name, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
+                    $data = array('name' => $name, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTID' => $gibbonTTID);
                     $sql = 'SELECT * FROM gibbonTT WHERE (name=:name AND gibbonSchoolYearID=:gibbonSchoolYearID) AND NOT gibbonTTID=:gibbonTTID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
