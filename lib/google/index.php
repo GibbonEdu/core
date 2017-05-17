@@ -114,7 +114,7 @@ if (isset($authUrl)){
 	//Start to collect User Info and test
 	try {
 		$data = array("email"=>$email);
-		$sql = "SELECT * FROM gibbonPerson WHERE email=:email AND status='Full' AND canLogin='Y'";
+		$sql = "SELECT * FROM gibbonPerson WHERE email=:email AND status='Full'";
 		$result = $connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -129,6 +129,16 @@ if (isset($authUrl)){
 	}
 	else {
 		$row = $result->fetch();
+
+        // Insufficient privileges to login
+        if ($row['canLogin'] != 'Y') {
+            unset($_SESSION[$guid]['googleAPIAccessToken'] );
+            unset($_SESSION[$guid]['gplusuer']);
+            @session_destroy();
+            $URL = "../../index.php?loginReturn=fail2";
+            header("Location: {$URL}");
+            exit;
+        }
 
 		$username = $row['username'];
 		if ($row["failCount"] >= 3) {
