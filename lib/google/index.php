@@ -159,26 +159,10 @@ if (isset($authUrl)){
 			header("Location: {$URL}");
 			exit;
 		}
+
 		if ($row["passwordForceReset"] == "Y") {
-			$salt = getSalt();
-			$password = randomPassword(8);
-			$passwordStrong = hash("sha256", $salt.$password);
-
-			try {
-				$data = array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username);
-				$sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
-				$result = $connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-
-			$row["passwordForceReset"] = "N";
-
-			$to = $row["email"];
-			$subject = $_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
-			$body = "Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-			$headers = "From: " . $_SESSION[$guid]["organisationAdministratorEmail"];
-			mail($to, $subject, $body, $headers);
+            // Sends the user to the password reset page after login
+            $_SESSION[$guid]['passwordForceReset'] = 'Y';
 		}
 
 
