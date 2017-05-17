@@ -146,7 +146,10 @@ if (isset($authUrl)){
 			}
 
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
-            $URL .= "?loginReturn=fail6";
+            unset($_SESSION[$guid]['googleAPIAccessToken'] );
+            unset($_SESSION[$guid]['gplusuer']);
+            @session_destroy();
+            $URL = "../../index.php?loginReturn=fail6";
 			header("Location: {$URL}");
 			exit;
 		}
@@ -176,7 +179,10 @@ if (isset($authUrl)){
 		if ($row["gibbonRoleIDPrimary"] == "" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2)) == 0) {
 			//FAILED TO SET ROLES
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
-            $URL .= "?loginReturn=fail2";
+            unset($_SESSION[$guid]['googleAPIAccessToken'] );
+            unset($_SESSION[$guid]['gplusuer']);
+            @session_destroy();
+            $URL = "../../index.php?loginReturn=fail2";
 			header("Location: {$URL}");
 			exit;
 		}
