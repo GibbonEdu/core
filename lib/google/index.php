@@ -102,7 +102,7 @@ if (isset($authUrl)){
 
 	//Test to see if email exists in logintable
 	if ($result->rowCount() != 1) {
-        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Google Login - Failed', array('username' => $username, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
+        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Google Login - Failed', array('username' => $email, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
         unset($_SESSION[$guid]['googleAPIAccessToken'] );
 		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
@@ -126,6 +126,9 @@ if (isset($authUrl)){
 		unset($_SESSION[$guid]['gplusuer']);
 		@session_destroy();
 		$_SESSION[$guid] = NULL;
+        $URL = "../../index.php?loginReturn=fail8";
+        header("Location: {$URL}");
+        exit;
 	}
 	else {
 		$row = $result->fetch();
