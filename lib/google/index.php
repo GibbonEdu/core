@@ -1,4 +1,7 @@
 <?php
+
+use Gibbon\Comms\NotificationEvent;
+
 session_start();
 include "../../functions.php";
 include "../../config.php";
@@ -138,11 +141,14 @@ if (isset($authUrl)){
 			catch(PDOException $e) { }
 
 			if ($row["failCount"] == 3) {
-				$to = getSettingByScope($connection2, "System", "organisationAdministratorEmail");
-				$subject = $_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body = "Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers = "From: " . $to;
-				mail($to, $subject, $body, $headers);
+                // Raise a new notification event
+                $event = new NotificationEvent('User Admin', 'Login - Failed');
+
+                $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+                $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
+                $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
+
+                $event->sendNotifications($pdo, $gibbon->session);
 			}
 
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
