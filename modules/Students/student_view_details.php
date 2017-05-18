@@ -71,6 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 }
             }
 
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my') and $gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+                $skipBrief = true;
+            }
+
             if ($highestAction == 'View Student Profile_brief' and $skipBrief == false) {
                 //Proceed!
                 try {
@@ -261,6 +265,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if ($highestAction == 'View Student Profile_myChildren') {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                         $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                    }
+                    else if ($highestAction == 'View Student Profile_my') {
+                        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDStudent' => $gibbonPersonID);
+                        $sql = 'SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.gibbonPersonID=:gibbonPersonIDStudent';
                     } else {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
@@ -1677,15 +1685,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo __($guid, 'Filter');
                                     echo '</h3>';
                                     ?>
-									<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-										<table class='noIntBorder' cellspacing='0' style="width: 100%">
-											<tr><td style="width: 30%"></td><td></td></tr>
-											<tr>
-												<td>
-													<b><?php echo __($guid, 'Category') ?></b><br/>
-												</td>
-												<td class="right">
-													<?php
+                                    <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+                                        <table class='noIntBorder' cellspacing='0' style="width: 100%">
+                                            <tr><td style="width: 30%"></td><td></td></tr>
+                                            <tr>
+                                                <td>
+                                                    <b><?php echo __($guid, 'Category') ?></b><br/>
+                                                </td>
+                                                <td class="right">
+                                                    <?php
                                                     echo "<select name='category' id='category' style='width:302px'>";
                                                     echo "<option value=''></option>";
                                                     while ($rowCategories = $resultCategories->fetch()) {
@@ -1697,25 +1705,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                     echo '</select>';
                                                     ?>
-												</td>
-											</tr>
-											<tr>
-												<td colspan=2 class="right">
-													<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/student_view_details.php">
-													<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-													<?php
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan=2 class="right">
+                                                    <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/student_view_details.php">
+                                                    <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+                                                    <?php
                                                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'>".__($guid, 'Clear Search').'</a>';
-                                    				?>
-													<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-													<input type="hidden" name="allStudents" value="<?php echo $allStudents ?>">
-													<input type="hidden" name="search" value="<?php echo $search ?>">
-													<input type="hidden" name="subpage" value="Notes">
-													<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-												</td>
-											</tr>
-										</table>
-									</form>
-								<?php
+                                                    ?>
+                                                    <input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
+                                                    <input type="hidden" name="allStudents" value="<?php echo $allStudents ?>">
+                                                    <input type="hidden" name="search" value="<?php echo $search ?>">
+                                                    <input type="hidden" name="subpage" value="Notes">
+                                                    <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </form>
+                                <?php
 
                                 }
 
@@ -1906,116 +1914,116 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Markbook'>";
                                 echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                                 ?>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
-											<span class="emphasis small"></span>
-										</td>
-										<td class="right">
-											<?php
-											echo "<select name='filter2' id='filter2' style='width:302px'>";
-											echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
-											try {
-												$dataSelect = array();
-												$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-												$resultSelect = $connection2->prepare($sqlSelect);
-												$resultSelect->execute($dataSelect);
-											} catch (PDOException $e) {
-											}
-											while ($rowSelect = $resultSelect->fetch()) {
-												$selected = '';
-												if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-													$selected = 'selected';
-												}
-												echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-											}
-											echo '</select>';
-											?>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'School Years') ?></b><br/>
-											<span class="emphasis small"></span>
-										</td>
-										<td class="right">
-											<?php
-											echo "<select name='filter' id='filter' style='width:302px'>";
-											echo "<option value='*'>".__($guid, 'All Years').'</option>';
-											try {
-												$dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-												$sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
-												$resultSelect = $connection2->prepare($sqlSelect);
-												$resultSelect->execute($dataSelect);
-											} catch (PDOException $e) {
-											}
-											while ($rowSelect = $resultSelect->fetch()) {
-												$selected = '';
-												if ($rowSelect['gibbonSchoolYearID'] == $filter) {
-													$selected = 'selected';
-												}
-												echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.$rowSelect['yearGroup'].')</option>';
-											}
-											echo '</select>';
-											?>
-										</td>
-									</tr>
-									<?php
-									$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
-									if ($types != false) {
-										$types = explode(',', $types);
-										?>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Type') ?></b><br/>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<select name="filter3" id="filter3" class="standardWidth">
-													<option value=""></option>
-													<?php
-													for ($i = 0; $i < count($types); ++$i) {
-														$selected = '';
-														if ($filter3 == $types[$i]) {
-															$selected = 'selected';
-														}
-														?>
-														<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-													<?php
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __($guid, 'Learning Areas') ?></b><br/>
+                                            <span class="emphasis small"></span>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            echo "<select name='filter2' id='filter2' style='width:302px'>";
+                                            echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
+                                            try {
+                                                $dataSelect = array();
+                                                $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+                                                $resultSelect = $connection2->prepare($sqlSelect);
+                                                $resultSelect->execute($dataSelect);
+                                            } catch (PDOException $e) {
+                                            }
+                                            while ($rowSelect = $resultSelect->fetch()) {
+                                                $selected = '';
+                                                if ($rowSelect['gibbonDepartmentID'] == $filter2) {
+                                                    $selected = 'selected';
+                                                }
+                                                echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
+                                            }
+                                            echo '</select>';
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __($guid, 'School Years') ?></b><br/>
+                                            <span class="emphasis small"></span>
+                                        </td>
+                                        <td class="right">
+                                            <?php
+                                            echo "<select name='filter' id='filter' style='width:302px'>";
+                                            echo "<option value='*'>".__($guid, 'All Years').'</option>';
+                                            try {
+                                                $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+                                                $sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
+                                                $resultSelect = $connection2->prepare($sqlSelect);
+                                                $resultSelect->execute($dataSelect);
+                                            } catch (PDOException $e) {
+                                            }
+                                            while ($rowSelect = $resultSelect->fetch()) {
+                                                $selected = '';
+                                                if ($rowSelect['gibbonSchoolYearID'] == $filter) {
+                                                    $selected = 'selected';
+                                                }
+                                                echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.$rowSelect['yearGroup'].')</option>';
+                                            }
+                                            echo '</select>';
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+                                    if ($types != false) {
+                                        $types = explode(',', $types);
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <b><?php echo __($guid, 'Type') ?></b><br/>
+                                                <span class="emphasis small"></span>
+                                            </td>
+                                            <td class="right">
+                                                <select name="filter3" id="filter3" class="standardWidth">
+                                                    <option value=""></option>
+                                                    <?php
+                                                    for ($i = 0; $i < count($types); ++$i) {
+                                                        $selected = '';
+                                                        if ($filter3 == $types[$i]) {
+                                                            $selected = 'selected';
+                                                        }
+                                                        ?>
+                                                        <option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
+                                                    <?php
 
-													}
-											?>
-												</select>
-											</td>
-										</tr>
-										<?php
+                                                    }
+                                            ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <?php
 
-										}
-										echo '<tr>';
-										echo "<td class='right' colspan=2>";
-										echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-										echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
-										echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>';
-										?>
-										<script type="text/javascript">
-											/* Show/Hide detail control */
-											$(document).ready(function(){
-												$(".details").click(function(){
-													if ($('input[name=details]:checked').val()=="Yes" ) {
-														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
-													}
-													else {
-														$(".detailItem").slideUp("fast");
-													}
-												 });
-											});
-										</script>
-										<?php
-										echo "<input type='submit' value='".__($guid, 'Go')."'>";
-									echo '</td>';
-									echo '</tr>';
-								echo'</table>';
-								echo '</form>';
+                                        }
+                                        echo '<tr>';
+                                        echo "<td class='right' colspan=2>";
+                                        echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+                                        echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
+                                        echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>';
+                                        ?>
+                                        <script type="text/javascript">
+                                            /* Show/Hide detail control */
+                                            $(document).ready(function(){
+                                                $(".details").click(function(){
+                                                    if ($('input[name=details]:checked').val()=="Yes" ) {
+                                                        $(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
+                                                    }
+                                                    else {
+                                                        $(".detailItem").slideUp("fast");
+                                                    }
+                                                 });
+                                            });
+                                        </script>
+                                        <?php
+                                        echo "<input type='submit' value='".__($guid, 'Go')."'>";
+                                    echo '</td>';
+                                    echo '</tr>';
+                                echo'</table>';
+                                echo '</form>';
 
                                 //Get class list
                                 try {
@@ -2618,10 +2626,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             try {
                                 $dataDeadlines = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                                 $sqlDeadlines = "
-								(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-								UNION
-								(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-								ORDER BY homeworkDueDateTime, type";
+                                (SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
+                                UNION
+                                (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
+                                ORDER BY homeworkDueDateTime, type";
                                 $resultDeadlines = $connection2->prepare($sqlDeadlines);
                                 $resultDeadlines->execute($dataDeadlines);
                             } catch (PDOException $e) {
@@ -2674,10 +2682,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $dataHistory['gibbonPersonID'] = $gibbonPersonID;
                                 $dataHistory['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
                                 $sqlHistory = "
-								(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
-								UNION
-								(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
-								ORDER BY date DESC, timeStart DESC";
+                                (SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
+                                UNION
+                                (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
+                                ORDER BY date DESC, timeStart DESC";
                                 $resultHistory = $connection2->prepare($sqlHistory);
                                 $resultHistory->execute($dataHistory);
                             } catch (PDOException $e) {
