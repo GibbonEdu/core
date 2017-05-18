@@ -57,6 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
+    $form->toggleVisibilityByClass('columnWeighting')->onSelect('enableColumnWeighting')->when('Y');
+
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks', true);
+    $row = $form->addRow()->addClass('columnWeighting');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value']);
+
     $setting = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

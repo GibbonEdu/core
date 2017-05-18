@@ -1877,7 +1877,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
     if ($resultCheck->rowCount() == 1) { //If exists, increment count
         $rowCheck = $resultCheck->fetch();
         $dataInsert = array('count' => ($rowCheck['count'] + 1), 'gibbonPersonID' => $gibbonPersonID, 'text' => $text, 'name' => $moduleName);
-        $sqlInsert = "UPDATE gibbonNotification SET count=:count WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'";
+        $sqlInsert = "UPDATE gibbonNotification SET count=:count, timestamp=now() WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'";
         $resultInsert = $connection2->prepare($sqlInsert);
         $resultInsert->execute($dataInsert);
     } else { //If not exists, create
@@ -3254,7 +3254,7 @@ function sidebar($gibbon, $pdo)
     if ($_SESSION[$guid]['address'] == '' and isset($_SESSION[$guid]['username'])) {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' ORDER BY course, class";
+            $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.attendance FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' ORDER BY course, class";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -3316,7 +3316,11 @@ function sidebar($gibbon, $pdo)
                     echo '</td>';
                 }
                 echo "<td style='text-align: center'>";
-                echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants'><img title='".__($guid, 'Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php') && $row['attendance'] == 'Y') {
+                    echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'><img title='".__($guid, 'Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                } else {
+                    echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants'><img title='".__($guid, 'Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                }
                 echo '</td>';
                 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                     echo "<td style='text-align: center'>";

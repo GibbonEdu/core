@@ -309,9 +309,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         echo "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
                                     }
 
-                                    //Alerts, if permission allows
-                                    echo getAlertBar($guid, $connection2, $rowRollGroup['gibbonPersonID'], $rowRollGroup['privacy']);
-
                                     //User photo
                                     echo getUserPhoto($guid, $rowRollGroup['image_240'], 75);
 

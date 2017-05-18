@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $data = array('name' => $name, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonTT WHERE (name=:name AND gibbonSchoolYearID=:gibbonSchoolYearID)';
             $result = $connection2->prepare($sql);
             $result->execute($data);

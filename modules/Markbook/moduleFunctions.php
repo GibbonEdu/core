@@ -85,7 +85,7 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
 function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
-    
+
     $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
     $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
     $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
@@ -327,16 +327,16 @@ function getReportGrade($pdo, $reportName, $gibbonSchoolYearID, $gibbonPersonIDS
         'gibbonSchoolYearID' => $gibbonSchoolYearID,
         'today' => date('Y-m-d'),
     );
-    $sql = "SELECT arrReportGrade.gradeID 
-        FROM arrCriteria 
+    $sql = "SELECT arrReportGrade.gradeID
+        FROM arrCriteria
         JOIN arrReport ON (arrCriteria.reportID=arrReport.reportID)
         JOIN arrReportGrade ON (arrReportGrade.criteriaID=arrCriteria.criteriaID)
         JOIN gibbonCourseClass ON (arrCriteria.subjectID=gibbonCourseClass.gibbonCourseID)
-        WHERE arrReport.reportName=:reportName 
-        AND arrReport.schoolYearID=:gibbonSchoolYearID 
+        WHERE arrReport.reportName=:reportName
+        AND arrReport.schoolYearID=:gibbonSchoolYearID
         AND arrReport.endDate<=:today
-        AND arrCriteria.criteriaType = 2 
-        AND arrReportGrade.studentID=:gibbonPersonIDStudent 
+        AND arrCriteria.criteriaType = 2
+        AND arrReportGrade.studentID=:gibbonPersonIDStudent
         AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID";
     $rs = $pdo->executeQuery($data, $sql);
 
@@ -351,13 +351,13 @@ function getCriteriaGrade($pdo, $criteriaType, $gibbonPersonIDStudent, $gibbonCo
         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
         'criteriaType' => $criteriaType,
     );
-    $sql = "SELECT arrReportGrade.gradeID 
-        FROM arrCriteria 
+    $sql = "SELECT arrReportGrade.gradeID
+        FROM arrCriteria
         JOIN arrReportGrade ON (arrReportGrade.criteriaID=arrCriteria.criteriaID)
         JOIN gibbonCourseClass ON (arrCriteria.subjectID=gibbonCourseClass.gibbonCourseID)
-        WHERE arrCriteria.criteriaType =:criteriaType 
-        AND arrReportGrade.studentID=:gibbonPersonIDStudent 
-        AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
+        WHERE arrCriteria.criteriaType =:criteriaType
+        AND arrReportGrade.studentID=:gibbonPersonIDStudent
+        AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
         ORDER BY arrCriteria.reportID DESC LIMIT 1";
     $rs = $pdo->executeQuery($data, $sql);
 
@@ -372,11 +372,11 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
         'today' => date('Y-m-d'),
     );
     $sql = "SELECT arrReportGPA.GPA, arrReport.reportName
-        FROM arrReportGPA 
+        FROM arrReportGPA
         JOIN arrReport ON (arrReportGPA.reportID=arrReport.reportID)
-        WHERE arrReport.schoolYearID=:gibbonSchoolYearID 
+        WHERE arrReport.schoolYearID=:gibbonSchoolYearID
         AND arrReport.endDate<=:today
-        AND arrReportGPA.studentID=:gibbonPersonIDStudent 
+        AND arrReportGPA.studentID=:gibbonPersonIDStudent
         ORDER BY arrReport.reportID ASC";
     $rs = $pdo->executeQuery($data, $sql);
 
@@ -410,9 +410,9 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
     echo '</table>';
 }
 
-function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
+function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
 
-    global $gibbon;
+    $guid = $gibbon->guid();
 
     $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
 
@@ -450,7 +450,7 @@ function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonC
     // Only display if there are marks
     if (!empty($courseMark) || !empty($examMark) || !empty($finalMark) ) {
         echo '<tr>';
-        
+
         echo '<td colspan=7 style="padding:0;">';
         echo '<table class="mini fullWidth" style="margin: 0; border: 0;" cellspacing="0">';
         echo '<tr class="head">';
@@ -490,7 +490,7 @@ function renderStudentCourseMarks( $pdo, $guid, $gibbonPersonIDStudent, $gibbonC
             echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';
             echo round( $courseMark ).'%' .'</td>';
         }
-        
+
         // Display final exam mark
         if (!empty($examMark)) {
             echo '<td style="background: -moz-linear-gradient(top, #f2f2f2, #f0f0f0); padding: 10px !important; text-align: center;">';

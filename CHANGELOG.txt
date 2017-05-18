@@ -33,6 +33,8 @@ v14.0.00
 		System: fixed infinite nested index reload bug
 		System: tightened rules for valid elements in TinyMCE text fields
 		System: removed Allowable HTML from System Settings interface
+		System: updated PHPMailer to latest version
+		System: removed all code samples from /lib libraries
 
 	Changes With Important Notices
 		System: added unit and acceptance testing environments for Gibbon developers
@@ -49,6 +51,8 @@ v14.0.00
 		System: added Myanmar, Burmese, Filipino to list of languages, fixed Croatian, Ukrainian, Swedish spelling
 		System: added logging to Google OAuth login
 		System: fixed broken Credits link in footer
+		System: removed Media plugin from tinyMCE
+		System: added timestamp update when incrementing notification count
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
@@ -59,6 +63,7 @@ v14.0.00
 		Attendance: added settings to determine default type in different contexts
 		Attendance: added dynamic legend for Student History report
 		Attendance: added extra role to allow form group attendance to be restricted to own form group
+		Attendance: updated Take Attendance by Class to exclude students with timetable exceptions
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
@@ -70,6 +75,7 @@ v14.0.00
 		Markbook: fixed order for first markbook column not saving properly
 		Markbook: allow decimal values for markbook column attainment raw max
 		Markbook: fixed custom Attainment label for Total Mark field
+		Markbook: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled

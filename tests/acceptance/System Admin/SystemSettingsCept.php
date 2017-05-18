@@ -1,4 +1,4 @@
-<?php 
+<?php
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update System Settings');
 $I->loginAsAdmin();
@@ -25,7 +25,6 @@ $newFormValues = array(
     'passwordPolicyNumeric'         => 'Y',
     'passwordPolicyNonAlphaNumeric' => 'Y',
     'sessionDuration'               => '2048',
-    'allowableHTML'                 => 'font,blink,marquee,acronym,abbr,wbr',
     'gibboneduComOrganisationName'  => 'Syndicate of Wordwide Gibbon Testers',
     'gibboneduComOrganisationKey'   => '1234-5678-90',
     'country'                       => 'Antarctica',
