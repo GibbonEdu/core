@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         //Check access to specified student
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd, gibbonYearGroup.gibbonYearGroupID FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -56,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             header("Location: {$URL}");
         } else {
             $partialFail = false;
+            $row = $result->fetch();
 
             if ($highestAction == 'Individual Needs Records_viewEdit') {
                 //UPDATE STATUS
@@ -137,6 +140,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                         $partialFail = true;
                     }
                 }
+            }
+
+            if (!$partialFail) {
+                // Raise a new notification event
+                $event = new NotificationEvent('Individual Needs', 'Updated Individual Needs');
+
+                $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                $actionLink = "/index.php?q=/modules/Individual Needs/in_edit.php&gibbonPersonID=$gibbonPersonID&search=";
+
+                $event->setNotificationText(sprintf(__('%1$s has updated the individual needs record for %2$s.'), $staffName, $studentName));
+                $event->setActionLink($actionLink);
+
+                $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
+
+                $event->sendNotifications($pdo, $gibbon->session);
             }
 
             //DEAL WITH OUTCOME
