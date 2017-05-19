@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 echo '</table>';
 
                 //PARTICIPANTS
-                echo '<a name=\'participants\'>';
+                echo '<a name=\'participants\'></a>';
                 echo '<h3 class=\'bigTop\'>';
                     echo __($guid, 'Participants');
                 echo '</h3>';
