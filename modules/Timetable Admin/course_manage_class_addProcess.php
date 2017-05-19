@@ -68,7 +68,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                print $e->getMessage(); exit();
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
