@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                         JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                         JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                         JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID)
-                        JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonPersonID2=gibbonPerson.gibbonPersonID AND gibbonFamilyRelationship.gibbonPersonID1=gibbonFamilyAdult.gibbonPersonID)
+                        JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
                         WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                         AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
                         GROUP BY gibbonPerson.gibbonPersonID
