@@ -131,8 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                         FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                         WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID
                     ) ORDER BY surname, preferredName";
-            }
-            else if ($highestAction == 'View Timetable by Person_myChildren') {
+            } else if ($highestAction == 'View Timetable by Person_myChildren') {
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
                         FROM gibbonPerson
@@ -145,8 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                         AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
                         GROUP BY gibbonPerson.gibbonPersonID
                         ORDER BY surname, preferredName";
-            }
-            else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
+            } else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
                 if ($allUsers == 'on') {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
