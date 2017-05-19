@@ -23,10 +23,11 @@ v14.0.00
 		Added the ability to manage system notifications and send specific notices to different users
 
 	Changes With Important Notices
-		...
+		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
+		Attendance: dropped legacy tables gibbonPlannerEntryAttendance, gibbonPlannerEntryAttendanceLog
 
 	Significant Changes
-		...
+		System: added unit and acceptance testing environments for Gibbon developers
 
 	Security
 		System: fixed PHP code execution vulnerability
@@ -35,11 +36,6 @@ v14.0.00
 		System: removed Allowable HTML from System Settings interface
 		System: updated PHPMailer to latest version
 		System: removed all code samples from /lib libraries
-
-	Changes With Important Notices
-		System: added unit and acceptance testing environments for Gibbon developers
-		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
-		Attendance: dropped legacy tables gibbonPlannerEntryAttendance, gibbonPlannerEntryAttendanceLog
 
 	Tweaks & Bug Fixes
 		System: improved Fast Finder student search permissions
@@ -98,16 +94,16 @@ v14.0.00
 
 v13.0.02
 --------
-Security
-	System: fixed PHP code execution vulnerability
-	System: fixed infinite nested index reload bug
+	Security
+		System: fixed PHP code execution vulnerability
+		System: fixed infinite nested index reload bug
 
 v13.0.01
 --------
-Tweaks & Bug Fixes
-	System: installer adjusted to provide compatibility with Softaculous
-	System: fixed Resource tag issue in demo data
-	Resources: fixed PHP notice in View Resources
+	Tweaks & Bug Fixes
+		System: installer adjusted to provide compatibility with Softaculous
+		System: fixed Resource tag issue in demo data
+		Resources: fixed PHP notice in View Resources
 
 v13.0.00
 --------
