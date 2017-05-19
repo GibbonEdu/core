@@ -134,8 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
             }
             else if ($highestAction == 'View Timetable by Person_myChildren') {
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(
-                        SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
                         FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                         JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
@@ -144,11 +143,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                         JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonPersonID2=gibbonPerson.gibbonPersonID AND gibbonFamilyRelationship.gibbonPersonID1=gibbonFamilyAdult.gibbonPersonID)
                         WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                         AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
-                    ) UNION (
-                        SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type
-                        FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                        WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID
-                    ) ORDER BY surname, preferredName";
+                        GROUP BY gibbonPerson.gibbonPersonID
+                        ORDER BY surname, preferredName";
             }
             else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
                 if ($allUsers == 'on') {

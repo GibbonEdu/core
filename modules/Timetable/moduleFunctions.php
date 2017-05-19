@@ -296,24 +296,22 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
     $output = '';
     $proceed = false;
 
-    if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
+    $highestAction = getHighestGroupedAction($guid, '/modules/Timetable/tt.php', $connection2);
+
+    if ($highestAction == 'View Timetable by Person_allYears') {
         $proceed = true;
-    } else {
-        if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
-            $proceed = true;
-        }
-    }
+    } else if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
 
-    if ($proceed && $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
-        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person') || isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
+        if ($highestAction == 'View Timetable by Person') {
             $proceed = true;
-        }
-        else if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_myChildren') ) {
-
+        } else if ($highestAction == 'View Timetable by Person_my') {
+            if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+                $proceed = true;
+            }
+        } else if ($highestAction == 'View Timetable by Person_myChildren') {
             try {
                 $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
-                $sql = "SELECT gibbonPersonID2
-                    FROM gibbonFamilyRelationship
+                $sql = "SELECT gibbonPersonID2 FROM gibbonFamilyRelationship
                     JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonFamilyRelationship.gibbonPersonID1)
                     WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
@@ -324,8 +322,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             if ($result->rowCount() > 0) {
                 $proceed = true;
-            } else {
-                $proceed = false;
             }
         }
     }
