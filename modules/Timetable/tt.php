@@ -116,14 +116,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         try {
             if ($highestAction == 'View Timetable by Person_my') {
-                // View Timetable by Person_my
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=:gibbonPersonID) AND (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full') UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID) ORDER BY surname, preferredName";
+                    $sql = "(
+                        SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
+                        FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                        JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                        WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+                        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full'
+                    ) UNION (
+                        SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type
+                        FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                        WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID
+                    ) ORDER BY surname, preferredName";
             }
             else if ($highestAction == 'View Timetable by Person_myChildren') {
-                // View Timetable by Person_my
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup, gibbonFamilyRelationship WHERE (gibbonFamilyRelationship.gibbonPersonID2=gibbonPerson.gibbonPersonID) AND (gibbonFamilyRelationship.gibbonPersonID1=:gibbonPersonID) AND (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full') UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID) ORDER BY surname, preferredName";
+                    $sql = "(
+                        SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
+                        FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                        JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                        JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID)
+                        JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonPersonID2=gibbonPerson.gibbonPersonID AND gibbonFamilyRelationship.gibbonPersonID1=gibbonFamilyAdult.gibbonPersonID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
+                    ) UNION (
+                        SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type
+                        FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                        WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID
+                    ) ORDER BY surname, preferredName";
             }
             else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
                 if ($allUsers == 'on') {
