@@ -31,7 +31,7 @@ $nameShort = $_POST['nameShort'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $gibbonCourseID = $_POST['gibbonCourseID'];
 $reportable = $_POST['reportable'];
-$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
+$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : 'N';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
+                print $e->getMessage(); exit();
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
