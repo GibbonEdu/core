@@ -32,95 +32,85 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        if ($highestAction == 'View Student Profile_myChildren') {
+        if ($highestAction == 'View Student Profile_myChildren' || $highestAction == 'View Student Profile_my') {
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Profiles').'</div>';
             echo '</div>';
 
-            //Test data access field for permission
+             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            if ($highestAction == 'View Student Profile_myChildren') {
+                // Get child list (and test permission to access)
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup
+                    FROM gibbonFamilyAdult
+                    JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+                    JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
+                    AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
+                    AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    GROUP BY gibbonPerson.gibbonPersonID
+                    ORDER BY surname, preferredName";
+            } else if ($highestAction == 'View Student Profile_my') {
+                // Get self
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup
+                    FROM gibbonPerson
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full'
+                    AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+            }
+
             try {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
+
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'Access denied.');
+                echo __($guid, 'You do not have access to this action.');
                 echo '</div>';
             } else {
-            //Get child list
-            $count = 0;
-                $options = '';
-                $students = array();
+                echo "<table class='colorOddEven' cellspacing='0' style='width: 100%'>";
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Name');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Year Group');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Roll Group');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Actions');
+                echo '</th>';
+                echo '</tr>';
+
                 while ($row = $result->fetch()) {
-                    try {
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID']);
-                        $sqlChild = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].' ORDER BY surname, preferredName ';
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    while ($rowChild = $resultChild->fetch()) {
-                        $students[$count][0] = $rowChild['surname'];
-                        $students[$count][1] = $rowChild['preferredName'];
-                        $students[$count][2] = $rowChild['yearGroup'];
-                        $students[$count][3] = $rowChild['rollGroup'];
-                        $students[$count][4] = $rowChild['gibbonPersonID'];
-                        ++$count;
-                    }
-                }
-
-                if ($count == 0) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'Access denied.');
-                    echo '</div>';
-                } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __($guid, 'Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Year Group');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Roll Group');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Actions');
-                    echo '</th>';
+                    echo "<tr>";
+                    echo '<td>';
+                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                    echo '</td>';
+                    echo '<td>';
+                    echo __($guid, $row['yearGroup']);
+                    echo '</td>';
+                    echo '<td>';
+                    echo $row['rollGroup'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                    echo '</td>';
                     echo '</tr>';
-
-                    for ($i = 0;$i < $count;++$i) {
-                        if ($i % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo formatName('', $students[$i][1], $students[$i][0], 'Student', true);
-                        echo '</td>';
-                        echo '<td>';
-                        echo __($guid, $students[$i][2]);
-                        echo '</td>';
-                        echo '<td>';
-                        echo $students[$i][3];
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php&gibbonPersonID='.$students[$i][4]."'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-
-                    echo '</table>';
                 }
+                echo '</table>';
             }
         }
         if ($highestAction == 'View Student Profile_brief') {

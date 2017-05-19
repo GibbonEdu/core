@@ -80,11 +80,14 @@ v14.0.00
 		Students: added settable thresholds for issuing academic alerts
 		Students: added settable thresholds for issuing behaviour alerts
 		Students: added extra action to allow deleting of application forms to be disabled
+		Students: added optional permission for students to only view their profile
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 		Timetable: added option to display either Day Of The Week or Timetable Day Short Name in column header of timetables
 		Timetable: added name of person making a facility booking to timetable view by Person
+		Timetable: added optional permission for users to only view their own timetable
+		Timetable: added optional permission for parents to only view their children's timetables
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit
 		User Admin: added ability to restrict which roles can be assigned in Manage Users

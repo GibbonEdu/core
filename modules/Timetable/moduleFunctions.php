@@ -296,11 +296,33 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
     $output = '';
     $proceed = false;
 
-    if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php', 'View Timetable by Person_allYears')) {
+    $highestAction = getHighestGroupedAction($guid, '/modules/Timetable/tt.php', $connection2);
+
+    if ($highestAction == 'View Timetable by Person_allYears') {
         $proceed = true;
-    } else {
-        if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
+    } else if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
+
+        if ($highestAction == 'View Timetable by Person') {
             $proceed = true;
+        } else if ($highestAction == 'View Timetable by Person_my') {
+            if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+                $proceed = true;
+            }
+        } else if ($highestAction == 'View Timetable by Person_myChildren') {
+            try {
+                $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
+                $sql = "SELECT gibbonPersonID2 FROM gibbonFamilyRelationship
+                    JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonFamilyRelationship.gibbonPersonID1)
+                    WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND childDataAccess='Y'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($result->rowCount() > 0) {
+                $proceed = true;
+            }
         }
     }
 
@@ -1139,15 +1161,15 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 }
             }
 
-			//Draw periods from TT
-			try {
-				$dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonPersonID' => $gibbonPersonID);
-				$sqlPeriods = "SELECT gibbonTTDayID, gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
-				$resultPeriods = $connection2->prepare($sqlPeriods);
-				$resultPeriods->execute($dataPeriods);
-			} catch (PDOException $e) {
-				$output .= "<div class='error'>".$e->getMessage().'</div>';
-			}
+            //Draw periods from TT
+            try {
+                $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonPersonID' => $gibbonPersonID);
+                $sqlPeriods = "SELECT gibbonTTDayID, gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
+                $resultPeriods = $connection2->prepare($sqlPeriods);
+                $resultPeriods->execute($dataPeriods);
+            } catch (PDOException $e) {
+                $output .= "<div class='error'>".$e->getMessage().'</div>';
+            }
             while ($rowPeriods = $resultPeriods->fetch()) {
                 $isSlotInTime = false;
                 if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -1160,14 +1182,14 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                 if ($isSlotInTime == true) {
                     //Check for an exception for the current user
-					try {
-						$dataException = array('gibbonPersonID' => $gibbonPersonID);
-						$sqlException = 'SELECT * FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID='.$rowPeriods['gibbonTTDayRowClassID'].' AND gibbonPersonID=:gibbonPersonID';
-						$resultException = $connection2->prepare($sqlException);
-						$resultException->execute($dataException);
-					} catch (PDOException $e) {
-						$output .= "<div class='error'>".$e->getMessage().'</div>';
-					}
+                    try {
+                        $dataException = array('gibbonPersonID' => $gibbonPersonID);
+                        $sqlException = 'SELECT * FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID='.$rowPeriods['gibbonTTDayRowClassID'].' AND gibbonPersonID=:gibbonPersonID';
+                        $resultException = $connection2->prepare($sqlException);
+                        $resultException->execute($dataException);
+                    } catch (PDOException $e) {
+                        $output .= "<div class='error'>".$e->getMessage().'</div>';
+                    }
                     if ($resultException->rowCount() < 1) {
                         $effectiveStart = $rowPeriods['timeStart'];
                         $effectiveEnd = $rowPeriods['timeEnd'];
@@ -1282,8 +1304,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                     //Add planner link icons for any one else's TT
                                     else {
                                         $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
-										//Check for lesson plan
-										$bgImg = 'none';
+                                        //Check for lesson plan
+                                        $bgImg = 'none';
 
                                         try {
                                             $dataPlan = array('gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'], 'date' => $date, 'timeStart' => $rowPeriods['timeStart'], 'timeEnd' => $rowPeriods['timeEnd']);
@@ -1303,42 +1325,42 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                         ++$zCount;
                                     }
                             }
-							//Show exception editing
-							elseif ($edit) {
-								$output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
-									//Check for lesson plan
-									$bgImg = 'none';
-								$output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__($guid, 'Manage Exceptions')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
-								$output .= '</div>';
-								++$zCount;
-							}
+                            //Show exception editing
+                            elseif ($edit) {
+                                $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                    //Check for lesson plan
+                                    $bgImg = 'none';
+                                $output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__($guid, 'Manage Exceptions')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                                $output .= '</div>';
+                                ++$zCount;
+                            }
                         }
                     }
                 }
             }
 
-			//Draw periods from school calendar
-			if ($eventsSchool != false) {
-				$height = 0;
-				$top = 0;
-				foreach ($eventsSchool as $event) {
-					if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-						if ($event[1] == 'All Day') {
-							$label = $event[0];
-							$title = '';
-							if (strlen($label) > 20) {
-								$label = substr($label, 0, 20).'...';
-								$title = "title='".$event[0]."'";
-							}
-							$height = '30px';
-							$top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-							$output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-							$output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-							$output .= '</div>';
-							++$allDay;
-						} else {
-							$label = $event[0];
-							$title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
+            //Draw periods from school calendar
+            if ($eventsSchool != false) {
+                $height = 0;
+                $top = 0;
+                foreach ($eventsSchool as $event) {
+                    if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                        if ($event[1] == 'All Day') {
+                            $label = $event[0];
+                            $title = '';
+                            if (strlen($label) > 20) {
+                                $label = substr($label, 0, 20).'...';
+                                $title = "title='".$event[0]."'";
+                            }
+                            $height = '30px';
+                            $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
+                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                            $output .= '</div>';
+                            ++$allDay;
+                        } else {
+                            $label = $event[0];
+                            $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                             $height = ceil(($event[3] - $event[2]) / 60).'px';
                             $charCut = 20;
                             if ($height < 20) {
@@ -1349,38 +1371,38 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-							$output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-							$output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-							$output .= '</div>';
-						}
-						++$zCount;
-					}
-				}
-			}
+                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                            $output .= '</div>';
+                        }
+                        ++$zCount;
+                    }
+                }
+            }
 
-			//Draw periods from personal calendar
-			if ($eventsPersonal != false) {
-				$height = 0;
-				$top = 0;
-				$bg = "rgba(103,153,207,$schoolCalendarAlpha)";
-				foreach ($eventsPersonal as $event) {
-					if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-						if ($event[1] == 'All Day') {
-							$label = $event[0];
-							$title = '';
-							if (strlen($label) > 20) {
-								$label = substr($label, 0, 20).'...';
-								$title = "title='".$event[0]."'";
-							}
-							$height = '30px';
-							$top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-							$output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-							$output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-							$output .= '</div>';
-							++$allDay;
-						} else {
-							$label = $event[0];
-							$title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
+            //Draw periods from personal calendar
+            if ($eventsPersonal != false) {
+                $height = 0;
+                $top = 0;
+                $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
+                foreach ($eventsPersonal as $event) {
+                    if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                        if ($event[1] == 'All Day') {
+                            $label = $event[0];
+                            $title = '';
+                            if (strlen($label) > 20) {
+                                $label = substr($label, 0, 20).'...';
+                                $title = "title='".$event[0]."'";
+                            }
+                            $height = '30px';
+                            $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
+                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                            $output .= '</div>';
+                            ++$allDay;
+                        } else {
+                            $label = $event[0];
+                            $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                             $height = ceil(($event[3] - $event[2]) / 60).'px';
                             $charCut = 20;
                             if ($height < 20) {
@@ -1391,38 +1413,38 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-							$output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-							$output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-							$output .= '</div>';
-						}
-						++$zCount;
-					}
-				}
-			}
+                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                            $output .= '</div>';
+                        }
+                        ++$zCount;
+                    }
+                }
+            }
 
-			//Draw space bookings
-			if ($eventsSpaceBooking != false) {
-				$height = 0;
-				$top = 0;
-				foreach ($eventsSpaceBooking as $event) {
-					if ($event[3] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-						$height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60).'px';
-						$top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
+            //Draw space bookings
+            if ($eventsSpaceBooking != false) {
+                $height = 0;
+                $top = 0;
+                foreach ($eventsSpaceBooking as $event) {
+                    if ($event[3] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                        $height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60).'px';
+                        $top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
                         if ($height < 45) {
-    						$label = $event[1];
-    						$title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
-    					} else {
-    						$label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
-    						$title = '';
-    					}
-						$output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-						$output .= $label;
-						$output .= '</div>';
-						++$zCount;
-					}
-				}
-			}
-		$output .= '</div>';
+                            $label = $event[1];
+                            $title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
+                        } else {
+                            $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
+                            $title = '';
+                        }
+                        $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= $label;
+                        $output .= '</div>';
+                        ++$zCount;
+                    }
+                }
+            }
+        $output .= '</div>';
         }
     }
     $output .= '</td>';
@@ -1707,23 +1729,23 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                 $output .= '</tr>';
             }
 
-			$output .= "<tr class='head'>";
-			$output .= "<th style='vertical-align: top; width: 70px; text-align: center'>";
-			//Calculate week number
-			$week = getWeekNumber($startDayStamp, $connection2, $guid);
-			if ($week != false) {
-				$output .= sprintf(__($guid, 'Week %1$s'), $week).'<br/>';
-			}
-			$output .= "<span style='font-weight: normal; font-style: italic;'>".__($guid, 'Time').'<span>';
-			$output .= '</th>';
+            $output .= "<tr class='head'>";
+            $output .= "<th style='vertical-align: top; width: 70px; text-align: center'>";
+            //Calculate week number
+            $week = getWeekNumber($startDayStamp, $connection2, $guid);
+            if ($week != false) {
+                $output .= sprintf(__($guid, 'Week %1$s'), $week).'<br/>';
+            }
+            $output .= "<span style='font-weight: normal; font-style: italic;'>".__($guid, 'Time').'<span>';
+            $output .= '</th>';
             $count = 0;
-			foreach ($days as $day) {
-				if ($day['schoolDay'] == 'Y') {
-					$dateCorrection = ($day['sequenceNumber'] - 1);
+            foreach ($days as $day) {
+                if ($day['schoolDay'] == 'Y') {
+                    $dateCorrection = ($day['sequenceNumber'] - 1);
 
-					$output .= "<th style='vertical-align: top; text-align: center; width: ";
-					$output .= (550 / $daysInWeek);
-					$output .= "px'>";
+                    $output .= "<th style='vertical-align: top; text-align: center; width: ";
+                    $output .= (550 / $daysInWeek);
+                    $output .= "px'>";
                     if ($nameShortDisplay != 'Timetable Day Short Name') {
                         $output .= __($guid, $day['nameShort']).'<br/>';
                     }
@@ -1742,139 +1764,139 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             $output .= __($guid, $day['nameShort']).'<br/>';
                         }
                     }
-					$output .= "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
-					try {
-						$dataSpecial = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-						$sqlSpecial = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'";
-						$resultSpecial = $connection2->prepare($sqlSpecial);
-						$resultSpecial->execute($dataSpecial);
-					} catch (PDOException $e) {
-						$output .= "<div class='error'>".$e->getMessage().'</div>';
-					}
-					if ($resultSpecial->rowcount() == 1) {
-						$rowSpecial = $resultSpecial->fetch();
-						$output .= "<span style='font-size: 80%; font-weight: bold'><u>".$rowSpecial['name'].'</u></span>';
-					}
-					$output .= '</th>';
-				}
+                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
+                    try {
+                        $dataSpecial = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                        $sqlSpecial = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'";
+                        $resultSpecial = $connection2->prepare($sqlSpecial);
+                        $resultSpecial->execute($dataSpecial);
+                    } catch (PDOException $e) {
+                        $output .= "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    if ($resultSpecial->rowcount() == 1) {
+                        $rowSpecial = $resultSpecial->fetch();
+                        $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$rowSpecial['name'].'</u></span>';
+                    }
+                    $output .= '</th>';
+                }
                 $count ++;
-			}
-			$output .= '</tr>';
+            }
+            $output .= '</tr>';
 
-			$output .= "<tr style='height:".(ceil($diffTime / 60) + 14)."px'>";
-			$output .= "<td class='ttTime' style='height: 300px; width: 75px; text-align: center; vertical-align: top'>";
-			$output .= "<div style='position: relative; width: 71px'>";
-			$countTime = 0;
-			$time = $timeStart;
-			$output .= "<div $title style='position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
-			$output .= substr($time, 0, 5).'<br/>';
-			$output .= '</div>';
-			$time = date('H:i:s', strtotime($time) + 3600);
-			$spinControl = 0;
-			while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 5))) {
-				++$countTime;
-				$output .= "<div $title style='position: absolute; top:".(($countTime * 60) - 5)."px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
-				$output .= substr($time, 0, 5).'<br/>';
-				$output .= '</div>';
-				$time = date('H:i:s', strtotime($time) + 3600);
-				++$spinControl;
-			}
+            $output .= "<tr style='height:".(ceil($diffTime / 60) + 14)."px'>";
+            $output .= "<td class='ttTime' style='height: 300px; width: 75px; text-align: center; vertical-align: top'>";
+            $output .= "<div style='position: relative; width: 71px'>";
+            $countTime = 0;
+            $time = $timeStart;
+            $output .= "<div $title style='position: absolute; top: -3px; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+            $output .= substr($time, 0, 5).'<br/>';
+            $output .= '</div>';
+            $time = date('H:i:s', strtotime($time) + 3600);
+            $spinControl = 0;
+            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 5))) {
+                ++$countTime;
+                $output .= "<div $title style='position: absolute; top:".(($countTime * 60) - 5)."px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+                $output .= substr($time, 0, 5).'<br/>';
+                $output .= '</div>';
+                $time = date('H:i:s', strtotime($time) + 3600);
+                ++$spinControl;
+            }
 
-			$output .= '</div>';
-			$output .= '</td>';
+            $output .= '</div>';
+            $output .= '</td>';
 
-			//Check to see if week is at all in term time...if it is, then display the grid
-			$isWeekInTerm = false;
-			try {
-				$dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-				$sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-				$resultTerm = $connection2->prepare($sqlTerm);
-				$resultTerm->execute($dataTerm);
-			} catch (PDOException $e) {
-				$output .= "<div class='error'>".$e->getMessage().'</div>';
-			}
-			$weekStart = date('Y-m-d', ($startDayStamp + (86400 * 0)));
-			$weekEnd = date('Y-m-d', ($startDayStamp + (86400 * 6)));
-			while ($rowTerm = $resultTerm->fetch()) {
-				if ($weekStart <= $rowTerm['firstDay'] and $weekEnd >= $rowTerm['firstDay']) {
-					$isWeekInTerm = true;
-				} elseif ($weekStart >= $rowTerm['firstDay'] and $weekEnd <= $rowTerm['lastDay']) {
-					$isWeekInTerm = true;
-				} elseif ($weekStart <= $rowTerm['lastDay'] and $weekEnd >= $rowTerm['lastDay']) {
-					$isWeekInTerm = true;
-				}
-			}
-			if ($isWeekInTerm == true) {
-				$blank = false;
-			}
+            //Check to see if week is at all in term time...if it is, then display the grid
+            $isWeekInTerm = false;
+            try {
+                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+                $resultTerm = $connection2->prepare($sqlTerm);
+                $resultTerm->execute($dataTerm);
+            } catch (PDOException $e) {
+                $output .= "<div class='error'>".$e->getMessage().'</div>';
+            }
+            $weekStart = date('Y-m-d', ($startDayStamp + (86400 * 0)));
+            $weekEnd = date('Y-m-d', ($startDayStamp + (86400 * 6)));
+            while ($rowTerm = $resultTerm->fetch()) {
+                if ($weekStart <= $rowTerm['firstDay'] and $weekEnd >= $rowTerm['firstDay']) {
+                    $isWeekInTerm = true;
+                } elseif ($weekStart >= $rowTerm['firstDay'] and $weekEnd <= $rowTerm['lastDay']) {
+                    $isWeekInTerm = true;
+                } elseif ($weekStart <= $rowTerm['lastDay'] and $weekEnd >= $rowTerm['lastDay']) {
+                    $isWeekInTerm = true;
+                }
+            }
+            if ($isWeekInTerm == true) {
+                $blank = false;
+            }
 
-			//Run through days of the week
-			foreach ($days as $day) {
-				$dayOut = '';
-				if ($day['schoolDay'] == 'Y') {
-					$dateCorrection = ($day['sequenceNumber'] - 1);
+            //Run through days of the week
+            foreach ($days as $day) {
+                $dayOut = '';
+                if ($day['schoolDay'] == 'Y') {
+                    $dateCorrection = ($day['sequenceNumber'] - 1);
 
-					//Check to see if day is term time
-					$isDayInTerm = false;
-					try {
-						$dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-						$sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-						$resultTerm = $connection2->prepare($sqlTerm);
-						$resultTerm->execute($dataTerm);
-					} catch (PDOException $e) {
-						$output .= "<div class='error'>".$e->getMessage().'</div>';
-					}
-					while ($rowTerm = $resultTerm->fetch()) {
-						if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
-							$isDayInTerm = true;
-						}
-					}
+                    //Check to see if day is term time
+                    $isDayInTerm = false;
+                    try {
+                        $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+                        $resultTerm = $connection2->prepare($sqlTerm);
+                        $resultTerm->execute($dataTerm);
+                    } catch (PDOException $e) {
+                        $output .= "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    while ($rowTerm = $resultTerm->fetch()) {
+                        if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
+                            $isDayInTerm = true;
+                        }
+                    }
 
-					if ($isDayInTerm == true) {
-						//Check for school closure day
-						try {
-							$dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-							$sqlClosure = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date';
-							$resultClosure = $connection2->prepare($sqlClosure);
-							$resultClosure->execute($dataClosure);
-						} catch (PDOException $e) {
-							$output .= "<div class='error'>".$e->getMessage().'</div>';
-						}
-						if ($resultClosure->rowCount() == 1) {
-							$rowClosure = $resultClosure->fetch();
-							if ($rowClosure['type'] == 'School Closure') {
-								$dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-								$dayOut .= "<div style='position: relative'>";
-								$dayOut .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
-								$dayOut .= "<div style='position: relative; top: 50%'>";
-								$dayOut .= '<span>'.$rowClosure['name'].'</span>';
-								$dayOut .= '</div>';
-								$dayOut .= '</div>';
-								$dayOut .= '</div>';
-								$dayOut .= '</td>';
-							} elseif ($rowClosure['type'] == 'Timing Change') {
-								$dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure['schoolStart'], $rowClosure['schoolEnd']);
-							}
-						} else {
-							$dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking);
-						}
-					}
+                    if ($isDayInTerm == true) {
+                        //Check for school closure day
+                        try {
+                            $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                            $sqlClosure = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date';
+                            $resultClosure = $connection2->prepare($sqlClosure);
+                            $resultClosure->execute($dataClosure);
+                        } catch (PDOException $e) {
+                            $output .= "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultClosure->rowCount() == 1) {
+                            $rowClosure = $resultClosure->fetch();
+                            if ($rowClosure['type'] == 'School Closure') {
+                                $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+                                $dayOut .= "<div style='position: relative'>";
+                                $dayOut .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                                $dayOut .= "<div style='position: relative; top: 50%'>";
+                                $dayOut .= '<span>'.$rowClosure['name'].'</span>';
+                                $dayOut .= '</div>';
+                                $dayOut .= '</div>';
+                                $dayOut .= '</div>';
+                                $dayOut .= '</td>';
+                            } elseif ($rowClosure['type'] == 'Timing Change') {
+                                $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure['schoolStart'], $rowClosure['schoolEnd']);
+                            }
+                        } else {
+                            $dayOut = renderTTSpaceDay($guid, $connection2, $row['gibbonTTID'], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking);
+                        }
+                    }
 
-					if ($dayOut == '') {
-						$dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-						$dayOut .= "<div style='position: relative'>";
-						$dayOut .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
-						$dayOut .= "<div style='position: relative; top: 50%'>";
-						$dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed').'</span>';
-						$dayOut .= '</div>';
-						$dayOut .= '</div>';
-						$dayOut .= '</div>';
-						$dayOut .= '</td>';
-					}
+                    if ($dayOut == '') {
+                        $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+                        $dayOut .= "<div style='position: relative'>";
+                        $dayOut .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                        $dayOut .= "<div style='position: relative; top: 50%'>";
+                        $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed').'</span>';
+                        $dayOut .= '</div>';
+                        $dayOut .= '</div>';
+                        $dayOut .= '</div>';
+                        $dayOut .= '</td>';
+                    }
 
-					$output .= $dayOut;
-				}
-			}
+                    $output .= $dayOut;
+                }
+            }
 
         $output .= '</tr>';
         $output .= '</table>';
@@ -1962,15 +1984,15 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
         $zCount = 0;
         $output .= "<div style='position: relative'>";
 
-		//Draw outline of the day
-		try {
-			$dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-			$sqlPeriods = 'SELECT gibbonTTColumnRow.name, timeStart, timeEnd, type, date FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDayDate.gibbonTTDayID=:gibbonTTDayID AND date=:date ORDER BY timeStart, timeEnd';
-			$resultPeriods = $connection2->prepare($sqlPeriods);
-			$resultPeriods->execute($dataPeriods);
-		} catch (PDOException $e) {
-			$output .= "<div class='error'>".$e->getMessage().'</div>';
-		}
+        //Draw outline of the day
+        try {
+            $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
+            $sqlPeriods = 'SELECT gibbonTTColumnRow.name, timeStart, timeEnd, type, date FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDayDate.gibbonTTDayID=:gibbonTTDayID AND date=:date ORDER BY timeStart, timeEnd';
+            $resultPeriods = $connection2->prepare($sqlPeriods);
+            $resultPeriods->execute($dataPeriods);
+        } catch (PDOException $e) {
+            $output .= "<div class='error'>".$e->getMessage().'</div>';
+        }
         while ($rowPeriods = $resultPeriods->fetch()) {
             $isSlotInTime = false;
             if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -2020,18 +2042,18 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             }
         }
 
-		//Draw periods from TT
-		try {
-			$dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonTTDayID1' => $rowDay['gibbonTTDayID'], 'gibbonSpaceID1' => $gibbonSpaceID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-			$sqlPeriods = "(SELECT 'Normal' AS type, gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonSpace.gibbonSpaceID=:gibbonSpaceID)
-			UNION
-			(SELECT 'Change' AS type, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=:date) LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID1 AND gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID1)
-			ORDER BY timeStart, timeEnd";
-			$resultPeriods = $connection2->prepare($sqlPeriods);
-			$resultPeriods->execute($dataPeriods);
-		} catch (PDOException $e) {
-			$output .= "<div class='error'>".$e->getMessage().'</div>';
-		}
+        //Draw periods from TT
+        try {
+            $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonTTDayID1' => $rowDay['gibbonTTDayID'], 'gibbonSpaceID1' => $gibbonSpaceID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
+            $sqlPeriods = "(SELECT 'Normal' AS type, gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonSpace.gibbonSpaceID=:gibbonSpaceID)
+            UNION
+            (SELECT 'Change' AS type, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=:date) LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID1 AND gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID1)
+            ORDER BY timeStart, timeEnd";
+            $resultPeriods = $connection2->prepare($sqlPeriods);
+            $resultPeriods->execute($dataPeriods);
+        } catch (PDOException $e) {
+            $output .= "<div class='error'>".$e->getMessage().'</div>';
+        }
 
         while ($rowPeriods = $resultPeriods->fetch()) {
             $isSlotInTime = false;
@@ -2105,28 +2127,28 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
             }
         }
 
-		//Draw space bookings
-		if ($eventsSpaceBooking != false) {
-			$height = 0;
-			$top = 0;
-			foreach ($eventsSpaceBooking as $event) {
-				if ($event[3] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-					$height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60).'px';
-					$top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
-					if ($height < 45) {
-						$label = $event[1];
-						$title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
-					} else {
-						$label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
-						$title = '';
-					}
-					$output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-					$output .= $label;
-					$output .= '</div>';
-					++$zCount;
-				}
-			}
-		}
+        //Draw space bookings
+        if ($eventsSpaceBooking != false) {
+            $height = 0;
+            $top = 0;
+            foreach ($eventsSpaceBooking as $event) {
+                if ($event[3] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    $height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))).' '.$event[4])) / 60).'px';
+                    $top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
+                    if ($height < 45) {
+                        $label = $event[1];
+                        $title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
+                    } else {
+                        $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
+                        $title = '';
+                    }
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= $label;
+                    $output .= '</div>';
+                    ++$zCount;
+                }
+            }
+        }
 
         $output .= '</div>';
     }
