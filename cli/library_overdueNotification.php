@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
@@ -57,12 +61,32 @@ else {
     } catch (PDOException $e) {
     }
 
-    if ($result->rowCount() > 0) {
-        while ($row = $result->fetch()) { //For every student
-            $notificationText = sprintf(__($guid, 'You have an overdue loan item that needs to be returned (%1$s).'), $row['name']);
-            setNotification($connection2, $guid, $row['gibbonPersonIDStatusResponsible'], $notificationText, 'Library', '/index.php?q=/modules/Library/library_browse.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']);
+    // Initialize the notification sender & gateway objects
+    $notificationGateway = new NotificationGateway($pdo);
+    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+
+    // Raise a new notification event
+    $event = new NotificationEvent('Library', 'Overdue Loan Items');
+
+    if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+        if ($result->rowCount() > 0) {
+            while ($row = $result->fetch()) { //For every student
+                $notificationText = sprintf(__($guid, 'You have an overdue loan item that needs to be returned (%1$s).'), $row['name']);
+                $notificationSender->addNotification($row['gibbonPersonIDStatusResponsible'], $notificationText, 'Library', '/index.php?q=/modules/Library/library_browse.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']);
+            }
         }
     }
 
-//}
-;
+    $event->setNotificationText(sprintf(__($guid, 'A Library Overdue Items CLI script has run, notifying %1$s users.'), $notificationSender->getNotificationCount()));
+    $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+
+    // Push the event to the notification sender
+    $event->pushNotifications($notificationGateway, $notificationSender);
+
+    // Send all notifications
+    $sendReport = $notificationSender->sendNotifications();
+
+    // Output the result to terminal
+    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
+}
+?>
