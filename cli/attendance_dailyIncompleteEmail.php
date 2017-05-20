@@ -242,7 +242,6 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
             foreach ($userReport as $gibbonPersonID => $items ) {
 
                 $notificationText = __($guid, 'You have not taken attendance yet today. Please do so as soon as possible.');
-                $id = 0;
 
                 if ($enabledByRollGroup == 'Y') {
                     // Output the roll groups the particular user is a part of
@@ -250,7 +249,6 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                         $notificationText .= '<br/><br/>';
                         $notificationText .= '<b>'.__($guid, 'Roll Group').':</b><br/>';
                         foreach ($items['rollGroup'] as $rollGroup) {
-                            $id = $rollGroup['gibbonRollGroupID'];
                             $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
                         }
 
@@ -269,21 +267,15 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                     }
                 }
 
-                $notificationSender->addNotification($gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$id.'&currentDate='.dateConvertBack($guid, date('Y-m-d')));
+                $notificationSender->addNotification($gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance.php&currentDate='.dateConvertBack($guid, date('Y-m-d')));
             }
 
             // Notify Additional Users
             if (!empty($additionalUsersList)) {
-                $additionalUsers = explode(',', $additionalUsersList );
+                $additionalUsers = explode(',', $additionalUsersList);
 
                 if (is_array($additionalUsers) && count($additionalUsers) > 0) {
-                    $notificationText = __($guid, 'An Attendance CLI script has run.').' '.$report;
-
                     foreach ($additionalUsers as $gibbonPersonID) {
-
-                        // Skip duplicates if the Admin is in the Additional Users list
-                        if ($gibbonPersonID == $_SESSION[$guid]['organisationAdministrator']) continue;
-
                         // Confirm that this user still has permission to access these reports
                         try {
                             $data = array( 'gibbonPersonID' => $gibbonPersonID, 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
@@ -293,7 +285,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                         }  catch (PDOException $e) {}
 
                         if ($result->rowCount() > 0) {
-                            $notificationSender->addNotification($gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+                            $event->addRecipient($gibbonPersonID);
                         }
                     }
                 }
