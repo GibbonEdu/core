@@ -786,5 +786,6 @@ UPDATE gibbonAction SET precedence=4 WHERE gibbonModuleID=(SELECT gibbonModuleID
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Daily Attendance Summary', 'Attendance', 'Roll Groups Not Registered', 'CLI', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('User Status Check and Fix', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Overdue Loan Items', 'Library', 'Lending & Activity Log', 'CLI', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Behaviour Letters', 'Behaviour', 'View Behaviour Records_all', 'CLI', 'All', 'Y');end
 
 ";

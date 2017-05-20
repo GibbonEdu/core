@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
@@ -46,6 +50,10 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
 } else {
     $emailSendCount = 0;
     $emailFailCount = 0;
+
+    // Initialize the notification sender & gateway objects
+    $notificationGateway = new NotificationGateway($pdo);
+    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
     //Get settings
     $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
@@ -226,13 +234,13 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                 //Notify tutor(s)
                                 $notificationText = sprintf(__($guid, 'A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
                                 if ($row['gibbonPersonIDTutor'] != '') {
-                                    setNotification($connection2, $guid, $row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                 }
                                 if ($row['gibbonPersonIDTutor2'] != '') {
-                                    setNotification($connection2, $guid, $row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    $notificationSender->addNotification($row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                 }
                                 if ($row['gibbonPersonIDTutor3'] != '') {
-                                    setNotification($connection2, $guid, $row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    $notificationSender->addNotification($row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                 }
                             }
                         } elseif ($newLetterRequired) { //Issue new letter
@@ -253,13 +261,13 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     //Notify tutor(s)
                                     $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
                                     if ($row['gibbonPersonIDTutor'] != '') {
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
                                     if ($row['gibbonPersonIDTutor2'] != '') {
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
                                     if ($row['gibbonPersonIDTutor3'] != '') {
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
 
                                     //Notify teachers
@@ -272,7 +280,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     } catch (PDOException $e) {
                                     }
                                     while ($rowTeachers = $resultTeachers->fetch()) {
-                                        setNotification($connection2, $guid, $rowTeachers['gibbonPersonID'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($rowTeachers['gibbonPersonID'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
                                 }
                             } else { //It's being issued
@@ -295,13 +303,13 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     //Notify tutor(s)
                                     $notificationText = sprintf(__($guid, 'A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
                                     if ($row['gibbonPersonIDTutor'] != '') {
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
                                     if ($row['gibbonPersonIDTutor2'] != '') {
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
                                     if ($row['gibbonPersonIDTutor3'] != '') {
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
                                 }
                             }
@@ -330,7 +338,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     $bodyPlain = emailBodyConvert($body);
 
                                     $mail = getGibbonMailer($guid);
-                                    $mail->IsSMTP();
+
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {
                                         $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
@@ -345,7 +353,6 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                                     $mail->AltBody = $bodyPlain;
 
                                     if (!$mail->Send()) {
-                                        echo 'Here'.'<br/>';
                                         ++$emailFailCount;
                                     }
                                 }
@@ -370,12 +377,25 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         }
     }
 
+    // Raise a new notification event
+    $event = new NotificationEvent('Behaviour', 'Behaviour Letters');
+
     //Notify admin
     if ($email == false) {
-        $notificationText = __($guid, 'The Behaviour Letter CLI script has run: no emails were sent.');
-        setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php');
+        $event->setNotificationText(__($guid, 'The Behaviour Letter CLI script has run: no emails were sent.'));
     } else {
-        $notificationText = sprintf(__($guid, 'The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount);
-        setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'User Admin', '/index.php?q=/modules/Behaviour/behaviour_letters.php');
+        $event->setNotificationText(sprintf(__($guid, 'The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount));
     }
+
+    $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_letters.php');
+
+    // Add admin, then push the event to the notification sender
+    $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+    $event->pushNotifications($notificationGateway, $notificationSender);
+
+    // Send all notifications
+    $sendReport = $notificationSender->sendNotifications();
+
+    // Output the result to terminal
+    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
 }
