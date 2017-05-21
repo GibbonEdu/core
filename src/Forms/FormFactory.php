@@ -197,7 +197,7 @@ class FormFactory implements FormFactoryInterface
             'Mr.'  => __('Mr.'),
             'Mrs.' => __('Mrs.'),
             'Dr.'  => __('Dr.'),
-        ))->placeholder(__('Please select...'));
+        ))->placeholder();
     }
 
     public function createSelectGender($name)
@@ -205,7 +205,7 @@ class FormFactory implements FormFactoryInterface
         return $this->createSelect($name)->fromArray(array(
             'F' => __('Female'),
             'M' => __('Male'),
-        ))->placeholder(__('Please select...'));
+        ))->placeholder();
     }
 
     public function createSelectRelationship($name)
@@ -223,7 +223,7 @@ class FormFactory implements FormFactoryInterface
             'Uncle'           => __('Uncle'),
             'Nanny/Helper'    => __('Nanny/Helper'),
             'Other'           => __('Other'),
-        ))->placeholder(__('Please select...'));
+        ))->placeholder();
     }
 
     public function createSelectCurrency($name)
