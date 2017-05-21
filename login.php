@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include 'functions.php';
 include 'config.php';
 
@@ -25,9 +27,6 @@ include 'config.php';
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 setCurrentSchoolYear($guid, $connection2);
 
@@ -89,8 +88,14 @@ else {
             }
 
             if ($row['failCount'] == 3) {
-                $notificationText = sprintf(__($guid, 'Someone failed to login to account "%1$s" 3 times in a row.'), $username);
-                setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'System', "/index.php?q=/modules/User Admin/user_manage.php&search=$username");
+                // Raise a new notification event
+                $event = new NotificationEvent('User Admin', 'Login - Failed');
+
+                $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+                $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
+                $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
+
+                $event->sendNotifications($pdo, $gibbon->session);
             }
 
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);

@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
 $status = $_GET['status'];

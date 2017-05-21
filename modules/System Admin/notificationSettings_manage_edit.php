@@ -209,17 +209,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
                     $row = $form->addRow()->addClass('scopeTypeStudent');
                         $row->addLabel('gibbonPersonIDStudent', __('Student'));
-                        $row->addSelectStudent('gibbonPersonIDStudent')->isRequired();
+                        $row->addSelectStudent('gibbonPersonIDStudent')->isRequired()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
                     $row = $form->addRow()->addClass('scopeTypeStaff');
                         $row->addLabel('gibbonPersonIDStaff', __('Student'));
-                        $row->addSelectStaff('gibbonPersonIDStaff')->isRequired();
+                        $row->addSelectStaff('gibbonPersonIDStaff')->isRequired()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeYearGroup')->onSelect('scopeType')->when('gibbonYearGroupID');
                     $row = $form->addRow()->addClass('scopeTypeYearGroup');
                         $row->addLabel('gibbonYearGroupID', __('Year Group'));
-                        $row->addSelectYearGroup('gibbonYearGroupID')->isRequired();
+                        $row->addSelectYearGroup('gibbonYearGroupID')->isRequired()->placeholder();
                 }
 
                 $row = $form->addRow();

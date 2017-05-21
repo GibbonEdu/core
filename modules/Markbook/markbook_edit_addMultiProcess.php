@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
@@ -126,12 +123,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         }
         $viewableStudents = $_POST['viewableStudents'];
         $viewableParents = $_POST['viewableParents'];
+        $attachment = '';
         $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
         $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
         //Lock markbook column table
         try {
-            $sqlLock = 'LOCK TABLES gibbonMarkbookColumn WRITE';
+            $sqlLock = 'LOCK TABLES gibbonMarkbookColumn WRITE, gibbonFileExtension READ';
             $resultLock = $connection2->query($sqlLock);
         } catch (PDOException $e) {
             $URL .= '&return=error2';
@@ -156,30 +154,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $groupingID = ($rowGrouping['groupingID'] + 1);
         }
 
-        $time = time();
-        //Move attached file, if there is one
-        if ($_FILES['file']['tmp_name'] != '') {
-            //Check for folder in uploads based on today's date
-            $path = $_SESSION[$guid]['absolutePath'];
-            if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
+        //Move attached image  file, if there is one
+        if (!empty($_FILES['file']['tmp_name'])) {
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+            $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+
+            // Upload the file, return the /uploads relative path
+            $attachment = $fileUploader->uploadFromPost($file, $name);
+
+            if (empty($attachment)) {
+                $partialFail = true;
             }
-            $unique = false;
-            $count = 0;
-            while ($unique == false and $count < 100) {
-                $suffix = randomPassword(16);
-                $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                if (!(file_exists($path.'/'.$attachment))) {
-                    $unique = true;
-                }
-                ++$count;
-            }
-            if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                $URL .= '&return=warning1';
-                header("Location: {$URL}");
-            }
-        } else {
-            $attachment = '';
         }
 
         if (count($gibbonCourseClassIDMulti) < 1 or is_numeric($groupingID) == false or $groupingID < 1 or $name == '' or $description == '' or $type == '' or $date == '' or $viewableStudents == '' or $viewableParents == '') {

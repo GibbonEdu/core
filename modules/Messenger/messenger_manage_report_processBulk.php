@@ -32,9 +32,6 @@ require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $action = $_POST['action'];
 $search = $_GET['search'];
 $gibbonMessengerID = $_GET['gibbonMessengerID'];

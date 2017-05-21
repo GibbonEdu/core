@@ -1036,19 +1036,21 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '</table>';
 
         try {
-            if ($preview == true) {
+            $dataFees['gibbonFinanceInvoiceID1'] = $row['gibbonFinanceInvoiceID'];
+
+            print 'here'.$preview;
+            if ($preview) { //Get fees from gibbonFinanceFee
                 //Standard
-                $dataFees['gibbonFinanceInvoiceID1'] = $row['gibbonFinanceInvoiceID'];
                 $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";
-                $sqlFees .= ' UNION ';
-                //Ad Hoc
-                $dataFees['gibbonFinanceInvoiceID2'] = $row['gibbonFinanceInvoiceID'];
-                $sqlFees .= "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID2 AND feeType='Ad Hoc')";
-                $sqlFees .= ' ORDER BY sequenceNumber';
-            } else {
-                $dataFees['gibbonFinanceInvoiceID'] = $row['gibbonFinanceInvoiceID'];
-                $sqlFees = 'SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID ORDER BY sequenceNumber';
+            } else { //Get fees from gibbonFinanceInvoiceFee
+                //Standard
+                $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";
             }
+            //Ad Hoc
+            $sqlFees .= ' UNION ';
+            $dataFees['gibbonFinanceInvoiceID2'] = $row['gibbonFinanceInvoiceID'];
+            $sqlFees .= "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID2 AND feeType='Ad Hoc')";
+            $sqlFees .= ' ORDER BY sequenceNumber';
             $resultFees = $connection2->prepare($sqlFees);
             $resultFees->execute($dataFees);
         } catch (PDOException $e) {
@@ -1518,7 +1520,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Display balance
-        if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
+        if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial' or $row['status'] == 'Refunded') {
             if (@$rowPayment['status'] == 'Partial') {
                 if ($receiptNumber != null) { //New style receipt, with multiple payments
                     $balanceFail = false;
@@ -1541,7 +1543,24 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                         }
                     }
 
-                    if ($balanceFail == false) {
+                    if ($row['status'] == 'Refunded') {
+                        $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
+                        $return .= __($guid, 'Refund Issued');
+                        $return .= '</h3>';
+                        $return .= '<table cellspacing="0" style="width: 100%; $style4">';
+                        $return .= "<tr style='height: 35px' class='current error'>";
+                        $return .= "<td style='text-align: right; $style2'>";
+                        $return .= '<b>'.__($guid, 'Refund Total:').'</b>';
+                        $return .= '</td>';
+                        $return .= "<td style='width: 135px; $style2'>";
+                        if (substr($currency, 4) != '') {
+                            $return .= substr($currency, 4).' ';
+                        }
+                        $return .= '<b>'.number_format($amountPaid, 2, '.', ',').'</b>';
+                        $return .= '</td>';
+                        $return .= '</tr>';
+                        $return .= '</table>';
+                    } else if ($balanceFail == false) {
                         $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
                         $return .= __($guid, 'Outstanding Balance');
                         $return .= '</h3>';
@@ -1569,6 +1588,25 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                             $return .= '</p>';
                         }
                     }
+                }
+            } else if (@$rowPayment['status'] == 'Complete') {
+                if ($row['status'] == 'Refunded') {
+                    $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
+                    $return .= __($guid, 'Refund Issued');
+                    $return .= '</h3>';
+                    $return .= '<table cellspacing="0" style="width: 100%; $style4">';
+                    $return .= "<tr style='height: 35px' class='current error'>";
+                    $return .= "<td style='text-align: right; $style2'>";
+                    $return .= '<b>'.__($guid, 'Refund Total:').'</b>';
+                    $return .= '</td>';
+                    $return .= "<td style='width: 135px; $style2'>";
+                    if (substr($currency, 4) != '') {
+                        $return .= substr($currency, 4).' ';
+                    }
+                    $return .= '<b>'.number_format($rowPayment['amount'], 2, '.', ',').'</b>';
+                    $return .= '</td>';
+                    $return .= '</tr>';
+                    $return .= '</table>';
                 }
             }
         }

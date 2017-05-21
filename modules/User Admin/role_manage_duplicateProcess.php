@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonRoleID = $_GET['gibbonRoleID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/role_manage.php&gibbonRoleID=$gibbonRoleID";
 
@@ -94,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
             } else {
                 $row = $result->fetch();
                 try {
-                    $data = array('gibbonRoleID' => $AI, 'category' => $row['category'], 'name' => $name, 'nameShort' => $nameShort, 'description' => $row['description']);
-                    $sql = "INSERT INTO gibbonRole SET gibbonRoleID=:gibbonRoleID, category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional'";
+                    $data = array('gibbonRoleID' => $AI, 'category' => $row['category'], 'name' => $name, 'nameShort' => $nameShort, 'description' => $row['description'], 'restriction' => $row['restriction']);
+                    $sql = "INSERT INTO gibbonRole SET gibbonRoleID=:gibbonRoleID, category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', restriction=:restriction";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

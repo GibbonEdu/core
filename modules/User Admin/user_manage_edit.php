@@ -268,6 +268,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 							<span class="emphasis small"><?php echo __($guid, 'Controls what a user can do and see.') ?></span>
 						</td>
 						<td class="right">
+                            <?php
+
+                            // Put together an array of this user's current roles
+                            $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
+                            $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
+                            // Get info on the user role being edited
+                            try {
+                                $dataRole = array('gibbonRoleID' => $row['gibbonRoleIDPrimary']);
+                                $sqlRole = 'SELECT gibbonRoleID, restriction, name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+                                $resultRole = $connection2->prepare($sqlRole);
+                                $resultRole->execute($dataRole);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+
+                            $roleDetails = ($resultRole && $resultRole->rowCount() > 0)? $resultRole->fetch() : null;
+                            $roleRestriction = $roleDetails['restriction'];
+
+                            // Display a readonly field if the current role cannot be changed
+                            if (empty($roleRestriction) || ($roleRestriction == 'Admin Only' && !in_array('001', $currentUserRoles, true)) || ($roleRestriction == 'Same Role' && !in_array($row['gibbonRoleIDPrimary'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) ) {
+                                echo '<input type="text" name="gibbonRoleIDPrimaryName" value="'.$roleDetails['name'].'" class="standardWidth" readonly>';
+                            } else {
+
+                            ?>
 							<select name="gibbonRoleIDPrimary" id="gibbonRoleIDPrimary" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
@@ -279,7 +304,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 								} catch (PDOException $e) {
 									echo "<div class='error'>".$e->getMessage().'</div>';
 								}
+
 								while ($rowSelect = $resultSelect->fetch()) {
+                                    // Check for and remove restricted roles from this list
+                                    if ($rowSelect['restriction'] == 'Admin Only') {
+                                        if (!in_array('001', $currentUserRoles, true)) continue;
+                                    } else if ($rowSelect['restriction'] == 'Same Role') {
+                                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) continue;
+                                    }
+
 									$selected = '';
 									if ($row['gibbonRoleIDPrimary'] == $rowSelect['gibbonRoleID']) {
 										$selected = 'selected';
@@ -293,6 +326,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 							</script>
+                        <?php
+                        }
+                        ?>
 						</td>
 					</tr>
 					<tr>
@@ -311,23 +347,41 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
+
+                                $selectedRoles = explode(',', $row['gibbonRoleIDAll']);
+                                $restrictedRoles = array();
+
 								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									$roles = explode(',', $row['gibbonRoleIDAll']);
-									foreach ($roles as $role) {
-										if ($role == $rowSelect['gibbonRoleID']) {
-											$selected = 'selected';
-										}
-									}
+                                    $selected = (in_array($rowSelect['gibbonRoleID'], $selectedRoles))? 'selected' : '';
+
+                                    // Check for and copy -selected- restricted roles to a separate array
+                                    if ($rowSelect['restriction'] == 'Admin Only') {
+                                        if (!in_array('001', $currentUserRoles, true)) {
+                                            if ($selected == 'selected') $restrictedRoles[] = $rowSelect;
+                                            continue;
+                                        }
+                                    } else if ($rowSelect['restriction'] == 'Same Role') {
+                                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true))
+                                        {
+                                            if ($selected == 'selected') $restrictedRoles[] = $rowSelect;
+                                            continue;
+                                        }
+                                    }
 
 									echo "<option $selected value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 								}
 								?>
 							</select>
-							<script type="text/javascript">
-								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
-								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
+							<?php
+                            if (!empty($restrictedRoles) && count($restrictedRoles) > 0) {
+                                $restrictedRolesList = implode(', ', array_column($restrictedRoles, 'name'));
+
+                                echo '<div class="standardWidth" style="clear: both; float:right; text-align:left;margin-top: 6px;">';
+                                    echo '<span class="emphasis small">'.__('Resticted roles.').' '.__('This value cannot be changed.').'</span>';
+                                    echo '<input type="text" name="gibbonRoleIDAllNames" value="'.$restrictedRolesList.'" class="standardWidth" readonly>';
+                                echo '</div>';
+                            }
+                            ?>
 						</td>
 					</tr>
 					<tr>

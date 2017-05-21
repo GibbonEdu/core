@@ -26,11 +26,9 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $name = $_POST['name'];
 $nameShort = $_POST['nameShort'];
+$nameShortDisplay = $_POST['nameShortDisplay'];
 $active = $_POST['active'];
 $count = $_POST['count'];
 $gibbonYearGroupIDList = '';
@@ -73,13 +71,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            if ($name == '' or $nameShort == '' or $gibbonSchoolYearID == '') {
+            if ($name == '' or $nameShort == '' or $nameShortDisplay == '' or $gibbonSchoolYearID == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
                 //Check unique inputs for uniquness
                 try {
-                    $data = array('name' => $name, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
+                    $data = array('name' => $name, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTID' => $gibbonTTID);
                     $sql = 'SELECT * FROM gibbonTT WHERE (name=:name AND gibbonSchoolYearID=:gibbonSchoolYearID) AND NOT gibbonTTID=:gibbonTTID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -95,8 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name, 'nameShort' => $nameShort, 'active' => $active, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonTTID' => $gibbonTTID);
-                        $sql = 'UPDATE gibbonTT SET name=:name, nameShort=:nameShort, active=:active, gibbonYearGroupIDList=:gibbonYearGroupIDList WHERE gibbonTTID=:gibbonTTID';
+                        $data = array('name' => $name, 'nameShort' => $nameShort, 'nameShortDisplay' => $nameShortDisplay, 'active' => $active, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonTTID' => $gibbonTTID);
+                        $sql = 'UPDATE gibbonTT SET name=:name, nameShort=:nameShort, nameShortDisplay=:nameShortDisplay, active=:active, gibbonYearGroupIDList=:gibbonYearGroupIDList WHERE gibbonTTID=:gibbonTTID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

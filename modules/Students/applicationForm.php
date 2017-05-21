@@ -2579,74 +2579,63 @@ if ($proceed == false) {
                             }
                             echo '</p>';
                         }
-        				?>
-					</td>
-				</tr>
-				<?php
+                        ?>
+                    </td>
+                </tr>
+            <?php
 
-                //Get list of acceptable file extensions
-                try {
-                    $dataExt = array();
-                    $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                    $resultExt = $connection2->prepare($sqlExt);
-                    $resultExt->execute($dataExt);
-                } catch (PDOException $e) {
+            $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+            $requiredDocumentsList = explode(',', $requiredDocuments);
+            $count = 0;
+            foreach ($requiredDocumentsList as $document) {
+                ?>
+                <tr>
+                    <td>
+                        <b><?php echo $document;
+                        if ($requiredDocumentsCompulsory == 'Y') {
+                            echo ' *';
+                        }
+                        ?></b><br/>
+                    </td>
+                    <td class="right">
+                        <?php
+                        echo "<input type='file' name='file$count' id='file$count'><br/>";
+                        echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
+                        echo "<script type='text/javascript'>";
+                        echo "var file$count=new LiveValidation('file$count');";
+                        echo "file$count.add( Validate.Inclusion, { within: [".$fileUploader->getFileExtensionsCSV()."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
+                        if ($requiredDocumentsCompulsory == 'Y') {
+                            echo "file$count.add(Validate.Presence);";
+                        }
+                        echo '</script>';
+                        ++$count; ?>
+                    </td>
+                </tr>
+                <?php
             }
-			$ext = '';
-			while ($rowExt = $resultExt->fetch()) {
-				$ext = $ext."'.".$rowExt['extension']."',";
-			}
+            ?>
+            <tr>
+                <td colspan=2>
+                    <?php echo getMaxUpload($guid);?>
+                    <input type="hidden" name="fileCount" value="<?php echo $count ?>">
+                </td>
+            </tr>
+            <?php
+            }
+            ?>
 
-			$requiredDocumentsList = explode(',', $requiredDocuments);
-			$count = 0;
-			foreach ($requiredDocumentsList as $document) {
-				?>
-				<tr>
-					<td>
-						<b><?php echo $document;
-						if ($requiredDocumentsCompulsory == 'Y') {
-							echo ' *';
-						}
-						?></b><br/>
-					</td>
-					<td class="right">
-						<?php
-						echo "<input type='file' name='file$count' id='file$count'><br/>";
-						echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
-						if ($requiredDocumentsCompulsory == 'Y') {
-							echo "<script type='text/javascript'>";
-							echo "var file$count=new LiveValidation('file$count');";
-							echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
-							echo "file$count.add(Validate.Presence);";
-							echo '</script>';
-						}
-						++$count; ?>
-					</td>
-				</tr>
-				<?php
-			}
-			?>
-			<tr>
-				<td colspan=2>
-					<?php echo getMaxUpload($guid);?>
-					<input type="hidden" name="fileCount" value="<?php echo $count ?>">
-				</td>
-			</tr>
-			<?php
-			}
-			?>
-
-			<tr class='break'>
-				<td colspan=2>
+            <tr class='break'>
+                <td colspan=2>
 					<h3><?php echo __('Miscellaneous') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td>
+                </td>
+            </tr>
+            <tr>
+                <td>
 					<b><?php echo __('How Did You Hear About Us?') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<?php
+                </td>
+                <td class="right">
+                    <?php
                     $howDidYouHearList = getSettingByScope($connection2, 'Application Form', 'howDidYouHear');
 					if ($howDidYouHearList == '') {
 						echo "<input name='howDidYouHear' id='howDidYouHear' maxlength=30 value='".@$application['howDidYouHear']."' type='text' style='width: 300px'>";

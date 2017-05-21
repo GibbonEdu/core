@@ -31,9 +31,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
 $status = $_GET['status'];
@@ -96,17 +93,21 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 if (isset($_POST['order'])) {
                     $order = $_POST['order'];
                 }
-                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete' or $_POST['status'] == 'Refunded') {
+                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
                     $paidDate = dateConvert($guid, $_POST['paidDate']);
+                } else if ($_POST['status'] == 'Refunded') {
+                    $paidDate = $row['paidDate'];
                 } else {
                     $paidDate = null;
                 }
-                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete' or $_POST['status'] == 'Refunded') {
+                if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
                     $paidAmountLog = $_POST['paidAmount'];
                     $paidAmount = $_POST['paidAmount'];
                     //If some paid already, work out amount, and add it to total
                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
                     $paidAmount += $alreadyPaid;
+                } else if ($_POST['status'] == 'Refunded') {
+                    $paidAmount = $row['paidAmount'];
                 } else {
                     $paidAmount = null;
                 }
@@ -269,8 +270,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
-                            if (isset($_POST['emails2'])) {
-                                $emails = $_POST['emails2'];
+                            if (isset($_POST['emails'])) {
+                                $emails = $_POST['emails'];
                                 for ($i = 0; $i < count($emails); ++$i) {
                                     $emailsInner = explode(',', $emails[$i]);
                                     for ($n = 0; $n < count($emailsInner); ++$n) {

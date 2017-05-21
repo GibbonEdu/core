@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -28,9 +32,6 @@ $connection2 = $pdo->getConnection();
 
 //Module includes
 include './moduleFunctions.php';
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
@@ -101,22 +102,75 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $status = $_POST['status'];
             $canLogin = $_POST['canLogin'];
             $passwordForceReset = $_POST['passwordForceReset'];
-            $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'];
-            $gibbonRoleIDAll = '';
-            $containsPrimary = false;
-            $choices = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
-            if (count($choices) > 0) {
-                foreach ($choices as $t) {
-                    $gibbonRoleIDAll .= $t.',';
-                    if ($t == $gibbonRoleIDPrimary) {
-                        $containsPrimary = true;
+
+            // Put together an array of this user's current roles
+            $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
+            $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
+            try {
+                $dataRoles = array('gibbonRoleIDAll' => $row['gibbonRoleIDAll']);
+                $sqlRoles = 'SELECT gibbonRoleID, restriction, name FROM gibbonRole';
+                $resultRoles = $connection2->prepare($sqlRoles);
+                $resultRoles->execute($dataRoles);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            $gibbonRoleIDAll = array();
+            $gibbonRoleIDPrimary = $row['gibbonRoleIDPrimary'];
+
+            $selectedRoleIDPrimary = (isset($_POST['gibbonRoleIDPrimary'])) ? $_POST['gibbonRoleIDPrimary'] : null;
+            $selectedRoleIDAll = (isset($_POST['gibbonRoleIDAll'])) ? $_POST['gibbonRoleIDAll'] : array();
+
+            if ($resultRoles && $resultRoles->rowCount() > 0) {
+                while ($rowRole = $resultRoles->fetch()) {
+
+                    if ($rowRole['restriction'] == 'Admin Only') {
+                        if (in_array('001', $currentUserRoles, true)) {
+                            // Add selected roles only if they meet the restriction
+                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                                $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                            }
+
+                            if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
+                                // Prevent primary role being changed to a restricted role (via modified POST)
+                                $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
+                            }
+                        } else if (in_array($rowRole['gibbonRoleID'], $roles, true)) {
+                            // Add existing restricted roles because they cannot be removed by this user
+                            $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                        }
+                    } else if ($rowRole['restriction'] == 'Same Role') {
+                        if (in_array($rowRole['gibbonRoleID'], $currentUserRoles, true) || in_array('001', $currentUserRoles, true)) {
+                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                                $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                            }
+
+                            if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
+                                $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
+                            }
+                        } else if (in_array($rowRole['gibbonRoleID'], $roles, true)) {
+                            $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                        }
+                    } else {
+                        if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                            $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
+                        }
+
+                        if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
+                            $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
+                        }
                     }
                 }
             }
-            if ($containsPrimary == false) {
-                $gibbonRoleIDAll = $gibbonRoleIDPrimary.','.$gibbonRoleIDAll;
+
+            // Ensure the primary role is always in the all roles list
+            if (!in_array($gibbonRoleIDPrimary, $gibbonRoleIDAll)) {
+                $gibbonRoleIDAll[] = $gibbonRoleIDPrimary;
             }
-            $gibbonRoleIDAll = substr($gibbonRoleIDAll, 0, -1);
+
+            $gibbonRoleIDAll = (is_array($gibbonRoleIDAll))? implode(',', array_unique($gibbonRoleIDAll)) : $row['gibbonRoleIDAll'];
+
             $dob = $_POST['dob'];
             if ($dob == '') {
                 $dob = null;
@@ -337,140 +391,97 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
-                    if ($_FILES['file1']['tmp_name'] != '' or $_FILES['birthCertificateScan']['tmp_name'] != '' or $_FILES['nationalIDCardScan']['tmp_name'] != '' or $_FILES['citizenship1PassportScan']['tmp_name'] != '') {
-                        $time = time();
-                        //Check for folder in uploads based on today's date
+                    if (!empty($_FILES['file1']['tmp_name']) or !empty($_FILES['birthCertificateScan']['tmp_name']) or !empty($_FILES['nationalIDCardScan']['tmp_name']) or !empty($_FILES['citizenship1PassportScan']['tmp_name']))
+                    {
                         $path = $_SESSION[$guid]['absolutePath'];
-                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                        }
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
                         //Move 240 attached file, if there is one
-                        if ($_FILES['file1']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                if ($count == 0) {
-                                    $attachment1 = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_240'.strrchr($_FILES['file1']['name'], '.');
-                                } else {
-                                    $attachment1 = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_240'."_$count".strrchr($_FILES['file1']['name'], '.');
-                                }
+                        if (!empty($_FILES['file1']['tmp_name'])) {
+                            $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
-                                if (!(file_exists($path.'/'.$attachment1))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$attachment1))) {
-                                $attachment1 = '';
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
+                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+
+                            if (empty($attachment1)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size1 = getimagesize($path.'/'.$attachment1);
+                                $width1 = $size1[0];
+                                $height1 = $size1[1];
+                                $aspect1 = $height1 / $width1;
+                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
+                                    $attachment1 = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
 
-                        //Move birth certificate scan file, if there is one
-                        if ($_FILES['birthCertificateScan']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                if ($count == 0) {
-                                    $birthCertificateScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_birthCertificate_'.$suffix.strrchr($_FILES['birthCertificateScan']['name'], '.');
-                                } else {
-                                    $birthCertificateScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_birthCertificate'."_$count_".$suffix.strrchr($_FILES['birthCertificateScan']['name'], '.');
-                                }
+                        //Move birth certificate scan if there is one
+                        if (!empty($_FILES['birthCertificateScan']['tmp_name'])) {
+                            $file = (isset($_FILES['birthCertificateScan']))? $_FILES['birthCertificateScan'] : null;
 
-                                if (!(file_exists($path.'/'.$birthCertificateScan))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['birthCertificateScan']['tmp_name'], $path.'/'.$birthCertificateScan))) {
-                                $birthCertificateScan = '';
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
+                            $birthCertificateScan = $fileUploader->uploadFromPost($file, $username.'_birthCertificate');
+
+                            if (empty($birthCertificateScan)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size2 = getimagesize($path.'/'.$birthCertificateScan);
+                                $width2 = $size2[0];
+                                $height2 = $size2[1];
+                                if ($width2 > 1440 or $height2 > 900) {
+                                    $birthCertificateScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
 
                         //Move ID Card scan file, if there is one
-                        if ($_FILES['nationalIDCardScan']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                if ($count == 0) {
-                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan_'.$suffix.strrchr($_FILES['nationalIDCardScan']['name'], '.');
-                                } else {
-                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan'."_$count_".$suffix.strrchr($_FILES['nationalIDCardScan']['name'], '.');
-                                }
+                        if (!empty($_FILES['nationalIDCardScan']['tmp_name'])) {
+                            $file = (isset($_FILES['nationalIDCardScan']))? $_FILES['nationalIDCardScan'] : null;
 
-                                if (!(file_exists($path.'/'.$nationalIDCardScan))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['nationalIDCardScan']['tmp_name'], $path.'/'.$nationalIDCardScan))) {
-                                $nationalIDCardScan = '';
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
+                            $nationalIDCardScan = $fileUploader->uploadFromPost($file, $username.'_idscan');
+
+                            if (empty($nationalIDCardScan)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size3 = getimagesize($path.'/'.$nationalIDCardScan);
+                                $width3 = $size3[0];
+                                $height3 = $size3[1];
+                                if ($width3 > 1440 or $height3 > 900) {
+                                    $nationalIDCardScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
 
                         //Move passport scan file, if there is one
-                        if ($_FILES['citizenship1PassportScan']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                if ($count == 0) {
-                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'.$suffix.strrchr($_FILES['citizenship1PassportScan']['name'], '.');
-                                } else {
-                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'."_$count_".$suffix.strrchr($_FILES['citizenship1PassportScan']['name'], '.');
-                                }
+                        if (!empty($_FILES['citizenship1PassportScan']['tmp_name'])) {
+                            $file = (isset($_FILES['citizenship1PassportScan']))? $_FILES['citizenship1PassportScan'] : null;
 
-                                if (!(file_exists($path.'/'.$citizenship1PassportScan))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['citizenship1PassportScan']['tmp_name'], $path.'/'.$citizenship1PassportScan))) {
-                                $citizenship1PassportScan = '';
-                                $imageFail = true;
-                            }
-                        }
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
+                            $citizenship1PassportScan = $fileUploader->uploadFromPost($file, $username.'_passportscan');
 
-                        //Check image sizes
-                        if ($attachment1 != '') {
-                            $size1 = getimagesize($path.'/'.$attachment1);
-                            $width1 = $size1[0];
-                            $height1 = $size1[1];
-                            $aspect1 = $height1 / $width1;
-                            if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
-                                $attachment1 = '';
+                            if (empty($citizenship1PassportScan)) {
                                 $imageFail = true;
-                            }
-                        }
-                        if ($birthCertificateScan != '') {
-                            $size3 = getimagesize($path.'/'.$birthCertificateScan);
-                            $width3 = $size3[0];
-                            $height3 = $size3[1];
-                            if ($width3 > 1440 or $height3 > 900) {
-                                $birthCertificateScan = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($nationalIDCardScan != '') {
-                            $size3 = getimagesize($path.'/'.$nationalIDCardScan);
-                            $width3 = $size3[0];
-                            $height3 = $size3[1];
-                            if ($width3 > 1440 or $height3 > 900) {
-                                $nationalIDCardScan = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($citizenship1PassportScan != '') {
-                            $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
-                            $width4 = $size4[0];
-                            $height4 = $size4[1];
-                            if ($width4 > 1440 or $height4 > 900) {
-                                $citizenship1PassportScan = '';
-                                $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
+                                $width4 = $size4[0];
+                                $height4 = $size4[1];
+                                if ($width4 > 1440 or $height4 > 900) {
+                                    $citizenship1PassportScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
                     }
@@ -523,7 +534,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 //Notify tutor
                                 try {
                                     $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                                    $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
+                                    $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                                     $resultDetail = $connection2->prepare($sqlDetail);
                                     $resultDetail->execute($dataDetail);
                                 } catch (PDOException $e) {
@@ -531,17 +542,44 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 if ($resultDetail->rowCount() == 1) {
 
                                     $rowDetail = $resultDetail->fetch();
-                                    $name = formatName('', $preferredName, $surname, 'Student', false);
-                                    $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $name);
-                                    if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                        setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
+
+                                    // Initialize the notification sender & gateway objects
+                                    $notificationGateway = new NotificationGateway($pdo);
+                                    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+
+                                    // Raise a new notification event
+                                    $event = new NotificationEvent('Students', 'Updated Privacy Settings');
+
+                                    $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                                    $studentName = formatName('', $preferredName, $surname, 'Student', false);
+                                    $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
+
+                                    $event->setNotificationText(sprintf(__($guid, '%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName));
+                                    $event->setActionLink($actionLink);
+
+                                    $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                                    $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+
+                                    // Add event listeners to the notification sender
+                                    $event->pushNotifications($notificationGateway, $notificationSender);
+
+                                    // Add direct notifications to roll group tutors
+                                    if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+                                        $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName);
+
+                                        if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);
+                                        }
+                                        if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', $actionLink);
+                                        }
+                                        if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', $actionLink);
+                                        }
                                     }
-                                    if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                        setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
-                                    }
-                                    if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                        setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
-                                    }
+
+                                    // Send all notifications
+                                    $notificationSender->sendNotifications();
                                 }
 
                                 //Set log
@@ -561,7 +599,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
-                                if ($_POST[$i.'-matchAddress'] != '') {
+                                if (!empty($_POST[$i.'-matchAddress'])) {
                                     try {
                                         $dataAddress = array('address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonID' => $_POST[$i.'-matchAddress']);
                                         $sqlAddress = 'UPDATE gibbonPerson SET address1=:address1, address1District=:address1District, address1Country=:address1Country WHERE gibbonPersonID=:gibbonPersonID';

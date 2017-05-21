@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -28,9 +32,6 @@ $connection2 = $pdo->getConnection();
 
 //Module includes
 include '../User Admin/moduleFunctions.php';
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
@@ -475,24 +476,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         if ($_POST['newprivacyOn'] == 'on') {
                             try {
                                 $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                                $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
+                                $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             } catch (PDOException $e) {
                             }
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                $name = formatName('', $row2['preferredName'], $row2['surname'], 'Student', false);
-                                $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $name);
-                                if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
+
+                                // Initialize the notification sender & gateway objects
+                                $notificationGateway = new NotificationGateway($pdo);
+                                $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+
+                                // Raise a new notification event
+                                $event = new NotificationEvent('Students', 'Updated Privacy Settings');
+
+                                $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                                $studentName = formatName('', $row2['preferredName'], $row2['surname'], 'Student', false);
+                                $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
+
+                                $event->setNotificationText(sprintf(__($guid, '%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName));
+                                $event->setActionLink($actionLink);
+
+                                $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                                $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
+
+                                // Add event listeners to the notification sender
+                                $event->pushNotifications($notificationGateway, $notificationSender);
+
+                                // Add direct notifications to roll group tutors
+                                if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+                                    $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName);
+
+                                    if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);
+                                    }
+                                    if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', $actionLink);
+                                    }
+                                    if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                        $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', $actionLink);
+                                    }
                                 }
-                                if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
-                                }
-                                if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
-                                }
+
+                                // Send all notifications
+                                $notificationSender->sendNotifications();
                             }
 
                             //Set log

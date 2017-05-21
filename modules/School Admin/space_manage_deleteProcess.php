@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonSpaceID = $_GET['gibbonSpaceID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/space_manage_delete.php&gibbonSpaceID='.$gibbonSpaceID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/space_manage.php';

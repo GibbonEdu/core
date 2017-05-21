@@ -27,9 +27,6 @@ $connection2 = $pdo->getConnection();
 @session_start();
 
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID";
 

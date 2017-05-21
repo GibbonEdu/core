@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $search = $_GET['search'];
@@ -627,6 +624,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         exit();
                     }
 
+                    $partialFail = false;
+
                     //Deal with required documents
                     $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
                     $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
@@ -638,30 +637,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         if (isset($_POST['fileCount'])) {
                             $fileCount = $_POST['fileCount'];
                         }
-                        for ($i = 0; $i < $fileCount; ++$i) {
-                            $fileName = $_POST["fileName$i"];
-                            $time = time();
-                            //Move attached file, if there is one
-                            if ($_FILES["file$i"]['tmp_name'] != '') {
-                                //Check for folder in uploads based on today's date
-                                $path = $_SESSION[$guid]['absolutePath'];
-                                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                                }
-                                $unique = false;
-                                $count = 0;
-                                while ($unique == false and $count < 100) {
-                                    $suffix = randomPassword(16);
-                                    $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
-                                    if (!(file_exists($path.'/'.$attachment))) {
-                                        $unique = true;
-                                    }
-                                    ++$count;
-                                }
-                                if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
-                                }
 
-                                //Write files to database
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+                        for ($i = 0; $i < $fileCount; ++$i) {
+                            if (empty($_FILES["file$i"]['tmp_name'])) continue;
+
+                            $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
+                            $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
+
+                            // Upload the file, return the /uploads relative path
+                            $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
+
+                            // Write files to database, if there is one
+                            if (!empty($attachment)) {
                                 try {
                                     $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment);
                                     $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
@@ -669,6 +658,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     $resultFile->execute($dataFile);
                                 } catch (PDOException $e) {
                                 }
+                            } else {
+                                $partialFail = true;
                             }
                         }
                     }
@@ -693,8 +684,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                       $URL .= '&return=success0';
+                       header("Location: {$URL}");
+                    }
                 }
             }
         }

@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
@@ -221,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                 } else {
                     //Lock markbook column table
                     try {
-                        $sql = 'LOCK TABLES gibbonPerson WRITE';
+                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonFileExtension WRITE';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
@@ -246,148 +243,97 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $nationalIDCardScan = '';
                     $citizenship1PassportScan = '';
                     $imageFail = false;
-                    if ($_FILES['file1']['tmp_name'] != '' or $_FILES['birthCertificateScan']['tmp_name'] != '' or $_FILES['nationalIDCardScan']['tmp_name'] != '' or $_FILES['citizenship1PassportScan']['tmp_name'] != '') {
-                        $time = time();
-                        //Check for folder in uploads based on today's date
+                    if (!empty($_FILES['file1']['tmp_name']) or !empty($_FILES['birthCertificateScan']['tmp_name']) or !empty($_FILES['nationalIDCardScan']['tmp_name']) or !empty($_FILES['citizenship1PassportScan']['tmp_name']))
+                    {
                         $path = $_SESSION[$guid]['absolutePath'];
-                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                        }
+                        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    
                         //Move 240 attached file, if there is one
-                        if ($_FILES['file1']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                if ($count == 0) {
-                                    $attachment1 = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_240'.strrchr($_FILES['file1']['name'], '.');
-                                } else {
-                                    $attachment1 = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_240'."_$count".strrchr($_FILES['file1']['name'], '.');
-                                }
+                        if (!empty($_FILES['file1']['tmp_name'])) {
+                            $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
 
-                                if (!(file_exists($path.'/'.$attachment1))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$attachment1))) {
-                                $attachment1 = '';
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
+                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+
+                            if (empty($attachment1)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size1 = getimagesize($path.'/'.$attachment1);
+                                $width1 = $size1[0];
+                                $height1 = $size1[1];
+                                $aspect1 = $height1 / $width1;
+                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
+                                    $attachment1 = '';
+                                    $imageFail = true;
+                                }
                             }
-                        } else {
-                            $attachment1 = '';
                         }
 
                         //Move birth certificate scan if there is one
-                        if ($_FILES['birthCertificateScan']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                if ($count == 0) {
-                                    $birthCertificateScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_birthCertificate'.$suffix.strrchr($_FILES['birthCertificateScan']['name'], '.');
-                                } else {
-                                    $birthCertificateScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_birthCertificate'."_$count".$suffix.strrchr($_FILES['birthCertificateScan']['name'], '.');
-                                }
+                        if (!empty($_FILES['birthCertificateScan']['tmp_name'])) {
+                            $file = (isset($_FILES['birthCertificateScan']))? $_FILES['birthCertificateScan'] : null;
 
-                                if (!(file_exists($path.'/'.$birthCertificateScan))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['birthCertificateScan']['tmp_name'], $path.'/'.$birthCertificateScan))) {
-                                $birthCertificateScan = '';
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
+                            $birthCertificateScan = $fileUploader->uploadFromPost($file, $username.'_birthCertificate');
+
+                            if (empty($birthCertificateScan)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size2 = getimagesize($path.'/'.$birthCertificateScan);
+                                $width2 = $size2[0];
+                                $height2 = $size2[1];
+                                if ($width2 > 1440 or $height2 > 900) {
+                                    $birthCertificateScan = '';
+                                    $imageFail = true;
+                                }
                             }
-                        } else {
-                            $birthCertificateScan = '';
                         }
 
                         //Move ID Card scan file, if there is one
-                        if ($_FILES['nationalIDCardScan']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                if ($count == 0) {
-                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan_'.$suffix.strrchr($_FILES['nationalIDCardScan']['name'], '.');
-                                } else {
-                                    $nationalIDCardScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_idscan'."_$count_".$suffix.strrchr($_FILES['nationalIDCardScan']['name'], '.');
-                                }
+                        if (!empty($_FILES['nationalIDCardScan']['tmp_name'])) {
+                            $file = (isset($_FILES['nationalIDCardScan']))? $_FILES['nationalIDCardScan'] : null;
 
-                                if (!(file_exists($path.'/'.$nationalIDCardScan))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['nationalIDCardScan']['tmp_name'], $path.'/'.$nationalIDCardScan))) {
-                                $nationalIDCardScan = '';
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
+                            $nationalIDCardScan = $fileUploader->uploadFromPost($file, $username.'_idscan');
+
+                            if (empty($nationalIDCardScan)) {
                                 $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size3 = getimagesize($path.'/'.$nationalIDCardScan);
+                                $width3 = $size3[0];
+                                $height3 = $size3[1];
+                                if ($width3 > 1440 or $height3 > 900) {
+                                    $nationalIDCardScan = '';
+                                    $imageFail = true;
+                                }
                             }
-                        } else {
-                            $nationalIDCardScan = '';
                         }
 
                         //Move passport scan file, if there is one
-                        if ($_FILES['citizenship1PassportScan']['tmp_name'] != '') {
-                            $unique = false;
-                            $count = 0;
-                            while ($unique == false and $count < 100) {
-                                $suffix = randomPassword(16);
-                                if ($count == 0) {
-                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan_'.$suffix.strrchr($_FILES['citizenship1PassportScan']['name'], '.');
-                                } else {
-                                    $citizenship1PassportScan = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_passportscan'."_$count_".$suffix.strrchr($_FILES['citizenship1PassportScan']['name'], '.');
-                                }
+                        if (!empty($_FILES['citizenship1PassportScan']['tmp_name'])) {
+                            $file = (isset($_FILES['citizenship1PassportScan']))? $_FILES['citizenship1PassportScan'] : null;
 
-                                if (!(file_exists($path.'/'.$citizenship1PassportScan))) {
-                                    $unique = true;
-                                }
-                                ++$count;
-                            }
-                            if (!(move_uploaded_file($_FILES['citizenship1PassportScan']['tmp_name'], $path.'/'.$citizenship1PassportScan))) {
-                                $citizenship1PassportScan = '';
-                                $imageFail = true;
-                            }
-                        } else {
-                            $citizenship1PassportScan = '';
-                        }
+                            // Upload the file, return the /uploads relative path
+                            $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
+                            $citizenship1PassportScan = $fileUploader->uploadFromPost($file, $username.'_passportscan');
 
-                        //Check image sizes
-                        if ($attachment1 != '') {
-                            $size1 = getimagesize($path.'/'.$attachment1);
-                            $width1 = $size1[0];
-                            $height1 = $size1[1];
-                            $aspect1 = $height1 / $width1;
-                            if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
-                                $attachment1 = '';
+                            if (empty($citizenship1PassportScan)) {
                                 $imageFail = true;
-                            }
-                        }
-                        if ($birthCertificateScan != '') {
-                            $size3 = getimagesize($path.'/'.$birthCertificateScan);
-                            $width3 = $size3[0];
-                            $height3 = $size3[1];
-                            if ($width3 > 1440 or $height3 > 900) {
-                                $birthCertificateScan = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($nationalIDCardScan != '') {
-                            $size3 = getimagesize($path.'/'.$nationalIDCardScan);
-                            $width3 = $size3[0];
-                            $height3 = $size3[1];
-                            if ($width3 > 1440 or $height3 > 900) {
-                                $nationalIDCardScan = '';
-                                $imageFail = true;
-                            }
-                        }
-                        if ($citizenship1PassportScan != '') {
-                            $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
-                            $width4 = $size4[0];
-                            $height4 = $size4[1];
-                            if ($width4 > 1440 or $height4 > 900) {
-                                $citizenship1PassportScan = '';
-                                $imageFail = true;
+                            } else {
+                                //Check image sizes
+                                $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
+                                $width4 = $size4[0];
+                                $height4 = $size4[1];
+                                if ($width4 > 1440 or $height4 > 900) {
+                                    $citizenship1PassportScan = '';
+                                    $imageFail = true;
+                                }
                             }
                         }
                     }

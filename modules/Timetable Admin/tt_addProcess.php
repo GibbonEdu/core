@@ -26,11 +26,9 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $name = $_POST['name'];
 $nameShort = $_POST['nameShort'];
+$nameShortDisplay = $_POST['nameShortDisplay'];
 $active = $_POST['active'];
 $count = $_POST['count'];
 $gibbonYearGroupIDList = '';
@@ -52,13 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 } else {
     //Proceed!
     //Validate Inputs
-    if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '') {
+    if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '' or $nameShortDisplay == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $data = array('name' => $name, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonTT WHERE (name=:name AND gibbonSchoolYearID=:gibbonSchoolYearID)';
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -74,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $nameShort, 'active' => $active, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
-                $sql = 'INSERT INTO gibbonTT SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, active=:active, gibbonYearGroupIDList=:gibbonYearGroupIDList';
+                $data = array('name' => $name, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $nameShort, 'nameShortDisplay' => $nameShortDisplay, 'active' => $active, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
+                $sql = 'INSERT INTO gibbonTT SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, nameShortDisplay=:nameShortDisplay, active=:active, gibbonYearGroupIDList=:gibbonYearGroupIDList';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fileExtensions_manage_edit.php&gibbonFileExtensionID='.$gibbonFileExtensionID;
 
@@ -58,11 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $extension = $_POST['extension'];
+            $extension = strtolower($_POST['extension']);
             $name = $_POST['name'];
             $type = $_POST['type'];
 
-            if ($extension == '' or $name == '' or $type == '') {
+            $illegalFileExtensions = Gibbon\FileUploader::getIllegalFileExtensions();
+
+            if ($extension == '' or $name == '' or $type == '' or in_array($extension, $illegalFileExtensions)) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {

@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -373,7 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                             ?>
 							<tr id="attainmentRawMaxRow">
 								<td>
-									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Total Mark');
 									} else {
 										echo __($guid, 'Attainment Total Mark');
 									}

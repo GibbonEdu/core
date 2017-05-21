@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 require '../../lib/PHPMailer/PHPMailerAutoload.php';
@@ -34,9 +36,6 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/applicationForm.php';
 
@@ -226,35 +225,19 @@ if ($proceed == false) {
                 if (isset($_POST['fileCount'])) {
                     $fileCount = $_POST['fileCount'];
                 }
+
+                $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
                 for ($i = 0; $i < $fileCount; ++$i) {
-                    $fileName = $_POST["fileName$i"];
-                    $time = time();
-                    //Move attached file, if there is one
-                    if ($_FILES["file$i"]['tmp_name'] != '') {
-                        //Check for folder in uploads based on today's date
-                        $path = $_SESSION[$guid]['absolutePath'];
-                        if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                            mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                        }
-                        $unique = false;
-                        $count = 0;
-                        while ($unique == false and $count < 100) {
-                            $suffix = randomPassword(16);
-                            $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time)."/Application Document_$suffix".strrchr($_FILES["file$i"]['name'], '.');
-                            if (!(file_exists($path.'/'.$attachment))) {
-                                $unique = true;
-                            }
-                            ++$count;
-                        }
-                        if (!(move_uploaded_file($_FILES["file$i"]['tmp_name'], $path.'/'.$attachment))) {
-                            // Make one more attempt at moving the file, using gibbon root path
-                            $basePath = str_replace('\\', '/', dirname(__FILE__));
-                            $basePath = str_replace('modules/Staff', '', $basePath);
-                            $basePath = rtrim($basePath, '/');
+                    if (empty($_FILES["file$i"]['tmp_name'])) continue;
 
-                            move_uploaded_file($_FILES["file$i"]['tmp_name'], $basePath.'/'.$attachment);
-                        }
+                    $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
+                    $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
 
+                    // Upload the file, return the /uploads relative path
+                    $attachment = $fileUploader->uploadFromPost($file, 'StaffApplicationDocument');
+
+                    if (!empty($attachment)) {
                         // Create an array of uploaded files
                         $uploadedDocuments[$fileName] = $attachment;
                     }
@@ -312,11 +295,14 @@ if ($proceed == false) {
                             }
                         }
 
-                        //Attempt to notify HR administrator
-                        if ($_SESSION[$guid]['organisationHR']) {
-                            $notificationText = sprintf(__($guid, 'An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student'));
-                            setNotification($connection2, $guid, $_SESSION[$guid]['organisationHR'], $notificationText, 'Staff Application Form', "/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
-                        }
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Staff', 'New Application Form');
+
+                        $event->addRecipient($_SESSION[$guid]['organisationHR']);
+                        $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student')));
+                        $event->setActionLink("/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
+
+                        $event->sendNotifications($pdo, $gibbon->session);
 
                         //Email reference form link to referee
                         $applicationFormRefereeLink = unserialize(getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink'));

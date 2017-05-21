@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplacement_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -48,84 +50,34 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/stringReplacement_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/stringReplacement_manage_addProcess.php?search=$search" ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Original String') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<input name="original" id="original" maxlength=100 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var original=new LiveValidation('original');
-						original.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Replacement String') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<input name="replacement" id="replacement" maxlength=100 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var replacement=new LiveValidation('replacement');
-						replacement.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Mode') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="mode" id="mode" class="standardWidth">
-						<?php
-                        echo '<option value="Whole">'.__($guid, 'Whole').'</option>';
-                        echo '<option value="Partial">'.__($guid, 'Partial').'</option>';?>
-					</select>
-				</td>
-			</tr>
-			
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Case Sensitive') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="caseSensitive" id="caseSensitive" class="standardWidth">
-						<?php
-                        echo "<option value='N'>".ynExpander($guid, 'N').'</option>';
-    					echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';?>
-					</select>
-				</td>
-			</tr>	
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Priority') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Higher priorities are substituted first.') ?></span>
-				</td>
-				<td class="right">
-					<input name="priority" id="priority" maxlength=2 value="0" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var priority=new LiveValidation('priority');
-						priority.add(Validate.Presence);
-						priority.add(Validate.Numericality);
-					</script>
-				</td>
-			</tr>		
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
 
+    $form = Form::create('addString', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage_addProcess.php?search='.$search);
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow();
+        $row->addLabel('original', __('Original String'));
+        $row->addTextField('original')->isRequired()->maxLength(100);
+
+    $row = $form->addRow();
+        $row->addLabel('replacement', __('Replacement String'));
+        $row->addTextField('replacement')->isRequired()->maxLength(100);
+
+    $row = $form->addRow();
+        $row->addLabel('mode', __('Mode'));
+        $row->addSelect('mode')->fromArray(array('Whole' => __('Whole'), 'Partial' => __('Partial')));
+
+    $row = $form->addRow();
+        $row->addLabel('caseSensitive', __('Case Sensitive'));
+        $row->addYesNo('caseSensitive')->selected('N')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('priority', __('Priority'))->description(__('Higher priorities are substituted first.'));
+        $row->addNumber('priority')->isRequired()->maxLength(2)->setValue('0');
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>

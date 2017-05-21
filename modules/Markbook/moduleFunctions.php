@@ -85,8 +85,6 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
 function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
-    //Set timezone from session variable
-    date_default_timezone_set($_SESSION[$guid]['timezone']);
 
     $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
     $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
@@ -316,5 +314,42 @@ function getAlertStyle( $alert, $concern ) {
         return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;margin:0 auto;'";
     } else {
         return '';
+    }
+}
+
+function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
+
+    require_once $gibbon->session->get('absolutePath').'/modules/Markbook/src/markbookView.php';
+
+    // Build the markbook object for this class & student
+    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID);
+    $assessmentScale = $markbook->getDefaultAssessmentScale();
+
+    // Cancel our now if this isnt a percent-based mark
+    if (empty($assessmentScale) || (stripos($assessmentScale['name'], 'percent') === false && $assessmentScale['nameShort'] !== '%')) {
+        return;
+    }
+
+    // Calculate & get the cumulative average
+    $markbook->cacheWeightings($gibbonPersonID);
+    $cumulativeMark = round($markbook->getCumulativeAverage($gibbonPersonID));
+
+    // Only display if there are marks
+    if (!empty($cumulativeMark)) {
+        // Divider
+        echo '<tr class="break">';
+            echo '<th colspan="7" style="height: 4px; padding: 0px;"></th>';
+        echo '</tr>';
+
+        // Display the cumulative average
+        echo '<tr>';
+            echo '<td style="width:120px;">';
+                echo '<b>'.__('Cumulative Average').'</b>';
+            echo '</td>';
+            echo '<td style="padding: 10px !important; text-align: center;">';
+                echo round( $cumulativeMark ).'%';
+            echo '</td>';
+            echo '<td colspan="3" class="dull"></td>';
+         echo '</tr>';
     }
 }

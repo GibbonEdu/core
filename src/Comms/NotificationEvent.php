@@ -103,14 +103,19 @@ class NotificationEvent
      * Adds a recipient to the list. Avoids duplicates by checking presence in the the array.
      *
      * @param  int|string  $gibbonPersonID
+     * @return bool
      */
     public function addRecipient($gibbonPersonID)
     {
+        if (empty($gibbonPersonID)) return false;
+
         $gibbonPersonID = intval($gibbonPersonID);
 
         if (in_array($gibbonPersonID, $this->recipients) == false) {
             $this->recipients[] = $gibbonPersonID;
         }
+
+        return true;
     }
 
     /**

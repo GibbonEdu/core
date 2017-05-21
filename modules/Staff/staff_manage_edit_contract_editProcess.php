@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonStaffID = $_GET['gibbonStaffID'];
 $gibbonStaffContractID = $_GET['gibbonStaffContractID'];
 $search = $_GET['search'];
@@ -141,36 +138,20 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                     $notes = $_POST['notes'];
                 }
                 $contractUpload = $row['contractUpload'];
-                if ($_FILES['file1']['tmp_name'] != '') {
-                    $time = time();
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    //Move 240 attached file, if there is one
-                    if ($_FILES['file1']['tmp_name'] != '') {
-                        $unique = false;
-                        $count = 0;
-                        while ($unique == false and $count < 100) {
-                            $suffix = randomPassword(16);
-                            if ($count == 0) {
-                                $contractUpload = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.'_'.$suffix.strrchr($_FILES['file1']['name'], '.');
-                            } else {
-                                $contractUpload = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$username.''."_$count_".$suffix.strrchr($_FILES['file1']['name'], '.');
-                            }
 
-                            if (!(file_exists($path.'/'.$contractUpload))) {
-                                $unique = true;
-                            }
-                            ++$count;
-                        }
-                        if (!(move_uploaded_file($_FILES['file1']['tmp_name'], $path.'/'.$contractUpload))) {
-                            $contractUpload = '';
-                            $imageFail = true;
-                        }
-                    } else {
+                $partialFail = false;
+                if (!empty($_FILES['file1']['tmp_name'])) {
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                    $fileUploader->getFileExtensions('Document');
+
+                    $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+
+                    // Upload the file, return the /uploads relative path
+                    $contractUpload = $fileUploader->uploadFromPost($file, $username);
+
+                    if (empty($contractUpload)) {
                         $contractUpload = '';
+                        $partialFail = true;
                     }
                 }
 
@@ -190,8 +171,13 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                         exit();
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                        $URL .= "&return=success0";
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }

@@ -55,7 +55,7 @@ class markbookView
     /**
      * Markbook Values
      */
-    protected $columnsPerPage = 20;
+    protected $columnsPerPage = 30;
     protected $columnsThisPage = -1;
     protected $columnCountTotal = -1;
     protected $minSequenceNumber = -1;
@@ -598,7 +598,7 @@ class markbookView
                     }
 
                     // Skip weighting types that have no marks (not marks of zero, but absence of marks)
-                    if ($typeTotal == null || $typeCumulative == null) continue;
+                    if ($typeTotal === null || $typeCumulative === null) continue;
 
                     $typeAverage = ($typeTotal > 0)? ( $typeCumulative / $typeTotal ) : 0;
 

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -25,9 +27,6 @@ $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start();
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $subpage = $_GET['subpage'];
@@ -53,8 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         } else {
             //Check for existence of student
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT surname, preferredName, status FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sql = 'SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.status, gibbonStudentEnrolment.gibbonYearGroupID
+                    FROM gibbonPerson
+                    LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                    WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -69,7 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 exit();
             } else {
                 $row = $result->fetch();
-                $name = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
                 $status = $row['status'];
 
                 //Proceed!
@@ -97,10 +98,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         exit();
                     }
 
-                    //Attempt to issue alerts form tutor(s) and teacher(s) accornding to settings
+                    //Attempt to issue alerts form tutor(s) and teacher(s) according to settings
                     if ($status == 'Full') {
-                        $notify = array();
-                        $notifyCount = 0;
+
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Students', 'New Student Note');
+
+                        $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                        $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+
+                        $event->setNotificationText(sprintf(__($guid, '%1$s has added a student note ("%2$s") about %3$s.'), $staffName, $title, $studentName));
+                        $event->setActionLink("/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
+
+                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                        $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
 
                         if ($noteCreationNotification == 'Tutors' or $noteCreationNotification == 'Tutors & Teachers') {
                             try {
@@ -114,8 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $result->execute($data);
                             } catch (PDOException $e) { print $e->getMessage(); }
                             while ($row = $result->fetch()) {
-                                $notify[$notifyCount] = $row['gibbonPersonID'];
-                                $notifyCount ++;
+                                $event->addRecipient($row['gibbonPersonID']);
                             }
 
                         }
@@ -127,20 +137,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $result->execute($data);
                             } catch (PDOException $e) { }
                             while ($row = $result->fetch()) {
-                                $notify[$notifyCount] = $row['gibbonPersonID'];
-                                $notifyCount ++;
+                                $event->addRecipient($row['gibbonPersonID']);
                             }
                         }
-                        $notify = array_unique($notify) ;
 
-                        if (count($notify > 0)) {
-                            $notificationText = sprintf(__($guid, 'Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name);
-                            foreach ($notify AS $gibbonPersonIDNotify) {
-                                if ($gibbonPersonIDNotify != $_SESSION[$guid]['gibbonPersonID']) {
-                                    setNotification($connection2, $guid, $gibbonPersonIDNotify, $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
-                                }
-                            }
-                        }
+                        // Send notifications
+                        $event->sendNotifications($pdo, $gibbon->session);
                     }
 
                     $URL .= '&return=success0';

@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_edit.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID";
@@ -63,6 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
+                $partialFail = false;
+                
                 //Validate Inputs
                 $name = $_POST['name'];
                 $description = $_POST['description'];
@@ -105,26 +104,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 $time = time();
                 //Move attached file, if there is one
-                if ($_FILES['file']['tmp_name'] != '') {
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    $unique = false;
-                    $count = 0;
-                    while ($unique == false and $count < 100) {
-                        $suffix = randomPassword(16);
-                        $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file']['name'], '.');
-                        if (!(file_exists($path.'/'.$attachment))) {
-                            $unique = true;
-                        }
-                        ++$count;
-                    }
+                if (!empty($_FILES['file']['tmp_name'])) {
+                    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+                
+                    $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
-                    if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$attachment))) {
-                        $URL .= '&return=error3';
-                        header("Location: {$URL}");
+                    // Upload the file, return the /uploads relative path
+                    $attachment = $fileUploader->uploadFromPost($file, $name);
+
+                    if (empty($attachment)) {
+                        $partialFail = true;
                     }
                 } else {
                     $attachment = $row['attachment'];
@@ -146,8 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         exit();
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    if ($partialFail == true) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                    } else {
+                        $URL .= '&return=success0';
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }

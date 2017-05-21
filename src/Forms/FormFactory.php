@@ -279,6 +279,6 @@ class FormFactory implements FormFactoryInterface
             ),
         );
 
-        return $this->createSelect($name)->fromArray($currencies)->placeholder('Please select...');
+        return $this->createSelect($name)->fromArray($currencies)->placeholder();
     }
 }

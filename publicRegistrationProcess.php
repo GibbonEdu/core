@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include './functions.php';
 include './config.php';
 
@@ -25,9 +27,6 @@ $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start();
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/publicRegistration.php';
 
@@ -134,12 +133,21 @@ if ($proceed == false) {
 
                     $gibbonPersonID = $connection2->lastInsertId();
 
+                    try {
+                        $sqlLock = 'UNLOCK TABLES';
+                        $result = $connection2->query($sqlLock);
+                    } catch (PDOException $e) {
+                    }
+
                     if ($status == 'Pending Approval') {
-                        //Attempt to notify Admissions
-                        if ($_SESSION[$guid]['organisationAdmissions']) {
-                            $notificationText = sprintf(__($guid, 'An new public registration, for %1$s, is pending approval.'), formatName('', $preferredName, $surname, 'Student'));
-                            setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdmissions'], $notificationText, 'User Admin', "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
-                        }
+                        // Raise a new notification event
+                        $event = new NotificationEvent('User Admin', 'New Public Registration');
+
+                        $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
+                        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is pending approval.'), formatName('', $preferredName, $surname, 'Student')));
+                        $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
+
+                        $event->sendNotifications($pdo, $gibbon->session);
 
                         $URL .= '&return=success1';
                         header("Location: {$URL}");

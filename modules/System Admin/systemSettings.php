@@ -142,22 +142,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationDBA', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdmissions', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationHR', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder('Please select...')->isRequired();
+        $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->isRequired();
 
     // SECURITY SETTINGS
     $form->addRow()->addHeading(__('Security Settings'));
@@ -189,11 +189,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->isRequired();
-
-    $setting = getSettingByScope($connection2, 'System', 'allowableHTML', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8);
 
     // VALUE ADDED
     $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));

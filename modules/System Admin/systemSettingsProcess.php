@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {
@@ -67,7 +64,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $passwordPolicyNumeric = $_POST['passwordPolicyNumeric'];
     $passwordPolicyNonAlphaNumeric = $_POST['passwordPolicyNonAlphaNumeric'];
     $sessionDuration = $_POST['sessionDuration'];
-    $allowableHTML = $_POST['allowableHTML'];
     $currency = $_POST['currency'];
     $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
@@ -414,14 +410,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         try {
             $data = array('passwordPolicyNonAlphaNumeric' => $passwordPolicyNonAlphaNumeric);
             $sql = "UPDATE gibbonSetting SET value=:passwordPolicyNonAlphaNumeric WHERE scope='System' AND name='passwordPolicyNonAlphaNumeric'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('allowableHTML' => $allowableHTML);
-            $sql = "UPDATE gibbonSetting SET value=:allowableHTML WHERE scope='System' AND name='allowableHTML'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

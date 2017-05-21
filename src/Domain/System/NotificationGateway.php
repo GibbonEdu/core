@@ -58,16 +58,18 @@ class NotificationGateway
     public function updateNotificationCount($gibbonNotificationID, $count)
     {
         $data = array('gibbonNotificationID' => $gibbonNotificationID, 'count' => $count);
-        $sql = "UPDATE gibbonNotification SET count=:count WHERE gibbonNotificationID=:gibbonNotificationID";
+        $sql = "UPDATE gibbonNotification SET count=:count, timestamp=now() WHERE gibbonNotificationID=:gibbonNotificationID";
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        return $this->pdo->executeQuery($data, $sql);
+        return $this->pdo->getQuerySuccess();
     }
 
     public function insertNotification($data)
     {
         $sql = 'INSERT INTO gibbonNotification SET gibbonPersonID=:gibbonPersonID, gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName), text=:text, actionLink=:actionLink, timestamp=now()';
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        return $this->pdo->executeQuery($data, $sql);
+        return $this->pdo->getConnection()->lastInsertID();
     }
 
     /* NOTIFICATION EVENTS */
@@ -98,8 +100,9 @@ class NotificationGateway
     {
         $data = array('gibbonNotificationEventID' => $update['gibbonNotificationEventID'], 'active' => $update['active']);
         $sql = "UPDATE gibbonNotificationEvent SET active=:active WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        return $this->pdo->executeQuery($data, $sql);
+        return $this->pdo->getQuerySuccess();
     }
 
     /* NOTIFICATION LISTENERS */
@@ -158,16 +161,18 @@ class NotificationGateway
     public function insertNotificationListener($data)
     {
         $sql = 'INSERT INTO gibbonNotificationListener SET gibbonNotificationEventID=:gibbonNotificationEventID, gibbonPersonID=:gibbonPersonID, scopeType=:scopeType, scopeID=:scopeID';
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        return $this->pdo->executeQuery($data, $sql);
+        return $this->pdo->getConnection()->lastInsertID();
     }
 
     public function deleteNotificationListener($gibbonNotificationListenerID)
     {
         $data = array('gibbonNotificationListenerID' => $gibbonNotificationListenerID);
         $sql = 'DELETE FROM gibbonNotificationListener WHERE gibbonNotificationListenerID=:gibbonNotificationListenerID';
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        return $this->pdo->executeQuery($data, $sql);
+        return $this->pdo->getQuerySuccess();
     }
 
     /* NOTIFICATION PREFERENCES */

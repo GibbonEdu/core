@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $gibbonPlannerEntryGuestID = $_GET['gibbonPlannerEntryGuestID'];
 $viewBy = $_GET['viewBy'];

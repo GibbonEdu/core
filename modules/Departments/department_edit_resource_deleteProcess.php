@@ -29,9 +29,6 @@ $connection2 = $pdo->getConnection();
 //Module includes
 include './moduleFunctions.php';
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
 $gibbonDepartmentResourceID = $_GET['gibbonDepartmentResourceID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";

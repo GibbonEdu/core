@@ -26,9 +26,6 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/markbookSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSettings.php') == false) {
@@ -44,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $enableEffort = $_POST['enableEffort'];
     $enableRubrics = $_POST['enableRubrics'];
     $enableColumnWeighting = $_POST['enableColumnWeighting'];
+    $enableDisplayCumulativeMarks = (isset($_POST['enableDisplayCumulativeMarks']))? $_POST['enableDisplayCumulativeMarks'] : 'N';
     $enableRawAttainment = $_POST['enableRawAttainment'];
     $enableGroupByTerm = $_POST['enableGroupByTerm'];
     $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
@@ -95,6 +93,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         try {
             $data = array('value' => $enableColumnWeighting);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableColumnWeighting'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $enableDisplayCumulativeMarks);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableDisplayCumulativeMarks'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

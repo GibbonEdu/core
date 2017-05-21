@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -28,9 +30,6 @@ $connection2 = $pdo->getConnection();
 
 //Module includes
 include $_SESSION[$guid]['absolutePath'].'/modules/Activities/moduleFunctions.php';
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $mode = $_POST['mode'];
 $gibbonActivityID = $_POST['gibbonActivityID'];
@@ -71,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 try {
                     if ($dateType != 'Date') {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
-                        $sql = "SELECT DISTINCT gibbonActivity.* FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' AND registration='Y'";
+                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' AND registration='Y'";
                     } else {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                        $sql = "SELECT DISTINCT gibbonActivity.* FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' AND registration='Y'";
+                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' AND registration='Y'";
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -90,18 +89,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 } else {
                     $row = $result->fetch();
 
+                    // Grab organizer info for notifications
+                    try {
+                        $dataStaff = array('gibbonActivityID' => $gibbonActivityID);
+                        $sqlStaff = "SELECT gibbonPersonID FROM gibbonActivityStaff WHERE gibbonActivityID=:gibbonActivityID AND role='Organiser'";
+                        $resultStaff = $connection2->prepare($sqlStaff);
+                        $resultStaff->execute($dataStaff);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $gibbonActivityStaffIDs = ($resultStaff->rowCount() > 0)? $resultStaff->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+
+                    //Check for existing registration
+                    try {
+                        $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
+                        $sqlReg = 'SELECT gibbonActivityStudentID, status FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
+                        $resultReg = $connection2->prepare($sqlReg);
+                        $resultReg->execute($dataReg);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
                     if ($mode == 'register') {
-                        //Check for existing registration
-                        try {
-                            $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-                            $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
-                            $resultReg = $connection2->prepare($sqlReg);
-                            $resultReg->execute($dataReg);
-                        } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
-                        }
 
                         if ($resultReg->rowCount() > 0) {
                             $URL .= '&return=error3';
@@ -173,6 +187,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 } catch (PDOException $e) {
                                 }
 
+                                // Get the start and end date of the activity, depending on which dateType we're using
+                                $activityTimespan = getActivityTimespan($connection2, $gibbonActivityID, $row['gibbonSchoolYearTermIDList']);
+
+                                // Is the activity running right now?
+                                if (time() >= $activityTimespan['start'] && time() <= $activityTimespan['end']) {
+                                    // Raise a new notification event
+                                    $event = new NotificationEvent('Activities', 'New Activity Registration');
+
+                                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                                    $notificationText = sprintf(__('%1$s has registered for the activity %2$s (%3$s)'), $studentName, $row['name'], $status);
+
+                                    $event->setNotificationText($notificationText);
+                                    $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');
+
+                                    $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                                    $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
+
+                                    foreach ($gibbonActivityStaffIDs as $gibbonPersonIDStaff) {
+                                        $event->addRecipient($gibbonPersonIDStaff);
+                                    }
+
+                                    $event->sendNotifications($pdo, $gibbon->session);
+                                }
+
                                 if ($status == 'Waiting List') {
                                     $URLSuccess = $URLSuccess.'&return=success2';
                                     header("Location: {$URLSuccess}");
@@ -183,17 +221,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
                         }
                     } elseif ($mode == 'unregister') {
-                        //Check for existing registration
-                        try {
-                            $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-                            $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
-                            $resultReg = $connection2->prepare($sqlReg);
-                            $resultReg->execute($dataReg);
-                        } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
-                        }
 
                         if ($resultReg->rowCount() < 1) {
                             $URL .= '&return=error3';
@@ -209,6 +236,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $URL .= '&return=error2';
                                 header("Location: {$URL}");
                                 exit();
+                            }
+
+                            $reg = $resultReg->fetch();
+
+                            // Raise a new notification event
+                            if ($reg['status'] == 'Accepted') {
+                                // Get the start and end date of the activity, depending on which dateType we're using
+                                $activityTimespan = getActivityTimespan($connection2, $gibbonActivityID, $row['gibbonSchoolYearTermIDList']);
+
+                                // Is the activity running right now?
+                                if (time() >= $activityTimespan['start'] && time() <= $activityTimespan['end']) {
+                                    $event = new NotificationEvent('Activities', 'Student Withdrawn');
+
+                                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                                    $notificationText = sprintf(__('%1$s has withdrawn from the activity %2$s'), $studentName, $row['name']);
+
+                                    $event->setNotificationText($notificationText);
+                                    $event->setActionLink('/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$gibbonActivityID.'&search=&gibbonSchoolYearTermID=');
+
+                                    $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                                    $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupID']);
+
+                                    foreach ($gibbonActivityStaffIDs as $gibbonPersonIDStaff) {
+                                        $event->addRecipient($gibbonPersonIDStaff);
+                                    }
+
+                                    $event->sendNotifications($pdo, $gibbon->session);
+                                }
                             }
 
                             //Bump up any waiting in competitive selection, to fill spaces available

@@ -38,9 +38,6 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
     }
 }
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 //Setup variables
 $output = '';
 if (isset($_POST['gibbonTTID'])) {

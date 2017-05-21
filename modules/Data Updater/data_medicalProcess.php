@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 include '../../functions.php';
 include '../../config.php';
 
@@ -25,9 +27,6 @@ $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start();
-
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
@@ -245,12 +244,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     }
                 }
 
-                //Attempt to notify to DBA
-                if ($_SESSION[$guid]['organisationDBA'] != '') {
-                    $notificationText = sprintf(__($guid, 'A medical data update request has been submitted.'));
-                    setNotification($connection2, $guid, $_SESSION[$guid]['organisationDBA'], $notificationText, 'Data Updater', '/index.php?q=/modules/Data Updater/data_medical_manage.php');
-                }
-
                 //Write to database
                 try {
                     if ($existing != 'N') {
@@ -276,8 +269,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     }
                 }
 
+                // Raise a new notification event
+                $event = new NotificationEvent('Data Updater', 'Medical Form Updates');
+
+                $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                $event->setNotificationText(__('A medical data update request has been submitted.'));
+                $event->setActionLink('/index.php?q=/modules/Data Updater/data_medical_manage.php');
+
+                $event->sendNotifications($pdo, $gibbon->session);
+
                 if ($partialFail == true) {
-                    $URL .= '&return=error1';
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
                     $URL .= '&return=success0';

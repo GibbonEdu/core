@@ -26,15 +26,13 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-//Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]['timezone']);
-
 $time = time();
 
 if (empty($_POST) or empty($_FILES)) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
-    echo 'Your request failed due to an attachment error.';
+    echo __($guid, 'Your request failed due to an attachment error.');
     echo '</span>';
+    exit();
 } else {
     //Proceed!
     $id = $_POST['id'];
@@ -47,6 +45,7 @@ if (empty($_POST) or empty($_FILES)) {
         echo "<span style='font-weight: bold; color: #ff0000'>";
         echo __($guid, 'Your request failed because your inputs were invalid.');
         echo '</span>';
+        exit();
     } else {
         //Check if multiple files
         $multiple = false;
@@ -60,39 +59,32 @@ if (empty($_POST) or empty($_FILES)) {
             $multiple = true;
         }
 
+        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
         //Insert files
         for ($i = 1; $i < 5; ++$i) {
             $html = '';
             if (isset($_FILES[$id.'file'.$i])) {
-                $name = substr($_FILES[$id.'file'.$i]['name'], 0, strrpos($_FILES[$id.'file'.$i]['name'], '.'));
-                if ($_FILES[$id.'file'.$i]['tmp_name'] != '') {
-                    //Check for folder in uploads based on today's date
-                    $path = $_SESSION[$guid]['absolutePath'];
-                    if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
-                        mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
-                    }
-                    $unique = false;
-                    $count = 0;
-                    while ($unique == false and $count < 100) {
-                        $suffix = randomPassword(16);
-                        $attachment = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES[$id.'file'.$i]['name'], '.');
-                        if (!(file_exists($path.'/'.$attachment))) {
-                            $unique = true;
-                        }
-                        ++$count;
-                    }
-                    if (!(move_uploaded_file($_FILES[$id.'file'.$i]['tmp_name'], $path.'/'.$attachment))) {
-                        echo "<span style='font-weight: bold; color: #ff0000'>";
-                        echo 'Your request failed due to an attachment error.';
-                        echo '</span>';
-                    }
-                }
+                $file = $_FILES[$id.'file'.$i];
 
-                $extension = strrchr($attachment, '.');
-                if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'><img class='resource' style='max-width: 500px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'></a>";
+                // Upload the file, return the /uploads relative path
+                $attachment = $fileUploader->uploadFromPost($file);
+
+                if (empty($attachment)) {
+                    echo "<span style='font-weight: bold; color: #ff0000'>";
+                        echo __($guid, 'Your request failed due to an attachment error.');
+                        echo ' '.$fileUploader->getLastError();
+                    echo '</span>';
+                    exit();
                 } else {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'>".$name.'</a>';
+                    $extension = strrchr($attachment, '.');
+                    $name = mb_substr(basename($file['name']), 0, mb_strpos(basename($file['name']), '.'));
+
+                    if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
+                        $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'><img class='resource' style='max-width: 500px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'></a>";
+                    } else {
+                        $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'>".$name.'</a>';
+                    }
                 }
             }
             if ($multiple) {
