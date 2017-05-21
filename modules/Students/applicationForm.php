@@ -153,6 +153,8 @@ if ($proceed == false) {
             $heading = $row->addSubheading(__('Add Another Application'));
             $heading->append(__('You may continue submitting applications for siblings with the form below and they will be linked to your family data.'));
             $heading->append(__('Some information has been pre-filled for you, feel free to change this information as needed.'));
+
+        // TODO: Current Applications
     }
 
     // STUDENT PERSONAL DATA
@@ -250,7 +252,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $row->addTextField('email')->maxLength(50);
+        $row->addEmail('email')->maxLength(50);
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
@@ -317,14 +319,14 @@ if ($proceed == false) {
         $row->addLabel('', __('Previous Schools'))->description(__('Please give information on the last two schools attended by the applicant.'));
 
     // PREVIOUS SCHOOLS TABLE
-    $table = $form->addRow()->addTable();
+    $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
     $header = $table->addHeaderRow();
     $header->addContent(__('School Name'));
     $header->addContent(__('Address'));
     $header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
     $header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
-    $header->addContent(__('Joining Date'))->append('<br/>'.$_SESSION[$guid]['i18n']['dateFormat']);
+    $header->addContent(__('Joining Date'))->append('<br/><small>'.$_SESSION[$guid]['i18n']['dateFormat'].'</small>');
 
     // Grab some languages, for auto-complete
     $results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
@@ -418,10 +420,7 @@ if ($proceed == false) {
                 $row->addLabel('parent1relationship', __('Relationship'));
                 $row->addSelectRelationship('parent1relationship');
 
-            $row = $form->addRow();
-                $row->addLabel('', __(''))->description(__(''));
-                $row->addTextField('');
-
+            // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
             $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
@@ -456,6 +455,7 @@ if ($proceed == false) {
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
             }
 
+            // PARENT PERSONAL DATA
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
 
@@ -485,57 +485,295 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}gender", __('Gender'));
-                $row->createSelectGender("parent{$i}gender");
+                $row->addSelectGender("parent{$i}gender")->isRequired();
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}relationship", __('Relationship'));
-                $row->createSelectRelationship("parent{$i}relationship");
+                $row->addSelectRelationship("parent{$i}relationship")->isRequired();
 
+            // PARENT PERSONAL BACKGROUND
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
 
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}languageFirst", __('First Language'));
+                $row->addSelectLanguage("parent{$i}languageFirst")->placeholder();
 
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}languageSecond", __('Second Language'));
+                $row->addSelectLanguage("parent{$i}languageSecond")->placeholder();
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
+                if (!empty($nationalityList)) {
+                    $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder();
+                } else {
+                    $row->addSelectCountry("parent{$i}citizenship1");
+                }
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
+                $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
+                if (!empty($residencyStatusList)) {
+                    $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder();
+                } else {
+                    $row->addTextField("parent{$i}residencyStatus")->maxLength(30);
+                }
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+                $row->addDate("parent{$i}visaExpiryDate");
+
+            // PARENT CONTACT
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Contact'));
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}email", __('Email'));
+                $row->addEmail("parent{$i}email")->isRequired()->maxLength(50);
+
+            for ($y = 1; $y < 3; ++$y) {
+                $row = $form->addRow()->setClass("parentSection{$i}");
+                    $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
+                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($y == 1);
+            }
+
+            // PARENT EMPLOYMENT
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}profession", __('Profession'));
+                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}employer", __('Employer'));
+                $row->addTextField("parent{$i}employer")->maxLength(30);
+
+            // CUSTOM FIELDS FOR PARENTS
+            $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
+            $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
+            if ($resultFields->rowCount() > 0) {
+                while ($rowFields = $resultFields->fetch()) {
+                    $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+                    $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+
+                    $row = $form->addRow();
+                        $row->addLabel($name, $rowFields['name']);
+                        $row->addCustomField($name, $rowFields)->setValue($value);
+                }
+            }
         }
+    } else {
+        // LOGGED IN PARENT WITH FAMILY
+
+        $form->addHiddenValue('gibbonFamily', 'TRUE');
+
+        // TODO: Existing Family Selector
+    }
+
+    // SIBLINGS
+
+    $form->addRow()->addHeading(__('Siblings'));
+    $form->addRow()->addContent(__('Please give information on the applicants\'s siblings.'))->wrap('<p>','</p>');
+
+    $table = $form->addRow()->addTable()->addClass('colorOddEven');
+
+    $header = $table->addHeaderRow();
+    $header->addContent(__('Sibling Name'));
+    $header->addContent(__('Date of Birth'))->append('<br/><small>'.$_SESSION[$guid]['i18n']['dateFormat'].'</small>');
+    $header->addContent(__('School Attending'));
+    $header->addContent(__('Joining Date'))->append('<br/><small>'.$_SESSION[$guid]['i18n']['dateFormat'].'</small>');
+
+    // TODO: Load existing siblings
+    for ($i = 1; $i <= 3; ++$i) {
+        $row = $table->addRow();
+        $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(30);
+        $row->addDate('siblingDOB'.$i)->setSize(10);
+        $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
+        $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
+    }
+
+    // LANGUAGE OPTIONS
+    $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
+
+    if ($languageOptionsActive == 'Y') {
+
+        $heading = $form->addRow()->addHeading(__('Language Selection'));
+
+        $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
+        if (!empty($languageOptionsBlurb)) {
+            $heading->append($languageOptionsBlurb)->wrap('<p>','</p>');
+        }
+
+        $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
+        $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
+
+        $row = $form->addRow();
+            $row->addLabel('languageChoice', __('Language Choice'))->description(__('Please choose preferred additional language to study.'));
+            $row->addSelect('languageChoice')->fromArray($languages)->isRequired()->placeholder();
+
+        $row = $form->addRow();
+            $column = $row->addColumn();
+            $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
+            $column->addTextArea('languageChoiceExperience')->isRequired()->setRows(5)->setClass('fullWidth');
+    }
+
+    // SCHOLARSHIPS
+    $heading = $form->addRow()->addHeading(__('Scholarships'));
+
+    $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
+    if (!empty($scholarship)) {
+        $heading->append($scholarship)->wrap('<p>','</p>');
     }
 
     $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+        $row->addLabel('scholarshipInterest', __('Interest'))->description(__('Indicate if you are interested in a scholarship.'));
+        $row->addRadio('scholarshipInterest')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
 
     $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+        $row->addLabel('scholarshipRequired', __('Required?'))->description(__('Is a scholarship required for you to take up a place at the school?'));
+        $row->addRadio('scholarshipRequired')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+
+
+     // PAYMENT
+    $form->addRow()->addHeading(__('Payment'));
+
+    $form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>','</p>');
 
     $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+        $row->addLabel('payment', __('Send Future Invoices To'));
+        $row->addRadio('payment')
+            ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
+            ->checked('Family')
+            ->inline();
+
+    $form->toggleVisibilityByClass('paymentCompany')->onRadio('payment')->when('Company');
+
+    // COMPANY DETAILS
+    $row = $form->addRow()->addClass('paymentCompany');
+        $row->addLabel('companyName', __('Company Name'));
+        $row->addTextField('companyName')->isRequired()->maxLength(100);
+
+    $row = $form->addRow()->addClass('paymentCompany');
+        $row->addLabel('companyContact', __('Company Contact Person'));
+        $row->addTextField('companyContact')->isRequired()->maxLength(100);
+
+    $row = $form->addRow()->addClass('paymentCompany');
+        $row->addLabel('companyAddress', __('Company Address'));
+        $row->addTextField('companyAddress')->isRequired()->maxLength(255);
+
+    $row = $form->addRow()->addClass('paymentCompany');
+        $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
+        $row->addTextField('companyEmail')->isRequired();
+
+    $row = $form->addRow()->addClass('paymentCompany');
+        $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
+        $row->addYesNo('companyCCFamily')->selected('N');
+
+    $row = $form->addRow()->addClass('paymentCompany');
+        $row->addLabel('companyPhone', __('Company Phone'));
+        $row->addTextField('companyPhone')->maxLength(20);
+
+    // COMPANY FEE CATEGORIES
+    $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
+    $resultFees = $pdo->executeQuery(array(), $sqlFees);
+
+    if (!$resultFees || $resultFees->rowCount() == 0) {
+        $form->addHiddenValue('companyAll', 'Y');
+    } else {
+        $row = $form->addRow()->addClass('paymentCompany');
+            $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
+            $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline();
+
+        $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
+
+        $existingFeeCategoryIDList = (isset($application['gibbonFinanceFeeCategoryIDList']) && is_array($application['gibbonFinanceFeeCategoryIDList']))? $application['gibbonFinanceFeeCategoryIDList'] : array();
+
+        $row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
+            $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))->description(__('If the specified company is not paying all fees, which categories are they paying?'));
+            $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
+                ->fromResults($resultFees)
+                ->fromArray(array('0001' => __('Other')))
+                ->checked($existingFeeCategoryIDList);
+    }
+
+    // REQURIED DOCUMENTS
+    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+
+    if (!empty($requiredDocuments)) {
+        $requiredDocumentsText = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText');
+        $requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
+
+        $heading = $form->addRow()->addHeading(__('Supporting Documents'));
+
+        if (!empty($requiredDocumentsText)) {
+            $heading->append($requiredDocumentsText);
+
+            if ($requiredDocumentsCompulsory == 'Y') {
+                $heading->append(__('All documents must all be included before the application can be submitted.'));
+            } else {
+                $heading->append(__('These documents are all required, but can be submitted separately to this form if preferred. Please note, however, that your application will be processed faster if the documents are included here.'));
+            }
+            $heading->wrap('<p>', '</p>');
+        }
+
+        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+
+        $requiredDocumentsList = explode(',', $requiredDocuments);
+
+        for ($i = 0; $i < count($requiredDocumentsList); $i++) {
+            $form->addHiddenValue('fileName'.$i, $requiredDocumentsList[$i]);
+
+            $row = $form->addRow();
+                $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
+                $row->addFileUpload('file'.$i)
+                    ->accepts($fileUploader->getFileExtensions())
+                    ->setRequired($requiredDocumentsCompulsory == 'Y');
+        }
+
+        $row = $form->addRow()->addContent(getMaxUpload($guid));
+        $form->addHiddenValue('fileCount', count($requiredDocumentsList));
+    }
+
+
+    // MISCELLANEOUS
+
+    $form->addRow()->addHeading(__('Miscellaneous'));
+
+    $howDidYouHear = getSettingByScope($connection2, 'Application Form', 'howDidYouHear');
+    $howDidYouHearList = explode(',', $howDidYouHear);
 
     $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+        $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
-    $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+    if (empty($howDidYouHearList)) {
+        $row->addTextField('howDidYouHear')->isRequired()->maxLength(30);
+    } else {
+        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->isRequired()->placeholder();
+    }
 
-    $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
 
-    $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+    $row = $form->addRow()->addClass('tellUsMore');
+        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+        $row->addTextField('howDidYouHearMore')->maxLength(255);
 
-    $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+    // PRIVACY
+    $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+    $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-    $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
+    if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+        $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 
-    $row = $form->addRow();
-        $row->addLabel('', __(''))->description(__(''));
-        $row->addTextField('');
-
+        $row = $form->addRow();
+            $row->addLabel('privacyOptions', __('Privacy'))->description($privacyBlurb);
+            $row->addCheckbox('privacyOptions')->fromArray($options);
+    }
 
 
     $row = $form->addRow();
