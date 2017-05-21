@@ -50,6 +50,7 @@ v14.0.00
 		System: removed Media plugin from tinyMCE
 		System: added timestamp update when incrementing notification count
 		System: fixed error messages and failed login redirect on Google login page
+		System: added ability to set mysql port through config.php
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
@@ -73,6 +74,7 @@ v14.0.00
 		Markbook: allow decimal values for markbook column attainment raw max
 		Markbook: fixed custom Attainment label for Total Mark field
 		Markbook: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
+		Markbook: added a permission for teachers to only view their own markbook information
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
