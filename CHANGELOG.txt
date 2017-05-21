@@ -36,6 +36,7 @@ v14.0.00
 		System: removed Allowable HTML from System Settings interface
 		System: updated PHPMailer to latest version
 		System: removed all code samples from /lib libraries
+		System: fixed SVG code execution vulnerability
 
 	Tweaks & Bug Fixes
 		System: improved Fast Finder student search permissions
