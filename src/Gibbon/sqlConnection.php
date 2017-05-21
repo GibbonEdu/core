@@ -78,7 +78,9 @@ class sqlConnection
 			return NULL;
 		}
 
-		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message);
+		$databasePort = (isset($databasePort))? $databasePort : null;
+
+		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $databasePort, $message);
 	}
 
 	/**
@@ -92,13 +94,18 @@ class sqlConnection
 	 *
 	 * @return	Object	PDO Connection
 	 */
-	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
+	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $databasePort = NULL, $message = NULL)
 	 {
 		$this->pdo = NULL;
 		$this->success = true;
 		try
 		{
-			$this->pdo = new \PDO("mysql:host=".$databaseServer.";dbname=".$databaseName.";charset=utf8", $databaseUsername, $databasePassword );
+			$dns = "mysql:host=$databaseServer;";
+			$dns .= (!empty($databasePort))? "port=$databasePort;" : '';
+			$dns .= "dbname=$databaseName;";
+			$dns .= "charset=utf8";
+
+			$this->pdo = new \PDO($dns, $databaseUsername, $databasePassword );
 			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 			$this->setSQLMode();
