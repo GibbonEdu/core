@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         define("MARKBOOK_VIEW_LOCK", sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') );
 
         //VIEW ACCESS TO ALL MARKBOOK DATA
-        if ($highestAction == 'View Markbook_allClassesAllData') {
+        if ($highestAction == 'View Markbook_allClassesAllData' || $highestAction == 'View Markbook_myClasses') {
             require_once './modules/'.$_SESSION[$guid]['module'].'/markbook_view_allClassesAllData.php';
         }
         //VIEW ACCESS TO MY OWN MARKBOOK DATA
