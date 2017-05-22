@@ -84,7 +84,12 @@ class NotificationGateway
     public function selectNotificationEventByName($moduleName, $event)
     {
         $data = array('moduleName' => $moduleName, 'event' => $event);
-        $sql = "SELECT * FROM gibbonNotificationEvent WHERE moduleName=:moduleName AND event=:event";
+        $sql = "SELECT gibbonNotificationEvent.*
+                FROM gibbonNotificationEvent
+                JOIN gibbonModule ON (gibbonNotificationEvent.moduleName=gibbonModule.name)
+                WHERE gibbonNotificationEvent.moduleName=:moduleName
+                AND gibbonNotificationEvent.event=:event
+                AND gibbonModule.active='Y'";
 
         return $this->pdo->executeQuery($data, $sql);
     }

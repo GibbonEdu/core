@@ -66,7 +66,7 @@ class FileUploader
      * Internal hard-coded array of file types that should never be allowed
      * @var  array
      */
-    protected static $illegalFileExtensions = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py');
+    protected static $illegalFileExtensions = array('js','htm','html','css','php','php3','php4','php5','php7','phtml','asp','jsp','py','svg');
 
     /**
      * @version  v14

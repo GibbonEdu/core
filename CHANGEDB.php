@@ -780,5 +780,13 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('003', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='View Student Profile_my'));end
 UPDATE gibbonAction SET precedence=3 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='View Timetable by Person_allYears';end
 UPDATE gibbonAction SET precedence=2 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='View Timetable by Person';end
-
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook'), 'View Markbook_myClasses', 3, 'Profiles', 'Allows teachers to view their own markbook information', 'markbook_view.php, markbook_view_full.php', 'markbook_view.php', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y');end
+SELECT `gibbonModuleID` FROM `gibbonModule` LIMIT 1;end
+UPDATE gibbonAction SET precedence=4 WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook') AND name='View Markbook_allClassesAllData';end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Daily Attendance Summary', 'Attendance', 'Roll Groups Not Registered', 'CLI', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('User Status Check and Fix', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Overdue Loan Items', 'Library', 'Lending & Activity Log', 'CLI', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Behaviour Letters', 'Behaviour', 'View Behaviour Records_all', 'CLI', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Parent Weekly Email Summary', 'Planner', 'Parent Weekly Email Summary', 'CLI', 'All', 'Y');end
+DELETE FROM gibbonFileExtension WHERE extension LIKE 'svg';end
 ";
