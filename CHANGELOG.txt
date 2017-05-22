@@ -23,10 +23,11 @@ v14.0.00
 		Added the ability to manage system notifications and send specific notices to different users
 
 	Changes With Important Notices
-		...
+		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
+		Attendance: dropped legacy tables gibbonPlannerEntryAttendance, gibbonPlannerEntryAttendanceLog
 
 	Significant Changes
-		...
+		System: added unit and acceptance testing environments for Gibbon developers
 
 	Security
 		System: fixed PHP code execution vulnerability
@@ -35,11 +36,7 @@ v14.0.00
 		System: removed Allowable HTML from System Settings interface
 		System: updated PHPMailer to latest version
 		System: removed all code samples from /lib libraries
-
-	Changes With Important Notices
-		System: added unit and acceptance testing environments for Gibbon developers
-		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
-		Attendance: dropped legacy tables gibbonPlannerEntryAttendance, gibbonPlannerEntryAttendanceLog
+		System: fixed SVG code execution vulnerability
 
 	Tweaks & Bug Fixes
 		System: improved Fast Finder student search permissions
@@ -53,6 +50,8 @@ v14.0.00
 		System: fixed broken Credits link in footer
 		System: removed Media plugin from tinyMCE
 		System: added timestamp update when incrementing notification count
+		System: fixed error messages and failed login redirect on Google login page
+		System: added ability to set mysql port through config.php
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
@@ -76,6 +75,7 @@ v14.0.00
 		Markbook: allow decimal values for markbook column attainment raw max
 		Markbook: fixed custom Attainment label for Total Mark field
 		Markbook: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
+		Markbook: added a permission for teachers to only view their own markbook information
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
@@ -83,27 +83,30 @@ v14.0.00
 		Students: added settable thresholds for issuing academic alerts
 		Students: added settable thresholds for issuing behaviour alerts
 		Students: added extra action to allow deleting of application forms to be disabled
+		Students: added optional permission for students to only view their profile
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
 		Timetable: added option to display either Day Of The Week or Timetable Day Short Name in column header of timetables
 		Timetable: added name of person making a facility booking to timetable view by Person
+		Timetable: added optional permission for users to only view their own timetable
+		Timetable: added optional permission for parents to only view their children's timetables
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit
 		User Admin: added ability to restrict which roles can be assigned in Manage Users
 
 v13.0.02
 --------
-Security
-	System: fixed PHP code execution vulnerability
-	System: fixed infinite nested index reload bug
+	Security
+		System: fixed PHP code execution vulnerability
+		System: fixed infinite nested index reload bug
 
 v13.0.01
 --------
-Tweaks & Bug Fixes
-	System: installer adjusted to provide compatibility with Softaculous
-	System: fixed Resource tag issue in demo data
-	Resources: fixed PHP notice in View Resources
+	Tweaks & Bug Fixes
+		System: installer adjusted to provide compatibility with Softaculous
+		System: fixed Resource tag issue in demo data
+		Resources: fixed PHP notice in View Resources
 
 v13.0.00
 --------

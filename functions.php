@@ -3729,6 +3729,9 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
 //Gets Members of a roll group and prints them as a table.
 function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection2)
 {
+    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+    $canViewStududents = ($highestAction == 'View Student Profile_breif' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
+
     try {
         $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
         $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
@@ -3740,6 +3743,8 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
     echo "<table class='noIntBorder' cellspacing='0' style='width:100%'>";
     $count = 0;
     while ($rowClassGroup = $resultClassGroup->fetch()) {
+        if ($canViewStududents == false && $rowClassGroup['role'] == 'Student') continue;
+
         if ($count % $columns == 0) {
             echo '<tr>';
         }

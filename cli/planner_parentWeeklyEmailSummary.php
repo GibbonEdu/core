@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
@@ -186,11 +188,11 @@ else {
 
                                 if ($keyReadFail == true) {
                                     ++$sendFailCount;
-                                    error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '1', $rowMember['preferredName'].' '.$rowMember['surname']));
+                                    error_log(sprintf(__($guid, 'Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '1', $rowMember['preferredName'].' '.$rowMember['surname']));
                                 } else {
                                     if ($resultKeyRead->rowCount() != 0) {
                                         ++$sendFailCount;
-                                        error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '2', $rowMember['preferredName'].' '.$rowMember['surname']));
+                                        error_log(sprintf(__($guid, 'Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '2', $rowMember['preferredName'].' '.$rowMember['surname']));
                                     } else {
                                         //Make and store unique code for confirmation. add it to email text.
                                         $key = '';
@@ -216,7 +218,7 @@ else {
 
                                         if ($continue == false) {
                                             ++$sendFailCount;
-                                            error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '3', $rowMember['preferredName'].' '.$rowMember['surname']));
+                                            error_log(sprintf(__($guid, 'Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '3', $rowMember['preferredName'].' '.$rowMember['surname']));
                                         } else {
                                             //Write key to database
                                             $keyWriteFail = false;
@@ -231,7 +233,7 @@ else {
 
                                             if ($keyWriteFail == true) {
                                                 ++$sendFailCount;
-                                                error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '4', $rowMember['preferredName'].' '.$rowMember['surname']));
+                                                error_log(sprintf(__($guid, 'Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '4', $rowMember['preferredName'].' '.$rowMember['surname']));
                                             } else {
                                                 //Prep email
                                                 $body = sprintf(__($guid, 'Dear %1$s'), $rowMember['preferredName'].' '.$rowMember['surname']).',<br/><br/>';
@@ -265,7 +267,7 @@ else {
                                                 if ($mail->Send()) {
                                                     ++$sendSucceedCount;
                                                 } else {
-                                                    error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '5', $rowMember['preferredName'].' '.$rowMember['surname']));
+                                                    error_log(sprintf(__($guid, 'Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '5', $rowMember['preferredName'].' '.$rowMember['surname']));
                                                     ++$sendFailCount;
                                                 }
                                             }
@@ -285,13 +287,25 @@ else {
             } catch (PDOException $e) {
             }
 
-            //Notify administrator
             $body = __($guid, 'Week').': '.date('W').'<br/>';
             $body .= __($guid, 'Student Count').': '.$studentCount.'<br/>';
             $body .= __($guid, 'Send Succeed Count').': '.$sendSucceedCount.'<br/>';
             $body .= __($guid, 'Send Fail Count').': '.$sendFailCount.'<br/><br/>';
-            $notificationText = __($guid, 'A Planner CLI script has run.').'<br/>'.$body;
-            setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'Planner', '/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
+
+            // Raise a new notification event
+            $event = new NotificationEvent('Planner', 'Parent Weekly Email Summary');
+
+            $event->setNotificationText(__($guid, 'A Planner CLI script has run.').'<br/>'.$body);
+            $event->setActionLink('/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
+
+            //Notify admin
+            $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+
+            // Send all notifications
+            $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+
+            // Output the result to terminal
+            echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
         }
     }
 }

@@ -25,9 +25,9 @@ use Gibbon\Domain\System\NotificationGateway;
 /**
  * Notification Sender
  *
- * Holds a collection of notifications. Sends notifications by inserting in the database and optionally sends 
+ * Holds a collection of notifications. Sends notifications by inserting in the database and optionally sends
  * by email based on the recipient's notification settings.
- * 
+ *
  * TODO: Add background processing for notification emails.
  *
  * @version v14
@@ -99,8 +99,6 @@ class NotificationSender
             return $sendReport;
         }
 
-        $mail = new GibbonMailer($this->session);
-
         foreach ($this->notifications as $notification) {
             // Check for existence of notification in new status
             $result = $this->gateway->selectNotificationByStatus($notification, 'New');
@@ -126,7 +124,9 @@ class NotificationSender
                 $body = __('Notification').': '.$notification['text'].'<br/><br/>';
                 $body .= $this->getNotificationLink();
                 $body .= $this->getNotificationFooter();
-                
+
+                $mail = new GibbonMailer($this->session);
+
                 $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
                 $mail->SetFrom($fromEmail, $organisationName);
                 $mail->AddAddress($emailPreference['email']);

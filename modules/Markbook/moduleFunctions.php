@@ -200,40 +200,50 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Class').": </span>";
     $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px; float: none;'>";
     $output .= "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
-    } catch (PDOException $e) {
-    }
-    $selectCount = 0;
 
-    $output .= "<optgroup label='--".__($guid, 'My Classes')."--'>";
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) {
-            $selected = 'selected';
-            ++$selectCount;
+    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $pdo->getConnection());
+
+    // Add teacher's own classes to the drop down
+    if ($highestAction == 'View Markbook_allClassesAllData' || $highestAction == 'View Markbook_myClasses') {
+         try {
+            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
+            $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+        } catch (PDOException $e) {
         }
-        $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-    }
-    $output .= '</optgroup>';
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
-    } catch (PDOException $e) {
-    }
-    $output .= "<optgroup label='--".__($guid, 'All Classes')."--'>";
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
-            $selected = 'selected';
-            ++$selectCount;
+        $selectCount = 0;
+
+        $output .= "<optgroup label='--".__($guid, 'My Classes')."--'>";
+        while ($rowSelect = $resultSelect->fetch()) {
+            $selected = '';
+            if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) {
+                $selected = 'selected';
+                ++$selectCount;
+            }
+            $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
         }
-        $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+        $output .= '</optgroup>';
     }
-    $output .= '</optgroup>';
+
+    // Add all classes to the dropdown (if permissions permit)
+    if ($highestAction == 'View Markbook_allClassesAllData') {
+        try {
+            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
+            $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
+        } catch (PDOException $e) {
+        }
+        $output .= "<optgroup label='--".__($guid, 'All Classes')."--'>";
+        while ($rowSelect = $resultSelect->fetch()) {
+            $selected = '';
+            if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
+                $selected = 'selected';
+                ++$selectCount;
+            }
+            $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+        }
+        $output .= '</optgroup>';
+    }
     $output .= '</select>';
     $output .= "<input type='submit' value='".__($guid, 'Go')."'>";
     $output .= '</form>';

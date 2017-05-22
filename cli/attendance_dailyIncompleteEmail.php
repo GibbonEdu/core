@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
@@ -64,17 +68,17 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         }
 
         //Produce array of attendance data ------------------------------------------------------------------------------------------------------
-        
+
         if ($enabledByRollGroup == 'Y') {
             try {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
                 // Looks for roll groups with attendance='Y', also grabs primary tutor name
-                $sql = "SELECT gibbonRollGroupID, gibbonRollGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AS studentCount 
-                FROM gibbonRollGroup 
-                JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID) 
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND attendance = 'Y' 
+                $sql = "SELECT gibbonRollGroupID, gibbonRollGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AS studentCount
+                FROM gibbonRollGroup
+                JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
+                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
+                AND attendance = 'Y'
                 ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
 
                 $result = $connection2->prepare($sql);
@@ -140,23 +144,23 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
 
 
         //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
-        
+
         if ($enabledByClass == 'Y') {
             try {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate);
 
                 // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) AS studentCount 
-                FROM gibbonCourseClass 
-                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-                JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
-                JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
-                WHERE gibbonTTDayDate.date =:date 
-                AND gibbonCourseClassPerson.role = 'Teacher' 
-                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND gibbonCourseClass.attendance = 'Y' 
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) AS studentCount
+                FROM gibbonCourseClass
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                WHERE gibbonTTDayDate.date =:date
+                AND gibbonCourseClassPerson.role = 'Teacher'
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonCourseClass.attendance = 'Y'
                 ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $result = $connection2->prepare($sql);
@@ -216,7 +220,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                         }
                         $reportInner .= '<br>';
                     }
-                    
+
                     $report .= '<br/><br/>';
                     $report .= sprintf(__($guid, '%1$s classes have not been registered today (%2$s).'), count($adminReport['classes']), dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
                 } else {
@@ -226,13 +230,18 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
             }
         }
 
+        // Initialize the notification sender & gateway objects
+        $notificationGateway = new NotificationGateway($pdo);
+        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-        if ($partialFail == false) {
+        // Raise a new notification event
+        $event = new NotificationEvent('Attendance', 'Daily Attendance Summary');
+
+        if ($event->getEventDetails($notificationGateway, 'active') == 'Y' && $partialFail == false) {
             //Notify non-completing tutors
             foreach ($userReport as $gibbonPersonID => $items ) {
 
                 $notificationText = __($guid, 'You have not taken attendance yet today. Please do so as soon as possible.');
-                $id = 0;
 
                 if ($enabledByRollGroup == 'Y') {
                     // Output the roll groups the particular user is a part of
@@ -240,10 +249,9 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                         $notificationText .= '<br/><br/>';
                         $notificationText .= '<b>'.__($guid, 'Roll Group').':</b><br/>';
                         foreach ($items['rollGroup'] as $rollGroup) {
-                            $id = $rollGroup['gibbonRollGroupID'];
                             $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
                         }
-                        
+
                     }
                 }
 
@@ -253,27 +261,21 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                         $notificationText .= '<br/><br/>';
                         $notificationText .= '<b>'.__($guid, 'Classes').':</b><br/>';
                         foreach ($items['classes'] as $class) {
-                            $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $class['name'] .'<br/>'; 
+                            $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $class['name'] .'<br/>';
                         }
                         $notificationText .= '<br/>';
                     }
                 }
-                
-                setNotification($connection2, $guid,  $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$id.'&currentDate='.dateConvertBack($guid, date('Y-m-d')));
+
+                $notificationSender->addNotification($gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance.php&currentDate='.dateConvertBack($guid, date('Y-m-d')));
             }
 
             // Notify Additional Users
             if (!empty($additionalUsersList)) {
-                $additionalUsers = explode(',', $additionalUsersList );
+                $additionalUsers = explode(',', $additionalUsersList);
 
                 if (is_array($additionalUsers) && count($additionalUsers) > 0) {
-                    $notificationText = __($guid, 'An Attendance CLI script has run.').' '.$report;
-                    
                     foreach ($additionalUsers as $gibbonPersonID) {
-
-                        // Skip duplicates if the Admin is in the Additional Users list
-                        if ($gibbonPersonID == $_SESSION[$guid]['organisationAdministrator']) continue;
-
                         // Confirm that this user still has permission to access these reports
                         try {
                             $data = array( 'gibbonPersonID' => $gibbonPersonID, 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
@@ -283,22 +285,28 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                         }  catch (PDOException $e) {}
 
                         if ($result->rowCount() > 0) {
-                            setNotification($connection2, $guid, $gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+                            $event->addRecipient($gibbonPersonID);
                         }
                     }
                 }
             }
 
-        } else {
+        } else if ($partialFail) {
             // Notify admin if there was an error in the report
             $report = __($guid, 'Your request failed due to a database error.') . '<br/><br/>' . $report;
         }
 
-        // Notify admin
-        $notificationText = __($guid, 'An Attendance CLI script has run.').' '.$report;
-        setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').' '.$report);
+        $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+
+        // Add admin, then push the event to the notification sender
+        $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+        $event->pushNotifications($notificationGateway, $notificationSender);
+
+        // Send all notifications
+        $sendReport = $notificationSender->sendNotifications();
 
         // Output the result to terminal
-        echo $report."\n";
+        echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
     }
 }

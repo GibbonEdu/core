@@ -1,4 +1,7 @@
 <?php
+
+use Gibbon\Comms\NotificationEvent;
+
 session_start();
 include "../../functions.php";
 include "../../config.php";
@@ -99,7 +102,7 @@ if (isset($authUrl)){
 
 	//Test to see if email exists in logintable
 	if ($result->rowCount() != 1) {
-        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Google Login - Failed', array('username' => $username, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
+        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Google Login - Failed', array('username' => $email, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
         unset($_SESSION[$guid]['googleAPIAccessToken'] );
 		unset($_SESSION[$guid]['gplusuer']);
  		session_destroy();
@@ -111,7 +114,7 @@ if (isset($authUrl)){
 	//Start to collect User Info and test
 	try {
 		$data = array("email"=>$email);
-		$sql = "SELECT * FROM gibbonPerson WHERE email=:email AND status='Full' AND canLogin='Y'";
+		$sql = "SELECT * FROM gibbonPerson WHERE email=:email AND status='Full'";
 		$result = $connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -123,9 +126,22 @@ if (isset($authUrl)){
 		unset($_SESSION[$guid]['gplusuer']);
 		@session_destroy();
 		$_SESSION[$guid] = NULL;
+        $URL = "../../index.php?loginReturn=fail8";
+        header("Location: {$URL}");
+        exit;
 	}
 	else {
 		$row = $result->fetch();
+
+        // Insufficient privileges to login
+        if ($row['canLogin'] != 'Y') {
+            unset($_SESSION[$guid]['googleAPIAccessToken'] );
+            unset($_SESSION[$guid]['gplusuer']);
+            @session_destroy();
+            $URL = "../../index.php?loginReturn=fail2";
+            header("Location: {$URL}");
+            exit;
+        }
 
 		$username = $row['username'];
 		if ($row["failCount"] >= 3) {
@@ -138,45 +154,38 @@ if (isset($authUrl)){
 			catch(PDOException $e) { }
 
 			if ($row["failCount"] == 3) {
-				$to = getSettingByScope($connection2, "System", "organisationAdministratorEmail");
-				$subject = $_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body = "Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers = "From: " . $to;
-				mail($to, $subject, $body, $headers);
+                // Raise a new notification event
+                $event = new NotificationEvent('User Admin', 'Login - Failed');
+
+                $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+                $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
+                $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
+
+                $event->sendNotifications($pdo, $gibbon->session);
 			}
 
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
-            $URL .= "?loginReturn=fail6";
+            unset($_SESSION[$guid]['googleAPIAccessToken'] );
+            unset($_SESSION[$guid]['gplusuer']);
+            @session_destroy();
+            $URL = "../../index.php?loginReturn=fail6";
 			header("Location: {$URL}");
 			exit;
 		}
+
 		if ($row["passwordForceReset"] == "Y") {
-			$salt = getSalt();
-			$password = randomPassword(8);
-			$passwordStrong = hash("sha256", $salt.$password);
-
-			try {
-				$data = array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username);
-				$sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
-				$result = $connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-
-			$row["passwordForceReset"] = "N";
-
-			$to = $row["email"];
-			$subject = $_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
-			$body = "Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-			$headers = "From: " . $_SESSION[$guid]["organisationAdministratorEmail"];
-			mail($to, $subject, $body, $headers);
+            // Sends the user to the password reset page after login
+            $_SESSION[$guid]['passwordForceReset'] = 'Y';
 		}
 
 
 		if ($row["gibbonRoleIDPrimary"] == "" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2)) == 0) {
 			//FAILED TO SET ROLES
             setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
-            $URL .= "?loginReturn=fail2";
+            unset($_SESSION[$guid]['googleAPIAccessToken'] );
+            unset($_SESSION[$guid]['gplusuer']);
+            @session_destroy();
+            $URL = "../../index.php?loginReturn=fail2";
 			header("Location: {$URL}");
 			exit;
 		}

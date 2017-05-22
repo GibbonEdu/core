@@ -59,45 +59,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
             echo '</h2>';
 
             ?>
-    		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-    			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-    				<tr><td style="width: 30%"></td><td></td></tr>
-    				<tr>
-    					<td> 
-    						<b><?php echo __($guid, 'Search For') ?></b><br/>
-    						<span class="emphasis small">Preferred, surname, username.</span>
-    					</td>
-    					<td class="right">
-    						<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-    					</td>
-    				</tr>
-    				<tr>
-    					<td> 
-    						<b><?php echo __($guid, 'All Users') ?></b><br/>
-    						<span class="emphasis small"><?php echo __($guid, 'Include non-staff, non-student users.') ?></span>
-    					</td>
-    					<td class="right">
-    						<?php
+            <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+                <table class='noIntBorder' cellspacing='0' style="width: 100%">
+                    <tr><td style="width: 30%"></td><td></td></tr>
+                    <tr>
+                        <td>
+                            <b><?php echo __($guid, 'Search For') ?></b><br/>
+                            <span class="emphasis small">Preferred, surname, username.</span>
+                        </td>
+                        <td class="right">
+                            <input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b><?php echo __($guid, 'All Users') ?></b><br/>
+                            <span class="emphasis small"><?php echo __($guid, 'Include non-staff, non-student users.') ?></span>
+                        </td>
+                        <td class="right">
+                            <?php
                             $checked = '';
-    						if ($allUsers == 'on') {
-    							$checked = 'checked';
-    						}
-    						echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
-    						?>
-    					</td>
-    				</tr>
-    				<tr>
-    					<td colspan=2 class="right">
-    						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/tt.php">
-    						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-    						<?php
+                            if ($allUsers == 'on') {
+                                $checked = 'checked';
+                            }
+                            echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class="right">
+                            <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/tt.php">
+                            <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+                            <?php
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt.php'>".__($guid, 'Clear Filters').'</a>'; ?>
-    						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-    					</td>
-    				</tr>
-    			</table>
-    		</form>
-    		<?php
+                            <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <?php
 
         }
 
@@ -116,16 +116,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         try {
             if ($highestAction == 'View Timetable by Person_my') {
-                // View Timetable by Person_my
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=:gibbonPersonID) AND (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full') UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID) ORDER BY surname, preferredName";
-            }
-            else if ($highestAction == 'View Timetable by Person_myChildren') {
-                // View Timetable by Person_my
+                    $sql = "(
+                        SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
+                        FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                        JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                        WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+                        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full'
+                    ) UNION (
+                        SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type
+                        FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                        WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID
+                    ) ORDER BY surname, preferredName";
+            } else if ($highestAction == 'View Timetable by Person_myChildren') {
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup, gibbonFamilyRelationship WHERE (gibbonFamilyRelationship.gibbonPersonID2=gibbonPerson.gibbonPersonID) AND (gibbonFamilyRelationship.gibbonPersonID1=:gibbonPersonID) AND (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full') UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID) ORDER BY surname, preferredName";
-            }
-            else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
+                        FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                        JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                        JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID)
+                        JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
+                        GROUP BY gibbonPerson.gibbonPersonID
+                        ORDER BY surname, preferredName";
+            } else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
                 if ($allUsers == 'on') {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
@@ -142,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                     }
                 }
             }
-            
+
             $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
             $result = $connection2->prepare($sql);
             $result->execute($data);

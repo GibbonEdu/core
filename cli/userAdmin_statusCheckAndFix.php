@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
@@ -132,7 +134,18 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         }
     }
 
+    // Raise a new notification event
+    $event = new NotificationEvent('User Admin', 'User Status Check and Fix');
+
+    $event->setNotificationText(sprintf(__($guid, 'A User Admin CLI script has run, updating %1$s users.'), $count));
+    $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php');
+
     //Notify admin
-    $notificationText = sprintf(__($guid, 'A User Admin CLI script has run, updating %1$s users.'), $count);
-    setNotification($connection2, $guid, $_SESSION[$guid]['organisationAdministrator'], $notificationText, 'User Admin', '/index.php?q=/modules/User Admin/user_manage.php');
+    $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+
+    // Send all notifications
+    $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+
+    // Output the result to terminal
+    echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
 }
