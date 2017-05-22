@@ -33,6 +33,7 @@ class CustomField extends Input
 {
     protected $factory;
     protected $fields;
+    protected $type;
 
     protected $customField;
 
@@ -42,10 +43,10 @@ class CustomField extends Input
         $this->fields = $fields;
 
         //From Enum: 'varchar','text','date','url','select', ('checkboxes' unimplemented?)
-        $type = (isset($fields['type']))? $fields['type'] : 'varchar';
+        $this->type = (isset($fields['type']))? $fields['type'] : 'varchar';
         $options = (isset($fields['options']))? $fields['options'] : '';
 
-        switch($type) {
+        switch($this->type) {
 
             case 'date':
                 $this->customField = $this->factory->createDate($name);
@@ -88,7 +89,7 @@ class CustomField extends Input
 
     public function setValue($value = '')
     {
-        switch($type) {
+        switch($this->type) {
 
             case 'select':
                 $this->customField->selected($value);
