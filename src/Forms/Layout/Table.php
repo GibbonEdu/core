@@ -98,7 +98,7 @@ class Table implements OutputableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $output .= '<td>';
+                $output .= '<td class="'.$element->getClass().'">';
                     $element->removeClass('standardWidth');
                     $output .= $element->getOutput();
                 $output .= '</td>';
