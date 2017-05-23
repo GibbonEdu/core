@@ -49,6 +49,34 @@ trait InputAttributesTrait
         return $this->getAttribute('value');
     }
 
+    public function loadFrom(&$row)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($row[$name])) {
+            $value = $row[$name];
+
+            if (method_exists($this, 'selected')) {
+                $this->selected($value);
+            } else if (method_exists($this, 'checked')) {
+                $this->checked($value);
+            } else {
+                $this->setAttribute('value', $value);
+            }
+        }
+    }
+
+    public function loadFromCSV(&$row)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($row[$name])) {
+            $row[$name] = explode(',', $row[$name]);
+        }
+
+        $this->loadFrom($row);
+    }
+
     public function setSize($size = '')
     {
         $this->setAttribute('size', $size);
