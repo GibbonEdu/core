@@ -441,7 +441,7 @@ if ($proceed == false) {
 
             $row = $form->addRow();
                 $row->addLabel('parent1relationship', __('Relationship'));
-                $row->addSelectRelationship('parent1relationship');
+                $row->addSelectRelationship('parent1relationship')->isRequired();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
             $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
