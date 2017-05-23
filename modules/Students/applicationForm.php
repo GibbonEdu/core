@@ -140,6 +140,7 @@ if ($proceed == false) {
 
     $form = Form::create('applicationForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
     $form->removeClass('standardForm');
+    $form->setAutocomplete('on');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -321,6 +322,7 @@ if ($proceed == false) {
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
         $row->addSelect('gibbonYearGroupIDEntry')->fromQuery($pdo, $sql)->isRequired()->placeholder(__('Please select...'));
 
+    // DAY TYPE
     $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
     if (!empty($dayTypeOptions)) {
         $row = $form->addRow();
@@ -328,6 +330,7 @@ if ($proceed == false) {
             $row->addSelect('dayType')->fromString($dayTypeOptions);
     }
 
+    // REFEREE EMAIL
     $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
     if (!empty($applicationFormRefereeLink)) {
         $row = $form->addRow();
@@ -481,31 +484,31 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}title", __('Title'));
-                $row->addSelectTitle("parent{$i}title")->isRequired();
+                $row->addSelectTitle("parent{$i}title")->isRequired()->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
-                $row->addTextField("parent{$i}surname")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}surname")->isRequired()->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}firstName", __('First Name'))->description(__('First name as shown in ID documents.'));
-                $row->addTextField("parent{$i}firstName")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}firstName")->isRequired()->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-                $row->addTextField("parent{$i}preferredName")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}preferredName")->isRequired()->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
-                $row->addTextField("parent{$i}officialName")->isRequired()->maxLength(150);
+                $row->addTextField("parent{$i}officialName")->isRequired()->maxLength(150)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-                $row->addTextField("parent{$i}nameInCharacters")->maxLength(20);
+                $row->addTextField("parent{$i}nameInCharacters")->maxLength(20)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}gender", __('Gender'));
-                $row->addSelectGender("parent{$i}gender")->isRequired();
+                $row->addSelectGender("parent{$i}gender")->isRequired()->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}relationship", __('Relationship'));
@@ -517,18 +520,18 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}languageFirst", __('First Language'));
-                $row->addSelectLanguage("parent{$i}languageFirst")->placeholder();
+                $row->addSelectLanguage("parent{$i}languageFirst")->placeholder()->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}languageSecond", __('Second Language'));
-                $row->addSelectLanguage("parent{$i}languageSecond")->placeholder();
+                $row->addSelectLanguage("parent{$i}languageSecond")->placeholder()->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
                 if (!empty($nationalityList)) {
-                    $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder();
+                    $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder()->loadFrom($application);
                 } else {
-                    $row->addSelectCountry("parent{$i}citizenship1");
+                    $row->addSelectCountry("parent{$i}citizenship1")->loadFrom($application);
                 }
 
             $row = $form->addRow()->setClass("parentSection{$i}");
@@ -538,14 +541,14 @@ if ($proceed == false) {
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
                 if (!empty($residencyStatusList)) {
-                    $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder();
+                    $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder()->loadFrom($application);
                 } else {
-                    $row->addTextField("parent{$i}residencyStatus")->maxLength(30);
+                    $row->addTextField("parent{$i}residencyStatus")->maxLength(30)->loadFrom($application);
                 }
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
-                $row->addDate("parent{$i}visaExpiryDate");
+                $row->addDate("parent{$i}visaExpiryDate")->loadFrom($application);
 
             // PARENT CONTACT
             $row = $form->addRow()->setClass("parentSection{$i}");
@@ -553,12 +556,12 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $row->addEmail("parent{$i}email")->isRequired()->maxLength(50);
+                $row->addEmail("parent{$i}email")->isRequired()->maxLength(50)->loadFrom($application);
 
             for ($y = 1; $y < 3; ++$y) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
                     $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
-                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($y == 1);
+                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($y == 1)->loadFrom($application);
             }
 
             // PARENT EMPLOYMENT
@@ -567,11 +570,11 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(30);
+                $row->addTextField("parent{$i}employer")->maxLength(30)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
@@ -583,7 +586,7 @@ if ($proceed == false) {
 
                     $row = $form->addRow();
                         $row->addLabel($name, $rowFields['name']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
+                        $row->addCustomField($name, $rowFields)->setValue($value)->loadFrom($application);
                 }
             }
         }
@@ -626,6 +629,7 @@ if ($proceed == false) {
                 $subTableRow = $subTable->addRow()->addClass('right');
                 $subTableRow->addContent(formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent'))->setClass('mediumWidth');
                 $subTableRow->addSelectRelationship($rowSelect['gibbonFamilyID'].'-relationships[]')->selected($selected)->setClass('mediumWidth');
+                $form->addHiddenValue($rowSelect['gibbonFamilyID'].'-relationshipsGibbonPersonID[]', $rowRelationships['gibbonPersonID']);
             }
 
             // If there's only one family, set this now so the Siblings section works
@@ -735,34 +739,35 @@ if ($proceed == false) {
         $row->addRadio('payment')
             ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
             ->checked('Family')
-            ->inline();
+            ->inline()
+            ->loadFrom($application);
 
     $form->toggleVisibilityByClass('paymentCompany')->onRadio('payment')->when('Company');
 
     // COMPANY DETAILS
     $row = $form->addRow()->addClass('paymentCompany');
         $row->addLabel('companyName', __('Company Name'));
-        $row->addTextField('companyName')->isRequired()->maxLength(100);
+        $row->addTextField('companyName')->isRequired()->maxLength(100)->loadFrom($application);
 
     $row = $form->addRow()->addClass('paymentCompany');
         $row->addLabel('companyContact', __('Company Contact Person'));
-        $row->addTextField('companyContact')->isRequired()->maxLength(100);
+        $row->addTextField('companyContact')->isRequired()->maxLength(100)->loadFrom($application);
 
     $row = $form->addRow()->addClass('paymentCompany');
         $row->addLabel('companyAddress', __('Company Address'));
-        $row->addTextField('companyAddress')->isRequired()->maxLength(255);
+        $row->addTextField('companyAddress')->isRequired()->maxLength(255)->loadFrom($application);
 
     $row = $form->addRow()->addClass('paymentCompany');
         $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
-        $row->addTextField('companyEmail')->isRequired();
+        $row->addTextField('companyEmail')->isRequired()->loadFrom($application);
 
     $row = $form->addRow()->addClass('paymentCompany');
         $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
-        $row->addYesNo('companyCCFamily')->selected('N');
+        $row->addYesNo('companyCCFamily')->selected('N')->loadFrom($application);
 
     $row = $form->addRow()->addClass('paymentCompany');
         $row->addLabel('companyPhone', __('Company Phone'));
-        $row->addTextField('companyPhone')->maxLength(20);
+        $row->addTextField('companyPhone')->maxLength(20)->loadFrom($application);
 
     // COMPANY FEE CATEGORIES
     $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
@@ -773,7 +778,7 @@ if ($proceed == false) {
     } else {
         $row = $form->addRow()->addClass('paymentCompany');
             $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
-            $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline();
+            $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline()->loadFrom($application);
 
         $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
 
@@ -784,7 +789,8 @@ if ($proceed == false) {
             $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
                 ->fromResults($resultFees)
                 ->fromArray(array('0001' => __('Other')))
-                ->checked($existingFeeCategoryIDList);
+
+                ->loadFromCSV($application);
     }
 
     // REQURIED DOCUMENTS
@@ -836,16 +842,16 @@ if ($proceed == false) {
         $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
     if (empty($howDidYouHearList)) {
-        $row->addTextField('howDidYouHear')->isRequired()->maxLength(30);
+        $row->addTextField('howDidYouHear')->isRequired()->maxLength(30)->loadFrom($application);
     } else {
-        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->isRequired()->placeholder();
+        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->isRequired()->placeholder()->loadFrom($application);
     }
 
     $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
 
     $row = $form->addRow()->addClass('tellUsMore');
         $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-        $row->addTextField('howDidYouHearMore')->maxLength(255);
+        $row->addTextField('howDidYouHearMore')->maxLength(255)->loadFrom($application);
 
     // PRIVACY
     $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
