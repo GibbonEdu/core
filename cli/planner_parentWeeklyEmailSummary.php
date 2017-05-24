@@ -43,7 +43,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-if (php_sapi_name()!="cli") {
+if (!isCommandLineInterface()) {
 	print __($guid, "This script cannot be run from a browser, only via CLI.") ;
 }
 else {

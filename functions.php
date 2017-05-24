@@ -4835,6 +4835,40 @@ function dump($object, $stop = false, $full = false)
     return;
 }
 
+/**
+ * Checks if PHP is currently running from the command line. Additional checks added to help with cgi/fcgi systems, currently limited to that scope.
+ *
+ * @version  v14
+ * @since    24th May 2017
+ * @return   bool
+ */
+function isCommandLineInterface()
+{
+    if (php_sapi_name() === 'cli')
+    {
+        return true;
+    }
+
+    if (stripos(php_sapi_name(), 'cgi') !== false) {
+        if (defined('STDIN'))
+        {
+            return true;
+        }
+
+        if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0)
+        {
+            return true;
+        }
+
+        if (!array_key_exists('REQUEST_METHOD', $_SERVER))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /*
 Easy Return Display Processing.
 Arguments:
