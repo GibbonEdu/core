@@ -230,8 +230,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         //Show roll group grid
                         try {
-                            $dataRollGroup = array('gibbonRollGroupID' => $gibbonRollGroupID);
-                            $sqlRollGroup = "SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY rollOrder, surname, preferredName";
+                            $dataRollGroup = array('gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate);
+                            $sqlRollGroup = "SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
                             $resultRollGroup = $connection2->prepare($sqlRollGroup);
                             $resultRollGroup->execute($dataRollGroup);
                         } catch (PDOException $e) {
