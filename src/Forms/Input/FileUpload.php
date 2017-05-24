@@ -37,9 +37,12 @@ class FileUpload extends Input
         }
 
         if (!empty($accepts) && is_array($accepts)) {
-            $this->setAttribute('accepts', implode(',', $accepts));
 
-            $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $accepts));
+            $within = implode(',', array_map(function ($str) {
+                return sprintf("'.%s'", trim($str, " .'")); },
+            $accepts));
+
+            $this->setAttribute('accept', str_replace("'",'', $within));
             $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
         }
         return $this;

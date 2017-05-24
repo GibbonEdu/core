@@ -112,12 +112,23 @@ class Form implements OutputableInterface
 
     public function addHiddenValue($name, $value)
     {
-        $this->values[$name] = $value;
+        $this->values[] = array('name' => $name, 'value' => $value);
     }
 
     public function getHiddenValues()
     {
         return $this->values;
+    }
+
+    public function getAutocomplete()
+    {
+        $autocomplete = $this->getAttribute('autocomplete');
+        return (!empty($autocomplete))? $autocomplete : 'off';
+    }
+
+    public function setAutocomplete($value)
+    {
+        $this->setAttribute('autocomplete', $value);
     }
 
     public function addTrigger($selector, $trigger)

@@ -31,6 +31,8 @@ class Radio extends Input
 {
     use MultipleOptionsTrait;
 
+    protected $inline = false;
+
     public function __construct($name)
     {
         $this->setID('');
@@ -40,6 +42,12 @@ class Radio extends Input
     public function checked($value)
     {
         $this->setValue($value);
+        return $this;
+    }
+
+    public function inline($value = true)
+    {
+        $this->inline = $value;
         return $this;
     }
 
@@ -54,13 +62,16 @@ class Radio extends Input
 
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
             foreach ($this->getOptions() as $value => $label) {
-                if (!empty($label)) {
-                    $output .= '<label title="'.$label.'">'.$label.'</label> ';
-                }
 
                 $this->setAttribute('checked', $this->getIsChecked($value));
 
-                $output .= '<input type="radio" value="'.$value.'" '.$this->getAttributeString().'><br/>';
+                if ($this->inline) {
+                    $output .= '&nbsp;&nbsp;<input type="radio" value="'.$value.'" '.$this->getAttributeString().'>&nbsp;';
+                    $output .= '<label title="'.$label.'">'.$label.'</label>';
+                } else {
+                    $output .= '<label title="'.$label.'">'.$label.'</label>&nbsp;';
+                    $output .= '<input type="radio" value="'.$value.'" '.$this->getAttributeString().'><br/>';
+                }
             }
         }
 
