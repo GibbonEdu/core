@@ -47,7 +47,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         } else {
             try {
                 $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT * FROM gibbonPerson, gibbonFamily, gibbonFamilyAdult WHERE gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID AND gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID';
+                $sql = 'SELECT gibbonPerson.gibbonPersonID, gibbonFamilyAdult.contactPriority FROM gibbonPerson, gibbonFamily, gibbonFamilyAdult WHERE gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID AND gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -60,6 +60,19 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $row = $result->fetch();
+
+                // If we're deleting the first contact priority, move the second one to first
+                if ($row['contactPriority'] == 1) {
+                    try {
+                        $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
+                        $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=1 WHERE contactPriority=2 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID LIMIT 1';
+                        $resultCP = $connection2->prepare($sqlCP);
+                        $resultCP->execute($dataCP);
+                    } catch (PDOException $e) {
+                    }
+                }
+
                 //Write to database
                 try {
                     $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $gibbonPersonID);
