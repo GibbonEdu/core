@@ -155,7 +155,7 @@ if ($proceed == false) {
             $heading->append(__('Some information has been pre-filled for you, feel free to change this information as needed.'));
 
         $data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
-        $sql = 'SELECT DISTINCT gibbonApplicationFormID, preferredName, surname FROM gibbonApplicationForm
+        $sql = 'SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, officialName, dob FROM gibbonApplicationForm
                 LEFT JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
                 WHERE (gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonApplicationFormLinkID IS NULL)
                 OR gibbonApplicationFormID1=:gibbonApplicationFormID
@@ -163,19 +163,21 @@ if ($proceed == false) {
                 ORDER BY gibbonApplicationFormID';
         $resultLinked = $pdo->executeQuery($data, $sql);
 
-        $currentApplications = '';
+        $linkedApplicationText = '';
         if ($resultLinked && $resultLinked->rowCount() > 0) {
-            $currentApplications .= '<ul style="width:302px;display:inline-block">';
-            while ($rowLinked = $resultLinked->fetch()) {
-                $currentApplications .= '<li>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
-                $currentApplications .= ' ('.str_pad( intval($rowLinked['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
+            $linkedApplicationText .= '<ul style="width:302px;display:inline-block">';
+            $linkedApplications = $resultLinked->fetchAll();
+
+            foreach ($linkedApplications as $rowLinked) {
+                $linkedApplicationText .= '<li>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
+                $linkedApplicationText .= ' ('.str_pad( intval($rowLinked['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
             }
-            $currentApplications .= '</ul>';
+            $linkedApplicationText .= '</ul>';
         }
 
         $row = $form->addRow();
             $row->addLabel('', __('Current Applications'));
-            $row->addContent($currentApplications);
+            $row->addContent($linkedApplicationText);
     }
 
     // STUDENT PERSONAL DATA
@@ -536,7 +538,7 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
-                $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30);
+                $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
@@ -681,10 +683,16 @@ if ($proceed == false) {
     // Add additional sibling rows up to 3
     for ($i = $rowCount; $i <= 3; ++$i) {
         $row = $table->addRow();
-        $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(30);
-        $row->addDate('siblingDOB'.$i)->setSize(10);
+        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(30);
+        $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
         $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
         $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
+
+        // Fill in some info from any sibling applications
+        if (!empty($linkedApplications[$i-1])) {
+            $nameField->setValue($linkedApplications[$i-1]['officialName']);
+            $dobField->setValue(dateConvertBack($guid, $linkedApplications[$i-1]['dob']));
+        }
     }
 
     // LANGUAGE OPTIONS
@@ -864,6 +872,16 @@ if ($proceed == false) {
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
+    }
+
+    // AGREEMENT
+    $agreement = getSettingByScope($connection2, 'Application Form', 'agreement');
+    if (!empty($agreement)) {
+        $form->addRow()->addHeading(__('Agreement'))->append($agreement)->wrap('<p>','</p>');
+
+        $row = $form->addRow();
+            $row->addLabel('agreement', '<b>'.__('Do you agree to the above?').'</b>');
+            $row->addCheckbox('agreement')->fromArray(array('on' => __('Yes')))->isRequired();
     }
 
     $row = $form->addRow();
