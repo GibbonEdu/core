@@ -118,12 +118,13 @@ $formValues = array(
     'companyPhone'                => '54329876',
     'howDidYouHear'               => 'Others',
     'howDidYouHearMore'           => 'Testing',
-    'gibbonFamily'                => 'FALSE',
+    'gibbonFamily'                => 'FALSE'
 );
 
 // Maually select some items (relative values)
 $I->selectFromDropdown('gibbonSchoolYearIDEntry', 2);
 $I->selectFromDropdown('gibbonYearGroupIDEntry', 2);
+//$I->checkOption('agreement');
 
 // Only if no second parent
 //$I->selectOption('secondParent', 'No');

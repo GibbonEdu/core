@@ -387,7 +387,7 @@ if ($proceed == false) {
 
     if ($public == true or $resultSelect->rowCount() < 1) {
 
-        $form->addHiddenValue('gibbonFamily', FALSE);
+        $form->addHiddenValue('gibbonFamily', 'FALSE');
 
         if ($siblingApplicationMode == true) {
             $form->addHiddenValue('homeAddress', isset($application['homeAddress'])? $application['homeAddress'] : '');
@@ -450,7 +450,7 @@ if ($proceed == false) {
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
@@ -579,16 +579,19 @@ if ($proceed == false) {
                 $row->addTextField("parent{$i}employer")->maxLength(30)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Fields'));
+
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
                         $row->addLabel($name, $rowFields['name']);
-                        $row->addCustomField($name, $rowFields)->setValue($value)->loadFrom($application);
+                        $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
         }
