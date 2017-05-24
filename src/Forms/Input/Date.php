@@ -27,9 +27,20 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
+    public function loadFrom(&$row)
+    {
+        global $guid;
+
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($row[$name])) {
+            $value = dateConvertBack($guid, $row[$name]);
+            $this->setAttribute('value', $value);
+        }
+    }
+
     protected function getElement()
     {
-
         global $guid;
 
         $validationFormat = '';
