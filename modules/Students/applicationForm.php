@@ -589,7 +589,7 @@ if ($proceed == false) {
                     $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
-                    $row = $form->addRow();
+                    $row = $form->addRow()->setClass("parentSection{$i}");
                         $row->addLabel($name, $rowFields['name']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
