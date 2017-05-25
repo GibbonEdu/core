@@ -84,30 +84,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_p
         if (is_array($additionalName) && count($additionalName) > 0) {
             foreach ($additionalName as $id => $name) {
 
-                if (empty($name)) continue; // Skip empty additional people
-
-                $relationship = (isset($additionalRelationship[$id]))? $additionalRelationship[$id] : '';
-                $image_240 = '';
-
-                if (!empty($additionalPhotos[$id])) {
-                    // Upload the data URI
-                    $binary = file_get_contents( 'data://' . substr($additionalPhotos[$id], 5) );
-                    $filename = $gibbonFamilyID.'-'.$id.'.jpg';
-                    if (file_put_contents( $_SESSION[$guid]['absolutePath'].'/'.$photoPath.'/'.$filename, $binary ) === false) {
+                if (empty($name)) {
+                    // Delete existing details
+                    try {
+                        $data = array('sequenceNumber' => $id, 'gibbonFamilyID' => $gibbonFamilyID );
+                        $sql = "DELETE FROM gibbonFamilyAdditionalPerson WHERE gibbonFamilyID=:gibbonFamilyID AND sequenceNumber=:sequenceNumber";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
                         $partialFail = true;
                     }
 
-                    $image_240 = $photoPath.'/'.$filename;
-                }
+                } else {
+                    $relationship = (isset($additionalRelationship[$id]))? $additionalRelationship[$id] : '';
+                    $image_240 = '';
 
-                // Update the photo link for this family member
-                try {
-                    $data = array('image_240' => $image_240, 'name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $gibbonFamilyID );
-                    $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, image_240=:image_240, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship, image_240=:image_240";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $partialFail = true;
+                    if (!empty($additionalPhotos[$id])) {
+                        // Upload the data URI
+                        $binary = file_get_contents( 'data://' . substr($additionalPhotos[$id], 5) );
+                        $filename = $gibbonFamilyID.'-'.$id.'.jpg';
+                        if (file_put_contents( $_SESSION[$guid]['absolutePath'].'/'.$photoPath.'/'.$filename, $binary ) === false) {
+                            $partialFail = true;
+                        }
+
+                        $image_240 = $photoPath.'/'.$filename;
+                    }
+
+                    // Update the photo link for this family member
+                    try {
+                        $data = array('image_240' => $image_240, 'name' => $name, 'relationship' => $relationship, 'sequenceNumber' => $id, 'gibbonFamilyID' => $gibbonFamilyID );
+                        $sql = "INSERT INTO gibbonFamilyAdditionalPerson SET gibbonFamilyID=:gibbonFamilyID, sequenceNumber=:sequenceNumber, name=:name, relationship=:relationship, image_240=:image_240, timestamp=CURRENT_TIMESTAMP ON DUPLICATE KEY UPDATE name=:name, relationship=:relationship, image_240=:image_240";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
                 }
             }
         }
