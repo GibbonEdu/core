@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -28,13 +27,22 @@ include './modules/Attendance/moduleFunctions.php';
 
 function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 'Y-m-d' ) {
 
+    // Check if there's no range to calculate
+    if ($firstDate === $lastDate) {
+        return array($firstDate);
+    }
+
+    // Handle an invalid step by returning the first and last dates only
+    if (stripos($step, '+') === false) {
+        return array($firstDate, $lastDate);
+    }
+
     $dates = array();
     $current = strtotime($firstDate);
     $last = strtotime($lastDate);
 
     while( $current <= $last ) {
-        $date = date($output_format, $current);
-            $dates[] = $date;
+        $dates[] = date($output_format, $current);
         $current = strtotime($step, $current);
     }
 
@@ -60,8 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
     echo __($guid, 'Choose Date');
     echo '</h2>';
 
-    $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
-    $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : $_SESSION[$guid]['gibbonSchoolYearLastDay'];
     $interval =  (isset($_POST['interval']))? $_POST['interval'] : '+1 week';
 
     // Correct inverse date ranges rather than generating an error
@@ -75,7 +83,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
     $yearGroups = !empty($_POST['gibbonYearGroupID'])? $_POST['gibbonYearGroupID'] : array('all');
     if (in_array('all', $yearGroups)) $yearGroups = array('all');
 
-    $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_graph_studentEnrolment.php');
+    $intervals = array(
+        '+1 day' => __('1 Day'),
+        '+1 week' => __('1 Week'),
+        '+1 month' => __('1 Month'),
+        '+3 month' => __('3 Months'),
+        '+6 month' => __('6 Months'),
+        '+1 year' => __('Year')
+    );
+
+    $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/report_graph_studentEnrolment.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -89,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
 
     $row = $form->addRow();
         $row->addLabel('interval', __('Interval'));
-        $row->addSelect('interval')->fromArray(array('+1 day' => __('1 Day'), '+1 week' => __('1 Week'), '+1 month' => __('1 Month'), '+3 month' => __('3 Months'), '+6 month' => __('6 Months'), '+1 year' => __('Year')) )->selected($interval);
+        $row->addSelect('interval')->fromArray($intervals)->selected($interval);
 
     $sql = "SELECT gibbonYearGroup.name as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
 
@@ -133,7 +150,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
 
             if ($yearGroups != array('all')) {
                 $data['yearGroups'] = implode(',', $yearGroups);
-
                 $sql .= " AND FIND_IN_SET(gibbonYearGroup.name, :yearGroups) GROUP BY date, gibbonYearGroup.gibbonYearGroupID";
             } else {
                 $sql .= " GROUP BY date";
