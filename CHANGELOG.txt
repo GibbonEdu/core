@@ -96,6 +96,8 @@ v14.0.00
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit
 		User Admin: added ability to restrict which roles can be assigned in Manage Users
+		User Admin: reduced Transport auto suggest to students enroled in the current year
+
 
 v13.0.02
 --------

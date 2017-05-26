@@ -1618,7 +1618,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 									<?php
                                     try {
                                         $dataAuto = array();
-                                        $sqlAuto = 'SELECT DISTINCT transport FROM gibbonPerson ORDER BY lastSchool';
+                                        $sqlAuto = 'SELECT DISTINCT transport FROM gibbonPerson
+                                            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status=\'Current\')
+                                            ORDER BY transport';
                                         $resultAuto = $connection2->prepare($sqlAuto);
                                         $resultAuto->execute($dataAuto);
                                     } catch (PDOException $e) {
