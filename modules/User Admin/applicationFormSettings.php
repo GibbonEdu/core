@@ -47,22 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Students', 'applicationFormSENText', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
-
     $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Application Form', 'postscript', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Application Form', 'scholarships', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
@@ -137,6 +127,42 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $row = $form->addRow()->addClass('languageOptions');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $row = $form->addRow()->addHeading(__('Sections'))->append(__(''));
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'studentContactActive', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'senOptionsActive', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
+    $form->toggleVisibilityByClass('senOptions')->onSelect($setting['name'])->when('Y');
+
+    $setting = getSettingByScope($connection2, 'Students', 'applicationFormSENText', true);
+    $row = $form->addRow()->addClass('senOptions');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
+    $form->toggleVisibilityByClass('scholarshipOptions')->onSelect($setting['name'])->when('Y');
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'scholarships', true);
+    $row = $form->addRow()->addClass('scholarshipOptions');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $row = $form->addRow()->addHeading(__('Acceptance Options'));
 
