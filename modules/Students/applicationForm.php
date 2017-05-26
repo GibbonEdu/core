@@ -270,41 +270,53 @@ if ($proceed == false) {
         $row->addDate('visaExpiryDate');
 
     // STUDENT CONTACT
-    $form->addRow()->addSubheading(__('Student Contact'));
+    $studentContactActive = getSettingByScope($connection2, 'Application Form', 'studentContactActive');
 
-    $row = $form->addRow();
-        $row->addLabel('email', __('Email'));
-        $row->addEmail('email')->maxLength(50);
+    if ($studentContactActive == 'Y') {
+        $form->addRow()->addSubheading(__('Student Contact'));
 
-    for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
-            $row->addLabel('', __('Phone').' '.$i)->description(__('Type, country code, number.'));
-            $row->addPhoneNumber('phone'.$i);
+            $row->addLabel('email', __('Email'));
+            $row->addEmail('email')->maxLength(50);
+
+        for ($i = 1; $i < 3; ++$i) {
+            $row = $form->addRow();
+                $row->addLabel('', __('Phone').' '.$i)->description(__('Type, country code, number.'));
+                $row->addPhoneNumber('phone'.$i);
+        }
     }
 
     // SPECIAL EDUCATION & MEDICAL
-    $heading = $form->addRow()->addSubheading(__('Special Educational Needs & Medical'));
+    $senOptionsActive = getSettingByScope($connection2, 'Application Form', 'senOptionsActive');
 
-    $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
-    if (!empty($applicationFormSENText)) {
-        $heading->append('<p>'.$applicationFormSENText.'<p>');
+    if ($senOptionsActive == 'Y') {
+        $heading = $form->addRow()->addSubheading(__('Special Educational Needs & Medical'));
+
+        $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
+        if (!empty($applicationFormSENText)) {
+            $heading->append('<p>'.$applicationFormSENText.'<p>');
+        }
+
+        $row = $form->addRow();
+            $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
+            $row->addYesNo('sen')->isRequired()->placeholder(__('Please select...'));
+
+        $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
+
+        $row = $form->addRow()->setClass('senDetailsRow');
+            $column = $row->addColumn();
+            $column->addLabel('', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
+            $column->addTextArea('senDetails')->setRows(5)->setClass('fullWidth');
+
+    } else {
+        $form->addHiddenValue('sen', 'N');
     }
-
-    $row = $form->addRow();
-        $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-        $row->addYesNo('sen')->isRequired()->placeholder(__('Please select...'));
-
-    $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
-
-    $row = $form->addRow()->setClass('senDetailsRow');
-        $column = $row->addColumn();
-        $column->addLabel('', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
-        $column->addTextArea('senDetails')->setRows(5)->setClass('fullWidth');
 
     $row = $form->addRow();
         $column = $row->addColumn();
         $column->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
         $column->addTextArea('medicalInformation')->setRows(5)->setClass('fullWidth');
+
 
     // STUDENT EDUCATION
     $heading = $form->addRow()->addSubheading(__('Student Education'));
@@ -743,68 +755,74 @@ if ($proceed == false) {
     }
 
 
-     // PAYMENT
-    $form->addRow()->addHeading(__('Payment'));
+    // PAYMENT
+    $paymentOptionsActive = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive');
 
-    $form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>','</p>');
+    if ($paymentOptionsActive == 'Y') {
+        $form->addRow()->addHeading(__('Payment'));
 
-    $row = $form->addRow();
-        $row->addLabel('payment', __('Send Future Invoices To'));
-        $row->addRadio('payment')
-            ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
-            ->checked('Family')
-            ->inline()
-            ->loadFrom($application);
+        $form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>','</p>');
 
-    $form->toggleVisibilityByClass('paymentCompany')->onRadio('payment')->when('Company');
+        $row = $form->addRow();
+            $row->addLabel('payment', __('Send Future Invoices To'));
+            $row->addRadio('payment')
+                ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
+                ->checked('Family')
+                ->inline()
+                ->loadFrom($application);
 
-    // COMPANY DETAILS
-    $row = $form->addRow()->addClass('paymentCompany');
-        $row->addLabel('companyName', __('Company Name'));
-        $row->addTextField('companyName')->isRequired()->maxLength(100)->loadFrom($application);
+        $form->toggleVisibilityByClass('paymentCompany')->onRadio('payment')->when('Company');
 
-    $row = $form->addRow()->addClass('paymentCompany');
-        $row->addLabel('companyContact', __('Company Contact Person'));
-        $row->addTextField('companyContact')->isRequired()->maxLength(100)->loadFrom($application);
-
-    $row = $form->addRow()->addClass('paymentCompany');
-        $row->addLabel('companyAddress', __('Company Address'));
-        $row->addTextField('companyAddress')->isRequired()->maxLength(255)->loadFrom($application);
-
-    $row = $form->addRow()->addClass('paymentCompany');
-        $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
-        $row->addTextField('companyEmail')->isRequired()->loadFrom($application);
-
-    $row = $form->addRow()->addClass('paymentCompany');
-        $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
-        $row->addYesNo('companyCCFamily')->selected('N')->loadFrom($application);
-
-    $row = $form->addRow()->addClass('paymentCompany');
-        $row->addLabel('companyPhone', __('Company Phone'));
-        $row->addTextField('companyPhone')->maxLength(20)->loadFrom($application);
-
-    // COMPANY FEE CATEGORIES
-    $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-    $resultFees = $pdo->executeQuery(array(), $sqlFees);
-
-    if (!$resultFees || $resultFees->rowCount() == 0) {
-        $form->addHiddenValue('companyAll', 'Y');
-    } else {
+        // COMPANY DETAILS
         $row = $form->addRow()->addClass('paymentCompany');
-            $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
-            $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline()->loadFrom($application);
+            $row->addLabel('companyName', __('Company Name'));
+            $row->addTextField('companyName')->isRequired()->maxLength(100)->loadFrom($application);
 
-        $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
+        $row = $form->addRow()->addClass('paymentCompany');
+            $row->addLabel('companyContact', __('Company Contact Person'));
+            $row->addTextField('companyContact')->isRequired()->maxLength(100)->loadFrom($application);
 
-        $existingFeeCategoryIDList = (isset($application['gibbonFinanceFeeCategoryIDList']) && is_array($application['gibbonFinanceFeeCategoryIDList']))? $application['gibbonFinanceFeeCategoryIDList'] : array();
+        $row = $form->addRow()->addClass('paymentCompany');
+            $row->addLabel('companyAddress', __('Company Address'));
+            $row->addTextField('companyAddress')->isRequired()->maxLength(255)->loadFrom($application);
 
-        $row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
-            $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))->description(__('If the specified company is not paying all fees, which categories are they paying?'));
-            $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
-                ->fromResults($resultFees)
-                ->fromArray(array('0001' => __('Other')))
+        $row = $form->addRow()->addClass('paymentCompany');
+            $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
+            $row->addTextField('companyEmail')->isRequired()->loadFrom($application);
 
-                ->loadFromCSV($application);
+        $row = $form->addRow()->addClass('paymentCompany');
+            $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
+            $row->addYesNo('companyCCFamily')->selected('N')->loadFrom($application);
+
+        $row = $form->addRow()->addClass('paymentCompany');
+            $row->addLabel('companyPhone', __('Company Phone'));
+            $row->addTextField('companyPhone')->maxLength(20)->loadFrom($application);
+
+        // COMPANY FEE CATEGORIES
+        $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
+        $resultFees = $pdo->executeQuery(array(), $sqlFees);
+
+        if (!$resultFees || $resultFees->rowCount() == 0) {
+            $form->addHiddenValue('companyAll', 'Y');
+        } else {
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
+                $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline()->loadFrom($application);
+
+            $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
+
+            $existingFeeCategoryIDList = (isset($application['gibbonFinanceFeeCategoryIDList']) && is_array($application['gibbonFinanceFeeCategoryIDList']))? $application['gibbonFinanceFeeCategoryIDList'] : array();
+
+            $row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
+                $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))->description(__('If the specified company is not paying all fees, which categories are they paying?'));
+                $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
+                    ->fromResults($resultFees)
+                    ->fromArray(array('0001' => __('Other')))
+
+                    ->loadFromCSV($application);
+        }
+    } else {
+        $form->addHiddenValue('payment', 'Family');
     }
 
     // REQURIED DOCUMENTS
