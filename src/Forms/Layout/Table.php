@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
@@ -29,7 +30,7 @@ use Gibbon\Forms\Traits\BasicAttributesTrait;
  * @version v14
  * @since   v14
  */
-class Table implements OutputableInterface
+class Table implements OutputableInterface, ValidatableInterface
 {
     use BasicAttributesTrait;
 
@@ -121,5 +122,25 @@ class Table implements OutputableInterface
         }
 
         return $count;
+    }
+
+    public function addValidation($name)
+    {
+        return $this;
+    }
+
+    public function getValidationOutput()
+    {
+        $output = '';
+
+        foreach ($this->getRows() as $row) {
+            foreach ($row->getElements() as $element) {
+                if ($element instanceof ValidatableInterface) {
+                    $output .= $element->getValidationOutput();
+                }
+            }
+        }
+
+        return $output;
     }
 }

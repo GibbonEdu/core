@@ -70,9 +70,6 @@ abstract class Input extends Element implements ValidatableInterface
             if ($this->getRequired() == true) {
                 if ($this instanceof Checkbox && $this->getOptionCount() == 1) {
                     $output .= $this->getID().'Validate.add(Validate.Acceptance); '."\r";
-                } else if ($this instanceof TextArea) {
-                    $output .= $this->getID().'Validate.add(Validate.Presence); '."\r";
-                    $output .= $this->getID().'Validate.add(Validate.Length, {minimum: 0}); '."\r";
                 } else {
                     $output .= $this->getID().'Validate.add(Validate.Presence); '."\r";
                 }
