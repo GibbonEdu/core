@@ -68,7 +68,14 @@ abstract class Input extends Element implements ValidatableInterface
             $output .= 'var '.$this->getID().'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
 
             if ($this->getRequired() == true) {
-                $output .= $this->getID().'Validate.add(Validate.Presence); '."\r";
+                if ($this instanceof Checkbox && $this->getOptionCount() == 1) {
+                    $output .= $this->getID().'Validate.add(Validate.Acceptance); '."\r";
+                } else if ($this instanceof TextArea) {
+                    $output .= $this->getID().'Validate.add(Validate.Presence); '."\r";
+                    $output .= $this->getID().'Validate.add(Validate.Length, {minimum: 0}); '."\r";
+                } else {
+                    $output .= $this->getID().'Validate.add(Validate.Presence); '."\r";
+                }
             }
 
             if (!empty($this->validation) && is_array($this->validation)) {
