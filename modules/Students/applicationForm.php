@@ -139,7 +139,6 @@ if ($proceed == false) {
     $siblingApplicationMode = !empty($gibbonApplicationFormID);
 
     $form = Form::create('applicationForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
-    $form->removeClass('standardForm');
     $form->setAutocomplete('on');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
