@@ -723,20 +723,24 @@ if ($proceed == false) {
     }
 
     // SCHOLARSHIPS
-    $heading = $form->addRow()->addHeading(__('Scholarships'));
+    $scholarshipOptionsActive = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive');
 
-    $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
-    if (!empty($scholarship)) {
-        $heading->append($scholarship)->wrap('<p>','</p>');
+    if ($scholarshipOptionsActive == 'Y') {
+        $heading = $form->addRow()->addHeading(__('Scholarships'));
+
+        $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
+        if (!empty($scholarship)) {
+            $heading->append($scholarship)->wrap('<p>','</p>');
+        }
+
+        $row = $form->addRow();
+            $row->addLabel('scholarshipInterest', __('Interest'))->description(__('Indicate if you are interested in a scholarship.'));
+            $row->addRadio('scholarshipInterest')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
+
+        $row = $form->addRow();
+            $row->addLabel('scholarshipRequired', __('Required?'))->description(__('Is a scholarship required for you to take up a place at the school?'));
+            $row->addRadio('scholarshipRequired')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
     }
-
-    $row = $form->addRow();
-        $row->addLabel('scholarshipInterest', __('Interest'))->description(__('Indicate if you are interested in a scholarship.'));
-        $row->addRadio('scholarshipInterest')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
-
-    $row = $form->addRow();
-        $row->addLabel('scholarshipRequired', __('Required?'))->description(__('Is a scholarship required for you to take up a place at the school?'));
-        $row->addRadio('scholarshipRequired')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->checked('N')->inline();
 
 
      // PAYMENT
