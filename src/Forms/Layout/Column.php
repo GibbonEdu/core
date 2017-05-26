@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 
 /**
@@ -28,7 +29,7 @@ use Gibbon\Forms\FormFactoryInterface;
  * @version v14
  * @since   v14
  */
-class Column extends Row implements OutputableInterface
+class Column extends Row implements OutputableInterface, ValidatableInterface
 {
     protected $class = 'column';
 
@@ -46,6 +47,24 @@ class Column extends Row implements OutputableInterface
             $output .= '<div>';
             $output .= $element->getOutput();
             $output .= '</div>';
+        }
+
+        return $output;
+    }
+
+    public function addValidation($name)
+    {
+        return $this;
+    }
+
+    public function getValidationOutput()
+    {
+        $output = '';
+
+        foreach ($this->getElements() as $element) {
+            if ($element instanceof ValidatableInterface) {
+                $output .= $element->getValidationOutput();
+            }
         }
 
         return $output;
