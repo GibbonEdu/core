@@ -852,17 +852,17 @@ if ($proceed == false) {
     $row = $form->addRow();
         $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
-    if (empty($howDidYouHearList)) {
+    if (empty($howDidYouHear)) {
         $row->addTextField('howDidYouHear')->isRequired()->maxLength(30)->loadFrom($application);
     } else {
         $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->isRequired()->placeholder()->loadFrom($application);
+
+        $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+
+        $row = $form->addRow()->addClass('tellUsMore');
+            $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+            $row->addTextField('howDidYouHearMore')->maxLength(255)->loadFrom($application);
     }
-
-    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
-
-    $row = $form->addRow()->addClass('tellUsMore');
-        $row->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
-        $row->addTextField('howDidYouHearMore')->maxLength(255)->loadFrom($application);
 
     // PRIVACY
     $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
