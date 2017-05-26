@@ -95,9 +95,12 @@ class CustomField extends Input
                 $this->customField->selected($value);
                 break;
 
+            case 'date':
+                $this->customField->setDateFromValue($value);
+                break;
+
             default:
             case 'url':
-            case 'date':
             case 'text':
             case 'varchar':
                 $this->customField->setValue($value);
