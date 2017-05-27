@@ -98,25 +98,26 @@ if ($proceed == false) {
         } else {
             $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
         }
-        $email = trim($_POST['email']);
-        $phone1Type = $_POST['phone1Type'];
-        if ($_POST['phone1'] != '' and $phone1Type == '') {
+        $email = (isset($_POST['email']))? trim($_POST['email']) : '';
+        $phone1Type = (isset($_POST['phone1Type']))? $_POST['phone1Type'] : '';
+        if (!empty($_POST['phone1']) and $phone1Type == '') {
             $phone1Type = 'Other';
         }
-        $phone1CountryCode = $_POST['phone1CountryCode'];
-        $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1']);
-        $phone2Type = $_POST['phone2Type'];
-        if ($_POST['phone2'] != '' and $phone2Type == '') {
+        $phone1CountryCode = (isset($_POST['phone1CountryCode']))? $_POST['phone1CountryCode'] : '';
+        $phone1 = (isset($_POST['phone1']))? preg_replace('/[^0-9+]/', '', $_POST['phone1']) : '';
+        $phone2Type = (isset($_POST['phone2Type']))? $_POST['phone2Type'] : '';
+        if (!empty($_POST['phone2']) and $phone2Type == '') {
             $phone2Type = 'Other';
         }
-        $phone2CountryCode = $_POST['phone2CountryCode'];
-        $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2']);
-        $medicalInformation = $_POST['medicalInformation'];
-        $sen = $_POST['sen'];
+        $phone2CountryCode = (isset($_POST['phone2CountryCode']))? $_POST['phone2CountryCode'] : '';
+        $phone2 = (isset($_POST['phone2']))? preg_replace('/[^0-9+]/', '', $_POST['phone2']) : '';
+
+        $medicalInformation = (isset($_POST['medicalInformation']))? $_POST['medicalInformation'] : '';
+        $sen = (isset($_POST['sen']))? $_POST['sen'] : 'N';
         if ($sen == 'N') {
             $senDetails = '';
         } else {
-            $senDetails = $_POST['senDetails'];
+            $senDetails = (isset($_POST['senDetails']))? $_POST['senDetails'] : '';
         }
         $gibbonSchoolYearIDEntry = $_POST['gibbonSchoolYearIDEntry'];
         $dayType = null;
@@ -423,7 +424,7 @@ if ($proceed == false) {
         }
 
         //GET PAYMENT FIELDS
-        $payment = $_POST['payment'];
+        $payment = (isset($_POST['payment']))? $_POST['payment'] : '';
         $companyName = null;
         if (isset($_POST['companyName'])) {
             $companyName = $_POST['companyName'];
@@ -472,11 +473,11 @@ if ($proceed == false) {
         if (isset($_POST['languageChoiceExperience'])) {
             $languageChoiceExperience = $_POST['languageChoiceExperience'];
         }
-        $scholarshipInterest = null;
+        $scholarshipInterest = '';
         if (isset($_POST['scholarshipInterest'])) {
             $scholarshipInterest = $_POST['scholarshipInterest'];
         }
-        $scholarshipRequired = null;
+        $scholarshipRequired = '';
         if (isset($_POST['scholarshipRequired'])) {
             $scholarshipRequired = $_POST['scholarshipRequired'];
         }
