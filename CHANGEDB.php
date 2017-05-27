@@ -794,6 +794,5 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 UPDATE `gibbonAction` SET `defaultPermissionTeacher`='N' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin') AND name='Notification Settings';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'scholarshipOptionsActive', 'Scholarship Options Active', 'Should the Scholarship Options section be turned on?', 'Y');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'paymentOptionsActive', 'Payment Options Active', 'Should the Payment section be turned on?', 'Y');end
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'studentContactActive', 'Student Contact Active', 'Should the Student Contact section be turned on?', 'Y');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'senOptionsActive', 'Special Education Needs Active', 'Should the Special Education Needs section be turned on?', 'Y');end
 ";

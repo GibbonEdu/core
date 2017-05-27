@@ -270,20 +270,16 @@ if ($proceed == false) {
         $row->addDate('visaExpiryDate');
 
     // STUDENT CONTACT
-    $studentContactActive = getSettingByScope($connection2, 'Application Form', 'studentContactActive');
+    $form->addRow()->addSubheading(__('Student Contact'));
 
-    if ($studentContactActive == 'Y') {
-        $form->addRow()->addSubheading(__('Student Contact'));
+    $row = $form->addRow();
+        $row->addLabel('email', __('Email'));
+        $row->addEmail('email')->maxLength(50);
 
+    for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
-            $row->addLabel('email', __('Email'));
-            $row->addEmail('email')->maxLength(50);
-
-        for ($i = 1; $i < 3; ++$i) {
-            $row = $form->addRow();
-                $row->addLabel('', __('Phone').' '.$i)->description(__('Type, country code, number.'));
-                $row->addPhoneNumber('phone'.$i);
-        }
+            $row->addLabel('', __('Phone').' '.$i)->description(__('Type, country code, number.'));
+            $row->addPhoneNumber('phone'.$i);
     }
 
     // SPECIAL EDUCATION & MEDICAL

@@ -130,11 +130,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     $row = $form->addRow()->addHeading(__('Sections'))->append(__(''));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'studentContactActive', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
-
     $setting = getSettingByScope($connection2, 'Application Form', 'senOptionsActive', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

@@ -297,15 +297,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     }
 
     try {
-        $data = array('value' => $studentContactActive);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='studentContactActive'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
         $data = array('value' => $senOptionsActive);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='senOptionsActive'";
         $result = $connection2->prepare($sql);
