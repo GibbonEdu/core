@@ -69,11 +69,11 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                 $output .= '</h4>';
                 $output .= "<table cellspacing='0' style='width: 100%'>";
                 $output .= "<tr class='head'>";
-                $output .= "<th style='width: 120px'>";
-                $output .= 'Course';
-                $output .= '</th>';
-                $output .= "<th style='width: 120px'>";
+                $output .= "<th style='width: 160px'>";
                 $output .= 'Assessment';
+                $output .= '</th>';
+                $output .= "<th style='width: 180px'>";
+                $output .= 'Course';
                 $output .= '</th>';
                 $output .= "<th style='width: 75px; text-align: center'>";
                 if ($attainmentAlternativeName != '') {
@@ -105,11 +105,8 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     ++$count;
 
                     $output .= "<tr class=$rowNum>";
-                    $output .= "<td>";
-                    $output .= $rowInternalAssessment['courseFull'];
-                    $output .= '</td>';
                     $output .= '<td>';
-                    $output .= "<span title='".htmlPrep($rowInternalAssessment['description'])."'><b><u>".$rowInternalAssessment['course'].'.'.$rowInternalAssessment['class'].' '.$rowInternalAssessment['name'].'</u></b></span><br/>';
+                    $output .= "<span title='".htmlPrep($rowInternalAssessment['description'])."'><b><u>".$rowInternalAssessment['name'].'</u></b></span><br/>';
                     $output .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
                     if ($rowInternalAssessment['completeDate'] != '') {
                         $output .= 'Marked on '.dateConvertBack($guid, $rowInternalAssessment['completeDate']).'<br/>';
@@ -120,6 +117,9 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         $output .= " | <a 'title='Download more information' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>More info</a>";
                     }
                     $output .= '</span>';
+                    $output .= '</td>';
+                    $output .= "<td>";
+                    $output .= $rowInternalAssessment['courseFull'];
                     $output .= '</td>';
                     if ($rowInternalAssessment['attainment'] == 'N' or $rowInternalAssessment['gibbonScaleIDAttainment'] == '') {
                         $output .= "<td class='dull' style='color: #bbb; text-align: center'>";
@@ -138,12 +138,12 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         }
                         if ($resultAttainment->rowCount() == 1) {
                             $rowAttainment = $resultAttainment->fetch();
-                            $attainmentExtra = '<br/>'.__($guid, $rowAttainment['usage']);
+                            $attainmentExtra = __($guid, $rowAttainment['usage']);
                         }
                         $styleAttainment = "style='font-weight: bold'";
                         $output .= "<div $styleAttainment>".$rowInternalAssessment['attainmentValue'].'</div>';
                         if ($rowInternalAssessment['attainmentValue'] != '') {
-                            $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowInternalAssessment['attainmentDescriptor'])).'</b>'.__($guid, $attainmentExtra).'</div>';
+                            $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>".__($guid, $attainmentExtra).'</div>';
                         }
                         $output .= '</td>';
                     }
@@ -164,14 +164,13 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         }
                         if ($resultEffort->rowCount() == 1) {
                             $rowEffort = $resultEffort->fetch();
-                            $effortExtra = '<br/>'.__($guid, $rowEffort['usage']);
+                            $effortExtra = __($guid, $rowEffort['usage']);
                         }
                         $styleEffort = "style='font-weight: bold'";
                         $output .= "<div $styleEffort>".$rowInternalAssessment['effortValue'];
                         $output .= '</div>';
                         if ($rowInternalAssessment['effortValue'] != '') {
                             $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>";
-                            $output .= '<b>'.htmlPrep(__($guid, $rowInternalAssessment['effortDescriptor'])).'</b>';
                             if ($effortExtra != '') {
                                 $output .= __($guid, $effortExtra);
                             }
