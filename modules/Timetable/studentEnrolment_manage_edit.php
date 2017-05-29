@@ -61,50 +61,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             echo __($guid, 'Add Participants');
             echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Enrolable Students') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelectWhere = '';
-                                    if ($row['gibbonYearGroupIDList'] != '') {
-                                        $years = explode(',', $row['gibbonYearGroupIDList']);
-                                        for ($i = 0; $i < count($years); ++$i) {
-                                            if ($i == 0) {
-                                                $dataSelect[$years[$i]] = $years[$i];
-                                                $sqlSelectWhere = $sqlSelectWhere.'AND (gibbonYearGroupID=:'.$years[$i];
-                                            } else {
-                                                $dataSelect[$years[$i]] = $years[$i];
-                                                $sqlSelectWhere = $sqlSelectWhere.' OR gibbonYearGroupID=:'.$years[$i];
-                                            }
+                                <?php
+                                echo "<optgroup label='--".__($guid, 'Enroled Students')."--'>";
+                                    try {
+                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                        $sqlSelectWhere = '';
+                                        if ($row['gibbonYearGroupIDList'] != '') {
+                                            $years = explode(',', $row['gibbonYearGroupIDList']);
+                                            for ($i = 0; $i < count($years); ++$i) {
+                                                if ($i == 0) {
+                                                    $dataSelect[$years[$i]] = $years[$i];
+                                                    $sqlSelectWhere = $sqlSelectWhere.'AND (gibbonYearGroupID=:'.$years[$i];
+                                                } else {
+                                                    $dataSelect[$years[$i]] = $years[$i];
+                                                    $sqlSelectWhere = $sqlSelectWhere.' OR gibbonYearGroupID=:'.$years[$i];
+                                                }
 
-                                            if ($i == (count($years) - 1)) {
-                                                $sqlSelectWhere = $sqlSelectWhere.')';
+                                                if ($i == (count($years) - 1)) {
+                                                    $sqlSelectWhere = $sqlSelectWhere.')';
+                                                }
                                             }
+                                        } else {
+                                            $sqlSelectWhere = ' FALSE';
                                         }
-                                    } else {
-                                        $sqlSelectWhere = ' FALSE';
+                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID $sqlSelectWhere ORDER BY name, surname, preferredName";
+                                        $resultSelect = $connection2->prepare($sqlSelect);
+                                        $resultSelect->execute($dataSelect);
+                                    } catch (PDOException $e) {}
+    								while ($rowSelect = $resultSelect->fetch()) {
+    									echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+    								}
+                                echo '</optgroup>';
+                                echo "<optgroup label='--".__($guid, 'All Students')."--'>";
+                                    try {
+                                        $dataSelect = array();
+                                        $sqlSelect = "SELECT DISTINCT gibbonPerson.gibbonPersonID, preferredName, surname
+                                            FROM gibbonPerson
+                                                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                                            WHERE status='FULL'
+                                            ORDER BY surname, preferredName";
+                                        $resultSelect = $connection2->prepare($sqlSelect);
+                                        $resultSelect->execute($dataSelect);
+                                    } catch (PDOException $e) {}
+                                    while ($rowSelect = $resultSelect->fetch()) {
+                                        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
                                     }
-                                    $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID $sqlSelectWhere ORDER BY name, surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-								}
+                                echo '</optgroup>';
 								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Role') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -125,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 				</table>
 			</form>
 
-			<?php	
+			<?php
             echo '<h2>';
             echo __($guid, 'Current Participants');
             echo '</h2>';
