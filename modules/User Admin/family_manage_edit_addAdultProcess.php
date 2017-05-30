@@ -93,10 +93,10 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 
                     //Enforce one and only one contactPriority=1 parent
                     if ($contactPriority == 1) {
-                        //Set all other parents in family who are set to 1, to 2
+                        //Set all other parents in family who are set to 1 to 2, 2 to 3
                         try {
                             $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
-                            $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=2 WHERE gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID';
+                            $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=contactPriority+1 WHERE contactPriority < 3 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID';
                             $resultCP = $connection2->prepare($sqlCP);
                             $resultCP->execute($dataCP);
                         } catch (PDOException $e) {
@@ -116,6 +116,17 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                             $contactSMS = 'Y';
                             $contactEmail = 'Y';
                             $contactMail = 'Y';
+                        }
+
+                        // Set any other contact priority 2 to 3
+                        if ($contactPriority == 2) {
+                            try {
+                            $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
+                                $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=3 WHERE contactPriority=2 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID';
+                                $resultCP = $connection2->prepare($sqlCP);
+                                $resultCP->execute($dataCP);
+                            } catch (PDOException $e) {
+                            }
                         }
                     }
 

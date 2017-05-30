@@ -34,10 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 } else {
     //Proceed!
     $introduction = $_POST['introduction'];
-    $applicationFormSENText = $_POST['applicationFormSENText'];
+    $applicationFormSENText = (isset($_POST['applicationFormSENText']))? $_POST['applicationFormSENText'] : '';
     $applicationFormRefereeLink = $_POST['applicationFormRefereeLink'];
     $postscript = $_POST['postscript'];
-    $scholarships = $_POST['scholarships'];
+    $scholarships = (isset($_POST['scholarships']))? $_POST['scholarships'] : '';
     $agreement = $_POST['agreement'];
     $applicationFee = $_POST['applicationFee'];
     $publicApplications = $_POST['publicApplications'];
@@ -59,6 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $autoHouseAssign = $_POST['autoHouseAssign'];
     $usernameFormat = $_POST['usernameFormat'];
 
+    $studentContactActive = (isset($_POST['studentContactActive']))? $_POST['studentContactActive'] : '';
+    $senOptionsActive = (isset($_POST['senOptionsActive']))? $_POST['senOptionsActive'] : '';
+    $scholarshipOptionsActive = (isset($_POST['scholarshipOptionsActive']))? $_POST['scholarshipOptionsActive'] : '';
+    $paymentOptionsActive = (isset($_POST['paymentOptionsActive']))? $_POST['paymentOptionsActive'] : '';
+
     //Write to database
     $fail = false;
 
@@ -71,13 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $fail = true;
     }
 
-    try {
-        $data = array('value' => $applicationFormSENText);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='applicationFormSENText'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    if ($senOptionsActive == 'Y') {
+        try {
+            $data = array('value' => $applicationFormSENText);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='applicationFormSENText'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
     }
 
     try {
@@ -98,13 +105,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $fail = true;
     }
 
-    try {
-        $data = array('value' => $scholarships);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='scholarships'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    if ($scholarshipOptionsActive == 'Y') {
+        try {
+            $data = array('value' => $scholarships);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='scholarships'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
     }
 
     try {
@@ -281,6 +290,33 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     try {
         $data = array('value' => $usernameFormat);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='usernameFormat'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $senOptionsActive);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='senOptionsActive'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $scholarshipOptionsActive);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='scholarshipOptionsActive'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $paymentOptionsActive);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='paymentOptionsActive'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

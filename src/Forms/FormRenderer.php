@@ -42,11 +42,11 @@ class FormRenderer implements FormRendererInterface
 
         $totalColumns = $this->getColumnCount($form, $form->getRows());
 
-        $output .= '<form autocomplete="off" id="'.$form->getID().'" method="'.$form->getMethod().'" action="'.$form->getAction().'" enctype="multipart/form-data">';
+        $output .= '<form autocomplete="'.$form->getAutocomplete().'" id="'.$form->getID().'" method="'.$form->getMethod().'" action="'.$form->getAction().'" enctype="multipart/form-data">';
 
         // Output hidden values
-        foreach ($form->getHiddenValues() as $name => $value) {
-            $output .= '<input name="'.$name.'" value="'.$value.'" type="hidden">';
+        foreach ($form->getHiddenValues() as $values) {
+            $output .= '<input name="'.$values['name'].'" value="'.$values['value'].'" type="hidden">';
         }
 
         $output .= '<table class="'.$form->getClass().'" cellspacing="0">';

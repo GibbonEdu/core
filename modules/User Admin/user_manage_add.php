@@ -1238,25 +1238,28 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<input name="transport" id="transport" maxlength=255 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			<script type="text/javascript">
-				$(function() {
-					var availableTags=[
-						<?php
+            <script type="text/javascript">
+                $(function() {
+                    var availableTags=[
+                        <?php
                         try {
                             $dataAuto = array();
-                            $sqlAuto = 'SELECT DISTINCT transport FROM gibbonPerson ORDER BY transport';
+                            $sqlAuto = 'SELECT DISTINCT transport FROM gibbonPerson
+                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status=\'Current\')
+                                ORDER BY transport';
                             $resultAuto = $connection2->prepare($sqlAuto);
                             $resultAuto->execute($dataAuto);
                         } catch (PDOException $e) {
                         }
-						while ($rowAuto = $resultAuto->fetch()) {
-							echo '"'.$rowAuto['transport'].'", ';
-						}
-						?>
-					];
-					$( "#transport" ).autocomplete({source: availableTags});
-				});
-			</script>
+                        while ($rowAuto = $resultAuto->fetch()) {
+                            echo '"'.$rowAuto['transport'].'", ';
+                        }
+                        ?>
+                    ];
+                    $( "#transport" ).autocomplete({source: availableTags});
+                });
+            </script>
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Transport Notes') ?></b><br/>

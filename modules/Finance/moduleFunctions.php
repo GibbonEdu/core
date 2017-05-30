@@ -300,7 +300,7 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 
         if ($result->rowCount() != 1) {
             echo $result->rowCount();
-            eixt();
+            exit();
 
             return false;
         } else {
@@ -1038,7 +1038,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         try {
             $dataFees['gibbonFinanceInvoiceID1'] = $row['gibbonFinanceInvoiceID'];
 
-            print 'here'.$preview;
             if ($preview) { //Get fees from gibbonFinanceFee
                 //Standard
                 $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";

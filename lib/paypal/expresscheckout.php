@@ -59,7 +59,7 @@ $cancelURL=$_SESSION[$guid]["absoluteURL"] . "/" . $_GET["fail"];
 //' The CallShortcutExpressCheckout function is defined in the file PayPalFunctions.php,
 //' it is included at the top of this file.
 //'-------------------------------------------------
-$resArray=CallShortcutExpressCheckout ($paymentAmount, $currencyCodeType, $paymentType, urlencode($returnURL), urlencode($cancelURL), $guid, _SESSION[$guid]['i18n']['code']);
+$resArray=CallShortcutExpressCheckout ($paymentAmount, $currencyCodeType, $paymentType, urlencode($returnURL), urlencode($cancelURL), $guid, $_SESSION[$guid]['i18n']['code']);
 $ack=strtoupper(@$resArray["ACK"]);
 
 

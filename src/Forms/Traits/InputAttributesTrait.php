@@ -27,6 +27,8 @@ namespace Gibbon\Forms\Traits;
  */
 trait InputAttributesTrait
 {
+    protected $required;
+
     public function setName($name = '')
     {
         $this->setAttribute('name', $name);
@@ -47,6 +49,34 @@ trait InputAttributesTrait
     public function getValue()
     {
         return $this->getAttribute('value');
+    }
+
+    public function loadFrom(&$row)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($row[$name])) {
+            $value = $row[$name];
+
+            if (method_exists($this, 'selected')) {
+                $this->selected($value);
+            } else if (method_exists($this, 'checked')) {
+                $this->checked($value);
+            } else {
+                $this->setAttribute('value', $value);
+            }
+        }
+    }
+
+    public function loadFromCSV(&$row)
+    {
+        $name = str_replace('[]', '', $this->getName());
+
+        if (!empty($row[$name])) {
+            $row[$name] = explode(',', $row[$name]);
+        }
+
+        $this->loadFrom($row);
     }
 
     public function setSize($size = '')
@@ -79,18 +109,17 @@ trait InputAttributesTrait
 
     public function isRequired($required = true)
     {
-        $this->setRequired($required);
-        return $this;
+        return $this->setRequired($required);
     }
 
     public function setRequired($required)
     {
-        $this->setAttribute('required', $required);
+        $this->required = $required;
         return $this;
     }
 
     public function getRequired()
     {
-        return $this->getAttribute('required');
+        return $this->required;
     }
 }

@@ -438,17 +438,6 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                                     echo $_SESSION[$guid]['indexText'];
                                     echo '</p>';
 
-                                    //Publc registration permitted?
-                                    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
-                                    if ($enablePublicRegistration == 'Y') {
-                                        echo "<h2 style='margin-top: 30px'>";
-                                        echo __($guid, 'Register');
-                                        echo '</h2>';
-                                        echo '<p>';
-                                        echo sprintf(__($guid, '%1$sRegister now%2$s to join our online learning community.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/publicRegistration.php'>", '</a>').' '.__($guid, "It's free!");
-                                        echo '</p>';
-                                    }
-
                                     //Student public applications permitted?
                                     $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
                                     if ($publicApplications == 'Y') {

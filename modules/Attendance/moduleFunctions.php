@@ -531,10 +531,10 @@ function getColourArray()
 {
     $return = array();
 
+    $return[] = '153, 102, 255';
     $return[] = '255, 99, 132';
     $return[] = '54, 162, 235';
     $return[] = '255, 206, 86';
-    $return[] = '153, 102, 255';
     $return[] = '75, 192, 192';
     $return[] = '255, 159, 64';
     $return[] = '152, 221, 95';

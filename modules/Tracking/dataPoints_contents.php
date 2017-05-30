@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
             $internalResults = array();
             try {
                 $data = array();
-                $sql = 'SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate, gibbonInternalAssessmentColumn.name AS assessment FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) ORDER BY gibbonCourse.nameShort, gibbonInternalAssessmentColumn.name, gibbonPersonIDStudent, completeDate DESC';
+                $sql = 'SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.name AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate, gibbonInternalAssessmentColumn.name AS assessment FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) ORDER BY gibbonCourse.name, gibbonInternalAssessmentColumn.name, gibbonPersonIDStudent, completeDate DESC';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -175,22 +175,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                 }
 
                 //GET INTERNAL ASSESSMENTS AND CREATE HEADERS
+                //Get gibbonSchoolYearID list for the school years including and before this year
+                $data2 = array();
+                $sql2 = '';
+                $yearMatch = array();
+                $countYear = 1;
                 try {
-                    $data = array('gibbonYearGroupID' => $yearGroups[$i]);
-                    $sql = "SELECT DISTINCT gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.name AS yearGroup, sequenceNumber, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.name AS assessment FROM gibbonYearGroup JOIN gibbonCourse ON (gibbonCourse.gibbonYearGroupIDList LIKE concat('%', gibbonYearGroup.gibbonYearGroupID, '%')) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE sequenceNumber<=(SELECT sequenceNumber FROM gibbonYearGroup AS year WHERE year.gibbonYearGroupID=:gibbonYearGroupID) ORDER BY sequenceNumber, gibbonCourse.nameShort";
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sql = "SELECT gibbonSchoolYearID
+                        FROM gibbonSchoolYear
+                        WHERE gibbonSchoolYearID<=:gibbonSchoolYearID
+                        ORDER BY sequenceNumber DESC";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
+                } catch (PDOException $e) {}
+                while ($row = $result->fetch()) {
+                    $yearGroupIndex = (count($yearGroups)-($countYear*2)) - (count($yearGroups)-2-$i);
+                    if ($yearGroupIndex >= 0 && $yearGroups[$yearGroupIndex] != '') {
+
+                        $data2['gibbonYearGroupID'.$countYear] = $yearGroups[$yearGroupIndex];
+                        $data2['gibbonSchoolYearID'.$countYear] = $row['gibbonSchoolYearID'];
+                        $sql2 .= "(SELECT DISTINCT CONCAT(gibbonYearGroup.gibbonYearGroupID) AS gibbonYearGroupID, gibbonYearGroup.name AS yearGroup, sequenceNumber, gibbonCourse.name AS course, gibbonInternalAssessmentColumn.name AS assessment, gibbonInternalAssessmentColumn.type
+                            FROM gibbonYearGroup
+                                JOIN gibbonCourse ON (gibbonCourse.gibbonYearGroupIDList LIKE concat('%', gibbonYearGroup.gibbonYearGroupID, '%'))
+                                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                                JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                            WHERE gibbonYearGroup.gibbonYearGroupID=:gibbonYearGroupID".$countYear."
+                                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$countYear."
+                                AND gibbonInternalAssessmentColumn.completeDate<='".date('Y-m-d')."'
+                            ) UNION ";
+                        $countYear ++;
+                    }
                 }
+                try {
+                    $sql2 = substr($sql2, 0, -7);
+                    $sql2 .= ' ORDER BY sequenceNumber, course';
+                    $result = $connection2->prepare($sql2);
+                    $result->execute($data2);
+                } catch (PDOException $e) {}
+
                 while ($row = $result->fetch()) {
                     foreach ($internalAssessmentTypes as $type) {
                         foreach ($internalAssessmentDataPoints as $point) {
-                            if ($point['type'] == $type) {
+                            if ($point['type'] == $type && $row['type'] == $type) {
                                 if (!(strpos($point['gibbonYearGroupIDList'], $row['gibbonYearGroupID']) === false)) {
                                     //Output data
                                     $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'1', $row['yearGroup']);
                                     $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'2', $type."\r\n".$row['assessment']);
-                                    $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'3', $row['course']);
+                                    $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'3', trim(str_replace($row['yearGroup'], '', $row['course'])));
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_border);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_head_fill4);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -213,6 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                                     $columns[($activeColumn - 6)]['assessment'] = $row['assessment'];
 
                                     ++$activeColumn;
+
                                 }
                             }
                         }
@@ -258,6 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                                     $excel->getActiveSheet()->setCellValue(num2alpha($column['count'] + 6).$activeRow, $externalResults[$externalIndex]);
                                 }
                             } else { //Output internal assessment data
+
                                 $internalIndex = $column['gibbonYearGroupID'].'-'.$column['course'].'-'.$column['type'].'-'.$row['gibbonPersonID'].'-'.$column['assessment'];
                                 if (isset($internalResults[$internalIndex])) {
                                     $excel->getActiveSheet()->setCellValue(num2alpha($column['count'] + 6).$activeRow, $internalResults[$internalIndex]);

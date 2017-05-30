@@ -37,6 +37,7 @@ class Checkbox extends Input
     public function __construct($name)
     {
         $this->setName($name);
+        $this->setID($name);
         $this->setValue('on');
     }
 
@@ -59,7 +60,7 @@ class Checkbox extends Input
         if (empty($value) || empty($this->checked)) {
             return '';
         }
-        
+
         return (in_array($value, $this->checked, true))? 'checked' : '';
     }
 
