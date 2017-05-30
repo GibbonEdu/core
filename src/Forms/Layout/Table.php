@@ -147,11 +147,7 @@ class Table implements OutputableInterface, ValidatableInterface
     public function loadFrom(&$data)
     {
         foreach ($this->getRows() as $row) {
-            foreach ($row->getElements() as $element) {
-                if (method_exists($element, 'loadFrom')) {
-                    $element->loadFrom($data);
-                }
-            }
+            $row->loadFrom($data);
         }
 
         return $this;
