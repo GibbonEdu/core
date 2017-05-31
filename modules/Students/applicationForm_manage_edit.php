@@ -884,10 +884,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow();
             $row->addLabel('file'.$i, $requiredDocumentsList[$i])->description($description);
-            $row->addFileUpload('file'.$i)
-                ->accepts($fileUploader->getFileExtensions())
-                ->setRequired($requiredDocumentsCompulsory == 'Y')
-                ->setAttachment($_SESSION[$guid]['absoluteURL'], $attachment);
+                $row->addFileUpload('file'.$i)
+                    ->accepts($fileUploader->getFileExtensions())
+                    ->setRequired($requiredDocumentsCompulsory == 'Y')
+                    ->setAttachment('attachment'.$i, $_SESSION[$guid]['absoluteURL'], $attachment)
+                    ->canDelete(false);
         }
 
         $row = $form->addRow()->addContent(getMaxUpload($guid));

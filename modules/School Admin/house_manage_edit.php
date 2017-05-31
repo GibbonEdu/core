@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                 $file = $row->addFileUpload('file1')
                     ->addClass('right')
                     ->accepts($fileUploader->getFileExtensions('Graphics/Design'))
-                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $values['logo'])
+                    ->setAttachment('logo', $_SESSION[$guid]['absoluteURL'], $values['logo'])
                     ->setDeleteAction('/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID='.$gibbonHouseID);
 
             $row = $form->addRow();
