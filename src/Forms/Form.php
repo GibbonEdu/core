@@ -157,6 +157,15 @@ class Form implements OutputableInterface
         return $this->addTrigger($selector, $this->factory->createTrigger($selector));
     }
 
+    public function loadAllValuesFrom(&$data)
+    {
+        foreach ($this->getRows() as $row) {
+            $row->loadFrom($data);
+        }
+
+        return $this;
+    }
+
     public function getOutput()
     {
         return $this->renderer->renderForm($this);

@@ -143,4 +143,13 @@ class Table implements OutputableInterface, ValidatableInterface
 
         return $output;
     }
+
+    public function loadFrom(&$data)
+    {
+        foreach ($this->getRows() as $row) {
+            $row->loadFrom($data);
+        }
+
+        return $this;
+    }
 }

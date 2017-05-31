@@ -102,6 +102,17 @@ class Row
     {
         return (end($this->formElements) == $element);
     }
+
+    public function loadFrom(&$data)
+    {
+        foreach ($this->getElements() as $element) {
+            if (method_exists($element, 'loadFrom')) {
+                $element->loadFrom($data);
+            }
+        }
+
+        return $this;
+    }
 }
 
 interface RowDependancyInterface

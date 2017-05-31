@@ -27,13 +27,15 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
-    public function loadFrom(&$row)
+    public function loadFrom(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
 
-        if (!empty($row[$name])) {
-            $this->setDateFromValue($row[$name]);
+        if (!empty($data[$name])) {
+            $this->setDateFromValue($data[$name]);
         }
+
+        return $this;
     }
 
     public function setDateFromValue($value)

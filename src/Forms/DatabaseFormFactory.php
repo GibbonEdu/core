@@ -182,12 +182,17 @@ class DatabaseFormFactory extends FormFactory
             $results = $this->pdo->executeQuery(array(), $sql);
             if ($results && $results->rowCount() > 0) {
                 $countryCodes = $results->fetchAll();
+
+                // Transform the row data into value => name pairs
+                $countryCodes = array_reduce($countryCodes, function($codes, $item) {
+                    $codes[$item['iddCountryCode']] = $item['iddCountryCode'].' - '.__($item['printable_name']);
+                    return $codes;
+                }, array());
             }
             $this->setCachedQuery('phoneNumber', $countryCodes);
         }
 
-        $phoneNumberField = new Input\PhoneNumber($name);
-        return $phoneNumberField->setCountryCodes($countryCodes);
+        return new Input\PhoneNumber($this, $name, $countryCodes);
     }
 
     public function createSequenceNumber($name, $tableName, $sequenceNumber = '')
