@@ -51,12 +51,12 @@ trait InputAttributesTrait
         return $this->getAttribute('value');
     }
 
-    public function loadFrom(&$row)
+    public function loadFrom(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
 
-        if (!empty($row[$name])) {
-            $value = $row[$name];
+        if (!empty($data[$name])) {
+            $value = $data[$name];
 
             if (method_exists($this, 'selected')) {
                 $this->selected($value);
@@ -68,15 +68,15 @@ trait InputAttributesTrait
         }
     }
 
-    public function loadFromCSV(&$row)
+    public function loadFromCSV(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
 
-        if (!empty($row[$name])) {
-            $row[$name] = explode(',', $row[$name]);
+        if (!empty($data[$name])) {
+            $data[$name] = explode(',', $data[$name]);
         }
 
-        $this->loadFrom($row);
+        $this->loadFrom($data);
     }
 
     public function setSize($size = '')
