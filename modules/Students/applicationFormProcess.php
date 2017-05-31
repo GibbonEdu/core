@@ -268,11 +268,11 @@ if ($proceed == false) {
         if (isset($_POST['parent1phone2'])) {
             $parent1phone2 = $_POST['parent1phone2'];
         }
-        $parent1profession = null;
+        $parent1profession = '';
         if (isset($_POST['parent1profession'])) {
             $parent1profession = $_POST['parent1profession'];
         }
-        $parent1employer = null;
+        $parent1employer = '';
         if (isset($_POST['parent1employer'])) {
             $parent1employer = $_POST['parent1employer'];
         }
@@ -370,11 +370,11 @@ if ($proceed == false) {
         if (isset($_POST['parent2phone2'])) {
             $parent2phone2 = $_POST['parent2phone2'];
         }
-        $parent2profession = null;
+        $parent2profession = '';
         if (isset($_POST['parent2profession'])) {
             $parent2profession = $_POST['parent2profession'];
         }
-        $parent2employer = null;
+        $parent2employer = '';
         if (isset($_POST['parent2employer'])) {
             $parent2employer = $_POST['parent2employer'];
         }
@@ -523,13 +523,13 @@ if ($proceed == false) {
                 $familyFail = true;
             }
             if ($parent1gibbonPersonID == null) {
-                if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
+                if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '') {
                     $familyFail = true;
                 }
             }
             if (isset($_POST['secondParent'])) {
                 if ($_POST['secondParent'] != 'No') {
-                    if ($parent2title == '' or $parent2surname == '' or $parent2firstName == '' or $parent2preferredName == '' or $parent2officialName == '' or $parent2gender == '' or $parent2relationship == '' or $parent2phone1 == '' or $parent2profession == '') {
+                    if ($parent2title == '' or $parent2surname == '' or $parent2firstName == '' or $parent2preferredName == '' or $parent2officialName == '' or $parent2gender == '' or $parent2relationship == '' or $parent2phone1 == '') {
                         $familyFail = true;
                     }
                 }

@@ -278,11 +278,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if (isset($_POST['parent1phone2'])) {
                 $parent1phone2 = $_POST['parent1phone2'];
             }
-            $parent1profession = null;
+            $parent1profession = '';
             if (isset($_POST['parent1profession'])) {
                 $parent1profession = $_POST['parent1profession'];
             }
-            $parent1employer = null;
+            $parent1employer = '';
             if (isset($_POST['parent1employer'])) {
                 $parent1employer = $_POST['parent1employer'];
             }
@@ -380,11 +380,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if (isset($_POST['parent2phone2'])) {
                 $parent2phone2 = $_POST['parent2phone2'];
             }
-            $parent2profession = null;
+            $parent2profession = '';
             if (isset($_POST['parent2profession'])) {
                 $parent2profession = $_POST['parent2profession'];
             }
-            $parent2employer = null;
+            $parent2employer = '';
             if (isset($_POST['parent2employer'])) {
                 $parent2employer = $_POST['parent2employer'];
             }
@@ -525,7 +525,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $familyFail = true;
                 }
                 if ($parent1gibbonPersonID == null) {
-                    if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '' or $parent1profession == '') {
+                    if ($parent1title == '' or $parent1surname == '' or $parent1firstName == '' or $parent1preferredName == '' or $parent1officialName == '' or $parent1gender == '' or $parent1relationship == '' or $parent1phone1 == '') {
                         $familyFail = true;
                     }
                 }
