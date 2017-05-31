@@ -385,16 +385,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 //Check boys and girls in each house in year group
                                 try {
                                     $dataHouse = array('gibbonYearGroupID' => $row['gibbonYearGroupIDEntry'], 'gibbonSchoolYearID' => $row['gibbonSchoolYearIDEntry'], 'gender' => $row['gender']);
-                                    $sqlHouse = "SELECT gibbonHouse.name AS house, gibbonHouse.gibbonHouseID, count(gibbonHouse.gibbonHouseID) AS count
+                                    $sqlHouse = "SELECT gibbonHouse.name AS house, gibbonHouse.gibbonHouseID, count(DISTINCT gibbonPerson.gibbonPersonID) AS count
                                         FROM gibbonHouse
-                                            LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID AND gender=:gender)
+                                            LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID AND gender=:gender AND status='Full')
                                             LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
                                                 AND gibbonSchoolYearID=:gibbonSchoolYearID
                                                 AND gibbonYearGroupID=:gibbonYearGroupID)
-                                        WHERE status='Full'
-                                            AND NOT gibbonHouse.gibbonHouseID IS NULL
+                                        WHERE gibbonHouse.gibbonHouseID IS NOT NULL
                                         GROUP BY house, gibbonHouse.gibbonHouseID
-                                        ORDER BY count, gibbonHouse.gibbonHouseID";
+                                        ORDER BY count, RAND(), gibbonHouse.gibbonHouseID";
                                     $resultHouse = $connection2->prepare($sqlHouse);
                                     $resultHouse->execute($dataHouse);
                                 } catch (PDOException $e) {
