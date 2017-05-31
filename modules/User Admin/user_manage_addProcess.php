@@ -282,13 +282,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                             if (empty($birthCertificateScan)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                $size2 = getimagesize($path.'/'.$birthCertificateScan);
-                                $width2 = $size2[0];
-                                $height2 = $size2[1];
-                                if ($width2 > 1440 or $height2 > 900) {
-                                    $birthCertificateScan = '';
-                                    $imageFail = true;
+                                if (stripos($file['tmp_name'], 'pdf') === false) {
+                                    //Check image sizes
+                                    $size2 = getimagesize($path.'/'.$birthCertificateScan);
+                                    $width2 = $size2[0];
+                                    $height2 = $size2[1];
+                                    if ($width2 > 1440 or $height2 > 900) {
+                                        $birthCertificateScan = '';
+                                        $imageFail = true;
+                                    }
                                 }
                             }
                         }
@@ -304,13 +306,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                             if (empty($nationalIDCardScan)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                $size3 = getimagesize($path.'/'.$nationalIDCardScan);
-                                $width3 = $size3[0];
-                                $height3 = $size3[1];
-                                if ($width3 > 1440 or $height3 > 900) {
-                                    $nationalIDCardScan = '';
-                                    $imageFail = true;
+                                if (stripos($file['tmp_name'], 'pdf') === false) {
+                                    //Check image sizes
+                                    $size3 = getimagesize($path.'/'.$nationalIDCardScan);
+                                    $width3 = $size3[0];
+                                    $height3 = $size3[1];
+                                    if ($width3 > 1440 or $height3 > 900) {
+                                        $nationalIDCardScan = '';
+                                        $imageFail = true;
+                                    }
                                 }
                             }
                         }
@@ -326,13 +330,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                             if (empty($citizenship1PassportScan)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
-                                $width4 = $size4[0];
-                                $height4 = $size4[1];
-                                if ($width4 > 1440 or $height4 > 900) {
-                                    $citizenship1PassportScan = '';
-                                    $imageFail = true;
+                                if (stripos($file['tmp_name'], 'pdf') === false) {
+                                    //Check image sizes
+                                    $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
+                                    $width4 = $size4[0];
+                                    $height4 = $size4[1];
+                                    if ($width4 > 1440 or $height4 > 900) {
+                                        $citizenship1PassportScan = '';
+                                        $imageFail = true;
+                                    }
                                 }
                             }
                         }
