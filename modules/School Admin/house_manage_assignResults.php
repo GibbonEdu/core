@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
                         AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                     LEFT JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                 GROUP BY gibbonYearGroup.gibbonYearGroupID, gibbonHouse.gibbonHouseID
+                HAVING total > 0
                 ORDER BY gibbonYearGroup.sequenceNumber, gibbonHouse.name";
 
         $result = $connection2->prepare($sql);
