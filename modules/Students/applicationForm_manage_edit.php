@@ -637,7 +637,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(30);
+                $row->addTextField("parent{$i}employer")->isRequired()->maxLength(30);
 
             // CUSTOM FIELDS FOR PARENTS
             $row = $form->addRow()->setClass("parentSection{$i}");
