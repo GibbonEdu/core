@@ -633,11 +633,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}profession")->maxLength(30);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}employer")->isRequired()->maxLength(150);
 
             // CUSTOM FIELDS FOR PARENTS
             $row = $form->addRow()->setClass("parentSection{$i}");

@@ -579,11 +579,11 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}profession")->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->isRequired()->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}employer")->isRequired()->maxLength(150)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
             $row = $form->addRow()->setClass("parentSection{$i}");
