@@ -28,7 +28,8 @@ namespace Gibbon\Forms\Input;
 class FileUpload extends Input
 {
     protected $accepts = array();
-    protected $absolutePath = '';
+    protected $absoluteURL = '';
+    protected $deleteAction = '';
 
     public function accepts($accepts)
     {
@@ -48,10 +49,17 @@ class FileUpload extends Input
         return $this;
     }
 
-    public function setAttachment($absolutePath, $filePath)
+    public function setAttachment($absoluteURL, $filePath)
     {
-        $this->absolutePath = $absolutePath;
+        $this->absoluteURL = $absoluteURL;
         $this->setValue($filePath);
+
+        return $this;
+    }
+
+    public function setDeleteAction($actionURL)
+    {
+        $this->deleteAction = ltrim($actionURL, '/');
 
         return $this;
     }
@@ -60,10 +68,19 @@ class FileUpload extends Input
     {
         $output = '';
 
-        if (!empty($this->absolutePath) && !empty($this->getValue())) {
-            $output .= '<div class="right">';
-            $output .= __('Current attachment:').' ';
-            $output .= '<a href="'.$this->absolutePath.'/'.$this->getValue().'" target="_blank">'.basename($this->getValue()).'</a><br/><br/>';
+        if (!empty($this->absoluteURL) && !empty($this->getValue())) {
+            $output .= '<div class="standardWidth" style="float: right;border: 1px solid #BFBFBF;background-color: #ffffff;margin-bottom:4px;height:48px;overflow:hidden;display: table;">';
+
+            $output .= '<div style="display:table-cell;white-space:no-wrap;text-align:left;padding: 5px;">';
+            $output .= __('Current attachment:').'<br/>';
+            $output .= '<a target="_blank" style="display:block; word-break: break-all;" href="'.$this->absoluteURL.'/'.$this->getValue().'">'.$this->getValue().'</a>';
+            $output .= '</div>';
+
+            $output .=  "<a download style='display:table-cell;border-left: 1px solid #BFBFBF;background: -moz-linear-gradient(top, #fbfbfb, #fafafa);height: 48px; width:48px;vertical-align:middle;text-align:center;' href='".$this->absoluteURL.'/'.$this->getValue()."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+
+            if (!empty($this->deleteAction)) {
+                $output .=  "<a style='display:table-cell;border-left: 1px solid #BFBFBF;background: -moz-linear-gradient(top, #fbfbfb, #fafafa);height: 48px; width:48px;vertical-align:middle;text-align:center;' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
+            }
             $output .= '</div>';
         }
 
