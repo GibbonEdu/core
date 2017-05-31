@@ -1,4 +1,4 @@
-<?php 
+<?php
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Application Form Settings');
 $I->loginAsAdmin();
@@ -13,10 +13,13 @@ $I->seeInFormFields('#content form', $originalFormValues);
 
 $newFormValues = array(
     'introduction'                => 'Intro Test',
+    'senOptionsActive'            => 'Y',
     'applicationFormSENText'      => 'SEN Test',
     'applicationFormRefereeLink'  => 'http://referee.test',
     'postscript'                  => 'Postscript Test',
+    'scholarshipOptionsActive'    => 'Y',
     'scholarships'                => 'Scholarship Test',
+    'paymentOptionsActive'        => 'Y',
     'agreement'                   => 'Agreement Test',
     'applicationFee'              => '1024.00',
     'publicApplications'          => 'Y',
