@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     if (!empty($dayTypeOptions)) {
         $row = $form->addRow();
             $row->addLabel('dayType', __('Day Type'))->description(getSettingByScope($connection2, 'User Admin', 'dayTypeText'));
-            $row->addSelect('dayType')->fromString($dayTypeOptions)->isRequired();
+            $row->addSelect('dayType')->fromString($dayTypeOptions);
     }
 
     // PAYMENT
