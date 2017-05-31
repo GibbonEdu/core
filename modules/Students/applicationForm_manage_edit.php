@@ -541,6 +541,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $form->addRow()->addHeading(__('Parent/Guardian').' '.$i)->append($subheading);
 
+            if ($i == 2) {
+                $checked = (!empty($application['parent2gibbonPersonID']) || !empty($application['parent2surname']))? 'Yes' : 'No';
+                $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
+                $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
+            }
+
             // PARENT PERSONAL DATA
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
