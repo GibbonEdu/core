@@ -82,20 +82,20 @@ class FileUpload extends Input
         $output = '';
 
         if (!empty($this->absoluteURL) && !empty($this->attachmentPath)) {
-            $output .= '<div class="standardWidth" style="float: right;border: 1px solid #BFBFBF;background-color: #ffffff;margin-bottom:4px;height:48px;overflow:hidden;display: table;">';
+            $output .= '<div class="attachment standardWidth" style="">';
 
-            $output .= '<div style="display:table-cell;vertical-align:middle;text-align:left;padding: 5px;">';
+            $output .= '<div class="filename">';
             $output .= __('Current attachment:').'<br/>';
-            $output .= '<a target="_blank" style="display:block; word-break: break-all;" href="'.$this->absoluteURL.'/'.$this->attachmentPath.'">'.basename($this->attachmentPath).'</a>';
+            $output .= '<a target="_blank" href="'.$this->absoluteURL.'/'.$this->attachmentPath.'">'.basename($this->attachmentPath).'</a>';
             $output .= '</div>';
 
-            $output .=  "<a download style='display:table-cell;border-left: 1px solid #BFBFBF;background: -moz-linear-gradient(top, #fbfbfb, #fafafa); width:48px;vertical-align:middle;text-align:center;' href='".$this->absoluteURL.'/'.$this->attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+            $output .=  "<a download class='inline-button' href='".$this->absoluteURL.'/'.$this->attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
 
             if ($this->canDelete) {
                 if (!empty($this->deleteAction)) {
-                    $output .=  "<a style='display:table-cell;border-left: 1px solid #BFBFBF;background: -moz-linear-gradient(top, #fbfbfb, #fafafa); width:48px;vertical-align:middle;text-align:center;' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record? Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
+                    $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record? Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
                 } else {
-                    $output .= "<div style='display:table-cell;border-left: 1px solid #BFBFBF;background: -moz-linear-gradient(top, #fbfbfb, #fafafa); width:48px;vertical-align:middle;text-align:center;cursor:pointer;' onclick='if(confirm(\"".__('Are you sure you want to delete this record? Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record? Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
                 }
             }
             $output .= '</div>';
