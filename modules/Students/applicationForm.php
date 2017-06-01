@@ -941,6 +941,15 @@ if ($proceed == false) {
             $row->addCheckbox('agreement')->fromArray(array('on' => __('Yes')))->isRequired();
     }
 
+    // OFFICE ONLY
+    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php')) {
+        $form->addRow()->addHeading(__('For Office Use'));
+
+        $row = $form->addRow();
+            $row->addLabel('skipEmailNotification', '<b>'.__('Skip sending a notification email to parents?').'</b>');
+            $row->addCheckbox('skipEmailNotification')->fromArray(array('on' => __('Yes')))->checked('on');
+    }
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

@@ -730,8 +730,10 @@ if ($proceed == false) {
                     $mail->Send();
                 }
 
+                $skipEmailNotification = (isset($_POST['skipEmailNotification']))? $_POST['skipEmailNotification'] : false;
+
                 //Notify parent 1 of application status
-                if (!is_null($parent1email)) {
+                if (!empty($parent1email) && !$skipEmailNotification) {
                     $body = sprintf(__($guid, 'Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $_SESSION[$guid]['organisationName']).' ';
                     $body .= __($guid, 'Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').'<br/><br/>';
                     $body .= __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/><br/>';
