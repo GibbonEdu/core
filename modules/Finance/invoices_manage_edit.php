@@ -777,7 +777,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 						</script>
 						<tr class='break emailReminder'>
 							<td colspan=2>
-								<h3><?php echo __($guid, 'Email Reminder') ?></h3>
+								<h3><?php echo sprintf(__($guid, 'Email Reminder %1$s'), ($row['reminderCount'])+1) ?></h3>
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
 							</td>
 						</tr>

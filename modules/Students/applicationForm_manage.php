@@ -130,6 +130,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         echo __($guid, 'View');
         echo '</h2>';
 
+        echo "<div class='linkTop'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo '</div>';
+
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID ORDER BY status, priority DESC, timestamp DESC';
