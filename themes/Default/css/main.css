@@ -1261,7 +1261,7 @@ div.notificationTray a.inactive {
 
 /* v14 */
 
-table.standardForm td:last-child:nth-child(2) {
+table.standardForm td.standardWidth:last-child:nth-child(2) {
 	min-width: 450px;
 }
 
