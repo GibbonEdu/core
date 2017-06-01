@@ -161,6 +161,9 @@ if ($proceed == false) {
 
     // SIBLING APPLICATIONS
     if ($siblingApplicationMode == true) {
+        $gibbonFamilyID = (!empty($application['gibbonFamilyID']))? $application['gibbonFamilyID'] : null;
+        $gibbonPersonID = null;
+
         $form->addHiddenValue('linkedApplicationFormID', $gibbonApplicationFormID);
 
         $row = $form->addRow()->setClass('break');
@@ -523,7 +526,8 @@ if ($proceed == false) {
             $form->addRow()->addHeading(__('Parent/Guardian').' '.$i)->append($subheading);
 
             if ($i == 2) {
-                $form->addRow()->addCheckbox('secondParent')->setValue('No')->prepend(__('Do not include a second parent/guardian'));
+                $checked = ($siblingApplicationMode && !empty($application['parent2gibbonPersonID']))? 'No' : 'Yes';
+                $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
             }
 
