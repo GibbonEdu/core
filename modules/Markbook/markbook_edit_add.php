@@ -215,6 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 										}
 									}
 									?>
+                                </select>
 								<script type="text/javascript">
 									$("#gibbonPlannerEntryID").chainedTo("#gibbonUnitID");
 								</script>
