@@ -27,7 +27,6 @@ namespace Gibbon\Forms\Input;
  */
 class FileUpload extends Input
 {
-    protected $accepts = array();
     protected $absoluteURL = '';
     protected $deleteAction = '';
 
@@ -42,12 +41,16 @@ class FileUpload extends Input
         }
 
         if (!empty($accepts) && is_array($accepts)) {
+            $accepts = array_map(function ($str) {
+                return trim(strtolower($str), " .'");
+            }, $accepts);
 
             $within = implode(',', array_map(function ($str) {
-                return sprintf("'.%s'", trim($str, " .'")); },
-            $accepts));
+                return sprintf("'.%s'", $str);
+            }, $accepts));
 
-            $this->setAttribute('accept', str_replace("'",'', $within));
+            $this->setAttribute('title', (count($accepts) < 20? implode(', ', $accepts) : ''));
+            $this->setAttribute('accept', str_replace("'", '', $within));
             $this->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
         }
         return $this;
@@ -64,10 +67,9 @@ class FileUpload extends Input
 
     public function setDeleteAction($actionURL)
     {
-        $this->canDelete = true;
         $this->deleteAction = ltrim($actionURL, '/');
 
-        return $this;
+        return $this->canDelete(true);
     }
 
     public function canDelete($value)
@@ -82,9 +84,9 @@ class FileUpload extends Input
         $output = '';
 
         if (!empty($this->absoluteURL) && !empty($this->attachmentPath)) {
-            $output .= '<div class="attachment standardWidth" style="">';
+            $output .= '<div class="input-box standardWidth">';
 
-            $output .= '<div class="filename">';
+            $output .= '<div class="inline-label">';
             $output .= __('Current attachment:').'<br/>';
             $output .= '<a target="_blank" href="'.$this->absoluteURL.'/'.$this->attachmentPath.'">'.basename($this->attachmentPath).'</a>';
             $output .= '</div>';
@@ -93,9 +95,9 @@ class FileUpload extends Input
 
             if ($this->canDelete) {
                 if (!empty($this->deleteAction)) {
-                    $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record? Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
+                    $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
                 } else {
-                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record? Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
                 }
             }
             $output .= '</div>';

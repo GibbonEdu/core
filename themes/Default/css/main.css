@@ -1337,7 +1337,6 @@ table tr.heading:first-child td:last-child {
 	padding-left: 5px !important;
 }
 
-
 /* Usability tweak to make large data tables like User Permissions easier to read */
 table.rowHighlight tr:not(.break):hover td {
 	background: #EDF7FF !important;
@@ -1358,15 +1357,14 @@ input[name*="phone"] ~ .LV_invalid {
 .LV_valid {
     margin: 0;
 
-.attachment {
+.input-box {
 	float: right;
 	display: table;
 	border: 1px solid #BFBFBF;
 	background-color: #ffffff;
-	height:48px;
 }
 
-.attachment .filename {
+.input-box .inline-label {
 	display:table-cell;
 	padding: 5px;
 	text-align:left;
@@ -1374,12 +1372,13 @@ input[name*="phone"] ~ .LV_invalid {
 	word-break: break-all;
 }
 
-.attachment .inline-button {
+.input-box .inline-button {
 	display:table-cell;
 	border-left: 1px solid #BFBFBF;
 	background: #fafafa;
 	background: -moz-linear-gradient(top, #fbfbfb, #fafafa);
 	width:48px;
+	height:48px;
 	vertical-align:middle;
 	text-align:center;
 	cursor: pointer;
