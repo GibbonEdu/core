@@ -20,12 +20,37 @@ v13.0.00
 --------
 
 	Significant Changes
-		Timetable Admin: Added credits and course weight (for GPA calculations)
+		Timetable Admin: added credits and course weight (for GPA calculations)
 
 	Tweaks & Bug Fixes
-		System: Split the View Timetable and View Student Profile actions for greater control
-		User Admin: Increased the field length of surname, preferredName, firstname, profession, employer, jobtitle, emergency1Name, emergency2Name
-		User Admin: Added middleName field for query and cross-reference access
-		School Admin: Increased the field length of House name, nameShort
-		Timetable Admin: Increased the field length of Course name, nameShort
-		Activities: Added user permission for activity organisers to manage their activity enrolment
+		System: split the View Timetable and View Student Profile actions for greater control
+		User Admin: increased the field length of surname, preferredName, firstname, profession, employer, jobtitle, emergency1Name, emergency2Name
+		User Admin: added middleName field for query and cross-reference access
+		School Admin: increased the field length of House name, nameShort
+		Timetable Admin: increased the field length of Course name, nameShort
+		Activities: added user permission for activity organisers to manage their activity enrolment
+
+=========
+v14.0.00
+--------
+
+    Significant Changes
+        Parent Information:
+        User Admin: allow PDF files for user ID documents
+        Timetable Admin: allow classes to be scheduled in the same room without conflict
+        System: localization can be overridden for any page through a URL parameter
+
+    Tweaks & Bug Fixes
+        Form Class: added roll group name to SelectStudent field in DatabaseFormFactory
+        Markbook: display report card grades and GPA on the Stdent Details markbook page
+        Markbook: added student official name on hover to class lists (for students with identical names)
+        Messenger: added school email to the the Reply To field
+        Messenger: added student's roll group name to the list of names for Individuals
+        Staff: added a teacher's roll group and class links to Staff Details page
+        Students: moved required field from Profession to Employer in Application Form
+        Students: added an office-only 'skip email notification' option for Application Form
+        Students: added course names to the list of teachers on Student Details page
+        System: disallow password reset for users where canLogin is not enabled
+        Timetable: display teacher name in timetable views
+        User Admin: added an Activation Required option for canLogin
+        User Admin: commented out the Delete action for users
