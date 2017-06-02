@@ -53,6 +53,7 @@ v14.0.00
 		System: fixed error messages and failed login redirect on Google login page
 		System: added ability to set mysql port through config.php
 		System: moved registration link from main panel to sidebar
+		System: fixed issue preventing Excel export from root level files
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities

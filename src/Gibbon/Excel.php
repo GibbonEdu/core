@@ -10,7 +10,10 @@
  */
 namespace Gibbon;
 
-require_once '../../lib/PHPExcel/Classes/PHPExcel.php';
+if (file_exists('../../lib/PHPExcel/Classes/PHPExcel.php'))
+	require_once '../../lib/PHPExcel/Classes/PHPExcel.php';
+else
+	require_once './lib/PHPExcel/Classes/PHPExcel.php';
 
 /**
  * Export to Excel
