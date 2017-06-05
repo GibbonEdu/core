@@ -163,9 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addSelect('gibbonRollGroupID')
             ->fromArray($rollGroupsOptions)
             ->chainedTo('gibbonSchoolYearIDEntry', $rollGroupsChained)
-            ->isRequired()
-            ->placeholder()
-            ;
+            ->placeholder();
 
     // DAY TYPE
     $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
