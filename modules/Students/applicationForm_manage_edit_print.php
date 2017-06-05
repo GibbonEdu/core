@@ -785,11 +785,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo "<table class='print-table' cellspacing='0' style='width: 100%;'>";
             echo '<tr>';
             echo "<td style='width: 33%;'>";
-            echo "<span class='label'>".__($guid, 'Language Arts 1').'</span><br/>';
+            echo "<span class='label'>".__($guid, 'Vocabulary').'</span><br/>';
             echo '<hr/>';
             echo '</td>';
             echo "<td style='width: 33%;'>";
-            echo "<span class='label'>".__($guid, 'Language Arts 2').'</span><br/>';
+            echo "<span class='label'>".__($guid, 'Reading').'</span><br/>';
             echo '<hr/>';
             echo '</td>';
             echo "<td style='width: 33%;'>";
