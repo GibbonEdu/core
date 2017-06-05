@@ -252,8 +252,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</tr>';
             echo '<tr>';
             echo "<td colspan=3>";
-            echo "<span class='label'>".__($guid, 'Details').'</span><br/>';
-            echo '<hr/><hr/><hr/><hr/>';
+            echo "<span class='label'>".__($guid, 'Notes').'</span><br/>';
+            echo '<hr/><hr/><hr/><hr/><hr/><hr/>';
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
@@ -264,12 +264,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo "<td colspan='2'>";
             echo "<span class='label'>".__($guid, 'Teacher').'</span><br/>';
             echo '<hr/>';
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo "<td colspan=3>";
-            echo "<span class='label'>".__($guid, 'Additional Notes').'</span><br/>';
-            echo '<hr/><hr/><hr/><hr/>';
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
