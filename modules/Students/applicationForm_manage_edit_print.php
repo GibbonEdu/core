@@ -60,8 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         } else {
             ?>
             <style>
-            .page-break-after {
-                page-break-after: always;
+            .page-break-avoid {
+                page-break-inside: avoid;
             }
 
             .print-table {
@@ -103,10 +103,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 border: 2px solid #666666;
             }
 
+            h4 {
+                page-break-after: avoid;
+            }
+
             </style>
             <?php
             $row = $result->fetch();
-            echo '<div class="page-break-after">';
             echo '<h4>'.__($guid, 'For Office Use').'</h4>';
             echo "<table class='print-table' cellspacing='0'>";
             echo '<tr>';
@@ -216,71 +219,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '</tr>';
             }
             echo '</table>';
-
-
-            // TIS OFFICE USE
-            echo '<h4>'.__($guid, 'Test Results').'</h4>';
-            echo "<table class='print-table' cellspacing='0' style='width: 100%;'>";
-            echo '<tr>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'>".__($guid, 'Language Arts 1').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'>".__($guid, 'Language Arts 2').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'>".__($guid, 'Maths').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-
-            echo '<h4>'.__($guid, 'Decision').'</h4>';
-            echo "<table class='print-table' cellspacing='0' style='width: 100%;'>";
-            echo '<tr>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'><span class='checkbox'></span>".__($guid, 'Accept').'</span><br/>';
-            echo '</td>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'><span class='checkbox'></span>".__($guid, 'Decline').'</span><br/>';
-            echo '</td>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'><span class='checkbox'></span>".__($guid, 'Conditional Acceptance').'</span><br/>';
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo "<td colspan=3>";
-            echo "<span class='label'>".__($guid, 'Notes').'</span><br/>';
-            echo '<hr/><hr/><hr/><hr/><hr/><hr/>';
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo "<td style='width: 33%;'>";
-            echo "<span class='label'>".__($guid, 'Homeroom').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo "<td colspan='2'>";
-            echo "<span class='label'>".__($guid, 'Teacher').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo "<td  colspan='2'>";
-            echo "<span class='label'>".__($guid, 'Admin Signature').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo "<td >";
-            echo "<span class='label'>".__($guid, 'Date').'</span><br/>';
-            echo '<hr/>';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-
-            // END TIS OFFICE USE
-
-            echo '</div>';
 
             echo '<h4>'.__($guid, 'Student Details').'</h4>';
             echo "<table class='print-table' cellspacing='0' style='width: 100%'>";
@@ -840,6 +778,70 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '</tr>';
             }
             echo '</table>';
+
+            // TIS OFFICE USE
+            echo '<div class="page-break-avoid">';
+            echo '<h4>'.__($guid, 'Test Results').'</h4>';
+            echo "<table class='print-table' cellspacing='0' style='width: 100%;'>";
+            echo '<tr>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'>".__($guid, 'Language Arts 1').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'>".__($guid, 'Language Arts 2').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'>".__($guid, 'Maths').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo '</tr>';
+            echo '</table>';
+
+            echo '<h4>'.__($guid, 'Decision').'</h4>';
+            echo "<table class='print-table' cellspacing='0' style='width: 100%;'>";
+            echo '<tr>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'><span class='checkbox'></span>".__($guid, 'Accept').'</span><br/>';
+            echo '</td>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'><span class='checkbox'></span>".__($guid, 'Decline').'</span><br/>';
+            echo '</td>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'><span class='checkbox'></span>".__($guid, 'Conditional Acceptance').'</span><br/>';
+            echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo "<td colspan=3>";
+            echo "<span class='label'>".__($guid, 'Notes').'</span><br/>';
+            echo '<hr/><hr/><hr/><hr/><hr/><hr/>';
+            echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo "<td style='width: 33%;'>";
+            echo "<span class='label'>".__($guid, 'Homeroom').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo "<td colspan='2'>";
+            echo "<span class='label'>".__($guid, 'Teacher').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo "<td  colspan='2'>";
+            echo "<span class='label'>".__($guid, 'Admin Signature').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo "<td >";
+            echo "<span class='label'>".__($guid, 'Date').'</span><br/>';
+            echo '<hr/>';
+            echo '</td>';
+            echo '</tr>';
+            echo '</table>';
+            echo '</div>';
+            // END TIS OFFICE USE
+
         }
     }
 }
