@@ -92,7 +92,7 @@ class Validator
         }
 
         if (empty($allowableTags)) {
-            return $value;
+            return strip_tags($value);
         }
 
         // Do a generic strip tags first
