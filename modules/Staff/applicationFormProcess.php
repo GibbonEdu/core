@@ -59,6 +59,11 @@ if ($proceed == false) {
     header("Location: {$URL}");
 } else {
     //Proceed!
+
+    // Sanitize the whole $_POST array
+    $validator = new \Gibbon\Data\Validator();
+    $_POST = $validator->sanitize($_POST);
+
     $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'];
     $questions = '';
     if (isset($_POST['questions'])) {

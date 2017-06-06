@@ -55,6 +55,10 @@ if ($proceed == false) {
         exit();
     }
 
+    // Sanitize the whole $_POST array
+    $validator = new \Gibbon\Data\Validator();
+    $_POST = $validator->sanitize($_POST);
+
     //Proceed!
     $surname = trim($_POST['surname']);
     $firstName = trim($_POST['firstName']);

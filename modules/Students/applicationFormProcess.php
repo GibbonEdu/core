@@ -69,6 +69,11 @@ if ($proceed == false) {
     //IF ID IS NOT SET IT IS A NEW APPLICATION, SO PROCESS AND SAVE.
     if (is_null($id)) {
         //Proceed!
+
+        // Sanitize the whole $_POST array
+        $validator = new \Gibbon\Data\Validator();
+        $_POST = $validator->sanitize($_POST);
+
         //GET STUDENT FIELDS
         $surname = $_POST['surname'];
         $firstName = trim($_POST['firstName']);
