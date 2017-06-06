@@ -33,7 +33,6 @@ class Validator
      * @param  array  $input            An array of all input data
      * @param  array  $allowableTags    An array of field => tags for input fields that accept HTML
      * @param  bool   $utf8_encode
-     *
      * @return array
      */
     public function sanitize($input, $allowableTags = array(), $utf8_encode = true)
@@ -82,11 +81,8 @@ class Validator
     /**
      * Sanitize an HTML string by stripping tags and handling the attributes within allowable tags.
      *
-     * @version  v14
-     * @since    v14
      * @param    string  &$value
      * @param    array   $allowableTags
-     *
      * @return   string
      */
     public function sanitizeHTML(&$value, $allowableTags = array())
@@ -111,11 +107,8 @@ class Validator
     /**
      * Wrapper for strip_tags, accepts an array of tags rather than a string.
      *
-     * @version  v14
-     * @since    v14
      * @param    string  &$value
      * @param    array   &$allowableTags
-     *
      * @return   string
      */
     protected function stripTags(&$value, &$allowableTags = array())
@@ -131,11 +124,8 @@ class Validator
     /**
      * Strip disallowed attributes from tags using the DOM classes to walk over the HTML elements.
      *
-     * @version  v14
-     * @since    v14
      * @param    string  &$value
      * @param    array   &$allowableTags
-     *
      * @return   string
      */
     protected function stripAttributes(&$value, &$allowableTags = array())
@@ -172,10 +162,7 @@ class Validator
     /**
      * Parse a tag string into an array of tag => array(attrs). Handles strip_tags and tinymce-style strings.
      *
-     * @version  v14
-     * @since    v14
      * @param    string  $allowableTagString
-     *
      * @return   array
      */
     protected function parseTagsFromString($tagString = '')
