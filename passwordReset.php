@@ -65,6 +65,10 @@ if ($step == 1) {
 	<?php
 }
 else {
+	// Sanitize the whole $_GET array
+    $validator = new \Gibbon\Data\Validator();
+    $_GET = $validator->sanitize($_GET);
+
 	//Get URL parameters
 	$input = $_GET['input'];
 	$key = $_GET['key'];

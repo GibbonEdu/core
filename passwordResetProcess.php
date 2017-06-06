@@ -30,6 +30,11 @@ $connection2 = $pdo->getConnection();
 //Create password
 $password = randomPassword(8);
 
+// Sanitize the $_GET and $_POST arrays
+$validator = new \Gibbon\Data\Validator();
+$_GET = $validator->sanitize($_GET);
+$_POST = $validator->sanitize($_POST);
+
 //Check email address is not blank
 if (isset($_GET['input']))
     $input = $_GET['input'];
@@ -105,7 +110,7 @@ else {
             } else {
                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
             }
-            
+
             $mail->CharSet="UTF-8";
             $mail->Encoding="base64" ;
             $mail->IsHTML(true);
