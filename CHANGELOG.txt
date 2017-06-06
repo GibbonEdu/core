@@ -37,6 +37,7 @@ v14.0.00
 		System: updated PHPMailer to latest version
 		System: removed all code samples from /lib libraries
 		System: fixed SVG code execution vulnerability
+        System: added input sanitization to public forms
 
 	Tweaks & Bug Fixes
 		System: improved Fast Finder student search permissions
