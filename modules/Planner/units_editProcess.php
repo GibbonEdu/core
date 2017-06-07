@@ -47,12 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         } else {
             //Proceed!
 
-            // Sanitize the whole $_POST array
-            $validator = new \Gibbon\Data\Validator();
-            $_POST = $validator->sanitize($_POST, array(
-                'details' => getSettingByScope($connection2, 'System', 'allowableHTML')
-            ));
-
             //Validate Inputs
             $name = $_POST['name'];
             $description = $_POST['description'];
