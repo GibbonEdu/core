@@ -319,7 +319,7 @@ else {
 									print "<tr>" ;
 								}
 
-								$rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+								$rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
 
 								//Get any student log data by context
 								try {

@@ -25,24 +25,24 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Daily Attendance') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('View Daily Attendance') . "</div>" ;
 	print "</div>" ;
 
 	print "<h2>" ;
-	print _("View Daily Attendance") ;
+	print __("View Daily Attendance") ;
 	print "</h2>" ;
 
 	if (isset($_GET["currentDate"])==FALSE) {
 	 	$currentDate=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
+		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;
 	}
 
 	$today=date("Y-m-d");
@@ -55,17 +55,17 @@ else {
 	?>
 
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 			<tr>
-				<td style='width: 275px'> 
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+				<td style='width: 275px'>
+					<b><?php print __('Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 						date.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -95,7 +95,7 @@ else {
 								$selected = ($gibbonPersonID == $rowSelect['gibbonPersonID'])? 'selected' : '';
 
 								echo "<option value='".$rowSelect['gibbonPersonID']."' $selected>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-								
+
 							}
 							?>
 						</select>
@@ -105,7 +105,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/attendance.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -118,12 +118,12 @@ else {
 
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
-				print _("The specified date is in the future: it must be today or earlier.");
+				print __("The specified date is in the future: it must be today or earlier.");
 			print "</div>" ;
 		}
 		else if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 			print "<div class='error'>" ;
-				print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
+				print __("School is closed on the specified date, and so attendance information cannot be recorded.") ;
 			print "</div>" ;
 		} else {
 
@@ -131,13 +131,13 @@ else {
 			if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php") ) {
 				// Show My Form Groups
 				try {
-					$data=array("gibbonPersonIDTutor1"=>$gibbonPersonID, "gibbonPersonIDTutor2"=>$gibbonPersonID, "gibbonPersonIDTutor3"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$data=array("gibbonPersonIDTutor1"=>$gibbonPersonID, "gibbonPersonIDTutor2"=>$gibbonPersonID, "gibbonPersonIDTutor3"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
 					$sql="SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				catch(PDOException $e) {
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 
 			 	if ($result->rowCount()>0) {
@@ -149,29 +149,29 @@ else {
 					print "<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed;'>" ;
 						print "<tr class='head'>" ;
 								print "<th style='width: 80px; font-size: 85%; text-transform: uppercase'>" ;
-								print _("Group") ;
+								print __("Group") ;
 							print "</th>" ;
 
 							print "<th style='width: 342px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Recent History") ;
+								print __("Recent History") ;
 							print "</th>" ;
 
 							print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Today") ;
+								print __("Today") ;
 							print "</th>" ;
 
 							print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Present") ;
+								print __("In") ;
 							print "</th>" ;
 
 							print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Absent") ;
+								print __("Out") ;
 							print "</th>" ;
 
 							if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-								
+
 								print "<th style='width: 50px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-									print _("Actions") ;
+									print __("Actions") ;
 								print "</th>" ;
 							}
 
@@ -195,24 +195,24 @@ else {
 
 							//Grab attendance log for the group & current day
 							try {
-								$dataLog=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"], "date"=>$currentDate . "%"); 
-								
-								$sqlLog="SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp, 
-								COUNT(DISTINCT gibbonPersonID) AS total, 
-								SUM(DISTINCT gibbonPersonID AND gibbonAttendanceLogPerson.direction = 'Out') AS absent 
-								FROM gibbonAttendanceLogPerson 
-								JOIN gibbonAttendanceLogRollGroup ON gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date 
-								WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID 
-								AND gibbonAttendanceLogPerson.date LIKE :date 
-								AND gibbonAttendanceLogPerson.gibbonCourseClassID = 0 
-								GROUP BY gibbonAttendanceLogRollGroup.gibbonAttendanceLogRollGroupID 
+								$dataLog=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"], "date"=>$currentDate . "%");
+
+								$sqlLog="SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp,
+								COUNT(DISTINCT gibbonPersonID) AS total,
+								COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonPersonID END) AS absent
+								FROM gibbonAttendanceLogPerson
+								JOIN gibbonAttendanceLogRollGroup ON gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date
+								WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID
+								AND gibbonAttendanceLogPerson.date LIKE :date
+								AND gibbonAttendanceLogPerson.context = 'Roll Group'
+								GROUP BY gibbonAttendanceLogRollGroup.gibbonAttendanceLogRollGroupID
 								ORDER BY gibbonAttendanceLogPerson.timestampTaken" ;
 
 								$resultLog=$connection2->prepare($sqlLog);
 								$resultLog->execute($dataLog);
 							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							catch(PDOException $e) {
+								print "<div class='error'>" . $e->getMessage() . "</div>" ;
 							}
 
 							$log=$resultLog->fetch();
@@ -225,7 +225,7 @@ else {
 
 
 								print "<td style='text-align: center'>" ;
-									
+
 
 									echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
 			                        echo '<tr>';
@@ -247,7 +247,7 @@ else {
 			                                    //$class = 'highlightNoData';
 			                                    $class = 'highlightAbsent';
 			                                } else {
-			                                    
+
 			                                    $class = 'highlightPresent';
 			                                }
 
@@ -290,15 +290,15 @@ else {
 									print $log["absent"];
 								print "</td>" ;
 
-								
+
 								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
 
 									print "<td style='text-align: center'>" ;
-										print "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . $currentDate . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									print "</td>" ;
 
 								}
-								
+
 
 							print "</tr>" ;
 
@@ -344,16 +344,16 @@ else {
 				//Show My Classes
 				try {
 					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=> $gibbonPersonID);
-					
+
 					$sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID,
-					(SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount 
-					FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson 
-					WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID 
-					AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID 
-					AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' 
-					AND gibbonCourseClass.attendance = 'Y' 
+					(SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount
+					FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson
+					WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID
+					AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID
+					AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%'
+					AND gibbonCourseClass.attendance = 'Y'
 					ORDER BY course, class" ;
-					
+
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -361,35 +361,35 @@ else {
 
 				if ($result->rowCount()>0) {
 					print "<h2 style='margin-bottom: 10px'  class='sidebar'>" ;
-					print _("My Classes") ;
+					print __("My Classes") ;
 					print "</h2>" ;
 
 					print "<table class='mini colorOddEven fullWidth' cellspacing='0' style='table-layout: fixed;'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 80px; font-size: 85%; text-transform: uppercase'>" ;
-							print _("Group") ;
+							print __("Group") ;
 						print "</th>" ;
 
 						print "<th style='width: 342px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Recent History") ;
+							print __("Recent History") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Today") ;
+							print __("Today") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("In") ;
+							print __("In") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Out") ;
+							print __("Out") ;
 						print "</th>" ;
 
 						if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-							
+
 							print "<th style='width: 50px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Actions") ;
+								print __("Actions") ;
 							print "</th>" ;
 						}
 
@@ -409,26 +409,27 @@ else {
 
 							//Grab attendance log for the class & current day
 							try {
-								$dataLog=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "date"=>$currentDate . "%"); 
-								
-								$sqlLog="SELECT gibbonAttendanceLogCourseClass.timestampTaken as timestamp, 
-								COUNT(gibbonAttendanceLogPerson.gibbonPersonID) AS total, SUM(gibbonAttendanceLogPerson.direction = 'Out') AS absent 
-								FROM gibbonAttendanceLogCourseClass 
+								$dataLog=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "date"=>$currentDate . "%");
+
+								$sqlLog="SELECT gibbonAttendanceLogCourseClass.timestampTaken as timestamp,
+								COUNT(gibbonAttendanceLogPerson.gibbonPersonID) AS total, SUM(gibbonAttendanceLogPerson.direction = 'Out') AS absent
+								FROM gibbonAttendanceLogCourseClass
 								JOIN gibbonAttendanceLogPerson ON gibbonAttendanceLogPerson.gibbonCourseClassID = gibbonAttendanceLogCourseClass.gibbonCourseClassID
-								WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
-								AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date 
-								GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID  
+								WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID
+								AND gibbonAttendanceLogPerson.context='Class'
+								AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date
+								GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID
 								ORDER BY gibbonAttendanceLogCourseClass.timestampTaken" ;
-	 
+
 								$resultLog=$connection2->prepare($sqlLog);
 								$resultLog->execute($dataLog);
 							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							catch(PDOException $e) {
+								print "<div class='error'>" . $e->getMessage() . "</div>" ;
 							}
 
 							$log=$resultLog->fetch();
-							
+
 							print "<tr>" ;
 
 								print "<td style='word-wrap: break-word'>" ;
@@ -450,7 +451,7 @@ else {
 		                            } else {
 
 		                                $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-		                                
+
 		                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
 
 		                                if (isset($logHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
@@ -510,15 +511,15 @@ else {
 									print $log["absent"];
 								print "</td>" ;
 
-								
+
 								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
 
 									print "<td style='text-align: center'>" ;
-										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									print "</td>" ;
 
 								}
-								
+
 
 							print "</tr>" ;
 						}
@@ -528,6 +529,6 @@ else {
 		}
 	}
 
-	
+
 }
 ?>
