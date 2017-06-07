@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Daily Attendance') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('View Daily Attendance') . "</div>" ;
 	print "</div>" ;
 
 	print "<h2>" ;
-	print _("View Daily Attendance") ;
+	print __("View Daily Attendance") ;
 	print "</h2>" ;
 
 	if (isset($_GET["currentDate"])==FALSE) {
@@ -58,8 +58,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 			<tr>
 				<td style='width: 275px'>
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __('Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
@@ -105,7 +105,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/attendance.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __("Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -118,12 +118,12 @@ else {
 
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
-				print _("The specified date is in the future: it must be today or earlier.");
+				print __("The specified date is in the future: it must be today or earlier.");
 			print "</div>" ;
 		}
 		else if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 			print "<div class='error'>" ;
-				print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
+				print __("School is closed on the specified date, and so attendance information cannot be recorded.") ;
 			print "</div>" ;
 		} else {
 
@@ -149,29 +149,29 @@ else {
 					print "<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed;'>" ;
 						print "<tr class='head'>" ;
 								print "<th style='width: 80px; font-size: 85%; text-transform: uppercase'>" ;
-								print _("Group") ;
+								print __("Group") ;
 							print "</th>" ;
 
 							print "<th style='width: 342px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Recent History") ;
+								print __("Recent History") ;
 							print "</th>" ;
 
 							print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Today") ;
+								print __("Today") ;
 							print "</th>" ;
 
 							print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Present") ;
+								print __("In") ;
 							print "</th>" ;
 
 							print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Absent") ;
+								print __("Out") ;
 							print "</th>" ;
 
 							if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
 
 								print "<th style='width: 50px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-									print _("Actions") ;
+									print __("Actions") ;
 								print "</th>" ;
 							}
 
@@ -294,7 +294,7 @@ else {
 								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
 
 									print "<td style='text-align: center'>" ;
-										print "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . $currentDate . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									print "</td>" ;
 
 								}
@@ -361,35 +361,35 @@ else {
 
 				if ($result->rowCount()>0) {
 					print "<h2 style='margin-bottom: 10px'  class='sidebar'>" ;
-					print _("My Classes") ;
+					print __("My Classes") ;
 					print "</h2>" ;
 
 					print "<table class='mini colorOddEven fullWidth' cellspacing='0' style='table-layout: fixed;'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 80px; font-size: 85%; text-transform: uppercase'>" ;
-							print _("Group") ;
+							print __("Group") ;
 						print "</th>" ;
 
 						print "<th style='width: 342px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Recent History") ;
+							print __("Recent History") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Today") ;
+							print __("Today") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("In") ;
+							print __("In") ;
 						print "</th>" ;
 
 						print "<th style='width: 40px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-							print _("Out") ;
+							print __("Out") ;
 						print "</th>" ;
 
 						if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
 
 							print "<th style='width: 50px; font-size: 60%; text-align: center; text-transform: uppercase'>" ;
-								print _("Actions") ;
+								print __("Actions") ;
 							print "</th>" ;
 						}
 
@@ -514,7 +514,7 @@ else {
 								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
 
 									print "<td style='text-align: center'>" ;
-										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									print "</td>" ;
 
 								}
