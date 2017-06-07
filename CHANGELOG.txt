@@ -79,6 +79,7 @@ v14.0.00
 		Finance: removed incorrectly applied currency label from expense export
 		Formal Assessment: improved layout of Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
+		Library: fixed button label in Edit view in Lending & Activity Log
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
 		Markbook: fixed order for first markbook column not saving properly
 		Markbook: allow decimal values for markbook column attainment raw max

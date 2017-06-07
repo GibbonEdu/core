@@ -65,14 +65,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_lending_item_editProcess.php?gibbonLibraryItemEventID=$gibbonLibraryItemEventID&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'Item Details') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'ID') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Current Status') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -98,15 +98,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 							<input readonly name="statusCurrent" id="statusCurrent" value="<?php echo $row['status'] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
-					
+
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'This Event') ?></h3>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'New Status') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Responsible User') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 							$loanLength = 7;
 						}
 						?>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Expected Return Date') ?></b><br/>
 							<span class="emphasis small">
 								<?php echo sprintf(__($guid, 'Default loan length is %1$s day(s).'), $loanLength); ?>
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Action') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'What to do when item is next returned.') ?><br/></span>
 						</td>
@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Responsible User') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Who will be responsible for the future status?') ?></span>
 						</td>
@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 							echo '</select>'; ?>
 						</td>
 					</tr>
-					
+
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -245,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php echo $gibbonLibraryItemID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="Return">
+							<input type="submit" value="<?php echo __('Submit') ?>">
 						</td>
 					</tr>
 				</table>
