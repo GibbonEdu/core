@@ -69,6 +69,7 @@ v14.0.00
 		Attendance: added dynamic legend for Student History report
 		Attendance: added extra role to allow form group attendance to be restricted to own form group
 		Attendance: updated Take Attendance by Class to exclude students with timetable exceptions
+		Data Updater: made all fields optional when user has Update Family Data_any
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
