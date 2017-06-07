@@ -61,6 +61,7 @@ v14.0.00
 		Activities: added term filter to manage view
 		Activities: fixed PHP warnings in Edit Activity Enrolment when access via My Activities.
 		Activities: added upper limit to number of columns in Printable Attendance Sheet
+        Activities: fixed total attendance counts to exclude left students
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts

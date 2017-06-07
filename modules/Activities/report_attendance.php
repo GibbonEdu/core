@@ -272,6 +272,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         echo '</tr>';
 
         $count = 0;
+        // Build an empty array of attendance count data for each session
+        $attendanceCount = array_combine(array_keys($activitySessions), array_fill(0, count($activitySessions), 0));
 
         while ($row = $studentResult->fetch()) {
             ++$count;
@@ -287,6 +289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                 if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                     if (isset($sessionAttendanceData[$sessionDate]['data'][$student])) {
                         echo '✓';
+                        $attendanceCount[$sessionDate]++;
                     }
                 }
                 echo '</td>';
@@ -305,8 +308,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             echo '<td>';
-            if (isset($sessionAttendanceData[$sessionDate])) {
-                echo count($sessionAttendanceData[$sessionDate]['data']).' / '.$activity['participants'];
+            if (!empty($attendanceCount[$sessionDate])) {
+                echo $attendanceCount[$sessionDate].' / '.$activity['participants'];
             }
             echo '</td>';
         }
