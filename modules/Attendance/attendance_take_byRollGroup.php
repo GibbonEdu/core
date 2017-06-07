@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         echo '<tr>';
                                     }
 
-                                    $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+                                    $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
 
                                     try {
                                         //Get student log data by context
