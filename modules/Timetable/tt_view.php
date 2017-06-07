@@ -134,8 +134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo '</table>';
 
             $ttDate = null;
-            if (isset($_POST['ttDate'])) {
-                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+            if (isset($_REQUEST['ttDate'])) {
+                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_REQUEST['ttDate']));
             }
 
             if (isset($_POST['fromTT'])) {

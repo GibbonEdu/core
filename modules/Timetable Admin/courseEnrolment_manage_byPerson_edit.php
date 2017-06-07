@@ -307,8 +307,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $gibbonTTID = $_GET['gibbonTTID'];
             }
             $ttDate = null;
-            if (isset($_POST['ttDate'])) {
-                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+            if (isset($_REQUEST['ttDate'])) {
+                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_REQUEST['ttDate']));
             }
 
             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php', "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", 'full', true);
