@@ -234,6 +234,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             }
         }
 
+        // Build an empty array of attendance count data for each session
+        $attendanceCount = array_fill(0, count($sessions), 0);
+
         // Setup the column heading for students
         $excel->getActiveSheet()->setCellValue('A'.($columnStart), __($guid, 'Days'))
             ->setCellValue('A'.($columnStart + 1), __($guid, 'Student'));
@@ -257,6 +260,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                 if (isset($attendance[$n][$studentID]) && !empty($attendance[$n][$studentID])) {
                     $excel->getActiveSheet()->setCellValue(num2alpha($n + 1).($i + $columnStart), '✓');
                     ++$daysAttended;
+
+                    $attendanceCount[$n]++;
                 }
             }
 
@@ -272,8 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $excel->getActiveSheet()->getRowDimension($columnStart + $columnEnd + 1)->setRowHeight(2 * 18);
 
         for ($i = 0; $i < count($sessions); ++$i) {
-            $excel->getActiveSheet()->setCellValue(num2alpha($i + 1).($columnStart + $columnEnd),
-                count($attendance[$i]));
+            $excel->getActiveSheet()->setCellValue(num2alpha($i + 1).($columnStart + $columnEnd), $attendanceCount[$i]);
 
             $excel->getActiveSheet()->getStyle(num2alpha($i + 1).($columnStart + 1 + $columnEnd))->getAlignment()->setWrapText(true);
 
