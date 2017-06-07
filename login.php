@@ -39,6 +39,10 @@ $_SESSION[$guid]['pageLoads'] = null;
 
 $URL = './index.php';
 
+// Sanitize the whole $_POST array
+$validator = new \Gibbon\Data\Validator();
+$_POST = $validator->sanitize($_POST);
+
 //Get and store POST variables from calling page
 $username = $_POST['username'];
 $password = $_POST['password'];
