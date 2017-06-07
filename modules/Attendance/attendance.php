@@ -416,6 +416,7 @@ else {
 								FROM gibbonAttendanceLogCourseClass
 								JOIN gibbonAttendanceLogPerson ON gibbonAttendanceLogPerson.gibbonCourseClassID = gibbonAttendanceLogCourseClass.gibbonCourseClassID
 								WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID
+								AND gibbonAttendanceLogPerson.context='Class'
 								AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date
 								GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID
 								ORDER BY gibbonAttendanceLogCourseClass.timestampTaken" ;
