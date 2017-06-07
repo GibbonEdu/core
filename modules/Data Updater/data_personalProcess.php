@@ -278,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                     $fields[$rowFields['gibbonPersonFieldID']] = $_POST['custom'.$rowFields['gibbonPersonFieldID']];
                                 }
                             }
-                            if ($rowFields['required'] == 'Y') {
+                            if ($highestAction != 'Update Personal Data_any' && $rowFields['required'] == 'Y') {
                                 if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']]) == false) {
                                     $customRequireFail = true;
                                 } elseif ($_POST['custom'.$rowFields['gibbonPersonFieldID']] == '') {

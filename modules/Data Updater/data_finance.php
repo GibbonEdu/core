@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
                     echo '</div>';
                     $proceed = true;
-                } else {    
+                } else {
                     //Get user's data
                     try {
                         $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);

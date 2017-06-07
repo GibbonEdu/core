@@ -1883,7 +1883,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                     if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
                                         $value = $fields[$rowFields['gibbonPersonFieldID']];
                                     }
-                                    echo renderCustomFieldRow($connection2, $guid, $rowFields, $value);
+                                    if ($highestAction != 'Update Personal Data_any') {
+                                        echo renderCustomFieldRow($connection2, $guid, $rowFields, $value);
+                                    }
+                                    else {
+                                        echo renderCustomFieldRow($connection2, $guid, $rowFields, $value, '', '', true);
+                                    }
+
                                 }
 							}
 							?>
