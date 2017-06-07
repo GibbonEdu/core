@@ -76,6 +76,7 @@ v14.0.00
 		Finance: fixed bug preventing reminder emails from being sent
 		Finance: fixed bug leading to invoice values changing (in print view only) after issue
 		Finance: added reminder number to Email Reminder section header in overdue invoice edit view
+		Finance: removed incorrectly applied currency label from expense export
 		Formal Assessment: improved layout of Internal Assessment view
 		Library: added new type to store Audio/Visual equipment
 		Markbook: added a class average row to the bottom of markbook views (when Weighting is enabled)
