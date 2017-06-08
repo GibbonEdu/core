@@ -1337,7 +1337,7 @@ table tr.heading:first-child td:last-child {
 }
 
 /* Unfloat validation preceded by a phone input, adjust line height for vertical alignment */
-input[name^="phone"] ~ .LV_invalid {
+input[name*="phone"] ~ .LV_invalid {
     float: none;
     line-height: 30px;
 }
