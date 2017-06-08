@@ -1335,3 +1335,19 @@ table tr.heading:first-child td:last-child {
 	border-top-right-radius:3px;
 	padding-left: 5px !important;
 }
+
+/* Unfloat validation preceded by a phone input, adjust line height for vertical alignment */
+input[name^="phone"] ~ .LV_invalid {
+    float: none;
+    line-height: 30px;
+}
+
+/* Hide validation preceded by another validation message in the same parent element */
+.LV_invalid ~ .LV_invalid {
+    display: none;
+}
+
+/* Remove the tiny gap that appears near valid elements */
+.LV_valid {
+    margin: 0;
+}
