@@ -18,3 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once '../gibbon.php';
+
+$installType = getSettingByScope($connection2, 'System', 'installType');
+if ($installType == 'Production') {
+    die('ERROR: Test suite cannot run on a production system.'."\n");
+}
