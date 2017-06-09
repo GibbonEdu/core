@@ -78,6 +78,7 @@ v14.0.00
 		Finance: added reminder number to Email Reminder section header in overdue invoice edit view
 		Finance: removed incorrectly applied currency label from expense export
 		Formal Assessment: improved layout of Internal Assessment view
+		Formal Assessment: fixed incorrect string wrapping for translation in Internal Assessment import
 		Library: added new type to store Audio/Visual equipment
 		Library: fixed button label in Edit view in Lending & Activity Log
 		Library: fixed empty Link field when in Edit view in Manage Catalog

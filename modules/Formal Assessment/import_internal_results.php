@@ -126,11 +126,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                     <li><b><?php echo __($guid, 'Student\'s Username') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonPerson.username in database,') ?></li>
                     <?php
                     if ($attainmentAlternativeName != '')
-                        echo '<li><b>' . __($guid, '$attainmentAlternativeName Value') . ' *</b> - </li>' ;
+                        echo '<li><b>' . __($guid, "$attainmentAlternativeName Value") . '</b></li>' ;
                     else
                         echo '<li><b>' . __($guid, 'Attainment Value') . '</b></li>' ;
                     if ($effortAlternativeName != '')
-                        echo '<li><b>' . __($guid, '$effortAlternativeName Value') . ' *</b> - </li>' ;
+                        echo '<li><b>' . __($guid, "$effortAlternativeName Value") . '</b></li>' ;
                     else
                         echo '<li><b>' . __($guid, 'Effort Value') . '</b></li>' ;
                     ?>
