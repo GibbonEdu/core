@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
-include './modules/Markbook/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == false) {
     //Acess denied
@@ -1872,6 +1871,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __($guid, 'The highest grouped action cannot be determined.');
                                 echo '</div>';
                             } else {
+                                //Module includes
+                                include './modules/Markbook/moduleFunctions.php';
+
                                 //Get settings
                                 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
                                 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
