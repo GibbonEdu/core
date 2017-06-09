@@ -21,7 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
-include './modules/Markbook/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == false) {
     //Acess denied
@@ -1856,6 +1855,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Attendance/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
                         }
                     } elseif ($subpage == 'Markbook') {
+                        include './modules/Markbook/moduleFunctions.php';
+
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
                             echo "<div class='error'>";
                             echo __($guid, 'Your request failed because you do not have access to this action.');
