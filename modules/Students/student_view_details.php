@@ -1855,8 +1855,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Attendance/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
                         }
                     } elseif ($subpage == 'Markbook') {
-                        include './modules/Markbook/moduleFunctions.php';
-
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
                             echo "<div class='error'>";
                             echo __($guid, 'Your request failed because you do not have access to this action.');
@@ -1868,6 +1866,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __($guid, 'The highest grouped action cannot be determined.');
                                 echo '</div>';
                             } else {
+                                //Module includes
+                                include './modules/Markbook/moduleFunctions.php';
+
                                 //Get settings
                                 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
                                 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
