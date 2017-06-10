@@ -89,6 +89,7 @@ v14.0.00
 		Markbook: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
 		Markbook: added a permission for teachers to only view their own markbook information
 		Planner: adjusted permissions to allow teachers with Planner_viewAllEditMyClasses rights to view Unit Overview for classes they don't teach
+		Planner: fixed bug causing incorrect Satisfactory count in Work Summary by Form Group report
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
