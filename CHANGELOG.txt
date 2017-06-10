@@ -89,6 +89,7 @@ v14.0.00
 		Markbook: fixed custom Attainment label for Total Mark field
 		Markbook: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
 		Markbook: added a permission for teachers to only view their own markbook information
+		Messenger: fixed issue leaking custom Messenger bubble background onto screen
 		Planner: adjusted permissions to allow teachers with Planner_viewAllEditMyClasses rights to view Unit Overview for classes they don't teach
 		Planner: fixed bug causing incorrect Satisfactory count in Work Summary by Form Group report
 		Planner: fixed PHP notice issue when listing lessons with unit that no longer exists
