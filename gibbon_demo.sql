@@ -6891,19 +6891,6 @@ VALUES
 	(00000000082846, 00001806, NULL, 0000003617, '2017-08-18', '09:40:00', '10:50:00', 'Epic Wallpaper 2', 'Use Your Texture, Why So Big?, Layers, Finding A Silhouette, Making A Cu...', '', '', 'N', NULL, '', 'N', NULL, NULL, '', 'Optional', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'Y', 0000000001, 0000000001),
 	(00000000082845, 00001806, NULL, 0000003617, '2017-08-16', '10:35:00', '11:40:00', 'Epic Wallpaper 1', 'Want To Make Some Eye Candy?, Assessment, Getting Started With Acorn, Fi...', '', '', 'N', NULL, '', 'N', NULL, NULL, '', 'Optional', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'Y', 0000000001, 0000000001);
 
-UPDATE gibbonSchoolYear SET status='Past' WHERE gibbonSchoolYearID=022;
-
-INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenceNumber`, `firstDay`, `lastDay`)
-VALUES
-	(023, '2017-2018', 'Current', 9, '2017-08-16', '2018-06-28'),
-	(024, '2018-2019', 'Upcoming', 10, '2018-08-20', '2019-06-30');
-
-INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearID`, `sequenceNumber`, `name`, `nameShort`, `firstDay`, `lastDay`)
-VALUES
-	(00025, 023, 22, 'Term 1', 'T1', '2017-08-16', '2017-12-15'),
-	(00026, 023, 23, 'Term 2', 'T2', '2018-01-08', '2018-03-28'),
-	(00027, 023, 24, 'Term 3', 'T3', '2018-04-16', '2018-06-28');
-
 INSERT INTO `gibbonSchoolYearSpecialDay` (`gibbonSchoolYearSpecialDayID`, `gibbonSchoolYearTermID`, `type`, `name`, `description`, `date`, `schoolOpen`, `schoolStart`, `schoolEnd`, `schoolClose`)
 VALUES
 	(0000000213, 00027, 'School Closure', 'Tuen Ng Festival', '', '2018-06-18', NULL, NULL, NULL, NULL),
