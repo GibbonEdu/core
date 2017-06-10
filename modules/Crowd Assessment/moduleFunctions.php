@@ -102,7 +102,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
     $role = '';
     //Determine roll
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view.php', $connection2);
-    if ($highestAction == 'View Student Profile_myChildren') {
+    if ($highestAction == 'View Student Profile_myChildren' OR $highestAction == 'View Student Profile_brief') {
         $role = 'Parent';
         $childInClass = false;
 
