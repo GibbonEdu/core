@@ -1261,7 +1261,8 @@ div.notificationTray a.inactive {
 
 /* v14 */
 
-table.standardForm td:last-child:nth-child(2) {
+/* Ensure forms leave enough room in the second column for LiveValidation to fit. Updated to fix nested tables in forms. */
+table.standardForm td.standardWidth:last-child:nth-child(2) {
 	min-width: 450px;
 }
 
