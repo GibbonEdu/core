@@ -94,6 +94,7 @@ v14.0.00
 		Planner: fixed bug causing incorrect Satisfactory count in Work Summary by Form Group report
 		Planner: fixed PHP notice issue when listing lessons with unit that no longer exists
 		School Admin: fixed timezone issue in display of dates in Special Days view
+		School Admin: fixed bug in Manage School Days involving active days not having timings set
 		Staff: fixed PHP notice in Application Form edit Status field
 		Students: added ability to store internal documents against student application forms
 		Students: fixed bug preventing upload of application form documents when cookies disabled
