@@ -35,7 +35,7 @@ class Radio extends Input
 
     public function __construct($name)
     {
-        $this->setID('');
+        $this->setID(''); // Cannot share an ID across multiple Radio inputs
         $this->setName($name);
     }
 
@@ -48,6 +48,12 @@ class Radio extends Input
     public function inline($value = true)
     {
         $this->inline = $value;
+        return $this;
+    }
+
+    public function addValidation($type, $params = '')
+    {
+        // Override and prevent; LiveValidation does not support Radio elements
         return $this;
     }
 

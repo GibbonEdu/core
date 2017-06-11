@@ -632,7 +632,7 @@ if ($proceed == false) {
 
             $row = $table->addRow()->setClass('break');
             $row->addContent($rowSelect['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');
-            $row->addRadio('gibbonFamilyID')->fromArray(array($rowSelect['gibbonFamilyID'] => ''))->checked($checked)->isRequired();
+            $row->addRadio('gibbonFamilyID')->fromArray(array($rowSelect['gibbonFamilyID'] => ''))->checked($checked);
             $subTable = $row->addTable()->setClass('blank');
 
             while ($rowRelationships = $resultRelationships->fetch()) {
