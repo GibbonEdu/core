@@ -38,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
+    $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : '';
     $search = $_GET['search'];
     if ($search != '') {
         echo "<div class='linkTop'>";
@@ -46,11 +47,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     }
 
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_addProcess.php?search=$search" ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Person') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -71,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 							}
 						}
-						?>					
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -80,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Blood Type') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -99,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Long-Term Medication?') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -112,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Medication Details') ?></b><br/>
 				</td>
 				<td class="right">
@@ -120,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>

@@ -74,10 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
                             }
 							while ($rowSelect = $resultSelect->fetch()) {
                                 $selected = '';
-                                foreach ($choices as $choice) {
-                                    if ($choice == $rowSelect['gibbonPersonID']) {
-                                        $selected = 'selected';
-                                    }
+                                if (!empty($choices) && in_array($rowSelect['gibbonPersonID'], $choices)) {
+                                    $selected = 'selected';
                                 }
                                 echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
 							}
