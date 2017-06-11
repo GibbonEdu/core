@@ -76,22 +76,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolOpen', __('School Opens'));
                 $col = $row->addColumn()->addClass('right inline');
-                    $col->addSelect($day['name'].'schoolOpenH')
-                        ->fromString($hours)
-                        ->setClass('shortWidth')
-                        ->placeholder(__('Hours'))
-                        ->selected(substr($day['schoolOpen'], 0, 2));
-                    $col->addSelect($day['name'].'schoolOpenM')
-                        ->fromString($minutes)
-                        ->setClass('shortWidth')
-                        ->placeholder(__('Minutes'))
-                        ->selected(substr($day['schoolOpen'], 3, 2));
+                $col->addSelect($day['name'].'schoolOpenH')
+                    ->fromString($hours)
+                    ->isRequired()
+                    ->setClass('shortWidth')
+                    ->placeholder(__('Hours'))
+                    ->selected(substr($day['schoolOpen'], 0, 2));
+                $col->addSelect($day['name'].'schoolOpenM')
+                    ->fromString($minutes)
+                    ->setClass('shortWidth')
+                    ->placeholder(__('Minutes'))
+                    ->selected(substr($day['schoolOpen'], 3, 2));
 
             $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolStart', __('School Starts'));
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolStartH')
                     ->fromString($hours)
+                    ->isRequired()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolStart'], 0, 2));
@@ -106,6 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolEndH')
                     ->fromString($hours)
+                    ->isRequired()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolEnd'], 0, 2));
@@ -120,6 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolCloseH')
                     ->fromString($hours)
+                    ->isRequired()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolClose'], 0, 2));

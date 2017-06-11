@@ -31,6 +31,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     //Proceed!
     try {
@@ -41,12 +42,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     } catch (PDOException $e) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
-        exit();
+        exit;
     }
 
     if ($result->rowCount() != 7) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
+        exit;
     } else {
         $valid = true;
         $unqiue = true;
@@ -57,26 +59,26 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             $sequenceNumber = $_POST[$name.'sequenceNumber'];
             $schoolDay = $_POST[$name.'schoolDay'];
 
-            if (isset($_POST[$name.'schoolOpenH']) && isset($_POST[$name.'schoolOpenM']) && is_numeric($_POST[$name.'schoolOpenH']) && is_numeric($_POST[$name.'schoolOpenM'])) {
-                $schoolOpen = $_POST[$name.'schoolOpenH'].':'.$_POST[$name.'schoolOpenM'].':00';
+            if (isset($_POST[$name.'schoolOpenH']) && isset($_POST[$name.'schoolOpenM']) && is_numeric($_POST[$name.'schoolOpenH'])) {
+                $schoolOpen = $_POST[$name.'schoolOpenH'].':'.intval($_POST[$name.'schoolOpenM']).':00';
             } else {
                 $schoolOpen = null;
             }
 
-            if (isset($_POST[$name.'schoolStartH']) && isset($_POST[$name.'schoolStartM']) && is_numeric($_POST[$name.'schoolStartH']) && is_numeric($_POST[$name.'schoolStartM'])) {
-                $schoolStart = $_POST[$name.'schoolStartH'].':'.$_POST[$name.'schoolStartM'].':00';
+            if (isset($_POST[$name.'schoolStartH']) && isset($_POST[$name.'schoolStartM']) && is_numeric($_POST[$name.'schoolStartH'])) {
+                $schoolStart = $_POST[$name.'schoolStartH'].':'.intval($_POST[$name.'schoolStartM']).':00';
             } else {
                 $schoolStart = null;
             }
 
-            if (isset($_POST[$name.'schoolEndH']) && isset($_POST[$name.'schoolEndM']) && is_numeric($_POST[$name.'schoolEndH']) && is_numeric($_POST[$name.'schoolEndM'])) {
-                $schoolEnd = $_POST[$name.'schoolEndH'].':'.$_POST[$name.'schoolEndM'].':00';
+            if (isset($_POST[$name.'schoolEndH']) && isset($_POST[$name.'schoolEndM']) && is_numeric($_POST[$name.'schoolEndH'])) {
+                $schoolEnd = $_POST[$name.'schoolEndH'].':'.intval($_POST[$name.'schoolEndM']).':00';
             } else {
                 $schoolEnd = null;
             }
 
-            if (isset($_POST[$name.'schoolCloseH']) && isset($_POST[$name.'schoolCloseM']) && is_numeric($_POST[$name.'schoolCloseH']) && is_numeric($_POST[$name.'schoolCloseM'])) {
-                $schoolClose = $_POST[$name.'schoolCloseH'].':'.$_POST[$name.'schoolCloseM'].':00';
+            if (isset($_POST[$name.'schoolCloseH']) && isset($_POST[$name.'schoolCloseM']) && is_numeric($_POST[$name.'schoolCloseH'])) {
+                $schoolClose = $_POST[$name.'schoolCloseH'].':'.intval($_POST[$name.'schoolCloseM']).':00';
             } else {
                 $schoolClose = null;
             }
@@ -85,30 +87,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             if ($sequenceNumber == '' or is_numeric($sequenceNumber) == false or ($schoolDay != 'Y' and $schoolDay != 'N')) {
                 $valid = false;
             }
-
-            //Run SQL
-            try {
-                $dataUpdate = array('sequenceNumber' => $sequenceNumber, 'schoolDay' => $schoolDay, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose, 'name' => $name);
-                $sqlUpdate = 'UPDATE gibbonDaysOfWeek SET sequenceNumber=:sequenceNumber, schoolDay=:schoolDay, schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose WHERE name=:name';
-                $resultUpdate = $connection2->prepare($sqlUpdate);
-                $resultUpdate->execute($dataUpdate);
-            } catch (PDOException $e) {
-                $update = false;
+            // Check for invlid times for active school days
+            else if ($schoolDay == 'Y' AND ($schoolOpen == null || $schoolStart == null || $schoolEnd == null || $schoolClose == null)) {
+                $valid = false;
+            } else {
+                //Run SQL
+                try {
+                    $dataUpdate = array('sequenceNumber' => $sequenceNumber, 'schoolDay' => $schoolDay, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose, 'name' => $name);
+                    $sqlUpdate = 'UPDATE gibbonDaysOfWeek SET sequenceNumber=:sequenceNumber, schoolDay=:schoolDay, schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose WHERE name=:name';
+                    $resultUpdate = $connection2->prepare($sqlUpdate);
+                    $resultUpdate->execute($dataUpdate);
+                } catch (PDOException $e) {
+                    $update = false;
+                }
             }
         }
 
         //Deal with invalid or not unique
         if ($valid != true) {
-            $URL .= '&return=error3';
+            $URL .= '&return=warning1';
             header("Location: {$URL}");
+            exit;
         } else {
             //Deal with failed update
             if ($update != true) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
+                exit;
             } else {
                 $URL .= '&return=success0';
                 header("Location: {$URL}");
+                exit;
             }
         }
     }
