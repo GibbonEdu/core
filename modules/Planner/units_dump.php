@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
-                            $resourceContents = '';
+                            $resourceContents = $row['details'];
 
                             while ($rowBlocks = $resultBlocks->fetch()) {
                                 if ($rowBlocks['title'] != '' or $rowBlocks['type'] != '' or $rowBlocks['length'] != '') {
