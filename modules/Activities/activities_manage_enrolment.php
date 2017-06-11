@@ -89,7 +89,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo '</div>';
             }
             ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
 						<td style='width: 275px'>
@@ -147,7 +146,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     }
             		?>
 				</table>
-			</form>
 
 			<?php
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
