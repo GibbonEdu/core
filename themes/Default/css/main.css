@@ -1337,7 +1337,7 @@ table tr.heading:first-child td:last-child {
 }
 
 /* Usability tweak to make large data tables like User Permissions easier to read */
-table.rowHighlight tr:hover td {
+table.rowHighlight tr:not(.break):hover td {
 	background: #EDF7FF !important;
 }
 
