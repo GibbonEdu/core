@@ -69,6 +69,8 @@ v14.0.00
 		Attendance: added dynamic legend for Student History report
 		Attendance: added extra role to allow form group attendance to be restricted to own form group
 		Attendance: updated Take Attendance by Class to exclude students with timetable exceptions
+		Attendance: fixed pre-filled attendance to always display the most recent attendance log
+		Attendance: updated pre-filled class attendance to not pre-fill for another class
 		Crowd Assessment: fixed parent role determination error
 		Data Updater: made various fields optional when user has _any privileges
 		Finance: added ability to bulk issue invoices without sending email
