@@ -1536,9 +1536,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                         if ($resultMedical->rowCount() != 1) {
-                            if (isActionAccessible($guid, $connection2, '/modules/User Admin/medicalForm_manage_add.php') == true) {
+                            if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_add.php') == true) {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/medicalForm_manage_add.php'>Add Medical Form<img style='margin: 0 0 -4px 3px' title='Add Medical Form' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage_add.php&gibbonPersonID=$gibbonPersonID&search='>Add Medical Form<img style='margin: 0 0 -4px 3px' title='Add Medical Form' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
                                 echo '</div>';
                             }
 
