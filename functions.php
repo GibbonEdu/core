@@ -828,7 +828,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     if (isset($_GET['tab'])) {
         $defaultTab = $_GET['tab'];
     }
-    else if (!is_null($staffDashboardDefaultTabCount)) {
+    else if (!empty($staffDashboardDefaultTabCount)) {
         $defaultTab = $staffDashboardDefaultTabCount-1;
     }
 
