@@ -1336,6 +1336,11 @@ table tr.heading:first-child td:last-child {
 	padding-left: 5px !important;
 }
 
+/* Usability tweak to make large data tables like User Permissions easier to read */
+table.rowHighlight tr:hover td {
+	background: #EDF7FF !important;
+}
+
 /* Unfloat validation preceded by a phone input, adjust line height for vertical alignment */
 input[name*="phone"] ~ .LV_invalid {
     float: none;
