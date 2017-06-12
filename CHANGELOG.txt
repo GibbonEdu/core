@@ -55,6 +55,7 @@ v14.0.00
 		System: added ability to set mysql port through config.php
 		System: moved registration link from main panel to sidebar
 		System: fixed issue preventing Excel export from root level files
+        System: fixed PHP notice for undefined default staff dashboard tab
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
@@ -62,6 +63,7 @@ v14.0.00
 		Activities: fixed PHP warnings in Edit Activity Enrolment when access via My Activities.
 		Activities: added upper limit to number of columns in Printable Attendance Sheet
         Activities: fixed total attendance counts to exclude left students
+        Activities: fixed PHP notice in Manage Enrolment
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts
@@ -73,6 +75,7 @@ v14.0.00
 		Attendance: updated pre-filled class attendance to not pre-fill for another class
 		Crowd Assessment: fixed parent role determination error
 		Data Updater: made various fields optional when user has _any privileges
+        Data Updater: fixed PHP notice for empty array in Student Data Updater History
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
@@ -92,9 +95,12 @@ v14.0.00
 		Markbook: added a markbook setting to enable display of cumulative marks on View Markbook and Student Profile pages
 		Markbook: added a permission for teachers to only view their own markbook information
 		Messenger: fixed issue leaking custom Messenger bubble background onto screen
+        Messenger: fixed duplicate course names for message target
+        Messenger: removed call to isSMTP in message process when not using SMTP
 		Planner: adjusted permissions to allow teachers with Planner_viewAllEditMyClasses rights to view Unit Overview for classes they don't teach
 		Planner: fixed bug causing incorrect Satisfactory count in Work Summary by Form Group report
 		Planner: fixed PHP notice issue when listing lessons with unit that no longer exists
+        Planner: added resources from unit outline to the resources tab in Unit Dump
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		School Admin: fixed bug in Manage School Days involving active days not having timings set
 		Staff: fixed PHP notice in Application Form edit Status field
@@ -107,6 +113,8 @@ v14.0.00
 		Students: added optional permission for students to only view their profile
         Students: added data visualisation for student enrolment over time
         Students: fixed auto-assign houses potentially failing on Application Form acceptance if houses are empty
+        Students: fixed PHP notice for gibbonPersonID in Add Medical Form
+        Students: fixed link to Add Medical Form in Student Profile
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
@@ -122,6 +130,7 @@ v14.0.00
 		User Admin: reduced Transport auto suggest to students enroled in the current year
 		User Admin: added settings to enable/disable scholarships, payment and SEN sections in Application Form
 		User Admin: fixed issue preventing inactive students from showing up when family link is clicked
+        User Admin: added row highlighting in Manage Permissions
 
 v13.0.02
 --------
