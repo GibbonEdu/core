@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $totalCount = 0;
         echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/permission_manageProcess.php'>";
         echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-        echo "<table class='mini' cellspacing='0' style='width: 100%'>";
+        echo "<table class='mini rowHighlight' cellspacing='0' style='width: 100%'>";
         while ($rowModules = $resultModules->fetch()) {
             echo "<tr class='break'>";
             echo '<td colspan='.($resultRoles->rowCount() + 1).'>';

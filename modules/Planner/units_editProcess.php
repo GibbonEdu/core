@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             header("Location: {$URL}");
         } else {
             //Proceed!
+
             //Validate Inputs
             $name = $_POST['name'];
             $description = $_POST['description'];

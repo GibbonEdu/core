@@ -42,13 +42,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $gibbonActivityID = $_GET['gibbonActivityID'];
     }
 
-    $numberOfColumns = (isset($_GET['columns'])) ? $_GET['columns'] : 15;
+    $numberOfColumns = (isset($_GET['columns']) && $_GET['columns'] <= 20 ) ? $_GET['columns'] : 20;
+
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Activity')  ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -70,17 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 							}
 							echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Number of Columns')  ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input type="text" name="columns" class="standardWidth" maxlength="2" value="15"/>
+					<input type="text" name="columns" class="standardWidth" maxlength="2" value="<?php echo $numberOfColumns ?>"/>
 				</td>
 			</tr>
 			<tr>

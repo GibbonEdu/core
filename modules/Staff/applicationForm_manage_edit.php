@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="status" id="status" maxlength=20 value="<?php echo htmlPrep($row['applicationStatus']) ?>" type="text" class="standardWidth">
+								<input readonly name="status" id="status" maxlength=20 value="<?php echo htmlPrep($row['status']) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -214,12 +214,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 					</tr>
 
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Job Related Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Job Type') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Job Opening') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -250,9 +250,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						echo '</tr>';
 					}
 					?>
-				
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Personal Data') ?></h3>
 						</td>
 					</tr>
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         ?>
 						<input name="gibbonPersonID" id="gibbonPersonID" maxlength=10 value="<?php echo htmlPrep($_SESSION[$guid]['gibbonPersonID']) ?>" type="hidden" class="standardWidth">
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Surname') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Preferred Name') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -283,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     } else {
                         ?>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Surname') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 							</td>
@@ -296,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'First Name') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 							</td>
@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Preferred Name') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 							</td>
@@ -322,7 +322,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Official Name') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
 							</td>
@@ -335,7 +335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Name In Characters') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
 							</td>
@@ -344,7 +344,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Gender') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Date of Birth') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 							</td>
@@ -378,7 +378,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-                       	 			?>." } );  
+                       	 			?>." } );
 									dob.add(Validate.Presence);
 								</script>
 								 <script type="text/javascript">
@@ -388,15 +388,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								</script>
 							</td>
 						</tr>
-			
-			
+
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Background Data') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'First Language') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Student\'s native/first/mother language.') ?></span>
 							</td>
@@ -418,7 +418,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 										}
 										echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 								<script type="text/javascript">
 									var languageFirst=new LiveValidation('languageFirst');
@@ -427,7 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Second Language') ?></b><br/>
 							</td>
 							<td class="right">
@@ -448,12 +448,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 										}
 										echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Third Language') ?></b><br/>
 							</td>
 							<td class="right">
@@ -474,12 +474,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 										}
 										echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Country of Birth') ?></b><br/>
 							</td>
 							<td class="right">
@@ -500,12 +500,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 										}
 										echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Citizenship') ?></b><br/>
 							</td>
 							<td class="right">
@@ -534,12 +534,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 											echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
 										}
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Citizenship Passport Number') ?></b><br/>
 							</td>
 							<td class="right">
@@ -547,7 +547,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<?php
                                 if ($_SESSION[$guid]['country'] == '') {
                                     echo '<b>'.__($guid, 'National ID Card Number').'</b><br/>';
@@ -561,7 +561,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<?php
                                 if ($_SESSION[$guid]['country'] == '') {
                                     echo '<b>'.__($guid, 'Residency/Visa Type').'</b><br/>';
@@ -588,7 +588,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<?php
 							if ($_SESSION[$guid]['country'] == '') {
 								echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
@@ -618,7 +618,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } );  
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -627,15 +627,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</script>
 						</td>
 					</tr>
-		
-		
+
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Contacts') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Email') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -648,7 +648,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Phone') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
 						</td>
@@ -675,7 +675,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 									}
 									echo "<option $selected value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<select style="width: 70px" name="phone1Type">
 								<option value=""></option>
@@ -689,7 +689,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Home Address') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 						</td>
@@ -702,7 +702,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Home Address (District)') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 						</td>
@@ -734,7 +734,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</script>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Home Address (Country)') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -755,7 +755,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						}
 						echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 					}
-					?>				
+					?>
 							</select>
 							<script type="text/javascript">
 								var homeAddressCountry=new LiveValidation('homeAddressCountry');
@@ -773,7 +773,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 				if ($resultFields->rowCount() > 0) {
 					?>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Other Information') ?></h3>
 						</td>
 					</tr>
@@ -887,7 +887,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						echo '</td>';
 						echo '</tr>'; ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Referee 1') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'An email address for a referee at the applicant\'s current school.') ?></span>
 							</td>
@@ -901,7 +901,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Referee 2') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'An email address for a second referee.') ?></span>
 							</td>

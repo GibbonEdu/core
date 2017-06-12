@@ -90,10 +90,18 @@ class PhoneNumber extends Input
     protected function getElement()
     {
         // Pass any specific attributes along to the phone number field
+        $this->phoneType->setRequired($this->getRequired());
+        $this->phoneCodes->setRequired($this->getRequired());
         $this->phoneNumber->setRequired($this->getRequired());
+
         $this->phoneNumber->setSize($this->getSize());
         $this->phoneNumber->setDisabled($this->getDisabled());
 
-        return $this->column->getOutput();
+        $output = '';
+        $output .= $this->phoneNumber->getOutput();
+        $output .= $this->phoneCodes->getOutput();
+        $output .= $this->phoneType->getOutput();
+
+        return $output;
     }
 }

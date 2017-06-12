@@ -437,13 +437,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 echo '<td>';
                                                 echo '<b>'.$row['name'].'</b><br/>';
                                                 if ($row['gibbonUnitID'] != '') {
-                                                    echo "<span style='font-size: 85%; font-style: italic'>";
                                                     $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
-                                                    echo $unit[0];
-                                                    if ($unit[1] != '') {
-                                                        echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                                                    if (!empty($unit[0])) {
+                                                        echo "<span style='font-size: 85%; font-style: italic'>";
+                                                            echo $unit[0];
+                                                            if ($unit[1] != '') {
+                                                                echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                                                            }
+                                                        echo '</span>';
                                                     }
-                                                    echo '</span>';
+
                                                 }
                                                 echo '</td>';
                                                 echo '<td>';

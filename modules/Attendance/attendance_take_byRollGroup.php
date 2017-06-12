@@ -272,12 +272,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         echo '<tr>';
                                     }
 
-                                    $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+                                    $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
 
                                     try {
-                                        //Get student log data by context
                                         $dataLog = array('gibbonPersonID' => $rowRollGroup['gibbonPersonID'], 'date' => $currentDate.'%');
-                                        $sqlLog = "SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Roll Group' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC LIMIT 1";
+
+                                        if ($prefillAttendanceType == 'Y') {
+                                            //Get any student log data
+                                            $sqlLog = "SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context <> 'Class' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC LIMIT 1";
+                                        } else {
+                                            //Get student log data by Roll Group context only
+                                            $sqlLog = "SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Roll Group' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC LIMIT 1";
+                                        }
+
                                         $resultLog = $connection2->prepare($sqlLog);
                                         $resultLog->execute($dataLog);
                                     } catch (PDOException $e) {
@@ -286,20 +293,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                                     if ($resultLog && $resultLog->rowCount() > 0 ) {
                                         $rowLog = $resultLog->fetch();
-                                    } elseif ($prefillAttendanceType == 'Y') {
-                                        //Get any student log data
-                                        try {
-                                            $dataLog = array('gibbonPersonID' => $rowRollGroup['gibbonPersonID'], 'date' => $currentDate.'%');
-                                            $sqlLog = 'SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC LIMIT 1';
-                                            $resultLog = $connection2->prepare($sqlLog);
-                                            $resultLog->execute($dataLog);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
-
-                                        if ($resultLog && $resultLog->rowCount() > 0 ) {
-                                            $rowLog = $resultLog->fetch();
-                                        }
                                     }
 
                                     if ( $attendance->isTypeAbsent($rowLog["type"]) ) {

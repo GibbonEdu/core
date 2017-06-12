@@ -219,7 +219,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                 } else {
                     $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                     if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
-                        echo $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
+                        $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
                         if ($messageBubbleBGColor != '') {
                             $bubbleBG = '; background-color: rgba('.$messageBubbleBGColor.')!important';
@@ -846,7 +846,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     if (isset($_GET['tab'])) {
         $defaultTab = $_GET['tab'];
     }
-    else if (!is_null($staffDashboardDefaultTabCount)) {
+    else if (!empty($staffDashboardDefaultTabCount)) {
         $defaultTab = $staffDashboardDefaultTabCount-1;
     }
 

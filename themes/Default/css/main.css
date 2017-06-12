@@ -1261,6 +1261,7 @@ div.notificationTray a.inactive {
 
 /* v14 */
 
+/* Ensure forms leave enough room in the second column for LiveValidation to fit. Updated to fix nested tables in forms. */
 table.standardForm td.standardWidth:last-child:nth-child(2) {
 	min-width: 450px;
 }
@@ -1334,4 +1335,25 @@ table tr.heading:first-child td:last-child {
 	-webkit-border-top-right-radius:3px;
 	border-top-right-radius:3px;
 	padding-left: 5px !important;
+}
+
+/* Usability tweak to make large data tables like User Permissions easier to read */
+table.rowHighlight tr:not(.break):hover td {
+	background: #EDF7FF !important;
+}
+
+/* Unfloat validation preceded by a phone input, adjust line height for vertical alignment */
+input[name*="phone"] ~ .LV_invalid {
+    float: none;
+    line-height: 30px;
+}
+
+/* Hide validation preceded by another validation message in the same parent element */
+.LV_invalid ~ .LV_invalid {
+    display: none;
+}
+
+/* Remove the tiny gap that appears near valid elements */
+.LV_valid {
+    margin: 0;
 }

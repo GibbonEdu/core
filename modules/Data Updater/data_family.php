@@ -211,33 +211,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
 								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Address Name') ?> *</b><br/>
+									<b><?php echo __($guid, 'Address Name') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Formal name to address parents with.') ?></span>
 								</td>
 								<td class="right">
 									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php echo htmlPrep($row['nameAddress']) ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var nameAddress=new LiveValidation('nameAddress');
-										nameAddress.add(Validate.Presence);
-									</script>
+                                    <?php
+                                    if ($highestAction != 'Update Family Data_any') {
+                                        ?>
+                                        <script type="text/javascript">
+    										var nameAddress=new LiveValidation('nameAddress');
+    										nameAddress.add(Validate.Presence);
+    									</script>
+                                        <?php
+                                    }
+                                    ?>
+
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<b><?php echo __($guid, 'Home Address') ?> *</b><br/>
+									<b><?php echo __($guid, 'Home Address') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 								</td>
 								<td class="right">
 									<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php echo $row['homeAddress'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var homeAddress=new LiveValidation('homeAddress');
-										homeAddress.add(Validate.Presence);
-									</script>
+                                    <?php
+                                    if ($highestAction != 'Update Family Data_any') {
+                                        ?>
+                                        <script type="text/javascript">
+    										var homeAddress=new LiveValidation('homeAddress');
+    										homeAddress.add(Validate.Presence);
+    									</script>
+                                        <?php
+                                    }
+                                    ?>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<b><?php echo __($guid, 'Home Address (District)') ?> *</b><br/>
+									<b><?php echo __($guid, 'Home Address (District)') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 								</td>
 								<td class="right">
@@ -262,19 +275,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 										$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
 									});
 								</script>
-								<script type="text/javascript">
-										var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
-										homeAddressDistrict.add(Validate.Presence);
-									</script>
+                                <?php
+                                if ($highestAction != 'Update Family Data_any') {
+                                    ?>
+                                    <script type="text/javascript">
+                                        var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
+                                        homeAddressDistrict.add(Validate.Presence);
+                                    </script>
+                                    <?php
+                                }
+                                ?>
 							</tr>
 							<tr>
 								<td>
-									<b><?php echo __($guid, 'Home Address (Country)') ?> *</b><br/>
+									<b><?php echo __($guid, 'Home Address (Country)') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
 								</td>
 								<td class="right">
 									<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 										<?php
-                                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                        if ($highestAction != 'Update Family Data_any') {
+                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                        }
+                                        else {
+                                            echo "<option value=''></option>";
+                                        }
 										try {
 											$dataSelect = array();
 											$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
@@ -291,20 +315,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 										}
 										?>
 									</select>
-									<script type="text/javascript">
-										var homeAddressCountry=new LiveValidation('homeAddressCountry');
-										homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
+                                    <?php
+                                    if ($highestAction != 'Update Family Data_any') {
+                                        ?>
+                                        <script type="text/javascript">
+    										var homeAddressCountry=new LiveValidation('homeAddressCountry');
+    										homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+    									</script>
+                                        <?php
+                                    }
+                                    ?>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<b><?php echo __($guid, 'Home Language - Primary') ?> *</b><br/>
+									<b><?php echo __($guid, 'Home Language - Primary') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
 								</td>
 								<td class="right">
 									<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 										<?php
-                                        echo "<option value='Please select...'>Please select...</option>";
+                                        if ($highestAction != 'Update Family Data_any') {
+                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                        }
+                                        else {
+                                            echo "<option value=''></option>";
+                                        }
 										try {
 											$dataSelect = array();
 											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
@@ -321,10 +356,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 										}
 										?>
 									</select>
-									<script type="text/javascript">
-										var languageHomePrimary=new LiveValidation('languageHomePrimary');
-										languageHomePrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
+                                    <?php
+                                    if ($highestAction != 'Update Family Data_any') {
+                                        ?>
+                                        <script type="text/javascript">
+    										var languageHomePrimary=new LiveValidation('languageHomePrimary');
+    										languageHomePrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+    									</script>
+                                        <?php
+                                    }
+                                    ?>
 								</td>
 							</tr>
 							<tr>

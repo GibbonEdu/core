@@ -666,7 +666,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							} elseif ($field['type'] == 'URL') {
 								echo "<input maxlength='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' value='";
 								if (isset($fieldValues[$field['name']])) {
-									htmlPrep($fieldValues[$field['name']]);
+									echo htmlPrep($fieldValues[$field['name']]);
 								}
 								echo "' type='text' style='width: 300px'>";
 								echo "<script type='text/javascript'>";

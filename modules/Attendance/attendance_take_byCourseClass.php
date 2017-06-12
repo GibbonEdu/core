@@ -319,12 +319,19 @@ else {
 									print "<tr>" ;
 								}
 
-								$rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+								$rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
 
-								//Get any student log data by context
 								try {
-									$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%", 'gibbonCourseClassID' => $gibbonCourseClassID);
-									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Class' AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									$dataLog=array('gibbonPersonID'=>$rowCourseClass['gibbonPersonID'], 'date' => $currentDate.'%', 'gibbonCourseClassID' => $gibbonCourseClassID);
+
+									if ($prefillAttendanceType == 'Y') {
+										// Get any student log data
+										$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE (context<>'Class' OR (context='Class' AND gibbonCourseClassID=:gibbonCourseClassID)) AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									} else {
+										// Get student log data by Class context only
+										$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE context='Class' AND gibbonCourseClassID=:gibbonCourseClassID AND gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									}
+
 									$resultLog=$connection2->prepare($sqlLog);
 									$resultLog->execute($dataLog);
 								}
@@ -335,22 +342,6 @@ else {
 								if ($resultLog && $resultLog->rowCount() > 0 ) {
                                     $rowLog = $resultLog->fetch();
                                 }
-                                elseif ($prefillAttendanceType == 'Y') {
-									//Get any student log data
-									try {
-										$dataLog=array("gibbonPersonID"=>$rowCourseClass["gibbonPersonID"], "date"=>$currentDate . "%");
-										$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
-										$resultLog=$connection2->prepare($sqlLog);
-										$resultLog->execute($dataLog);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-
-									if ($resultLog && $resultLog->rowCount() > 0 ) {
-                                        $rowLog = $resultLog->fetch();
-                                    }
-								}
 
 
 								if ( $attendance->isTypeAbsent($rowLog["type"]) ) {

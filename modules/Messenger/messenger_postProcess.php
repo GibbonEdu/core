@@ -1796,8 +1796,7 @@ else {
 				//Set up email
 				$emailCount=0 ;
 				$mail=getGibbonMailer($guid);
-				$mail->IsSMTP();
-				
+
 				if ( empty($emailReplyTo) ) {
 					$emailReplyTo = $from;
 				}
@@ -1810,7 +1809,7 @@ else {
 					$mail->SetFrom($from, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
 					$mail->AddReplyTo($emailReplyTo, $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
 				}
-				
+
 				$mail->AddAddress($from);
 				$mail->CharSet="UTF-8";
 				$mail->Encoding="base64" ;

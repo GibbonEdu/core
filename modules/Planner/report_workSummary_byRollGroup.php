@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             echo "<td style='width:15%'>";
             try {
                 $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentConcern='N' AND effortConcern='N') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
+                $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID  AND (attainmentConcern='N' OR attainmentConcern IS NULL) AND (effortConcern='N' OR effortConcern IS NULL) AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
                 $resultData = $connection2->prepare($sqlData);
                 $resultData->execute($dataData);
             } catch (PDOException $e) {

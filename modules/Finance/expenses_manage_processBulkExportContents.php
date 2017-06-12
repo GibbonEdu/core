@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __($guid, 'Staff'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __($guid, 'Timestamp')." (".$_SESSION[$guid]['currency'].')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __($guid, 'Timestamp'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
