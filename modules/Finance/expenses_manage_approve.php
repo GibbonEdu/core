@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
         //Check if params are specified
         $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+        $status = '';
         $status2 = $_GET['status2'];
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
@@ -191,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 
                                                 echo "<select name='gibbonFinanceBudgetID' id='gibbonFinanceBudgetID' style='width:302px'>";
                                                 $selected = '';
-                                                if ($gibbonFinanceBudgetID == '') {
+                                                if (empty($gibbonFinanceBudgetID)) {
                                                     $selected = 'selected';
                                                 }
                                                 echo "<option $selected value='Please select...'>".__($guid, 'Please select...').'</option>';

@@ -933,7 +933,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-										if ($required['address1Country'] == 'Y') {
+										if (!empty($required['address1Country']) && $required['address1Country'] == 'Y') {
 											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
 										} else {
 											echo "<option value=''></option>";
@@ -1043,7 +1043,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-										if ($required['address2Country'] == 'Y') {
+										if (!empty($required['address2Country']) && $required['address2Country'] == 'Y') {
 											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
 										} else {
 											echo "<option value=''></option>";

@@ -64,6 +64,7 @@ v14.0.00
 		Activities: added upper limit to number of columns in Printable Attendance Sheet
         Activities: fixed total attendance counts to exclude left students
         Activities: fixed PHP notice in Manage Enrolment
+        Activities: fixed PHP notice on status field in Activity Spread by Roll Group
 		Attendance: added ability (off by default) for students to register themselves as Present, when within a set of IP addresses
 		Attendance: added explicitly stored context recording where attendance was taken
 		Attendance: added settings to determine pre-filling of attendance in different contexts
@@ -76,6 +77,7 @@ v14.0.00
 		Crowd Assessment: fixed parent role determination error
 		Data Updater: made various fields optional when user has _any privileges
         Data Updater: fixed PHP notice for empty array in Student Data Updater History
+        Data Updater: fixed PHP notice for address country fields in Personal Data Updater
 		Finance: added ability to bulk issue invoices without sending email
 		Finance: tweaked interface for display of payment log to make it more usable
 		Finance: added ability to view and print receipts for refunded invoices
@@ -83,6 +85,7 @@ v14.0.00
 		Finance: fixed bug leading to invoice values changing (in print view only) after issue
 		Finance: added reminder number to Email Reminder section header in overdue invoice edit view
 		Finance: removed incorrectly applied currency label from expense export
+		Finance: fixed PHP notices for unset IDs in Manage Expenses and My Expense Requests
 		Formal Assessment: improved layout of Internal Assessment view
 		Formal Assessment: fixed incorrect string wrapping for translation in Internal Assessment import
 		Library: added new type to store Audio/Visual equipment
@@ -101,6 +104,7 @@ v14.0.00
 		Planner: fixed bug causing incorrect Satisfactory count in Work Summary by Form Group report
 		Planner: fixed PHP notice issue when listing lessons with unit that no longer exists
         Planner: added resources from unit outline to the resources tab in Unit Dump
+        Planner: fixed PHP notice on completion checkbox in Planner Deadlines
 		School Admin: fixed timezone issue in display of dates in Special Days view
 		School Admin: fixed bug in Manage School Days involving active days not having timings set
 		Staff: fixed PHP notice in Application Form edit Status field
