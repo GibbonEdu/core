@@ -144,17 +144,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
                 ?>
 				<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-					<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='noIntBorder' cellspacing='0' style="width: 100%">
 						<tr><td style="width: 30%"></td><td></td></tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Search For') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
 							</td>
 							<td class="right">
 								<select name="search" id="search" class="standardWidth">
 									<option value=""></value>
-									<?php echo $options; ?> 
+									<?php echo $options; ?>
 								</select>
 							</td>
 						</tr>
@@ -785,7 +785,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 										$completion = "<input disabled type='checkbox'>";
 									} else {
 										$status .= __($guid, 'Pending');
-										$completion = '<input '.$completionArray[$row['gibbonPlannerEntryID']]." name='complete-$count' type='checkbox'>";
+                                        $submissionCompletion = (isset($completionArray[$row['gibbonPlannerEntryID']]))? $completionArray[$row['gibbonPlannerEntryID']] : '';
+										$completion = "<input $submissionCompletion name='complete-$count' type='checkbox'>";
 									}
 								}
 								//After
@@ -795,7 +796,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 										$completion = "<input disabled type='checkbox'>";
 									} else {
 										$status .= __($guid, 'Not submitted online');
-										@$completion = '<input '.$completionArray[$row['gibbonPlannerEntryID']]." name='complete-$count' type='checkbox'>";
+                                        $submissionCompletion = (isset($completionArray[$row['gibbonPlannerEntryID']]))? $completionArray[$row['gibbonPlannerEntryID']] : '';
+										$completion = "<input $submissionCompletion name='complete-$count' type='checkbox'>";
 									}
 								}
 							} else {
