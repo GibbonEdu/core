@@ -88,6 +88,7 @@ v14.0.00
 		Finance: fixed PHP notices for unset IDs in Manage Expenses and My Expense Requests
 		Formal Assessment: improved layout of Internal Assessment view
 		Formal Assessment: fixed incorrect string wrapping for translation in Internal Assessment import
+		Formal Assessment: fixed visual issue in column header of Write view in Internal Assessment 
 		Library: added new type to store Audio/Visual equipment
 		Library: fixed button label in Edit view in Lending & Activity Log
 		Library: fixed empty Link field when in Edit view in Manage Catalog
