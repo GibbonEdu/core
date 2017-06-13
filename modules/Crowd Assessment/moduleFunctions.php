@@ -100,9 +100,7 @@ function getLessons($guid, $connection2, $and = '')
 function getCARole($guid, $connection2, $gibbonCourseClassID)
 {
     $role = '';
-    //Determine roll
-    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view.php', $connection2);
-    if ($highestAction == 'View Student Profile_myChildren' OR $highestAction == 'View Student Profile_brief') {
+    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Parent') {
         $role = 'Parent';
         $childInClass = false;
 
@@ -167,7 +165,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
                 $resultRole->execute($dataRole);
             } catch (PDOException $e) {
             }
-            if ($resultRole->rowCount() == 1) {
+            if ($resultRole->rowCount() >= 1) {
                 $role = 'Teacher - In Class';
             }
         }
