@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
         $status2 = $_GET['status2'];
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+        $gibbonFinanceBudgetID = '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');

@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             }
                             echo $row['type'];
                             if ($row['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$row['attachment'])) {
-                                echo "<a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>More info</a>";
+                                echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>More info</a>";
                             }
                             echo '</span><br/>';
                             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {

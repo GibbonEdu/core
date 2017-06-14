@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
 
                 if ($rowLog['context'] != '') {
-                    if ($rowLog['context'] == 'Class' && $rowLog['gibbonCourseClassID'] > 0)
+                    if (($rowLog['context'] == 'Future' || $rowLog['context'] == 'Class') && $rowLog['gibbonCourseClassID'] > 0)
                         echo '<td>'.__($guid, $rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
                     else
                         echo '<td>'.__($guid, $rowLog['context']).'</td>';

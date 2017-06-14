@@ -42,11 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
     }
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -67,12 +67,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Status') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -80,10 +80,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 						<?php
                         echo "<option value='Accepted'>".__($guid, 'Accepted').'</option>';
 						$selected = '';
-						if ($_GET['status'] == 'Registered') {
+						if (!empty($_GET['status']) && $_GET['status'] == 'Registered') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='Registered'>".__($guid, 'Registered').'</option>';?>				
+						echo "<option $selected value='Registered'>".__($guid, 'Registered').'</option>';?>
 					</select>
 				</td>
 			</tr>

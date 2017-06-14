@@ -219,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								}
 								echo $row2['type'];
 								if ($row2['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$row2['attachment'])) {
-									echo "<a title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row2['attachment']."'>".__($guid, 'More info').'</a>';
+									echo " | <a title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row2['attachment']."'>".__($guid, 'More info').'</a>';
 								}
 								echo '</span><br/>';
 								echo '</th>';

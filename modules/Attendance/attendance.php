@@ -198,10 +198,11 @@ else {
 								$dataLog=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"], "date"=>$currentDate . "%");
 
 								$sqlLog="SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp,
-								COUNT(DISTINCT gibbonPersonID) AS total,
-								COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonPersonID END) AS absent
+								COUNT(DISTINCT gibbonAttendanceLogPerson.gibbonPersonID) AS total,
+								COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonAttendanceLogPerson.gibbonPersonID END) AS absent
 								FROM gibbonAttendanceLogPerson
-								JOIN gibbonAttendanceLogRollGroup ON gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date
+								JOIN gibbonAttendanceLogRollGroup ON (gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date)
+								JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonAttendanceLogRollGroup.gibbonRollGroupID)
 								WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID
 								AND gibbonAttendanceLogPerson.date LIKE :date
 								AND gibbonAttendanceLogPerson.context = 'Roll Group'

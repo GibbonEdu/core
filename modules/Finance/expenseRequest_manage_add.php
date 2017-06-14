@@ -131,13 +131,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<?php
                                     echo "<select name='gibbonFinanceBudgetID' id='gibbonFinanceBudgetID' style='width:302px'>";
 									$selected = '';
-									if ($gibbonFinanceBudgetID == '') {
+									if (empty($gibbonFinanceBudgetID)) {
 										$selected = 'selected';
 									}
 									echo "<option $selected value='Please select...'>".__($guid, 'Please select...').'</option>';
 									foreach ($budgets as $budget) {
 										$selected = '';
-										if ($gibbonFinanceBudgetID == $budget[0]) {
+										if (!empty($gibbonFinanceBudgetID) && $gibbonFinanceBudgetID == $budget[0]) {
 											$selected = 'selected';
 										}
 										echo "<option $selected value='".$budget[0]."'>".$budget[1].'</option>';
@@ -249,7 +249,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
-									<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php echo $gibbonFinanceInvoiceID ?>" type="hidden">
 									<input name="status2" id="status2" value="<?php echo $status2 ?>" type="hidden">
 									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">

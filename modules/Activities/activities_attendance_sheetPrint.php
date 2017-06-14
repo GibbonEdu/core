@@ -39,10 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    $row = $result->fetch();
-
-    if ($gibbonActivityID != '') {
+    if (empty($gibbonActivityID) || $result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
         $output = '';
+
+        $results = $result->fetchAll();
+        $row = current($results);
 
         $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
         $date = '';
@@ -62,69 +67,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo __($guid, 'Participants for').' '.$row['name'].$date;
         echo '</h2>';
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            echo "<div class='linkTop'>";
-            echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-            echo '</div>';
+        echo "<div class='linkTop'>";
+        echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo '</div>';
 
-            $lastPerson = '';
-            $count = 0;
+        $lastPerson = '';
+        $count = 0;
 
-            $pages = array_chunk($row = $result->fetchAll(), 30);
-            $pageCount = 1;
-            foreach ($pages as $pagenum => $page) {
-                echo "<table class='mini colorOddEven' cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Student');
-                echo '</th>';
-                echo "<th colspan=$numberOfColumns>";
-                echo __($guid, 'Attendance');
-                echo '</th>';
-                echo '</tr>';
-                echo "<tr style='height: 75px' class='odd'>";
-                echo "<td style='vertical-align:top; width: 120px'>Date</td>";
-                for ($i = 1; $i <= $numberOfColumns; ++$i) {
-                    echo "<td style='color: #bbb; vertical-align:top; width: 15px'>$i</td>";
-                }
-                echo '</tr>';
+        $pages = array_chunk($results, 30);
+        $pageCount = 1;
+        foreach ($pages as $pagenum => $page) {
 
-                $rowNum = 'odd';
-                try {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                while ($row = $result->fetch()) {
-                    ++$count;
-
-                    //COLOR ROW BY STATUS!
-                    echo '<tr>';
-                    echo '<td>';
-                    echo $count.'. '.formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-                    echo '</td>';
-                    for ($i = 1; $i <= $numberOfColumns; ++$i) {
-                        echo '<td></td>';
-                    }
-                    echo '</tr>';
-
-                    $lastPerson = $row['gibbonPersonID'];
-                }
-
-                echo '</table>';
-
-                if ($pageCount < count($pages)) {
-                    echo "<div class='page-break'></div>";
-                }
-                ++$pageCount;
+            echo "<table class='mini colorOddEven' cellspacing='0' style='width: 100%'>";
+            echo "<tr class='head'>";
+            echo '<th>';
+            echo __($guid, 'Student');
+            echo '</th>';
+            echo "<th colspan=$numberOfColumns>";
+            echo __($guid, 'Attendance');
+            echo '</th>';
+            echo '</tr>';
+            echo "<tr style='height: 75px' class='odd'>";
+            echo "<td style='vertical-align:top; width: 120px'>Date</td>";
+            for ($i = 1; $i <= $numberOfColumns; ++$i) {
+                echo "<td style='color: #bbb; vertical-align:top; width: 15px'>$i</td>";
             }
+            echo '</tr>';
+
+            $rowNum = 'odd';
+            try {
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            while ($row = $result->fetch()) {
+                ++$count;
+
+                //COLOR ROW BY STATUS!
+                echo '<tr>';
+                echo '<td>';
+                echo $count.'. '.formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo '</td>';
+                for ($i = 1; $i <= $numberOfColumns; ++$i) {
+                    echo '<td></td>';
+                }
+                echo '</tr>';
+
+                $lastPerson = $row['gibbonPersonID'];
+            }
+
+            echo '</table>';
+
+            if ($pageCount < count($pages)) {
+                echo "<div class='page-break'></div>";
+            }
+            ++$pageCount;
         }
+
     }
 }
