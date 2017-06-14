@@ -1020,7 +1020,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
                         $height = ceil(($event[3] - $event[2]) / 60).'px';
                         $charCut = 20;
-                        if (height < 20) {
+                        if ($height < 20) {
                             $charCut = 12;
                         }
                         if (strlen($label) > $charCut) {
