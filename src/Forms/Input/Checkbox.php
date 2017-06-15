@@ -68,7 +68,7 @@ class Checkbox extends Input
             return '';
         }
 
-        return (in_array($value, $this->checked, true))? 'checked' : '';
+        return (in_array($value, $this->checked))? 'checked' : '';
     }
 
     protected function getElement()
