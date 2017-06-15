@@ -504,7 +504,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $privacyOptions = $_POST['privacyOptions'];
                 foreach ($privacyOptions as $privacyOption) {
                     if ($privacyOption != '') {
-                        $privacy .= $privacyOption.', ';
+                        $privacy .= $privacyOption.',';
                     }
                 }
                 if ($privacy != '') {
