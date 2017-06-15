@@ -129,6 +129,7 @@ v14.0.00
 		Timetable: added optional permission for users to only view their own timetable
 		Timetable: added optional permission for parents to only view their children's timetables
 		Timetable: increased list of students in Manage Student Enrolment to include all current students
+		Timetable: fixed PHP notice in renderTTDay module function
 		Tracking: fixed bugs leading to repeated and mixed display of columns
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit
