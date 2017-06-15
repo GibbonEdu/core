@@ -47,21 +47,23 @@ trait MultipleOptionsTrait
         return $this;
     }
 
-    public function fromArray($value)
+    public function fromArray($values)
     {
-        if (empty($value) || !is_array($value)) {
-            throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($value)));
+        if (empty($values) || !is_array($values)) {
+            throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($values)));
         }
 
-        if (array_values($value) === $value) {
-            $assocArray = array();
-            foreach ($value as $v) {
-                $assocArray[strval($v)] = $v;
+        if (array_values($values) === $values) {
+            // Convert non-associative array and trim values
+            foreach ($values as $value) {
+                $this->options[trim(strval($value))] = (!is_array($value))? trim($value) : $value;
             }
-            $value = $assocArray;
+        } else {
+            // Trim keys and values for associative array
+            foreach ($values as $key => $value) {
+                $this->options[trim($key)] = (!is_array($value))? trim($value) : $value;
+            }
         }
-
-        $this->options = (!empty($this->options))? array_merge($this->options, $value) : $value;
 
         return $this;
     }
@@ -85,7 +87,7 @@ trait MultipleOptionsTrait
                     continue;
                 }
 
-                $this->options[$row['value']] = $row['name'];
+                $this->options[trim($row['value'])] = trim($row['name']);
             }
         }
 
