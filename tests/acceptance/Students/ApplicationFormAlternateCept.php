@@ -1,6 +1,6 @@
 <?php
 $I = new AcceptanceTester($scenario);
-$I->wantTo('submit a student application form with most settings enabled');
+$I->wantTo('submit a student application form with most settings disabled');
 $I->loginAsAdmin();
 
 // Change Application Settings ---------------------------------
@@ -9,15 +9,13 @@ $I->amOnModulePage('User Admin', 'applicationFormSettings.php');
 $originalApplicationSettings = $I->grabAllFormValues();
 
 $newApplicationSettings = array_replace($originalApplicationSettings, array(
-    'howDidYouHear'               => 'Advertisement, Personal Recommendation, World Wide Web, Others',
-    'senOptionsActive'            => 'Y',
-    'scholarshipOptionsActive'    => 'Y',
-    'paymentOptionsActive'        => 'Y',
-    'languageOptionsActive'       => 'Y',
-    'languageOptionsBlurb'        => 'Language Blurb Test',
-    'languageOptionsLanguageList' => 'Esperanto,Latin,Klingon',
-    'applicationFormRefereeLink'  => 'http://referee.test',
-    'agreement'                   => 'Agreement Test',
+    'howDidYouHear'              => '',
+    'senOptionsActive'           => 'N',
+    'scholarshipOptionsActive'   => 'N',
+    'paymentOptionsActive'       => 'N',
+    'languageOptionsActive'      => 'N',
+    'applicationFormRefereeLink' => '',
+    'agreement'                  => '',
 ));
 
 $I->submitForm('#content form', $newApplicationSettings, 'Submit');
@@ -30,13 +28,11 @@ $I->amOnModulePage('User Admin', 'userSettings.php');
 $originalUserSettings = $I->grabAllFormValues();
 
 $newUserSettings = array_replace($originalUserSettings, array(
-    'nationality'        => 'Nationality 1, Nationality 2, Nationality 3',
-    'residencyStatus'    => 'Status 1, Status 2, Status 3',
-    'privacy'            => 'Y',
-    'privacyBlurb'       => 'Privacy Blurb Test',
-    'privacyOptions'     => 'Privacy 1, Privacy 2, Privacy 3',
-    'dayTypeOptions'     => 'Day Type 1, Day Type 2',
-    'dayTypeText'        => 'Day-Type Test',
+    'nationality'        => '',
+    'residencyStatus'    => '',
+    'privacy'            => 'N',
+    'dayTypeOptions'     => '',
+    'dayTypeText'        => '',
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');
@@ -64,10 +60,10 @@ $formValues = array(
     'languageSecond'              => 'Latin',
     'languageThird'               => 'Turkish',
     'countryOfBirth'              => 'Antarctica',
-    'citizenship1'                => 'Nationality 1',
+    'citizenship1'                => 'Antarctica',
     'citizenship1Passport'        => 'ABC12345',
     'nationalIDCardNumber'        => 'DEF12345',
-    'residencyStatus'             => 'Status 1',
+    'residencyStatus'             => 'Resident',
     'visaExpiryDate'              => '01/01/2020',
     'email'                       => 'testing.mctest@testingemail.test',
     'phone1'                      => '12345678',
@@ -76,12 +72,8 @@ $formValues = array(
     'phone2'                      => '87654321',
     'phone2Type'                  => 'Home',
     'phone2CountryCode'           => '1',
-    'sen'                         => 'Y',
-    'senDetails'                  => 'Testing SEN',
     'medicalInformation'          => 'Testing Medical',
     'dateStart'                   => '01/01/2020',
-    'referenceEmail'              => 'reference@testingemail.test',
-    'dayType'                     => 'Day Type 1',
     'schoolName1'                 => 'Previous School 1',
     'schoolAddress1'              => 'Previous Address 1',
     'schoolGrades1'               => 'Previous Grade 1',
@@ -105,9 +97,9 @@ $formValues = array(
     'parent1relationship'         => 'Mother',
     'parent1languageFirst'        => 'Latin',
     'parent1languageSecond'       => 'English',
-    'parent1citizenship1'         => 'Nationality 2',
+    'parent1citizenship1'         => 'Antarctica',
     'parent1nationalIDCardNumber' => 'GHI12345',
-    'parent1residencyStatus'      => 'Status 2',
+    'parent1residencyStatus'      => 'Non-Resident',
     'parent1visaExpiryDate'       => '02/02/2020',
     'parent1email'                => 'parent1.mctest@testingemail.test',
     'parent1phone1'               => '34567890',
@@ -118,29 +110,6 @@ $formValues = array(
     'parent1phone2CountryCode'    => '1',
     'parent1profession'           => 'Neurosurgeon',
     'parent1employer'             => 'Parent 1 Employer',
-    'parent2title'                => 'Mr.',
-    'parent2surname'              => 'McTest',
-    'parent2firstName'            => 'Parent 2',
-    'parent2preferredName'        => 'Parent 2',
-    'parent2officialName'         => 'Parent 2 McTest',
-    'parent2nameInCharacters'     => 'P2T',
-    'parent2gender'               => 'M',
-    'parent2relationship'         => 'Father',
-    'parent2languageFirst'        => 'German',
-    'parent2languageSecond'       => 'Urdu',
-    'parent2citizenship1'         => 'Nationality 3',
-    'parent2nationalIDCardNumber' => 'JKL12345',
-    'parent2residencyStatus'      => 'Status 3',
-    'parent2visaExpiryDate'       => '03/03/2030',
-    'parent2email'                => 'parent2.mctest@testingemail.test',
-    'parent2phone1'               => '87654321',
-    'parent2phone1Type'           => 'Home',
-    'parent2phone1CountryCode'    => '1',
-    'parent2phone2'               => '19876543',
-    'parent2phone2Type'           => 'Work',
-    'parent2phone2CountryCode'    => '1',
-    'parent2profession'           => 'Thespian',
-    'parent2employer'             => 'Parent 2 Employer',
     'siblingName1'                => 'Sibling 1 McTest',
     'siblingDOB1'                 => '01/01/2001',
     'siblingSchool1'              => 'Sibling 1 School',
@@ -153,19 +122,7 @@ $formValues = array(
     'siblingDOB3'                 => '03/03/2003',
     'siblingSchool3'              => 'Sibling 3 School',
     'siblingSchoolJoiningDate3'   => '03/03/2017',
-    'languageChoice'              => 'Latin',
-    'languageChoiceExperience'    => 'Language Choice Test',
-    'scholarshipInterest'         => 'Y',
-    'scholarshipRequired'         => 'Y',
-    'payment'                     => 'Company',
-    'companyName'                 => 'Testing Company',
-    'companyContact'              => 'Mr. Test McTesting',
-    'companyAddress'              => '1234 Company Address',
-    'companyEmail'                => 'testing.company@testingemail.test',
-    'companyCCFamily'             => 'Y',
-    'companyPhone'                => '54329876',
-    'howDidYouHear'               => 'Others',
-    'howDidYouHearMore'           => 'Testing',
+    'howDidYouHear'               => 'Something Random',
     'gibbonFamily'                => 'FALSE',
 );
 
@@ -173,12 +130,8 @@ $formValues = array(
 $I->selectFromDropdown('gibbonSchoolYearIDEntry', 2);
 $I->selectFromDropdown('gibbonYearGroupIDEntry', 2);
 
-// Check the agreement
-$I->checkOption('agreement');
-
-// Separate test?
-//$I->attachFile('file0', 'attachment.jpg');
-//$I->attachFile('file1', 'attachment.txt');
+// No second parent
+$I->selectOption('secondParent', 'No');
 
 $I->submitForm('#content form', $formValues, 'Submit');
 
