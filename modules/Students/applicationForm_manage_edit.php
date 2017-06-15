@@ -126,8 +126,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addLabel('milestones', __('Milestones'));
             $column = $row->addColumn()->setClass('right');
 
-        $milestonesChecked = explode(',', $application['milestones']);
-        $milestonesArray = explode(',', $milestonesList);
+        $milestonesChecked = array_map('trim', explode(',', $application['milestones']));
+        $milestonesArray = array_map('trim', explode(',', $milestonesList));
 
         foreach ($milestonesArray as $milestone) {
             $name = 'milestone_'.preg_replace('/\s+/', '', $milestone);
@@ -918,8 +918,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
-        $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
-        $checked = array_map(function($item) { return trim($item); }, explode(',', $application['privacy']));
+        $options = array_map('trim', explode(',', $privacyOptions));
+        $checked = array_map('trim', explode(',', $application['privacy']));
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
