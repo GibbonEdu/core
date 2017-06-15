@@ -47,10 +47,17 @@ class Checkbox extends Input
         return $this;
     }
 
-    public function checked($value)
+    public function checked($values)
     {
-        if ($value === 1 || $value === true) $value = 'on';
-        $this->checked = (!is_array($value))? array($value) : $value;
+        if ($values === 1 || $values === true) $values = 'on';
+
+        if (is_array($values)) {
+            foreach ($values as $key => $value) {
+                $this->checked[trim($key)] = (!is_array($value))? trim($value) : $value;
+            }
+        } else {
+            $this->checked = array(trim($values));
+        }
 
         return $this;
     }

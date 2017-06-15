@@ -41,7 +41,7 @@ class Radio extends Input
 
     public function checked($value)
     {
-        $this->setValue($value);
+        $this->setValue(trim($value));
         return $this;
     }
 

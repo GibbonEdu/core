@@ -866,7 +866,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
-        $requiredDocumentsList = explode(',', $requiredDocuments);
+        $requiredDocumentsList = array_map('trim', explode(',', $requiredDocuments));
 
         for ($i = 0; $i < count($requiredDocumentsList); $i++) {
 
