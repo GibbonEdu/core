@@ -922,8 +922,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $checked = array_map(function($item) { return trim($item); }, explode(',', $application['privacy']));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions', __('Privacy'))->description($privacyBlurb);
-            $row->addCheckbox('privacyOptions')->fromArray($options)->checked($checked);
+            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($checked);
     }
 
     // ⋆⋆⋆ Magic ⋆⋆⋆

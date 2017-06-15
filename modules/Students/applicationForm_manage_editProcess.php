@@ -508,7 +508,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
                 }
                 if ($privacy != '') {
-                    $privacy = substr($privacy, 0, -2);
+                    $privacy = substr($privacy, 0, -1);
                 } else {
                     $privacy = null;
                 }
