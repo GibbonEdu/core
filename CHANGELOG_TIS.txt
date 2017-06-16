@@ -36,6 +36,7 @@ v14.0.00
 
     Significant Changes
         Parent Information:
+        Planner: added a Student Learning page to view units and lessons by student
         User Admin: allow PDF files for user ID documents
         Timetable Admin: allow classes to be scheduled in the same room without conflict
         System: localization can be overridden for any page through a URL parameter
