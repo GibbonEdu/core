@@ -126,9 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 while ($rowRole = $resultRoles->fetch()) {
 
                     if ($rowRole['restriction'] == 'Admin Only') {
-                        if (in_array('001', $currentUserRoles, true)) {
+                        if (in_array('001', $currentUserRoles)) {
                             // Add selected roles only if they meet the restriction
-                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll)) {
                                 $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
                             }
 
@@ -136,24 +136,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 // Prevent primary role being changed to a restricted role (via modified POST)
                                 $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
                             }
-                        } else if (in_array($rowRole['gibbonRoleID'], $roles, true)) {
+                        } else if (in_array($rowRole['gibbonRoleID'], $roles)) {
                             // Add existing restricted roles because they cannot be removed by this user
                             $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
                         }
                     } else if ($rowRole['restriction'] == 'Same Role') {
-                        if (in_array($rowRole['gibbonRoleID'], $currentUserRoles, true) || in_array('001', $currentUserRoles, true)) {
-                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                        if (in_array($rowRole['gibbonRoleID'], $currentUserRoles) || in_array('001', $currentUserRoles)) {
+                            if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll)) {
                                 $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
                             }
 
                             if ($rowRole['gibbonRoleID'] == $selectedRoleIDPrimary) {
                                 $gibbonRoleIDPrimary = $selectedRoleIDPrimary;
                             }
-                        } else if (in_array($rowRole['gibbonRoleID'], $roles, true)) {
+                        } else if (in_array($rowRole['gibbonRoleID'], $roles)) {
                             $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
                         }
                     } else {
-                        if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll, true)) {
+                        if (in_array($rowRole['gibbonRoleID'], $selectedRoleIDAll)) {
                             $gibbonRoleIDAll[] = $rowRole['gibbonRoleID'];
                         }
 

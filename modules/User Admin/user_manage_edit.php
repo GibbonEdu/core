@@ -288,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $roleRestriction = $roleDetails['restriction'];
 
                             // Display a readonly field if the current role cannot be changed
-                            if (empty($roleRestriction) || ($roleRestriction == 'Admin Only' && !in_array('001', $currentUserRoles, true)) || ($roleRestriction == 'Same Role' && !in_array($row['gibbonRoleIDPrimary'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) ) {
+                            if (empty($roleRestriction) || ($roleRestriction == 'Admin Only' && !in_array('001', $currentUserRoles)) || ($roleRestriction == 'Same Role' && !in_array($row['gibbonRoleIDPrimary'], $currentUserRoles) && !in_array('001', $currentUserRoles)) ) {
                                 echo '<input type="text" name="gibbonRoleIDPrimaryName" value="'.$roleDetails['name'].'" class="standardWidth" readonly>';
                             } else {
 
@@ -308,9 +308,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 								while ($rowSelect = $resultSelect->fetch()) {
                                     // Check for and remove restricted roles from this list
                                     if ($rowSelect['restriction'] == 'Admin Only') {
-                                        if (!in_array('001', $currentUserRoles, true)) continue;
+                                        if (!in_array('001', $currentUserRoles)) continue;
                                     } else if ($rowSelect['restriction'] == 'Same Role') {
-                                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) continue;
+                                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) continue;
                                     }
 
 									$selected = '';
@@ -356,12 +356,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                                     // Check for and copy -selected- restricted roles to a separate array
                                     if ($rowSelect['restriction'] == 'Admin Only') {
-                                        if (!in_array('001', $currentUserRoles, true)) {
+                                        if (!in_array('001', $currentUserRoles)) {
                                             if ($selected == 'selected') $restrictedRoles[] = $rowSelect;
                                             continue;
                                         }
                                     } else if ($rowSelect['restriction'] == 'Same Role') {
-                                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true))
+                                        if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles))
                                         {
                                             if ($selected == 'selected') $restrictedRoles[] = $rowSelect;
                                             continue;
