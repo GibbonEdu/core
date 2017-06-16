@@ -121,6 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                                     AND gibbonUnit.gibbonUnitID=:gibbonUnitID
                                     AND gibbonUnitClass.running='Y'
+                                    AND gibbonUnit.active='Y'
                                     AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonIDStudent
                                     AND gibbonCourseClassPerson.role NOT LIKE '%- Left'
                                     AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
@@ -143,6 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                             WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                             AND gibbonUnit.gibbonUnitID=:gibbonUnitID
+                            AND gibbonUnit.active='Y'
                             AND gibbonUnitClass.running='Y'
                             AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonCourseClassPerson.role NOT LIKE '%- Left'
@@ -160,6 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                             AND gibbonUnit.gibbonUnitID=:gibbonUnitID
                             AND gibbonUnitClass.running='Y'
+                            AND gibbonUnit.active='Y'
                             GROUP BY gibbonUnit.gibbonUnitID";
                 } else {
                     $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
@@ -237,8 +240,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         } elseif ($highestAction == 'Lesson Planner_viewMyClasses') {
                             $dataPlanners = array('gibbonUnitID1' => $row['gibbonUnitID'], 'gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID1' => $row['gibbonCourseClassID'], 'gibbonUnitID2' => $row['gibbonUnitID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID2' => $row['gibbonCourseClassID']);
                             $sqlPlanners = "(SELECT gibbonPlannerEntry.* FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID1 AND gibbonPersonID=:gibbonPersonID1 AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID1 AND role='Teacher')
-							UNION
-							(SELECT gibbonPlannerEntry.* FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID2 AND gibbonPersonID=:gibbonPersonID2 AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID2 AND role='Student' AND viewableStudents='Y')";
+                            UNION
+                            (SELECT gibbonPlannerEntry.* FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID2 AND gibbonPersonID=:gibbonPersonID2 AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID2 AND role='Student' AND viewableStudents='Y')";
                         } elseif ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                             $dataPlanners = array('gibbonUnitID' => $row['gibbonUnitID'], 'gibbonCourseClassID' => $row['gibbonCourseClassID']);
                             $sqlPlanners = "SELECT * FROM gibbonPlannerEntry WHERE gibbonUnitID=:gibbonUnitID AND gibbonCourseClassID=:gibbonCourseClassID AND viewableParents='Y'";
@@ -250,11 +253,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
-                        if ($resultPlanners->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
-                            echo '</div>';
-                        } else {
+                        ?>
+                        <script type='text/javascript'>
+                            $(function() {
+                                $( "#tabs" ).tabs({
+                                    ajaxOptions: {
+                                        error: function( xhr, status, index, anchor ) {
+                                            $( anchor.hash ).html(
+                                                "Couldn't load this tab." );
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+                        <?php
+
+                        echo "<div id='tabs' style='margin: 20px 0'>";
+                        //Tab links
+                        echo '<ul>';
+                        echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
+                        if ($resultPlanners->rowCount() > 0) {
+                            echo "<li><a href='#tabs2'>".__($guid, 'Outcomes').'</a></li>';
+                            echo "<li><a href='#tabs3'>".__($guid, 'Lessons').'</a></li>';
+                            echo "<li><a href='#tabs4'>".__($guid, 'Resources').'</a></li>';
+                        }
+                        echo '</ul>';
+
+                        //Tab content
+                        //UNIT OVERVIEW
+                        echo "<div id='tabs1'>";
+                        $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                        echo '<h2>';
+                        echo __($guid, 'Description');
+                        echo '</h2>';
+                        echo '<p>';
+                        echo $rowUnit['description'];
+                        echo '</p>';
+
+                        if ($rowUnit['tags'] != '') {
+                            echo '<h2>';
+                            echo __($guid, 'Concepts & Keywords');
+                            echo '</h2>';
+                            echo '<p>';
+                            echo $rowUnit['tags'];
+                            echo '</p>';
+                        }
+                        if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $shareUnitOutline == 'Y') {
+                            if ($rowUnit['details'] != '') {
+                                echo '<h2>';
+                                echo __($guid, 'Unit Outline');
+                                echo '</h2>';
+                                echo '<p>';
+                                echo $rowUnit['details'];
+                                echo '</p>';
+                            }
+                        }
+                        echo '</div>';
+
+                        // Tabs 2-3
+                        if ($resultPlanners->rowCount() > 0) {
                             $dataMulti = array();
                             $whereMulti = '(';
                             $multiCount = 0;
@@ -264,60 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 ++$multiCount;
                             }
                             $whereMulti = substr($whereMulti, 0, -4).')';
-                            ?>
-							<script type='text/javascript'>
-								$(function() {
-									$( "#tabs" ).tabs({
-										ajaxOptions: {
-											error: function( xhr, status, index, anchor ) {
-												$( anchor.hash ).html(
-													"Couldn't load this tab." );
-											}
-										}
-									});
-								});
-							</script>
-							<?php
 
-                            echo "<div id='tabs' style='margin: 20px 0'>";
-							//Tab links
-							echo '<ul>';
-                            echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
-                            echo "<li><a href='#tabs2'>".__($guid, 'Outcomes').'</a></li>';
-                            echo "<li><a href='#tabs3'>".__($guid, 'Lessons').'</a></li>';
-                            echo "<li><a href='#tabs4'>".__($guid, 'Resources').'</a></li>';
-                            echo '</ul>';
-
-							//Tab content
-							//UNIT OVERVIEW
-							echo "<div id='tabs1'>";
-                            $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
-                            echo '<h2>';
-                            echo __($guid, 'Description');
-                            echo '</h2>';
-                            echo '<p>';
-                            echo $rowUnit['description'];
-                            echo '</p>';
-
-                            if ($rowUnit['tags'] != '') {
-                                echo '<h2>';
-                                echo __($guid, 'Concepts & Keywords');
-                                echo '</h2>';
-                                echo '<p>';
-                                echo $rowUnit['tags'];
-                                echo '</p>';
-                            }
-                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $shareUnitOutline == 'Y') {
-                                if ($rowUnit['details'] != '') {
-                                    echo '<h2>';
-                                    echo __($guid, 'Unit Outline');
-                                    echo '</h2>';
-                                    echo '<p>';
-                                    echo $rowUnit['details'];
-                                    echo '</p>';
-                                }
-                            }
-                            echo '</div>';
 							//OUTCOMES
 							echo "<div id='tabs2'>";
                             try {
@@ -423,8 +427,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 echo '</table>';
                             }
                             echo '</div>';
-                                //LESSONS
-                                echo "<div id='tabs3'>";
+
+                            //LESSONS
+                            echo "<div id='tabs3'>";
                             $resourceContents = $rowUnit['details'];
                             try {
                                 $dataLessons = $dataMulti;
@@ -490,6 +495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 }
                             }
                             echo '</div>';
+
                             //RESOURCES
                             echo "<div id='tabs4'>";
                             $noReosurces = true;
@@ -595,8 +601,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 								echo '</div>';
 							}
                             echo '</div>';
-                            echo '</div>';
                         }
+                        echo '</div>';
                     }
                 }
             }
