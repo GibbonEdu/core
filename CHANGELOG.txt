@@ -120,6 +120,7 @@ v14.0.00
         Students: fixed auto-assign houses potentially failing on Application Form acceptance if houses are empty
         Students: fixed PHP notice for gibbonPersonID in Add Medical Form
         Students: fixed link to Add Medical Form in Student Profile
+        Students: updated Edit Application Form to handle spaces in privacy options csv
 		Timetable: fixed TT not being navigable if user is not involved in any timetable
 		Timetable Admin: fix bulk checking bug in Tie Days to Dates
 		Timetable Admin: widened listing of staff in Course Enrolment by Person to include all staff (not just Teaching staff)
@@ -128,6 +129,7 @@ v14.0.00
 		Timetable: added optional permission for users to only view their own timetable
 		Timetable: added optional permission for parents to only view their children's timetables
 		Timetable: increased list of students in Manage Student Enrolment to include all current students
+		Timetable: fixed PHP notice in renderTTDay module function
 		Tracking: fixed bugs leading to repeated and mixed display of columns
 		User Admin: fixed bug preventing some custom fields appearing when individual had multiple categories in multiple roles
 		User Admin: fixed PHP Notice error caused when no additional roles chosen in user edit

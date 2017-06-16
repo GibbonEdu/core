@@ -222,9 +222,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							// Check for and remove restricted roles from this list
 							if ($rowSelect['restriction'] == 'Admin Only') {
-								if (!in_array('001', $currentUserRoles, true)) continue;
+								if (!in_array('001', $currentUserRoles)) continue;
 							} else if ($rowSelect['restriction'] == 'Same Role') {
-								if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles, true) && !in_array('001', $currentUserRoles, true)) continue;
+								if (!in_array($rowSelect['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) continue;
 							}
 
 							echo "<option value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';

@@ -219,7 +219,7 @@ class attendanceView
                     $rolesAllowed = explode(',', $attendanceType['gibbonRoleIDAll']);
 
                     foreach ($rolesAllowed as $role) {
-                        if ( in_array($role, $userRoleIDs, true) ) {
+                        if ( in_array($role, $userRoleIDs) ) {
                             $allowAttendanceType = true;
                         }
                     }
