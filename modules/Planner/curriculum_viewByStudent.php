@@ -193,8 +193,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculum_viewByS
 
                     foreach ($units as $unit) {
                         echo '<tr>';
-                            echo '<td style="width: 32%;">'.$unit['name'].'</td>';
-                            echo '<td style="width: 60%;">'.$unit['description'].'</td>';
+                            echo '<td style="width: 27%;">'.$unit['name'].'</td>';
+                            echo '<td style="width: 65%;">'.$unit['description'].'</td>';
                             echo '<td style="width: 8%;">';
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_unitOverview.php&viewBy=unit&subView=&gibbonUnitID='.$unit['gibbonUnitID'].'&gibbonCourseClassID='.$unit['gibbonCourseClassID']."&search=".$gibbonPersonID."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                             echo '</td>';
