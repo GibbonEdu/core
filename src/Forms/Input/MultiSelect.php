@@ -40,11 +40,16 @@ class MultiSelect implements OutputableInterface
     public function __construct(FormFactoryInterface &$factory, $name) {        
         $this->name = $name;
 
-        $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true);
-        $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true);
+        $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true)->setSize(8);
+        $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true)->setSize(8);
 
         $this->addButton = $factory->createButton("Add", 'optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')');
         $this->removeButton = $factory->createButton("Remove", 'optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')');
+    }
+
+    public function setSize($size=8) {
+        $this->sourceSelect->setSize($size);
+        $this->sourceSelect->setSize($size);
     }
 
     public function source() {
