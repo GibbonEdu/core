@@ -31,20 +31,39 @@ use Gibbon\Forms\FormFactoryInterface;
 class MultiSelect implements OutputableInterface
 {
 
+    protected $name;
+    protected $sortableAttributes;
+
     protected $sourceSelect;
     protected $destinationSelect;
     protected $addButton;
     protected $removeButton;
-    protected $name;
+    protected $sortBySelect;
 
     public function __construct(FormFactoryInterface &$factory, $name) {        
         $this->name = $name;
 
-        $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true)->setSize(8);
-        $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true)->setSize(8);
+        $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true)->setSize(8)->setClass('mediumWidth')->addClass("floatNone");
+        $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true)->setSize(8)->setClass('mediumWidth');
 
-        $this->addButton = $factory->createButton("Add", 'optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')');
-        $this->removeButton = $factory->createButton("Remove", 'optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')');
+        $this->sortBySelect = $factory->createSelect($name . "Sort")
+            ->placeholder("Sort by Name")
+            ->setClass("shortWidth")
+            ->addClass("floatNone");
+
+        $this->addButton = $factory->createButton("Add")
+            ->onClick('optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')')
+            ->setClass("shortWidth");
+        $this->removeButton = $factory->createButton("Remove")
+            ->onClick('optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')')
+            ->setClass("shortWidth");
+    }
+
+    public function addSortableAttribute($attribute, $values)
+    {
+        $this->sortableAttributes[$attribute] = $values;
+        $this->sortBySelect->fromArray(array($attribute => "Sort by " . $attribute));
+        return $this;
     }
 
     public function setSize($size=8) {
@@ -64,53 +83,47 @@ class MultiSelect implements OutputableInterface
     public function getOutput() {
         $output = '';
 
+        // TODO: Validate merge keys from both selects, throw exception if key conflict
+
+
         // TODO: Move javascript to somewhere more sensible
 
         $output .= '<script type="text/javascript">';
 
         $output .= 'function optionTransfer(select0Name, select1Name) {
-            var select0 = document.getElementById(select0Name);
-            var select1 = document.getElementById(select1Name);
-            for (var i = select0.length - 1; i>=0; i--) {
-                var option = select0.options[i];
-                if (option != null) {
-                    if (option.selected) {
-                        select0.remove(i);
-                        try {
-                            select1.add(option, null);
-                        } catch (ex) {
-                            select1.add(option);
-                        }
-                    }
-                }
-            }
-            sortSelect(select0);
-            sortSelect(select1);
+            var select0 = $(\'#\'+select0Name);
+            var select1 = $(\'#\'+select1Name);
+
+            select0.find(\'option:selected\').each(function() {
+                select1.append($(this).clone());
+                $(this).detach().remove();
+            });
+
+            sortSelect(select0, null);
+            sortSelect(select1, null);
         }' . "\n";
 
-        $output .= 'function sortSelect(list) {
-            var tempArray = new Array();
-            for (var i=0;i<list.options.length;i++) {
-                tempArray[i] = new Array();
-                tempArray[i][0] = list.options[i].text;
-                tempArray[i][1] = list.options[i].value;
+        $output .= 'function sortSelect(list, sortValues) {
+            var options = $(\'option\', list);
+            if(sortValues == null) {
+                sortValues = {};  
             }
-            tempArray.sort();
-            while (list.options.length > 0) {
-                list.options[0] = null;
-            }
-            for (var i=0;i<tempArray.length;i++) {
-                var op = new Option(tempArray[i][0], tempArray[i][1]);
-                list.options[i] = op;
-            }
-            return;
-        }';
+            var arr = options.map(function(_, o) { return { tSort: sortValues[o.value] + $(o).text(), t: $(o).text(), v: o.value }; }).get();
+            arr.sort(function(o1, o2) { return o1.tSort > o2.tSort ? 1 : o1.tSort < o2.tSort ? -1 : 0; });
+            options.each(function(i, o) {
+              o.value = arr[i].v;
+              $(o).text(arr[i].t);
+            });
+        }
+        ';
 
         $output .= '
             jQuery(function($){
 
+                var sourceSelect = $(\'#'.$this->sourceSelect->getID().'\');
                 var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
                 var form = destinationSelect.parents(\'form\');
+                var sortables = $(\'#'. $this->name .'\').data(\'sortable\');
 
                 form.submit(function(){
                     var options = $(\'option\', destinationSelect);
@@ -122,23 +135,40 @@ class MultiSelect implements OutputableInterface
                         }).val(options[i].value).appendTo(form);
                     }
                 });
+
+                $(\'#'. $this->sortBySelect->getID() .'\').change(function(){
+                    var sortBy = $(this).val();
+
+                    var values = null;
+
+                    if (sortBy != \'Sort by Name\') {
+                        values = sortables[sortBy];   
+                    }
+
+                    sortSelect(sourceSelect, values);
+                    sortSelect(destinationSelect, values);
+
+                });
             });
 
         ';
         $output .= '</script>';
 
-        $output .= '<table class="blank"><tr>';
+        $output .= '<table id="'.$this->name.'" class="blank fullWidth" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'"><tr>';
 
-        $output .= '<td style="width:40%">';
+        $output .= '<td style="width:35%; vertical-align:top;">';
             $output .= $this->sourceSelect->getOutput();
         $output .= '</td>';
 
-        $output .= '<td style="width:20%; text-align:center">';
-            $output .= $this->addButton->getOutput();
+        $output .= '<td style="width:30%; text-align:center">';
+            $output .= $this->addButton->getOutput() . '<br/>';
             $output .= $this->removeButton->getOutput();
+            if (!empty($this->sortableAttributes)) {
+                $output .= '<br/>' . $this->sortBySelect->getOutput();
+            }
         $output .= '</td>';
 
-        $output .= '<td style="width:40%">';
+        $output .= '<td style="width:35%; vertical-align:top;">';
             $output .= $this->destinationSelect->getOutput();
         $output .= '</td>';
 
