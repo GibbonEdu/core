@@ -49,7 +49,8 @@ class MultiSelect implements OutputableInterface
 
     public function setSize($size=8) {
         $this->sourceSelect->setSize($size);
-        $this->sourceSelect->setSize($size);
+        $this->destinationSelect->setSize($size);
+        return $this;
     }
 
     public function source() {
