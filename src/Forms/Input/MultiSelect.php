@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\FormFactoryInterface;
+
 /**
  * Multi Select
  *
@@ -27,5 +30,119 @@ namespace Gibbon\Forms\Input;
  */
 class MultiSelect implements OutputableInterface
 {
+
+    protected $sourceSelect;
+    protected $destinationSelect;
+    protected $addButton;
+    protected $removeButton;
+    protected $name;
+
+    public function __construct(FormFactoryInterface &$factory, $name) {        
+        $this->name = $name;
+
+        $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true);
+        $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true);
+
+        $this->addButton = $factory->createButton("Add", 'optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')');
+        $this->removeButton = $factory->createButton("Remove", 'optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')');
+    }
+
+    public function source() {
+        return $this->sourceSelect;
+    }
+
+    public function destination() {
+        return $this->destinationSelect;
+    }
+
+    public function getOutput() {
+        $output = '';
+
+        // TODO: Move javascript to somewhere more sensible
+
+        $output .= '<script type="text/javascript">';
+
+        $output .= 'function optionTransfer(select0Name, select1Name) {
+            var select0 = document.getElementById(select0Name);
+            var select1 = document.getElementById(select1Name);
+            for (var i = select0.length - 1; i>=0; i--) {
+                var option = select0.options[i];
+                if (option != null) {
+                    if (option.selected) {
+                        select0.remove(i);
+                        try {
+                            select1.add(option, null);
+                        } catch (ex) {
+                            select1.add(option);
+                        }
+                    }
+                }
+            }
+            sortSelect(select0);
+            sortSelect(select1);
+        }' . "\n";
+
+        $output .= 'function sortSelect(list) {
+            var tempArray = new Array();
+            for (var i=0;i<list.options.length;i++) {
+                tempArray[i] = new Array();
+                tempArray[i][0] = list.options[i].text;
+                tempArray[i][1] = list.options[i].value;
+            }
+            tempArray.sort();
+            while (list.options.length > 0) {
+                list.options[0] = null;
+            }
+            for (var i=0;i<tempArray.length;i++) {
+                var op = new Option(tempArray[i][0], tempArray[i][1]);
+                list.options[i] = op;
+            }
+            return;
+        }';
+
+        $output .= '
+            jQuery(function($){
+
+                var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
+                var form = destinationSelect.parents(\'form\');
+
+                form.submit(function(){
+                    var options = $(\'option\', destinationSelect);
+
+                    for (var i = 0; i < options.length; i++) {
+                        $(\'<input>\').attr({
+                            type: \'hidden\',
+                            name: \'' . $this->name . '[]\'
+                        }).val(options[i].value).appendTo(form);
+                    }
+                });
+            });
+
+        ';
+        $output .= '</script>';
+
+        $output .= '<table class="blank"><tr>';
+
+        $output .= '<td style="width:40%">';
+            $output .= $this->sourceSelect->getOutput();
+        $output .= '</td>';
+
+        $output .= '<td style="width:20%; text-align:center">';
+            $output .= $this->addButton->getOutput();
+            $output .= $this->removeButton->getOutput();
+        $output .= '</td>';
+
+        $output .= '<td style="width:40%">';
+            $output .= $this->destinationSelect->getOutput();
+        $output .= '</td>';
+
+        $output .= '</tr></table>';
+
+        return $output;
+    }
+
+    public function getClass() {
+        return '';
+    }
 
 }
