@@ -150,6 +150,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Select($name);
     }
 
+    public function createMultiSelect($name)
+    {
+        return new Input\MultiSelect($this, $name);
+    }
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($label)
