@@ -155,6 +155,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\MultiSelect($this, $name);
     }
 
+    public function createButton($label = 'Button', $onClick = '')
+    {
+        return new Input\Button($label, $onClick);
+    }
+    
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($label)
@@ -172,12 +177,6 @@ class FormFactory implements FormFactoryInterface
     public function createSubmit($label = 'Submit')
     {
         $content = sprintf('<input type="submit" value="%s">', $label);
-        return $this->createContent($content)->setClass('right');
-    }
-
-    public function createButton($label = 'Button', $onClick = '')
-    {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
         return $this->createContent($content)->setClass('right');
     }
 
