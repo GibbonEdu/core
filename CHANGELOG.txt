@@ -21,6 +21,7 @@ v14.0.00
 	Headlines
 		Object oriented form API
 		Added the ability to manage system notifications and send specific notices to different users
+		Activated Albanian, Thai and Vietnamese as complete languages
 
 	Changes With Important Notices
 		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
