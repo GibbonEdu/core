@@ -227,8 +227,11 @@ $_SESSION[$guid]['stringReplacement'] = array();
 														<option value='fr_FR'>Français - France</option>
 														<option value='it_IT'>Italiano - Italia</option>
 														<option value='ro_RO'>Română</option>
-														<option value='zh_HK'>體字 - 香港</option>
+                                                        <option value="sq_AL">Shqip - Shqipëri</option>
+                                                        <option value="vi_VN">Tiếng Việt - Việt Nam</option>
 														<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
+                                                        <option value="th_TH">ภาษาไทย - ราชอาณาจักรไทย </option>
+                                                        <option value='zh_HK'>體字 - 香港</option>
 													</select>
 												</td>
 											</tr>

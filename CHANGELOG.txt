@@ -21,6 +21,7 @@ v14.0.00
 	Headlines
 		Object oriented form API
 		Added the ability to manage system notifications and send specific notices to different users
+		Activated Albanian, Thai and Vietnamese as complete languages
 
 	Changes With Important Notices
 		Attendance: fixed default reason from Pending to blank, reset all reasons for existing Present, Pending logs
@@ -56,6 +57,7 @@ v14.0.00
 		System: moved registration link from main panel to sidebar
 		System: fixed issue preventing Excel export from root level files
         System: fixed PHP notice for undefined default staff dashboard tab
+		System: fixed string issue in Behaviour section of Staff Dashboard
 		Activities: added optional permission for activity organisers to manage their activities enrolment
 		Activities: fixed PHP Notice error (repeated many times) in activity add and edit interfaces
 		Activities: added optional permission for activity organisers to take attendance only within their activities
@@ -88,7 +90,7 @@ v14.0.00
 		Finance: fixed PHP notices for unset IDs in Manage Expenses and My Expense Requests
 		Formal Assessment: improved layout of Internal Assessment view
 		Formal Assessment: fixed incorrect string wrapping for translation in Internal Assessment import
-		Formal Assessment: fixed visual issue in column header of Write view in Internal Assessment 
+		Formal Assessment: fixed visual issue in column header of Write view in Internal Assessment
 		Library: added new type to store Audio/Visual equipment
 		Library: fixed button label in Edit view in Lending & Activity Log
 		Library: fixed empty Link field when in Edit view in Manage Catalog

@@ -685,7 +685,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                     if ($rowBehaviour['type'] == 'Negative') {
                         $rollGroups[$count][3] .= "<img title='".__($guid, 'Negative')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                     } elseif ($rowBehaviour['type'] == 'Positive') {
-                        $rollGroups[$count][3] .= "<img title='".__($guid, 'Position')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                        $rollGroups[$count][3] .= "<img title='".__($guid, 'Positive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                     }
                     $rollGroups[$count][3] .= '</td>';
                     $rollGroups[$count][3] .= '<td>';
