@@ -31,7 +31,7 @@ v15.0.00
 		...
 
 	Tweaks & Bug Fixes
-		...
+		i18n: fixed erroneous Georgian language code
 
 v14.0.00
 --------
