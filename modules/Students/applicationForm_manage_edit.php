@@ -876,19 +876,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $form->addHiddenValue('fileName'.$i, $requiredDocumentsList[$i]);
 
-            if ($resultFile->rowCount() > 0) {
-                $attachment = $resultFile->fetchColumn(0);
+            $attachment = ($resultFile->rowCount() > 0)? $resultFile->fetchColumn(0) : '';
+            $description = ($resultFile->rowCount() > 0)? __('Will overwrite existing attachment.') : '';
 
-                $row = $form->addRow();
-                $row->addLabel('file'.$i, $requiredDocumentsList[$i])->description(__('This value cannot be changed.'));
-                $row->addContent(__('Download'))->wrap('<a target="_blank" href="'.$_SESSION[$guid]['absoluteURL'].'/'.$attachment.'">', '</a>')->setClass('right');
-            } else {
-                $row = $form->addRow();
-                $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
-                $row->addFileUpload('file'.$i)
-                    ->accepts($fileUploader->getFileExtensions())
-                    ->setRequired($requiredDocumentsCompulsory == 'Y');
-            }
+            $row = $form->addRow();
+            $row->addLabel('file'.$i, $requiredDocumentsList[$i])->description($description);
+            $row->addFileUpload('file'.$i)
+                ->accepts($fileUploader->getFileExtensions())
+                ->setRequired($requiredDocumentsCompulsory == 'Y')
+                ->setAttachment($_SESSION[$guid]['absoluteURL'], $attachment);
         }
 
         $row = $form->addRow()->addContent(getMaxUpload($guid));
