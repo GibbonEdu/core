@@ -798,3 +798,10 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 UPDATE gibboni18n SET maintainerName='Enrique Snitzes' WHERE code='es_ES';end
 UPDATE gibboni18n SET active='Y' WHERE (code='sq_AL' OR code='vi_VN' OR code='th_TH');end
 ";
+
+//v15.0.00
+++$count;
+$sql[$count][0] = '15.0.00';
+$sql[$count][1] = "
+UPDATE gibboni18n SET code='ka_GE' WHERE code='ke_GE';end
+";
