@@ -871,19 +871,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         for ($i = 0; $i < count($requiredDocumentsList); $i++) {
 
             $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $requiredDocumentsList[$i]);
-            $sqlFile = 'SELECT path FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name';
+            $sqlFile = 'SELECT path FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY gibbonApplicationFormFileID DESC';
             $resultFile = $pdo->executeQuery($dataFile, $sqlFile);
-
-            $attachment = ($resultFile->rowCount() == 1)? $resultFile->fetchColumn(0) : '';
 
             $form->addHiddenValue('fileName'.$i, $requiredDocumentsList[$i]);
 
-            $row = $form->addRow();
+            if ($resultFile->rowCount() > 0) {
+                $attachment = $resultFile->fetchColumn(0);
+
+                $row = $form->addRow();
+                $row->addLabel('file'.$i, $requiredDocumentsList[$i])->description(__('This value cannot be changed.'));
+                $row->addContent(__('Download'))->wrap('<a target="_blank" href="'.$_SESSION[$guid]['absoluteURL'].'/'.$attachment.'">', '</a>')->setClass('right');
+            } else {
+                $row = $form->addRow();
                 $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
-                    ->setRequired($requiredDocumentsCompulsory == 'Y')
-                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $attachment);
+                    ->setRequired($requiredDocumentsCompulsory == 'Y');
+            }
         }
 
         $row = $form->addRow()->addContent(getMaxUpload($guid));
