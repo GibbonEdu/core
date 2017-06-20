@@ -871,19 +871,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         for ($i = 0; $i < count($requiredDocumentsList); $i++) {
 
             $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $requiredDocumentsList[$i]);
-            $sqlFile = 'SELECT path FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name';
+            $sqlFile = 'SELECT path FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY gibbonApplicationFormFileID DESC';
             $resultFile = $pdo->executeQuery($dataFile, $sqlFile);
-
-            $attachment = ($resultFile->rowCount() == 1)? $resultFile->fetchColumn(0) : '';
 
             $form->addHiddenValue('fileName'.$i, $requiredDocumentsList[$i]);
 
+            $attachment = ($resultFile->rowCount() > 0)? $resultFile->fetchColumn(0) : '';
+            $description = ($resultFile->rowCount() > 0)? __('Will overwrite existing attachment.') : '';
+
             $row = $form->addRow();
-                $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
-                $row->addFileUpload('file'.$i)
-                    ->accepts($fileUploader->getFileExtensions())
-                    ->setRequired($requiredDocumentsCompulsory == 'Y')
-                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $attachment);
+            $row->addLabel('file'.$i, $requiredDocumentsList[$i])->description($description);
+            $row->addFileUpload('file'.$i)
+                ->accepts($fileUploader->getFileExtensions())
+                ->setRequired($requiredDocumentsCompulsory == 'Y')
+                ->setAttachment($_SESSION[$guid]['absoluteURL'], $attachment);
         }
 
         $row = $form->addRow()->addContent(getMaxUpload($guid));
