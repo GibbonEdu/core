@@ -150,9 +150,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\Select($name);
     }
 
-    public function createCustomBlocks($name)
+    public function createCustomBlocks($name, $addBlockURL)
     {
-        return new Input\CustomBlocks($this, $name);
+        return new Input\CustomBlocks($this, $name, $addBlockURL);
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */
