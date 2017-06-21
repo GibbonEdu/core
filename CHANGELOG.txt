@@ -32,6 +32,7 @@ v15.0.00
 
 	Tweaks & Bug Fixes
 		i18n: fixed erroneous Georgian language code
+		Students: fixed School History section in Student Profile to exclude upcoming years
 
 v14.0.00
 --------
