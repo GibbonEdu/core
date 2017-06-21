@@ -503,7 +503,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         try {
                             $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlSelect = 'SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID';
+                            $sqlSelect = "SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear
+                                FROM gibbonStudentEnrolment
+                                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                                WHERE gibbonPersonID=:gibbonPersonID
+                                AND (gibbonSchoolYear.status = 'Current' OR gibbonSchoolYear.status='Past')
+                                ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID";
                             $resultSelect = $connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
