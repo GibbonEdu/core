@@ -16,6 +16,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v15.0.00
+--------
+	Headlines
+		...
+
+	Changes With Important Notices
+		...
+
+	Significant Changes
+		...
+
+	Security
+		...
+
+	Tweaks & Bug Fixes
+		i18n: fixed erroneous Georgian language code
+		Students: fixed School History section in Student Profile to exclude upcoming years
+
 v14.0.00
 --------
 	Headlines
