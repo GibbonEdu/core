@@ -430,19 +430,19 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
         echo __($guid, 'Total number of school days attended:')." $countPresent<br/>";
         echo __($guid, 'Total number of school days absent:')." $countAbsent<br/>";
 
-        if ( count($countTypes) > 0 ) {
-            echo '<br/><b>'.__($guid, 'Type').":</b><br/>";
-            foreach ($countTypes as $typeName => $count ) {
-                echo '<span style="width:180px;display:inline-block;">'.__($guid, $typeName)."</span>$count<br/>";
-            }
-        }
+        // if ( count($countTypes) > 0 ) {
+        //     echo '<br/><b>'.__($guid, 'Type').":</b><br/>";
+        //     foreach ($countTypes as $typeName => $count ) {
+        //         echo '<span style="width:180px;display:inline-block;">'.__($guid, $typeName)."</span>$count<br/>";
+        //     }
+        // }
 
-        if ( count($countReasons) > 0 ) {
-            echo '<br/><b>'.__($guid, 'Reason').":</b><br/>";
-            foreach ($countReasons as $reasonName => $count ) {
-                echo '<span style="width:180px;display:inline-block;">'.__($guid, $reasonName)."</span>$count<br/>";
-            }
-        }
+        // if ( count($countReasons) > 0 ) {
+        //     echo '<br/><b>'.__($guid, 'Reason').":</b><br/>";
+        //     foreach ($countReasons as $reasonName => $count ) {
+        //         echo '<span style="width:180px;display:inline-block;">'.__($guid, $reasonName)."</span>$count<br/>";
+        //     }
+        // }
     } else {
         echo __($guid, 'NA');
     }
