@@ -1550,7 +1550,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $_SESSION[$guid]['sidebarExtra'] .= "<table class='noIntBorder' cellspacing='0' style='width:260px; float: right; margin-bottom: 30px'>";
                         $count = 0;
                         $countStudents = 0;
-                        while ($rowClassGroup = $resultClassGroup->fetch()) {
+
+                        if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
+                            $resultClassGroup = null;
+                        }
+
+                        while ($resultClassGroup && $rowClassGroup = $resultClassGroup->fetch()) {
                             if ($count % $columns == 0) {
                                 $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
                             }
