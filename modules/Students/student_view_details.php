@@ -1979,7 +1979,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo "<option value='*'>".__($guid, 'All Years').'</option>';
                                             try {
                                                 $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                                                $sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
+                                                $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup
+                                                    FROM gibbonStudentEnrolment
+                                                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                                                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                                                    WHERE (gibbonSchoolYear.status='Current' OR gibbonSchoolYear.status='Past')
+                                                    AND gibbonPersonID=:gibbonPersonID
+                                                    ORDER BY gibbonSchoolYear.sequenceNumber";
                                                 $resultSelect = $connection2->prepare($sqlSelect);
                                                 $resultSelect->execute($dataSelect);
                                             } catch (PDOException $e) {
@@ -2551,7 +2557,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             try {
                                 $dataYears = array('gibbonPersonID' => $gibbonPersonID);
-                                $sqlYears = 'SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
+                                $sqlYears = "SELECT *
+                                    FROM gibbonStudentEnrolment
+                                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                                    WHERE (gibbonSchoolYear.status='Current' OR gibbonSchoolYear.status='Past')
+                                    AND gibbonPersonID=:gibbonPersonID
+                                     ORDER BY sequenceNumber DESC";
                                 $resultYears = $connection2->prepare($sqlYears);
                                 $resultYears->execute($dataYears);
                             } catch (PDOException $e) {
