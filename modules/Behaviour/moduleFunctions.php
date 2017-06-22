@@ -24,7 +24,7 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2)
 
     try {
         $dataYears = array('gibbonPersonID' => $gibbonPersonID);
-        $sqlYears = 'SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
+        $sqlYears = "SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonSchoolYear.status='Current' OR gibbonSchoolYear.status='Past') AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
         $resultYears = $connection2->prepare($sqlYears);
         $resultYears->execute($dataYears);
     } catch (PDOException $e) {
