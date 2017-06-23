@@ -33,6 +33,7 @@ v15.0.00
 	Tweaks & Bug Fixes
 		i18n: fixed erroneous Georgian language code
 		Students: fixed School History section in Student Profile to exclude upcoming years
+		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
 		User Admin: improved usability of feedback in Step 3 of the rollover
 
 v14.0.00
