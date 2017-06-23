@@ -34,14 +34,14 @@ class CustomBlocks implements OutputableInterface
     protected $name;
     protected $placeholder;
     protected $addButton;
-    protected $addBlockURL;
+    protected $formOutput;
 
-    public function __construct(FormFactoryInterface &$factory, $name, $addBlockURL)
+    public function __construct(FormFactoryInterface &$factory, $name, $form)
     {
         $this->name = $name;
         $this->placeholder = "Blocks will appear here...";  
         $this->addButton = $factory->createButton("Add Block", 'add'. $this->name .'Block()');
-        $this->addBlockURL = $addBlockURL;
+        $this->formOutput = $form->getOutput();
     }
 
     public function placeholder($value)
@@ -67,10 +67,20 @@ class CustomBlocks implements OutputableInterface
                 .<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
             </style>';
 
-        $output .= '<div class="' . $this->name. '" id="' . $this->name. ' " style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
+        $output .= '<div class="' . $this->name. '" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
             $output .= '<div id="' . $this->name . 'Outer0">';
                 $output .= '<div style="color: #ddd; font-size: 230%; margin: 15px 0 0 6px">' . $this->placeholder . '</div>';
             $output .= '</div>';
+
+            $output .= '<div id="'. $this->name .'Template" style="display:none">';
+                $output .= '<div style="float:left; width:90%">';
+                $output .= $this->formOutput;
+                $output .= '</div>';
+                $output .= '<div>';
+                $output .= 'Test';
+                $output .= '</div>';
+            $output .= '</div>';
+
         $output .= '</div>';
 
         $output .= '<script type="text/javascript">' . "\n";
@@ -78,8 +88,7 @@ class CustomBlocks implements OutputableInterface
             $output .= 'function add'. $this->name .'Block() {' . "\n";
                 $output .= '$("#' . $this->name . 'Outer0").css("display", "none");' . "\n";
                 $output .= 'var outerName = "'. $this->name .'Outer" + ' . $this->name . 'Count;';
-                $output .= '$(".'. $this->name .'").append(\'<div id=\' + outerName + \'><img style="margin: 10px 0 5px 0" src="' . $_SESSION[$guid]["absoluteURL"] . '"/themes/Default/img/loading.gif" alt="Loading" onclick="return false;" /><br/>Loading</div>\');' . "\n";
-                $output .= '$("#" + outerName).load("'. $this->addBlockURL .'","id=" + '. $this->name .'Count);' . "\n";
+                $output .= '$("#'. $this->name . 'Template").clone().css("display", "block").prop("id", outerName).appendTo($("#'. $this->name .'"));' . "\n";
                 $output .= $this->name . 'Count++;' . "\n";
             $output .= '}';
         $output .= '</script>';
