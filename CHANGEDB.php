@@ -804,4 +804,5 @@ UPDATE gibboni18n SET active='Y' WHERE (code='sq_AL' OR code='vi_VN' OR code='th
 $sql[$count][0] = '15.0.00';
 $sql[$count][1] = "
 UPDATE gibboni18n SET code='ka_GE' WHERE code='ke_GE';end
+ALTER TABLE `gibbonTTDay` ADD `color` VARCHAR(6) NOT NULL AFTER `nameShort`;end
 ";
