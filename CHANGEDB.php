@@ -805,4 +805,5 @@ $sql[$count][0] = '15.0.00';
 $sql[$count][1] = "
 UPDATE gibboni18n SET code='ka_GE' WHERE code='ke_GE';end
 ALTER TABLE `gibbonTTDay` ADD `color` VARCHAR(6) NOT NULL AFTER `nameShort`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('el_GR', 'ελληνικά - Ελλάδα', 'N', 'N', 'Konstantinos Chonias', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ";
