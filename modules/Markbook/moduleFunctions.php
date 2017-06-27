@@ -353,21 +353,26 @@ function getReportGrade($pdo, $reportName, $gibbonSchoolYearID, $gibbonPersonIDS
     return ($rs && $rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
 }
 
-function getCriteriaGrade($pdo, $criteriaType, $gibbonPersonIDStudent, $gibbonCourseClassID) {
+function getCriteriaGrade($pdo, $criteriaType, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID) {
 
     // read criteria for this subject
     $data = array(
         'gibbonCourseClassID' => $gibbonCourseClassID,
         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
         'criteriaType' => $criteriaType,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'today' => date('Y-m-d'),
     );
     $sql = "SELECT arrReportGrade.gradeID
         FROM arrCriteria
+        JOIN arrReport ON (arrCriteria.reportID=arrReport.reportID)
         JOIN arrReportGrade ON (arrReportGrade.criteriaID=arrCriteria.criteriaID)
         JOIN gibbonCourseClass ON (arrCriteria.subjectID=gibbonCourseClass.gibbonCourseID)
         WHERE arrCriteria.criteriaType =:criteriaType
         AND arrReportGrade.studentID=:gibbonPersonIDStudent
         AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
+        AND arrReport.schoolYearID=:gibbonSchoolYearID
+        AND arrReport.endDate<=:today
         ORDER BY arrCriteria.reportID DESC LIMIT 1";
     $rs = $pdo->executeQuery($data, $sql);
 
@@ -431,14 +436,14 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
     $sem2Mid = getReportGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
     $sem2End = getReportGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
-    $finalMark = getCriteriaGrade($pdo, 4, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    $finalMark = getCriteriaGrade($pdo, 4, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
     if (!empty($finalMark)) {
 
         $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
 
         $courseMark = '';
-        $examMark = getCriteriaGrade($pdo, 1, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $examMark = getCriteriaGrade($pdo, 1, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
     } else {
 
         $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
