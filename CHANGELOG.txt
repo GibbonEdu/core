@@ -37,6 +37,7 @@ v15.0.00
 		Finance: set name of outgoing email to school name, not user's name
 		Students: fixed School History section in Student Profile to exclude upcoming years
 		Timetable: added ability to set and display a background colour for timetable days
+		Timetable: adjusted font size for shorter lessons to allow display or facility name
 		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
 		User Admin: improved usability of feedback in Step 3 of the rollover
 

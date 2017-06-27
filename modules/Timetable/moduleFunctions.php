@@ -1223,13 +1223,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title .= __($guid, 'Timeslot:').' '.$rowPeriods['name'].' | ';
                         }
                         if ($rowPeriods['roomName'] != '') {
-                            if ($height < 60) {
-                                if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0]) == false) {
-                                    $title .= __($guid, 'Room:').' '.$rowPeriods['roomName'].' | ';
-                                } else {
-                                    $title .= __($guid, 'Room:').' '.$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].' | ';
-                                }
-                            }
                             if ($rowPeriods['phoneInternal'] != '') {
                                 if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0]) == false) {
                                     $title .= __($guid, 'Phone:').' '.$rowPeriods['phoneInternal'].' | ';
@@ -1247,7 +1240,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         //Create div to represent period
-                        $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: $width; height: $height; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+                        $fontSize = '100%';
+                        if ($height < 60) {
+                            $fontSize = '85%';
+                        }
+                        $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: $width; height: $height; margin: 0px; padding: 0px; opacity: $ttAlpha; font-size: $fontSize'>";
                         if ($height >= 45) {
                             $output .= $rowPeriods['name'].'<br/>';
                             $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
@@ -1260,20 +1257,18 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         } else {
                             $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
                         }
-                        if ($height >= 60) {
-                            if ($edit == false) {
-                                if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']]) == false) {
-                                    $output .= $rowPeriods['roomName'];
-                                } else {
-                                    if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
-                                        $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>".$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].'</span>';
-                                    } else {
-                                        $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>".__($guid, 'No Space Allocated').'</span>';
-                                    }
-                                }
+                        if ($edit == false) {
+                            if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']]) == false) {
+                                $output .= $rowPeriods['roomName'];
                             } else {
-                                $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
+                                if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
+                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>".$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].'</span>';
+                                } else {
+                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>".__($guid, 'No Space Allocated').'</span>';
+                                }
                             }
+                        } else {
+                            $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
                         }
                         $output .= '</div>';
                         ++$zCount;
