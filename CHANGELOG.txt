@@ -34,6 +34,7 @@ v15.0.00
 		System: fixed erroneous Georgian language code
 		System: added Greek as development language
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
+		Finance: set name of outgoing email to school name, not user's name
 		Students: fixed School History section in Student Profile to exclude upcoming years
 		Timetable: added ability to set and display a background colour for timetable days
 		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
