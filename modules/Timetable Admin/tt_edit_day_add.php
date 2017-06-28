@@ -127,6 +127,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 					</tr>
 					<tr>
 						<td>
+							<b><?php echo __($guid, 'Header Font Colour') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'RGB Hex value, without leading #.') ?></span>
+						</td>
+						<td class="right">
+							<input name="fontColor" id="fontColor" maxlength=6 value="" type="text" class="standardWidth">
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<b><?php echo __($guid, 'Timetable Column') ?> *</b><br/>
 						</td>
 						<td class="right">

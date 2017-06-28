@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     } else {
         try {
             $data = array('gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTDayID' => $gibbonTTDayID);
-            $sql = 'SELECT gibbonTT.gibbonTTID, gibbonSchoolYear.name AS yearName, gibbonTT.name AS ttName, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTTDay.color, gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTDayID=:gibbonTTDayID';
+            $sql = 'SELECT gibbonTT.gibbonTTID, gibbonSchoolYear.name AS yearName, gibbonTT.name AS ttName, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTTDay.color, gibbonTTDay.fontColor, gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTDayID=:gibbonTTDayID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -120,6 +120,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 						</td>
 						<td class="right">
 							<input name="color" id="color" maxlength=6 value="<?php echo htmlPrep($row['color']) ?>" type="text" class="standardWidth">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b><?php echo __($guid, 'Header Font Colour') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'RGB Hex value, without leading #.') ?></span>
+						</td>
+						<td class="right">
+							<input name="fontColor" id="fontColor" maxlength=6 value="<?php echo htmlPrep($row['fontColor']) ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>

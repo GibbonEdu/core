@@ -63,6 +63,7 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                 $name = $_POST['name'];
                 $nameShort = $_POST['nameShort'];
                 $color = $_POST['color'];
+                $fontColor = $_POST['fontColor'];
                 $gibbonTTColumnID = $_POST['gibbonTTColumnID'];
 
                 if ($name == '' or $nameShort == '' or $gibbonTTColumnID == '') {
@@ -87,8 +88,8 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                     } else {
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'nameShort' => $nameShort, 'color' => $color, 'gibbonTTColumnID' => $gibbonTTColumnID, 'gibbonTTDayID' => $gibbonTTDayID);
-                            $sql = 'UPDATE gibbonTTDay SET name=:name, nameShort=:nameShort, color=:color, gibbonTTColumnID=:gibbonTTColumnID WHERE gibbonTTDayID=:gibbonTTDayID';
+                            $data = array('name' => $name, 'nameShort' => $nameShort, 'color' => $color, 'fontColor' => $fontColor, 'gibbonTTColumnID' => $gibbonTTColumnID, 'gibbonTTDayID' => $gibbonTTDayID);
+                            $sql = 'UPDATE gibbonTTDay SET name=:name, nameShort=:nameShort, color=:color, fontColor=:fontColor, gibbonTTColumnID=:gibbonTTColumnID WHERE gibbonTTDayID=:gibbonTTDayID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

@@ -772,17 +772,20 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 if ($day['schoolDay'] == 'Y') {
                     $dateCorrection = ($day['sequenceNumber'] - 1);
 
-                    $backgroundColor = '';
+                    $color = '';
                     try {
                         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
-                        $sqlDay = 'SELECT nameShort, color FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                        $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                         $resultDay = $connection2->prepare($sqlDay);
                         $resultDay->execute($dataDay);
                     } catch (PDOException $e) {}
                     if ($resultDay->rowCount() == 1) {
                         $rowDay = $resultDay->fetch();
                         if ($rowDay['color'] != '') {
-                            $backgroundColor = "; background-color: #".$rowDay['color']."; background-image: none";
+                            $color .= "; background-color: #".$rowDay['color']."; background-image: none";
+                        }
+                        if ($rowDay['fontColor'] != '') {
+                            $color .= "; color: #".$rowDay['fontColor'];
                         }
                     }
 
@@ -794,7 +797,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     } else {
                         $output .= (550 / $daysInWeek);
                     }
-                    $output .= "px".$backgroundColor."'>";
+                    $output .= "px".$color."'>";
                     if ($nameShortDisplay != 'Timetable Day Short Name') {
                         $output .= __($guid, $day['nameShort']).'<br/>';
                     }
