@@ -3715,7 +3715,7 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
 function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection2)
 {
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    $canViewStududents = ($highestAction == 'View Student Profile_breif' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
+    $canViewStududents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
 
     try {
         $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
