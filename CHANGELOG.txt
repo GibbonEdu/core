@@ -33,6 +33,7 @@ v15.0.00
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
 		System: added Greek as development language
+		System: added South African Rand as currency
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name

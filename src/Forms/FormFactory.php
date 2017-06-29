@@ -273,6 +273,7 @@ class FormFactory implements FormFactoryInterface
                 'NPR ₨' => 'Nepalese Rupee (₨)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
+                'ZAR R‎' => 'South African Rand (R‎)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
