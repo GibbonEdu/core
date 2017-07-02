@@ -35,6 +35,7 @@ v15.0.00
 		System: added Greek as development language
 		System: added South African Rand as currency
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
+		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
 		Students: fixed School History section in Student Profile to exclude upcoming years
