@@ -38,6 +38,7 @@ v15.0.00
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
+		Library: added Optical Media as item type
 		Students: fixed School History section in Student Profile to exclude upcoming years
 		Timetable: added ability to set and display text and background colour for timetable day headers
 		Timetable: adjusted font size for shorter lessons to allow display or facility name
