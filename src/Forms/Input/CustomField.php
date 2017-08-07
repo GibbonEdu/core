@@ -114,4 +114,9 @@ class CustomField extends Input
     {
         return $this->customField->getElement();
     }
+
+    public function getValidationOutput()
+    {
+        return $this->customField->getValidationOutput();
+    }
 }
