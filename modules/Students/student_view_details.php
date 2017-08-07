@@ -367,7 +367,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $highestColour = $alert[3];
                             $highestColourBG = $alert[4];
                             echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__($guid, 'This student has one or more %1$s risk medical conditions.'), strToLower(__($guid, $highestLevel))).'</b>.';
+                            echo '<b>'.sprintf(__($guid, 'This student has one or more %1$s risk medical conditions.'), strToLower(__($guid, $highestLevel))).'</b>';
                             echo '</div>';
                         }
 
