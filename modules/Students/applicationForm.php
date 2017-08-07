@@ -616,9 +616,14 @@ if ($proceed == false) {
         $header->addContent(__('Selected'));
         $header->addContent(__('Relationships'));
 
-        $rowCount = 0;
+        $checked = null;
         while ($rowSelect = $resultSelect->fetch()) {
-            $checked = (isset($application['gibbonFamilyID']))? ($application['gibbonFamilyID'] == $rowSelect['gibbonFamilyID']) : ($rowCount == 0);
+            // Re-select the family for sibling applications, otherwise select the first family
+            if (isset($application['gibbonFamilyID'])) {
+                $checked = $application['gibbonFamilyID'];
+            } else if (is_null($checked)) {
+                $checked = $rowSelect['gibbonFamilyID'];
+            }
 
             // Get the family relationships
             try {
@@ -648,8 +653,6 @@ if ($proceed == false) {
             if ($resultSelect->rowCount() == 1) {
                 $gibbonFamilyID = $rowSelect['gibbonFamilyID'];
             }
-
-            $rowCount++;
         }
     }
 
