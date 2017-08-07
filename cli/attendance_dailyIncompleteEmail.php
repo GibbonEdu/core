@@ -147,7 +147,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
 
         if ($enabledByClass == 'Y') {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate);
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate, 'time' => date("H:i:s"));
 
                 // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
                 $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) AS studentCount
@@ -156,11 +156,13 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
-                WHERE gibbonTTDayDate.date =:date
-                AND gibbonCourseClassPerson.role = 'Teacher'
+                WHERE gibbonTTDayDate.date=:date
+                AND gibbonTTColumnRow.timeStart<=:time
+                AND gibbonCourseClassPerson.role='Teacher'
                 AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonCourseClass.attendance = 'Y'
+                AND gibbonCourseClass.attendance='Y'
                 ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $result = $connection2->prepare($sql);
