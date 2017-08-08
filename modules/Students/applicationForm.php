@@ -376,7 +376,7 @@ if ($proceed == false) {
     // CUSTOM FIELDS FOR STUDENT
     $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
     if ($resultFields->rowCount() > 0) {
-        $heading = $form->addRow()->addSubheading('Other Information');
+        $heading = $form->addRow()->addSubheading(__('Other Information'));
 
         while ($rowFields = $resultFields->fetch()) {
             $name = 'custom'.$rowFields['gibbonPersonFieldID'];
@@ -456,8 +456,11 @@ if ($proceed == false) {
             $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
+                $row = $form->addRow();
+                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Fields'));
+
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
+                    $name = "parent1custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
@@ -586,12 +589,12 @@ if ($proceed == false) {
                 $row->addTextField("parent{$i}employer")->maxLength(30)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Fields'));
-
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
+                $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Fields'));
+
                 while ($rowFields = $resultFields->fetch()) {
                     $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
