@@ -37,6 +37,7 @@ v15.0.00
 		System: fixed missing form validation for dropdowns created with User Custom Fields
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
+		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance 
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
