@@ -59,7 +59,7 @@ class Radio extends Input
 
     protected function getIsChecked($value)
     {
-        return (!empty($value) && $value == $this->getValue());
+        return (!is_null($this->getValue()) && $value == $this->getValue());
     }
 
     protected function getElement()
@@ -67,6 +67,13 @@ class Radio extends Input
         $output = '';
 
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
+
+            // Select the first option by default for required Radio elements with no checked value set
+            if ($this->getRequired() && is_null($this->getValue())) {
+                $firstOption = key($this->getOptions());
+                $this->checked($firstOption);
+            }
+
             foreach ($this->getOptions() as $value => $label) {
 
                 $this->setAttribute('checked', $this->getIsChecked($value));
