@@ -514,7 +514,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow();
-                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Fields'));
+                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
 
                 while ($rowFields = $resultFields->fetch()) {
                     $name = "parent1custom".$rowFields['gibbonPersonFieldID'];
@@ -651,7 +651,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Fields'));
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
 
                 while ($rowFields = $resultFields->fetch()) {
                     $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
