@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,22 +15,49 @@
  * the License.
  */
 
-class Google_Service_Container_ClusterUpdate extends Google_Model
+class Google_Service_Container_ClusterUpdate extends Google_Collection
 {
+  protected $collection_key = 'desiredLocations';
   protected $desiredAddonsConfigType = 'Google_Service_Container_AddonsConfig';
   protected $desiredAddonsConfigDataType = '';
+  public $desiredImageType;
+  public $desiredLocations;
   public $desiredMasterVersion;
   public $desiredMonitoringService;
+  protected $desiredNodePoolAutoscalingType = 'Google_Service_Container_NodePoolAutoscaling';
+  protected $desiredNodePoolAutoscalingDataType = '';
   public $desiredNodePoolId;
   public $desiredNodeVersion;
 
+  /**
+   * @param Google_Service_Container_AddonsConfig
+   */
   public function setDesiredAddonsConfig(Google_Service_Container_AddonsConfig $desiredAddonsConfig)
   {
     $this->desiredAddonsConfig = $desiredAddonsConfig;
   }
+  /**
+   * @return Google_Service_Container_AddonsConfig
+   */
   public function getDesiredAddonsConfig()
   {
     return $this->desiredAddonsConfig;
+  }
+  public function setDesiredImageType($desiredImageType)
+  {
+    $this->desiredImageType = $desiredImageType;
+  }
+  public function getDesiredImageType()
+  {
+    return $this->desiredImageType;
+  }
+  public function setDesiredLocations($desiredLocations)
+  {
+    $this->desiredLocations = $desiredLocations;
+  }
+  public function getDesiredLocations()
+  {
+    return $this->desiredLocations;
   }
   public function setDesiredMasterVersion($desiredMasterVersion)
   {
@@ -47,6 +74,20 @@ class Google_Service_Container_ClusterUpdate extends Google_Model
   public function getDesiredMonitoringService()
   {
     return $this->desiredMonitoringService;
+  }
+  /**
+   * @param Google_Service_Container_NodePoolAutoscaling
+   */
+  public function setDesiredNodePoolAutoscaling(Google_Service_Container_NodePoolAutoscaling $desiredNodePoolAutoscaling)
+  {
+    $this->desiredNodePoolAutoscaling = $desiredNodePoolAutoscaling;
+  }
+  /**
+   * @return Google_Service_Container_NodePoolAutoscaling
+   */
+  public function getDesiredNodePoolAutoscaling()
+  {
+    return $this->desiredNodePoolAutoscaling;
   }
   public function setDesiredNodePoolId($desiredNodePoolId)
   {

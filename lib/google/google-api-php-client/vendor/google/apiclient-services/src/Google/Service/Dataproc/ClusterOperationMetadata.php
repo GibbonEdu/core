@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,15 +17,17 @@
 
 class Google_Service_Dataproc_ClusterOperationMetadata extends Google_Collection
 {
-  protected $collection_key = 'statusHistory';
+  protected $collection_key = 'warnings';
   public $clusterName;
   public $clusterUuid;
   public $description;
+  public $labels;
   public $operationType;
   protected $statusType = 'Google_Service_Dataproc_ClusterOperationStatus';
   protected $statusDataType = '';
   protected $statusHistoryType = 'Google_Service_Dataproc_ClusterOperationStatus';
   protected $statusHistoryDataType = 'array';
+  public $warnings;
 
   public function setClusterName($clusterName)
   {
@@ -51,6 +53,14 @@ class Google_Service_Dataproc_ClusterOperationMetadata extends Google_Collection
   {
     return $this->description;
   }
+  public function setLabels($labels)
+  {
+    $this->labels = $labels;
+  }
+  public function getLabels()
+  {
+    return $this->labels;
+  }
   public function setOperationType($operationType)
   {
     $this->operationType = $operationType;
@@ -59,20 +69,40 @@ class Google_Service_Dataproc_ClusterOperationMetadata extends Google_Collection
   {
     return $this->operationType;
   }
+  /**
+   * @param Google_Service_Dataproc_ClusterOperationStatus
+   */
   public function setStatus(Google_Service_Dataproc_ClusterOperationStatus $status)
   {
     $this->status = $status;
   }
+  /**
+   * @return Google_Service_Dataproc_ClusterOperationStatus
+   */
   public function getStatus()
   {
     return $this->status;
   }
+  /**
+   * @param Google_Service_Dataproc_ClusterOperationStatus
+   */
   public function setStatusHistory($statusHistory)
   {
     $this->statusHistory = $statusHistory;
   }
+  /**
+   * @return Google_Service_Dataproc_ClusterOperationStatus
+   */
   public function getStatusHistory()
   {
     return $this->statusHistory;
+  }
+  public function setWarnings($warnings)
+  {
+    $this->warnings = $warnings;
+  }
+  public function getWarnings()
+  {
+    return $this->warnings;
   }
 }

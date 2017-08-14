@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,9 +17,18 @@
 
 class Google_Service_Clouderrorreporting_ServiceContext extends Google_Model
 {
+  public $resourceType;
   public $service;
   public $version;
 
+  public function setResourceType($resourceType)
+  {
+    $this->resourceType = $resourceType;
+  }
+  public function getResourceType()
+  {
+    return $this->resourceType;
+  }
   public function setService($service)
   {
     $this->service = $service;

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -58,7 +58,8 @@ class Google_Service_Dfareporting_Resource_Campaigns extends Google_Service_Reso
     return $this->call('insert', array($params), "Google_Service_Dfareporting_Campaign");
   }
   /**
-   * Retrieves a list of campaigns, possibly filtered. (campaigns.listCampaigns)
+   * Retrieves a list of campaigns, possibly filtered. This method supports
+   * paging. (campaigns.listCampaigns)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -86,7 +87,7 @@ class Google_Service_Dfareporting_Resource_Campaigns extends Google_Service_Reso
    * "campaign" will match campaigns with name "my campaign", "campaign 2015", or
    * simply "campaign".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @opt_param string subaccountId Select only campaigns that belong to this
    * subaccount.
    * @return Google_Service_Dfareporting_CampaignsListResponse

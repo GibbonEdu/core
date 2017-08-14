@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,9 +17,27 @@
 
 class Google_Service_Dataflow_CreateJobFromTemplateRequest extends Google_Model
 {
+  protected $environmentType = 'Google_Service_Dataflow_RuntimeEnvironment';
+  protected $environmentDataType = '';
   public $gcsPath;
+  public $jobName;
+  public $location;
   public $parameters;
 
+  /**
+   * @param Google_Service_Dataflow_RuntimeEnvironment
+   */
+  public function setEnvironment(Google_Service_Dataflow_RuntimeEnvironment $environment)
+  {
+    $this->environment = $environment;
+  }
+  /**
+   * @return Google_Service_Dataflow_RuntimeEnvironment
+   */
+  public function getEnvironment()
+  {
+    return $this->environment;
+  }
   public function setGcsPath($gcsPath)
   {
     $this->gcsPath = $gcsPath;
@@ -27,6 +45,22 @@ class Google_Service_Dataflow_CreateJobFromTemplateRequest extends Google_Model
   public function getGcsPath()
   {
     return $this->gcsPath;
+  }
+  public function setJobName($jobName)
+  {
+    $this->jobName = $jobName;
+  }
+  public function getJobName()
+  {
+    return $this->jobName;
+  }
+  public function setLocation($location)
+  {
+    $this->location = $location;
+  }
+  public function getLocation()
+  {
+    return $this->location;
   }
   public function setParameters($parameters)
   {

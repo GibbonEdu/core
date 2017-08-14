@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,7 +26,8 @@
 class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Resource
 {
   /**
-   * Marks an order as acknowledged. (orders.acknowledge)
+   * Marks an order as acknowledged. This method can only be called for non-multi-
+   * client accounts. (orders.acknowledge)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.
@@ -42,7 +43,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
   }
   /**
    * Sandbox only. Moves a test order from state "inProgress" to state
-   * "pendingShipment". (orders.advancetestorder)
+   * "pendingShipment". This method can only be called for non-multi-client
+   * accounts. (orders.advancetestorder)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the test order to modify.
@@ -56,7 +58,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('advancetestorder', array($params), "Google_Service_ShoppingContent_OrdersAdvanceTestOrderResponse");
   }
   /**
-   * Cancels all line items in an order. (orders.cancel)
+   * Cancels all line items in an order, making a full refund. This method can
+   * only be called for non-multi-client accounts. (orders.cancel)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order to cancel.
@@ -71,7 +74,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('cancel', array($params), "Google_Service_ShoppingContent_OrdersCancelResponse");
   }
   /**
-   * Cancels a line item. (orders.cancellineitem)
+   * Cancels a line item, making a full refund. This method can only be called for
+   * non-multi-client accounts. (orders.cancellineitem)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.
@@ -86,7 +90,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('cancellineitem', array($params), "Google_Service_ShoppingContent_OrdersCancelLineItemResponse");
   }
   /**
-   * Sandbox only. Creates a test order. (orders.createtestorder)
+   * Sandbox only. Creates a test order. This method can only be called for non-
+   * multi-client accounts. (orders.createtestorder)
    *
    * @param string $merchantId The ID of the managing account.
    * @param Google_Service_ShoppingContent_OrdersCreateTestOrderRequest $postBody
@@ -100,8 +105,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('createtestorder', array($params), "Google_Service_ShoppingContent_OrdersCreateTestOrderResponse");
   }
   /**
-   * Retrieves or modifies multiple orders in a single request.
-   * (orders.custombatch)
+   * Retrieves or modifies multiple orders in a single request. This method can
+   * only be called for non-multi-client accounts. (orders.custombatch)
    *
    * @param Google_Service_ShoppingContent_OrdersCustomBatchRequest $postBody
    * @param array $optParams Optional parameters.
@@ -114,7 +119,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('custombatch', array($params), "Google_Service_ShoppingContent_OrdersCustomBatchResponse");
   }
   /**
-   * Retrieves an order from your Merchant Center account. (orders.get)
+   * Retrieves an order from your Merchant Center account. This method can only be
+   * called for non-multi-client accounts. (orders.get)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.
@@ -128,7 +134,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('get', array($params), "Google_Service_ShoppingContent_Order");
   }
   /**
-   * Retrieves an order using merchant order id. (orders.getbymerchantorderid)
+   * Retrieves an order using merchant order id. This method can only be called
+   * for non-multi-client accounts. (orders.getbymerchantorderid)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $merchantOrderId The merchant order id to be looked for.
@@ -143,7 +150,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
   }
   /**
    * Sandbox only. Retrieves an order template that can be used to quickly create
-   * a new order in sandbox. (orders.gettestordertemplate)
+   * a new order in sandbox. This method can only be called for non-multi-client
+   * accounts. (orders.gettestordertemplate)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $templateName The name of the template to retrieve.
@@ -157,7 +165,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('gettestordertemplate', array($params), "Google_Service_ShoppingContent_OrdersGetTestOrderTemplateResponse");
   }
   /**
-   * Lists the orders in your Merchant Center account. (orders.listOrders)
+   * Lists the orders in your Merchant Center account. This method can only be
+   * called for non-multi-client accounts. (orders.listOrders)
    *
    * @param string $merchantId The ID of the managing account.
    * @param array $optParams Optional parameters.
@@ -196,7 +205,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('list', array($params), "Google_Service_ShoppingContent_OrdersListResponse");
   }
   /**
-   * Refund a portion of the order, up to the full amount paid. (orders.refund)
+   * Refund a portion of the order, up to the full amount paid. This method can
+   * only be called for non-multi-client accounts. (orders.refund)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order to refund.
@@ -211,7 +221,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('refund', array($params), "Google_Service_ShoppingContent_OrdersRefundResponse");
   }
   /**
-   * Returns a line item. (orders.returnlineitem)
+   * Returns a line item. This method can only be called for non-multi-client
+   * accounts. (orders.returnlineitem)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.
@@ -226,7 +237,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('returnlineitem', array($params), "Google_Service_ShoppingContent_OrdersReturnLineItemResponse");
   }
   /**
-   * Marks line item(s) as shipped. (orders.shiplineitems)
+   * Marks line item(s) as shipped. This method can only be called for non-multi-
+   * client accounts. (orders.shiplineitems)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.
@@ -241,8 +253,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('shiplineitems', array($params), "Google_Service_ShoppingContent_OrdersShipLineItemsResponse");
   }
   /**
-   * Updates the merchant order ID for a given order.
-   * (orders.updatemerchantorderid)
+   * Updates the merchant order ID for a given order. This method can only be
+   * called for non-multi-client accounts. (orders.updatemerchantorderid)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.
@@ -257,8 +269,8 @@ class Google_Service_ShoppingContent_Resource_Orders extends Google_Service_Reso
     return $this->call('updatemerchantorderid', array($params), "Google_Service_ShoppingContent_OrdersUpdateMerchantOrderIdResponse");
   }
   /**
-   * Updates a shipment's status, carrier, and/or tracking ID.
-   * (orders.updateshipment)
+   * Updates a shipment's status, carrier, and/or tracking ID. This method can
+   * only be called for non-multi-client accounts. (orders.updateshipment)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $orderId The ID of the order.

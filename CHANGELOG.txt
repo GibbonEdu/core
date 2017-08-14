@@ -35,6 +35,7 @@ v15.0.00
 		System: added Greek as development language
 		System: added South African Rand as currency
 		System: fixed missing form validation for dropdowns created with User Custom Fields
+		System: updated Google OAuth library to latest version (v2.2.0)
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
