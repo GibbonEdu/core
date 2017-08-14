@@ -71,7 +71,7 @@ if (isset($_GET['code'])) {
   If we have an access token, we can make
   requests, else we generate an authentication URL.
  ************************************************/
-@$refreshToken = json_decode($_SESSION[$guid]['googleAPIAccessToken'] )->refresh_token;
+$refreshToken = isset($_SESSION[$guid]['googleAPIAccessToken']['refresh_token'])? $_SESSION[$guid]['googleAPIAccessToken']['refresh_token'] : '';
 
 if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['googleAPIAccessToken'] ) {
   $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken'] );
