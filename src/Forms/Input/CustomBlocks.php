@@ -73,13 +73,21 @@ class CustomBlocks implements OutputableInterface
             $output .= '</div>';
 
             $output .= '<div id="'. $this->name .'Template" style="display:none">';
+                $output .= '<input name="' . $this->name . 'order[]" type="hidden" value="-1">';
                 $output .= '<div style="float:left; width:90%">';
-                $output .= $this->formOutput;
-                $output .= '</div>';
-                $output .= '<div>';
-                $output .= 'Test';
+                    $output .= $this->formOutput;
                 $output .= '</div>';
             $output .= '</div>';
+
+                $output .= '<div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">';
+                    $output .= '<table class="blank" cellspacing="0" style="width: 100%">';
+                        $output .= '<tr>';
+                            $output .= '<td style="width: 50%">';
+                                $output .= $this->addButton->getOutput();
+                            $output .= '</td>';
+                        $output .= '</tr>';
+                    $output .= '</table>';
+                $output .= '</div>';
 
         $output .= '</div>';
 
@@ -87,23 +95,12 @@ class CustomBlocks implements OutputableInterface
             $output .= 'var ' . $this->name . 'Count = 1;' . "\n";
             $output .= 'function add'. $this->name .'Block() {' . "\n";
                 $output .= '$("#' . $this->name . 'Outer0").css("display", "none");' . "\n";
-                $output .= 'var outerName = "'. $this->name .'Outer" + ' . $this->name . 'Count;';
-                $output .= '$("#'. $this->name . 'Template").clone().css("display", "block").prop("id", outerName).appendTo($("#'. $this->name .'"));' . "\n";
+                $output .= '$("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));' . "\n";
+                $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count).find("input[name*=' . $this->name . 'order]").val(' . $this->name . 'Count);' . "\n";
+                $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("id", $(this).prop("id") + ' . $this->name . 'Count); });' . "\n";
                 $output .= $this->name . 'Count++;' . "\n";
             $output .= '}';
         $output .= '</script>';
-
-        $output .= '<div style="width: 100%; padding: 0px 0px 0px 0px">';
-            $output .= '<div class="ui-state-default_dud" style="padding: 0px; height: 40px">';
-                $output .= '<table class="blank" cellspacing="0" style="width: 100%">';
-                    $output .= '<tr>';
-                        $output .= '<td style="width: 50%">';
-                            $output .= $this->addButton->getOutput();
-                        $output .= '</td>';
-                    $output .= '</tr>';
-                $output .= '</table>';
-            $output .= '</div>';
-        $output .= '</div>';
 
         return $output;
     }
