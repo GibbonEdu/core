@@ -84,12 +84,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addURL($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
+        $row->addURL($setting['name'])->setValue($setting['value'])->maxLength(100)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
     $row = $form->addRow()->addClass('googleSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50)->isRequired();
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(100)->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'systemName', true);
     $row = $form->addRow()->addClass('googleSettings');
