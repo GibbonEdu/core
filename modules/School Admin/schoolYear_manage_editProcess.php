@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                     if ($status == 'Current') {
                         try {
                             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                            $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current' AND NOT gibbonSchoolYearID=:gibbonSchoolYearID";
+                            $sql = "SELECT gibbonSchoolYearID, sequenceNumber FROM gibbonSchoolYear WHERE status='Current' AND NOT gibbonSchoolYearID=:gibbonSchoolYearID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -95,13 +95,26 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                             exit();
                         }
                         if ($result->rowCount() > 0) {
-                            $URL .= '&return=error3';
-                            header("Location: {$URL}");
-                            exit();
+                            // Enforces a single current school year by updating the status of the previous current year
+                            while ($currentSchoolYear = $result->fetch()) {
+                                $direction = ($sequenceNumber < $currentSchoolYear['sequenceNumber'])? 'Upcoming' : 'Past';
+                                try {
+                                    $data = array('gibbonSchoolYearID' => $currentSchoolYear['gibbonSchoolYearID'], 'status' => $direction);
+                                    $sql = 'UPDATE gibbonSchoolYear SET status=:status WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                                    $resultUpdate = $connection2->prepare($sql);
+                                    $resultUpdate->execute($data);
+                                } catch (PDOException $e) {
+                                    $currentFail = true;
+                                }
+                            }
                         }
                     }
 
-                    if ($currentFail == false) {
+                    if ($currentFail) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    } else {
                         //Write to database
                         try {
                             $data = array('name' => $name, 'status' => $status, 'sequenceNumber' => $sequenceNumber, 'firstDay' => $firstDay, 'lastDay' => $lastDay, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -112,6 +125,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        if ($status == 'Current') {
+                            // Update session vars so the user is warned if they're logged into a different year
+                            $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] = $gibbonSchoolYearID;
+                            $_SESSION[$guid]['gibbonSchoolYearNameCurrent'] = $name;
+                            $_SESSION[$guid]['gibbonSchoolYearSequenceNumberCurrent'] = $sequenceNumber;
                         }
 
                         $URL .= '&return=success0';
