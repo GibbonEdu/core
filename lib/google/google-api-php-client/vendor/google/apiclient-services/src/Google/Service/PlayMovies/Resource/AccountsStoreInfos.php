@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,34 +26,35 @@
 class Google_Service_PlayMovies_Resource_AccountsStoreInfos extends Google_Service_Resource
 {
   /**
-   * List StoreInfos owned or managed by the partner. See _Authentication and
-   * Authorization rules_ and _List methods rules_ for more information about this
-   * method. (storeInfos.listAccountsStoreInfos)
+   * List StoreInfos owned or managed by the partner.
+   *
+   * See _Authentication and Authorization rules_ and _List methods rules_ for
+   * more information about this method. (storeInfos.listAccountsStoreInfos)
    *
    * @param string $accountId REQUIRED. See _General rules_ for more information
    * about this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int pageSize See _List methods rules_ for info about this field.
-   * @opt_param string pageToken See _List methods rules_ for info about this
-   * field.
+   * @opt_param string mids Filter StoreInfos that match any of the given `mid`s.
    * @opt_param string pphNames See _List methods rules_ for info about this
    * field.
-   * @opt_param string studioNames See _List methods rules_ for info about this
-   * field.
-   * @opt_param string videoId Filter StoreInfos that match a given `video_id`.
-   * NOTE: this field is deprecated and will be removed on V2; `video_ids` should
-   * be used instead.
    * @opt_param string countries Filter StoreInfos that match (case-insensitive)
    * any of the given country codes, using the "ISO 3166-1 alpha-2" format
    * (examples: "US", "us", "Us").
    * @opt_param string name Filter that matches StoreInfos with a `name` or
    * `show_name` that contains the given case-insensitive name.
-   * @opt_param string videoIds Filter StoreInfos that match any of the given
-   * `video_id`s.
-   * @opt_param string mids Filter StoreInfos that match any of the given `mid`s.
+   * @opt_param string studioNames See _List methods rules_ for info about this
+   * field.
    * @opt_param string seasonIds Filter StoreInfos that match any of the given
    * `season_id`s.
+   * @opt_param string videoIds Filter StoreInfos that match any of the given
+   * `video_id`s.
+   * @opt_param string videoId Filter StoreInfos that match a given `video_id`.
+   * NOTE: this field is deprecated and will be removed on V2; `video_ids` should
+   * be used instead.
+   * @opt_param string pageToken See _List methods rules_ for info about this
+   * field.
    * @return Google_Service_PlayMovies_ListStoreInfosResponse
    */
   public function listAccountsStoreInfos($accountId, $optParams = array())

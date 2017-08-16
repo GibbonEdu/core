@@ -28,6 +28,8 @@ $connection2 = $pdo->getConnection();
 
 $name = $_POST['name'];
 $nameShort = $_POST['nameShort'];
+$color = $_POST['color'];
+$fontColor = $_POST['fontColor'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $gibbonTTID = $_POST['gibbonTTID'];
 $gibbonTTColumnID = $_POST['gibbonTTColumnID'];
@@ -62,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         } else {
             //Write to database
             try {
-                $data = array('gibbonTTID' => $gibbonTTID, 'name' => $name, 'nameShort' => $nameShort, 'gibbonTTColumnID' => $gibbonTTColumnID);
-                $sql = 'INSERT INTO gibbonTTDay SET gibbonTTID=:gibbonTTID, name=:name, nameShort=:nameShort, gibbonTTColumnID=:gibbonTTColumnID';
+                $data = array('gibbonTTID' => $gibbonTTID, 'name' => $name, 'nameShort' => $nameShort, 'color' => $color, 'fontColor' => $fontColor, 'gibbonTTColumnID' => $gibbonTTColumnID);
+                $sql = 'INSERT INTO gibbonTTDay SET gibbonTTID=:gibbonTTID, name=:name, nameShort=:nameShort, color=:color, fontColor=:fontColor, gibbonTTColumnID=:gibbonTTColumnID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

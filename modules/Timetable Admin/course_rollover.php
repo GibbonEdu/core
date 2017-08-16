@@ -320,16 +320,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                                 //Get staff and students and copy them over
                                 if ($rollStudents == 'on' and $rollTeachers == 'on') {
-                                    $sqlWhere = " AND (role='Student' OR role='Teacher')";
+                                    $sqlWhere = " AND (gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Teacher')";
                                 } elseif ($rollStudents == 'on' and $rollTeachers == '') {
-                                    $sqlWhere = " AND role='Student'";
+                                    $sqlWhere = " AND gibbonCourseClassPerson.role='Student'";
                                 } else {
-                                    $sqlWhere = " AND role='Teacher'";
+                                    $sqlWhere = " AND gibbonCourseClassPerson.role='Teacher'";
                                 }
-                                //Get current enrolment
+                                //Get current enrolment, exclude people already enrolled or their status is not Full
                                 try {
-                                    $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlCurrent = "SELECT gibbonPersonID, role FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID $sqlWhere";
+                                    $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassIDNext' => $gibbonCourseClassIDNext);
+                                    $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role
+                                    FROM gibbonCourseClassPerson
+                                    JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                    LEFT JOIN gibbonCourseClassPerson as gibbonCourseClassPersonNext ON (gibbonCourseClassPersonNext.gibbonCourseClassID=:gibbonCourseClassIDNext AND gibbonCourseClassPersonNext.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                                    AND gibbonCourseClassPersonNext.gibbonCourseClassPersonID IS NULL
+                                    AND gibbonPerson.status='Full'
+                                    $sqlWhere";
                                     $resultCurrent = $connection2->prepare($sqlCurrent);
                                     $resultCurrent->execute($dataCurrent);
                                 } catch (PDOException $e) {

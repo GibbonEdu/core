@@ -1663,14 +1663,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if ($attendanceEnabled && $row['role'] == 'Teacher' and $teacher == true) {
                                 if ($rowClassGroup['role'] == 'Student') {
 
-
                                     $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
 
                                     $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '86px;margin-left:1px;');
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
-                                        $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '84px');
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+                                    // Only hide the reason and comment fields if Present is the default attendance type
+                                    if ($defaultAttendanceType == 'Present') {
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
+                                    } else {
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<div>";
+                                    }
+
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '84px');
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= "</div>";
 
                                 }

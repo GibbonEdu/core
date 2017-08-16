@@ -424,8 +424,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 								<option <?php if ($row['status'] == 'Full') { echo 'selected '; } ?>value="Full"><?php echo __($guid, 'Full') ?></option>
 								<option <?php if ($row['status'] == 'Expected') { echo 'selected '; } ?>value="Expected"><?php echo __($guid, 'Expected') ?></option>
 								<option <?php if ($row['status'] == 'Left') { echo 'selected '; } ?>value="Left"><?php echo __($guid, 'Left') ?></option>
-								<option <?php if ($row['status'] == 'Pending Approval') { echo 'selected '; } ?>value="Pending Approval"><?php echo __($guid, 'Pending Approval') ?></option>
-							</select>
+                                <?php
+                                    if (getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration') == 'Y') {
+                                    ?>
+                                    <option <?php if ($row['status'] == 'Pending Approval') { echo 'selected '; } ?>value="Pending Approval"><?php echo __($guid, 'Pending Approval') ?></option>
+                                    <?php
+                                    }
+                                ?>
+                            </select>
 						</td>
 					</tr>
 					<tr>

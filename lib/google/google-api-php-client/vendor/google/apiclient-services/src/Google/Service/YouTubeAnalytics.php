@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -46,8 +46,6 @@ class Google_Service_YouTubeAnalytics extends Google_Service
   const YT_ANALYTICS_READONLY =
       "https://www.googleapis.com/auth/yt-analytics.readonly";
 
-  public $batchReportDefinitions;
-  public $batchReports;
   public $groupItems;
   public $groups;
   public $reports;
@@ -65,51 +63,6 @@ class Google_Service_YouTubeAnalytics extends Google_Service
     $this->version = 'v1';
     $this->serviceName = 'youtubeAnalytics';
 
-    $this->batchReportDefinitions = new Google_Service_YouTubeAnalytics_Resource_BatchReportDefinitions(
-        $this,
-        $this->serviceName,
-        'batchReportDefinitions',
-        array(
-          'methods' => array(
-            'list' => array(
-              'path' => 'batchReportDefinitions',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'onBehalfOfContentOwner' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
-    $this->batchReports = new Google_Service_YouTubeAnalytics_Resource_BatchReports(
-        $this,
-        $this->serviceName,
-        'batchReports',
-        array(
-          'methods' => array(
-            'list' => array(
-              'path' => 'batchReports',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'batchReportDefinitionId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'onBehalfOfContentOwner' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
     $this->groupItems = new Google_Service_YouTubeAnalytics_Resource_GroupItems(
         $this,
         $this->serviceName,
@@ -261,6 +214,10 @@ class Google_Service_YouTubeAnalytics extends Google_Service
                 'filters' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'include-historical-channel-data' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
                 ),
                 'max-results' => array(
                   'location' => 'query',

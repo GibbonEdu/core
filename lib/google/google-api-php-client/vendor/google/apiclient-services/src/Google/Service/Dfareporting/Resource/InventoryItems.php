@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -41,8 +41,8 @@ class Google_Service_Dfareporting_Resource_InventoryItems extends Google_Service
     return $this->call('get', array($params), "Google_Service_Dfareporting_InventoryItem");
   }
   /**
-   * Retrieves a list of inventory items, possibly filtered.
-   * (inventoryItems.listInventoryItems)
+   * Retrieves a list of inventory items, possibly filtered. This method supports
+   * paging. (inventoryItems.listInventoryItems)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param string $projectId Project ID for order documents.
@@ -58,7 +58,7 @@ class Google_Service_Dfareporting_Resource_InventoryItems extends Google_Service
    * @opt_param string siteId Select only inventory items that are associated with
    * these sites.
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @opt_param string type Select only inventory items with this type.
    * @return Google_Service_Dfareporting_InventoryItemsListResponse
    */

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,17 +16,17 @@
  */
 
 /**
- * Service definition for CloudTrace (v1).
+ * Service definition for CloudTrace (v2).
  *
  * <p>
- * Send and retrieve trace data from Google Cloud Trace. Data is generated and
+ * Send and retrieve trace data from Stackdriver Trace. Data is generated and
  * available by default for all App Engine applications. Data from other
- * applications can be written to Cloud Trace for display, reporting, and
+ * applications can be written to Stackdriver Trace for display, reporting, and
  * analysis.</p>
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://cloud.google.com/tools/cloud-trace" target="_blank">Documentation</a>
+ * <a href="https://cloud.google.com/trace" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
@@ -43,8 +43,8 @@ class Google_Service_CloudTrace extends Google_Service
   const TRACE_READONLY =
       "https://www.googleapis.com/auth/trace.readonly";
 
-  public $projects;
   public $projects_traces;
+  public $projects_traces_spans;
   
   /**
    * Constructs the internal representation of the CloudTrace service.
@@ -56,66 +56,45 @@ class Google_Service_CloudTrace extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://cloudtrace.googleapis.com/';
     $this->servicePath = '';
-    $this->version = 'v1';
+    $this->version = 'v2';
     $this->serviceName = 'cloudtrace';
 
-    $this->projects = new Google_Service_CloudTrace_Resource_Projects(
-        $this,
-        $this->serviceName,
-        'projects',
-        array(
-          'methods' => array(
-            'patchTraces' => array(
-              'path' => 'v1/projects/{projectId}/traces',
-              'httpMethod' => 'PATCH',
-              'parameters' => array(
-                'projectId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
     $this->projects_traces = new Google_Service_CloudTrace_Resource_ProjectsTraces(
         $this,
         $this->serviceName,
         'traces',
         array(
           'methods' => array(
-            'get' => array(
-              'path' => 'v1/projects/{projectId}/traces/{traceId}',
-              'httpMethod' => 'GET',
+            'batchWrite' => array(
+              'path' => 'v2/{+name}/traces:batchWrite',
+              'httpMethod' => 'POST',
               'parameters' => array(
-                'projectId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'traceId' => array(
+                'name' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
               ),
             ),'list' => array(
-              'path' => 'v1/projects/{projectId}/traces',
+              'path' => 'v2/{+parent}/traces',
               'httpMethod' => 'GET',
               'parameters' => array(
-                'projectId' => array(
+                'parent' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
-                'view' => array(
+                'orderBy' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'pageSize' => array(
+                'filter' => array(
                   'location' => 'query',
-                  'type' => 'integer',
+                  'type' => 'string',
+                ),
+                'endTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
                 'pageToken' => array(
                   'location' => 'query',
@@ -125,17 +104,43 @@ class Google_Service_CloudTrace extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'endTime' => array(
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+              ),
+            ),'listSpans' => array(
+              'path' => 'v2/{+parent}:listSpans',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'filter' => array(
-                  'location' => 'query',
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_traces_spans = new Google_Service_CloudTrace_Resource_ProjectsTracesSpans(
+        $this,
+        $this->serviceName,
+        'spans',
+        array(
+          'methods' => array(
+            'create' => array(
+              'path' => 'v2/{+name}',
+              'httpMethod' => 'PUT',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
                   'type' => 'string',
-                ),
-                'orderBy' => array(
-                  'location' => 'query',
-                  'type' => 'string',
+                  'required' => true,
                 ),
               ),
             ),

@@ -394,7 +394,7 @@ if ($proceed == false) {
     // CUSTOM FIELDS FOR STUDENT
     $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
     if ($resultFields->rowCount() > 0) {
-        $heading = $form->addRow()->addSubheading('Other Information');
+        $heading = $form->addRow()->addSubheading(__('Other Information'));
 
         while ($rowFields = $resultFields->fetch()) {
             $name = 'custom'.$rowFields['gibbonPersonFieldID'];
@@ -496,8 +496,11 @@ if ($proceed == false) {
             $existingFields = (!empty($parent1fields))? unserialize($parent1fields) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
+                $row = $form->addRow();
+                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
+
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
+                    $name = "parent1custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
@@ -627,12 +630,12 @@ if ($proceed == false) {
                 $row->addTextField("parent{$i}employer")->isRequired()->maxLength(150)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Fields'));
-
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
+                $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
+
                 while ($rowFields = $resultFields->fetch()) {
                     $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
@@ -657,9 +660,14 @@ if ($proceed == false) {
         $header->addContent(__('Selected'));
         $header->addContent(__('Relationships'));
 
-        $rowCount = 0;
+        $checked = null;
         while ($rowSelect = $resultSelect->fetch()) {
-            $checked = (isset($application['gibbonFamilyID']))? ($application['gibbonFamilyID'] == $rowSelect['gibbonFamilyID']) : ($rowCount == 0);
+            // Re-select the family for sibling applications, otherwise select the first family
+            if (isset($application['gibbonFamilyID'])) {
+                $checked = $application['gibbonFamilyID'];
+            } else if (is_null($checked)) {
+                $checked = $rowSelect['gibbonFamilyID'];
+            }
 
             // Get the family relationships
             try {
@@ -689,8 +697,6 @@ if ($proceed == false) {
             if ($resultSelect->rowCount() == 1) {
                 $gibbonFamilyID = $rowSelect['gibbonFamilyID'];
             }
-
-            $rowCount++;
         }
     }
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -50,9 +50,9 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * @param string $project Project ID for this request.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string filter Sets a filter expression for filtering listed
-   * resources, in the form filter={expression}. Your {expression} must be in the
-   * format: field_name comparison_string literal_string.
+   * @opt_param string filter Sets a filter {expression} for filtering listed
+   * resources. Your {expression} must be in the format: field_name
+   * comparison_string literal_string.
    *
    * The field_name is the name of the field you want to compare. Only atomic
    * field types are supported (string, number, boolean). The comparison_string
@@ -63,7 +63,7 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * literal value must match the entire field.
    *
    * For example, to filter for instances that do not have a name of example-
-   * instance, you would use filter=name ne example-instance.
+   * instance, you would use name ne example-instance.
    *
    * You can filter on nested fields. For example, you could filter on instances
    * that have set the scheduling.automaticRestart field to true. Use filtering on
@@ -77,7 +77,8 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * @opt_param string maxResults The maximum number of results per page that
    * should be returned. If the number of available results is larger than
    * maxResults, Compute Engine returns a nextPageToken that can be used to get
-   * the next page of results in subsequent list requests.
+   * the next page of results in subsequent list requests. Acceptable values are 0
+   * to 500, inclusive. (Default: 500)
    * @opt_param string orderBy Sorts list results by a certain order. By default,
    * results are returned in alphanumerical order based on the resource name.
    *
@@ -100,7 +101,10 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
     return $this->call('aggregatedList', array($params), "Google_Service_Compute_InstanceAggregatedList");
   }
   /**
-   * Attaches a Disk resource to an instance. (instances.attachDisk)
+   * Attaches an existing Disk resource to an instance. You must first create the
+   * disk before you can attach it. It is not possible to create and attach a disk
+   * at the same time. For more information, read Adding a persistent disk to your
+   * instance. (instances.attachDisk)
    *
    * @param string $project Project ID for this request.
    * @param string $zone The name of the zone for this request.
@@ -191,6 +195,11 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param int port Specifies which COM or serial port to retrieve data from.
+   * @opt_param string start Returns output starting from a specific byte
+   * position. Use this to page through output when the output is too large to
+   * return in a single request. For the initial request, leave this field
+   * unspecified. For subsequent calls, this field should be set to the next value
+   * returned in the previous call.
    * @return Google_Service_Compute_SerialPortOutput
    */
   public function getSerialPortOutput($project, $zone, $instance, $optParams = array())
@@ -223,9 +232,9 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * @param string $zone The name of the zone for this request.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string filter Sets a filter expression for filtering listed
-   * resources, in the form filter={expression}. Your {expression} must be in the
-   * format: field_name comparison_string literal_string.
+   * @opt_param string filter Sets a filter {expression} for filtering listed
+   * resources. Your {expression} must be in the format: field_name
+   * comparison_string literal_string.
    *
    * The field_name is the name of the field you want to compare. Only atomic
    * field types are supported (string, number, boolean). The comparison_string
@@ -236,7 +245,7 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * literal value must match the entire field.
    *
    * For example, to filter for instances that do not have a name of example-
-   * instance, you would use filter=name ne example-instance.
+   * instance, you would use name ne example-instance.
    *
    * You can filter on nested fields. For example, you could filter on instances
    * that have set the scheduling.automaticRestart field to true. Use filtering on
@@ -250,7 +259,8 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
    * @opt_param string maxResults The maximum number of results per page that
    * should be returned. If the number of available results is larger than
    * maxResults, Compute Engine returns a nextPageToken that can be used to get
-   * the next page of results in subsequent list requests.
+   * the next page of results in subsequent list requests. Acceptable values are 0
+   * to 500, inclusive. (Default: 500)
    * @opt_param string orderBy Sorts list results by a certain order. By default,
    * results are returned in alphanumerical order based on the resource name.
    *
@@ -273,7 +283,8 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
     return $this->call('list', array($params), "Google_Service_Compute_InstanceList");
   }
   /**
-   * Performs a hard reset on the instance. (instances.reset)
+   * Performs a reset on the instance. For more information, see Resetting an
+   * instance. (instances.reset)
    *
    * @param string $project Project ID for this request.
    * @param string $zone The name of the zone for this request.
@@ -305,6 +316,40 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
     $params = array('project' => $project, 'zone' => $zone, 'instance' => $instance, 'autoDelete' => $autoDelete, 'deviceName' => $deviceName);
     $params = array_merge($params, $optParams);
     return $this->call('setDiskAutoDelete', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Sets labels on an instance. To learn more about labels, read the Labeling
+   * Resources documentation. (instances.setLabels)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $instance Name of the instance scoping this request.
+   * @param Google_Service_Compute_InstancesSetLabelsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Operation
+   */
+  public function setLabels($project, $zone, $instance, Google_Service_Compute_InstancesSetLabelsRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'instance' => $instance, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setLabels', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Changes the number and/or type of accelerator for a stopped instance to the
+   * values specified in the request. (instances.setMachineResources)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $instance Name of the instance scoping this request.
+   * @param Google_Service_Compute_InstancesSetMachineResourcesRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Operation
+   */
+  public function setMachineResources($project, $zone, $instance, Google_Service_Compute_InstancesSetMachineResourcesRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'instance' => $instance, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setMachineResources', array($params), "Google_Service_Compute_Operation");
   }
   /**
    * Changes the machine type for a stopped instance to the machine type specified
@@ -355,6 +400,24 @@ class Google_Service_Compute_Resource_Instances extends Google_Service_Resource
     $params = array('project' => $project, 'zone' => $zone, 'instance' => $instance, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('setScheduling', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Sets the service account on the instance. For more information, read Changing
+   * the service account and access scopes for an instance.
+   * (instances.setServiceAccount)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $instance Name of the instance resource to start.
+   * @param Google_Service_Compute_InstancesSetServiceAccountRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Operation
+   */
+  public function setServiceAccount($project, $zone, $instance, Google_Service_Compute_InstancesSetServiceAccountRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'instance' => $instance, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setServiceAccount', array($params), "Google_Service_Compute_Operation");
   }
   /**
    * Sets tags for the specified instance to the data included in the request.

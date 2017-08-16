@@ -295,7 +295,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 
                 $mail = getGibbonMailer($guid);
                 $mail->IsSMTP();
-                $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'));
+                $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'), sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
                 foreach ($emails as $address) {
                     $mail->AddBCC($address);
                 }

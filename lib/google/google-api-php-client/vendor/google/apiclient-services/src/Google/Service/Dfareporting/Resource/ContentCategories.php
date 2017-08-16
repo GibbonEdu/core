@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -67,8 +67,8 @@ class Google_Service_Dfareporting_Resource_ContentCategories extends Google_Serv
     return $this->call('insert', array($params), "Google_Service_Dfareporting_ContentCategory");
   }
   /**
-   * Retrieves a list of content categories, possibly filtered.
-   * (contentCategories.listContentCategories)
+   * Retrieves a list of content categories, possibly filtered. This method
+   * supports paging. (contentCategories.listContentCategories)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -85,7 +85,7 @@ class Google_Service_Dfareporting_Resource_ContentCategories extends Google_Serv
    * example, a search string of "contentcategory" will match objects with name
    * "my contentcategory", "contentcategory 2015", or simply "contentcategory".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @return Google_Service_Dfareporting_ContentCategoriesListResponse
    */
   public function listContentCategories($profileId, $optParams = array())

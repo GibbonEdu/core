@@ -213,27 +213,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr>
-					<td>
-						<b>Staff</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-					</td>
-					<td class="right">
-						<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
-							<?php
-                            try {
-                                $dataSelect = array();
-                                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowSelect = $resultSelect->fetch()) {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-							}
-							?>
-						</select>
-					</td>
-
+    					<td>
+    						<b>Staff</b><br/>
+    						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
+    					</td>
+    					<td class="right">
+    						<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
+    							<?php
+                                try {
+                                    $dataSelect = array();
+                                    $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+                                    $resultSelect = $connection2->prepare($sqlSelect);
+                                    $resultSelect->execute($dataSelect);
+                                } catch (PDOException $e) {
+                                }
+    							while ($rowSelect = $resultSelect->fetch()) {
+    								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+    							}
+    							?>
+    						</select>
+    					</td>
+                    </tr>
 					<tr id='roleLARow'>
 						<td>
 							<b><?php echo __($guid, 'Role') ?></b><br/>
@@ -262,7 +262,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                                     ?>
 									<option value="Other"><?php echo __($guid, 'Other') ?></option>
 									<?php
-
                                 }
            	 					?>
 							</select>

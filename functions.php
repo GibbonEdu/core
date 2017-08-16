@@ -593,13 +593,15 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
+    $attendanceAccess = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php');
+
     while ($rowRollGroups = $resultRollGroups->fetch()) {
         $rollGroups[$count][0] = $rowRollGroups['gibbonRollGroupID'];
         $rollGroups[$count][1] = $rowRollGroups['nameShort'];
 
         //Roll group table
         $rollGroups[$count][2] = "<div class='linkTop' style='margin-top: 0px'>";
-        if ($rowRollGroups['attendance'] == 'Y') {
+        if ($rowRollGroups['attendance'] == 'Y' AND $attendanceAccess) {
             $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__($guid, 'Take Attendance')."<img style='margin-left: 5px' title='".__($guid, 'Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> | ";
         }
         $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/indexExport.php?gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__($guid, 'Export to Excel')."<img style='margin-left: 5px' title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
@@ -3747,7 +3749,7 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
 function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection2)
 {
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    $canViewStududents = ($highestAction == 'View Student Profile_breif' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
+    $canViewStududents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
 
     try {
         $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);

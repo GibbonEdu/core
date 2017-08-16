@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,13 +15,16 @@
  * the License.
  */
 
-class Google_Service_Appengine_OperationMetadataV1 extends Google_Model
+class Google_Service_Appengine_OperationMetadataV1 extends Google_Collection
 {
+  protected $collection_key = 'warning';
   public $endTime;
+  public $ephemeralMessage;
   public $insertTime;
   public $method;
   public $target;
   public $user;
+  public $warning;
 
   public function setEndTime($endTime)
   {
@@ -30,6 +33,14 @@ class Google_Service_Appengine_OperationMetadataV1 extends Google_Model
   public function getEndTime()
   {
     return $this->endTime;
+  }
+  public function setEphemeralMessage($ephemeralMessage)
+  {
+    $this->ephemeralMessage = $ephemeralMessage;
+  }
+  public function getEphemeralMessage()
+  {
+    return $this->ephemeralMessage;
   }
   public function setInsertTime($insertTime)
   {
@@ -62,5 +73,13 @@ class Google_Service_Appengine_OperationMetadataV1 extends Google_Model
   public function getUser()
   {
     return $this->user;
+  }
+  public function setWarning($warning)
+  {
+    $this->warning = $warning;
+  }
+  public function getWarning()
+  {
+    return $this->warning;
   }
 }

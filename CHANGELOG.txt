@@ -31,8 +31,32 @@ v15.0.00
 		...
 
 	Tweaks & Bug Fixes
-		i18n: fixed erroneous Georgian language code
+		System: fixed erroneous Georgian language code
+		System: added Greek as development language
+		System: added South African Rand as currency
+		System: fixed missing form validation for dropdowns created with User Custom Fields
+		System: updated Google OAuth library to latest version (v2.2.0)
+		System: fixed Sign In With Google to fix missing token refresh issue
+		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
+		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
+		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
+		Behaviour: fixed typo in three settings
+		Departments: fixed bug preventing students from seeing other students in a class
+		Finance: set name of outgoing email to school name, not user's name
+		Individual Needs: added ability to record educational assistants for a student
+		Library: added Optical Media as item type
+		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Students: fixed School History section in Student Profile to exclude upcoming years
+		Students: fixed Application Form for logged in users not selecting a family by default (if one exists)
+		Students: fixed interface string issue in student details screen
+		Students: fixed display of Other Fields heading for parents in Application Form
+		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
+		Timetable: added ability to set and display text and background colour for timetable day headers
+		Timetable: adjusted font size for shorter lessons to allow display or facility name
+		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
+		Timetable Admin: updated Course Enrolment Rollover to prevent duplicates and not copy users set to Left
+		User Admin: improved usability of feedback in Step 3 of the rollover
+		User Admin: made Pending Approval option in Status in edit User appear only if Public Registration is enabled
 
 v14.0.00
 --------

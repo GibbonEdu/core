@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,7 +30,7 @@ class Google_Service_AndroidEnterprise_Resource_Products extends Google_Service_
    * maximum number of products that you can approve per enterprise customer is
    * 1,000.
    *
-   * To learn how to use Google Play for Work to design and create a store layout
+   * To learn how to use managed Google Play to design and create a store layout
    * to display approved products to your users, see Store Layout Design.
    * (products.approve)
    *
@@ -93,9 +93,9 @@ class Google_Service_AndroidEnterprise_Resource_Products extends Google_Service_
    * Retrieves the schema that defines the configurable properties for this
    * product. All products have a schema, but this schema may be empty if no
    * managed configurations have been defined. This schema can be used to populate
-   * a UI that allows an administrator to configure the product. To apply a
-   * managed configuration based on the schema obtained using this API, see
-   * Managed Configurations through Play. (products.getAppRestrictionsSchema)
+   * a UI that allows an admin to configure the product. To apply a managed
+   * configuration based on the schema obtained using this API, see Managed
+   * Configurations through Play. (products.getAppRestrictionsSchema)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $productId The ID of the product.
@@ -142,11 +142,11 @@ class Google_Service_AndroidEnterprise_Resource_Products extends Google_Service_
    * @opt_param string maxResults Specifies the maximum number of products that
    * can be returned per request. If not specified, uses a default value of 100,
    * which is also the maximum retrievable within a single response.
-   * @opt_param string query The search query as typed in the Google Play Store
+   * @opt_param string query The search query as typed in the Google Play store
    * search box. If omitted, all approved apps will be returned (using the
    * pagination parameters), including apps that are not available in the store
    * (e.g. unpublished apps).
-   * @opt_param string token A pagination token is contained in a requests
+   * @opt_param string token A pagination token is contained in a request''s
    * response when there are more products. The token can be used in a subsequent
    * request to obtain more products, and so forth. This parameter cannot be used
    * in the initial request.
@@ -171,27 +171,5 @@ class Google_Service_AndroidEnterprise_Resource_Products extends Google_Service_
     $params = array('enterpriseId' => $enterpriseId, 'productId' => $productId);
     $params = array_merge($params, $optParams);
     return $this->call('unapprove', array($params));
-  }
-  /**
-   * This method has been deprecated. To programmatically approve applications,
-   * you must use the iframe mechanism via the  generateApprovalUrl and  approve
-   * methods of the Products resource. For more information, see the  Play EMM API
-   * usage requirements.
-   *
-   * The updatePermissions method (deprecated) updates the set of Android app
-   * permissions for this app that have been accepted by the enterprise.
-   * (products.updatePermissions)
-   *
-   * @param string $enterpriseId The ID of the enterprise.
-   * @param string $productId The ID of the product.
-   * @param Google_Service_AndroidEnterprise_ProductPermissions $postBody
-   * @param array $optParams Optional parameters.
-   * @return Google_Service_AndroidEnterprise_ProductPermissions
-   */
-  public function updatePermissions($enterpriseId, $productId, Google_Service_AndroidEnterprise_ProductPermissions $postBody, $optParams = array())
-  {
-    $params = array('enterpriseId' => $enterpriseId, 'productId' => $productId, 'postBody' => $postBody);
-    $params = array_merge($params, $optParams);
-    return $this->call('updatePermissions', array($params), "Google_Service_AndroidEnterprise_ProductPermissions");
   }
 }

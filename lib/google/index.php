@@ -71,7 +71,7 @@ if (isset($_GET['code'])) {
   If we have an access token, we can make
   requests, else we generate an authentication URL.
  ************************************************/
-@$refreshToken = json_decode($_SESSION[$guid]['googleAPIAccessToken'] )->refresh_token;
+$refreshToken = isset($_SESSION[$guid]['googleAPIAccessToken']['refresh_token'])? $_SESSION[$guid]['googleAPIAccessToken']['refresh_token'] : '';
 
 if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['googleAPIAccessToken'] ) {
   $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken'] );
@@ -216,7 +216,7 @@ if (isset($authUrl)){
 		catch(PDOException $e) { }
 
 		//Set Goolge API refresh token where appropriate, and update user
-		if ($refreshToken != "") {
+		if (!empty($refreshToken)) {
 			$_SESSION[$guid]["googleAPIRefreshToken"] = $refreshToken;
 			try {
 				$data = array( "googleAPIRefreshToken"=> $_SESSION[$guid]["googleAPIRefreshToken"], "username"=> $username );
@@ -225,7 +225,15 @@ if (isset($authUrl)){
 				$result->execute($data);
 			}
 			catch(PDOException $e) { }
-		}
+		} else {
+            // No refresh token and none saved in gibbonPerson: force a re-authorization of this account
+            if (empty($row['googleAPIRefreshToken'])) {
+                $client->setApprovalPrompt('force');
+                $authUrl = $client->createAuthUrl();
+                header('Location: ' . $authUrl);
+                exit;
+            }
+        }
 
         //The final reckoning...does email match?
 		if (isset($_SESSION[$guid]["username"])) { //YES!
