@@ -68,11 +68,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     }
 
     ?>
-	
+
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-                <td style='width: 275px'> 
+                <td style='width: 275px'>
                     <b><?php echo __($guid, 'Start Date') ?> *</b><br/>
                     <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
                 </td>
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                         } else {
                             echo $_SESSION[$guid]['i18n']['dateFormat'];
                         }
-                        ?>." } ); 
+                        ?>." } );
                         dateStart.add(Validate.Presence);
                     </script>
                      <script type="text/javascript">
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 </td>
             </tr>
             <tr>
-                <td style='width: 275px'> 
+                <td style='width: 275px'>
                     <b><?php echo __($guid, 'End Date') ?> *</b><br/>
                     <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
                 </td>
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                         } else {
                             echo $_SESSION[$guid]['i18n']['dateFormat'];
                         }
-                        ?>." } ); 
+                        ?>." } );
                         dateEnd.add(Validate.Presence);
                     </script>
                      <script type="text/javascript">
@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 if ($row['studentCount'] <= 0) continue;
 
                 //Output row only if not registered on specified date, and timetabled for that day
-                if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false || 
+                if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false ||
                     count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
                     ++$count;
 
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
                     echo '</td>';
                     echo '<td style="padding: 0;">';
-                    
+
                         echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
                         echo '<tr>';
 
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                             } else {
 
                                 $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-                                
+
                                 $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
 
                                 if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
@@ -317,13 +317,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                             echo formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
                         }
                     }
-                    
+
                     echo '</td>';
                     echo '</tr>';
                 }
             }
-            
-            
+
+
 
             if ($count == 0) {
                 echo "<tr";
