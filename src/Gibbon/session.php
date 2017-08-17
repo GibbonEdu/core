@@ -137,6 +137,28 @@ class Session
 		return $this;
 	}
 
+	public function loadSystemSettings($pdo)
+	{
+		// System settings from gibbonSetting
+		$sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
+	    $result = $pdo->executeQuery(array(), $sql);
+
+        while ($row = $result->fetch()) {
+            $this->set($row['name'], $row['value']);
+        }
+	}
+
+    public function loadLanguageSettings($pdo)
+    {
+        // Language settings from gibboni18n
+        $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
+        $result = $pdo->executeQuery(array(), $sql);
+
+        while ($row = $result->fetch()) {
+            $this->set('i18n', $row);
+        }
+    }
+
 	public function createUserSession($username, $userData) {
 
 		$this->set('username', $username);
