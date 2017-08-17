@@ -144,7 +144,6 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
 
 
         //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
-
         if ($enabledByClass == 'Y') {
             try {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate, 'time' => date("H:i:s"));
@@ -299,7 +298,12 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
         }
 
         $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').' '.$report);
-        $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        if ($enabledByRollGroup == 'N' && $enabledByClass == 'Y') {
+            $event->setActionLink('/index.php?q=/modules/Attendance/report_courseClassesNotRegistered_byDate.php');
+        }
+        else {
+            $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        }
 
         // Add admin, then push the event to the notification sender
         $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
