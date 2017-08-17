@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
         foreach ($yearGroups as $gibbonYearGroupID => $rowData) {
 
             $row = current($rowData);
-            $rowClass = (!in_array($gibbonYearGroupID, $gibbonYearGroupIDList))? 'dull' : '';
+            $rowClass = (in_array($gibbonYearGroupID, $gibbonYearGroupIDList))? 'current' : '';
 
             echo '<tr class="'.$rowClass.'">';
 
