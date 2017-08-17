@@ -838,13 +838,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             <tr>
                 <td>
                     <b><?php echo __($guid, 'Birth Certificate Scan') ?></b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
+                    <span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px').'. '.__('Accepts PDF files.') ?></span>
                 </td>
                 <td class="right">
                     <input type="file" name="birthCertificateScan" id="birthCertificateScan"><br/><br/>
                     <script type="text/javascript">
                         var birthCertificateScan=new LiveValidation('birthCertificateScan');
-                        birthCertificateScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+                        birthCertificateScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png','pdf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
                     </script>
                 </td>
             </tr>
@@ -921,13 +921,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Citizenship 1 Passport Scan') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px').'. '.__('Accepts PDF files.') ?></span>
 				</td>
 				<td class="right">
 					<input type="file" name="citizenship1PassportScan" id="citizenship1PassportScan"><br/><br/>
 					<script type="text/javascript">
 						var citizenship1PassportScan=new LiveValidation('citizenship1PassportScan');
-						citizenship1PassportScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						citizenship1PassportScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png','pdf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
 			</tr>
@@ -992,13 +992,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Scan').'</b><br/>';
                     }
    				 	?>
-					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px').'. '.__('Accepts PDF files.') ?></span>
 				</td>
 				<td class="right">
 					<input type="file" name="nationalIDCardScan" id="nationalIDCardScan"><br/><br/>
 					<script type="text/javascript">
 						var nationalIDCardScan=new LiveValidation('nationalIDCardScan');
-						nationalIDCardScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						nationalIDCardScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png','pdf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
 			</tr>

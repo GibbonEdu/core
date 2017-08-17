@@ -1134,7 +1134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     <tr>
 						<td>
 							<b><?php echo __($guid, 'Birth Certificate Scan') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px').'. '.__('Accepts PDF files.') ?><br/>
 							<?php if ($row['birthCertificateScan'] != '') { echo __($guid, 'Will overwrite existing attachment.'); } ?>
 							</span>
 						</td>
@@ -1148,7 +1148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 							<input type="hidden" name="birthCertificateScanCurrent" value='<?php echo $row['birthCertificateScan'] ?>'>
 							<script type="text/javascript">
 								var birthCertificateScan=new LiveValidation('birthCertificateScan');
-								birthCertificateScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								birthCertificateScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png','pdf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
@@ -1241,7 +1241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					<tr>
 						<td>
 							<b><?php echo __($guid, 'Citizenship 1 Passport Scan') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px').'. '.__('Accepts PDF files.') ?><br/>
 							<?php if ($row['citizenship1PassportScan'] != '') { echo __($guid, 'Will overwrite existing attachment.');} ?>
 							</span>
 						</td>
@@ -1255,7 +1255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 							<input type="hidden" name="citizenship1PassportScanCurrent" value='<?php echo $row['citizenship1PassportScan'] ?>'>
 							<script type="text/javascript">
 								var citizenship1PassportScan=new LiveValidation('citizenship1PassportScan');
-								citizenship1PassportScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								citizenship1PassportScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png','pdf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
@@ -1328,7 +1328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Scan').'</b><br/>';
                             }
             				?>
-							<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
+							<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px').'. '.__('Accepts PDF files.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -1340,7 +1340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 							<input type="hidden" name="nationalIDCardScanCurrent" value='<?php echo $row['nationalIDCardScan'] ?>'>
 							<script type="text/javascript">
 								var nationalIDCardScan=new LiveValidation('nationalIDCardScan');
-								nationalIDCardScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								nationalIDCardScan.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png','pdf'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
