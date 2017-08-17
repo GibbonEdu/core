@@ -4307,7 +4307,7 @@ function setCurrentSchoolYear($guid,  $connection2)
     //Check number of rows returned.
     //If it is not 1, show error
     if (!($result->rowCount() == 1)) {
-        die(__($guid, 'Your request failed due to a database error.'));
+        die(__($guid, 'Configuration Error: there is a problem accessing the current Academic Year from the database.'));
     }
     //Else get schoolYearID
     else {
