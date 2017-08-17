@@ -63,33 +63,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             //Check for other currents
             $currentFail = false;
             if ($status == 'Current') {
+                // Enforces a single current school year by updating the status of other years
                 try {
-                    $data = array();
-                    $sql = "SELECT gibbonSchoolYearID, sequenceNumber FROM gibbonSchoolYear WHERE status='Current'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    $data = array('sequenceNumber' => $sequenceNumber);
+                    $sql = "UPDATE gibbonSchoolYear SET status = (CASE
+                        WHEN sequenceNumber < :sequenceNumber THEN 'Past' ELSE 'Upcoming'
+                    END)";
+                    $resultUpdate = $connection2->prepare($sql);
+                    $resultUpdate->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-                if ($result->rowCount() > 0) {
-                    // Enforces a single current school year by updating the status of the previous current year
-                    while ($currentSchoolYear = $result->fetch()) {
-                        $direction = ($sequenceNumber < $currentSchoolYear['sequenceNumber'])? 'Upcoming' : 'Past';
-                        try {
-                            $data = array('gibbonSchoolYearID' => $currentSchoolYear['gibbonSchoolYearID'], 'status' => $direction, 'sequenceNumber' => $sequenceNumber);
-                            $sql = "UPDATE gibbonSchoolYear SET status = (CASE
-                                WHEN gibbonSchoolYearID=:gibbonSchoolYearID THEN :status
-                                WHEN sequenceNumber < :sequenceNumber THEN 'Past'
-                                ELSE 'Upcoming'
-                            END)";
-                            $resultUpdate = $connection2->prepare($sql);
-                            $resultUpdate->execute($data);
-                        } catch (PDOException $e) {
-                            $currentFail = true;
-                        }
-                    }
+                    $currentFail = true;
                 }
             }
 
