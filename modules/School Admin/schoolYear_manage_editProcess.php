@@ -84,29 +84,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                     //Check for other currents
                     $currentFail = false;
                     if ($status == 'Current') {
+                        // Enforces a single current school year by updating the status of other years
                         try {
-                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                            $sql = "SELECT gibbonSchoolYearID, sequenceNumber FROM gibbonSchoolYear WHERE status='Current' AND NOT gibbonSchoolYearID=:gibbonSchoolYearID";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
+                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'sequenceNumber' => $sequenceNumber);
+                            $sql = "UPDATE gibbonSchoolYear SET status = (CASE
+                                WHEN sequenceNumber < :sequenceNumber THEN 'Past' ELSE 'Upcoming'
+                            END) WHERE gibbonSchoolYearID <> :gibbonSchoolYearID";
+                            $resultUpdate = $connection2->prepare($sql);
+                            $resultUpdate->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
-                        }
-                        if ($result->rowCount() > 0) {
-                            // Enforces a single current school year by updating the status of the previous current year
-                            while ($currentSchoolYear = $result->fetch()) {
-                                $direction = ($sequenceNumber < $currentSchoolYear['sequenceNumber'])? 'Upcoming' : 'Past';
-                                try {
-                                    $data = array('gibbonSchoolYearID' => $currentSchoolYear['gibbonSchoolYearID'], 'status' => $direction);
-                                    $sql = 'UPDATE gibbonSchoolYear SET status=:status WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                    $resultUpdate = $connection2->prepare($sql);
-                                    $resultUpdate->execute($data);
-                                } catch (PDOException $e) {
-                                    $currentFail = true;
-                                }
-                            }
+                            $currentFail = true;
                         }
                     }
 
@@ -118,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                         //Write to database
                         try {
                             $data = array('name' => $name, 'status' => $status, 'sequenceNumber' => $sequenceNumber, 'firstDay' => $firstDay, 'lastDay' => $lastDay, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                            $sql = 'UPDATE gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                            $sql = "UPDATE gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -127,8 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                             exit();
                         }
 
+                        // Update session vars so the user is warned if they're logged into a different year
                         if ($status == 'Current') {
-                            // Update session vars so the user is warned if they're logged into a different year
                             $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] = $gibbonSchoolYearID;
                             $_SESSION[$guid]['gibbonSchoolYearNameCurrent'] = $name;
                             $_SESSION[$guid]['gibbonSchoolYearSequenceNumberCurrent'] = $sequenceNumber;
