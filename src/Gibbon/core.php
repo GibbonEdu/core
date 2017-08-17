@@ -108,14 +108,28 @@ class Core {
 
 		if ($this->initialized == true) return;
 
+		// Provide the session class with a db connection
+		$this->session->setDatabaseConnection($pdo);
+
+		if (empty($this->session->get('systemSettingsSet'))) {
+			// Load all system settings into session data
+			$this->session->loadSystemSettings($pdo);
+
+			// Load all i18n values into session data
+			$this->session->loadLanguageSettings($pdo);
+		}
+
+		// Setup the Internationalization code from session
+		$this->locale->setLocale($this->session->get(array('i18n', 'code')));
+
+		// Set timezone from session variable
+		$this->locale->setTimezone($this->session->get('timezone', 'UTC'));
+
 		// Setup the textdomain based on the current locale  (if any)
 		$this->locale->setTextDomain($pdo);
 
 		// Load the string replacements from db
 		$this->locale->setStringReplacementList($pdo);
-
-		// Provide the session class with a db connection
-		$this->session->setDatabaseConnection($pdo);
 
 		$this->initialized = true;
 	}
