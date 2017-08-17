@@ -2,6 +2,440 @@
 http://visjs.org
 
 
+## 2017-07-01, version 4.20.1
+
+### General
+- Added Release checklist 
+- Added collapsible items for objects in graph3d doc
+
+### Network
+- FIX #3203: Set dimensions properly of images on initialization
+- FIX #3198: Small fix on ref usage in DataGroup
+- FIX #3170: Refactoring of Node Drawing 
+- FIX #3108: Reverse nodes returned with 'from' and 'to' directions
+- FIX #3122: Refactored line drawing for Bezier edges
+- FIX #3121: Refactoring of `BezierEdgeStatic._getViaCoordinates()` 
+- FIX #3088: Consolidate code for determining the pixel ratio
+- FIX #3036: Smooth type 'dynamic' adjusted for node-specific option in hierarchical
+- FIX #1105: Fix usage of clustering with hierarchical networks
+- FIX #3133: Protect Network from zero and negative mass values
+- FIX #3163: Prevent crashes from invalid id's in `Clustering.findNode()`
+- FIX #3106: Ensure start and end of stabilization progress events is sent
+- FIX #3015: Properly handle newline escape sequences in strings for DOT
+- FIX Refactoring of LayoutEngine
+- FIX #2990: Edge labels turn bold on select and hover
+- FIX #2959: Changed order of (de)select events for network
+- FIX #3091: Added param 'direction' to Network.getConnectedNodes()
+- FIX #3085: Add prefix  to cancelAnimationFrame()
+
+### Graph3D
+- FIX #2804: Add data group class to Graph3d
+
+### Timeline
+- FIX #3172: Fix stacking when setting option
+- FIX #3183: Fixes a race condition that set an item's group to be set to undefined
+- FEAT #3154: Caching to Range getMillisecondsPerPixel function
+- FIX #3105: Adjusting timeline TimeStep.roundToMinor
+- FEAT #3107: Allow overriding `align` per item
+
+## 2017-05-21, version 4.20.0
+
+### General
+
+- FIX #2934: Replacing all ES6 imports with CJS require calls (#3063)
+- Add command line options to mocha for running tests (#3064)
+- Added documentation on how labels are used (#2873)
+- FIX: Fix typo in PR template (#2908)
+- FIX #2912: updated moment.js (#2925)
+- Added @wimrijnders to the support team (#2886)
+
+### Network
+
+- FIX: Fixes for loading images into image nodes (#2964)
+- FIX #3025: Added check on mission var 'options', refactoring. (#3055)
+- FIX #3057: Use get() to get data from DataSet/View instead of directly accessing member \_data. (#3069)
+- FIX #3065: Avoid overriding standard context method ellipse() (#3072)
+- FIX #2922: bold label for selected ShapeBase classes (#2924)
+- FIX #2952: Pre-render node images for interpolation (#3010)
+- FIX #1735: Fix for exploding directed network, first working version; refactored hierarchical state in LayoutEngine.(#3017)
+- Refactoring of Label.propagateFonts() (#3052)
+- FIX #2894: Set CircleImageBase.imageObjAlt always when options change (#3053)
+- FIX #3047: Label.getFormattingValues() fix option fallback to main font for mod-fonts (#3054)
+- FIX #2938: Fix handling of node id's in saveAndLoad example (#2943)
+- FIX: Refactoring in Canvas.js (#3030)
+- FIX #2968: Fix placement label for dot shape (#3018)
+- FIX #2994: select edge with id zero (#2996)
+- FIX #1847, #2436: Network: use separate refresh indicator in NodeBase, instead of width… (#2885)
+- Fix #2914: Use option edges.chosen if present in global options (#2917)
+- FIX #2940: Gephi consolidate double assignment of node title (#2962)
+- FIX 2936: Fix check for nodes not present in EdgesHandler (#2963)
+- FEAT: Reduce the time-complexity of the network initial positioning (#2759)
+
+### Timeline / Graph2D
+
+- FEAT: Add support for multiple class names in utils add/remove class methods (#3079)
+- FEAT: Adds 'showTooltips' option to override popups displayed for items with titles (#3046)
+- FIX #2818: LineGraph: Add an existingItemsMap to check if items are new or not before skipping (#3075)
+- FEAT #2835: Improve timeline stack performance (#2848, #3078)
+- FIX #3032: mouseup and mousedown events (#3059)
+- FIX #2421: Fix click and doubleclick events on items (#2988)
+- FEAT #1405, #1715, #3002: Implementation of a week scale feature (#3009)
+- FIX #397: Eliminate repeatedly fired `rangechanged` events on mousewheel (#2989)
+- FIX #2939: Add check for parent existence when changing group in Item.setData (#2985)
+- FIX #2877: Add check for empty groupIds array and get full list from data set (#2986)
+- FIX #2614: Timeline docs border overlaps (#2992)
+- FIX: Doubleclick add (#2987)
+- FIX #2679: Cannot read property 'hasOwnProperty' of null (#2973)
+- FEAT #2863: Drag and drop custom fields (#2872)
+- FEAT #2834: Control over the drop event (#2974)
+- FIX #2918: Remove usages of elementsCensor (#2947)
+- FEAT #2948: Rolling mode offset (#2950)
+- FEAT #2805: Add callback functions to moveTo, zoomIn, zoomOut and setWindow (#2870)
+- FIX: Do not corrupt class names at high zoom levels (#2909)
+- FIX #2888: Fix error in class names (#2911)
+- FIX #2835: Visible items bug (#2878)
+
+### Graph3D
+
+- FEAT: Configurable minimum and maximum sizes for dot-size graphs (#2849)
+
+
+## 2017-03-19, version 4.19.1
+
+### General
+
+* FIX: #2685 Fixed babel dependencies (#2875)
+
+### Timeline / Graph2D
+
+* FIX #2809: Fix docs typo in "showNested" (#2879)
+* FIX #2594: Fixes for removing and adding items to subgroups (#2821)
+* FIX: Allow nested groups to be removed (#2852)
+
+
+## 2017-03-18, version 4.19.0
+
+### General
+
+- FIX: Fix eslint problem on Travis. (#2744)
+- added support for eslint (#2695)
+- Trivial typo fix in how_to_help doc. (#2714)
+- add link to a mentioned example (#2709)
+- FEAT: use babel preset2015 for custom builds (#2678)
+- FIX: use babel version compatible with webpack@1.14 (#2693)
+- FEAT: run mocha tests in travis ci (#2687)
+- Add note that PRs should be submitted against the `develop` branch (#2623)
+- FIX: Fixes instanceof Object statements for objects from other windows and iFrames. (#2631)
+- removed google-analytics from all examples (#2670)
+- do not ignore test folder (#2648)
+- updated dependencies and devDependencies (#2649)
+- general improvements (#2652)
+
+### Network
+
+- FEAT: Improve the performance of the network layout engine (#2729)
+- FEAT: Allow for image nodes to have a selected or broken image (#2601)
+
+### Timeline / Graph2D
+
+- FIX #2842: Prevent redirect to blank after drag and drop in FF (#2871)
+- FIX #2810: Nested groups do not use "groupOrder" (#2817)
+- FIX #2795: fix date for custom format function (#2826)
+- FIX #2689: Add animation options for zoomIn/zoomOut funtions (#2830)
+- FIX #2800: Removed all "Object.assign" from examples (#2829)
+- FIX #2725: Background items positioning when orientation: top (#2831)
+- FEAT: Added data as argument to the template function (#2802)
+- FIX #2827: Update "progress bar" example to reflect values (#2828)
+- FIX #2672: Item events original event (#2704)
+- FIX #2696: Update serialization example to use ISOString dates (#2789)
+- FIX #2790: Update examples to use ISOString format (#2791)
+- FEAT: Added support to supply an end-time to bar charts to have them scale (#2760)
+- FIX #1982, #1417: Modify redraw logic to treat scroll as needing restack (#2774)
+- FEAT: Initial tests for timeline ItemSet (#2750)
+- FIX #2720: Problems with option editable (#2743, #2796, #2806)
+- FIX: Range.js "event" is undeclared (#2749)
+- FEAT: added new locales for french and espanol (#2723)
+- FIX: fixes timestep next issue (#2732)
+- FEAT: #2647 Dynamic rolling mode option (#2705)
+- FIX #2679: TypeError: Cannot read property 'hasOwnProperty' of null (#2735)
+- Add initial tests for Timeline PointItem (#2716)
+- FIX #778: Tooltip does not work with background items in timeline (#2703)
+- FIX #2598: Flickering onUpdateTimeTooltip (#2702)
+- FEAT: refactor tooltip to only use one dom-element (#2662)
+- FEAT: Change setCustomTimeTitle title parameter to be a string or a function (#2611)
+
+### Graph3D
+
+- FEAT #2769: Graph3d tooltip styling (#2780)
+- FEAT #2540: Adjusted graph3d doc for autoscaling (#2812)
+- FIX #2536: 3d bar graph data array unsorted (#2803)
+- FEAT: Added showX(YZ)Axis options to Graph3d (#2686)
+
+
+## 2017-01-29, version 4.18.1
+
+### General
+
+- updated dependencies
+- FIX: moved babel plugins from devDependencies to dependencies (#2629)
+
+### Network
+
+- FIX #2604: Handle label composition for long words (#2650)
+- FIX #2640: Network manipulation styles together with Bootstrap styles (#2654)
+- FIX #2494: Fix tree collision in hierarchical layout (#2625)
+- FIX #2589: Vertically center label in network circle node (#2593)
+- FIX #2591: Self reference edge should now appear in all cases (#2595)
+- FIX #2613: Fixed return value for zoom in/out callback (#2615)
+- FIX #2609: Values should be passed to check values.borderDashes (#2599)
+
+### Timeline / Graph2D
+
+- FIX: Fixed htmlContents example (#2651)
+- FIX #2590: Min zoom bug (#2646)
+- FIX #2597: Zoom while dragging (#2645)
+- FIX: Minor cleanups in Timeline Range. (#2633)
+- FIX #2458: Allow graph2D options to be undefined (#2634)
+- FIX: Fix typo (#2622)
+- FIX #2585: Fixed React example  (#2587)
+
+
+## 2017-01-15, version 4.18.0
+
+### General
+
+- Readme improvements (#2520)
+- Babel updates and fixes (#2466, #2513, #2566)
+- Removed dist folder from the develop-branch (#2497)
+- updated and cleaned-up npm dependencies (#2518, #2406)
+- FEAT: Added CodeClimate tests (#2411)
+- FEAT: Added initial Travis-CI support: https://travis-ci.org/almende/vis (#2550)
+- FIX #2500: Replace { bool } with { boolean: bool } (#2501, #2506, #2581)
+- FIX #2445: Fix YUI Compressor incompatibilities (#2452)
+- FIX #2402: make sure a given element isn’t undefined before accessing properties (#2403)
+- FIX #2560: IE11 issue 'Symbol' is undefined with babel-polyfill (#2566)
+- FIX #2490: Don't pass non-string values to Date.parse (#2534)
+
+### DataSet
+
+- FIX: Removed event oldData items (#2535)
+- FIX #2528: Fixed deleting item with id 0 (#2530)
+
+### Network
+
+- FIX #1911: Fix missing blur edge event (#2554)
+- FIX #2478: Fix tooltip issue causing exception when node becomes cluster (#2555)
+- FEAT: Change styles if element is selected (#2446)
+- FEAT #2306: Add example for network onLoad animation. (#2476)
+- FEAT #1845: Adding example of cursor change (#2463)
+- FEAT #1603 #1628 #1936 #2298 #2384: Font styles, width and height of network nodes (#2385)
+- FEAT: Add pointer position to zoom event (#2377)
+- FEAT #1653 #2342: label margins for box, circle, database, icon and text nodes. (#2343)
+- FEAT #2233 #2068 #1756: Edit edge without endpoint dragging, and pass label in data (#2329)
+
+### Timeline / Graph2D
+
+- FIX: #2522 Right button while dragging item makes items uneditable (#2582)
+- FIX #2538: Major axis labels displaying wrong value (#2551)
+- FEAT #2516: Added followMouse & overflowMethod to tooltip options (#2544)
+- FIX: Fixed tool-tip surviving after item deleted (#2545)
+- FIX #2515: Fixed hover events for HTML elements (#2539)
+- FIX: Timeline.setGroups for Array (#2529)
+- FIX: Error in React example when adding a ranged item (#2521)
+- FEAT #226 #2421 #2429: Added mouse events for the timeline (#2473)
+- FEAT #497: new stackSubgroups option (#2519, #2527)
+- FEAT #338: Added HTML tool-tip support (#2498)
+- FIX #2511: readded throttleRedraw option; added DEPRECATED warning (#2514)
+- FEAT #2300: Added nested groups (#2416)
+- FEAT #2464: Add template support for minor/major labels (#2493)
+- FIX #2379: Fix initial drag (#2474)
+- FIX #2102: Fix error on click for graph2D when no data is provided (#2472)
+- FIX #2469: Fix graph2D render issue (#2470)
+- FIX #1126: Add visibleFrameTemplate option for higher item dom content (#2437)
+- FIX #2467: Fix Range ctor with optional options parameter (#2468)
+- FEAT #1746: Rolling mode (#2439, #2486)
+- FIX #2422: Timeline onMove callback (#2427)
+- FIX #2370: IE10 drag-and-drop support (#2426)
+- FIX #1906: Pass through original hammer.js events (#2420)
+- FIX #2327: Add support to fixed times drag and drop (#2372)
+- FIX: \_origRedraw sometimes undefined (#2399)
+- FIX #2367 #2328: Group editable bug (#2368)
+- FIX #2336: Mouse wheel problem on custom time element (#2366)
+- FIX #2307: Timeline async initial redraw bug (#2386)
+- FIX #2312: Vertical scroll bug with groups and fixed height (#2363)
+- FIX #2333: Scrollbar width on browser zoom (#2344)
+- Fixed #2319: Bug in TimeStep.prototype.getClassName (#2335)
+- FEAT #257: Added option to change the visibility of a group (#2315)
+- FEAT: More editable control of timeline items (#2305)
+- FIX #2273: Cannot scroll page when zoomKey is enabled (#2301)
+- FIX #2295, 2263: Issues with vertical scroll and maxHeight (#2302)
+- FIX #2285: onUpdate event (#2304)
+- FIX: Timeline-docs: updated group.content description to show that it can be an element (#2296)
+- FIX #2251: No axis after daylight saving (#2290)
+- FEAT #2256: Timeline editable can override items (#2284)
+- FEAT: Graph2d performance enhancement (#2281)
+
+### Graph3D
+
+- FEAT #2451: Allow pass the color of points in 'dot-color' mode of Graph3D (#2489)
+- FEAT: Improvement for camera 3d moving (#2340)
+- FEAT: Add ability to move graph3d by left mouse button while pressing ctrl key and rotate like before (#2357)
+- FIX: Fixed label disappearing bug for large axis values in graph3d (#2348)
+- FIX: Fixed Grpah3D-docs: Changed "an" to "and" in graph3D docs (#2313)
+- FIX #2274: Graph3d disappears when setSize is called (#2293)
+- FIX: Fixed typo in index.html of Graph3D (#2286)
+
+
+## 2016-11-05, version 4.17.0
+
+### General
+
+- Generate source-maps in develop-branch (#2246)
+- Implemented #2181: Ignore the "dist" folder in the develop-branch (#2245)
+- Updates DataSet and DataView remove event payload (#2189, #2264)
+- Added a Gitter chat badge to README.md (#2179)
+- Adds `oldData` to the update event payload in DataView (#2174)
+- Prevent moment.js deprecation warning (#2089)
+- Fixed #2170: Improved the contribution docs (#1991, #2158, #2178, #2183, #2213, #2218, #2219)
+- Implemented #1969: generate individual css files for network and timeline (#1970)
+- Cleanup bower.json (#1968)
+- Fixed #2114: Removed feature-request page from website
+- Distinguish better between `devDependencies` and `dependencies` (#1967)
+- Typos and minor docs improvements (#1958, #2028, #2050, #2093, #2222, #2223, #2224)
+- Replaced `gulp-minify-css` with `gulp-clean-css` (#1953)
+
+### Network
+
+- Fixed HTML in nodes example to work in Safari (#2248, #2260)
+- Fixed #2100: "zoom" improvements; `clusterByConnection` bugfix (#2229)
+- Implemented #2073: New example to export/import current network as JSON (#2152)
+- Fixed #1718, #2122: Fix blur edge for dense networks (#2124)
+- Russian, Italian, Brazilian Portuguese locale (#2111, #2184, #2188, #2052)
+- Implemented #1993: edge-endpoint 'circle' (#2066)
+- Implemented #972, #1920: advanced Clustering (#2055)
+- Removed restriction to allow clusters of a single node. (#2013)
+- Improved label positioning in ellipses (#2011)
+- Fixed #1857: Fixed node positioning with improved Layout:true (#1987)
+- Fixed issue with selecting edges drawn close to another (#1922)
+- Fixed getPoint for same node edges (#1907)
+
+### Timeline / Graph2D
+
+- Fixed #2261: Bugs with mousewheel events (#2262)
+- Implemented #1506: Date-Time-Tooltip while item dragging (#2247)
+- Fixed background items with no groups (#2241)
+- Fixed #2015: Fixes and improvements for data-serialization (#2244)
+- Implemented #1881: Drag and Drop into a timeline (#2238)
+- Implemented #1955: Added zoomIn and zoomOut functions (#2239)
+- Implemented #2027: Auto-detect Right-To-Left orientation from DOM attributes (#2235, #2237)
+- German locale (#2234)
+- Option `zoomKey` added for mouse wheel support (#2197, #2216, #2217)
+- Implements #2193: Horizontal scrollbar (#2201)
+- Implements #272, #466, #1060: Vertical scrollbar (#2196, #2197, #2228, #2231)
+- Fixed #2173: Italian locale (#2185)
+- Example for react.js support (#2153, #2206, #2211)
+- Allow custom label formatting via functions (#1098, #2145)
+- Fix Vertical visibility for all item types (#2143)
+- Fixed #2057: Right-To-Left orientation docs (#2141)
+- Small bugfix to prevent null pointer exception (#2116)
+- Add missing require for util module (#2109)
+- Fixed #2092: Gaps between timeline items (#2107)
+- Fixed #2064: Fixed position of box item (#2106)
+- Implemented #773, #1367: `itemover` and `itemout` events (#2099)
+- Fixed #27023: Use `requestAnimationFrame` to throttle redraws ()#2091)
+- Hide vertically hidden ranged items in groups that are not visible (#2062)
+- Fixed #2032: fixes BoxItem's initial width if content width is dynamic (#2035)
+- Use css styles instead of delete image (#2034)
+- Implemented #2014: weekday marks in other zoomlevel (#2016)
+- Fixed #1625: only use `shape.radius` if available (#2005)
+- Fixed incorrect documentation URL (#1998)
+- Added example for zoom functions (#1986)
+- Fixed #1156: Vertical scrolling when dragging (#1976)
+- Minor fix in docs (#1972)
+- Fixed handlebars example (#1946)
+- Fixed #1723: Problems in the time axis bar if using `hiddenDates` (#1944)
+- Timestep setMoment fix (#1932)
+- Fixed #1853: Content overflow (#1862)
+- Bugfix (#1822)
+- Fix right orientation axis for Graph2D (f516cb0)
+
+### Graph3D
+
+- Minor improvements and major source restructuring (#2157, #2159, #2160, #2162, #2165, #2166, #2167, #2168, #2171, #2175, #2176, #2182, #2195, #2199, #2200, #2202, #2204, #2208, #2209, #2210, #2212, #2214, #2215, #2227, #2230)
+- Improvements for graph3d legend support (#1940)
+- Advanced Tooltips (#1884)
+
+
+## 2016-04-18, version 4.16.1
+
+### Timeline
+
+- Fixed #1786: Timeline having zero height on Internet Explorer, regression
+  introduced after fixing #1697.
+
+
+## 2016-04-07, version 4.16.0
+
+### Timeline
+
+- Implemented rtl support. Thanks @yotamberk.
+- Fixed #1697: Timeline not drawn when used within the Angular.js directive.
+- Fixed #1774: Wrong initial scale when Timeline contains a single item.
+
+### General
+
+- Created bundles for individual visualizations: `vis-graph3d.min.js`,
+  `vis-network.min.js`, and `vis-timeline-graph2d.min.js`.
+
+
+## 2016-03-08, version 4.15.1
+
+## General
+
+- Updated all dependencies.
+
+### Graph2d
+
+- Fixed #1455: allow vertical panning of the web page on touch devices.
+- Fixed #1692: Error when y-axis values are equal.
+
+### Timeline
+
+- Fixed #1455: allow vertical panning of the web page on touch devices.
+- Fixed #1695: Item line and dot not correctly reckoning with the line width
+  when using left or right align.
+- Fixed #1697: Timeline not drawn when used within the Angular.js directive.
+
+
+## 2016-02-23, version 4.15.0
+
+### Timeline
+
+- Implemented `currentTimeTick` event (see #1683).
+- Fixed #1630: method `getItemRange` missing in docs.
+
+### Graph2d
+
+- Fixed #1630: method `getDataRange` was wrongly called `getItemRange` in docs.
+- Fixed #1655: use parseFloat instead of Number.parseFloat, as the latter is
+  not supported in IE. Thanks @ttjoseph.
+
+### Graph3d
+
+- Changed the built-in tooltip to show the provided `xLabel`, `yLabel`, and
+  `zLabel` instead of `'x'`, `'y'`, and `'z'`. Thanks @jacklightbody.
+
+### Network
+
+- Implemented interpolation option for interpolation of images, default true.
+- Implemented parentCentralization option for hierarchical layout.
+- Fixed #1635: edges are now referring to the correct points.
+- Fixed #1644, #1631: overlapping nodes in hierarchical layout should no longer occur.
+- Fixed #1575: fixed selection events
+- Fixed #1677: updating groups through manipulation now works as it should.
+- Fixed #1672: Implemented stepped scaling for nice interpolation of images.
+
+
 ## 2016-02-04, version 4.14.0
 
 ### Timeline
@@ -117,7 +551,7 @@ http://visjs.org
 ### General
 
 - Fixed #1353: Custom bundling with browserify requiring manual installation
-  of `babelify`.  
+  of `babelify`.
 
 ### Network
 
@@ -234,9 +668,9 @@ http://visjs.org
 
 ### Timeline
 
-- Fixed #192: Items keep their group offset while dragging items located in 
+- Fixed #192: Items keep their group offset while dragging items located in
   multiple groups. Thanks @Fice.
-- Fixed #1118: since v4.6.0, grid of time axis was wrongly positioned on some 
+- Fixed #1118: since v4.6.0, grid of time axis was wrongly positioned on some
   scales.
 
 ### Network
@@ -294,15 +728,15 @@ http://visjs.org
 ### Timeline
 
 - Implemented support for group templates (#996). Thanks @hansmaulwurf23.
-- Implemented option `zoomKey` for both Timeline and Graph2d (see #1082). 
+- Implemented option `zoomKey` for both Timeline and Graph2d (see #1082).
   Thanks @hansmaulwurf23.
-- Fixed #1076: Fixed possible overlap of minor labels text on the TimeAxis. 
+- Fixed #1076: Fixed possible overlap of minor labels text on the TimeAxis.
 - Fixed #1001: First element of group style being cut.
 - Fixed #1071: HTML contents of a group not cleared when the contents is updated.
 - Fixed #1033: Moved item data not updated in DataSet when using an asynchronous
   `onMove` handler.
 - Fixed #239: Do not zoom/move the window when the mouse is on the left panel
-  with group labels.   
+  with group labels.
 
 
 ## 2015-07-03, version 4.4.0
@@ -315,7 +749,7 @@ http://visjs.org
 
 - Fixed #970: Implemented options `dataColor`, `axisColor`, and `gridColor`.
 
-### Network 
+### Network
 
 - Fixed Hammerjs direction issue.
 - Fixed recursion error when node is fixed but has no position.
@@ -373,7 +807,7 @@ http://visjs.org
 
 ### General
 
-- Fixed #893, #911: the `clickToUse` option of Network, Graph2d, and Network 
+- Fixed #893, #911: the `clickToUse` option of Network, Graph2d, and Network
   was blocking click events in the web page.
 
 ### Timeline
@@ -715,7 +1149,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
   strange behaviour in manipulation mode
 - Better cleanup after reconnecting edges in manipulation mode
 - Fixed recursion error with smooth edges that are connected to non-existent nodes
-- Added destroy method. 
+- Added destroy method.
 
 ## 2014-11-28, version 3.7.1
 
@@ -788,7 +1222,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Fixed moving legend when postioned on the bottom and vertical dragging.
 - Optimised a serious slowdown on performance since hidden dates.
 
-- Accepted a large pull request from @cdjackson adding the following features (thank you!): 
+- Accepted a large pull request from @cdjackson adding the following features (thank you!):
 - Titles on the DataAxis to explain what units you are using.
 - A style field for groups and datapoints so you can dynamically change styles.
 - A precision option to manually set the amount of decimals.
@@ -832,7 +1266,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 ### Network
 
 - Title of nodes and edges can now be an HTML element too.
-- Renamed storePosition to storePositions. Added deprication message and old name still works.
+- Renamed storePosition to storePositions. Added deprecation message and old name still works.
 - Worked around hammer.js bug with multiple release listeners.
 - Improved cleaning up after manipulation toolbar.
 - Added getPositions() method to get the position of all nodes or some of them if specific Ids are supplied.
@@ -853,7 +1287,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 
 ### DataSet
 
-- Event listeners of `update` now receive an extra property `data`, 
+- Event listeners of `update` now receive an extra property `data`,
   containing the changed fields of the changed items.
 
 ### Graph2d
@@ -914,7 +1348,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Fixed some positioning issues with the close button of the manipulation menu.
 - Added fontFill to Nodes as it is in Edges.
 - Implemented support for broken image fallback. Thanks @sfairgrieve.
-- Added multiline labels to edges as they are implemented in nodes. Updated 
+- Added multiline labels to edges as they are implemented in nodes. Updated
   multiline example to show this.
 - Added animation and camera controls by the method .moveTo()
 - Added new event that fires when the animation is finished.
@@ -934,7 +1368,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Fixed option `autoResize` not working on IE in case of changing visibility
   of the Timeline container element.
 - Fixed an overflow issue with the dots of BoxItems when using groups.
-- Fixed a horizontal 1-pixel offset in the items (border width wasn't taken into 
+- Fixed a horizontal 1-pixel offset in the items (border width wasn't taken into
   account).
 - Renamed internal items from `ItemBox`, `ItemRange`, and `ItemPoint` to
   respectively `BoxItem`, `RangeItem`, and `PointItem`.
@@ -1035,10 +1469,10 @@ it future proof for maintainability, extendability and clarity. A summary of new
   in the current window.
 - Added options `margin.item.horizontal` and  `margin.item.vertical`, which
   allows to specify different margins horizontally/vertically.
-- Removed check for number of arguments in callbacks `onAdd`, `onUpdate`, 
+- Removed check for number of arguments in callbacks `onAdd`, `onUpdate`,
   `onRemove`, and `onMove`.
 - Fixed items in groups sometimes being displayed but not positioned correctly.
-- Fixed range where the `end` of the first is equal to the `start` of the second 
+- Fixed range where the `end` of the first is equal to the `start` of the second
   sometimes being stacked instead of put besides each other when `item.margin=0`
   due to round-off errors.
 
@@ -1065,7 +1499,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 
 ### DataSet
 
-- Added .get() returnType option to return as JSON object, Array or Google 
+- Added .get() returnType option to return as JSON object, Array or Google
   DataTable.
 
 
@@ -1089,14 +1523,14 @@ it future proof for maintainability, extendability and clarity. A summary of new
 
 ### Network (formerly named Graph)
 
-- Renamed `Graph` to `Network` to prevent confusion with the visualizations 
+- Renamed `Graph` to `Network` to prevent confusion with the visualizations
   `Graph2d` and `Graph3d`.
   - Renamed option `dragGraph` to `dragNetwork`.
 - Now throws an error when constructing without new keyword.
-- Added pull request from Vukk, user can now define the edge width multiplier 
+- Added pull request from Vukk, user can now define the edge width multiplier
   when selected.
 - Fixed `graph.storePositions()`.
-- Extended Selection API with `selectNodes` and `selectEdges`, deprecating 
+- Extended Selection API with `selectNodes` and `selectEdges`, deprecating
   `setSelection`.
 - Fixed multiline labels.
 - Changed hierarchical physics solver and updated docs.
@@ -1119,7 +1553,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Implemented options `zoomable` and `moveable`.
 - Changed default value of option `showCurrentTime` to true.
 - Internal refactoring and simplification of the code.
-- Fixed property `className` of groups not being applied to related contents and 
+- Fixed property `className` of groups not being applied to related contents and
   background elements, and not being updated once applied.
 
 ### Graph
@@ -1141,7 +1575,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Select event now triggers repeatedly when selecting an already selected item.
 - Renamed `Timeline.repaint()` to `Timeline.redraw()` to be consistent with
   the other visualisations of vis.js.
-- Fixed `Timeline.clear()` not resetting a configured `options.start` and 
+- Fixed `Timeline.clear()` not resetting a configured `options.start` and
   `options.end`.
 
 ### Graph
@@ -1170,7 +1604,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - A newly created item is initialized with `end` property when option `type`
   is `"range"` or `"rangeoverflow"`.
 - Fixed a bug in replacing the DataSet of groups via `Timeline.setGroups(groups)`.
-- Fixed a bug when rendering the Timeline inside a hidden container. 
+- Fixed a bug when rendering the Timeline inside a hidden container.
 - Fixed axis scale being determined wrongly for a second Timeline in a single page.
 
 ### Graph
@@ -1245,7 +1679,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 ### Graph
 
 - Fixed color bug.
-- Added pull requests from kannonboy and vierja: tooltip styling, label fill 
+- Added pull requests from kannonboy and vierja: tooltip styling, label fill
   color.
 
 
@@ -1263,11 +1697,11 @@ it future proof for maintainability, extendability and clarity. A summary of new
 
 - Fixed edge color bug.
 - Fixed select event bug.
-- Clarified docs, stressing importance of css inclusion for correct display of 
+- Clarified docs, stressing importance of css inclusion for correct display of
   navigation an manipulation icons.
 - Improved and expanded playing with physics (configurePhysics option).
 - Added highlights to navigation icons if the corresponding key is pressed.
-- Added freezeForStabilization option to improve stabilization with cached 
+- Added freezeForStabilization option to improve stabilization with cached
   positions.
 
 
@@ -1278,8 +1712,8 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Changed navigation CSS. Icons are now always correctly positioned.
 - Added stabilizationIterations option to graph.
 - Added storePosition() method to save the XY positions of nodes in the DataSet.
-- Separated allowedToMove into allowedToMoveX and allowedToMoveY. This is 
-  required for initializing nodes from hierarchical layouts after 
+- Separated allowedToMove into allowedToMoveX and allowedToMoveY. This is
+  required for initializing nodes from hierarchical layouts after
   storePosition().
 - Added color options for the edges.
 
@@ -1295,7 +1729,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 
 ### Timeline
 
-- Fixed a bug with options `margin.axis` and `margin.item` being ignored when 
+- Fixed a bug with options `margin.axis` and `margin.item` being ignored when
   setting them to zero.
 - Some clarifications in the documentation.
 
@@ -1304,7 +1738,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 
 ### Graph
 
-- Added Physics Configuration option. This makes tweaking the physics system to 
+- Added Physics Configuration option. This makes tweaking the physics system to
   suit your needs easier.
 - Click and doubleClick events.
 - Initial zoom bugfix.
@@ -1335,7 +1769,7 @@ it future proof for maintainability, extendability and clarity. A summary of new
 - Performance improvements.
 - Fixed scroll to zoom not working on IE in standards mode.
 - Added hierarchical layout option.
-- Overhauled physics system, now using Barnes-Hut simulation by default. Great 
+- Overhauled physics system, now using Barnes-Hut simulation by default. Great
   performance gains.
 - Modified clustering system to give better results.
 - Adaptive performance system to increase visual performance (60fps target).

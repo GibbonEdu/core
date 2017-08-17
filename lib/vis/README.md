@@ -1,13 +1,18 @@
-vis.js
-==================
+# vis.js
+
+[![Join the chat at https://gitter.im/vis-js/Lobby](https://badges.gitter.im/vis-js/Lobby.svg)](https://gitter.im/vis-js/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+<a href="https://github.com/almende/vis/blob/develop/misc/we_need_help.md">
+  <img align="right" src="https://raw.githubusercontent.com/almende/vis/master/misc/we_need_help.png">
+</a>
 
 Vis.js is a dynamic, browser based visualization library.
 The library is designed to be easy to use, handle large amounts
 of dynamic data, and enable manipulation of the data.
 The library consists of the following components:
 
-- DataSet and DataView. A flexible key/value based data set. Add, update, and 
-  remove items. Subscribe on changes in the data set. A DataSet can filter and 
+- DataSet and DataView. A flexible key/value based data set. Add, update, and
+  remove items. Subscribe on changes in the data set. A DataSet can filter and
   order items, and convert fields of items.
 - DataView. A filtered and/or formatted view on a DataSet.
 - Graph2d. Plot data on a timeline with lines or barcharts.
@@ -15,8 +20,25 @@ The library consists of the following components:
 - Network. Display a network (force directed graph) with nodes and edges.
 - Timeline. Display different types of data on a timeline.
 
-The vis.js library is developed by [Almende B.V](http://almende.com).
+The vis.js library was initially developed by [Almende B.V](http://almende.com).
 
+## Badges
+
+[![NPM](https://nodei.co/npm/vis.png?downloads=true&downloadRank=true)](https://nodei.co/npm/vis/)
+
+[![Dependency Status](https://david-dm.org/almende/vis/status.svg)](https://david-dm.org/almende/vis)
+[![devDependency Status](https://david-dm.org/almende/vis/dev-status.svg)](https://david-dm.org/almende/vis?type=dev)
+
+[![last version on CDNJS](https://img.shields.io/cdnjs/v/vis.svg)](https://cdnjs.com/libraries/vis)
+[![GitHub contributors](https://img.shields.io/github/contributors/almende/vis.svg)](https://github.com/almende/vis/graphs/contributors)
+[![GitHub stars](https://img.shields.io/github/stars/almende/vis.svg)](https://github.com/almende/vis/stargazers)
+
+[![GitHub issues](https://img.shields.io/github/issues/almende/vis.svg)](https://github.com/almende/vis/issues)
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/almende/vis.svg)](http://isitmaintained.com/project/almende/vis "Percentage of issues still open")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/almende/vis.svg)](http://isitmaintained.com/project/almende/vis "Average time to resolve an issue")
+[![Pending Pull-Requests](http://githubbadges.herokuapp.com/almende/vis/pulls.svg)](https://github.com/almende/vis/pulls)
+
+[![Code Climate](https://codeclimate.com/github/almende/vis/badges/gpa.svg)](https://codeclimate.com/github/almende/vis) 
 
 ## Install
 
@@ -33,9 +55,7 @@ Link via cdnjs: http://cdnjs.com
 Or download the library from the github project:
 [https://github.com/almende/vis.git](https://github.com/almende/vis.git).
 
-
 ## Load
-
 
 To use a component, include the javascript and css files of vis in your web page:
 
@@ -43,8 +63,8 @@ To use a component, include the javascript and css files of vis in your web page
 <!DOCTYPE HTML>
 <html>
 <head>
-  <script src="components/vis/dist/vis.js"></script>
-  <link href="components/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+  <script src="webroot/vis/dist/vis.js"></script>
+  <link href="webroot/vis/dist/vis.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
   <script type="text/javascript">
@@ -119,7 +139,6 @@ of the project.
 </html>
 ```
 
-
 ## Build
 
 To build the library from source, clone the project from github
@@ -127,7 +146,7 @@ To build the library from source, clone the project from github
     $ git clone git://github.com/almende/vis.git
 
 The source code uses the module style of node (require and module.exports) to
-organize dependencies. To install all dependencies and build the library, 
+organize dependencies. To install all dependencies and build the library,
 run `npm install` in the root of the project.
 
     $ cd vis
@@ -142,32 +161,30 @@ To automatically rebuild on changes in the source files, once can use
     $ npm run watch
 
 This will both build and minify the library on changes. Minifying is relatively
-slow, so when only the non-minified library is needed, one can use the 
+slow, so when only the non-minified library is needed, one can use the
 `watch-dev` script instead:
 
     $ npm run watch-dev
 
-
 ## Custom builds
 
-The folder `dist` contains bundled versions of vis.js for direct use in the browser. These bundles contain the all visualizations and includes external dependencies such as hammer.js and moment.js.
+The folder `dist` contains bundled versions of vis.js for direct use in the browser. These bundles contain all the visualizations and include external dependencies such as *hammer.js* and *moment.js*.
 
-The source code of vis.js consists of commonjs modules, which makes it possible to create custom bundles using tools like [Browserify](http://browserify.org/) or [Webpack](http://webpack.github.io/). This can be bundling just one visualization like the Timeline, or bundling vis.js as part of your own browserified web application. 
+The source code of vis.js consists of commonjs modules, which makes it possible to create custom bundles using tools like [Browserify](http://browserify.org/) or [Webpack](http://webpack.github.io/). This can be bundling just one visualization like the Timeline, or bundling vis.js as part of your own browserified web application.
 
 *Note that hammer.js version 2 is required as of v4.*
 
-
-#### Prerequisites
+### Prerequisites
 
 Before you can do a build:
 
-- Install node.js and npm on your system: https://nodejs.org/
+- Install *node.js* and *npm* on your system: https://nodejs.org/
 - Install the following modules using npm: `browserify`, `babelify`, and `uglify-js`:
- 
+
   ```
   $ [sudo] npm install -g browserify babelify uglify-js
   ```
- 
+
 - Download or clone the vis.js project:
 
   ```
@@ -181,9 +198,11 @@ Before you can do a build:
   $ npm install
   ```
 
-#### Example 1: Bundle a single visualization
+### Examples of custom builds
 
-For example, to create a bundle with just the Timeline and DataSet, create an index file named **custom.js** in the root of the project, containing: 
+#### Example 1: Bundle only a single visualization type
+
+For example, to create a bundle with just the Timeline and DataSet, create an index file named **custom.js** in the root of the project, containing:
 
 ```js
 exports.DataSet = require('./lib/DataSet');
@@ -192,11 +211,11 @@ exports.Timeline = require('./lib/timeline/Timeline');
 
 Then create a custom bundle using browserify, like:
 
-    $ browserify custom.js -t babelify -o vis-custom.js -s vis
-
+    $ browserify custom.js -t [ babelify --presets [es2015] ] -o dist/vis-custom.js -s vis
+    
 This will generate a custom bundle *vis-custom.js*, which exposes the namespace `vis` containing only `DataSet` and `Timeline`. The generated bundle can be minified using uglifyjs:
 
-    $ uglifyjs vis-custom.js -o vis-custom.min.js
+    $ uglifyjs dist/vis-custom.js -o dist/vis-custom.min.js
 
 The custom bundle can now be loaded like:
 
@@ -204,7 +223,7 @@ The custom bundle can now be loaded like:
 <!DOCTYPE HTML>
 <html>
 <head>
-  <script src="vis-custom.min.js"></script>
+  <script src="dist/vis-custom.min.js"></script>
   <link href="dist/vis.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -215,13 +234,13 @@ The custom bundle can now be loaded like:
 
 #### Example 2: Exclude external libraries
 
-The default bundle `vis.js` is standalone and includes external dependencies such as hammer.js and moment.js. When these libraries are already loaded by the application, vis.js does not need to include these dependencies itself too. To build a custom bundle of vis.js excluding moment.js and hammer.js, run browserify in the root of the project:
+The default bundle `vis.js` is standalone and includes external dependencies such as *hammer.js* and *moment.js*. When these libraries are already loaded by the application, vis.js does not need to include these dependencies itself too. To build a custom bundle of vis.js excluding *moment.js* and *hammer.js*, run browserify in the root of the project:
 
-    $ browserify index.js -t babelify -o vis-custom.js -s vis -x moment -x hammerjs
-    
-This will generate a custom bundle *vis-custom.js*, which exposes the namespace `vis`, and has moment and hammerjs excluded. The generated bundle can be minified with uglifyjs:
+    $ browserify index.js -t [ babelify --presets [es2015] ] -o dist/vis-custom.js -s vis -x moment -x hammerjs
 
-    $ uglifyjs vis-custom.js -o vis-custom.min.js
+This will generate a custom bundle *vis-custom.js*, which exposes the namespace `vis`, and has *moment.js* and *hammer.js* excluded. The generated bundle can be minified with uglifyjs:
+
+    $ uglifyjs dist/vis-custom.js -o dist/vis-custom.min.js
 
 The custom bundle can now be loaded as:
 
@@ -230,11 +249,11 @@ The custom bundle can now be loaded as:
 <html>
 <head>
   <!-- load external dependencies -->
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.1.3/hammer.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 
   <!-- load vis.js -->
-  <script src="vis-custom.min.js"></script>
+  <script src="dist/vis-custom.min.js"></script>
   <link href="dist/vis.min.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -265,14 +284,10 @@ var options = {};
 var timeline = new Timeline(container, data, options);
 ```
 
-Install the application dependencies via npm:
-
-    $ npm install vis moment
-
 The application can be bundled and minified:
 
-    $ browserify app.js -o app-bundle.js -t babelify 
-    $ uglifyjs app-bundle.js -o app-bundle.min.js
+    $ browserify app.js -o dist/app-bundle.js -t babelify
+    $ uglifyjs dist/app-bundle.js -o dist/app-bundle.min.js
 
 And loaded into a webpage:
 
@@ -284,12 +299,43 @@ And loaded into a webpage:
 </head>
 <body>
   <div id="visualization"></div>
-  
-  <script src="app-bundle.min.js"></script>
+  <script src="dist/app-bundle.min.js"></script>
 </body>
 </html>
 ```
 
+#### Example 4: Integrate vis.js components directly in your webpack build
+
+You can integrate e.g. the timeline component directly in you webpack build.
+Therefor you just import the component-files from root direcory (starting with "index-").
+
+```js
+var visTimeline = require('vis/index-timeline-graph2d');
+
+var container = document.getElementById('visualization');
+var data = new DataSet();
+var timeline = new Timeline(container, data, {});
+```
+
+To get this to work you'll need to add the some babel-loader-setting:
+
+```js
+module: {
+	loaders: [{
+		test: /node_modules[\\\/]vis[\\\/].*\.js$/,
+		loader: 'babel',
+		query: {
+			cacheDirectory: true,
+			presets: ["es2015"],
+			plugins: [
+				"transform-es3-property-literals",
+				"transform-es3-member-expression-literals",
+				"transform-runtime"
+			]
+		}
+	}]
+}
+```
 
 ## Test
 
@@ -299,12 +345,11 @@ To test the library, install the project dependencies once:
 
 Then run the tests:
 
-    $ npm test
-
+    $ npm run test
 
 ## License
 
-Copyright (C) 2010-2015 Almende B.V.
+Copyright (C) 2010-2017 Almende B.V. and Contributors
 
 Vis.js is dual licensed under both
 
