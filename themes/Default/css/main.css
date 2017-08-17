@@ -1356,6 +1356,7 @@ input[name*="phone"] ~ .LV_invalid {
 /* Remove the tiny gap that appears near valid elements */
 .LV_valid {
     margin: 0;
+}
 
 .input-box {
 	float: right;
