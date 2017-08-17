@@ -46,6 +46,7 @@ v15.0.00
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
+		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
 		Students: fixed School History section in Student Profile to exclude upcoming years
 		Students: fixed Application Form for logged in users not selecting a family by default (if one exists)
 		Students: fixed interface string issue in student details screen
