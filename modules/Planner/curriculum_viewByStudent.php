@@ -165,9 +165,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculum_viewByS
                 echo '</div>';
             } else {
                 echo '<br/>';
-                echo '<p>';
-                echo __('Here you can see an overview of units for a student. This currently includes units that have been added to Gibbon and is not always a comprehensive list. Click view to see more information about the unit outline.');
-                echo '</p>';
 
                 $unitsByCourse = $result->fetchAll(\PDO::FETCH_GROUP);
 
@@ -177,19 +174,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculum_viewByS
                     echo '</h5>';
 
                     echo '<table class="fullWidth colorOddEven" cellspacing="0">';
-
-                    // echo '<tr class="head">';
-                    //     echo '<th>';
-                    //         echo __('Unit');
-                    //         echo "<br/><span style='font-style: italic; font-size: 85%'>".__('Course').'</span>';
-                    //     echo '</th>';
-                    //     echo '<th>';
-                    //         echo __('Description');
-                    //     echo '</th>';
-                    //     echo '<th style="width: 80px;">';
-                    //         echo __('Actions');
-                    //     echo '</th>';
-                    // echo '</tr>';
 
                     foreach ($units as $unit) {
                         echo '<tr>';
