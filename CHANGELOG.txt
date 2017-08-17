@@ -45,6 +45,7 @@ v15.0.00
 		Finance: set name of outgoing email to school name, not user's name
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
+        Planner: added a Student Learning page to view units and lessons by student
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Students: fixed School History section in Student Profile to exclude upcoming years
 		Students: fixed Application Form for logged in users not selecting a family by default (if one exists)
