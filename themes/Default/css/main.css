@@ -1357,3 +1357,30 @@ input[name*="phone"] ~ .LV_invalid {
 .LV_valid {
     margin: 0;
 }
+
+.input-box {
+	float: right;
+	display: table;
+	border: 1px solid #BFBFBF;
+	background-color: #ffffff;
+}
+
+.input-box .inline-label {
+	display:table-cell;
+	padding: 5px;
+	text-align:left;
+	vertical-align:middle;
+	word-break: break-all;
+}
+
+.input-box .inline-button {
+	display:table-cell;
+	border-left: 1px solid #BFBFBF;
+	background: #fafafa;
+	background: -moz-linear-gradient(top, #fbfbfb, #fafafa);
+	width:48px;
+	height:48px;
+	vertical-align:middle;
+	text-align:center;
+	cursor: pointer;
+}

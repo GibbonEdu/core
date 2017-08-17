@@ -57,7 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $setting = getSettingByScope($connection2, 'System Admin', 'customAlarmSound', true);
-    $form->addHiddenValue('attachmentCurrent', $setting['value']);
 
     $row = $form->addRow();
         $label = $row->addLabel('file', __($setting['nameDisplay']))->description(__($setting['description']));
@@ -65,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 
         $file = $row->addFileUpload('file')
                     ->accepts($fileUploader->getFileExtensionsCSV())
-                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $setting['value']);
+                    ->setAttachment('attachmentCurrent', $_SESSION[$guid]['absoluteURL'], $setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'alarm', true);
     $form->addHiddenValue('alarmCurrent', $setting['value']);
