@@ -1203,7 +1203,7 @@ div.resourceAddSlider {
 	margin-bottom: -5px
 }
 
-/* V12 NEW CLASSES */
+/* v12 NEW CLASSES */
 p.emphasis, span.emphasis {
 	font-style: italic ;
 }
@@ -1234,7 +1234,7 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
 }
 
-/* V13 NEW CLASSES */
+/* v13 NEW CLASSES */
 td.wordWrap {
 	overflow-wrap: break-word;
   	word-wrap: break-word;
@@ -1259,7 +1259,7 @@ div.notificationTray a.inactive {
 	text-decoration: none;
 }
 
-/* v14 */
+/* v14 NEW CLASSES */
 
 /* Ensure forms leave enough room in the second column for LiveValidation to fit. Updated to fix nested tables in forms. */
 table.standardForm td.standardWidth:last-child:nth-child(2) {
@@ -1358,6 +1358,7 @@ input[name*="phone"] ~ .LV_invalid {
     margin: 0;
 }
 
+/* v15 NEW CLASSES */
 .input-box {
 	float: right;
 	display: table;
