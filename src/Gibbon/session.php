@@ -90,7 +90,20 @@ class Session
 	 */
 	public function get($name, $default = null)
 	{
-		return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
+        if (is_array($name)) {
+            // Fetch a value from multi-dimensional array with an array of keys
+            $retrieve = function($array, $keys, $default) {
+                foreach($keys as $key) {
+                    if (!isset($array[$key])) return $default;
+                    $array = $array[$key];
+                }
+                return $array;
+            };
+
+            return $retrieve($_SESSION[$this->guid], $name, $default);
+        }
+
+        return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
 	}
 
 	/**
