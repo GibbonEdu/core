@@ -99,8 +99,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                             while ($currentSchoolYear = $result->fetch()) {
                                 $direction = ($sequenceNumber < $currentSchoolYear['sequenceNumber'])? 'Upcoming' : 'Past';
                                 try {
-                                    $data = array('gibbonSchoolYearID' => $currentSchoolYear['gibbonSchoolYearID'], 'status' => $direction);
-                                    $sql = 'UPDATE gibbonSchoolYear SET status=:status WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                                    $data = array('gibbonSchoolYearID' => $currentSchoolYear['gibbonSchoolYearID'], 'status' => $direction, 'sequenceNumber' => $sequenceNumber);
+                                    $sql = "UPDATE gibbonSchoolYear SET status = (CASE
+                                        WHEN gibbonSchoolYearID=:gibbonSchoolYearID THEN :status
+                                        WHEN sequenceNumber < :sequenceNumber THEN 'Past'
+                                        ELSE 'Upcoming'
+                                    END)";
                                     $resultUpdate = $connection2->prepare($sql);
                                     $resultUpdate->execute($data);
                                 } catch (PDOException $e) {
@@ -118,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                         //Write to database
                         try {
                             $data = array('name' => $name, 'status' => $status, 'sequenceNumber' => $sequenceNumber, 'firstDay' => $firstDay, 'lastDay' => $lastDay, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                            $sql = 'UPDATE gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                            $sql = "UPDATE gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -127,8 +131,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                             exit();
                         }
 
+                        // Update session vars so the user is warned if they're logged into a different year
                         if ($status == 'Current') {
-                            // Update session vars so the user is warned if they're logged into a different year
                             $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] = $gibbonSchoolYearID;
                             $_SESSION[$guid]['gibbonSchoolYearNameCurrent'] = $name;
                             $_SESSION[$guid]['gibbonSchoolYearSequenceNumberCurrent'] = $sequenceNumber;
