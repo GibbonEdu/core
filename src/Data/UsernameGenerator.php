@@ -35,6 +35,7 @@ class UsernameGenerator
     protected $pdo;
 
     protected $tokens = array();
+    protected $defaultFormat = '[preferredNameInitial][surname]';
 
     public function __construct(sqlConnection $pdo)
     {
@@ -60,8 +61,7 @@ class UsernameGenerator
 
     public function addNumericToken($name, $value, $size, $increment)
     {
-        $number = str_pad(intval($value) + intval($increment), intval($size), '0', STR_PAD_LEFT);
-
+        $number = str_pad($value + $increment, $size, '0', STR_PAD_LEFT);
         $this->addToken($name, $number);
 
         return $number;
@@ -69,15 +69,37 @@ class UsernameGenerator
 
     public function generateByRole($gibbonRoleID)
     {
-        // TODO: replace with database table
-        $usernameFormat = getSettingByScope($this->pdo->getConnection(), 'Application Form', 'usernameFormat');
+        $usernameFormat = '';
+
+        $data = array('gibbonRoleID' => $gibbonRoleID);
+        $sql = "SELECT * FROM gibbonUsernameFormat WHERE (FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList)) OR isDefault='Y' ORDER BY FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList) DESC LIMIT 1";
+
+        $result = $this->pdo->executeQuery($data, $sql);
+
+        if ($result->rowCount() > 0) {
+            $row = $result->fetch(0);
+
+            $usernameFormat = $row['format'];
+
+            if ($row['isNumeric'] == 'Y') {
+                $number = $this->addNumericToken('[number]', $row['numericValue'], $row['numericSize'], $row['numericIncrement']);
+
+                $data = array('gibbonUsernameFormatID' => $row['gibbonUsernameFormatID'], 'numericValue' => $number);
+                $sql = "UPDATE gibbonUsernameFormat SET numericValue=:numericValue WHERE gibbonUsernameFormatID=:gibbonUsernameFormatID";
+                $result = $this->pdo->executeQuery($data, $sql);
+            }
+        }
 
         return $this->generate($usernameFormat);
     }
 
-    public function generate($format = '[preferredNameInitial][surname]')
+    public function generate($format)
     {
         $username = $format;
+
+        if (empty($username)) {
+            $username = $this->defaultFormat;
+        }
 
         // Replace named tokens with values
         foreach ($this->tokens as $name => $value) {
@@ -89,14 +111,6 @@ class UsernameGenerator
 
         // Limit to max length for database
         $username = substr($username, 0, self::MAX_LENGTH);
-
-        // Continue generating until username is unique
-        $increment = 1;
-        $baseUsername = $username;
-        while ($this->checkUniqueness($username) == false) {
-            $username = $baseUsername . $increment;
-            $increment++;
-        }
 
         return $username;
     }
