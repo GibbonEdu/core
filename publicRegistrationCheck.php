@@ -17,23 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include './functions.php';
-include './config.php';
+use Gibbon\Data\UsernameGenerator;
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
+include './gibbon.php';
 
-@session_start();
+$username = (isset($_POST['username']))? $_POST['username'] : '';
+$generator = new UsernameGenerator($pdo);
 
-try {
-    $data = array("username"=>$_POST['username']);
-    $sql = 'SELECT username FROM gibbonPerson WHERE username=:username';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-} catch (PDOException $e) {
-    echo '0';
-    exit();
-}
-echo $result->rowCount();
+echo $generator->checkUniqueness($username)? '0' : '1';
+
 ?>
