@@ -276,8 +276,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                             });
                         });
 
+                        // Username Uniqueness
+                        $('#username').on('input', function(){
+                            if ($('#username').val() == '') {
+                                $('#username_availability_result').html('');
+                                return;
+                            }
+                            $.ajax({
+                                type : 'POST',
+                                data : { username: $('#username').val() },
+                                url: "./publicRegistrationCheck.php",
+                                success: function(responseText){
+                                    if(responseText == 0){
+                                        $('#username_availability_result').html('<?php echo __('Username available'); ?>');
+                                        $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
+                                    }else if(responseText > 0){
+                                        $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
+                                        $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
+                                    }
+                                }
+                            });
+                        });
+
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					</script>
 				</td>
