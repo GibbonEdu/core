@@ -1353,8 +1353,8 @@ input[name*="phone"] ~ .LV_invalid {
     display: none;
 }
 
-/* Remove the tiny gap that appears near valid elements */
-.LV_valid {
+/* Remove the tiny gap that appears near validation elements */
+.LV_valid:empty, .LV_invalid:empty {
     margin: 0;
 }
 
