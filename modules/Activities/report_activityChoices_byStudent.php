@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $gibbonPersonID = $_GET['gibbonPersonID'];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_editProcess.php');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_activityChoices_byStudent.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', 'Student')->description('Use Control, Command and/or Shift to select multiple.');
-        $row->addSelectStudent('gibbonPersonID', false, true, true)->isRequired();
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => "false", "byName" => "true", "byRoll" => "true"))->isRequired();
 
     $row = $form->addRow();
         $row->addFooter();

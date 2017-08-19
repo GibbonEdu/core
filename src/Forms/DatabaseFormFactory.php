@@ -144,23 +144,41 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectStudent($name, $allStudents = false, $byForm = false, $byAlpha = true)
+    /*
+    $params is an array, with the following options as keys:
+        allStudents - false by default. true displays students regardless of status and start/end date
+        byName - true by default, adds students organised by name
+        byRoll - false by default, adds students organised by roll group. Can be used in conjunction with byName to have multiple sections
+    */
+    public function createSelectStudent($name, $gibbonSchoolYearID, $params = null)
     {
+        //Create arrays for use later on
         $values = array();
         $data = array();
 
+        //Check params and set sensible defaults as needed
+        if (is_null($params)) {
+            $params = array("allStudents" => "false", "byName" => "true", "byRoll" => "false");
+        }
+        else {
+            if (!array_key_exists("allStudents", $params) || ($params["allStudents"] != false && $params["allStudents"] != true))
+                $params["allStudents"] = false;
+            if (!array_key_exists("byName", $params) || ($params["byName"] != false && $params["byName"] != true))
+                $params["byName"] = true;
+            if (!array_key_exists("byRoll", $params) || ($params["byRoll"] != false && $params["byRoll"] != true))
+                $params["byRoll"] = false;
+        }
+
+        //Check for multiple by methods, so we know when to apply optgroups
         $multipleBys = false;
-        if ($byAlpha && $byForm) {
+        if ($params["byName"] && $params["byRoll"]) {
             $multipleBys = true;
         }
 
         //Add students by roll group
-        if ($byForm) {
-            if ($multipleBys) {
-                array_push($values,"<optgroup label='--".__('Students by Roll Group')."--'>");
-            }
-            if ($allStudents) {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        if ($params["byRoll"]) {
+            if ($params["allStudents"]) {
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
@@ -169,7 +187,7 @@ class DatabaseFormFactory extends FormFactory
                     ORDER BY name, surname, preferredName";
 
             } else {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name
                     FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
@@ -185,17 +203,17 @@ class DatabaseFormFactory extends FormFactory
 
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
-                    $values[$row['gibbonPersonID']] = htmlPrep($row['name']).' - '.formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                    if ($multipleBys)
+                        $values[__('Students by Roll Group')][$row['gibbonPersonID']] = htmlPrep($row['name']).' - '.formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                    else
+                        $values[$row['gibbonPersonID']] = htmlPrep($row['name']).' - '.formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                 }
             }
         }
-        
+
         //Add students by name
-        if ($byAlpha) {
-            if ($multipleBys) {
-                array_push($values,"<optgroup label='--".__('Students by Name')."--'>");
-            }
-            if ($allStudents) {
+        if ($params["byName"]) {
+            if ($params["allStudents"]) {
                 $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
                     FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
             } else {
@@ -208,7 +226,10 @@ class DatabaseFormFactory extends FormFactory
 
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
-                    $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                    if ($multipleBys)
+                        $values[__('Students by Name')][$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                    else
+                        $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
                 }
             }
         }
