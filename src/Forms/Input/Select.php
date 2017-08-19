@@ -56,6 +56,10 @@ class Select extends Input
     {
         $this->setAttribute('multiple', $value);
 
+        if ($value == true && !empty($this->getLabel())) {
+            $this->getLabel()->description(__('Use Control, Command and/or Shift to select multiple.'));
+        }
+
         return $this;
     }
 
@@ -95,7 +99,9 @@ class Select extends Input
                 $this->setAttribute('size', $this->getOptionCount());
             }
 
-            $this->setName($this->getName().'[]');
+            if (stripos($this->getName(), '[]') === false) {
+                $this->setName($this->getName().'[]');
+            }
         }
 
         $output .= '<select '.$this->getAttributeString().'>';
