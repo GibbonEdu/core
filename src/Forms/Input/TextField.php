@@ -48,13 +48,6 @@ class TextField extends Input
         return $this;
     }
 
-    public function readonly($value = true)
-    {
-        $this->setAttribute('readonly', $value);
-
-        return $this;
-    }
-
     public function autocomplete($value = '')
     {
         $this->autocomplete = (is_array($value))? $value : array($value);
@@ -63,10 +56,6 @@ class TextField extends Input
         return $this;
     }
 
-    public function getReadonly()
-    {
-        return $this->getAttribute('readonly');
-    }
 
     protected function getElement()
     {
