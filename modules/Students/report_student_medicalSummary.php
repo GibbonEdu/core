@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('Students'))->description('Use Control, Command and/or Shift to select multiple.');
+        $row->addLabel('gibbonPersonID', __('Students'));
         $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();

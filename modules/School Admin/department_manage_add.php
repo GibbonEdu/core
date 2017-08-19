@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             ->addClass('right');
 
     $row = $form->addRow();
-        $row->addLabel('staff', __('Staff'))->description('Use Control, Command and/or Shift to select multiple.');
+        $row->addLabel('staff', __('Staff'));
         $row->addSelectStaff('staff')->selectMultiple();
 
     $form->toggleVisibilityByClass('roleLARow')->onSelect('type')->when('Learning Area');
