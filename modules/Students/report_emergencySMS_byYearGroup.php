@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', _('Year Group'));
-        $row->addSelectYearGroup('gibbonYearGroupID', true)->isRequired();
+        $row->addSelectYearGroup('gibbonYearGroupID', true)->isRequired()->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
         $row->addLabel('prefix', __('Prefix'));
