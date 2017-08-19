@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -41,6 +44,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     if (isset($_GET['gibbonPersonID'])) {
         $gibbonPersonID = $_GET['gibbonPersonID'];
     }
+
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_editProcess.php');
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byStudent.php");
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', 'Student')->description('Use Control, Command and/or Shift to select multiple.');
+        $row->addSelectStudent('gibbonPersonID', false, true, true)->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
     ?>
 
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">

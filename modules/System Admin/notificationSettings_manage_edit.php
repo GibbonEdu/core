@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 $row->addLabel('event', __('Event'));
                 $row->addTextField('event')->setValue($event['moduleName'].': '.$event['event'])->readOnly();
 
-                $row = $form->addRow();
+            $row = $form->addRow();
                 $row->addLabel('permission', __('Permission Required'));
                 $row->addTextField('permission')->setValue($event['actionName'])->readOnly();
 
