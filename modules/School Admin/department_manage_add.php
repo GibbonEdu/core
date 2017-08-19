@@ -49,47 +49,47 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
-        $row->addLabel('type', 'Type');
+        $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromString('Learning Area, Administration')->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('name', 'Name');
+        $row->addLabel('name', __('Name'));
         $row->addTextField('name')->maxLength(40)->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('nameShort', 'Short Name');
+        $row->addLabel('nameShort', __('Short Name'));
         $row->addTextField('nameShort')->maxLength(4)->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('subjectListing', 'Subject Listing');
+        $row->addLabel('subjectListing', __('Subject Listing'));
         $row->addTextField('subjectListing')->maxLength(255);
 
     $row = $form->addRow();
        $column = $row->addColumn()->setClass('');
-       $column->addLabel('blurb', 'Blurb');
+       $column->addLabel('blurb', __('Blurb'));
        $column->addEditor('blurb', $guid);
 
     $row = $form->addRow();
-        $row->addLabel('file', 'Logo')->description('125x125px jpg/png/gif');
+        $row->addLabel('file', __('Logo'))->description('125x125px jpg/png/gif');
         $row->addFileUpload('file')
             ->accepts('.jpg,.jpeg,.gif,.png')
             ->append('<br/><br/>'.getMaxUpload($guid))
             ->addClass('right');
 
     $row = $form->addRow();
-        $row->addLabel('staff', 'Staff')->description('Use Control, Command and/or Shift to select multiple.');
+        $row->addLabel('staff', __('Staff'))->description('Use Control, Command and/or Shift to select multiple.');
         $row->addSelectStaff('staff')->selectMultiple();
 
     $form->toggleVisibilityByClass('roleLARow')->onSelect('type')->when('Learning Area');
 
     $row = $form->addRow()->setClass('roleLARow');
-        $row->addLabel('roleLA', 'Role');
+        $row->addLabel('roleLA', __('Role'));
         $row->addSelect('roleLA')->fromString('Coordinator, Assistant Coordinator, Teacher (Curriculum), Teacher, Other');
 
     $form->toggleVisibilityByClass('roleAdmin')->onSelect('type')->when('Administration');
 
     $row = $form->addRow()->setClass('roleAdmin');
-        $row->addLabel('roleAdmin', 'Role');
+        $row->addLabel('roleAdmin', __('Role'));
         $row->addSelect('roleAdmin')->fromString('Director, Manager, Administrator, Other');
 
     $row = $form->addRow();

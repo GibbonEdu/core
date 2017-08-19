@@ -215,7 +215,7 @@ class DatabaseFormFactory extends FormFactory
         if ($params["byName"]) {
             if ($params["allStudents"]) {
                 $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
-                    FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
+                    FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student' ORDER BY surname, preferredName";
             } else {
                 $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
                     FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)

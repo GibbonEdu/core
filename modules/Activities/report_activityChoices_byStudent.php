@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byStudent.php");
 
     $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', 'Student')->description('Use Control, Command and/or Shift to select multiple.');
+        $row->addLabel('gibbonPersonID', __('Student'))->description('Use Control, Command and/or Shift to select multiple.');
         $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => "false", "byName" => "true", "byRoll" => "true"))->isRequired()->placeholder()->selected($gibbonPersonID);
-        
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
