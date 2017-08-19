@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
                     $row = $form->addRow()->addClass('scopeTypeStudent');
                         $row->addLabel('gibbonPersonIDStudent', __('Student'));
-                        $row->addSelectStudent('gibbonPersonIDStudent')->isRequired()->placeholder();
+                        $row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
                     $row = $form->addRow()->addClass('scopeTypeStaff');
