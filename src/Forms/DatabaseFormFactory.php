@@ -67,12 +67,18 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
-    public function createSelectYearGroup($name)
+    /*
+    The optional $all function adds an option to the top of the select, using * to allow selection of all year groups
+    */
+    public function createSelectYearGroup($name, $all = false)
     {
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
         $results = $this->pdo->executeQuery(array(), $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        if (!$all)
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        else
+            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
     public function createCheckboxYearGroup($name)
