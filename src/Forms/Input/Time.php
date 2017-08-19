@@ -53,7 +53,7 @@ class Time extends TextField
 
         $output = '';
 
-        $output = '<input type="text" '.$this->getAttributeString().'>';
+        $output = '<input type="text" '.$this->getAttributeString().' maxlength="5">';
 
         $output .= '<script type="text/javascript">';
         $output .= '$("#'.$this->getID().'").timepicker({ "scrollDefault": "now", "timeFormat" : "'.$this->format.'"});';
