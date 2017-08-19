@@ -678,8 +678,8 @@ input[type="text"], input[type="password"], input[type="file"] {
 	font-size: 13px ;
 }
 
-input[readonly] {
-	border: none ;
+input[readonly], textarea[readonly], select[readonly] {
+	border: none;
 	background: none;
 }
 
