@@ -33,6 +33,7 @@ class Select extends Input
 
     protected $placeholder;
     protected $selected = null;
+    protected $hasSelected = false;
 
     protected $chainedToID;
     protected $chainedToValues;
@@ -74,9 +75,12 @@ class Select extends Input
     {
         if ($value === '') return false;
 
+        if ($this->hasSelected) return false;
+
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
+            if ($this->getAttribute('multiple') == false) $this->hasSelected = true;
             return ($value == $this->selected);
         }
     }
