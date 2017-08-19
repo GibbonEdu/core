@@ -128,7 +128,7 @@ trait InputAttributesTrait
         return $this->setReadonly($value);
     }
 
-    public function setReadonly()
+    public function setReadonly($value)
     {
         $this->setAttribute('readonly', $value);
 
