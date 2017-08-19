@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -47,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFirstAidID' => $gibbonFirstAidID);
-            $sql = "SELECT gibbonFirstAid.*, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
+            $sql = "SELECT gibbonFirstAid.*, patient.gibbonPersonID AS gibbonPersonIDPatient, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
                 FROM gibbonFirstAid
                     JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
                     JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
@@ -67,117 +70,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Patient') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonIDPatient']);
-                                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							if ($resultSelect->rowCount() == 1) {
-								$rowSelect = $resultSelect->fetch();
-							}
+            $values = $result->fetch();
 
-							?>
-							<input type="hidden" name="gibbonPersonID" value="<?php echo $row['gibbonPersonID'] ?>">
-							<input readonly name="name" id="name" value="<?php echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student') ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-                    <tr>
-                        <td style='width: 275px'>
-                            <b><?php echo __($guid, 'First Aider') ?> *</b><br/>
-                            <span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-                        </td>
-                        <td class="right">
-                            <input readonly name="name" id="name" value="<?php echo formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student') ?>" type="text" class="standardWidth">
-                        </td>
-                    </tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Date') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-								echo 'dd/mm/yyyy';
-							} else {
-								echo $_SESSION[$guid]['i18n']['dateFormat'];
-							}
-            				?></span>
-						</td>
-						<td class="right">
-							<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row['date']) ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID']);
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Time In') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input name="timeIn" id="timeIn" readonly="readonly" maxlength=20 value="<?php echo substr($row['timeIn'], 0, -3) ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-                    <tr>
-                        <td>
-                            <b><?php echo __($guid, 'Time Out') ?></b><br/>
-                            <span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
-                        </td>
-                        <td class="right">
-                            <input name="timeOut" id="timeOut" maxlength=5 value="<?php echo substr($row['timeOut'], 0, 5); ?>" type="text" class="standardWidth">
-                            <script type="text/javascript">
-                                var timeOut=new LiveValidation('timeOut');
-                                timeOut.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
-                            </script>
-                        </td>
-                    </tr>
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
-					<script type='text/javascript'>
-						$(document).ready(function(){
-							autosize($('textarea'));
-						});
-					</script>
-					<tr>
-						<td colspan=2>
-							<b><?php echo __($guid, 'Description') ?></b><br/>
-							<p style="width: 100%"><?php echo htmlPrep($row['description']) ?></p>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b><?php echo __($guid, 'Action Taken') ?></b><br/>
-							<p style="width: 100%"><?php echo htmlPrep($row['actionTaken']) ?></p>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b><?php echo __($guid, 'Follow Up') ?></b><br/>
-							<textarea name="followUp" id="followUp" rows=8 style="width: 100%"><?php echo htmlPrep($row['followUp']) ?></textarea>
-						</td>
-					</tr>
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonIDPatient']);
+            $row = $form->addRow();
+                $row->addLabel('patient', __('Patient'));
+                $row->addTextField('patient')->setValue(formatName('', $values['preferredNamePatient'], $values['surnamePatient'], 'Student'))->isRequired()->readonly();
 
+            $row = $form->addRow();
+                $row->addLabel('name', __('First Aider'));
+                $row->addTextField('name')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->isRequired()->readonly();
+
+            $row = $form->addRow();
+                $row->addLabel('date', __('Date'));
+                $row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->isRequired()->readonly();
+
+            $row = $form->addRow();
+                $row->addLabel('timeIn', __('Time In'));
+                $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->isRequired()->readonly();
+
+            $row = $form->addRow();
+                $row->addLabel('timeOut', __('Time Out'));
+                $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5));
+
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('description', __('Description'));
+                $column->addTextArea('description')->setValue($values['description'])->setRows(8)->setClass('fullWidth')->readonly();
+
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('actionTaken', __('Action Taken'));
+                $column->addTextArea('actionTaken')->setValue($values['actionTaken'])->setRows(8)->setClass('fullWidth')->readonly();
+
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('followUp', __('Follow Up'));
+                $column->addTextArea('followUp')->setValue($values['followUp'])->setRows(8)->setClass('fullWidth');
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
