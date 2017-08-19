@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\RowDependancyInterface;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
 /**
@@ -113,9 +114,4 @@ class Row
 
         return $this;
     }
-}
-
-interface RowDependancyInterface
-{
-    public function setRow(Row $row);
 }

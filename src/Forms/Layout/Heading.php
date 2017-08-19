@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\RowDependancyInterface;
 
 /**
  * Content
@@ -36,7 +37,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
         $this->content = $content;
     }
 
-    public function setRow(Row $row)
+    public function setRow($row)
     {
         $this->row = $row;
 

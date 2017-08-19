@@ -194,3 +194,8 @@ interface OutputableInterface
 {
     public function getOutput();
 }
+
+interface RowDependancyInterface
+{
+    public function setRow($row);
+}
