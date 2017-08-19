@@ -156,17 +156,14 @@ class DatabaseFormFactory extends FormFactory
         byName - true by default, adds students organised by name
         byRoll - false by default, adds students organised by roll group. Can be used in conjunction with byName to have multiple sections
     */
-    public function createSelectStudent($name, $gibbonSchoolYearID, $params = null)
+    public function createSelectStudent($name, $gibbonSchoolYearID, $params = array("allStudents" => false, "byName" => true, "byRoll" => false))
     {
         //Create arrays for use later on
         $values = array();
         $data = array();
 
         //Check params and set sensible defaults as needed
-        if (is_null($params)) {
-            $params = array("allStudents" => "false", "byName" => "true", "byRoll" => "false");
-        }
-        else {
+        if (!is_null($params)) {
             if (!array_key_exists("allStudents", $params) || ($params["allStudents"] != false && $params["allStudents"] != true))
                 $params["allStudents"] = false;
             if (!array_key_exists("byName", $params) || ($params["byName"] != false && $params["byName"] != true))
@@ -178,6 +175,7 @@ class DatabaseFormFactory extends FormFactory
         //Check for multiple by methods, so we know when to apply optgroups
         $multipleBys = false;
         if ($params["byName"] && $params["byRoll"]) {
+            echo $params["byRoll"];
             $multipleBys = true;
         }
 

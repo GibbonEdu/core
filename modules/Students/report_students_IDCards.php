@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'))->description('Use Control, Command and/or Shift to select multiple.');
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => "false", "byName" => "true", "byRoll" => "true"))->isRequired()->placeholder()->selectMultiple()->selected($choices);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
         $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
