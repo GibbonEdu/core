@@ -53,7 +53,7 @@ class Label extends Element implements RowDependancyInterface
 
     public function description($value = '')
     {
-        $this->description = (!empty($this->description))? $this->description.' '.$value : $value;
+        $this->description = (!empty($this->description))? $this->description.'<br><br>'.$value : $value;
         return $this;
     }
 
