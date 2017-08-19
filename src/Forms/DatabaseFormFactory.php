@@ -290,6 +290,20 @@ class DatabaseFormFactory extends FormFactory
         return $field;
     }
 
+    /*
+    The optional $all function adds an option to the top of the select, using * to allow selection of all year groups
+    */
+    public function createSelectTransport($name, $all = false)
+    {
+        $sql = "SELECT DISTINCT transport AS value, transport AS name FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        if (!$all)
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        else
+            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+    }
+
     protected function getCachedQuery($name)
     {
         return (isset($this->cachedQueries[$name]))? $this->cachedQueries[$name] : array();
