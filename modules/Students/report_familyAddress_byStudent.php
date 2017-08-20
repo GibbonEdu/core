@@ -53,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_familyAddress_byStudent.php");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
 
     echo $form->getOutput();
 

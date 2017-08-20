@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -49,78 +52,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
-    ?>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-						echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?></span>
-				</td>
-				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var currentDate=new LiveValidation('currentDate');
-						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-						currentDate.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#currentDate" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-            <tr>
-                <td>
-                    <b><?php echo __($guid, 'Sort By') ?></b><br/>
-                </td>
-                <td class="right">
-                    <select name="sort" class="standardWidth">
-                        <option value="surname" <?php if ($sort == 'surname') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
-                        <option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
-                        <option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <b><?php print _('All Students') ?></b><br/>
-                    <span style="font-size: 90%"><i><?php print _('Include all students, even those where attendance has not yet been recorded.') ?></i></span>
-                </td>
-                <td class="right">
-                    <?php
-                        print "<input ".( ($allStudents)? "checked" : ""  )." name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">" ;
-                    ?>
-                </td>
-            </tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_studentsNotOnsite_byDate.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentsNotOnsite_byDate.php");
+
+    $row = $form->addRow();
+        $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('sort', __('Sort By'));
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('allStudents', __('All Students'))->description('Include all students, even those where attendance has not yet been recorded.');
+        $row->addCheckbox('allStudents')->checked($allStudents);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+    echo $form->getOutput();
+    
     if ($currentDate != '') {
         echo '<h2>';
         echo __($guid, 'Report Data');

@@ -96,6 +96,15 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
+    public function createSelectClass($name, $gibbonSchoolYearID)
+    {
+        $data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID);
+        $sql="SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
     public function createCheckboxYearGroup($name)
     {
         $sql = "SELECT gibbonYearGroupID as `value`, name FROM gibbonYearGroup ORDER BY sequenceNumber";

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -67,77 +70,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         if ( $lastSetOfSchoolDays[$i] >= $dateStart  ) $lastNSchoolDays[] = $lastSetOfSchoolDays[$i];
     }
 
-    ?>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="dateStart" id="dateStart" maxlength=10 value="<?php echo dateConvertBack($guid, $dateStart) ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var dateStart=new LiveValidation('dateStart');
-						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-						dateStart.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#dateStart" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'End Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $dateEnd) ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var dateEnd=new LiveValidation('dateEnd');
-						dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-						dateEnd.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#dateEnd" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_rollGroupsNotRegistered_byDate.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_rollGroupsNotRegistered_byDate.php");
+
+    $row = $form->addRow();
+        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+    echo $form->getOutput();
 
     if ( count($lastNSchoolDays) == 0 ) {
         echo "<div class='error'>";

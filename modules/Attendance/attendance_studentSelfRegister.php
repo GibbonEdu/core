@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -82,29 +85,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     				print "</div>" ;
                 }
                 else { //If no records, give option to self register
-                    ?>
-                    <form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_studentSelfRegisterProcess.php?" ?>">
-                        <table class='smallIntBorder fullWidth' cellspacing='0'>
-                            <tr>
-                                <td>
-                                    <b><?php echo __($guid, 'Click the Submit button below to register yourself as Present today.'); ?></b><br/>
-                                </td>
-                                <td class="right">
+                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendance_studentSelfRegisterProcess.php');
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-                                    <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-                                </td>
-                                <td class="right">
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                                </td>
-                            </tr>
-                        </table>
-                    </form>
-                    <?php
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                    $row = $form->addRow();
+                        $row->addLabel('submit','Click the Submit button below to register yourself as Present today.');
+
+                    $row = $form->addRow();
+                        $row->addFooter(false);
+                        $row->addSubmit();
+
+                    echo $form->getOutput();
                 }
             }
         }

@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
                 $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->isRequired()->readonly();
 
             $row = $form->addRow();
-                $row->addLabel('timeOut', __('Time Out'));
+                $row->addLabel('timeOut', __('Time Out'))->description("Format: hh:mm (24hr)");;
                 $row->addTime('timeOut')->setValue(substr($values['timeOut'], 0, 5));
 
             $row = $form->addRow();
