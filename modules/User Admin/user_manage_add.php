@@ -261,6 +261,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 url: "./modules/User Admin/user_manage_usernameAjax.php",
                                 success: function(responseText){
                                     if (responseText == 0) {
+                                        $('#gibbonRoleIDPrimary').change();
+                                        $('#preferredName').blur();
+                                        $('#surname').blur();
                                         alert("<?php
                                             echo __('The following fields are required to generate a username:').'\n\n';
                                             echo '- '.__('Primary Role').'\n';
