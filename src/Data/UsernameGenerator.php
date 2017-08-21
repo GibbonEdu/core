@@ -22,7 +22,7 @@ namespace Gibbon\Data;
 use Gibbon\sqlConnection;
 
 /**
- * Username Generator
+ * Helper class to generate a username based on a supplied format. Guarantees the uniqueness of the returned username.
  *
  * @version v15
  * @since   v15
@@ -35,45 +35,91 @@ class UsernameGenerator
     protected $pdo;
 
     protected $tokens = array();
-    protected $defaultFormat = '[preferredNameInitial][surname]';
 
+    protected $defaultFormat = '[preferredNameInitial][surname]';
+    protected $loopCount = 0;
+
+    /**
+     * Class constructor with database dependancy injection.
+     * @version  v15
+     * @since    v15
+     * @param    sqlConnection  $pdo
+     */
     public function __construct(sqlConnection $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * Adds a string token that's replaced with the corresponding value when processing the username format.
+     * @version  v15
+     * @since    v15
+     * @param    string  $name
+     * @param    string  $value
+     */
     public function addToken($name, $value)
     {
         if (empty($name)) {
             throw new InvalidArgumentException();
         }
 
-        $this->tokens[$name] = strtolower($value);
+        $this->tokens[$name] = array(
+            'type'  => 'string',
+            'value' => strtolower($value),
+        );
     }
 
-    public function addTokens($array)
+    /**
+     * Adds a numeric token with a starting value and size that's incremented each time it's generated.
+     * @version  v15
+     * @since    v15
+     * @param    string  $name
+     * @param    string|int  $value
+     * @param    int  $size
+     * @param    int  $increment
+     * @param    function  $callback (optional) A function to be called after a numberic token is incremented.
+     */
+    public function addNumericToken($name, $value, $size, $increment, $callback = null)
     {
-        foreach ($array as $name => $value)
-        {
-            $this->addToken($name, $value);
+        if (empty($name)) {
+            throw new InvalidArgumentException();
         }
+
+        $this->tokens[$name] = array(
+            'type'      => 'numeric',
+            'value'     => intval($value),
+            'size'      => intval($size),
+            'increment' => intval($increment),
+            'callback'  => $callback,
+        );
     }
 
-    public function addNumericToken($name, $value, $size, $increment)
+    /**
+     * Get token data by name.
+     * @version  v15
+     * @since    v15
+     * @param    string  $name
+     * @return   array Token data
+     */
+    public function getToken($name)
     {
-        $number = str_pad($value + $increment, $size, '0', STR_PAD_LEFT);
-        $this->addToken($name, $number);
-
-        return $number;
+        return (isset($this->tokens[$name]))? $this->tokens[$name] : false;
     }
 
+    /**
+     * Generates a username based on the provided gibbonRoleID, using the 'isDefault' format if none exists for that role.
+     * @version  v15
+     * @since    v15
+     * @param    string|int  $gibbonRoleID
+     * @return   string  Unique username
+     */
     public function generateByRole($gibbonRoleID)
     {
         $usernameFormat = '';
 
+        // Get the username format data by gibbonRoleID
         $data = array('gibbonRoleID' => $gibbonRoleID);
         $sql = "SELECT * FROM gibbonUsernameFormat WHERE (FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList)) OR isDefault='Y' ORDER BY FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList) DESC LIMIT 1";
-
         $result = $this->pdo->executeQuery($data, $sql);
 
         if ($result->rowCount() > 0) {
@@ -81,18 +127,29 @@ class UsernameGenerator
 
             $usernameFormat = $row['format'];
 
+            // Add a numeric token with a callback to update the database value when generated.
             if ($row['isNumeric'] == 'Y') {
-                $number = $this->addNumericToken('[number]', $row['numericValue'], $row['numericSize'], $row['numericIncrement']);
+                $pdo = $this->pdo;
+                $callback = function($number) use (&$pdo, &$row) {
+                    $data = array('gibbonUsernameFormatID' => $row['gibbonUsernameFormatID'], 'numericValue' => $number);
+                    $sql = "UPDATE gibbonUsernameFormat SET numericValue=:numericValue WHERE gibbonUsernameFormatID=:gibbonUsernameFormatID";
+                    $result = $pdo->executeQuery($data, $sql);
+                };
 
-                $data = array('gibbonUsernameFormatID' => $row['gibbonUsernameFormatID'], 'numericValue' => $number);
-                $sql = "UPDATE gibbonUsernameFormat SET numericValue=:numericValue WHERE gibbonUsernameFormatID=:gibbonUsernameFormatID";
-                $result = $this->pdo->executeQuery($data, $sql);
+                $this->addNumericToken('[number]', $row['numericValue'], $row['numericSize'], $row['numericIncrement'], $callback);
             }
         }
 
         return $this->generate($usernameFormat);
     }
 
+    /**
+     * Generates a username based on the provided string format, replacing tokens with their corresponding values.
+     * @version  v15
+     * @since    v15
+     * @param    string  $format
+     * @return   string  Unique username
+     */
     public function generate($format)
     {
         $username = $format;
@@ -101,8 +158,14 @@ class UsernameGenerator
             $username = $this->defaultFormat;
         }
 
-        // Replace named tokens with values
-        foreach ($this->tokens as $name => $value) {
+        // Replace named tokens with values, handle incrementing numeric values.
+        foreach ($this->tokens as $name => $data) {
+            if ($data['type'] == 'numeric') {
+                $value = $this->incrementNumericToken($name);
+            } else {
+                $value = $data['value'];
+            }
+
             $username = str_replace($name, $value, $username);
         }
 
@@ -112,23 +175,69 @@ class UsernameGenerator
         // Limit to max length for database
         $username = substr($username, 0, self::MAX_LENGTH);
 
+        if ($this->isUsernameUnique($username) == false) {
+            if (stripos($format, '[number]') === false) {
+                $format .= '[number]';
+            }
+
+            // Add a numeric token for incrementing possible usernames
+            if ($this->getToken('[number]') == false) {
+                $this->addNumericToken('[number]', 0, 1, 1);
+            }
+
+            // Prevent infinite loops
+            if (++$this->loopCount > 1000) {
+                return 'usernamefailed';
+            }
+
+            return $this->generate($format);
+        }
+
         return $username;
     }
 
     /**
-     * Checks a username against the database for uniqueness
+     * Checks a username against the database for uniqueness.
      * @version  v15
      * @since    v15
      * @param    string  $username
-     * @return   bool
+     * @return   bool True if unique
      */
-    public function checkUniqueness($username)
+    public function isUsernameUnique($username)
     {
         $data = array('username' => $username);
         $sql = "SELECT gibbonPersonID from gibbonPerson WHERE username=:username OR username=LOWER(:username)";
-
         $result = $this->pdo->executeQuery($data, $sql);
 
         return ($result->rowCount() == 0);
+    }
+
+    /**
+     * Increment a numeric token value and optionally invoke a callback with the value as a single parameter.
+     * @version  v15
+     * @since    v15
+     * @param    string  $name
+     * @return   string  The incremented value
+     */
+    protected function incrementNumericToken($name)
+    {
+        $number = $this->getToken($name);
+
+        if (empty($number) || $number['type'] != 'numeric') {
+            throw new InvalidArgumentException();
+        }
+
+        // Increment value and format result
+        $number['value'] = str_pad(intval($number['value']) + $number['increment'], $number['size'], '0', STR_PAD_LEFT);
+
+        // Is there a callback? Then try to run it
+        if (!empty($number['callback']) && is_callable($number['callback'])) {
+            call_user_func($number['callback'], $number['value']);
+        }
+
+        // Store the updated token value
+        $this->tokens[$name] = $number;
+
+        return $number['value'];
     }
 }

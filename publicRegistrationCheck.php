@@ -24,6 +24,6 @@ include './gibbon.php';
 $username = (isset($_POST['username']))? $_POST['username'] : '';
 $generator = new UsernameGenerator($pdo);
 
-echo $generator->checkUniqueness($username)? '0' : '1';
+echo $generator->isUsernameUnique($username)? '0' : '1';
 
 ?>
