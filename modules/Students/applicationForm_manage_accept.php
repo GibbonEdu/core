@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\UsernameGenerator;
+
 @session_start();
 
 //Module includes
@@ -218,44 +220,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $rowAI = $resultAI->fetch();
                         $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                        //Set username & password
-                        $username = '';
-                        $usernameFormat = getSettingByScope($connection2, 'Application Form', 'usernameFormat');
-                        if ($usernameFormat == '') {
-                            $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['preferredName'], 0, 1).$row['surname']))), 0, 12);
-                        } else {
-                            $username = $usernameFormat;
-                            $username = str_replace('[preferredNameInitial]', strtolower(substr($row['preferredName'], 0, 1)), $username);
-                            $username = str_replace('[preferredName]', strtolower($row['preferredName']), $username);
-                            $username = str_replace('[surname]', strtolower($row['surname']), $username);
-                            $username = str_replace(' ', '', $username);
-                            $username = str_replace("'", '', $username);
-                            $username = str_replace("-", '', $username);
-                            $username = substr($username, 0, 12);
-                        }
-                        $usernameBase = $username;
-                        $count = 1;
-                        $continueLoop = true;
-                        while ($continueLoop == true and $count < 10000) {
-                            $gotUsername = true;
-                            try {
-                                $dataUsername = array('username' => $username);
-                                $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                $resultUsername = $connection2->prepare($sqlUsername);
-                                $resultUsername->execute($dataUsername);
-                            } catch (PDOException $e) {
-                                $gotUsername = false;
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                        // Generate a unique username for the new student
+                        $generator = new UsernameGenerator($pdo);
+                        $generator->addToken('[preferredNameInitial]', strtolower(substr($row['preferredName'], 0, 1)));
+                        $generator->addToken('[preferredName]', $row['preferredName']);
+                        $generator->addToken('[surname]', $row['surname']);
 
-                            if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                $continueLoop = false;
-                            } else {
-                                $username = $usernameBase.$count;
-                            }
-                            ++$count;
-                        }
+                        $username = $generator->generateByRole('003');
 
+                        // Generate a random password
                         $password = randomPassword(8);
                         $salt = getSalt();
                         $passwordStrong = hash('sha256', $salt.$password);
@@ -932,43 +905,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $rowAI = $resultAI->fetch();
                                         $gibbonPersonIDParent1 = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                                        //Set username & password
-                                        $username = '';
-                                        if ($usernameFormat == '') {
-                                            $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['parent1preferredName'], 0, 1).$row['parent1surname']))), 0, 12);
-                                        } else {
-                                            $username = $usernameFormat;
-                                            $username = str_replace('[preferredNameInitial]', strtolower(substr($row['parent1preferredName'], 0, 1)), $username);
-                                            $username = str_replace('[preferredName]', strtolower($row['parent1preferredName']), $username);
-                                            $username = str_replace('[surname]', strtolower($row['parent1surname']), $username);
-                                            $username = str_replace(' ', '', $username);
-                                            $username = str_replace("'", '', $username);
-                                            $username = str_replace("-", '', $username);
-                                            $username = substr($username, 0, 12);
-                                        }
-                                        $usernameBase = $username;
-                                        $count = 1;
-                                        $continueLoop = true;
-                                        while ($continueLoop == true and $count < 10000) {
-                                            $gotUsername = true;
-                                            try {
-                                                $dataUsername = array('username' => $username);
-                                                $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                                $resultUsername = $connection2->prepare($sqlUsername);
-                                                $resultUsername->execute($dataUsername);
-                                            } catch (PDOException $e) {
-                                                $gotUsername = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+                                        // Generate a unique username for parent 1
+                                        $generator = new UsernameGenerator($pdo);
+                                        $generator->addToken('[preferredNameInitial]', strtolower(substr($row['parent1preferredName'], 0, 1)));
+                                        $generator->addToken('[preferredName]', $row['parent1preferredName']);
+                                        $generator->addToken('[surname]', $row['parent1surname']);
 
-                                            if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                                $continueLoop = false;
-                                            } else {
-                                                $username = $usernameBase.$count;
-                                            }
-                                            ++$count;
-                                        }
+                                        $username = $generator->generateByRole('004');
 
+                                        // Generate a random password
                                         $password = randomPassword(8);
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
@@ -1097,40 +1042,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $rowAI = $resultAI->fetch();
                                         $gibbonPersonIDParent2 = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                                        //Set username & password
-                                        $username = '';
-                                        if ($usernameFormat == '') {
-                                            $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['parent2preferredName'], 0, 1).$row['parent2surname']))), 0, 12);
-                                        } else {
-                                            $username = $usernameFormat;
-                                            $username = str_replace('[preferredNameInitial]', strtolower(substr($row['parent2preferredName'], 0, 1)), $username);
-                                            $username = str_replace('[preferredName]', strtolower($row['parent2preferredName']), $username);
-                                            $username = str_replace('[surname]', strtolower($row['parent2surname']), $username);
-                                            $username = substr($username, 0, 12);
-                                        }
-                                        $usernameBase = $username;
-                                        $count = 1;
-                                        $continueLoop = true;
-                                        while ($continueLoop == true and $count < 10000) {
-                                            $gotUsername = true;
-                                            try {
-                                                $dataUsername = array('username' => $username);
-                                                $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                                $resultUsername = $connection2->prepare($sqlUsername);
-                                                $resultUsername->execute($dataUsername);
-                                            } catch (PDOException $e) {
-                                                $gotUsername = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+                                        // Generate a unique username for parent 2
+                                        $generator = new UsernameGenerator($pdo);
+                                        $generator->addToken('[preferredNameInitial]', strtolower(substr($row['parent2preferredName'], 0, 1)));
+                                        $generator->addToken('[preferredName]', $row['parent2preferredName']);
+                                        $generator->addToken('[surname]', $row['parent2surname']);
 
-                                            if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                                $continueLoop = false;
-                                            } else {
-                                                $username = $usernameBase.$count;
-                                            }
-                                            ++$count;
-                                        }
+                                        $username = $generator->generateByRole('004');
 
+                                        // Generate a random password
                                         $password = randomPassword(8);
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
