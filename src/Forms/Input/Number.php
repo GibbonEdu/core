@@ -29,7 +29,7 @@ class Number extends TextField
 {
     protected $min;
     protected $max;
-    protected $decimal;
+    protected $decimal = 0;
 
     public function minimum($value)
     {
