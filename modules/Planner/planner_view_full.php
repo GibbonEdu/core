@@ -1663,7 +1663,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '86px;margin-left:1px;');
 
                                     // Only hide the reason and comment fields if Present is the default attendance type
-                                    if ($defaultAttendanceType == 'Present') {
+                                    if ($defaultAttendanceType == 'Present' || $attendance->isTypePresent($rowLog['type'])) {
                                         $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
                                     } else {
                                         $_SESSION[$guid]['sidebarExtra'] .= "<div>";
