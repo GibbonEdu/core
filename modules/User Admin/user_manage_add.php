@@ -256,6 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 data : {
                                     gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
                                     preferredName: $('#preferredName').val(),
+                                    firstName: $('#firstName').val(),
                                     surname: $('#surname').val(),
                                 },
                                 url: "./modules/User Admin/user_manage_usernameAjax.php",
@@ -263,12 +264,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                     if (responseText == 0) {
                                         $('#gibbonRoleIDPrimary').change();
                                         $('#preferredName').blur();
+                                        $('#firstName').blur();
                                         $('#surname').blur();
                                         alert("<?php
                                             echo __('The following fields are required to generate a username:').'\n\n';
-                                            echo '- '.__('Primary Role').'\n';
-                                            echo '- '.__('Preferred Name').'\n';
-                                            echo '- '.__('Surname').'\n';
+                                            echo __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname').'\n';
                                         ?>");
                                     } else {
                                         $('#username').val(responseText);

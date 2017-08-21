@@ -222,9 +222,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         // Generate a unique username for the new student
                         $generator = new UsernameGenerator($pdo);
-                        $generator->addToken('[preferredNameInitial]', strtolower(substr($row['preferredName'], 0, 1)));
-                        $generator->addToken('[preferredName]', $row['preferredName']);
-                        $generator->addToken('[surname]', $row['surname']);
+                        $generator->addToken('preferredName', $row['preferredName']);
+                        $generator->addToken('firstName', $row['firstName']);
+                        $generator->addToken('surname', $row['surname']);
 
                         $username = $generator->generateByRole('003');
 
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $lastSchool = $row['schoolName2'];
                         }
 
-                        $continueLoop = (!empty($username) && $username != 'usernamefailed' && !empty($password));
+                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                         //Set default email address for student
                         $email = $row['email'];
@@ -909,9 +909,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                         // Generate a unique username for parent 1
                                         $generator = new UsernameGenerator($pdo);
-                                        $generator->addToken('[preferredNameInitial]', strtolower(substr($row['parent1preferredName'], 0, 1)));
-                                        $generator->addToken('[preferredName]', $row['parent1preferredName']);
-                                        $generator->addToken('[surname]', $row['parent1surname']);
+                                        $generator->addToken('preferredName', $row['parent1preferredName']);
+                                        $generator->addToken('firstName', $row['parent1firstName']);
+                                        $generator->addToken('surname', $row['parent1surname']);
 
                                         $username = $generator->generateByRole('004');
 
@@ -920,7 +920,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
 
-                                        $continueLoop = (!empty($username) && $username != 'usernamefailed' && !empty($password));
+                                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                                         if ($continueLoop == false) {
                                             $insertOK = true;
@@ -1048,9 +1048,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                         // Generate a unique username for parent 2
                                         $generator = new UsernameGenerator($pdo);
-                                        $generator->addToken('[preferredNameInitial]', strtolower(substr($row['parent2preferredName'], 0, 1)));
-                                        $generator->addToken('[preferredName]', $row['parent2preferredName']);
-                                        $generator->addToken('[surname]', $row['parent2surname']);
+                                        $generator->addToken('preferredName', $row['parent2preferredName']);
+                                        $generator->addToken('firstName', $row['parent2firstName']);
+                                        $generator->addToken('surname', $row['parent2surname']);
 
                                         $username = $generator->generateByRole('004');
 
@@ -1059,7 +1059,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
 
-                                        $continueLoop = (!empty($username) && $username != 'usernamefailed' && !empty($password));
+                                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                                         if ($continueLoop == false) {
                                             $insertOK = true;

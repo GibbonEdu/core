@@ -45,11 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $sql = "SELECT gibbonRole.gibbonRoleID as value, gibbonRole.name FROM gibbonRole LEFT JOIN gibbonUsernameFormat ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonUsernameFormat.gibbonRoleIDList)) WHERE gibbonUsernameFormatID IS NULL ORDER BY gibbonRole.name";
     $result = $pdo->executeQuery(array(), $sql);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'usernameFormat', true);
-
     $row = $form->addRow();
-        $row->addLabel('format', __('Username Format'))->description(__($setting['description']));
-        $row->addTextField('format')->isRequired()->setValue('[preferredNameInitial][surname]');
+        $row->addLabel('format', __('Username Format'))->description(__('How should usernames be formated? Choose from [preferredName], [firstName], [surname].').'<br>'.__('Use a colon to limit the number of letters, for example [preferredName:1] will use the first initial.'));
+        $row->addTextField('format')->isRequired()->setValue('[preferredName:1][surname]');
 
     $row = $form->addRow();
         $row->addLabel('gibbonRoleIDList', __('Roles'));
@@ -64,22 +62,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
         $row->addYesNo('isDefault')->selected('N');
 
     $row = $form->addRow();
-        $row->addLabel('isNumeric', __('Numeric?'))->description(__('Enables the format [number] to insert a numeric value into your username. Each time a username is generated the number will increment by the amount defined below.'));
+        $row->addLabel('isNumeric', __('Numeric?'))->description(__('Enables the format [number] to insert a numeric value into your username.'));
         $row->addYesNo('isNumeric')->selected('N');
 
     $form->toggleVisibilityByClass('numericValueSettings')->onSelect('isNumeric')->when('Y');
 
     $row = $form->addRow()->addClass('numericValueSettings');
-        $row->addLabel('numericValue', __('Starting Value'));
-        $row->addTextField('numericValue')->setValue('0')->maxLength(12);
+        $row->addLabel('numericValue', __('Starting Value'))->description(__('Each time a username is generated this value will increase by the increment defined below.'));
+        $row->addTextField('numericValue')->isRequired()->setValue('0')->maxLength(12);
 
     $row = $form->addRow()->addClass('numericValueSettings');
         $row->addLabel('numericSize', __('Number of Digits'));
-        $row->addNumber('numericSize')->setValue('4')->minimum(0)->maximum(12);
+        $row->addNumber('numericSize')->isRequired()->setValue('4')->minimum(0)->maximum(12);
 
     $row = $form->addRow()->addClass('numericValueSettings');
         $row->addLabel('numericIncrement', __('Increment By'));
-        $row->addNumber('numericIncrement')->setValue('1')->minimum(0)->maximum(100);
+        $row->addNumber('numericIncrement')->isRequired()->setValue('1')->minimum(0)->maximum(100);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -87,4 +85,3 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     echo $form->getOutput();
 }
-?>

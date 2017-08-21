@@ -36,7 +36,7 @@ class UsernameGenerator
 
     protected $tokens = array();
 
-    protected $defaultFormat = '[preferredNameInitial][surname]';
+    protected $defaultFormat = '[preferredName:1][surname]';
     protected $loopCount = 0;
 
     /**
@@ -65,7 +65,7 @@ class UsernameGenerator
 
         $this->tokens[$name] = array(
             'type'  => 'string',
-            'value' => strtolower($value),
+            'value' => mb_strtolower($value),
         );
     }
 
@@ -136,7 +136,7 @@ class UsernameGenerator
                     $result = $pdo->executeQuery($data, $sql);
                 };
 
-                $this->addNumericToken('[number]', $row['numericValue'], $row['numericSize'], $row['numericIncrement'], $callback);
+                $this->addNumericToken('number', $row['numericValue'], $row['numericSize'], $row['numericIncrement'], $callback);
             }
         }
 
@@ -158,22 +158,36 @@ class UsernameGenerator
             $username = $this->defaultFormat;
         }
 
-        // Replace named tokens with values, handle incrementing numeric values.
-        foreach ($this->tokens as $name => $data) {
-            if ($data['type'] == 'numeric') {
-                $value = $this->incrementNumericToken($name);
-            } else {
-                $value = $data['value'];
-            }
+        // Split the format string into tokens
+        $formatTokens = array();
+        preg_match_all('/[\[]+([^\]]*)[\]]+/u', $format, $formatTokens);
 
-            $username = str_replace($name, $value, $username);
+        if (!empty($formatTokens[1])) {
+            foreach ($formatTokens[1] as $fullToken) {
+
+                // Split the full token name and assign params
+                list($name, $length) = array_pad(explode(':', $fullToken), 2, false);
+
+                // Only continue with valid tokens
+                $token = $this->getToken($name);
+                if (empty($token)) continue;
+
+                // Handle the token based on type
+                if ($token['type'] == 'numeric') {
+                    $value = $this->incrementNumericToken($name);
+                } else {
+                    $value = (!empty($length))? substr($token['value'], 0, $length) : $token['value'];
+                }
+
+                $username = str_replace('['.$fullToken.']', $value, $username);
+            }
         }
 
         // Remove illegal characters
         str_replace(str_split(self::ILLEGAL_CHARS), '', $username);
 
         // Limit to max length for database
-        $username = substr($username, 0, self::MAX_LENGTH);
+        $username = mb_substr($username, 0, self::MAX_LENGTH);
 
         if ($this->isUsernameUnique($username) == false) {
             if (stripos($format, '[number]') === false) {
@@ -181,8 +195,8 @@ class UsernameGenerator
             }
 
             // Add a numeric token for incrementing possible usernames
-            if ($this->getToken('[number]') == false) {
-                $this->addNumericToken('[number]', 0, 1, 1);
+            if ($this->getToken('number') == false) {
+                $this->addNumericToken('number', 0, 1, 1);
             }
 
             // Prevent infinite loops
