@@ -66,11 +66,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             // Grab family ID from Sibling Applications that have been accepted
             $data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
-            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm 
-                    JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-                    WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL 
+            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm
+                    JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                    WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL
                     AND gibbonApplicationForm.status='Accepted'
-                    AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID) 
+                    AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID)
                     LIMIT 1";
 
             $resultLinked = $pdo->executeQuery($data, $sql);
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $failStudent = true;
                 $lock = true;
                 try {
-                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE';
+                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE, gibbonUsernameFormat WRITE';
                     $result = $connection2->query($sql);
                 } catch (PDOException $e) {
                     $lock = false;
@@ -239,6 +239,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         } elseif ($row['schoolDate2'] > $row['schoolDate1']) {
                             $lastSchool = $row['schoolName2'];
                         }
+
+                        $continueLoop = (!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                         //Set default email address for student
                         $email = $row['email'];
@@ -634,7 +636,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                             }
-                            
+
                             //Add relationship record for each parent
                             try {
                                 $dataRelationship = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonPersonID' => $rowParents['gibbonPersonID']);
@@ -885,7 +887,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             } else {
                                 $lock = true;
                                 try {
-                                    $sql = 'LOCK TABLES gibbonPerson WRITE';
+                                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonUsernameFormat WRITE';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $lock = false;
@@ -917,6 +919,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $password = randomPassword(8);
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
+
+                                        $continueLoop = (!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                                         if ($continueLoop == false) {
                                             $insertOK = true;
@@ -1022,7 +1026,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $failParent2 = true;
                                 $lock = true;
                                 try {
-                                    $sql = 'LOCK TABLES gibbonPerson WRITE';
+                                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonUsernameFormat WRITE';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $lock = false;
@@ -1054,6 +1058,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $password = randomPassword(8);
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
+
+                                        $continueLoop = (!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                                         if ($continueLoop == false) {
                                             $insertOK = true;
