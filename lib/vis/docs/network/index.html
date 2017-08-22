@@ -210,20 +210,7 @@
     <ul>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#options">Options</a></li>
-        <li><a href="#methods">Method Reference</a>
-            <ul>
-                <li><a href="#methodGlobal">Global</a></li>
-                <li><a href="#methodCanvas">Canvas</a></li>
-                <li><a href="#methodClustering">Clustering</a></li>
-                <li><a href="#methodLayout">Layout</a></li>
-                <li><a href="#methodManipulation">Manipulation</a></li>
-                <li><a href="#methodInformation">Information</a></li>
-                <li><a href="#methodPhysics">Physics</a></li>
-                <li><a href="#methodSelection">Selection</a></li>
-                <li><a href="#methodViewport">Viewport</a></li>
-                <li><a href="#methodConfigurator">Configurator</a></li>
-            </ul>
-        </li>
+        <li><a href="#methods">Methods</a></li>
         <li><a href="#Events">Events</a></li>
         <li><a href="#importing_data">Importing Data</a>
             <ul>
@@ -328,23 +315,19 @@ network.setOptions(options);
             <tr><td id="event_locale">locale</td>
                 <td>String</td>
                 <td><code>'en'</code></td>
-                <td>Select the locale. By default, the language is English.
+                <td>Select the locale. By default, the language is English. If you want to use another language, you
+                    will
+                    need to define your own locale and refer to it here.
                 </td>
             </tr>
             <tr><td id="event_locales">locales</td>
                 <td>Object</td>
                 <td>defaultLocales</td>
-                <td>Locales object. By default
-                  <code>'en'</code>,
-                  <code>'de'</code>,
-                  <code>'es'</code>,
-                  <code>'it'</code>,
-                  <code>'nl'</code>
-                  <code>'pt-br'</code>,
-                  <code>'ru'</code> 
-                  are supported. Take a look at the
-                  <a href="#locales" data-scroll="" data-options="{ &quot;easing&quot;: &quot;easeInCubic&quot; }">locales section below</a>
-                  for more explaination on how to customize this.
+                <td>Locales object. By default only <code>'en'</code>, <code>'de'</code>, <code>'es'</code> and <code>'nl'</code> are supported. Take a look
+                    at
+                    the <a href="#locales" data-scroll=""
+                           data-options="{ &quot;easing&quot;: &quot;easeInCubic&quot; }">locales
+                        section below</a> for more explaination on how to customize this.
                 </td>
             </tr>
             <tr><td id="event_clickToUse">clickToUse</td>
@@ -356,49 +339,49 @@ network.setOptions(options);
             <tr><td id="event_configure">configure</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./configure.html">configure module</a>.
+                <td href="./configure.html">All options in this object are explained in the configure module.</a>
                 </td>
             </tr>
             <tr><td id="event_edges">edges</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./edges.html">edges module</a>.
+                <td href="./edges.html">All options in this object are explained in the edges module.</a>
                 </td>
             </tr>
             <tr><td id="event_nodes">nodes</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./nodes.html">nodes module</a>.
+                <td href="./nodes.html">All options in this object are explained in the nodes module.</a>
                 </td>
             </tr>
             <tr><td id="event_groups">groups</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./groups.html">groups module</a>.
+                <td href="./groups.html">All options in this object are explained in the groups module.</a>
                 </td>
             </tr>
             <tr><td id="event_layout">layout</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./layout.html">layout module</a>.
+                <td href="./layout.html">All options in this object are explained in the layout module.</a>
                 </td>
             </tr>
             <tr><td id="event_interaction">interaction</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./interaction.html">interaction module</a>.
+                <td href="./interaction.html">All options in this object are explained in the interaction module.</a>
                 </td>
             </tr>
             <tr><td id="event_manipulation">manipulation</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./manipulation.html">manipulation module</a>.
+                <td href="./manipulation.html">All options in this object are explained in the manipulation module.</a>
                 </td>
             </tr>
             <tr><td id="event_physics">physics</td>
                 <td>Object</td>
                 <td>Object</td>
-                <td>All options in this object are explained in the <a href="./physics.html">physics module</a>.
+                <td href="./physics.html">All options in this object are explained in the physics module.</a>
                 </td>
             </tr>
         </table>
@@ -437,7 +420,7 @@ var locales = {
             the
             modules listed above.</p>
         <table class="methods-collapsable" id="methodTable">
-            <tr id="methodGlobal" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Global methods for the network.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','destroy', this);">
@@ -502,7 +485,7 @@ var locales = {
             </tr>
 
 
-            <tr id="methodCanvas" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Methods related to the canvas.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','canvasToDOM', this);">
@@ -549,7 +532,7 @@ var locales = {
                 <td>Set the size of the canvas. This is automatically done on a window resize.</td>
             </tr>
 
-            <tr id="methodClustering" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Clustering</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','cluster', this);">
@@ -611,65 +594,17 @@ var locales = {
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','findNode', this);">
                 <td colspan="2"><span parent="findNode" class="right-caret" id="method_findNode"></span> findNode(
-                    <code>String/Number nodeId</code>)
+                    <code>String nodeId</code>)
             </tr>
             <tr class="hidden" parent="findNode">
                 <td class="midMethods">Returns: Array</td>
                 <td>Nodes can be in clusters. Clusters can also be in clusters. This function returns and array of
-                    nodeIds showing where the node is.
-
-                    <br><br>
-                    If any nodeId in the chain, especially the first passed in as a parameter, is not present in
-                    the current nodes list, an empty array is returned.
-
-                    <br><br> Example:
+                    nodeIds
+                    showing where the node is. <br><br> Example:
                     cluster 'A' contains cluster 'B',
                     cluster 'B' contains cluster 'C',
                     cluster 'C' contains node 'fred'.
                     <code>network.clustering.findNode('fred')</code> will return <code>['A','B','C','fred']</code>.
-                </td>
-            </tr>
-            <tr class="collapsible toggle" onclick="toggleTable('methodTable','getClusteredEdges', this);">
-                <td colspan="2"><span parent="getClusteredEdges" class="right-caret" id="method_getClusteredEdges"></span> getClusteredEdges(
-                    <code>String baseEdgeId</code>)
-            </tr>
-            <tr class="hidden" parent="getClusteredEdges">
-                <td class="midMethods">Returns: Array</td>
-                <td>Similiar to <code>findNode</code> in that it returns all the edge ids that were created from the provided edge during clustering
-                </td>
-            </tr>
-            <tr class="collapsible toggle" onclick="toggleTable('methodTable','getBaseEdge', this);">
-                <td colspan="2"><span parent="getBaseEdge" class="right-caret" id="method_getBaseEdge"></span> getBaseEdge(
-                    <code>String clusteredEdgeId</code>)
-            </tr>
-            <tr class="hidden" parent="getBaseEdge">
-                <td class="midMethods">Returns: Value</td>
-                <td>When a clusteredEdgeId is available, this method will return the original baseEdgeId provided in <code>data.edges</code><br/>
-                    ie. After clustering the 'SelectEdge' event is fired but provides only the clustered edge. This method can then be used to return the baseEdgeId.
-                </td>
-            </tr>
-            <tr class="collapsible toggle" onclick="toggleTable('methodTable','updateEdge', this);">
-                <td colspan="2"><span parent="updateEdge" class="right-caret" id="method_updateEdge"></span> updateEdge(
-                    <code>String startEdgeId, Object options</code>)
-            </tr>
-            <tr class="hidden" parent="updateEdge">
-                <td class="midMethods">Returns: none</td>
-                <td>Visible edges between clustered nodes are not the same edge as the ones provided in <code>data.edges</code> passed on <code>network</code> creation<br/>
-                    With each layer of clustering, copies of the edges between clusters are created and the previous edges are hidden, until the cluster is opened.<br/>
-                    This method takes an edgeId (ie. a base edgeId from <data>data.edges</code>) and applys the options to it and any edges that were created from it while clustering.<br><br> Example:
-                    <code>network.clustering.updateEdge(originalEdge.id, {color : '#aa0000'});</code><br/>
-                    This would turn the base edge and any subsequent edges red, so when opening clusters the edges will all be the same color.
-                </td>
-            </tr>
-            <tr class="collapsible toggle" onclick="toggleTable('methodTable','updateClusteredNode', this);">
-                <td colspan="2"><span parent="updateClusteredNode" class="right-caret" id="method_updateClusteredNode"></span> updateClusteredNode(
-                    <code>String clusteredNodeId, Object options</code>)
-            </tr>
-            <tr class="hidden" parent="updateClusteredNode">
-                <td class="midMethods">Returns: none</td>
-                <td>Clustered Nodes when created are not contained in the original <code>data.nodes</code> passed on <code>network</code> creation<br/>
-                    This method updates the cluster node.<br><br> Example:
-                    <code>network.clustering.updateClusteredNode(clusteredNodeId, {shape : 'star'});</code>
                 </td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','isCluster', this);">
@@ -714,7 +649,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
                 </td>
             </tr>
 
-            <tr id="methodLayout" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Layout</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getSeed', this);">
@@ -731,7 +666,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
 
 
-            <tr id="methodManipulation" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Manipulation methods to use the manipulation system without GUI.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','enableEditMode', this);">
@@ -792,7 +727,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
 
 
-            <tr id="methodInformation" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Methods to get information on nodes and edges.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getPositions', this);">
@@ -871,19 +806,13 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getConnectedNodes', this);">
                 <td colspan="2"><span parent="getConnectedNodes" class="right-caret" id="method_getConnectedNodes"></span> getConnectedNodes(<code><i>String
-                    nodeId or edgeId, [String direction]</i></code>)
+                    nodeId or edgeId</i></code>)
                 </td>
             </tr>
             <tr class="hidden" parent="getConnectedNodes">
                 <td class="midMethods">Returns: Array</td>
-                <td>Returns an array of nodeIds of all the nodes that are directly connected to this node or edge.<br><br>
-                For a node id, returns an array with the id's of the connected nodes.<br>
-                If optional parameter <code>direction</code> is set to string <i>'from'</i>, only parent nodes are returned.<br>
-                If <code>direction</code> is set to <i>'to'</i>, only child nodes are returned.<br>
-                Any other value or <code>undefined</code> returns both parent and child nodes.
-                <br><br>
-                For an edge id, returns an array: <code>[fromId, toId]</code>.
-                Parameter <i>direction</i> is ignored for edges.</td>
+                <td>Returns an array of nodeIds of the all the nodes that are directly connected to this node. If you supply an edgeId,
+                vis will first match the id to nodes. If no match is found, it will search in the edgelist and return an array: <code>[fromId, toId]</code>.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getConnectedEdges', this);">
                 <td colspan="2"><span parent="getConnectedEdges" class="right-caret" id="method_getConnectedEdges"></span> getConnectedEdges(<code><i>String
@@ -896,7 +825,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
 
 
-            <tr id="methodPhysics" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Physics methods to control when the simulation should run.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','startSimulation', this);">
@@ -927,7 +856,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
 
 
-            <tr id="methodSelection" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Selection methods for nodes and edges.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getSelection', this);">
@@ -1013,7 +942,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','setSelection', this);">
                 <td colspan="2"><span parent="setSelection" class="right-caret" id="method_setSelection"></span> setSelection(
-                  <code>Object selection</code>,
+                  <code>Object selection</code>, 
                   <code>[Object options]</code>)</td>
             </tr>
             <tr class="hidden" parent="setSelection">
@@ -1042,7 +971,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
             </tr>
 
 
-            <tr id="methodViewport" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Methods to control the viewport for zoom and animation.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getScale', this);">
@@ -1154,7 +1083,7 @@ function releaseFunction (clusterPosition, containedNodesPositions) {
                 <td class="midMethods">Returns: none</td>
                 <td>Programatically release the focussed node.</td>
             </tr>
-            <tr id="methodConfigurator" class="subHeader">
+            <tr class="subHeader">
                 <td colspan="2">Methods to use with the configurator module.</td>
             </tr>
             <tr class="collapsible toggle" onclick="toggleTable('methodTable','getOptionsFromConfigurator', this);">
@@ -1252,13 +1181,7 @@ var options = {
                     node
                     any way you want. This is also the style object that is provided in the processProperties function
                     for
-                    fine tuning. If undefined, default node options will be used.<br/><br/>
-                    Default functionality only allows clustering if the cluster will contain 2 or more nodes. To allow clustering of single nodes you can use the <code>allowSingleNodeCluster : true</code> property.
-<pre class="prettyprint lang-js">
-    clusterNodeProperties: {
-        allowSingleNodeCluster: true
-    }
-</pre>
+                    fine tuning. If undefined, default node options will be used.
                 </td>
             </tr>
             <tr><td id="event_clusterEdgeProperties">clusterEdgeProperties</td>
@@ -1411,14 +1334,8 @@ var options = {
                 <td>Fired if the option <code>interaction:{hover:true}</code> is enabled and the mouse moved away from an edge it was hovering over before.</td>
             </tr>
             <tr><td id="event_zoom">zoom</td>
-                <td>Object</td>
-                <td>Fired when the user zooms in or out. The properties tell you which direction the zoom is in. The scale is a number greater than 0, which is the same that you get with network.getScale(). When fired by clicking the zoom in or zoom out navigation buttons, the pointer property of the object passed will be null.  Passes an object with properties structured as:
-<pre class="prettyprint lang-js">{
-  direction: '+'/'-',
-  scale: Number,
-  pointer: {x:pointer_x, y:pointer_y}
-}
-</pre></td>
+                <td><code>{direction:'+'/'-', scale: Number}</code></td>
+                <td>Fired when the user zooms in or out. The properties tell you which direction the zoom is in. The scale is a number greater than 0, which is the same that you get with network.getScale().</td>
             </tr>
             <tr><td id="event_showPopup">showPopup</td>
                 <td><code>id of item corresponding to popup</code></td>

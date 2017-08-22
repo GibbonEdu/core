@@ -184,7 +184,7 @@
   <p>
     The class name of the Graph3d is <code>vis.Graph3d</code>.
     When constructing a Graph3d, an HTML DOM container must be provided to attach
-    the graph to. Optionally, data and options can be provided.
+    the graph to. Optionally, data an options can be provided.
     Data is a vis <code>DataSet</code> or an <code>Array</code>, described in
     section <a href="#Data_Format">Data Format</a>.
     Options is a name-value map in the JSON format. The available options
@@ -272,7 +272,7 @@ var options = {
     The following options are available.
   </p>
 
-  <table class="options" id="optionTable">
+  <table class="options">
     <tr>
       <th>Name</th>
       <th>Type</th>
@@ -311,83 +311,69 @@ var options = {
       <td>The color of the axis lines and the text along the axis.</td>
     </tr>
 
-    <tr class='toggle collapsible' onclick="toggleTable('optionTable','backgroundColor', this);">
-      <td><span parent="backgroundColor" class="right-caret"></span> backgroundColor</td>
+    <tr>
+      <td>backgroundColor</td>
       <td>string or Object</td>
-      <td>Object</td>
+      <td>{fill:&nbsp;'white', stroke:&nbsp;'gray', strokeWidth:&nbsp;1}</td>
       <td>The background color for the main area of the chart.
         Can be either a simple HTML color string, for example: 'red' or '#00cc00',
         or an object with the following properties.</td>
     </tr>
-    <tr parent="backgroundColor" class="hidden">
-      <td class="indent">backgroundColor.fill</td>
+    <tr>
+      <td>backgroundColor.fill</td>
       <td>string</td>
       <td>'white'</td>
       <td>The chart fill color, as an HTML color string.</td>
     </tr>
-    <tr parent="backgroundColor" class="hidden">
-      <td class="indent">backgroundColor.stroke</td>
+    <tr>
+      <td>backgroundColor.stroke</td>
       <td>string</td>
       <td>'gray'</td>
       <td>The color of the chart border, as an HTML color string.</td>
     </tr>
     <tr>
-    <tr parent="backgroundColor" class="hidden">
-      <td class="indent">backgroundColor.strokeWidth</td>
+      <td>backgroundColor.strokeWidth</td>
       <td>number</td>
       <td>1</td>
       <td>The border width, in pixels.</td>
     </tr>
 
-    <tr class='toggle collapsible' onclick="toggleTable('optionTable','cameraPosition', this);">
-      <td><span parent="cameraPosition" class="right-caret"></span> cameraPosition</td>
+    <tr>
+      <td>cameraPosition</td>
       <td>Object</td>
-      <td>Object</td>
+      <td>{horizontal:&nbsp;1.0, vertical:&nbsp;0.5, distance:&nbsp;1.7}</td>
       <td>Set the initial rotation and position of the camera.
+        The object <code>cameraPosition</code> contains three parameters:
+        <code>horizontal</code>, <code>vertical</code>, and <code>distance</code>.
+        Parameter <code>horizontal</code> is a value in radians and can have any
+        value (but normally in the range of 0 and 2*Pi).
+        Parameter <code>vertical</code> is a value in radians between 0 and 0.5*Pi.
+        Parameter <code>distance</code> is the (normalized) distance from the
+        camera to the center of the graph, in the range of 0.71 to 5.0. A
+        larger distance puts the graph further away, making it smaller.
         All parameters are optional.
     </tr>
-    <tr parent="cameraPosition" class="hidden">
-      <td class="indent">cameraPosition.horizontal</td>
-      <td>number</td>
-      <td>1.0</td>
-      <td>Value in radians. It can have any
-        value, but is normally in the range of 0 and 2*Pi.</td>
-    </tr>
-    <tr parent="cameraPosition" class="hidden">
-      <td class="indent">cameraPosition.vertical</td>
-      <td>number</td>
-      <td>0.5</td>
-      <td>Value in radians between 0 and 0.5*Pi.</td>
-    </tr>
-    <tr parent="cameraPosition" class="hidden">
-      <td class="indent">cameraPosition.distance</td>
-      <td>number</td>
-      <td>1.7</td>
-      <td>The (normalized) distance from the
-        camera to the center of the graph, in the range of 0.71 to 5.0. A
-        larger distance puts the graph further away, making it smaller.</p>
-    </tr>
 
-    <tr class='toggle collapsible' onclick="toggleTable('optionTable','dataColor', this);">
-      <td><span parent="dataColor" class="right-caret"></span> dataColor</td>
+    <tr>
+      <td>dataColor</td>
       <td>string or object</td>
-      <td>Object</td>
+      <td>{fill:&nbsp;'#7DC1FF', stroke:&nbsp;'#3267D2', strokeWidth:&nbsp;1}</td>
       <td>When <code>dataColor</code> is a string, it will set the color for both border and fill color of dots and bars. Applicable for styles <code>dot-size</code>, <code>bar-size</code>, and <code>line</code>. When an object, it can contain the properties descibed below.</td>
     </tr>
-    <tr parent="dataColor" class="hidden">
-      <td class="indent">dataColor.fill</td>
+    <tr>
+      <td>dataColor.fill</td>
       <td>string</td>
       <td>'#7DC1FF'</td>
-      <td>The fill color of the dots or bars. Applicable when using styles <code>dot-size</code>, <code>bar-size</code>, or <code>line</code>.</td>  
-    </tr>
-    <tr parent="dataColor" class="hidden">
-      <td class="indent">dataColor.stroke</td>
-      <td>string</td>
-      <td>'#3267D2'</td>
       <td>The border color of the dots or bars. Applicable when using styles <code>dot-size</code> or <code>bar-size</code>.</td>
     </tr>
-    <tr parent="dataColor" class="hidden">
-      <td class="indent">dataColor.strokeWidth</td>
+    <tr>
+      <td>dataColor.stroke</td>
+      <td>string</td>
+      <td>'#3267D2'</td>
+      <td>The fill color of the dots or bars. Applicable when using styles <code>dot-size</code>, <code>bar-size</code>, or <code>line</code>.</td>
+    </tr>
+    <tr>
+      <td>dataColor.strokeWidth</td>
       <td>number</td>
       <td>1</td>
       <td>The line width of dots, bars and lines. Applicable for all styles.</td>
@@ -398,24 +384,6 @@ var options = {
       <td>number</td>
       <td>0.02</td>
       <td>Ratio of the size of the dots with respect to the width of the graph.</td>
-    </tr>
-
-    <tr>
-      <td>dotSizeMinFraction</td>
-      <td>number</td>
-      <td>0.5</td>
-      <td>Size of minimum-value dot as a fraction of dotSizeRatio.
-          Applicable when using style <code>dot-size</code>.</td>
-      </td>
-    </tr>
-
-    <tr>
-      <td>dotSizeMaxFraction</td>
-      <td>number</td>
-      <td>2.5</td>
-      <td>Size of maximum-value dot as a fraction of dotSizeRatio.
-          Applicable when using style <code>dot-size</code>.</td>
-      </td>
     </tr>
 
     <tr>
@@ -454,26 +422,8 @@ var options = {
       <td>showGrid</td>
       <td>boolean</td>
       <td>true</td>
-      <td>If true, grid lines are drawn in the x-y surface (the bottom of the 3d
+      <td>If true, grid lines are draw in the x-y surface (the bottom of the 3d
         graph).</td>
-    </tr>
-    <tr>
-      <td>showXAxis</td>
-      <td>boolean</td>
-      <td>true</td>
-      <td>If true, X axis and X axis labels are drawn.</td>
-    </tr>
-    <tr>
-      <td>showYAxis</td>
-      <td>boolean</td>
-      <td>true</td>
-      <td>If true, Y axis and Y axis labels are drawn.</td>
-    </tr>
-    <tr>
-      <td>showZAxis</td>
-      <td>boolean</td>
-      <td>true</td>
-      <td>If true, Z axis and Z axis labels are drawn.</td>
     </tr>
     <tr>
       <td>showPerspective</td>
@@ -483,14 +433,6 @@ var options = {
         are further away are drawn smaller.
         Note that the graph currently does not support a gray colored bottom side
         when drawn in perspective.
-      </td>
-    </tr>
-    <tr>
-      <td>showLegend</td>
-      <td>boolean</td>
-      <td>none</td>
-      <td>If true, a legend is drawn for the graph (if the graph type supports it). 
-          By default a legend is drawn for dot and dot-color style graphs. 
       </td>
     </tr>
     <tr>
@@ -524,100 +466,9 @@ var options = {
         The contents of the tooltip can be customized by providing a callback
         function as <code>tooltip</code>. In this case the function is called
         with an object containing parameters <code>x</code>,
-    <code>y</code>, <code>z</code>, and <code>data</code>
-    (the source JS object for the point) as an argument,
+        <code>y</code>, and <code>z</code> argument,
         and must return a string which may contain HTML.
       </td>
-    </tr>
-
-    <tr class='toggle collapsible' onclick="toggleTable('optionTable','tooltipStyle', this);">
-      <td><span parent="tooltipStyle" class="right-caret"></span> tooltipStyle</td>
-      <td>Object</td>
-      <td>Object</td>
-      </td>
-      <td>Tooltip style properties.
-        Provided properties will be merged with the default object.
-      </td>
-    </tr>
-    <!-- Can't define separate entries for content, line and dot objects here,
-         because toggleTable() can't handle multiple levels of collapsibles --> 
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.content.padding</td>
-      <td>string</td>
-      <td>'10px'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.content.border</td>
-      <td>string</td>
-      <td>'1px solid #4d4d4d'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.content.color</td>
-      <td>string</td>
-      <td>'#1a1a1a'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.content.background</td>
-      <td>string</td>
-      <td>'rgba(255,255,255,0.7)'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.content.borderRadius</td>
-      <td>string</td>
-      <td>'2px'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.content.boxShadow</td>
-      <td>string</td>
-      <td>'5px 5px 10px rgba(128,128,128,0.5)'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.line.height</td>
-      <td>string</td>
-      <td>'40px'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.line.width</td>
-      <td>string</td>
-      <td>'0'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.line.borderLeft</td>
-      <td>string</td>
-      <td>'1px solid #4d4d4d'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.dot.height</td>
-      <td>string</td>
-      <td>'0'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.dot.width</td>
-      <td>string</td>
-      <td>'0'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.dot.border</td>
-      <td>string</td>
-      <td>'5px solid #4d4d4d'</td>
-      <td></td>
-    </tr>
-    <tr parent="tooltipStyle" class="hidden">
-      <td class="indent">tooltipStyle.dot.borderRadius</td>
-      <td>string</td>
-      <td>'5px'</td>
-      <td></td>
     </tr>
 
     <tr>
@@ -654,8 +505,8 @@ var options = {
       <td>xBarWidth</td>
       <td>number</td>
       <td>none</td>
-      <td>The width of bars in x direction. By default, the width is equal to the smallest distance
-        between the data points.
+      <td>The width of bars in x direction. By default, the width is equal to the distance
+        between the data points, such that bars adjoin each other.
         Only applicable for styles <code>'bar'</code> and <code>'bar-color'</code>.</td>
     </tr>
 
@@ -669,18 +520,14 @@ var options = {
     <tr>
       <td>xMax</td>
       <td>number</td>
-      <td>from data</td>
-      <td>The maximum value for the x-axis.
-         If not set, the largest value for x in the data set is used.
-      </td>
+      <td>none</td>
+      <td>The maximum value for the x-axis.</td>
     </tr>
     <tr>
       <td>xMin</td>
       <td>number</td>
-      <td>from data</td>
-      <td>The minimum value for the x-axis.
-         If not set, the smallest value for x in the data set is used.
-      </td>
+      <td>none</td>
+      <td>The minimum value for the x-axis.</td>
     </tr>
     <tr>
       <td>xStep</td>
@@ -701,8 +548,8 @@ var options = {
       <td>yBarWidth</td>
       <td>number</td>
       <td>none</td>
-      <td>The width of bars in y direction. By default, the width is equal to the smallest distance
-        between the data points.
+      <td>The width of bars in y direction. By default, the width is equal to the distance
+        between the data points, such that bars adjoin each other.
         Only applicable for styles <code>'bar'</code> and <code>'bar-color'</code>.</td>
     </tr>
 
@@ -716,18 +563,14 @@ var options = {
     <tr>
       <td>yMax</td>
       <td>number</td>
-      <td>from data</td>
-      <td>The maximum value for the y-axis.
-         If not set, the largest value for y in the data set is used.
-      </td>
+      <td>none</td>
+      <td>The maximum value for the y-axis.</td>
     </tr>
     <tr>
       <td>yMin</td>
       <td>number</td>
-      <td>from data</td>
-      <td>The minimum value for the y-axis.
-         If not set, the smallest value for y in the data set is used.
-      </td>
+      <td>none</td>
+      <td>The minimum value for the y-axis.</td>
     </tr>
     <tr>
       <td>yStep</td>
@@ -745,20 +588,16 @@ var options = {
     </tr>
 
     <tr>
-      <td>zMax</td>
-      <td>number</td>
-      <td>from data</td>
-      <td>The maximum value for the z-axis.
-         If not set, the largest value for z in the data set is used.
-      </td>
-    </tr>
-    <tr>
       <td>zMin</td>
       <td>number</td>
-      <td>from data</td>
-      <td>The minimum value for the z-axis.
-         If not set, the smallest value for z in the data set is used.
-      </td>
+      <td>none</td>
+      <td>The minimum value for the z-axis.</td>
+    </tr>
+    <tr>
+      <td>zMax</td>
+      <td>number</td>
+      <td>none</td>
+      <td>The maximum value for the z-axis.</td>
     </tr>
     <tr>
       <td>zStep</td>
