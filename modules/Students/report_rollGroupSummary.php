@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -64,56 +67,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         }
     }
 
-    ?>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'From Date') ?></b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'Start date must be before this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?></span>
-				</td>
-				<td class="right">
-					<input name="dateFrom" id="dateFrom" maxlength=10 value="<?php echo $dateFrom ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						$(function() {
-							$( "#dateFrom" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'To Date') ?></b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'End date must be after this date.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-    				?></span>
-				</td>
-				<td class="right">
-					<input name="dateTo" id="dateTo" maxlength=10 value="<?php echo $dateTo ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						$(function() {
-							$( "#dateTo" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_rollGroupSummary.php">
-                    <?php echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_rollGroupSummary.php'>".__($guid, 'Clear Filters').'</a>'; ?>
-                    <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_rollGroupSummary.php");
+
+    $row = $form->addRow();
+        $row->addLabel('dateFrom', __('From Date'))->description('Start date must be before this date.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addDate('dateFrom')->setValue($dateFrom);
+
+    $row = $form->addRow();
+        $row->addLabel('dateTo', __('To Date'))->description('End date must be after this date.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addDate('dateTo')->setValue($dateTo);
+
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+    echo $form->getOutput();
 
     echo '<h2>';
     echo __($guid, 'Results');

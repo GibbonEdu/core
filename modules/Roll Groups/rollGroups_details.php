@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -127,57 +130,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             echo __($guid, 'Filters');
             echo '</h2>';
 
-            $orderBy = null;
-            if (isset($_GET['orderBy'])) {
-                $orderBy = $_GET['orderBy'];
+            $sortBy = null;
+            if (isset($_GET['sortBy'])) {
+                $sortBy = $_GET['sortBy'];
             }
-            ?>
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Order By') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="orderBy" id="orderBy" class="standardWidth">
-								<?php
-                                echo '<option ';
-								if ($orderBy == 'normal') {
-									echo 'selected ';
-								}
-								echo "value='normal'>".__($guid, 'Roll Order').'</option>';
-								echo '<option ';
-								if ($orderBy == 'surname') {
-									echo 'selected ';
-								}
-								echo "value='surname'>".__($guid, 'Surname').'</option>';
-								echo '<option ';
-								if ($orderBy == 'preferredName') {
-									echo 'selected ';
-								}
-								echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/rollGroups_details.php">
-							<input type="hidden" name="gibbonRollGroupID" value="<?php echo $gibbonRollGroupID ?>">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollGroups_details.php&gibbonRollGroupID=$gibbonRollGroupID'>".__($guid, 'Clear Filters').'</a>'; ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('noIntBorder fullWidth');
+
+            $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/rollGroups_details.php");
+            $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
+
+            $row = $form->addRow();
+                $row->addLabel('sortBy', __('Sort By'));
+                $row->addSelect('sortBy')->fromArray(array('normal' => __('Roll Order'), 'surname' => __('Surname'), 'preferredName' => __('Preferred Name')))->selected($sortBy)->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonRollGroupID=$gibbonRollGroupID", __('Clear Form')));
+
+            echo $form->getOutput();
 
             echo '<h3>';
             echo __($guid, 'Students');
             echo '</h3>';
-            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, false, $orderBy);
+            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, false, $sortBy);
 
             //Set sidebar
             $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $primaryTutor240, 240);

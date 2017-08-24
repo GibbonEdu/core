@@ -90,7 +90,20 @@ class Session
 	 */
 	public function get($name, $default = null)
 	{
-		return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
+        if (is_array($name)) {
+            // Fetch a value from multi-dimensional array with an array of keys
+            $retrieve = function($array, $keys, $default) {
+                foreach($keys as $key) {
+                    if (!isset($array[$key])) return $default;
+                    $array = $array[$key];
+                }
+                return $array;
+            };
+
+            return $retrieve($_SESSION[$this->guid], $name, $default);
+        }
+
+        return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
 	}
 
 	/**
@@ -123,6 +136,28 @@ class Session
 
 		return $this;
 	}
+
+	public function loadSystemSettings($pdo)
+	{
+		// System settings from gibbonSetting
+		$sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
+	    $result = $pdo->executeQuery(array(), $sql);
+
+        while ($row = $result->fetch()) {
+            $this->set($row['name'], $row['value']);
+        }
+	}
+
+    public function loadLanguageSettings($pdo)
+    {
+        // Language settings from gibboni18n
+        $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
+        $result = $pdo->executeQuery(array(), $sql);
+
+        while ($row = $result->fetch()) {
+            $this->set('i18n', $row);
+        }
+    }
 
 	public function createUserSession($username, $userData) {
 

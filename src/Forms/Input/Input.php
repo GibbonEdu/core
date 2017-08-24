@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Layout\Element;
+use Gibbon\Forms\RowDependancyInterface;
 use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\Traits\InputAttributesTrait;
 
@@ -29,9 +30,11 @@ use Gibbon\Forms\Traits\InputAttributesTrait;
  * @version v14
  * @since   v14
  */
-abstract class Input extends Element implements ValidatableInterface
+abstract class Input extends Element implements ValidatableInterface, RowDependancyInterface
 {
     use InputAttributesTrait;
+
+    protected $row;
 
     protected $validationOptions = array();
     protected $validation = array();
@@ -41,6 +44,16 @@ abstract class Input extends Element implements ValidatableInterface
         $this->setID($name);
         $this->setName($name);
         $this->setClass('standardWidth');
+    }
+
+    public function setRow($row)
+    {
+        $this->row = $row;
+    }
+
+    public function getLabel()
+    {
+        return $this->row->getElement('label-'.$this->getID());
     }
 
     public function addValidationOption($option = '')

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -38,90 +41,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     echo '</h2>';
 
     $gibbonCourseIDs = array();
-    if (isset($_GET['gibbonCourseIDs'])) {
-        $gibbonCourseIDs = $_GET['gibbonCourseIDs'];
+    if (isset($_POST['gibbonCourseID'])) {
+        $gibbonCourseIDs = $_POST['gibbonCourseID'];
     }
     $gibbonYearGroupID = '';
-    if (isset($_GET['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
+    if (isset($_POST['gibbonYearGroupID'])) {
+        $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
     }
-    ?>
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-            <tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Course') ?> *</b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-				</td>
-				<td class="right">
-					<select multiple class="standardWidth" name="gibbonCourseIDs[]" id="gibbonCourseIDs" style="height: 150px">
-						<?php
-                        $currentDepartment = '';
-						$lastDepartment = '';
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/scopeAndSequence.php");
 
-						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND map='Y' ORDER BY department, nameShort";
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {}
-						while ($rowSelect = $resultSelect->fetch()) {
-							$currentDepartment = $rowSelect['department'];
-							if (($currentDepartment != $lastDepartment) and $currentDepartment != '') {
-								echo "<optgroup label='--".$currentDepartment."--'>";
-							}
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
-                            $selected = '';
-                            foreach ($gibbonCourseIDs as $gibbonCourseID) {
-    							if ($gibbonCourseID == $rowSelect['gibbonCourseID']) {
-    								$selected = 'selected';
-    							}
-                            }
-                            echo "<option $selected class='".$rowSelect['gibbonYearGroupIDList']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							$lastDepartment = $rowSelect['department'];
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-            <tr>
-				<td>
-					<b><?php echo __($guid, 'Year Group') ?></b><br/>
-					<span style="font-size: 90%"></span>
-				</td>
-				<td class="right">
-					<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$dataSelect = array();
-							$sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($rowSelect['gibbonYearGroupID'] == $gibbonYearGroupID) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-						}
-						?>
-					</select>
-                </td>
-            </tr>
-            <tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/scopeAndSequence.php">
-					<?php echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/scopeAndSequence.php'>".__($guid, 'Clear Filters').'</a> ';?>
-                    <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $options = array();
+    try {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND map='Y' ORDER BY department, gibbonCourse.nameShort";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) { }
+    while ($row = $result->fetch()) {
+        $options[$row["department"]][$row["gibbonCourseID"]] = $row["name"];
+    }
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonCourseID', __('Course'));
+        $row->addSelect('gibbonCourseID')->fromArray($options)->selectMultiple()->selected($gibbonCourseIDs);
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+    echo $form->getOutput();
 
     if (count($gibbonCourseIDs) > 0) {
         //Set up for edit access

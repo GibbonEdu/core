@@ -81,11 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                 $file = $row->addFileUpload('file1')
                     ->addClass('right')
                     ->accepts($fileUploader->getFileExtensions('Graphics/Design'))
-                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $values['logo']);
-
-                if (!empty($values['logo'])) {
-                    $file->prepend("<a href='".$_SESSION[$guid]['absoluteURL']."/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID=$gibbonHouseID' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px;float: right;' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/>");
-                }
+                    ->setAttachment('logo', $_SESSION[$guid]['absoluteURL'], $values['logo'])
+                    ->setDeleteAction('/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID='.$gibbonHouseID);
 
             $row = $form->addRow();
                 $row->addFooter();

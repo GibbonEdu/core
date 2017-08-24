@@ -176,9 +176,12 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->setClass('right');
     }
 
-    public function createFooter()
+    public function createFooter($required = true)
     {
-        $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        $content = '';
+        if ($required) {
+            $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        }
         return $this->createContent($content);
     }
 

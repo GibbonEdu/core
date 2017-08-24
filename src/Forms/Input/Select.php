@@ -33,6 +33,7 @@ class Select extends Input
 
     protected $placeholder;
     protected $selected = null;
+    protected $hasSelected = false;
 
     protected $chainedToID;
     protected $chainedToValues;
@@ -55,6 +56,10 @@ class Select extends Input
     {
         $this->setAttribute('multiple', $value);
 
+        if ($value == true && !empty($this->getLabel())) {
+            $this->getLabel()->description(__('Use Control, Command and/or Shift to select multiple.'));
+        }
+
         return $this;
     }
 
@@ -74,10 +79,14 @@ class Select extends Input
     {
         if ($value === '') return false;
 
+        if ($this->hasSelected) return false;
+
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
-            return ($value == $this->selected);
+            $selected = ($value == $this->selected);
+            if ($selected && $this->getAttribute('multiple') == false) $this->hasSelected = true;
+            return $selected;
         }
     }
 
@@ -86,8 +95,13 @@ class Select extends Input
         $output = '';
 
         if (!empty($this->getAttribute('multiple'))) {
-            $this->setAttribute('size', $this->getOptionCount());
-            $this->setName($this->getName().'[]');
+            if (empty($this->getAttribute('size'))) {
+                $this->setAttribute('size', $this->getOptionCount());
+            }
+
+            if (stripos($this->getName(), '[]') === false) {
+                $this->setName($this->getName().'[]');
+            }
         }
 
         $output .= '<select '.$this->getAttributeString().'>';

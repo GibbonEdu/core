@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Layout;
 
+use Gibbon\Forms\RowDependancyInterface;
+
 /**
  * Label
  *
@@ -39,14 +41,19 @@ class Label extends Element implements RowDependancyInterface
         $this->for = $for;
     }
 
-    public function setRow(Row $row)
+    public function setRow($row)
     {
         $this->row = $row;
     }
 
+    public function getName()
+    {
+        return 'label-'.$this->for;
+    }
+
     public function description($value = '')
     {
-        $this->description = $value;
+        $this->description = (!empty($this->description))? $this->description.'<br><br>'.$value : $value;
         return $this;
     }
 

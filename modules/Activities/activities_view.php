@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -93,33 +96,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo __($guid, 'Access denied.');
                     echo '</div>';
                 } else {
-                    $options = '';
+                    $options = array();
                     while ($row = $result->fetch()) {
                         try {
                             $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                            $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                             $resultChild = $connection2->prepare($sqlChild);
                             $resultChild->execute($dataChild);
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-                        if ($resultChild->rowCount() == 1) {
-                            $rowChild = $resultChild->fetch();
-                            $gibbonPersonID = $rowChild['gibbonPersonID'];
-                            $select = '';
-                            if ($rowChild['gibbonPersonID'] == $gibbonPersonID) {
-                                $select = 'selected';
-                            }
-                            $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
-                            ++$countChild;
-                        } else {
-                            while ($rowChild = $resultChild->fetch()) {
-                                $select = '';
-                                if ($rowChild['gibbonPersonID'] == $gibbonPersonID) {
-                                    $select = 'selected';
-                                }
-                                $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
+                        if ($resultChild->rowCount() > 0) {
+                            if ($resultChild->rowCount() == 1) {
+                                $rowChild = $resultChild->fetch();
+                                $gibbonPersonID = $rowChild['gibbonPersonID'];
+                                $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                                 ++$countChild;
+                            }
+                            else {
+                                while ($rowChild = $resultChild->fetch()) {
+                                    $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                                    ++$countChild;
+                                }
                             }
                         }
                     }
@@ -140,54 +138,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             if (isset($_GET['search'])) {
                 $search = $_GET['search'];
             }
-            ?>
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<?php
-                    if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Child') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Choose the child you are registering for.') ?></span>
-							</td>
-							<td class="right">
-								<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-									<?php
-                                    if ($countChild > 1) {
-                                        echo "<option value=''></value>";
-                                    }
-                                    echo $options;
-                                    ?>
-								</select>
-							</td>
-						</tr>
-						<?php
-                    }
-                    ?>
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Search For Activity') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Activity name.') ?></span>
-						</td>
-						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_view.php">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('noIntBorder fullWidth');
+
+            $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_view.php");
+
+            if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPersonID', __('Child'))->description('Choose the child you are registering for.');
+                    if ($countChild > 1) {
+                        $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder();
+                    }
+                    else {
+                        $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID);
+                    }
+            }
+            $row = $form->addRow();
+                $row->addLabel('search', __('Search'))->description('Activity name.');
+                $row->addTextField('search')->setValue($search)->maxLength(20);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+            echo $form->getOutput();
 
             echo '<h2>';
             echo __($guid, 'Activities');
