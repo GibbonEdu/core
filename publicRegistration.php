@@ -163,30 +163,29 @@ if ($proceed == false) {
 				</td>
 				<td class="right">
                     <input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth"><br/><br/><br/>
-                    <div class="LV_validation_message LV_invalid" id='username_availability_result'</div><br/>
+                    <div class="LV_validation_message LV_invalid" id='username_availability_result'></div><br/>
                     <script type="text/javascript">
                         $(document).ready(function(){
-                           $('#username').keyup(function(){
-                               var username = $('#username').val();
-                               $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
-                               $.ajax({
-                                   type : 'POST',
-                                   data : { username: $('#username').val() },
-                                  url: "./publicRegistrationCheck.php",
-                                   success: function(responseText){
-                                       if(responseText == 0){
-                                           $('#username_availability_result').html('<?php echo __($guid, "Username available") ?>');
-                                           $('#username_availability_result').removeClass('LV_invalid');
-                                           $('#username_availability_result').addClass('LV_valid');
-                                       }else if(responseText > 0){
-                                           $('#username_availability_result').html('<?php echo __($guid, "Username already taken") ?>');
-                                           $('#username_availability_result').removeClass('LV_valid');
-                                           $('#username_availability_result').addClass('LV_invalid');
-                                       }else{
-                                           alert('Problem with mysql query');
-                                       }
-                                   }
-                               });
+                            $('#username').on('input', function(){
+                                if ($('#username').val() == '') {
+                                    $('#username_availability_result').html('');
+                                    return;
+                                }
+                                $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
+                                $.ajax({
+                                    type : 'POST',
+                                    data : { username: $('#username').val() },
+                                    url: "./publicRegistrationCheck.php",
+                                    success: function(responseText){
+                                        if(responseText == 0){
+                                            $('#username_availability_result').html('<?php echo __('Username available'); ?>');
+                                            $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
+                                        }else if(responseText > 0){
+                                            $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
+                                            $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
+                                        }
+                                    }
+                                });
                             });
                         });
 

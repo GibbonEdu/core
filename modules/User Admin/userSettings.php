@@ -36,6 +36,67 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    echo '<h3>';
+    echo __($guid, 'Username Formats');
+    echo '</h3>';
+
+    echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/userSettings_usernameFormat_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo '</div>';
+
+    $sql = "SELECT gibbonUsernameFormatID, format, isDefault, GROUP_CONCAT(DISTINCT gibbonRole.name SEPARATOR '<br>') as roles FROM gibbonUsernameFormat JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonUsernameFormat.gibbonRoleIDList)) GROUP BY gibbonUsernameFormatID ORDER BY isDefault";
+    $result = $pdo->executeQuery(array(), $sql);
+
+    if ($result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+        echo '<table class="fullWidth colorOddEven" cellspacing="0">';
+        echo "<tr class='head'>";
+        echo '<th>';
+        echo __($guid, 'Roles');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Format');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Is Default?');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Actions');
+        echo '</th>';
+        echo '</tr>';
+
+        while ($usernameFormat = $result->fetch()) {
+            echo "<tr>";
+            echo '<td>';
+            echo $usernameFormat['roles'];
+            echo '</td>';
+            echo '<td>';
+            echo $usernameFormat['format'];
+            echo '</td>';
+            echo '<td>';
+            echo ynExpander($guid, $usernameFormat['isDefault']);
+            echo '</td>';
+            echo '<td>';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/userSettings_usernameFormat_edit.php&gibbonUsernameFormatID='.$usernameFormat['gibbonUsernameFormatID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            if ($usernameFormat['isDefault'] == 'N') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/userSettings_usernameFormat_delete.php&gibbonUsernameFormatID='.$usernameFormat['gibbonUsernameFormatID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+
+        echo '</table>';
+    }
+
+    echo '<br/>';
+
+    echo '<h3>';
+    echo __($guid, 'Settings');
+    echo '</h3>';
+
     $form = Form::create('userSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

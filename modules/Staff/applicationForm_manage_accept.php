@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\UsernameGenerator;
+
 @session_start();
 
 //Module includes
@@ -170,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $failapplicant = true;
                     $lock = true;
                     try {
-                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE';
+                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE, gibbonUsernameFormat WRITE';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
                         $lock = false;
@@ -190,47 +192,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             $rowAI = $resultAI->fetch();
                             $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                            //Set username & password
-                            $username = '';
-                            $usernameFormat = getSettingByScope($connection2, 'Staff', 'staffApplicationFormUsernameFormat');
-                            if ($usernameFormat == '') {
-                                $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['preferredName'], 0, 1).$row['surname']))), 0, 12);
-                            } else {
-                                $username = $usernameFormat;
-                                $username = str_replace('[preferredNameInitial]', strtolower(substr($row['preferredName'], 0, 1)), $username);
-                                $username = str_replace('[preferredName]', strtolower($row['preferredName']), $username);
-                                $username = str_replace('[surname]', strtolower($row['surname']), $username);
-                                $username = str_replace(' ', '', $username);
-                                $username = str_replace("'", '', $username);
-                                $username = str_replace("-", '', $username);
-                                $username = substr($username, 0, 12);
-                            }
-                            $usernameBase = $username;
-                            $count = 1;
-                            $continueLoop = true;
-                            while ($continueLoop == true and $count < 10000) {
-                                $gotUsername = true;
-                                try {
-                                    $dataUsername = array('username' => $username);
-                                    $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                    $resultUsername = $connection2->prepare($sqlUsername);
-                                    $resultUsername->execute($dataUsername);
-                                } catch (PDOException $e) {
-                                    $gotUsername = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+                            // Generate a unique username for the staff member
+                            $generator = new UsernameGenerator($pdo);
+                            $generator->addToken('preferredName', $row['preferredName']);
+                            $generator->addToken('firstName', $row['firstName']);
+                            $generator->addToken('surname', $row['surname']);
 
-                                if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                    $continueLoop = false;
-                                } else {
-                                    $username = $usernameBase.$count;
-                                }
-                                ++$count;
-                            }
+                            $username = $generator->generateByRole($gibbonRoleID);
 
                             $password = randomPassword(8);
                             $salt = getSalt();
                             $passwordStrong = hash('sha256', $salt.$password);
+
+                            $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                             //Set default email address for applicant
                             $email = $row['email'];
