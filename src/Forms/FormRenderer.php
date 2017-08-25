@@ -31,9 +31,20 @@ use Gibbon\Forms\FormRendererInterface;
  */
 class FormRenderer implements FormRendererInterface
 {
+    protected $wrappers = array(
+        'form' => 'table',
+        'row'  => 'tr',
+        'cell' => 'td',
+    );
+
     public static function create()
     {
         return new FormRenderer();
+    }
+
+    public function setWrapper($name, $value)
+    {
+        $this->wrappers[$name] = $value;
     }
 
     public function renderForm(Form $form)
@@ -49,24 +60,24 @@ class FormRenderer implements FormRendererInterface
             $output .= '<input name="'.$values['name'].'" value="'.$values['value'].'" type="hidden">';
         }
 
-        $output .= '<table class="'.$form->getClass().'" cellspacing="0">';
+        $output .= sprintf('<%1$s class="'.$form->getClass().'" cellspacing="0">', $this->wrappers['form']);
 
         // Output form rows
         foreach ($form->getRows() as $row) {
-            $output .= '<tr id="'.$row->getID().'" class="'.$row->getClass().'">';
+            $output .= sprintf('<%1$s id="%2$s" class="%3$s">', $this->wrappers['row'], $row->getID(), $row->getClass());
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
                 $colspan = ($row->isLastElement($element) && $row->getElementCount() < $totalColumns)? 'colspan="'.($totalColumns + 1 - $row->getElementCount()).'"' : '';
 
-                $output .= '<td class="'.$element->getClass().'" '.$colspan.'>';
+                $output .= sprintf('<%1$s class="%2$s" %3$s>', $this->wrappers['cell'], $element->getClass(), $colspan);
                     $output .= $element->getOutput();
-                $output .= '</td>';
+                $output .= sprintf('</%1$s>', $this->wrappers['cell']);
             }
-            $output .= '</tr>';
+            $output .= sprintf('</%1$s>', $this->wrappers['row']);
         }
 
-        $output .= '</table>';
+        $output .= sprintf('</%1$s>', $this->wrappers['form']);
 
         // Output the validation code, aggregated
         $output .= '<script type="text/javascript">'."\n";
