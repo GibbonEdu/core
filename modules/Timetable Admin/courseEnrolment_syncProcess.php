@@ -53,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $data = array(
                 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
                 'gibbonCourseClassID' => $gibbonCourseClassID,
+                'gibbonYearGroupIDList' => $gibbonYearGroupIDList,
                 'syncID' => $syncID,
                 'date' => date('Y-m-d'),
             );
@@ -74,6 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
                 WHERE $subQuery
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
                 AND gibbonPerson.status='Full'
                 AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
