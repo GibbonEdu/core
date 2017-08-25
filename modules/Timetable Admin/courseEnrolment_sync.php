@@ -35,18 +35,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Sync Course Enrolment').'</div>';
     echo '</div>';
 
+    $step = (isset($_REQUEST['step']) && $_REQUEST['step'] <= 3)? $_REQUEST['step'] : 1;
+
+    if ($step > 3) {
+        echo "<div class='error'>";
+        echo __($guid, 'Your request failed because your inputs were invalid.');
+        echo '</div>';
+    }
+
+    echo '<h3>';
+    echo __($guid, sprintf('Step %1$s', $step));
+    echo '</h3>';
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $step = (isset($_REQUEST['step']) && $_REQUEST['step'] <= 3)? $_REQUEST['step'] : 1;
-
     //Step 1
     if ($step == 1) {
-        echo '<h3>';
-        echo __($guid, 'Step 1');
-        echo '</h3>';
-
         echo '<p>';
         echo __('Syncing enrolment lets you automaticaly enrol students into classes that match a similar grouping of students within the school, such as a Roll Group or House.');
         echo '<p>';
@@ -86,8 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         $row = $form->addRow()->addClass('mapping');
             $column = $row->addColumn();
-            $column->addLabel('courseClassMapping', __('Compare to Pattern'))->description(sprintf(__('Classes will be matched if they fit the specified pattern. Choose from %1$s. Must contain %2$s'), '[yearGroupShortName] [rollGroupShortName]', '[classShortName]'))->addClass('mapYearGroup mapRollGroup');
-            $column->addLabel('courseClassMapping', __('Compare to Pattern'))->description(sprintf(__('Classes will be matched if they fit the specified pattern. Choose from %1$s. Must contain %2$s'), '[houseShortName]', '[classShortName]'))->addClass('mapHouse');
+            $column->addLabel('courseClassMapping', __('Compare to Pattern'))->description(sprintf(__('Classes will be matched if they fit the specified pattern. Choose from %1$s. Must contain %2$s'), '[courseShortName] [yearGroupShortName] [rollGroupShortName] [houseShortName]', '[classShortName]'));
 
             $row->addTextField('pattern')
                 ->isRequired()
@@ -101,10 +106,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo $form->getOutput();
 
     } else if ($step == 2) {
-        echo '<h3>';
-        echo __($guid, 'Step 2');
-        echo '</h3>';
-
         $gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? $_POST['gibbonYearGroupIDList'] : null;
         $syncBy = (isset($_POST['syncBy']))? $_POST['syncBy'] : null;
         $pattern = (isset($_POST['pattern']))? $_POST['pattern'] : null;
@@ -146,11 +147,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
 
         if ($syncBy == 'rollGroup') {
-            $subQuery = "(SELECT syncBy.gibbonRollGroupID FROM gibbonRollGroup AS syncBy WHERE syncBy.nameShort = REPLACE(REPLACE(REPLACE(:pattern, '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort) AND syncBy.gibbonSchoolYearID=:gibbonSchoolYearID)";
+            $subQuery = "(SELECT syncBy.gibbonRollGroupID FROM gibbonRollGroup AS syncBy WHERE REPLACE(REPLACE(REPLACE(REPLACE(:pattern, '[courseShortName]', gibbonCourse.nameShort), '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort) LIKE CONCAT('%', syncBy.nameShort) AND syncBy.gibbonSchoolYearID=:gibbonSchoolYearID LIMIT 1)";
         } else if ($syncBy == 'yearGroup') {
-            $subQuery = "(SELECT syncBy.gibbonYearGroupID FROM gibbonYearGroup AS syncBy WHERE syncBy.nameShort = REPLACE(REPLACE(REPLACE(:pattern, '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort))";
+            $subQuery = "(SELECT syncBy.gibbonYearGroupID FROM gibbonYearGroup AS syncBy WHERE syncBy.nameShort = REPLACE(REPLACE(REPLACE(:pattern, '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort) LIMIT 1)";
         } else if ($syncBy == 'house') {
-            $subQuery = "(SELECT syncBy.gibbonHouseID FROM gibbonHouse AS syncBy WHERE syncBy.nameShort = REPLACE(REPLACE(REPLACE(:pattern, '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort))";
+            $subQuery = "(SELECT syncBy.gibbonHouseID FROM gibbonHouse AS syncBy WHERE syncBy.nameShort = REPLACE(REPLACE(REPLACE(:pattern, '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort) LIMIT 1)";
         }
 
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupIDList' => implode(',', $gibbonYearGroupIDList), 'pattern' => $pattern);
@@ -166,33 +167,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $result = $pdo->executeQuery($data, $sql);
 
         if ($result->rowCount() > 0) {
-            $courses = $result->fetchAll(PDO::FETCH_GROUP);
+            $yearGroups = $result->fetchAll(PDO::FETCH_GROUP);
 
-            foreach ($courses as $courseName => $classes) {
-                $form->addRow()->addHeading($courseName);
+            foreach ($yearGroups as $yearGroupName => $classes) {
+                $form->addRow()->addHeading($yearGroupName);
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
 
+                $yearGroupSelector = str_replace(' ', '', $yearGroupName);
                 $header = $table->addHeaderRow();
-                    $header->addContent(__('Enrol'));
+                    //$header->addContent(__('Enrol'));
+                    $header->addCheckbox('checkall'.$yearGroupSelector)->checked(true);
                     $header->addContent(__('Class'));
                     $header->addContent('');
                     $header->addContent(__('Roll Group'));
 
                 foreach ($classes as $class) {
                     $row = $table->addRow();
-                        $row->addCheckbox('syncEnabled['.$class['gibbonCourseClassID'].']')->checked(!empty($class['syncTo']))->setClass();
+                        $row->addCheckbox('syncEnabled['.$class['gibbonCourseClassID'].']')->checked(!empty($class['syncTo']))->setClass($yearGroupSelector);
                         $row->addLabel('className['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])->setTitle($class['courseNameShort'])->setClass('standardWidth');
                         $row->addContent( (empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )->setClass('shortWidth right');
 
-                        if ($syncBy == 'rollGroup') {
-                            $row->addSelectRollGroup('syncTo['.$class['gibbonCourseClassID'].']', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($class['syncTo'])->setClass('mediumWidth');
-                        } else if ($syncBy == 'yearGroup') {
-                            $row->addSelectYearGroup('syncTo['.$class['gibbonCourseClassID'].']')->selected($class['syncTo'])->setClass('mediumWidth');
-                        } else if ($syncBy == 'house') {
-                            $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
-                            $row->addSelect('syncTo['.$class['gibbonCourseClassID'].']')->fromQuery($pdo, $sql)->selected($class['syncTo'])->placeholder()->setClass('mediumWidth');
-                        }
+                    if ($syncBy == 'rollGroup') {
+                        $row->addSelectRollGroup('syncTo['.$class['gibbonCourseClassID'].']', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($class['syncTo'])->setClass('mediumWidth');
+                    } else if ($syncBy == 'yearGroup') {
+                        $row->addSelectYearGroup('syncTo['.$class['gibbonCourseClassID'].']')->selected($class['syncTo'])->setClass('mediumWidth');
+                    } else if ($syncBy == 'house') {
+                        $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
+                        $row->addSelect('syncTo['.$class['gibbonCourseClassID'].']')->fromQuery($pdo, $sql)->selected($class['syncTo'])->placeholder()->setClass('mediumWidth');
+                    }
                 }
+
+                echo '<script type="text/javascript">';
+                echo '$(function () {';
+                    echo "$('#checkall".$yearGroupSelector."').click(function () {";
+                    echo "$('.".$yearGroupSelector."').find(':checkbox').attr('checked', this.checked);";
+                    echo '});';
+                echo '});';
+                echo '</script>';
             }
         }
 
@@ -205,9 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo $form->getOutput();
 
     } else if ($step == 3) {
-        echo '<h3>';
-        echo __($guid, 'Step 3');
-        echo '</h3>';
+
     }
 
 
