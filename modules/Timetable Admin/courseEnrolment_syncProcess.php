@@ -56,42 +56,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 'syncID' => $syncID,
                 'date' => date('Y-m-d'),
             );
-            $sql = '';
 
             if ($syncBy == 'rollGroup') {
-                if ($includeStudents) {
-                    $sql .= "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                    SELECT :gibbonCourseClassID, gibbonPerson.gibbonPersonID, 'Student', 'Y'
-                    FROM gibbonPerson
-                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
-                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND gibbonStudentEnrolment.gibbonRollGroupID=:syncID
-                    AND gibbonPerson.status='Full'
-                    AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
-                    AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
-                    AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL
-                    ;";
-                }
+                $subQuery = "gibbonStudentEnrolment.gibbonRollGroupID=:syncID";
+            } else if ($syncBy == 'yearGroup') {
+                $subQuery = "gibbonStudentEnrolment.gibbonYearGroupID=:syncID";
+            } else if ($syncBy == 'house') {
+                $subQuery = "gibbonPerson.gibbonHouseID=:syncID";
+            }
 
-                if ($includeTeachers) {
-                    $sql .= "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                    SELECT :gibbonCourseClassID, gibbonPerson.gibbonPersonID, 'Student', 'Y'
-                    FROM gibbonPerson
-                    JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
-                    LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
-                    WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND gibbonRollGroup.gibbonRollGroupID=:syncID
-                    AND gibbonPerson.status='Full'
-                    AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
-                    AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
-                    AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL
-                    ;";
-                }
+            // Sync students
+            if ($includeStudents) {
+                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
+                SELECT :gibbonCourseClassID, gibbonPerson.gibbonPersonID, 'Student', 'Y'
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
+                WHERE $subQuery
+                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonPerson.status='Full'
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
+                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
+                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
             }
 
             $pdo->executeQuery($data, $sql);
+            if (!$pdo->getQuerySuccess()) $partialFail = true;
 
+            // Sync teachers by homeroom if enabled
+            if ($syncBy == 'rollGroup' && $includeTeachers) {
+                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
+                SELECT :gibbonCourseClassID, gibbonPerson.gibbonPersonID, 'Teacher', 'Y'
+                FROM gibbonPerson
+                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
+                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
+                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonRollGroup.gibbonRollGroupID=:syncID
+                AND gibbonPerson.status='Full'
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
+                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
+                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+            }
+
+            $pdo->executeQuery($data, $sql);
             if (!$pdo->getQuerySuccess()) $partialFail = true;
         }
 
