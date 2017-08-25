@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
-            $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple();
+            $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple()->isRequired();
 
         $studentGroupings = array(
             'rollGroup' => __('Roll Group'),
@@ -139,9 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $row->addLabel('includeStudents', __('Include Students'));
             $row->addCheckbox('includeStudents')->checked(true);
 
-        $row = $table->addRow();
-            $row->addLabel('includeTeachers', __('Include Teachers'));
-            $row->addCheckbox('includeTeachers')->checked(true);
+        if ($syncBy == 'rollGroup') {
+            $row = $table->addRow();
+                $row->addLabel('includeTeachers', __('Include Teachers'));
+                $row->addCheckbox('includeTeachers')->checked(true);
+        }
 
         if ($syncBy == 'rollGroup') {
             $subQuery = "(SELECT syncBy.gibbonRollGroupID FROM gibbonRollGroup AS syncBy WHERE syncBy.nameShort = REPLACE(REPLACE(REPLACE(:pattern, '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort) AND syncBy.gibbonSchoolYearID=:gibbonSchoolYearID)";
