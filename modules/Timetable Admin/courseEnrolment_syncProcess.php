@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'gibbonYearGroupIDList' => $gibbonYearGroupIDList,
                 'syncID' => $syncID,
-                'date' => date('Y-m-d'),
+                //'date' => date('Y-m-d'),
             );
 
             if ($syncBy == 'rollGroup') {
@@ -77,9 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
                 AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
-                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+
+                //AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
+                //AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
             }
 
             $pdo->executeQuery($data, $sql);
@@ -95,9 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonRollGroup.gibbonRollGroupID=:syncID
                 AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
-                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+
+                //AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
+                //AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
             }
 
             $pdo->executeQuery($data, $sql);
