@@ -997,6 +997,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																	<option value='ZAR R'>South African Rand (R)</option>
 																	<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
 																	<option value='TZS TSh'>Tanzania Shillings (TSh)</option>
+																	<option value='TTD $'>Trinidad & Tobago Dollar (TTD)</option>
 																	<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																</optgroup>
 															</select>

@@ -33,10 +33,9 @@ v15.0.00
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
 		System: added Greek as development language
-		System: added South African Rand as currency
+		System: added South African Rand and Trinidad & Tobago Dollar as currenies
 		System: fixed missing form validation for dropdowns created with User Custom Fields
 		System: updated Google OAuth library to latest version (v2.2.0)
-		System: updated vis.js library to latest version (v4.20.1)
 		System: fixed Sign In With Google to fix missing token refresh issue
         System: fixed timezone not being set in CLI scripts
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
