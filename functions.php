@@ -1109,8 +1109,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $entryCount = 0;
 
     //PREPARE PLANNER SUMMARY
-    $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__($guid, 'Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&search='.$gibbonPersonID."'>".__($guid, 'View Planner').'</a></span>';
-
+    $plannerOutput = '';
     $classes = false;
     $date = date('Y-m-d');
     if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $_SESSION[$guid]['username'] != '') {
@@ -1123,6 +1122,8 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $plannerOutput .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($result->rowCount() > 0) {
+            $plannerOutput .= "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&search='.$gibbonPersonID."'>".__($guid, 'View Planner').'</a></span></div>';
+
             $classes = true;
             $plannerOutput .= "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>";
             $plannerOutput .= "<tr class='head'>";
@@ -1211,14 +1212,9 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $plannerOutput .= '</table>';
         }
     }
-    if ($classes == false) {
-        $plannerOutput .= "<div style='margin-top: 2px' class='warning'>";
-        $plannerOutput .= __($guid, 'There are no records to display.');
-        $plannerOutput .= '</div>';
-    }
 
     //PREPARE RECENT GRADES
-    $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__($guid, 'View Markbook').'</a></span></div>';
+    $gradesOutput = '';
     $grades = false;
 
     //Get settings
@@ -1238,6 +1234,8 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
     }
     if ($resultEntry->rowCount() > 0) {
+        $gradesOutput .= "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__($guid, 'View Markbook').'</a></span></div>';
+
         $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
         $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
         $grades = true;
@@ -1472,14 +1470,9 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
 
         $gradesOutput .= '</table>';
     }
-    if ($grades == false) {
-        $gradesOutput .= "<div style='margin-top: 2px' class='warning'>";
-        $gradesOutput .= __($guid, 'There are no records to display.');
-        $gradesOutput .= '</div>';
-    }
 
     //PREPARE UPCOMING DEADLINES
-    $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__($guid, 'View All Deadlines').'</a></span></div>';
+    $deadlinesOutput = '';
     $deadlines = false;
 
     try {
@@ -1496,6 +1489,8 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     }
 
     if ($result->rowCount() > 0) {
+        $deadlinesOutput .= "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__($guid, 'View All Deadlines').'</a></span></div>';
+
         $deadlines = true;
         $deadlinesOutput .= "<ol style='margin-left: 15px'>";
         while ($row = $result->fetch()) {
@@ -1512,12 +1507,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $deadlinesOutput .= '</li>';
         }
         $deadlinesOutput .= '</ol>';
-    }
-
-    if ($deadlines == false) {
-        $deadlinesOutput .= "<div style='margin-top: 2px' class='warning'>";
-        $deadlinesOutput .= __($guid, 'There are no records to display.');
-        $deadlinesOutput .= '</div>';
     }
 
     //PREPARE TIMETABLE
@@ -1769,6 +1758,9 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $return .= $plannerOutput;
             $return .= $gradesOutput;
             $return .= $deadlinesOutput;
+            if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculum_viewByStudent.php')) {
+                $return .= "<div><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Overview of Units & Lessons')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/curriculum_viewByStudent.php&search='.$gibbonPersonID."'>".__($guid, 'View Student Learning').'</a></span></div>';
+            }
             $return .= '</div>';
             $tabCountExtraReset++;
         }
