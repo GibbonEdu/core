@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     exit();
                 }
 
-                if ($result->rowCount() != 1) {
+                if ($result->rowCount() < 1) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                 } else {
