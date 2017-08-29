@@ -1659,7 +1659,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $activitiesOutput .= '<td>';
                             try {
                                 $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
-                                $sqlSlots = 'SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
+                                $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS dayOfWeek, gibbonSpace.name AS facility FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
                                 $resultSlots = $connection2->prepare($sqlSlots);
                                 $resultSlots->execute($dataSlots);
                             } catch (PDOException $e) {
@@ -1667,10 +1667,10 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                             }
                             $count = 0;
                             while ($rowSlots = $resultSlots->fetch()) {
-                                $activitiesOutput .= '<b>'.$rowSlots['name'].'</b><br/>';
+                                $activitiesOutput .= '<b>'.$rowSlots['dayOfWeek'].'</b><br/>';
                                 $activitiesOutput .= '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                                 if ($rowSlots['gibbonSpaceID'] != '') {
-                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['name'];
+                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['facility'];
                                 } else {
                                     $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['locationExternal'];
                                 }
