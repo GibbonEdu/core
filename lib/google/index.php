@@ -63,6 +63,11 @@ $service = new Google_Service_Oauth2($client);
 if (isset($_GET['code'])) {
   $client->authenticate($_GET['code']);
   $_SESSION[$guid]['googleAPIAccessToken']  = $client->getAccessToken();
+
+  if (isset($_GET['state'])) {
+    $redirect_uri .= '?state='.$_GET['state'];
+  }
+
   header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
   exit;
 }
@@ -84,9 +89,58 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 
 if (isset($authUrl)){
 	//show login url
-	print '<div style="margin:20px">';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img style=\'width: 260px; height: 55px; margin: -20px 0 0 -24px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
-	print '</div>';
+	echo '<div>';
+		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addURL(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
+
+        $form = \Gibbon\Forms\Form::create('loginFormGoogle', '#');
+        $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
+        $form->setClass('blank fullWidth loginTableGoogle');
+
+        $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
+
+        $row = $form->addRow()->setClass('loginOptionsGoogle');
+            $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
+            $row->addSelectSchoolYear('gibbonSchoolYearIDGoogle')
+                ->setClass('fullWidth')
+                ->placeholder(null)
+                ->selected($_SESSION[$guid]['gibbonSchoolYearID']);
+
+        $row = $form->addRow()->setClass('loginOptionsGoogle');
+            $row->addContent(sprintf($loginIcon, 'language', __('Language')));
+            $row->addSelect('gibboni18nIDGoogle')
+                ->fromQuery($pdo, "SELECT gibboni18nID as value, name FROM gibboni18n WHERE active='Y' ORDER BY name")
+                ->setClass('fullWidth')
+                ->placeholder(null)
+                ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);
+
+        $row = $form->addRow();
+            $row->addContent('<a class="show_options_google" onclick="false" href="#">'.__('Options').'</a>')
+                ->wrap('<span class="small">', '</span>')
+                ->setClass('right');
+
+        echo $form->getOutput();
+        ?>
+
+        <script>
+        $(document).ready(function(){
+            $(".loginOptionsGoogle").hide();
+            $(".show_options_google").click(function(){
+                $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
+                $(".loginOptionsGoogle").fadeToggle(1000);
+            });
+        });
+
+        function addURL(element)
+        {
+            $(element).attr('href', function() {
+                var googleSchoolYear = $('#gibbonSchoolYearIDGoogle').val();
+                var googleLanguage = $('#gibboni18nIDGoogle').val();
+                return this.href.replace('&state&', '&state='+googleSchoolYear+':'+googleLanguage+'&');
+            });
+        }
+        </script>
+        <?php
+	echo '</div>';
 } else {
 	$user = $service->userinfo->get(); //get user info
 	$email = $user->email;
@@ -99,6 +153,10 @@ if (isset($authUrl)){
 		$result->execute($data);
 	}
 	catch(PDOException $e) {}
+
+    if (isset($_GET['state']) && stripos($_GET['state'], ':') !== false) {
+        list($gibbonSchoolYearID, $gibboni18nID) = explode(':', $_GET['state']);
+    }
 
 	//Test to see if email exists in logintable
 	if ($result->rowCount() != 1) {
@@ -193,20 +251,28 @@ if (isset($authUrl)){
 		//USER EXISTS, SET SESSION VARIABLES
 		$gibbon->session->createUserSession($username, $row);
 
-		//If user has personal language set, load it to session variable.
-		if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
-			try {
-				$dataLanguage = array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]);
-				$sqlLanguage = "SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID";
-				$resultLanguage = $connection2->prepare($sqlLanguage);
-				$resultLanguage->execute($dataLanguage);
-			}
-			catch(PDOException $e) { }
-			if ($resultLanguage->rowCount() == 1) {
-				$rowLanguage = $resultLanguage->fetch();
-				setLanguageSession($guid, $rowLanguage);
-			}
-		}
+        //Allow for non-system default language to be specified from login form
+        if (empty($gibboni18nID)) {
+            //If user has personal language set, load it to session variable.
+            if (!is_null($_SESSION[$guid]['gibboni18nIDPersonal'])) {
+                $gibboni18nID = $_SESSION[$guid]['gibboni18nIDPersonal'];
+            } else {
+                $gibboni18nID = $_SESSION[$guid]['i18n']['gibboni18nID'];
+            }
+        }
+
+        try {
+            $dataLanguage = array('gibboni18nID' => $gibboni18nID);
+            $sqlLanguage = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
+            $resultLanguage = $connection2->prepare($sqlLanguage);
+            $resultLanguage->execute($dataLanguage);
+        } catch (PDOException $e) {
+        }
+        if ($resultLanguage->rowCount() == 1) {
+            $rowLanguage = $resultLanguage->fetch();
+            setLanguageSession($guid, $rowLanguage);
+        }
+
 		try {
 			$data = array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username );
 			$sql = "UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username";
