@@ -61,6 +61,8 @@ v15.0.00
 		User Admin: improved usability of feedback in Step 3 of the rollover
 		User Admin: made Pending Approval option in Status in edit User appear only if Public Registration is enabled
         User Admin: updated Add User and Edit User to allow PDF files for ID documents
+        User Admin: added ability to set username formats by role in User Settings
+        User Admin: added a button to generate usernames in Add User
 
 v14.0.00
 --------

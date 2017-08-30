@@ -243,23 +243,65 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique. System login name. Cannot be changed.') ?></span>
 				</td>
 				<td class="right">
-					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
-					<?php
-                    $idList = '';
-					try {
-						$dataSelect = array();
-						$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
-						$resultSelect = $connection2->prepare($sqlSelect);
-						$resultSelect->execute($dataSelect);
-					} catch (PDOException $e) {
-					}
-					while ($rowSelect = $resultSelect->fetch()) {
-						$idList .= "'".addslashes($rowSelect['username'])."',";
-					}
-					$idList = substr($idList, 0, -1); ?>
-					<script type="text/javascript">
+
+                    <input type='button' class="generateUsername" value="<?php echo __($guid, 'Generate Username') ?>"/>
+					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth"><br/>
+                    <div class="LV_validation_message LV_invalid" id='username_availability_result'></div><br/>
+                    <script type="text/javascript">
+
+                        // Username Generation
+                        $(".generateUsername").click(function(){
+                            $.ajax({
+                                type : 'POST',
+                                data : {
+                                    gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
+                                    preferredName: $('#preferredName').val(),
+                                    firstName: $('#firstName').val(),
+                                    surname: $('#surname').val(),
+                                },
+                                url: "./modules/User Admin/user_manage_usernameAjax.php",
+                                success: function(responseText){
+                                    if (responseText == 0) {
+                                        $('#gibbonRoleIDPrimary').change();
+                                        $('#preferredName').blur();
+                                        $('#firstName').blur();
+                                        $('#surname').blur();
+                                        alert("<?php
+                                            echo __('The following fields are required to generate a username:').'\n\n';
+                                            echo __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname').'\n';
+                                        ?>");
+                                    } else {
+                                        $('#username').val(responseText);
+                                        $('#username').trigger('input');
+                                        $('#username').blur();
+                                    }
+                               }
+                            });
+                        });
+
+                        // Username Uniqueness
+                        $('#username').on('input', function(){
+                            if ($('#username').val() == '') {
+                                $('#username_availability_result').html('');
+                                return;
+                            }
+                            $.ajax({
+                                type : 'POST',
+                                data : { username: $('#username').val() },
+                                url: "./publicRegistrationCheck.php",
+                                success: function(responseText){
+                                    if(responseText == 0){
+                                        $('#username_availability_result').html('<?php echo __('Username available'); ?>');
+                                        $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
+                                    }else if(responseText > 0){
+                                        $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
+                                        $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
+                                    }
+                                }
+                            });
+                        });
+
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					</script>
 				</td>
