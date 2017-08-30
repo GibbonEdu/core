@@ -279,6 +279,7 @@ class FormFactory implements FormFactoryInterface
                 'ZAR R‎' => 'South African Rand (R‎)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
+                'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
             ),
         );

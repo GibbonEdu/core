@@ -1682,7 +1682,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $activitiesOutput .= '<td>';
                             try {
                                 $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
-                                $sqlSlots = 'SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
+                                $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS dayOfWeek, gibbonSpace.name AS facility FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
                                 $resultSlots = $connection2->prepare($sqlSlots);
                                 $resultSlots->execute($dataSlots);
                             } catch (PDOException $e) {
@@ -1690,10 +1690,10 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                             }
                             $count = 0;
                             while ($rowSlots = $resultSlots->fetch()) {
-                                $activitiesOutput .= '<b>'.$rowSlots['name'].'</b><br/>';
+                                $activitiesOutput .= '<b>'.$rowSlots['dayOfWeek'].'</b><br/>';
                                 $activitiesOutput .= '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                                 if ($rowSlots['gibbonSpaceID'] != '') {
-                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['name'];
+                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['facility'];
                                 } else {
                                     $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['locationExternal'];
                                 }
@@ -2872,111 +2872,78 @@ function sidebar($gibbon, $pdo)
 					$('#siteloader').load('lib/google/index.php');
 				});
 			</script>
-			<div id="siteloader"></div>
+			<div id="siteloader" style="min-height:73px"></div>
 			<?php
 
         } //End Check for Google Auth
         if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
-            ?>
-    		<h2>
-    			<?php echo __($guid, 'Login'); ?>
-    		</h2>
-    		<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q']; } ?>">
-    			<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
-    				<tr>
-    					<td colspan="2">
-                            <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Username or email'); ?>">
-    						<input name="username" id="username" maxlength=50 type="text" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Username or email'); ?>">
-    						<script type="text/javascript">
-    							var username=new LiveValidation('username', {onlyOnSubmit: true });
-    							username.add(Validate.Presence);
-    						</script>
-    					</td>
-    				</tr>
-    				<tr>
-    					<td colspan="2">
-                            <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/key.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Password'); ?>">
-    						<input name="password" id="password" maxlength=30 type="password" style="width:200px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'Password'); ?>">
-    						<script type="text/javascript">
-    							var password=new LiveValidation('password', {onlyOnSubmit: true });
-    							password.add(Validate.Presence);
-    						</script>
-    					</td>
-    				</tr>
-                    <tr class='schoolYear' id='schoolYear'>
-                        <td colspan="2">
-                            <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/planner.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'School Year'); ?>">
-                            <select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width:207px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'School Year'); ?>">
-                                <?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['status'] == 'Current') {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                }
-                                ?>
-                            </select>
-    					</td>
-    				</tr>
-                    	<tr class='language' id='language'>
-                        <td colspan="2">
-                            <img src="<?php echo $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/language.png"; ?>" style="width:20px;height:20px;margin:4px 0 0 2px;" title="<?php echo __($guid, 'Language'); ?>">
-                            <select name="gibboni18nID" id="gibboni18nID" style="width:207px;margin-left:0;padding-left: 5px;" placeholder="<?php echo __($guid, 'School Year'); ?>">
-    							<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibboni18n WHERE active='Y' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['systemDefault'] == 'Y') {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibboni18nID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                }
-                                ?>
-    						</select>
-    					</td>
-    				</tr>
-                    <tr>
-        				<td colspan=2 class="right">
-    						<?php
-                            echo "<script type='text/javascript'>";
-                                echo '$(document).ready(function(){';
-                                echo '$(".schoolYear").hide();';
-                                echo '$(".language").hide();';
-                                echo '$(".show_hide").fadeIn(1000);';
-                                echo '$(".show_hide").click(function(){';
-                                echo '$(".schoolYear").fadeToggle(1000);';
-                                echo '$(".language").fadeToggle(1000);';
-                                echo '});';
-                                echo '});';
-                            echo '</script>'; ?>
-    						<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
-    					</td>
-    				</tr>
-    				<tr>
-    					<td class="right" colspan=2>
-    						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-    						<input type="submit" value="Login">
-    					</td>
-    				</tr>
-    			</table>
-    		</form>
-    		<?php
+            echo '<h2>';
+                echo __('Login');
+            echo '</h2>';
+
+            if (empty($_SESSION[$guid]['gibbonSchoolYearID'])) setCurrentSchoolYear($guid, $connection2);
+
+            $form = \Gibbon\Forms\Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
+
+            $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
+            $form->setClass('noIntBorder fullWidth');
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
+
+            $row = $form->addRow();
+                $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
+                $row->addTextField('username')
+                    ->isRequired()
+                    ->maxLength(50)
+                    ->setClass('fullWidth')
+                    ->placeholder(__('Username or email'))
+                    ->addValidationOption('onlyOnSubmit: true');
+
+            $row = $form->addRow();
+                $row->addContent(sprintf($loginIcon, 'key', __('Password')));
+                $row->addPassword('password')
+                    ->isRequired()
+                    ->maxLength(30)
+                    ->setClass('fullWidth')
+                    ->placeholder(__('Password'))
+                    ->addValidationOption('onlyOnSubmit: true');
+
+            $row = $form->addRow()->setClass('loginOptions');
+                $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
+                $row->addSelectSchoolYear('gibbonSchoolYearID')
+                    ->setClass('fullWidth')
+                    ->placeholder(null)
+                    ->selected($_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $row = $form->addRow()->setClass('loginOptions');
+                $row->addContent(sprintf($loginIcon, 'language', __('Language')));
+                $row->addSelect('gibboni18nID')
+                    ->fromQuery($pdo, "SELECT gibboni18nID as value, name FROM gibboni18n WHERE active='Y' ORDER BY name")
+                    ->setClass('fullWidth')
+                    ->placeholder(null)
+                    ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);
+
+            $row = $form->addRow();
+                $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
+                    ->append(' . <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=passwordReset.php">'.__('Forgot Password?').'</a>')
+                    ->wrap('<span class="small">', '</span>')
+                    ->setClass('right');
+
+            $row = $form->addRow();
+                $row->addFooter(false);
+                $row->addSubmit(__('Login'));
+
+            echo $form->getOutput();
+
+            // Control the show/hide for login options
+            echo "<script type='text/javascript'>";
+                echo '$(".loginOptions").hide();';
+                echo '$(".show_hide").click(function(){';
+                echo '$(".loginOptions").fadeToggle(1000);';
+                echo '});';
+            echo '</script>';
+
             //Publc registration permitted?
             $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
             if ($enablePublicRegistration == 'Y') {
