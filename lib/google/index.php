@@ -90,7 +90,7 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 if (isset($authUrl)){
 	//show login url
 	echo '<div>';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addURL(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
+		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
 
         $form = \Gibbon\Forms\Form::create('loginFormGoogle', '#');
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
@@ -114,7 +114,7 @@ if (isset($authUrl)){
                 ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);
 
         $row = $form->addRow();
-            $row->addContent('<a class="show_options_google" onclick="false" href="#">'.__('Options').'</a>')
+            $row->addContent('<a class="showGoogleOptions" onclick="false" href="#">'.__('Options').'</a>')
                 ->wrap('<span class="small">', '</span>')
                 ->setClass('right');
 
@@ -122,15 +122,13 @@ if (isset($authUrl)){
         ?>
 
         <script>
-        $(document).ready(function(){
-            $(".loginOptionsGoogle").hide();
-            $(".show_options_google").click(function(){
-                $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
-                $(".loginOptionsGoogle").fadeToggle(1000);
-            });
+        $(".loginOptionsGoogle").hide();
+        $(".showGoogleOptions").click(function(){
+            $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
+            $(".loginOptionsGoogle").fadeToggle(1000);
         });
 
-        function addURL(element)
+        function addGoogleLoginParams(element)
         {
             $(element).attr('href', function() {
                 if ($('#gibbonSchoolYearIDGoogle').is(':visible')) {
