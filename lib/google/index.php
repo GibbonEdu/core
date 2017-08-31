@@ -124,8 +124,10 @@ if (isset($authUrl)){
         <script>
         $(".loginOptionsGoogle").hide();
         $(".showGoogleOptions").click(function(){
-            $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
-            $(".loginOptionsGoogle").fadeToggle(1000);
+            if ($('.loginOptionsGoogle').is(':hidden')) $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
+            $(".loginOptionsGoogle").fadeToggle(1000, function() {
+                if ($('.loginOptionsGoogle').is(':hidden')) $(".loginTableGoogle").removeClass('noIntBorder').addClass('blank');
+            });
         });
 
         function addGoogleLoginParams(element)
