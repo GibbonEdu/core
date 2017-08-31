@@ -122,12 +122,10 @@ if (isset($authUrl)){
         ?>
 
         <script>
-        $(document).ready(function(){
-            $(".loginOptionsGoogle").hide();
-            $(".showGoogleOptions").click(function(){
-                $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
-                $(".loginOptionsGoogle").fadeToggle(1000);
-            });
+        $(".loginOptionsGoogle").hide();
+        $(".showGoogleOptions").click(function(){
+            $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
+            $(".loginOptionsGoogle").fadeToggle(1000);
         });
 
         function addGoogleLoginParams(element)
