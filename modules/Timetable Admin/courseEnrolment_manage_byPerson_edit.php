@@ -93,9 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo __($guid, 'Add Classes');
             echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Classes') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
@@ -109,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                                     try {
                                         $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => '%'.$row['gibbonYearGroupID'].'%');
                                         $sqlSelect = "SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class,
-												(SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount 
-											FROM gibbonCourse 
-											JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-											WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList 
+												(SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount
+											FROM gibbonCourse
+											JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+											WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList
 											ORDER BY course, class";
                                         $resultSelect = $connection2->prepare($sqlSelect);
                                         $resultSelect->execute($dataSelect);
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Role') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -186,14 +186,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 			</form>
 
 			<?php
-            //SHOW CURRENT ENROLMENT	
+            //SHOW CURRENT ENROLMENT
             echo '<h2>';
             echo __($guid, 'Current Enrolment');
             echo '</h2>';
 
             try {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, role, gibbonCourseClassPerson.reportable FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%left' ORDER BY course, class";
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, role, gibbonCourseClassPerson.reportable FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%left' ORDER BY class, course";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
