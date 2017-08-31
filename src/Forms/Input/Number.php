@@ -31,24 +31,43 @@ class Number extends TextField
     protected $max;
     protected $decimal = 0;
 
+    /**
+     * Define a minimum for this numeric value.
+     * @param   int|float  $value
+     * @return  self
+     */
     public function minimum($value)
     {
         $this->min = $value;
         return $this;
     }
 
+    /**
+     * Define a maximum for this numeric value.
+     * @param   int|float  $value
+     * @return  self
+     */
     public function maximum($value)
     {
         $this->max = $value;
         return $this;
     }
 
+    /**
+     * Define a required number of decimal places (max) for this numeric value.
+     * @param   int  $value
+     * @return  self
+     */
     public function decimalPlaces($value)
     {
         $this->decimal = intval($value);
         return $this;
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
 

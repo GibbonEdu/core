@@ -92,13 +92,8 @@ trait BasicAttributesTrait
     }
 
     /**
-     * getAttributeString
-     *
      * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
-     * @version  v14
-     * @since    v14
-     * @param    [type]  $attributes
-     * @return   [type]
+     * @return  string
      */
     public function getAttributeString() {
         $attributes = $this->getAttributeArray();

@@ -34,6 +34,10 @@ class Checkbox extends Input
     protected $description;
     protected $checked = array();
 
+    /**
+     * Create a checkpox input with a default value of on when checked.
+     * @param  string  $name
+     */
     public function __construct($name)
     {
         $this->setName($name);
@@ -41,12 +45,22 @@ class Checkbox extends Input
         $this->setValue('on');
     }
 
+    /**
+     * Sets an inline label next to the checkbox input.
+     * @param   string  $value
+     * @return  self
+     */
     public function description($value = '')
     {
         $this->description = $value;
         return $this;
     }
 
+    /**
+     * Set a value or array of values that are currently checked.
+     * @param   string  $values
+     * @return  self
+     */
     public function checked($values)
     {
         if ($values === 1 || $values === true) $values = 'on';
@@ -62,6 +76,11 @@ class Checkbox extends Input
         return $this;
     }
 
+    /**
+     * Return true if the passed value matches the current checkbox element value(s).
+     * @param   mixed  $value
+     * @return  bool
+     */
     protected function getIsChecked($value)
     {
         if (empty($value) || empty($this->checked)) {
@@ -71,6 +90,10 @@ class Checkbox extends Input
         return (in_array($value, $this->checked))? 'checked' : '';
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '';
