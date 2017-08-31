@@ -29,34 +29,61 @@ trait BasicAttributesTrait
 {
     private $attributes = array();
 
+    /**
+     * Set the id attribute.
+     * @param  string  $id
+     * @return self
+     */
     public function setID($id = '')
     {
         $this->setAttribute('id', $id);
         return $this;
     }
 
+    /**
+     * Gets the id attribute.
+     * @return  string
+     */
     public function getID()
     {
         return $this->getAttribute('id');
     }
 
+    /**
+     * Set the title attribute.
+     * @param  string  $title
+     * @return self
+     */
     public function setTitle($title = '')
     {
         $this->setAttribute('title', $title);
         return $this;
     }
 
+    /**
+     * Gets the title attribute.
+     * @return  string
+     */
     public function getTitle()
     {
         return $this->getAttribute('title');
     }
 
+    /**
+     * Set the class attribute. Replaces any existing classes.
+     * @param  string  $class
+     * @return self
+     */
     public function setClass($class = '')
     {
         $this->setAttribute('class', $class);
         return $this;
     }
 
+    /**
+     * Add a class to the element's class atrribute.
+     * @param  string  $class
+     */
     public function addClass($class = '')
     {
         $class = (!empty($this->getClass()))? $this->getClass().' '.$class : $class;
@@ -64,6 +91,10 @@ trait BasicAttributesTrait
         return $this;
     }
 
+    /**
+     * Remove a class from the element's class atrribute.
+     * @param  string  $class
+     */
     public function removeClass($class = '')
     {
         $class = (!empty($this->getClass()))? str_replace($class, '', $this->getClass()) : '';
@@ -71,23 +102,42 @@ trait BasicAttributesTrait
         return $this;
     }
 
+    /**
+     * Gets the class attribute.
+     * @return  string
+     */
     public function getClass()
     {
         return $this->getAttribute('class');
     }
 
+    /**
+     * Add a $key => $value pair to the attributes collection.
+     * @param  string  $key
+     * @param  mixed   $value
+     */
     protected function setAttribute($key, $value)
     {
         $this->attributes[$key] = $value;
         return $this;
     }
 
+    /**
+     * Get the value of an attribute by the provided key.
+     * @param   string  $key
+     * @return  mixed
+     */
     protected function getAttribute($key)
     {
         return (isset($this->attributes[$key]))? $this->attributes[$key] : null;
     }
 
-    protected function getAttributeArray() {
+    /**
+     * Get the internal collection of attributes.
+     * @return  array
+     */
+    protected function getAttributeArray()
+    {
         return $this->attributes;
     }
 
@@ -95,7 +145,8 @@ trait BasicAttributesTrait
      * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
      * @return  string
      */
-    public function getAttributeString() {
+    public function getAttributeString()
+    {
         $attributes = $this->getAttributeArray();
 
         $output = implode(' ', array_map(
