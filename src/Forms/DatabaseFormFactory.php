@@ -35,11 +35,19 @@ class DatabaseFormFactory extends FormFactory
 
     protected $cachedQueries = array();
 
+    /**
+     * Create a factory with access to the provided a database connection.
+     * @param  \Gibbon\sqlConnection  $pdo
+     */
     public function __construct(\Gibbon\sqlConnection $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * Create and return an instance of DatabaseFormFactory.
+     * @return  object DatabaseFormFactory
+     */
     public static function create(\Gibbon\sqlConnection $pdo = null)
     {
         return new DatabaseFormFactory($pdo);
