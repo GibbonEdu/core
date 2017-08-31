@@ -2840,7 +2840,7 @@ function sidebar($gibbon, $pdo)
 					$('#siteloader').load('lib/google/index.php');
 				});
 			</script>
-			<div id="siteloader"></div>
+			<div id="siteloader" style="min-height:73px"></div>
 			<?php
 
         } //End Check for Google Auth
@@ -2906,11 +2906,9 @@ function sidebar($gibbon, $pdo)
 
             // Control the show/hide for login options
             echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
                 echo '$(".loginOptions").hide();';
                 echo '$(".show_hide").click(function(){';
                 echo '$(".loginOptions").fadeToggle(1000);';
-                echo '});';
                 echo '});';
             echo '</script>';
 
