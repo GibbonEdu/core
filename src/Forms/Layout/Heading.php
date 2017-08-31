@@ -32,11 +32,19 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
 {
     protected $row;
 
+    /**
+     * Add a generic heading element.
+     * @param  [type]  $content
+     */
     public function __construct($content)
     {
         $this->content = $content;
     }
 
+    /**
+     * Method for RowDependancyInterface to automatically set a reference to the parent Row object.
+     * @param  object  $row
+     */
     public function setRow($row)
     {
         $this->row = $row;
@@ -44,6 +52,10 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
         $this->row->setClass('break');
     }
 
+    /**
+     * Get the content text of the element.
+     * @return  string
+     */
     protected function getElement()
     {
         return '<h3>'.$this->content.'</h3>';
