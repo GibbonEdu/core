@@ -6,7 +6,7 @@ Copyright (C) 2017, Sandra Kuipers
 
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_assignResults.php') == false) {
 	//Acess denied
 	echo "<div class='error'>" ;
 		echo __('You do not have access to this action.');
@@ -22,10 +22,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     }
 
     $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : '';
+    $gibbonYearGroupIDList = explode(',', $gibbonYearGroupIDList);
     $gibbonHouseIDList = (isset($_GET['gibbonHouseIDList']))? $_GET['gibbonHouseIDList'] : '';
     $balanceYearGroup = (isset($_GET['balanceYearGroup']))? $_GET['balanceYearGroup'] : '';
-
-    $gibbonYearGroupIDList = explode(',', $gibbonYearGroupIDList);
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
@@ -56,15 +55,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-
         $count = (isset($_GET['count']))? $_GET['count'] : 0;
 
         echo '<p>';
-        echo sprintf(__('%1$s students were successfully assigned to houses.'), $count);
+        echo sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $count);
         echo '</p>';
 
         $yearGroups = $result->fetchAll(\PDO::FETCH_GROUP);
-        $headings = array_column(current($yearGroups), 'house');
+
+        // Group each year group result by house
+        foreach ($yearGroups as $gibbonYearGroupID => &$yearGroup) {
+            $yearGroup = array_reduce(array_keys($yearGroup), function ($carry, $key) use ($yearGroup) {
+                $carry[$yearGroup[$key]['house']] = $yearGroup[$key];
+                return $carry;
+            }, array());
+        }
+        // Grab unique headings across the results
+        $headings = array_reduce($yearGroups, function($carry, $value) {
+            $carry = array_merge($carry, array_column($value, 'house'));
+            return array_unique($carry);
+        }, array());
+
+        $totals = array_fill_keys($headings, array());
 
         echo '<table cellspacing="0" style="width: 100%">';
         echo '<tr class="head">';
@@ -85,21 +97,42 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
             $rowClass = (in_array($gibbonYearGroupID, $gibbonYearGroupIDList))? 'current' : '';
 
             echo '<tr class="'.$rowClass.'">';
-
             echo '<td>';
             echo $row['yearGroupName'];
             echo '</td>';
 
-            foreach ($rowData as $data) {
+            foreach ($headings as $heading) {
+                $data = (isset($rowData[$heading]))? $rowData[$heading] : null;
+
                 echo '<td>';
-                echo '<span title="'.$data['totalFemale'].' '.__('Female').'<br/>'.$data['totalMale'].' '.__('Male').'">';
-                echo $data['total'];
-                echo '</span>';
+                if (!empty($data)) {
+                    echo '<span title="'.$data['totalFemale'].' '.__('Female').'<br/>'.$data['totalMale'].' '.__('Male').'">';
+                    echo $data['total'];
+                    echo '</span>';
+
+                    // Append the current totals to the running totals for each house
+                    $totals[$data['house']] = array_reduce(array_keys($data), function ($carry, $key) use ($data) {
+                        $carry[$key] = (isset($carry[$key]))? $carry[$key] + $data[$key] : $data[$key];
+                        return $carry;
+                    }, $totals[$data['house']]);
+                }
                 echo '</td>';
             }
             echo '</tr>';
-
         }
+
+        // Display the runnung totals for each house
+        echo '<tr class="dull">';
+        echo '<td>'.__('Total').'</td>';
+        foreach ($totals as $houseName => $data) {
+            echo '<td>';
+            echo '<span title="'.$data['totalFemale'].' '.__('Female').'<br/>'.$data['totalMale'].' '.__('Male').'">';
+            echo $data['total'];
+            echo '</span>';
+            echo '</td>';
+        }
+        echo '</tr>';
+
         echo '</table>';
     }
 }

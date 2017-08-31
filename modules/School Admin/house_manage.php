@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.php') == false) {
@@ -56,10 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     }
 
     echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/house_manage_assign.php'>".__($guid, 'Assign Houses')."<img style='margin-left: 5px' title='".__($guid, 'Assign Houses')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>  |  ";
+
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/house_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    $gibbonHouseIDs = array();
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
@@ -110,46 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/house_manage_delete.php&gibbonHouseID='.$row['gibbonHouseID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
-
-            $gibbonHouseIDs[] = $row['gibbonHouseID'];
             ++$count;
         }
         echo '</table>';
     }
-
-    echo '<h3>';
-    echo __($guid, 'Assign Houses');
-    echo '</h3>';
-
-    $form = Form::create('houseAssign', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/house_manage_assign.php');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
-        $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple()->isRequired();
-
-    $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
-    $row = $form->addRow();
-        $row->addLabel('gibbonHouseIDList', __('Houses'));
-        $row->addSelect('gibbonHouseIDList')->fromQuery($pdo, $sql)->selectMultiple()->isRequired()->selected($gibbonHouseIDs);
-
-    $row = $form->addRow();
-        $row->addLabel('balanceGender', __('Balance by Gender?'));
-        $row->addYesNo('balanceGender')->isRequired();
-
-    $row = $form->addRow();
-        $row->addLabel('balanceYearGroup', __('Balance by Year Group?'))->description(__('Attempts to keep houses be as balanced as possible per year group, otherwise balances the house numbers school-wide.'));
-        $row->addYesNo('balanceYearGroup')->isRequired();
-
-    $row = $form->addRow();
-        $row->addLabel('overwrite', __('Overwrite'))->description(__("Replace a student's existing house assignment? If no, it will only assign houses to students who do not already have one."));
-        $row->addYesNo('overwrite')->isRequired()->selected('N');
-
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
-
-    echo $form->getOutput();
 }
