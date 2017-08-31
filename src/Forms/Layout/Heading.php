@@ -34,7 +34,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
 
     /**
      * Add a generic heading element.
-     * @param  [type]  $content
+     * @param  string  $content
      */
     public function __construct($content)
     {

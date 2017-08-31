@@ -79,7 +79,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
     /**
      * Get all rows defined as headers.
-     * @return  [type]
+     * @return  array
      */
     public function getHeaders()
     {
@@ -88,7 +88,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
     /**
      * Get all rows in the table.
-     * @return  [type]
+     * @return  array
      */
     public function getRows()
     {

@@ -70,7 +70,7 @@ class Editor extends Input
     /**
      * Set whether the editor input is initially hidden.
      * @param   bool    $value
-     * @return  [type]
+     * @return  self
      */
     public function initiallyHidden($value = true)
     {
