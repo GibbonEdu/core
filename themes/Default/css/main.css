@@ -676,8 +676,11 @@ input[type="text"], input[type="password"], input[type="file"] {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
-    padding-left: 4px;
     box-sizing: border-box;
+}
+
+input[type="text"], input[type="password"] {
+    padding-left: 4px;
 }
 
 input[readonly], textarea[readonly], select[readonly] {
@@ -1216,8 +1219,8 @@ span.small {
 	font-size: 93% ;
 }
 
-.standardWidth {
-	width: 302px ;
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth {
+	width: 300px ;
 }
 
 .fullWidth {
