@@ -6,7 +6,7 @@ Copyright (C) 2017, Sandra Kuipers
 
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_assignResults.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byHouse.php') == false) {
 	//Acess denied
 	echo "<div class='error'>" ;
 		echo __('You do not have access to this action.');
@@ -14,17 +14,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/house_manage.php'>".__('Manage Houses')."</a> > </div><div class='trailEnd'>".__('Assign Houses').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Students by House').'</div>';
     echo '</div>';
-
-    if (isset($_GET['return'])) {
-        returnProcess($_GET['return'], null, null);
-    }
 
     $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : '';
     $gibbonYearGroupIDList = explode(',', $gibbonYearGroupIDList);
-    $gibbonHouseIDList = (isset($_GET['gibbonHouseIDList']))? $_GET['gibbonHouseIDList'] : '';
-    $balanceYearGroup = (isset($_GET['balanceYearGroup']))? $_GET['balanceYearGroup'] : '';
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
@@ -46,20 +40,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
     } catch (PDOException $e) {
     }
 
-    echo '<h3>';
-    echo __('Assign Houses');
-    echo '</h3>';
-
     if ($result->rowCount() == 0) {
         echo '<div class="error">';
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-        $count = (isset($_GET['count']))? $_GET['count'] : 0;
-
-        echo '<p>';
-        echo sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $count);
-        echo '</p>';
+        if (isset($_GET['count'])) {
+            echo '<p>';
+            echo sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $_GET['count']);
+            echo '</p>';
+        }
 
         $yearGroups = $result->fetchAll(\PDO::FETCH_GROUP);
 

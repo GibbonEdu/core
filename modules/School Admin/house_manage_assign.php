@@ -18,6 +18,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/house_manage.php'>".__($guid, 'Manage Houses')."</a> > </div><div class='trailEnd'>".__($guid, 'Assign Houses').'</div>';
     echo '</div>';
 
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
     $form = Form::create('houseAssignProcess', $_SESSION[$guid]['absoluteURL'].'/modules/School Admin/house_manage_assignProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

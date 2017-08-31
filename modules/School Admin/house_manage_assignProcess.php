@@ -26,7 +26,8 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/house_manage_assignResults.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/house_manage_assign.php';
+$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/report_students_byHouse.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_assign.php') == false) {
     $URL .= '&return=error0';
@@ -159,9 +160,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             $URL .= "&return=warning1";
             header("Location: {$URL}");
         } else {
-            $URL .= "&gibbonYearGroupIDList={$gibbonYearGroupIDList}&gibbonHouseIDList={$gibbonHouseIDList}&balanceYearGroup={$balanceYearGroup}&count={$count}";
-            $URL .= "&return=success0";
-            header("Location: {$URL}");
+            $URLSuccess .= "&gibbonYearGroupIDList={$gibbonYearGroupIDList}&count={$count}";
+            $URLSuccess .= "&return=success0";
+            header("Location: {$URLSuccess}");
         }
     }
 }
