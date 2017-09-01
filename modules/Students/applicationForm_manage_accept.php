@@ -1243,7 +1243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
-                    if ($enrolmentOK) {
+                    if ($enrolmentOK && !empty($row['gibbonRollGroupID'])) {
                         $notificationText .= ' '.__('The student has successfully been enroled in the specified school year, year group and roll group.');
                     } else {
                         $notificationText .= ' '.__('Student could not be enroled, so this will have to be done manually at a later date.');
