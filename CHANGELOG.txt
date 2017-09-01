@@ -56,6 +56,7 @@ v15.0.00
 		Students: fixed Application Form for logged in users not selecting a family by default (if one exists)
 		Students: fixed interface string issue in student details screen
 		Students: fixed display of Other Fields heading for parents in Application Form
+        Students: added an option for logged-in users to link new Application Forms to an existing user or family
 		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
 		Timetable: added ability to set and display text and background colour for timetable day headers
 		Timetable: adjusted font size for shorter lessons to allow display or facility name

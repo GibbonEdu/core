@@ -28,7 +28,7 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
