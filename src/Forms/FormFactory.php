@@ -31,6 +31,10 @@ use Gibbon\Forms\FormFactoryInterface;
  */
 class FormFactory implements FormFactoryInterface
 {
+    /**
+     * Create and return an instance of FormFactory.
+     * @return  object FormFactory
+     */
     public static function create()
     {
         return new FormFactory();

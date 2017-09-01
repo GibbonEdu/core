@@ -31,6 +31,11 @@ trait MultipleOptionsTrait
 {
     protected $options = array();
 
+    /**
+     * Build an internal options array from a provided CSV string.
+     * @param   string  $value
+     * @return  self
+     */
     public function fromString($value)
     {
         if (empty($value) || !is_string($value)) {
@@ -47,6 +52,11 @@ trait MultipleOptionsTrait
         return $this;
     }
 
+    /**
+     * Build an internal options array from a provided array of $key => $value pairs.
+     * @param   array  $values
+     * @return  self
+     */
     public function fromArray($values)
     {
         if (empty($values) || !is_array($values)) {
@@ -68,6 +78,13 @@ trait MultipleOptionsTrait
         return $this;
     }
 
+    /**
+     * Build an internal options array from an SQL query with required value and name fields
+     * @param   \Gibbon\sqlConnection  $pdo
+     * @param   string                 $sql
+     * @param   array                  $data
+     * @return  self
+     */
     public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array())
     {
         $results = $pdo->executeQuery($data, $sql);
@@ -75,6 +92,11 @@ trait MultipleOptionsTrait
         return $this->fromResults($results);
     }
 
+    /**
+     * Build an internal options array from the result set of a PDO query.
+     * @param   object  $results
+     * @return  string
+     */
     public function fromResults($results)
     {
         if (empty($results) || !is_object($results)) {
@@ -94,11 +116,19 @@ trait MultipleOptionsTrait
         return $this;
     }
 
+    /**
+     * Gets the internal options collection.
+     * @return  array
+     */
     protected function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * Recursivly count the total options in the collection.
+     * @return  int
+     */
     protected function getOptionCount()
     {
         return count($this->options, COUNT_RECURSIVE);

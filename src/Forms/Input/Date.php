@@ -27,6 +27,11 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
+    /**
+     * Overload the base loadFrom method to handle converting date formats.
+     * @param   array  &$data
+     * @return  self
+     */
     public function loadFrom(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
@@ -38,6 +43,11 @@ class Date extends TextField
         return $this;
     }
 
+    /**
+     * Set the input value by converting a YYYY-MM-DD format back to localized value.
+     * @param  string  $value
+     * @return  self
+     */
     public function setDateFromValue($value)
     {
         global $guid;
@@ -47,6 +57,10 @@ class Date extends TextField
         return $this;
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         global $guid;

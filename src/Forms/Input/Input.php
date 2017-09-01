@@ -25,7 +25,7 @@ use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\Traits\InputAttributesTrait;
 
 /**
- * Input
+ * Abstract base class for form input elements.
  *
  * @version v14
  * @since   v14
@@ -39,6 +39,10 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     protected $validationOptions = array();
     protected $validation = array();
 
+    /**
+     * Create an HTML form input.
+     * @param  string  $name
+     */
     public function __construct($name)
     {
         $this->setID($name);
@@ -46,33 +50,59 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         $this->setClass('standardWidth');
     }
 
+    /**
+     * Method for RowDependancyInterface to automatically set a reference to the parent Row object.
+     * @param  object  $row
+     */
     public function setRow($row)
     {
         $this->row = $row;
     }
 
+    /**
+     * Get the Label layout object linked to this element, null if none exists.
+     * @return  object|null
+     */
     public function getLabel()
     {
         return $this->row->getElement('label-'.$this->getID());
     }
 
+    /**
+     * Add a LiveValidation option to the javascript object (eg: onlyOnSubmit: true, onlyOnBlur: true)
+     * @param  string  $option
+     */
     public function addValidationOption($option = '')
     {
         $this->validationOptions[] = $option;
         return $this;
     }
 
+    /**
+     * Add a LiveValidation setting to this element by type (eg: Validate.Presence)
+     * @param  string  $type
+     * @param  string  $params
+     */
     public function addValidation($type, $params = '')
     {
         $this->validation[$type] = $params;
         return $this;
     }
 
+    /**
+     * Get a LiveValidation setting by type (eg: Validate.Presence)
+     * @param   string  $type
+     * @return  string
+     */
     public function getValidation($type)
     {
         return (isset($this->validation[$type]))? $this->validation[$type] : null;
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     public function getValidationOutput()
     {
         $output = '';
