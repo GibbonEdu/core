@@ -80,10 +80,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
-            }
 
-            $pdo->executeQuery($data, $sql);
-            if (!$pdo->getQuerySuccess()) $partialFail = true;
+                $pdo->executeQuery($data, $sql);
+                if (!$pdo->getQuerySuccess()) $partialFail = true;
+            }
 
             // Sync teachers by homeroom if enabled
             if ($syncBy == 'rollGroup' && $includeTeachers) {
@@ -98,10 +98,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
-            }
 
-            $pdo->executeQuery($data, $sql);
-            if (!$pdo->getQuerySuccess()) $partialFail = true;
+                $pdo->executeQuery($data, $sql);
+                if (!$pdo->getQuerySuccess()) $partialFail = true;
+            }
         }
 
         if ($partialFail) {
