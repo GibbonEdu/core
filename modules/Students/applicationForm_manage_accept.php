@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\UsernameGenerator;
 
 @session_start();
@@ -258,6 +259,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $website = str_replace('[username]', $username, $studentDefaultWebsite);
                         }
 
+                        // Get student's school year at entry info
+                        try {
+                            $dataSchoolYear = array('gibbonSchoolYearID' => $row['gibbonSchoolYearIDEntry']);
+                            $sqlSchoolYear = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                            $resultSchoolYear = $connection2->prepare($sqlSchoolYear);
+                            $resultSchoolYear->execute($dataSchoolYear);
+                        } catch (PDOException $e) {
+                        }
+                        $schoolYearName = ($resultSchoolYear->rowCount() == 1)? $resultSchoolYear->fetchColumn(0) : '';
+
+                        // Get student's year group info
+                        try {
+                            $dataYearGroup = array('gibbonYearGroupID' => $row['gibbonYearGroupIDEntry']);
+                            $sqlYearGroup = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
+                            $resultYearGroup = $connection2->prepare($sqlYearGroup);
+                            $resultYearGroup->execute($dataYearGroup);
+                        } catch (PDOException $e) {
+                        }
+                        $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
+
+                        // Get student's roll group info (if any)
+                        try {
+                            $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                            $sqlRollGroup = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                            $resultRollGroup = $connection2->prepare($sqlRollGroup);
+                            $resultRollGroup->execute($dataRollGroup);
+                        } catch (PDOException $e) {
+                        }
+                        $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
+
                         //Email website and email address to admin for creation
                         if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
                             echo '<h4>';
@@ -272,53 +303,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             if ($studentDefaultWebsite != '') {
                                 $body .= __($guid, 'Website').': '.$website."<br/>";
                             }
-                            if ($row['gibbonSchoolYearIDEntry'] != '') {
-                                try {
-                                    $dataYearGroup = array('gibbonSchoolYearID' => $row['gibbonSchoolYearIDEntry']);
-                                    $sqlYearGroup = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                    $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                                    $resultYearGroup->execute($dataYearGroup);
-                                } catch (PDOException $e) {
-                                }
-
-                                if ($resultYearGroup->rowCount() == 1) {
-                                    $rowYearGroup = $resultYearGroup->fetch();
-                                    if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'School Year').': '.$rowYearGroup['name']."<br/>";
-                                    }
-                                }
+                            if ($row['gibbonSchoolYearIDEntry'] != '' && !empty($schoolYearName)) {
+                                $body .= __($guid, 'School Year').': '.$schoolYearName."<br/>";
                             }
-                            if ($row['gibbonYearGroupIDEntry'] != '') {
-                                try {
-                                    $dataYearGroup = array('gibbonYearGroupID' => $row['gibbonYearGroupIDEntry']);
-                                    $sqlYearGroup = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-                                    $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                                    $resultYearGroup->execute($dataYearGroup);
-                                } catch (PDOException $e) {
-                                }
-
-                                if ($resultYearGroup->rowCount() == 1) {
-                                    $rowYearGroup = $resultYearGroup->fetch();
-                                    if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Year Group').': '.$rowYearGroup['name']."<br/>";
-                                    }
-                                }
+                            if ($row['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
+                                $body .= __($guid, 'Year Group').': '.$yearGroupName."<br/>";
                             }
-                            if ($row['gibbonRollGroupID'] != '') {
-                                try {
-                                    $dataYearGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                    $sqlYearGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                                    $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                                    $resultYearGroup->execute($dataYearGroup);
-                                } catch (PDOException $e) {
-                                }
-
-                                if ($resultYearGroup->rowCount() == 1) {
-                                    $rowYearGroup = $resultYearGroup->fetch();
-                                    if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Roll Group').': '.$rowYearGroup['name']."<br/>";
-                                    }
-                                }
+                            if ($row['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
+                                $body .= __($guid, 'Roll Group').': '.$rollGroupName."<br/>";
                             }
                             if ($row['dateStart'] != '') {
                                 $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."<br/>";
@@ -1243,6 +1235,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             }
                         }
                     }
+
+                    // Raise a new notification event
+                    $event = new NotificationEvent('Students', 'Application Form Accepted');
+
+                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student');
+                    $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
+
+                    $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
+                    if ($enrolmentOK && !empty($row['gibbonRollGroupID'])) {
+                        $notificationText .= ' '.__('The student has successfully been enroled in the specified school year, year group and roll group.');
+                    } else {
+                        $notificationText .= ' '.__('Student could not be enroled, so this will have to be done manually at a later date.');
+                    }
+
+                    $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupIDEntry']);
+                    $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
+                    $event->setNotificationText($notificationText);
+                    $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=".$row['gibbonSchoolYearIDEntry']."&search=");
+
+                    $event->sendNotifications($pdo, $gibbon->session);
+
                     //SET STATUS TO ACCEPTED
                     $failStatus = false;
                     try {
