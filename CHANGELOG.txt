@@ -40,6 +40,7 @@ v15.0.00
         System: fixed timezone not being set in CLI scripts
 		System: fixed bug preventing activity day from being correctly shown in Parent Dashboard
         System: added login options to Login with Google button
+        System: added mbstring extension to the system requirements list
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
@@ -50,6 +51,7 @@ v15.0.00
 		Library: added Optical Media as item type
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
+        School Admin: added an Assign Houses tool to bulk assign students to houses by Year Group
 		Students: fixed School History section in Student Profile to exclude upcoming years
 		Students: fixed Application Form for logged in users not selecting a family by default (if one exists)
 		Students: fixed interface string issue in student details screen
