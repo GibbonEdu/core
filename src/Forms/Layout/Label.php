@@ -35,28 +35,50 @@ class Label extends Element implements RowDependancyInterface
     protected $description;
     protected $for = '';
 
+    /**
+     * Create a label element with a for attribute linking to an input.
+     * @param  string  $for
+     * @param  string  $label
+     */
     public function __construct($for, $label)
     {
         $this->label = $label;
         $this->for = $for;
     }
 
+    /**
+     * Method for RowDependancyInterface to automatically set a reference to the parent Row object.
+     * @param  object  $row
+     */
     public function setRow($row)
     {
         $this->row = $row;
     }
 
+    /**
+     * Overload the getName method to prepend a label- prefix.
+     * @return  string
+     */
     public function getName()
     {
         return 'label-'.$this->for;
     }
 
+    /**
+     * Set the smaller description text to be output with the label.
+     * @param   string  $value
+     * @return  self
+     */
     public function description($value = '')
     {
         $this->description = (!empty($this->description))? $this->description.'<br><br>'.$value : $value;
         return $this;
     }
 
+    /**
+     * Get the required status of the input this label is linked to.
+     * @return  bool
+     */
     protected function getRequired()
     {
         if (empty($this->for) || empty($this->row)) {
@@ -68,6 +90,10 @@ class Label extends Element implements RowDependancyInterface
         return (!empty($element) && method_exists($element, 'getRequired'))? $element->getRequired() : false;
     }
 
+    /**
+     * Get the readonly status of the input this label is linked to.
+     * @return  bool
+     */
     protected function getReadOnly()
     {
         if (empty($this->for)) {
@@ -79,6 +105,10 @@ class Label extends Element implements RowDependancyInterface
         return (!empty($element) && method_exists($element, 'getReadonly'))? $element->getReadonly() : false;
     }
 
+    /**
+     * Get the HTML output of the label element.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';

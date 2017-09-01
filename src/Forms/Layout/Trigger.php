@@ -38,11 +38,20 @@ class Trigger implements OutputableInterface
 
     protected $negate;
 
+    /**
+     * Create a trigger to toggle visibility of the specified CSS/jQuery selector.
+     * @param  string  $selector
+     */
     public function __construct($selector)
     {
         $this->targetSelector = $selector;
     }
 
+    /**
+     * Link this trigger to a select input by name.
+     * @param   string  $name
+     * @return  self
+     */
     public function onSelect($name)
     {
         $this->elementType = 'select';
@@ -52,6 +61,11 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Link this trigger to a checkbox input by name.
+     * @param   string  $name
+     * @return  self
+     */
     public function onCheckbox($name)
     {
         $this->elementType = 'checkbox';
@@ -61,6 +75,11 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Link this trigger to a radio input by name.
+     * @param   string  $name
+     * @return  self
+     */
     public function onRadio($name)
     {
         $this->elementType = 'radio';
@@ -70,6 +89,11 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Set which value the trigger should respond to.
+     * @param   string  $value
+     * @return  self
+     */
     public function when($value)
     {
         if ($this->elementType == 'checkbox') {
@@ -80,12 +104,21 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Set the trigger to respond to all values except the specified one.
+     * @param   string  $value
+     * @return  self
+     */
     public function whenNot($value)
     {
         $this->negate = true;
         return $this->when($value);
     }
 
+    /**
+     * Get the javascript output of the trigger.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';

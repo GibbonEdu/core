@@ -27,6 +27,10 @@ namespace Gibbon\Forms\Input;
  */
 class Password extends TextField
 {
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '<input type="password" '.$this->getAttributeString().'>';

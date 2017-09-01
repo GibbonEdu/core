@@ -37,6 +37,12 @@ class CustomField extends Input
 
     protected $customField;
 
+    /**
+     * Creates a variable input type from a passed row of custom field settings (often from the database).
+     * @param  FormFactoryInterface  $factory
+     * @param  string                $name
+     * @param  array                 $fields
+     */
     public function __construct(FormFactoryInterface $factory, $name, $fields)
     {
         $this->factory = $factory;
@@ -87,6 +93,10 @@ class CustomField extends Input
         parent::__construct($name);
     }
 
+    /**
+     * Sets the value of the custom field depending on it's internal type.
+     * @param  mixed  $value
+     */
     public function setValue($value = '')
     {
         switch($this->type) {
@@ -110,11 +120,19 @@ class CustomField extends Input
         return $this;
     }
 
+    /**
+     * Gets the internal Input object
+     * @return  object Input
+     */
     protected function getElement()
     {
         return $this->customField->getElement();
     }
 
+    /**
+     * Get the validation output from the internal Input object.
+     * @return  string
+     */
     public function getValidationOutput()
     {
         return $this->customField->getValidationOutput();

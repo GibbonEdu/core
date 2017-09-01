@@ -24,7 +24,7 @@ use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\FormFactoryInterface;
 
 /**
- * Column
+ * Holds a collection of form elements to be output vertically.
  *
  * @version v14
  * @since   v14
@@ -33,12 +33,21 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
 {
     protected $class = 'column';
 
+    /**
+     * Construct a column with access to a specific factory.
+     * @param  FormFactoryInterface  $factory
+     * @param  string                $id
+     */
     public function __construct(FormFactoryInterface $factory, $id = '')
     {
         $this->setClass('column');
         parent::__construct($factory, $id);
     }
 
+    /**
+     * Iterate over each element in the collection and concatenate the output.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';
@@ -52,11 +61,20 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         return $output;
     }
 
+    /**
+     * Dead-end stub for interface: columns cannot validate.
+     * @param   string  $name
+     * @return  self
+     */
     public function addValidation($name)
     {
         return $this;
     }
 
+    /**
+     * Iterate over each element in the collection and get the combined validation output.
+     * @return  string
+     */
     public function getValidationOutput()
     {
         $output = '';
