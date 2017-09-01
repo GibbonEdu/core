@@ -52,6 +52,15 @@ class Select extends Input
         return $this;
     }
 
+    public function selectAll()
+    {
+        if ($this->getAttribute('multiple') == true) {
+            $this->selected = array_keys($this->options);
+        }
+
+        return $this;
+    }
+
     public function selectMultiple($value = true)
     {
         $this->setAttribute('multiple', $value);
