@@ -34,6 +34,11 @@ class FileUpload extends Input
     protected $attachmentPath;
     protected $canDelete = true;
 
+    /**
+     * Set an array or CSV string of file extensions accepted by this file input.
+     * @param   array|string  $accepts
+     * @return  self
+     */
     public function accepts($accepts)
     {
         if (is_string($accepts)) {
@@ -56,6 +61,12 @@ class FileUpload extends Input
         return $this;
     }
 
+    /**
+     * Set the attachment name and path.
+     * @param  string $name
+     * @param  string  $absoluteURL
+     * @param  string  $filePath
+     */
     public function setAttachment($name, $absoluteURL, $filePath = '')
     {
         $this->absoluteURL = $absoluteURL;
@@ -65,6 +76,10 @@ class FileUpload extends Input
         return $this;
     }
 
+    /**
+     * Set the URL to visit if the delete action is clicked.
+     * @param  string  $actionURL
+     */
     public function setDeleteAction($actionURL)
     {
         $this->deleteAction = ltrim($actionURL, '/');
@@ -72,6 +87,11 @@ class FileUpload extends Input
         return $this->canDelete(true);
     }
 
+    /**
+     * Sets whether the attachment will have a delete option.
+     * @param   bool  $value
+     * @return  self
+     */
     public function canDelete($value)
     {
         $this->canDelete = $value;
@@ -79,6 +99,10 @@ class FileUpload extends Input
         return $this;
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '';

@@ -39,29 +39,52 @@ class Radio extends Input
         $this->setName($name);
     }
 
+    /**
+     * Set the value of the radio element.
+     * @param   mixed  $value
+     * @return  self
+     */
     public function checked($value)
     {
         $this->setValue(trim($value));
         return $this;
     }
 
+    /**
+     * Sets multiple radio elements to display horizontally.
+     * @param   bool    $value
+     * @return  self
+     */
     public function inline($value = true)
     {
         $this->inline = $value;
         return $this;
     }
 
+    /**
+     * Dead-end stub for interface: LiveValidation does not support Radio elements.
+     * @param  string  $type
+     * @param  string  $params
+     */
     public function addValidation($type, $params = '')
     {
-        // Override and prevent; LiveValidation does not support Radio elements
         return $this;
     }
 
+    /**
+     * Return true if the passed value matches the current radio element value.
+     * @param   mixed  $value
+     * @return  bool
+     */
     protected function getIsChecked($value)
     {
         return (!is_null($this->getValue()) && $value == $this->getValue());
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '';

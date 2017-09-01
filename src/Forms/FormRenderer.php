@@ -37,6 +37,10 @@ class FormRenderer implements FormRendererInterface
         'cell' => 'td',
     );
 
+    /**
+     * Create and return an instance of FormRenderer.
+     * @return  object FormRenderer
+     */
     public static function create()
     {
         return new FormRenderer();
@@ -47,6 +51,11 @@ class FormRenderer implements FormRendererInterface
         $this->wrappers[$name] = $value;
     }
 
+    /**
+     * Transform a Form object into a string of HTML and javascript output.
+     * @param   Form    $form
+     * @return  string
+     */
     public function renderForm(Form $form)
     {
         $output = '';
@@ -102,6 +111,10 @@ class FormRenderer implements FormRendererInterface
         return $output;
     }
 
+    /**
+     * Get the minimum columns required to render this form.
+     * @return  int
+     */
     protected function getColumnCount(Form $form, $rows)
     {
         $count = 0;
