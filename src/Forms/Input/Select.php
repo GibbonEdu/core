@@ -63,6 +63,20 @@ class Select extends Input
     }
 
     /**
+     * Set the selected element(s) to include all available options.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function selectAll()
+    {
+        if ($this->getAttribute('multiple') == true) {
+            $this->selected = array_keys($this->options);
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets the select input attribute to handle multiple selections.
      * @param   bool    $value
      * @return  self
