@@ -441,7 +441,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $table->addRow();
-        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(20);
+        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
         $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
         $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
         $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
@@ -721,7 +721,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     // Add additional sibling rows up to 3
     for ($i = 1; $i <= 3; ++$i) {
         $row = $table->addRow();
-        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(30);
+        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
         $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
         $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
         $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);

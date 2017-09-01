@@ -65,6 +65,21 @@ if ($proceed == false) {
 
     if (isset($_SESSION[$guid]['username']) == false) {
         echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).'</div>';
+    } else {
+        // Application Manager
+        if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php')) {
+            $applicationType = (isset($_POST['applicationType']))? $_POST['applicationType'] : '';
+
+            if ($applicationType == 'blank') {
+                $public = true;
+                $gibbonFamilyID = null;
+                $gibbonPersonID = null;
+            } else if ($applicationType == 'family') {
+                $gibbonFamilyID = (isset($_POST['gibbonFamilyID']))? $_POST['gibbonFamilyID'] : '';
+            } else if ($applicationType == 'person') {
+                $gibbonPersonID = (isset($_POST['gibbonPersonID']))? $_POST['gibbonPersonID'] : '';
+            }
+        }
     }
 
     $returnExtra = '';
@@ -146,6 +161,9 @@ if ($proceed == false) {
 
     // SIBLING APPLICATIONS
     if ($siblingApplicationMode == true) {
+        $gibbonFamilyID = (!empty($application['gibbonFamilyID']))? $application['gibbonFamilyID'] : null;
+        $gibbonPersonID = null;
+
         $form->addHiddenValue('linkedApplicationFormID', $gibbonApplicationFormID);
 
         $row = $form->addRow()->setClass('break');
@@ -366,7 +384,7 @@ if ($proceed == false) {
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $table->addRow();
-        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(20);
+        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
         $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
         $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
         $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
@@ -387,8 +405,13 @@ if ($proceed == false) {
     }
 
     // FAMILY
-    $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-    $sqlSelect = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID ORDER BY name';
+    if (!empty($gibbonFamilyID)) {
+        $dataSelect = array('gibbonFamilyID' => $gibbonFamilyID);
+        $sqlSelect = 'SELECT * FROM gibbonFamily WHERE gibbonFamily.gibbonFamilyID=:gibbonFamilyID ORDER BY name';
+    } else {
+        $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+        $sqlSelect = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID GROUP BY gibbonFamily.gibbonFamilyID ORDER BY name';
+    }
 
     $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
 
@@ -422,14 +445,31 @@ if ($proceed == false) {
         }
 
         // PARENT 1 - IF EXISTS
-        if (isset($_SESSION[$guid]['username']) || !empty($application['parent1gibbonPersonID']) ) {
-            $fromData = (!empty($application['parent1gibbonPersonID']) && !empty($application['parent1username']));
+        if (!empty($gibbonPersonID) || !empty($application['parent1gibbonPersonID'])) {
 
-            $parent1username = ($fromData)? $application['parent1username'] : $_SESSION[$guid]['username'];
-            $parent1email = ($fromData)? $application['parent1email'] : $_SESSION[$guid]['email'];
-            $parent1surname = ($fromData)? $application['parent1surname'] : $_SESSION[$guid]['surname'];
-            $parent1preferredName = ($fromData)? $application['parent1preferredName'] : $_SESSION[$guid]['preferredName'];
-            $parent1gibbonPersonID = ($fromData)? $application['parent1gibbonPersonID'] : $gibbonPersonID;
+            if (!empty($application['parent1gibbonPersonID'])) {
+                // Get parent info from sibling application
+                $parent1username = $application['parent1username'];
+                $parent1email = $application['parent1email'];
+                $parent1surname = $application['parent1surname'];
+                $parent1preferredName = $application['parent1preferredName'];
+                $parent1fields = $application['parent1fields'];
+                $parent1gibbonPersonID = $application['parent1gibbonPersonID'];
+            } else {
+                // Get parent info from gibbonPersonID
+                $dataParent = array('gibbonPersonID' => $gibbonPersonID);
+                $sqlParent = 'SELECT username, email, surname, preferredName, fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+                $resultParent= $pdo->executeQuery($dataParent, $sqlParent);
+
+                if ($parent = $resultParent->fetch()) {
+                    $parent1username = $parent['username'];
+                    $parent1email = $parent['email'];
+                    $parent1surname = $parent['surname'];
+                    $parent1preferredName = $parent['preferredName'];
+                    $parent1fields = $parent['fields'];
+                    $parent1gibbonPersonID = $gibbonPersonID;
+                }
+            }
 
             $form->addRow()->addHeading(__('Parent/Guardian').' 1');
 
@@ -453,7 +493,7 @@ if ($proceed == false) {
                 $row->addSelectRelationship('parent1relationship')->isRequired();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
+            $existingFields = (!empty($parent1fields))? unserialize($parent1fields) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow();
@@ -486,7 +526,8 @@ if ($proceed == false) {
             $form->addRow()->addHeading(__('Parent/Guardian').' '.$i)->append($subheading);
 
             if ($i == 2) {
-                $form->addRow()->addCheckbox('secondParent')->setValue('No')->prepend(__('Do not include a second parent/guardian'));
+                $checked = ($siblingApplicationMode && !empty($application['parent2gibbonPersonID']))? 'No' : 'Yes';
+                $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
             }
 
@@ -687,7 +728,7 @@ if ($proceed == false) {
             $name = formatName('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
 
             $row = $table->addRow();
-            $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(30)->setValue($name);
+            $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(26)->setValue($name);
             $row->addDate('siblingDOB'.$rowCount)->setSize(10)->setValue(dateConvertBack($guid, $rowSibling['dob']));
             $row->addTextField('siblingSchool'.$rowCount)->maxLength(50)->setSize(30)->setValue($_SESSION[$guid]['organisationName']);
             $row->addDate('siblingSchoolJoiningDate'.$rowCount)->setSize(10)->setValue(dateConvertBack($guid, $rowSibling['dateStart']));
@@ -699,7 +740,7 @@ if ($proceed == false) {
     // Add additional sibling rows up to 3
     for ($i = $rowCount; $i <= 3; ++$i) {
         $row = $table->addRow();
-        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(30);
+        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
         $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
         $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
         $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
@@ -908,6 +949,15 @@ if ($proceed == false) {
         $row = $form->addRow();
             $row->addLabel('agreement', '<b>'.__('Do you agree to the above?').'</b>');
             $row->addCheckbox('agreement')->fromArray(array('on' => __('Yes')))->isRequired();
+    }
+
+    // OFFICE ONLY
+    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php')) {
+        $form->addRow()->addHeading(__('For Office Use'));
+
+        $row = $form->addRow();
+            $row->addLabel('skipEmailNotification', '<b>'.__('Skip sending a notification email to parents?').'</b>');
+            $row->addCheckbox('skipEmailNotification')->fromArray(array('on' => __('Yes')))->checked('on');
     }
 
     $row = $form->addRow();
