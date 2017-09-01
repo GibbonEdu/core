@@ -102,6 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $pdo->executeQuery($data, $sql);
                 if (!$pdo->getQuerySuccess()) $partialFail = true;
             }
+
+            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonRollGroupID' => $syncID, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
+            $sql = "INSERT INTO gibbonCourseClassMap SET gibbonCourseClassID=:gibbonCourseClassID, gibbonRollGroupID=:gibbonRollGroupID, gibbonYearGroupIDList=:gibbonYearGroupIDList ON DUPLICATE KEY UPDATE gibbonRollGroupID=:gibbonRollGroupID, gibbonYearGroupIDList=:gibbonYearGroupIDList";
+            $pdo->executeQuery($data, $sql);
         }
 
         if ($partialFail) {
