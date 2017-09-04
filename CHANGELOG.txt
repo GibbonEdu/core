@@ -41,6 +41,7 @@ v15.0.00
 		System: fixed bug preventing activity day from being correctly shown in Parent Dashboard
         System: added login options to Login with Google button
         System: added mbstring extension to the system requirements list
+		Activities: added new payment fields to activities (cost type and cost status)
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
