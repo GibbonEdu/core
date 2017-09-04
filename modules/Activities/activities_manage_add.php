@@ -373,39 +373,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				</td>
 			</tr>
 			<tr>
-				<td>
-					<b><?php echo __($guid, 'Cost') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'For entire programme').'. '.$_SESSION[$guid]['currency'].'.' ?><br/></span>
-				</td>
-				<td class="right">
-					<?php
-                        if (getSettingByScope($connection2, 'Activities', 'payment') == 'None' or getSettingByScope($connection2, 'Activities', 'payment') == 'Single') {
-                            ?>
-						 	<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="Per Activty payment is switched off" type="text" class="standardWidth">
-							<?php
-
-                        } else {
-                            ?>
-							<input name="payment" id="payment" maxlength=9 value="0" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var payment=new LiveValidation('payment');
-								payment.add(Validate.Presence);
-                                payment.add(Validate.Numericality, { minimum: 0, maximum: 999999.99 } );
-							</script>
-							 <?php
-
-                        }
-   				 		?>
-
-				</td>
-			</tr>
-			<tr>
 				<td colspan=2>
 					<b><?php echo __($guid, 'Description') ?></b>
 					<?php echo getEditor($guid,  true, 'description', '', 10, true) ?>
 				</td>
 			</tr>
 
+            <?php
+            if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
+                ?>
+                <tr class='break'>
+                    <td colspan=2>
+                        <h3><?php echo __($guid, 'Cost') ?></h3>
+                    </td>
+                </tr>
+                <tr>
+    				<td>
+    					<b><?php echo __($guid, 'Cost') ?> *</b><br/>
+    					<span class="emphasis small"><?php echo $_SESSION[$guid]['currency'].'.' ?><br/></span>
+    				</td>
+    				<td class="right">
+                        <input name="payment" id="payment" maxlength=9 value="0" type="text" class="standardWidth">
+                        <script type="text/javascript">
+                            var payment=new LiveValidation('payment');
+                            payment.add(Validate.Presence);
+                            payment.add(Validate.Numericality, { minimum: 0, maximum: 999999.99 } );
+                        </script>
+    				</td>
+    			</tr>
+                <tr>
+                    <td>
+    					<b><?php echo __($guid, 'Cost Type') ?> *</b><br/>
+    				</td>
+    				<td class="right">
+    					<select name="paymentType" id="paymentType" class="standardWidth">
+    						<option value="Entire Programme"><?php echo __($guid, 'Entire Programme') ?></option>
+    						<option value="Per Session"><?php echo __($guid, 'Per Session') ?></option>
+    						<option value="Per Week"><?php echo __($guid, 'Per Week') ?></option>
+    						<option value="Per Term"><?php echo __($guid, 'Per Term') ?></option>
+    					</select>
+    				</td>
+    			</tr>
+                <tr>
+                    <td>
+    					<b><?php echo __($guid, 'Cost Status') ?> *</b><br/>
+    				</td>
+    				<td class="right">
+    					<select name="paymentFirmness" id="paymentFirmness" class="standardWidth">
+    						<option value="Finalised"><?php echo __($guid, 'Finalised') ?></option>
+    						<option value="Estimated"><?php echo __($guid, 'Estimated') ?></option>
+    					</select>
+    				</td>
+    			</tr>
+                <?php
+            }
+            ?>
 
 			<tr class='break'>
 				<td colspan=2>
