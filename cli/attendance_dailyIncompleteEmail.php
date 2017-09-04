@@ -157,11 +157,13 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                 JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonTTDayDate.date=:date
                 AND gibbonTTColumnRow.timeStart<=:time
                 AND gibbonCourseClassPerson.role='Teacher'
                 AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonCourseClass.attendance='Y'
+                AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
                 ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $result = $connection2->prepare($sql);
