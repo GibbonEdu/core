@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         $row->addTextField('pattern')
             ->isRequired()
-            ->setValue('[yearGroupShortName]-[classShortName]')
+            ->setValue('[yearGroupShortName].[classShortName]')
             ->addValidation('Validate.Format', 'pattern: /(\[classShortName\])/');
 
     $row = $form->addRow();

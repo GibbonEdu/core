@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$step = (isset($_POST['step']) && $_POST['step'] <= 3)? $_POST['step'] : 1;
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_run.php';
+$gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? $_POST['gibbonYearGroupIDList'] : null;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_run.php&gibbonYearGroupIDList='.$gibbonYearGroupIDList;
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_run.php') == false) {
@@ -29,76 +29,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     exit;
 } else {
     //Proceed!
-    $gibbonYearGroupID = (isset($_POST['gibbonYearGroupID']))? $_POST['gibbonYearGroupID'] : null;
 
-    if (empty($gibbonYearGroupID)) {
+    $syncData = (isset($_POST['syncData']))? $_POST['syncData'] : false;
+
+    if (empty($gibbonYearGroupIDList) || empty($syncData)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     } else {
         $partialFail = false;
 
-        $includeStudents = (isset($_POST['includeStudents']))? $_POST['includeStudents'] : false;
-        $includeTeachers = (isset($_POST['includeTeachers']))? $_POST['includeTeachers'] : false;
+        foreach ($syncData as $gibbonRollGroupID => $usersToEnrol) {
 
-        // Pull up the class mapping for this year group
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $gibbonYearGroupID);
-        $sql = "SELECT gibbonCourseClassMap.*
-                FROM gibbonCourseClassMap
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonCourseClassMap.gibbonRollGroupID)
-                WHERE gibbonCourseClassMap.gibbonYearGroupID=:gibbonYearGroupID
-                AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
-        $result = $pdo->executeQuery($data, $sql);
+            if (empty($usersToEnrol)) continue;
 
-        if ($result->rowCount() == 0) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-            exit;
-        }
+            $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
 
-        while ($classMap = $result->fetch()) {
-            $data = array(
-                'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
-                'gibbonCourseClassID' => $classMap['gibbonCourseClassID'],
-                'gibbonYearGroupID' => $classMap['gibbonYearGroupID'],
-                'gibbonRollGroupID' => $classMap['gibbonRollGroupID'],
-                'date' => date('Y-m-d'),
-            );
+            foreach ($usersToEnrol as $gibbonPersonID => $role) {
+                $data['gibbonPersonID'] = $gibbonPersonID;
+                $data['role'] = $role;
 
-            // Sync students
-            if ($includeStudents) {
                 $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                SELECT :gibbonCourseClassID, gibbonPerson.gibbonPersonID, 'Student', 'Y'
-                FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
-                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID
-                AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID
-                AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
-                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
-                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, 'Y'
+                        FROM gibbonCourseClassMap
+                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
 
                 $pdo->executeQuery($data, $sql);
-                if (!$pdo->getQuerySuccess()) $partialFail = true;
-            }
 
-            // Sync teachers by homeroom if enabled
-            if ($includeTeachers) {
-                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                SELECT :gibbonCourseClassID, gibbonPerson.gibbonPersonID, 'Teacher', 'Y'
-                FROM gibbonPerson
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
-                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID)
-                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID
-                AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
-                AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
-                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
-
-                $pdo->executeQuery($data, $sql);
                 if (!$pdo->getQuerySuccess()) $partialFail = true;
             }
         }

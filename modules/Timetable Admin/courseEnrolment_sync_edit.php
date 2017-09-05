@@ -112,8 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             foreach ($classes as $class) {
                 $row = $table->addRow();
-                    $row->addCheckbox('syncEnabled['.$class['gibbonCourseClassID'].']')->checked(!empty($class['syncTo']))->setClass($course['gibbonCourseID'])->description('&nbsp;&nbsp;');
-                    $row->addLabel('syncEnabled['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])->setTitle($class['courseNameShort']);
+                    $row->addCheckbox('syncEnabled['.$class['gibbonCourseClassID'].']')
+                        ->checked(!empty($class['syncTo']))
+                        ->setClass($course['gibbonCourseID'])
+                        ->description('&nbsp;&nbsp;');
+                    $row->addLabel('syncEnabled['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])->setTitle($class['courseNameShort'])->setClass('mediumWidth');
                     $row->addContent( (empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )->setClass('shortWidth right');
                     $row->addSelectRollGroup('syncTo['.$class['gibbonCourseClassID'].']', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($class['syncTo'])->setClass('mediumWidth');
             }

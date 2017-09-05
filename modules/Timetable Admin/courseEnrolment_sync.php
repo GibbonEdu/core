@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $form = Form::create('settings', $_SESSION[$guid]['absoluteURL'].'/modules/Timetable Admin/courseEnrolment_sync_settingsProcess.php');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $setting = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolClasses', true);
+    $setting = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
@@ -69,20 +69,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     $results = $pdo->executeQuery($data, $sql);
 
+    $classMaps = $results->fetchAll();
+
+    $classMapsYearGroups = array_column($classMaps, 'gibbonYearGroupID');
+    $classMapsYearGroups = implode(',', $classMapsYearGroups);
+
     echo '<h3>';
     echo __('Map Classes');
     echo '</h3>';
 
     echo '<p>';
-    echo __('Syncing enrolment lets you enrol students into classes by mapping them to a Year Group and Roll Group within the school. If auto-enrol is turned on, new students accepted through the application form and student enrolment process will be enroled in classes automatically.');
+    echo __('Syncing enrolment lets you enrol students into courses by mapping them to a Roll Group and Year Group within the school. If auto-enrol is turned on, new students accepted through the application form and student enrolment process will be enroled in courses automatically.');
     echo '<p>';
 
     echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>&nbsp; | ";
+
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$classMapsYearGroups."'>".__('Sync All')."<img style='margin-left: 5px;width:22px;height:22px;' title='".__('Sync All')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a>";
+
     echo '</div>';
 
 
-    if ($results->rowCount() == 0) {
+    if (empty($classMaps)) {
         echo '<div class="error">';
         echo __("There are no records to display.") ;
         echo '</div>';
@@ -104,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</th>';
         echo '</tr>';
 
-        while ($mapping = $results->fetch()) {
+        foreach ($classMaps as $mapping) {
             echo '<tr>';
                 echo '<td>'.$mapping['gibbonYearGroupName'].'</td>';
                 echo '<td>'.$mapping['rollGroupList'].'</td>';
@@ -114,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_delete.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> &nbsp;";
 
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Sync Now')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png' width='22' height='22'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$mapping['gibbonYearGroupID']."'><img title='".__('Sync Now')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png' style='width:22px;height:22px;'/></a>";
                 echo '</td>';
             echo '</tr>';
         }
