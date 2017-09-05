@@ -822,5 +822,6 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 UPDATE gibbonAction SET URLList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND name='Manage Applications_edit';end
 UPDATE gibbonAction SET URLList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND name='Manage Applications_editDelete';end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Application Form Accepted', 'Students', 'Manage Applications_edit', 'Core', 'All,gibbonYearGroupID', 'Y');end
+ALTER TABLE `gibbonActivity` ADD `paymentType` ENUM('Entire Programme','Per Session','Per Week','Per Term') NULL DEFAULT 'Entire Programme' AFTER `payment`, ADD `paymentFirmness` ENUM('Finalised','Estimated') NULL DEFAULT 'Finalised' AFTER `paymentType`;end
 
 ";
