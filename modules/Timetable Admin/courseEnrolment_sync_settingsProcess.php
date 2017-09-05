@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     //Proceed!
     $partialFail = false;
 
-    $autoEnrolClasses = (isset($_POST['autoEnrolClasses']))? $_POST['autoEnrolClasses'] : '';
+    $autoEnrolCourses = (isset($_POST['autoEnrolCourses']))? $_POST['autoEnrolCourses'] : '';
     try {
-        $data = array('value' => $autoEnrolClasses);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Timetable Admin' AND name='autoEnrolClasses'";
+        $data = array('value' => $autoEnrolCourses);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Timetable Admin' AND name='autoEnrolCourses'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
