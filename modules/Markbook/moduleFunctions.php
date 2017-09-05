@@ -379,6 +379,25 @@ function getCriteriaGrade($pdo, $criteriaType, $gibbonSchoolYearID, $gibbonPerso
     return ($rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
 }
 
+function getLegacyGrade($pdo, $reportName, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID) {
+    // read criteria for this subject
+    $data = array(
+        'reportName' => $reportName,
+        'gibbonCourseClassID' => $gibbonCourseClassID,
+        'gibbonPersonID' => $gibbonPersonIDStudent,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    );
+    $sql = "SELECT grade
+        FROM arrLegacyGrade
+        WHERE arrLegacyGrade.reportTerm=:reportName
+        AND arrLegacyGrade.gibbonSchoolYearID=:gibbonSchoolYearID
+        AND arrLegacyGrade.gibbonPersonID=:gibbonPersonID
+        AND arrLegacyGrade.gibbonCourseClassID=:gibbonCourseClassID";
+    $rs = $pdo->executeQuery($data, $sql);
+
+    return ($rs && $rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
+}
+
 function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
 
     $data = array(
@@ -425,41 +444,52 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
     echo '</table>';
 }
 
-function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gibbonCourseClassID ) {
+function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gibbonCourseClassID, $gibbonSchoolYearID) {
 
     $guid = $gibbon->guid();
+    $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
 
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-
-    $sem1Mid = getReportGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-    $sem1End = getReportGrade($pdo, 'Sem1-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-    $sem2Mid = getReportGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-    $sem2End = getReportGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-
-    $finalMark = getCriteriaGrade($pdo, 4, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-
-    if (!empty($finalMark)) {
+    if (intval($gibbonSchoolYearID) < 11) {
+        // LEGACY GRADES
+        $sem1Mid = getLegacyGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem1End = getLegacyGrade($pdo, 'Sem1-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem2Mid = getLegacyGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem2End = getLegacyGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $finalMark = getLegacyGrade($pdo, 'Final', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
         $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
-
-        $courseMark = '';
-        $examMark = getCriteriaGrade($pdo, 1, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
     } else {
+        // Gibbon Reporting Grades
+        $sem1Mid = getReportGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem1End = getReportGrade($pdo, 'Sem1-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem2Mid = getReportGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem2End = getReportGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
-        $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-        if ($enableColumnWeighting != 'Y') return;
+        $finalMark = getCriteriaGrade($pdo, 4, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
-        require_once './modules/Markbook/src/markbookView.php';
+        if (!empty($finalMark)) {
 
-        // Build the markbook object for this class & student
-        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
-        $markbook->cacheWeightings( $gibbonPersonIDStudent );
+            $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
 
-        $message = '<b>Current course</b>: Overall mark is a cumulative grade from ongoing course work.';
+            $courseMark = '';
+            $examMark = getCriteriaGrade($pdo, 1, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        } else {
 
-        $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
-        $examMark = ''; //round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
-        $finalMark = ''; //round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
+            $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
+            if ($enableColumnWeighting != 'Y') return;
+
+            require_once './modules/Markbook/src/markbookView.php';
+
+            // Build the markbook object for this class & student
+            $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+            $markbook->cacheWeightings( $gibbonPersonIDStudent );
+
+            $message = '<b>Current course</b>: Overall mark is a cumulative grade from ongoing course work.';
+
+            $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
+            $examMark = ''; //round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
+            $finalMark = ''; //round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
+        }
     }
 
     // Only display if there are marks
@@ -521,5 +551,9 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
         echo '</tr></table>';
         echo '</td>';
         echo '</tr>';
+
+        return true;
+    } else {
+        return false;
     }
 }
