@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
 
     echo $form->getOutput();
-    
+
     if ($currentDate != '') {
         echo '<h2>';
         echo __($guid, 'Report Data');
@@ -100,6 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $log = array();
             $currentStudent = '';
             $lastStudent = '';
+            $count = 0;
             while ($row = $result->fetch()) {
                 $currentStudent = $row['gibbonPersonID'];
                 if ( $attendance->isTypeOnsite($row['type']) and $currentStudent != $lastStudent) {
@@ -141,6 +142,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
                 echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
                 echo '<tr class="head">';
+                echo '<th>';
+                echo __($guid, 'Count');
+                echo '</th>';
                 echo '<th style="width:80px">';
                 echo __($guid, 'Roll Group');
                 echo '</th>';
@@ -175,8 +179,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                             continue;
                         }
 
+                        $count ++;
+
                         // Row
                         echo "<tr>";
+                        echo '<td>';
+                            echo $count;
+                        echo '</td>';
                         echo '<td>';
                             echo $row['rollGroupName'];
                         echo '</td>';
