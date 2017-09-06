@@ -2149,6 +2149,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'] );
 
                                     while ($rowList = $resultList->fetch()) {
+                                        echo "<a name='".$rowList['gibbonCourseClassID']."'></a><h4>".$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
+
+                                        try {
+                                            $dataTeachers = array('gibbonCourseClassID' => $rowList['gibbonCourseClassID']);
+                                            $sqlTeachers = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+                                            $resultTeachers = $connection2->prepare($sqlTeachers);
+                                            $resultTeachers->execute($dataTeachers);
+                                        } catch (PDOException $e) {
+                                            echo "<div class='error'>".$e->getMessage().'</div>';
+                                        }
+
+                                        $teachers = '<p><b>'.__($guid, 'Taught by:').'</b> ';
+                                        while ($rowTeachers = $resultTeachers->fetch()) {
+                                            $teachers = $teachers.$rowTeachers['title'].' '.$rowTeachers['surname'].', ';
+                                        }
+                                        $teachers = substr($teachers, 0, -2);
+                                        $teachers = $teachers.'</p>';
+                                        echo $teachers;
+
+                                        if ($rowList['target'] != '') {
+                                            echo "<div style='font-weight: bold' class='linkTop'>";
+                                            echo __($guid, 'Target').': '.$rowList['target'];
+                                            echo '</div>';
+                                        }
+
+                                        echo "<table cellspacing='0' style='width: 100%'>";
+
                                         try {
                                             $dataEntry['gibbonPersonID'] = $gibbonPersonID;
                                             $dataEntry['gibbonCourseClassID'] = $rowList['gibbonCourseClassID'];
@@ -2164,32 +2191,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         }
 
                                         if ($resultEntry->rowCount() > 0) {
-                                            echo "<a name='".$rowList['gibbonCourseClassID']."'></a><h4>".$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
-
-                                            try {
-                                                $dataTeachers = array('gibbonCourseClassID' => $rowList['gibbonCourseClassID']);
-                                                $sqlTeachers = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
-                                                $resultTeachers = $connection2->prepare($sqlTeachers);
-                                                $resultTeachers->execute($dataTeachers);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
-
-                                            $teachers = '<p><b>'.__($guid, 'Taught by:').'</b> ';
-                                            while ($rowTeachers = $resultTeachers->fetch()) {
-                                                $teachers = $teachers.$rowTeachers['title'].' '.$rowTeachers['surname'].', ';
-                                            }
-                                            $teachers = substr($teachers, 0, -2);
-                                            $teachers = $teachers.'</p>';
-                                            echo $teachers;
-
-                                            if ($rowList['target'] != '') {
-                                                echo "<div style='font-weight: bold' class='linkTop'>";
-                                                echo __($guid, 'Target').': '.$rowList['target'];
-                                                echo '</div>';
-                                            }
-
-                                            echo "<table cellspacing='0' style='width: 100%'>";
                                             echo "<tr class='head'>";
                                             echo "<th style='width: 120px'>";
                                             echo __($guid, 'Assessment');
@@ -2439,17 +2440,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     echo '</tr>';
                                                 }
                                             }
-
-                                            $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
-                                            $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
-
-                                            if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
-                                                renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
-                                            }
-
-                                            echo '</table>';
-
                                         }
+
+                                        $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+                                        $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
+
+                                        if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
+                                            $gibbonSchoolYearID = (!empty($dataList['filter']))? $dataList['filter'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+                                            if (renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID'], $gibbonSchoolYearID)) {
+                                                $entryCount++;
+                                            }
+                                        }
+
+                                        echo '</table>';
                                     }
                                 }
                                 if ($entryCount < 1) {
