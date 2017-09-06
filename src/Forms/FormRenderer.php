@@ -46,6 +46,11 @@ class FormRenderer implements FormRendererInterface
         return new FormRenderer();
     }
 
+    /**
+     * Change the defailt HTML wrappers for a particular scope.
+     * @param    string  $name
+     * @param    string  $value
+     */
     public function setWrapper($name, $value)
     {
         $this->wrappers[$name] = $value;
