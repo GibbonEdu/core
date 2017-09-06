@@ -37,12 +37,14 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
     if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_edit.php') == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
+        exit;
     } else {
         //Proceed!
         //Check if person specified
         if ($gibbonStudentEnrolmentID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
+            exit;
         } else {
             try {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
@@ -52,12 +54,13 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
+                exit;
             } else {
                 $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
                 $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
@@ -76,11 +79,13 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
+                    exit;
                 }
 
                 if ($result->rowCount() > 0) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     //Write to database
                     try {
@@ -91,11 +96,47 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
-                        exit();
+                        exit;
+                    }
+
+                    // Handle automatic course enrolment if enabled
+                    $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                    if ($autoEnrolStudent == 'Y') {
+
+                        // Remove existing auto-enrolment: moving a student from one Roll Group to another
+                        $gibbonRollGroupIDOriginal = (isset($_POST['gibbonRollGroupIDOriginal']))? $_POST['gibbonRollGroupIDOriginal'] : 'N';
+
+                        $data = array('gibbonRollGroupIDOriginal' => $gibbonRollGroupIDOriginal, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
+                        $sql = "DELETE gibbonCourseClassPerson FROM gibbonStudentEnrolment
+                                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                                AND gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupIDOriginal";
+                        $pdo->executeQuery($data, $sql);
+
+                        if ($pdo->getQuerySuccess() == false) {
+                            $URL .= "&return=warning3";
+                            header("Location: {$URL}");
+                            exit;
+                        }
+
+                        // Add course enrolments for new Roll Group
+                        $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
+                        $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
+                                SELECT gibbonCourseClassMap.gibbonCourseClassID, gibbonStudentEnrolment.gibbonPersonID, 'Student', 'Y'
+                                FROM gibbonStudentEnrolment JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID";
+                        $pdo->executeQuery($data, $sql);
+
+                        if ($pdo->getQuerySuccess() == false) {
+                            $URL .= "&return=warning3";
+                            header("Location: {$URL}");
+                            exit;
+                        }
                     }
 
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
+                    exit;
                 }
             }
         }

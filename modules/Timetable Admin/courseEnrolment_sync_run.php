@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
             $header = $table->addHeaderRow();
                 $header->addCheckbox('checkall'.$classMap['gibbonYearGroupID'])->checked(true);
-                $header->addContent(__('Student'));
+                $header->addContent(__('Name'));
                 $header->addContent(__('Role'));
                 $header->addContent(__('Roll Group'));
                 $header->addContent(__('Enrolment by Class'));
