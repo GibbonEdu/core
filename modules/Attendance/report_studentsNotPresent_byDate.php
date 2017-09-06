@@ -101,6 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $log = array();
             $currentStudent = '';
             $lastStudent = '';
+            $count = 0 ;
             while ($row = $result->fetch()) {
                 $currentStudent = $row['gibbonPersonID'];
                 if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
@@ -141,6 +142,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
                 echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
                 echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Count');
+                echo '</th>';
                 echo '<th style="width:80px">';
                 echo __($guid, 'Roll Group');
                 echo '</th>';
@@ -176,8 +180,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                             continue;
                         }
 
+                        $count ++;
+
                         // ROW
                         echo "<tr>";
+                        echo '<td>';
+                            echo $count;
+                        echo '</td>';
                         echo '<td>';
                             echo $row['rollGroupName'];
                         echo '</td>';

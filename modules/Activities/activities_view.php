@@ -447,7 +447,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 if (substr($_SESSION[$guid]['currency'], 4) != '') {
                                     echo substr($_SESSION[$guid]['currency'], 4);
                                 }
-                                echo number_format($row['payment'], 2);
+                                echo number_format($row['payment'], 2)."<br/>";
+                                echo __($row['paymentType'])."<br/>";
+                                if ($row['paymentFirmness'] != 'Finalised') {
+                                    echo __($row['paymentFirmness'])."<br/>";
+                                }
                             }
                         }
                         echo '</td>';
