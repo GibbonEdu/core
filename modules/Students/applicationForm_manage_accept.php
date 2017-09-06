@@ -144,6 +144,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<li><?php echo __($guid, 'Set the status of the application to "Accepted".') ?></li>
 								</ol>
 								<br/>
+                                <?php
+                                // Handle optional auto-enrol feature
+                                if (!empty($row['gibbonRollGroupID'])) {
+                                    $data = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                                    $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap WHERE gibbonRollGroupID=:gibbonRollGroupID";
+                                    $resultClassMap = $pdo->executeQuery($data, $sql);
+
+                                    $classMapCount = ($resultClassMap->rowCount() > 0)? $resultClassMap->fetchColumn(0) : 0;
+
+                                    // Student has a roll group and mapped classes exist
+                                    if ($classMapCount > 0) {
+                                        $checkedAutoEnrol = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses') == 'Y'? 'checked' : '';
+
+                                        echo '<u><i>'.__($guid, 'The system can optionally perform the following actions:').'</i></u><br/>';
+                                        echo '<ol>';
+                                            echo '<li><input type="checkbox" name="autoEnrolStudent" value="Y" '.$checkedAutoEnrol.'> ';
+                                            echo __('Automatically enrol student in classes for their Roll Group.').'</li>';
+                                        echo '</ol><br/>';
+                                    }
+                                }
+                                ?>
+
 								<i><u><?php echo __($guid, 'But you may wish to manually do the following:') ?></u></i><br/>
 								<ol>
 									<?php
@@ -489,6 +511,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</h4>';
                             echo '<ul>';
                             echo '<li>'.__($guid, 'The student has successfully been enroled in the specified school year, year group and roll group.').'</li>';
+
+                            // Handle automatic course enrolment if enabled
+                            $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                            if ($autoEnrolStudent == 'Y') {
+                                $data = array(
+                                    'gibbonRollGroupID' => $row['gibbonRollGroupID'],
+                                    'gibbonPersonID' => $gibbonPersonID,
+                                );
+
+                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
+                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                                        FROM gibbonCourseClassMap
+                                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
+                                $pdo->executeQuery($data, $sql);
+
+                                if (!$pdo->getQuerySuccess()) {
+                                    echo '<li class="warning">'.__($guid, 'Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
+                                } else {
+                                    echo '<li>'.__($guid, 'The student has automatically been enroled in courses for their Roll Group.').'</li>';
+                                }
+                            }
+
                             echo '</ul>';
                         }
                     }
