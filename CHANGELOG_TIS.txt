@@ -16,19 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
-v13.0.00
+v15.0.00
 --------
 
-	Significant Changes
-		Timetable Admin: added credits and course weight (for GPA calculations)
-
-	Tweaks & Bug Fixes
-		System: split the View Timetable and View Student Profile actions for greater control
-		User Admin: increased the field length of surname, preferredName, firstname, profession, employer, jobtitle, emergency1Name, emergency2Name
-		User Admin: added middleName field for query and cross-reference access
-		School Admin: increased the field length of House name, nameShort
-		Timetable Admin: increased the field length of Course name, nameShort
-		Activities: added user permission for activity organisers to manage their activity enrolment
+    Significant Changes
+        Planner: added a Student Learning page to view units and lessons by student
 
 =========
 v14.0.00
@@ -55,3 +47,18 @@ v14.0.00
         Timetable: display teacher name in timetable views
         User Admin: added an Activation Required option for canLogin
         User Admin: commented out the Delete action for users
+
+=========
+v13.0.00
+--------
+
+	Significant Changes
+		Timetable Admin: added credits and course weight (for GPA calculations)
+
+	Tweaks & Bug Fixes
+		System: split the View Timetable and View Student Profile actions for greater control
+		User Admin: increased the field length of surname, preferredName, firstname, profession, employer, jobtitle, emergency1Name, emergency2Name
+		User Admin: added middleName field for query and cross-reference access
+		School Admin: increased the field length of House name, nameShort
+		Timetable Admin: increased the field length of Course name, nameShort
+		Activities: added user permission for activity organisers to manage their activity enrolment

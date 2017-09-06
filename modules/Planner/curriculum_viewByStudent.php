@@ -178,19 +178,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculum_viewByS
 
                     echo '<table class="fullWidth colorOddEven" cellspacing="0">';
 
-                    // echo '<tr class="head">';
-                    //     echo '<th>';
-                    //         echo __('Unit');
-                    //         echo "<br/><span style='font-style: italic; font-size: 85%'>".__('Course').'</span>';
-                    //     echo '</th>';
-                    //     echo '<th>';
-                    //         echo __('Description');
-                    //     echo '</th>';
-                    //     echo '<th style="width: 80px;">';
-                    //         echo __('Actions');
-                    //     echo '</th>';
-                    // echo '</tr>';
-
                     foreach ($units as $unit) {
                         echo '<tr>';
                             echo '<td style="width: 27%;">'.$unit['name'].'</td>';
