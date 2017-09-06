@@ -33,7 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         header("Location: {$URL}");
         exit;
     } else {
-
         $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
         $sql = "DELETE FROM gibbonCourseClassMap WHERE gibbonCourseClassMap.gibbonYearGroupID=:gibbonYearGroupID";
 

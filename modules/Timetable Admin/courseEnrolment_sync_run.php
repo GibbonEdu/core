@@ -39,11 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    // Allows for a single value or a csv list of gibbonYearGroupID
     $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : null;
-
-    if (is_array($gibbonYearGroupIDList)) {
-        $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
-    }
 
     if (empty($gibbonYearGroupIDList)) {
         echo "<div class='error'>";
@@ -53,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     }
 
     if ($gibbonYearGroupIDList == 'all') {
+        // All class mappings
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.name as gibbonYearGroupName
                 FROM gibbonCourseClassMap
@@ -84,22 +82,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $form = Form::create('courseEnrolmentSyncRun', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_runProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $renderer = $form->getRenderer();
-    $renderer->setWrapper('form', 'div');
-    $renderer->setWrapper('row', 'div');
-    $renderer->setWrapper('cell', 'div');
+    // To render the form as miltiple tables
+    $form->getRenderer()->setWrapper('form', 'div');
+    $form->getRenderer()->setWrapper('row', 'div');
+    $form->getRenderer()->setWrapper('cell', 'div');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->addHiddenValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
 
-    // Checkall Options
+    // Checkall options
     $row = $form->addRow()->addContent('<h4>'.__('Options').'</h4>');
     $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
 
     $row = $table->addRow();
         $row->addLabel('includeStudents', __('Include Students'));
         $row->addCheckbox('includeStudents')->checked(true);
-
     $row = $table->addRow();
         $row->addLabel('includeTeachers', __('Include Teachers'));
         $row->addCheckbox('includeTeachers')->checked(true);
@@ -115,6 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             'date' => date('Y-m-d'),
         );
 
+        // Grab mapped classes for all teachers & students grouped by year group, excluding those already enrolled
         $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as gibbonRollGroupName, GROUP_CONCAT(CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort SEPARATOR ', ') AS courseList, 'Teacher' as role
                 FROM gibbonCourseClassMap
                 JOIN gibbonRollGroup ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
@@ -152,8 +150,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         if ($enrolmentResult->rowCount() == 0) {
             $form->addRow()->addAlert(__('Course enrolments are already synced. No changes will be made.'), 'success');
         } else {
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+            $enrolableCount += $enrolmentResult->rowCount();
 
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
             $header = $table->addHeaderRow();
                 $header->addCheckbox('checkall'.$classMap['gibbonYearGroupID'])->checked(true);
                 $header->addContent(__('Student'));
@@ -162,8 +161,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $header->addContent(__('Enrolment by Class'));
 
             while ($person = $enrolmentResult->fetch()) {
-                $enrolableCount++;
-
                 $row = $table->addRow();
                     $row->addCheckbox('syncData['.$person['gibbonRollGroupID'].']['.$person['gibbonPersonID'].']')
                         ->setValue($person['role'])
@@ -177,6 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     $row->addContent($person['courseList']);
             }
 
+            // Checkall by Year Group
             echo '<script type="text/javascript">';
             echo '$(function () {';
                 echo "$('#checkall".$classMap['gibbonYearGroupID']."').click(function () {";
@@ -187,14 +185,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
     }
 
+    // Only display a submit button if a sync is required
     if ($enrolableCount > 0) {
         $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
-        $row = $table->addRow();
-            $row->addSubmit(__('Proceed'));
+        $table->addRow()->addSubmit(__('Proceed'));
     }
 
     echo $form->getOutput();
 
+    // Checkall by Student/Teacher
     echo '<script type="text/javascript">';
     echo '$(function () {';
         echo "$('#includeStudents').click(function () {";

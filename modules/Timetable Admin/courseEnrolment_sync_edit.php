@@ -52,20 +52,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $form = Form::create('courseEnrolmentSyncEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_addEditProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $renderer = $form->getRenderer();
-    $renderer->setWrapper('form', 'div');
-    $renderer->setWrapper('row', 'div');
-    $renderer->setWrapper('cell', 'div');
+    // To render the form as miltiple tables
+    $form->getRenderer()->setWrapper('form', 'div');
+    $form->getRenderer()->setWrapper('row', 'div');
+    $form->getRenderer()->setWrapper('cell', 'div');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
-    $form->addHiddenValue('pattern', $pattern);
 
     if (!empty($pattern)) {
+        // Allows for Roll Group naming patterns with different formats
         $subQuery = "(SELECT syncBy.gibbonRollGroupID FROM gibbonRollGroup AS syncBy WHERE REPLACE(REPLACE(REPLACE(REPLACE(:pattern, '[courseShortName]', gibbonCourse.nameShort), '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[rollGroupShortName]', nameShort) LIKE CONCAT('%', syncBy.nameShort) AND syncBy.gibbonSchoolYearID=:gibbonSchoolYearID LIMIT 1)";
 
+        // Grab courses by year group, optionally match to a pattern
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $gibbonYearGroupID, 'pattern' => $pattern);
-        $sql = "SELECT gibbonCourse.name as courseName, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourseClass.nameShort as classShortName, gibbonYearGroup.nameShort as yearGroupShortName, $subQuery as syncTo
+        $sql = "SELECT gibbonCourse.name as courseName, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourseClass.nameShort as classShortName, gibbonYearGroup.nameShort as yearGroupShortName,
+                $subQuery as syncTo
                 FROM gibbonCourse
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=:gibbonYearGroupID)
@@ -76,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ";
         $result = $pdo->executeQuery($data, $sql);
     } else {
+        // Grab courses by year group, pull in existing mapped classes
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $gibbonYearGroupID);
         $sql = "SELECT gibbonCourse.name as courseName, gibbonCourseClassMap.gibbonRollGroupID as syncTo,  gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourseClass.nameShort as classShortName, gibbonYearGroup.nameShort as yearGroupShortName
                 FROM gibbonCourseClass
@@ -91,21 +94,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     }
 
     if ($result->rowCount() > 0) {
-        $coursesGrouped = $result->fetchAll(PDO::FETCH_GROUP);
+        $classesGroupedByCourse = $result->fetchAll(PDO::FETCH_GROUP);
 
-        foreach ($coursesGrouped as $courseName => $classes) {
-            $form->addRow()->addHeading($courseName);
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
-
+        foreach ($classesGroupedByCourse as $courseName => $classes) {
             $course = current($classes);
-            $checkallSelected = array_filter($classes, function($item) {
+            $optionsSelected = array_filter($classes, function ($item) {
                 return !empty($item['syncTo']);
             });
 
-            $yearGroupSelector = str_replace(' ', '', strtolower($courseName));
+            $form->addRow()->addHeading($courseName);
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
+
             $header = $table->addHeaderRow();
-                //$header->addContent(__('Enrol'));
-                $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($checkallSelected));
+                $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($optionsSelected));
                 $header->addContent(__('Class'));
                 $header->addContent('');
                 $header->addContent(__('Roll Group'));
@@ -116,11 +117,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         ->checked(!empty($class['syncTo']))
                         ->setClass($course['gibbonCourseID'])
                         ->description('&nbsp;&nbsp;');
-                    $row->addLabel('syncEnabled['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])->setTitle($class['courseNameShort'])->setClass('mediumWidth');
-                    $row->addContent( (empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )->setClass('shortWidth right');
-                    $row->addSelectRollGroup('syncTo['.$class['gibbonCourseClassID'].']', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($class['syncTo'])->setClass('mediumWidth');
+                    $row->addLabel('syncEnabled['.$class['gibbonCourseClassID'].']', $class['courseNameShort'].'.'.$class['classShortName'])
+                        ->setTitle($class['courseNameShort'])
+                        ->setClass('mediumWidth');
+                    $row->addContent((empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )
+                        ->setClass('shortWidth right');
+                    $row->addSelectRollGroup('syncTo['.$class['gibbonCourseClassID'].']', $_SESSION[$guid]['gibbonSchoolYearID'])
+                        ->selected($class['syncTo'])
+                        ->setClass('mediumWidth');
             }
 
+            // Checkall by course
             echo '<script type="text/javascript">';
             echo '$(function () {';
                 echo "$('#checkall".$course['gibbonCourseID']."').click(function () {";
@@ -138,6 +145,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $row->addSubmit();
 
     echo $form->getOutput();
-
-
 }

@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -42,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        $form = Form::create('deleteClassMap', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_deleteProcess.php');
+        $form = Form::create('courseEnrolmentSyncDelete', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_deleteProcess.php');
 
         $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);

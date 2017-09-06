@@ -29,7 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     exit;
 } else {
     //Proceed!
-
     $syncData = (isset($_POST['syncData']))? $_POST['syncData'] : false;
 
     if (empty($gibbonYearGroupIDList) || empty($syncData)) {
@@ -40,20 +39,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $partialFail = false;
 
         foreach ($syncData as $gibbonRollGroupID => $usersToEnrol) {
-
             if (empty($usersToEnrol)) continue;
 
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-
             foreach ($usersToEnrol as $gibbonPersonID => $role) {
-                $data['gibbonPersonID'] = $gibbonPersonID;
-                $data['role'] = $role;
+                $data = array(
+                    'gibbonRollGroupID' => $gibbonRollGroupID,
+                    'gibbonPersonID' => $gibbonPersonID,
+                    'role' => $role,
+                );
 
                 $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, 'Y'
                         FROM gibbonCourseClassMap
                         WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
-
                 $pdo->executeQuery($data, $sql);
 
                 if (!$pdo->getQuerySuccess()) $partialFail = true;

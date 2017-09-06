@@ -63,4 +63,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     echo $form->getOutput();
 }
-

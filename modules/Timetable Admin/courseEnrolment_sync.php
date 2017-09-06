@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -56,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     echo $form->getOutput();
 
+    // Grab all mapped classes grouped by year group
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
     $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.gibbonYearGroupID, gibbonRollGroup.name as gibbonRollGroupName, gibbonYearGroup.name as gibbonYearGroupName, COUNT(DISTINCT gibbonCourseClassMap.gibbonCourseClassID) as classCount, GROUP_CONCAT(DISTINCT gibbonRollGroup.nameShort ORDER BY gibbonRollGroup.nameShort SEPARATOR ', ') as rollGroupList, GROUP_CONCAT(DISTINCT gibbonRollGroup.gibbonRollGroupID ORDER BY gibbonRollGroup.gibbonRollGroupID SEPARATOR ',') as gibbonRollGroupIDList
             FROM gibbonCourseClassMap
@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     $classMaps = $results->fetchAll();
 
-    $classMapsYearGroups = array_column($classMaps, 'gibbonYearGroupID');
-    $classMapsYearGroups = implode(',', $classMapsYearGroups);
+    $classMapsAllYearGroups = array_column($classMaps, 'gibbonYearGroupID');
+    $classMapsAllYearGroups = implode(',', $classMapsAllYearGroups);
 
     echo '<h3>';
     echo __('Map Classes');
@@ -84,11 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>&nbsp; | ";
-
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$classMapsYearGroups."'>".__('Sync All')."<img style='margin-left: 5px;width:22px;height:22px;' title='".__('Sync All')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a>";
-
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$classMapsAllYearGroups."'>".__('Sync All')."<img style='margin-left: 5px;width:22px;height:22px;' title='".__('Sync All')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a>";
     echo '</div>';
-
 
     if (empty($classMaps)) {
         echo '<div class="error">';
@@ -119,9 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '<td>'.$mapping['classCount'].'</td>';
                 echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_edit.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_delete.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> &nbsp;";
-
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$mapping['gibbonYearGroupID']."'><img title='".__('Sync Now')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png' style='width:22px;height:22px;'/></a>";
                 echo '</td>';
             echo '</tr>';

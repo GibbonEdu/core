@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     //Proceed!
     $partialFail = false;
 
-    $autoEnrolCourses = (isset($_POST['autoEnrolCourses']))? $_POST['autoEnrolCourses'] : '';
+    $autoEnrolCourses = (isset($_POST['autoEnrolCourses']))? $_POST['autoEnrolCourses'] : 'N';
     try {
         $data = array('value' => $autoEnrolCourses);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Timetable Admin' AND name='autoEnrolCourses'";
