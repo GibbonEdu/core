@@ -307,7 +307,7 @@ else {
 
                         if ($gibbon->locale->getLocale() == 'zh_HK') {
                             $body = sprintf('
-感謝閣下確認帳戶並上載照片。家證長將於2017年3月底前完成。若要上載更多家庭成員照片，請按以下指示進行。
+感謝閣下確認帳戶並上載照片。若要上載更多家庭成員照片，請按以下指示進行。
 
 歡迎登入澳門國際學校學生訊息系統－Gibbon。此系統可供老師紀錄學生出勤以及鍵入成績分數。另外，初中一年級至高中三年級學生亦可透過此系統，查看課堂時間表、索取課堂資料以及交功課。現學校為家長開通查看學生訊息部份。
 
@@ -329,7 +329,7 @@ else {
 
 期望  閣下在使用系統時感到便利。', $_SESSION[$guid]['absoluteURL'], $row['email'], $passwordNew);
                         } else {
-                        $body = sprintf('Thank you for confirming your account and uploading photos. If you\'re done uploading photos no further action needs taken at this time. Processing and issuing of Photo IDs will begin mid to late March 2017. If you need to continue uploading photos please see the login information below.
+                        $body = sprintf('Thank you for confirming your account and uploading photos. If you\'re done uploading photos no further action needs taken at this time. If you need to continue uploading photos please see the login information below.
 
 We would like to welcome you to The International School of Macao’s new Student Information System - Gibbon.  Gibbon is used by teachers to take attendance & enter report card marks and Gibbon is used by Grade 7-12 students to view their timetable, access class resources and submit school work.  We are now opening Student Information System to parents for secure access.
 
@@ -378,7 +378,7 @@ The TIS Gibbon team', $_SESSION[$guid]['absoluteURL'], $row['email'], $passwordN
                         $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Photo upload complete');
                         if ($gibbon->locale->getLocale() == 'zh_HK') {
                             $body = sprintf('
-感謝閣下確認帳戶並上載照片。家證長將於2017年3月底前完成。若需繼續上載照片，請按下登入按鈕。
+感謝閣下確認帳戶並上載照片。若需繼續上載照片，請按下登入按鈕。
 
 登入：  %1$s
 
@@ -395,7 +395,7 @@ The TIS Gibbon team', $_SESSION[$guid]['absoluteURL'], $row['email'], $passwordN
 
 期望  閣下在使用系統時感到便利。', $_SESSION[$guid]['absoluteURL']);
                         } else {
-                            $body = sprintf('Thank you for confirming your information and uploading photos. If you\'re done uploading photos no further action needs taken at this time. Processing and issuing of Photo IDs will begin mid to late March 2017. If you need to continue uploading photos please follow the login link below and use your existing account details.
+                            $body = sprintf('Thank you for confirming your information and uploading photos. If you\'re done uploading photos no further action needs taken at this time. If you need to continue uploading photos please follow the login link below and use your existing account details.
 
 Login here: %1$s
 

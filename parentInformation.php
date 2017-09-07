@@ -46,7 +46,6 @@ if ($gibbon->locale->getLocale() == 'zh_HK') {
 	$translation['step2']                  = "第二步";
 	$translation['step2-subheading']       = "上載家庭成員照片";
 	$translation['step2-message']          = "請為需要申請家長證之家庭成員及家務助理上傳照片（照片規格為「證件照」），家長證只供有相片上載之人士申請。當前沒有照片可供上傳者，可於稍後再行上傳。請注意：有上傳照片之家庭成員可快速辦理家長證。";
-	$translation['step2-dates']            = "家長證將於2017年3月底前開始辦理。";
 	$translation['step2-photo-heading']    = "照片規格：";
 	$translation['step2-photo-message']    = "上載之照片最好為證件照大小、人像清晰、背景簡單。照片上傳後可自行縮放大小，以符合要求之尺寸。若上傳之照片人像不清晰，將不能辦理家長證。";
 	$translation['step2-add-heading']      = "附加照片";
@@ -94,7 +93,6 @@ if ($gibbon->locale->getLocale() == 'zh_HK') {
 	$translation['step2']                  = "Step 2";
 	$translation['step2-subheading']       = "Upload Family Member Photos";
 	$translation['step2-message']          = "Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.";
-	$translation['step2-dates']            = "Processing and issuing of Photo IDs will begin mid to late March 2017.";
 	$translation['step2-photo-heading']    = "Photo Instructions:";
 	$translation['step2-photo-message']    = "For the best results your photos should be passport-sized, good quality and on a plain background. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.";
 	$translation['step2-add-heading']      = "Additional Photos";
@@ -384,9 +382,6 @@ else {
 		    			<img src="http://gibbon.tis.edu.mo/uploads/passport-graphic.png" style="float:right;margin-left: 20px;">
 	    				<p>
 	    					<?php echo $translation['step2-message']; ?>
-	    				</p>
-	    				<p>
-	    					<b style='color:#c0292d;'><?php echo $translation['step2-dates']; ?></b>
 	    				</p>
 	    				<h4><?php echo $translation['step2-photo-heading']; ?></h4>
 	    				<p>
