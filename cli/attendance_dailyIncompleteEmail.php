@@ -79,6 +79,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                 AND attendance = 'Y'
+                AND gibbonPerson.status='Full'
                 ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
 
                 $result = $connection2->prepare($sql);
@@ -164,6 +165,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonCourseClass.attendance='Y'
                 AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
+                AND gibbonPerson.status='Full'
                 ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $result = $connection2->prepare($sql);
