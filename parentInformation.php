@@ -17,175 +17,25 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 echo "<div class='trail'>";
 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Parent Information').'</div>';
 echo '</div>';
 
+$translation = include $_SESSION[$guid]['absolutePath'].'/modules/ID Cards/translations.php';
 
-$translation = array();
+// Module JS
+echo '<script type="text/javascript">';
+echo @file_get_contents($_SESSION[$guid]['absolutePath'].'/modules/ID Cards/js/module.js');
+echo '</script>';
 
-if ($gibbon->locale->getLocale() == 'zh_HK') {
-	$translation['jan']                    = "一月";
-	$translation['feb']                    = "二月";
-	$translation['mar']                    = "三月";
-	$translation['apr']                    = "四月";
-	$translation['may']                    = "五月";
-	$translation['jun']                    = "六月";
-	$translation['jul']                    = "七月";
-	$translation['aug']                    = "八月";
-	$translation['sep']                    = "九月";
-	$translation['oct']                    = "十月";
-	$translation['nov']                    = "十一月";
-	$translation['dec']                    = "十二月";
-	$translation['step1']            	   = "第一步";
-	$translation['step1-subheading'] 	   = "確認帳戶";
-	$translation['step1-message']          = "於登入前請先提供以下幾項資料以便確認帳號。資料獲確認後，  閣下會收到學校發出之電郵，通知家長登入Gibbon帳戶上載家庭成員照片。";
-	$translation['step1-email']            = "家長電郵地址";
-	$translation['step1-birthday']         = "子女生日日期";
-	$translation['step1-birthday-message'] = "登入之帳號將設定為  貴子女之生日日期。若  閣下有多於一位孩子就讀本校，請以最年長的子女之生日日期為登入帳號。";
-	$translation['step2']                  = "第二步";
-	$translation['step2-subheading']       = "上載家庭成員照片";
-	$translation['step2-message']          = "請為需要申請家長證之家庭成員及家務助理上傳照片（照片規格為「證件照」），家長證只供有相片上載之人士申請。當前沒有照片可供上傳者，可於稍後再行上傳。請注意：有上傳照片之家庭成員可快速辦理家長證。";
-	$translation['step2-photo-heading']    = "照片規格：";
-	$translation['step2-photo-message']    = "上載之照片最好為證件照大小、人像清晰、背景簡單。照片上傳後可自行縮放大小，以符合要求之尺寸。若上傳之照片人像不清晰，將不能辦理家長證。";
-	$translation['step2-add-heading']      = "附加照片";
-	$translation['step2-add-message']      = "家長可為會前來學校接送子女之家庭成員或家務助理申請家長證，家長證僅發放予有相片存檔的人士。而學校已有學生照片存檔，家長無須上傳  貴子女之照片。";
-	$translation['step2-add-person']      = "申請者照片";
-	$translation['step2-photo']            = "照片";
-	$translation['step2-photo-button']     = "照片";
-	$translation['step2-name']             = "姓名（身份證明文件姓名）";
-	$translation['step2-relationship']     = "關係";
-	$translation['step2-helper']           = "助理";
-	$translation['step2-driver']           = "司機";
-	$translation['step2-family']           = "家人";
-	$translation['step2-other']            = "其他";
-	$translation['step2-final-message']    = "提交帳號資料後，<b style='color:#c0292d;'>會即時收到學校發出之電郵</b>。若數分鐘後仍未收到有關電郵，請查看  閣下電子電箱內之「垃圾郵件」。";
-	$translation['required-message']       = "* 必需填寫";
-	$translation['submit']                 = "提交";
-	$translation['confirm-success']        = "成功確認帳戶，請繼續下一步。完成資料輸入後請按「提交」按鍵";
-	$translation['confirm-error1']         = '若資料提交出現錯誤，由於  閣下所填寫之子女生日日期與學校紀錄之子女生日日期資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
-	$translation['confirm-error2']         = '若資料提交出現錯誤，由於  閣下所填寫之電郵地址與學校紀錄之電郵地址資料不符，無法登入。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
-	$translation['step1-invalid']          = "無法執行此操作。文件已提交或對話窗口逾期操作，請返回上一步。";
-	$translation['step1-noaccount']        = '無法執行此操作。閣下之帳戶尚未激活，或提供之資訊與系統不匹配。請重新輸入，再有問題歡迎聯絡學校提供協助 %1$s';
-	$translation['step2-error-photo']      = '圖像處理出錯。請確認上載之相片為以下文件類型：PNG、JPG或GIF';
-	$translation['step2-success-new']      = "帳號已確認成功，請查看  閣下之電郵以獲取登入資訊。倘若未有收到確認電郵，請查看電子郵箱中的「垃圾郵件」。";
-	$translation['step2-success-exist']    = "相片上載成功。  閣下之帳戶已確認成功，歡迎登入。";
+// Module CSS
+echo '<style>';
+echo @file_get_contents($_SESSION[$guid]['absolutePath'].'/modules/ID Cards/css/module.css');
+echo '.cropit-preview:not(.cropit-image-loading)::before { content: "'.$translation['step2-photo-button'].'";}';
+echo '</style>';
 
-} else {
-	$translation['jan']                    = "January";
-	$translation['feb']                    = "February";
-	$translation['mar']                    = "March";
-	$translation['apr']                    = "April";
-	$translation['may']                    = "May";
-	$translation['jun']                    = "June";
-	$translation['jul']                    = "July";
-	$translation['aug']                    = "August";
-	$translation['sep']                    = "September";
-	$translation['oct']                    = "October";
-	$translation['nov']                    = "November";
-	$translation['dec']                    = "December";
-	$translation['step1']                  = "Step 1";
-	$translation['step1-subheading']       = "Account Confirmation";
-	$translation['step1-message']          = "Before you can login we'd like to request a few details to confirm your account. After submitting this form you'll be prompted to upload family member photos, after which you'll receive an email with account details to login to Gibbon for the first time.";
-	$translation['step1-email']            = "Your Email Address";
-	$translation['step1-birthday']         = "Child's Birthdate";
-	$translation['step1-birthday-message'] = "Please confirm your account by entering the birthdate of your child at TIS. If there is more than one child in your family, please enter the birthdate of the oldest child currently enrolled at TIS.";
-	$translation['step2']                  = "Step 2";
-	$translation['step2-subheading']       = "Upload Family Member Photos";
-	$translation['step2-message']          = "Please take the time now to upload a passport-sized photo for family members and helpers who will need an ID card. Photo ID cards can only be provided for those individuals with valid photos on file: if you do not have a photo available now you will have the opportunity to upload it later. Please note, however, that your IDs will be processed faster if the photos are included here.";
-	$translation['step2-photo-heading']    = "Photo Instructions:";
-	$translation['step2-photo-message']    = "For the best results your photos should be passport-sized, good quality and on a plain background. You can move, zoom and rotate your photos after uploading to ensure they fit the available frame. ID cards may not issued if the photo provided is not clear and easily recognizable.";
-	$translation['step2-add-heading']      = "Additional Photos";
-	$translation['step2-add-message']      = "You may optionally upload photos for helpers, drivers and extended family members who may be on campus for student dropoff or pickup. ID cards will only be provided for additional people if there is a valid photo on file. This does not include current students at TIS, a photo for them is already on file.";
-	$translation['step2-add-person']       = "Additional Person";
-	$translation['step2-photo']            = "Photo";
-	$translation['step2-photo-button']     = "Upload a Photo";
-	$translation['step2-name']             = "Name (Legal name)";
-	$translation['step2-relationship']     = "Relationship";
-	$translation['step2-helper']           = "Helper";
-	$translation['step2-driver']           = "Driver";
-	$translation['step2-family']           = "Family";
-	$translation['step2-other']            = "Other";
-	$translation['step2-final-message']    = "After pressing submit <b style='color:#c0292d;'>your login details will be emailed to you</b>. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there. ";
-	$translation['required-message']       = "* denotes a required field";
-	$translation['submit']                 = "Submit";
-	$translation['confirm-success']        = "Account confirmation successful, please continue. Be sure to click Submit when you've completed this form.";
-	$translation['confirm-error1']         = 'Your request failed because the birthdate supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
-	$translation['confirm-error2']         = 'Your request failed because the email address supplied does not match the one in our records. Please try again, and if the problem persists contact support at %1$s';
-	$translation['step1-invalid']          = "The request could not proceed. Either the form has already been submitted or session has expired. Please go back to Step 1.";
-	$translation['step1-noaccount']        = 'The request could not proceed. Either your account is not currently active in our system, or your family data could not be located. Please try again, and if the problem persists contact support at %1$s';
-	$translation['step2-error-photo']      = 'There was an error processing this image, it may not be a recognized file type. Please upload a PNG, JPG, or GIF.';
-	$translation['step2-success-new']      = "Account confirmation was successful: you may now log in. Please check your email for login details. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.";
-	$translation['step2-success-exist']    = "Photo upload successful. Your account has already been confirmed: you may now log in with your existing account details.";
-}
-
-?>
-<script type="text/javascript">
-function dataURItoBlob(dataURI) {
-    // convert base64/URLEncoded data component to raw binary data held in a string
-    var byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
-    else
-        byteString = unescape(dataURI.split(',')[1]);
-
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to a typed array
-    var ia = new Uint8Array(byteString.length);
-    for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ia], {type:mimeString});
-}
-</script>
-<style>
-	/* Show load indicator when image is being loaded */
-	.cropit-preview.cropit-image-loading .loading {
-	  opacity: 1;
-	}
-
-	.cropit-preview .loading {
-	  opacity: 0;
-	  width: 180px;
-	  margin:110px auto 0;
-	}
-
-	/* Show move cursor when image has been loaded */
-	.cropit-preview.cropit-image-loaded .cropit-preview-image-container {
-	  cursor: move;
-	  background: #ffffff;
-	}
-
-	/* Show pointer cursor before image has been loaded */
-	.cropit-preview:not(.cropit-image-loaded) {
-		cursor:pointer;
-	}
-
-	/* Show upload photo text */
-	.cropit-preview:not(.cropit-image-loading)::before {
-		content: "<?php echo $translation['step2-photo-button']; ?>";
-		border: 2px dashed #dddddd;
-		border-radius: 8px;
-		padding: 20px;
-		width:90px;
-		position: relative;
-		top: 50%;
-		left: calc(50% - ((90px + 40px - 4px)/2));
-	}
-
-	.cropit-photo-disabled {
-		width: 180px;
-		height: 240px;
-		border: 2px solid #bbbbbb;
-		background-size: cover;
-	}
-
-</style>
-
-<?php
 
 $step = 1;
 if (isset($_GET['step']) && $_GET['step'] == 2 ) {
@@ -201,7 +51,6 @@ if (!empty($_SESSION[$guid]['username'])) {
 }
 
 
-
 $returns = array();
 $returns['error0'] = __($guid, 'Email address not set.');
 $returns['error8'] = sprintf($translation['confirm-error1'], '<a mailto="'.$_SESSION[$guid]['organisationDBAEmail'].'">'.$_SESSION[$guid]['organisationDBAEmail'].'</a>');
@@ -213,95 +62,40 @@ if (isset($_GET['return'])) {
 }
 
 
+if ($step == 1) {
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/parentInformationProcess.php?step=1');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->setAutocomplete('on');
 
-if ($step == 1) { ?>
+    if (isset($_GET['sidebar']) && $_GET['sidebar'] == 'false') {
+        $form->addClass('fixedWidth');
+    }
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/parentInformationProcess.php?step=1">
-		<table class='smallIntBorder' cellspacing='0' <?php if (isset($_GET['sidebar']) && $_GET['sidebar'] == 'false') echo 'style="max-width:750px;margin: 0 auto;"'; ?>>
-			<tr class='break'>
-    			<td colspan=2>
-    				<h3>
-    					<?php echo $translation['step1']; ?> &nbsp;<small><?php echo $translation['step1-subheading']; ?></small>
-    				</h3>
-    				<p>
-						<?php echo $translation['step1-message']; ?>
-					</p>
-    			</td>
-    		</tr>
-			<tr>
-				<td style="width:160px;">
-					<b><?php echo $translation['step1-email']; ?></b>
-				</td>
-				<td class="right">
-					<input name="email" id="email" type="text" style="width:97.5%" value="<?php echo $email; ?>">
-					<script type="text/javascript">
-    					var email=new LiveValidation('email');
-    					email.add(Validate.Presence);
-    				</script>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2">
-				<br/><p>
-					<?php echo $translation['step1-birthday-message']; ?>
-					</td>
-				</p>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo $translation['step1-birthday']; ?></b>
-				</td>
-				<td class="right">
+    $form->addRow()->addHeading($translation['step1'].' &nbsp;<small>'.$translation['step1-subheading'].'</small>')
+        ->append('<p>'.$translation['step1-message'].'</p>');
 
-				<table class="blank mini">
-					<tr>
-						<td>
-							<select id="birthyear" name="birthyear">
-							<?php
-								for ($i = 2016; $i>=(2016-20);$i--) {
-									echo '<option value='.$i.'>'.$i;
-								}
-							?>
-							</select>
-						</td>
-						<td>
-							<select id="birthmonth" name="birthmonth">
-								<option value="01"><?php echo $translation['jan']; ?></option>
-								<option value="02"><?php echo $translation['feb']; ?></option>
-								<option value="03"><?php echo $translation['mar']; ?></option>
-								<option value="04"><?php echo $translation['apr']; ?></option>
-								<option value="05"><?php echo $translation['may']; ?></option>
-								<option value="06"><?php echo $translation['jun']; ?></option>
-								<option value="07"><?php echo $translation['jul']; ?></option>
-								<option value="08"><?php echo $translation['aug']; ?></option>
-								<option value="09"><?php echo $translation['sep']; ?></option>
-								<option value="10"><?php echo $translation['oct']; ?></option>
-								<option value="11"><?php echo $translation['nov']; ?></option>
-								<option value="12"><?php echo $translation['dec']; ?></option>
-							</select>
-						</td>
-						<td>
-							<input id="birthday" name="birthday" type="text" style="width:30px" value="" maxlength=2>
-						</td>
-						<script type="text/javascript">
-	    					var birthday=new LiveValidation('birthday');
-	    					birthday.add(Validate.Presence);
-	    				</script>
-					</tr>
-				</table>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo $translation['submit']; ?>"  style='font-size: 16px;padding:6px 10px;height:auto;'>
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
-}
-else {
+    $row = $form->addRow();
+        $row->addLabel('email', $translation['step1-email']);
+        $row->addEmail('email')->isRequired()->addValidationOption('onlyOnBlur: true')->setClass('longWidth');
+
+    $form->addRow()->addContent($translation['step1-birthday-message'])->wrap('<br/><p>', '</p>');
+
+    $months = array('01' => $translation['jan'], '02' => $translation['feb'],'03' => $translation['mar'],'04' => $translation['apr'],'05' => $translation['may'],'06' => $translation['jun'],'07' => $translation['jul'],'08' => $translation['aug'],'09' => $translation['sep'],'10' => $translation['oct'],'11' => $translation['nov'],'12' => $translation['dec']);
+
+    $row = $form->addRow();
+        $row->addLabel('birthdate', $translation['step1-birthday']);
+        $inline = $row->addColumn()->setClass('inline-input longWidth');
+        $inline->addNumber('birthday')->isRequired()->minimum(1)->maximum(31)->setClass('dateWidth')->maxLength(2)->addValidationOption('onlyOnBlur: true');
+        $inline->addSelect('birthmonth')->fromArray($months)->setClass('dateWidth');
+        $inline->addSelect('birthyear')->fromArray(range(date('Y'), date('Y')-20) )->setClass('dateWidth');
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit()->addClass('large-button');
+
+    echo $form->getOutput();
+
+} else {
 	//Get URL parameters
 	$proceed = false;
 	$message = $translation['step1-invalid'];
@@ -580,22 +374,26 @@ else {
 					});
 				</script>
 
-				<?php if (empty($_SESSION[$guid]['username'])) : ?>
-					<tr class="break">
-						<td colspan="3"><br/>
+                <tr class="break">
+                    <td colspan="3"><br/>
+				    <?php if (empty($_SESSION[$guid]['username'])) : ?>
 						<p>
 						<?php echo $translation['step2-final-message']; ?>
 						</p>
-						</td>
-					</tr>
-				<?php endif; ?>
+				    <?php endif; ?>
+
+                    <p>
+                    <?php echo $translation['step2-request-message']; ?>
+                    </p>
+                    </td>
+                </tr>
 	    		<tr>
 	    			<td colspan=2>
 	    				<span class="emphasis small"><?php echo $translation['required-message']; ?></span>
 	    			</td>
 	    			<td class="right">
 	    				<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-	    				<input type="submit" value="<?php echo $translation['submit']; ?>" style='font-size: 16px;padding:6px 10px;height:auto;'>
+	    				<input type="submit" value="<?php echo $translation['submit-request']; ?>" style='font-size: 16px;padding:6px 10px;height:auto;'>
 	    			</td>
 	    		</tr>
 	    	</table><br/>

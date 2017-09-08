@@ -274,6 +274,20 @@ else {
                         }
                     }
 
+                    // Insert a new ID card request
+                    try {
+                        $data = array(
+                            'gibbonRecordType' => 'gibbonFamily',
+                            'gibbonRecordID' => $row['gibbonFamilyID'],
+                            'gibbonPersonIDRequested' => $gibbonPersonID,
+                        );
+                        $sql = "INSERT INTO idCardRequest SET gibbonRecordType=:gibbonRecordType, gibbonRecordID=:gibbonRecordID, gibbonPersonIDRequested=:gibbonPersonIDRequested ON DUPLICATE KEY UPDATE gibbonPersonIDRequested=:gibbonPersonIDRequested, timestampRequested=CURRENT_TIMESTAMP";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
+
                     // User cannot currently login - generate a password, and activate their account
                     if ($row['canLogin'] == 'A') {
 
