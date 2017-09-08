@@ -46,6 +46,14 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
     $count = 0;
 
     try {
+        // Update blank Student ID to match username
+        $sql = "UPDATE `gibbonPerson` SET studentID=username WHERE gibbonRoleIDPrimary = 003 AND LEFT(username, 1) = '2' AND studentID = ''";
+        $result = $pdo->executeQuery(array(), $sql);
+
+        // Update usernames to match studentID
+        $sql = "UPDATE `gibbonPerson` SET `username`=`studentID` WHERE `gibbonRoleIDPrimary`=003 AND LEFT(`username`, 1) <> '2' AND `studentID` <> ''";
+        $result = $pdo->executeQuery(array(), $sql);
+
         // Update student photos to match studentID
         $sql = "UPDATE `gibbonPerson` SET `image_240` = CONCAT( 'uploads/photos/', studentID, '.jpg') WHERE (image_240 = '' OR image_240 IS NULL) AND `gibbonRoleIDPrimary` = 003 AND LEFT(studentID, 1) = '2'";
         $result = $pdo->executeQuery(array(), $sql);
@@ -54,9 +62,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         $sql = "UPDATE `gibbonPerson` SET `image_240` = CONCAT( 'uploads/photos/', username, '.jpg') WHERE (image_240 = '' OR image_240 IS NULL) AND `gibbonRoleIDPrimary` <> 003 AND `gibbonRoleIDPrimary` <> 004 AND LEFT(username, 1) = '1'";
         $result = $pdo->executeQuery(array(), $sql);
 
-        // Update usernames to match studentID
-        $sql = "UPDATE `gibbonPerson` SET `username`=`studentID` WHERE `gibbonRoleIDPrimary`=003 AND LEFT(`username`, 1) <> '2' AND `studentID` <> ''";
-        $result = $pdo->executeQuery(array(), $sql);
+
     } catch (PDOException $e) {
     }
 }
