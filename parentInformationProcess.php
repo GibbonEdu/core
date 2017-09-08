@@ -384,7 +384,7 @@ The TIS Gibbon team', $_SESSION[$guid]['absoluteURL'], $row['email'], $passwordN
                         exit;
 
                     }
-                    elseif ($row['canLogin'] == 'Y' || !empty($_SESSION[$guid]['username'])) {
+                    elseif ($row['canLogin'] == 'Y' && empty($_SESSION[$guid]['username'])) {
                         require_once $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
 
                         //Send email
