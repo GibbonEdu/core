@@ -2281,7 +2281,7 @@ function getParentPhotoUploader($connection2, $guid)
             $output .= '</p>';
         }
 
-        $output .= '<br/><a class="button" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php" style="border: 1px solid #222222;background-color: #eeeeee;;color: #444444;font-weight: bold;font-size: 13px ;text-decoration:none;padding: 8px;display:block;text-align:center;">';
+        $output .= '<br/><a class="button" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php&sidebar=false" style="border: 1px solid #222222;background-color: #eeeeee;;color: #444444;font-weight: bold;font-size: 13px ;text-decoration:none;padding: 8px;display:block;text-align:center;">';
             $output .= 'Update Family Member Photos';
         $output .= '</a>';
     }
