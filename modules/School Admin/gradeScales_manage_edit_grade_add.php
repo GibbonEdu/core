@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_manage_edit_grade_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -47,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/gradeScales_manage.php'>".__($guid, 'Manage Grade Scales')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>".__($guid, 'Edit Grade Scale')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Grade').'</div>';
@@ -61,84 +63,36 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                 returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Grade Scale') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php echo __($guid, $row['name']) ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Value') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this grade scale.') ?></span>
-						</td>
-						<td class="right">
-							<input name="value" id="value" maxlength=10 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var value=new LiveValidation('value');
-								value.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Descriptor') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="descriptor" id="descriptor" maxlength=50 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var descriptor=new LiveValidation('descriptor');
-								descriptor.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this grade scale.') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var sequenceNumber=new LiveValidation('sequenceNumber');
-								sequenceNumber.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Is Default?') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Preselects this option when using this grade scale in appropriate contexts.') ?><br/></span>
-						</td>
-						<td class="right">
-							<select name="isDefault" id="isDefault" class="standardWidth">
-								<option value="N"><?php echo ynExpander($guid, 'N') ?></option>
-								<option value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonScaleID" id="gibbonScaleID" value="<?php echo $gibbonScaleID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('gradeScaleGradeAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_addProcess.php');
 
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonScaleID', $gibbonScaleID);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Grade Scale'));
+                $row->addTextField('name')->readonly()->setValue($values['name']);
+
+            $row = $form->addRow();
+                $row->addLabel('value', __('Value'))->description(__('Must be unique for this grade scale.'));
+                $row->addTextField('value')->isRequired()->maxLength(10);
+
+            $row = $form->addRow();
+                $row->addLabel('descriptor', __('Descriptor'));
+                $row->addTextField('descriptor')->isRequired()->maxLength(50);
+
+            $row = $form->addRow();
+                $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique for this grade scale.'));
+                $row->addNumber('sequenceNumber')->isRequired()->maxLength(5);
+
+            $row = $form->addRow();
+                $row->addLabel('isDefault', __('Is Default?'))->description(__('Preselects this option when using this grade scale in appropriate contexts.'));
+                $row->addYesNo('isDefault')->selected('N');
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
-?>
