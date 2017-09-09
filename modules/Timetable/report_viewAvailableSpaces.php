@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $ttDate = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('viewAvailableFacilities', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_viewAvailableSpaces.php');
 

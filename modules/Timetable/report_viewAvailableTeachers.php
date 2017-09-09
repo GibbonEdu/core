@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     $viewBy = (isset($_GET['viewBy']))? $_GET['viewBy'] : '';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('viewAvailableTeachers', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_viewAvailableTeachers.php');
 

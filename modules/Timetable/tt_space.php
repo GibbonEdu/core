@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
             $search = $_GET['search'];
         }
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('ttSpace', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_space.php');

@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
             echo __($guid, 'Filters');
             echo '</h2>';
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('tt', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt.php');

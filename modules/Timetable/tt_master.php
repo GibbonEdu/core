@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         }
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('ttMaster', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_master.php');
 
