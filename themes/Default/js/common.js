@@ -17,5 +17,9 @@ http://www.htmldog.com/articles/suckerfish/dropdowns/
 }
 if (window.attachEvent) window.attachEvent("onload", sfHover);
 
-
+jQuery(function($){
+    $('.checkall').click(function () {
+        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+    });
+});
 
