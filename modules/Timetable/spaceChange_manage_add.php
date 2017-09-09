@@ -178,4 +178,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         }
     }
 }
-?>
