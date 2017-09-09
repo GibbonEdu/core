@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -58,47 +60,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
             echo __($guid, 'Filters');
             echo '</h2>';
 
-            ?>
-            <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-                <table class='noIntBorder' cellspacing='0' style="width: 100%">
-                    <tr><td style="width: 30%"></td><td></td></tr>
-                    <tr>
-                        <td>
-                            <b><?php echo __($guid, 'Search For') ?></b><br/>
-                            <span class="emphasis small">Preferred, surname, username.</span>
-                        </td>
-                        <td class="right">
-                            <input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b><?php echo __($guid, 'All Users') ?></b><br/>
-                            <span class="emphasis small"><?php echo __($guid, 'Include non-staff, non-student users.') ?></span>
-                        </td>
-                        <td class="right">
-                            <?php
-                            $checked = '';
-                            if ($allUsers == 'on') {
-                                $checked = 'checked';
-                            }
-                            echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan=2 class="right">
-                            <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/tt.php">
-                            <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-                            <?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt.php'>".__($guid, 'Clear Filters').'</a>'; ?>
-                            <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-                        </td>
-                    </tr>
-                </table>
-            </form>
-            <?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form->setClass('noIntBorder fullWidth');
 
+            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt.php');
+
+            $row = $form->addRow();
+                $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+                $row->addTextField('search')->setValue($search);
+
+            $row = $form->addRow();
+                $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
+                $row->addCheckbox('allUsers')->checked($allUsers);
+
+            $row = $form->addRow();
+                $row->addSearchSubmit($gibbon->session);
+
+            echo $form->getOutput();
         }
 
         echo '<h2>';
