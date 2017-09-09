@@ -60,19 +60,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
             $description = $_POST['description'];
             $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
             $schoolOpen = null;
-            if (is_numeric($_POST['schoolOpenH']) and is_numeric($_POST['schoolOpenM'])) {
+            if (!empty($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenM'])) {
                 $schoolOpen = $_POST['schoolOpenH'].':'.$_POST['schoolOpenM'].':00';
             }
             $schoolStart = null;
-            if (is_numeric($_POST['schoolStartH']) and is_numeric($_POST['schoolStartM'])) {
+            if (!empty($_POST['schoolStartH']) && is_numeric($_POST['schoolStartH']) && is_numeric($_POST['schoolStartM'])) {
                 $schoolStart = $_POST['schoolStartH'].':'.$_POST['schoolStartM'].':00';
             }
             $schoolEnd = null;
-            if (is_numeric($_POST['schoolEndH']) and is_numeric($_POST['schoolEndM'])) {
+            if (!empty($_POST['schoolEndH']) && is_numeric($_POST['schoolEndH']) && is_numeric($_POST['schoolEndM'])) {
                 $schoolEnd = $_POST['schoolEndH'].':'.$_POST['schoolEndM'].':00';
             }
             $schoolClose = null;
-            if (is_numeric($_POST['schoolCloseH']) and is_numeric($_POST['schoolCloseM'])) {
+            if (!empty($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseM'])) {
                 $schoolClose = $_POST['schoolCloseH'].':'.$_POST['schoolCloseM'].':00';
             }
 
