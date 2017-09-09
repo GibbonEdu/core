@@ -93,25 +93,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 
             $row = $form->addRow();
                 $row->addLabel('yearGroups', __('Year Groups'))->description(__('Year groups to which this field is relevant.'));
-                $column = $row->addColumn()->addClass('right');
-                $column->addCheckbox('checkall')->setClass('checkall')->description(__($guid, 'All').' / '.__($guid, 'None'));
-                $column->addCheckboxYearGroup('gibbonYearGroupIDList');
+                $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone();
 
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
 
             echo $form->getOutput();
-
-            ?>
-            <script type="text/javascript">
-                $(function () {
-                    $('.checkall').click(function () {
-                        $('form[id="externalAssessmentField"]').find(':checkbox').attr('checked', this.checked);
-                    });
-                });
-            </script>
-            <?php
         }
     }
 }
