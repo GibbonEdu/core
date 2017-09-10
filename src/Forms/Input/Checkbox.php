@@ -91,6 +91,19 @@ class Checkbox extends Input
     }
 
     /**
+     * Set the checked element(s) to include all available options.
+     * @return  self
+     */
+    public function checkAll()
+    {
+        if (!empty($this->options)) {
+            $this->checked = array_keys($this->options);
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds a checkall box to the top of the checkbox list, pass a label in otherwise defaults to All / None.
      * @param   string  $label
      * @return  self
