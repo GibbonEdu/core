@@ -72,8 +72,10 @@ class Finder extends TextField
      */
     public function selected($value)
     {
+        if (is_string($value)) $value = explode(',', $value);
+
         if (!empty($value)) {
-            $this->selected = $value;
+            $this->selected = array_combine($value, $value);
         }
         return $this;
     }
