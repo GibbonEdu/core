@@ -94,6 +94,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createFinder($name)
+    {
+        return new Input\Finder($name);
+    }
+
     public function createEditor($name, $guid)
     {
         return new Input\Editor($name, $guid);
