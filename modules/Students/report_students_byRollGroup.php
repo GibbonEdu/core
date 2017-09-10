@@ -58,10 +58,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
-    
+
     if ($gibbonRollGroupID != '') {
         echo '<h2>';
         echo __($guid, 'Report Data');
