@@ -92,31 +92,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
                 $form->addRow()->addHeading(__('Resource Contents'));
 
-                $types = array('File' => __('File'), 'HTML' => __('HTML'), 'Link' => __('Link'));
-                $row = $form->addRow();
-                    $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
-
                 if ($values['type'] == 'File') {
                     // File
-                    $form->toggleVisibilityByClass('resourceFile')->onSelect('type')->when('File');
                     $row = $form->addRow()->addClass('resourceFile');
                         $row->addLabel('file', __('Label'));
                         $row->addFileUpload('file')
-                            ->isRequired()
                             ->addClass('right')
                             ->append('<br/><br/>'.getMaxUpload($guid))
                             ->setAttachment('content', $_SESSION[$guid]['absoluteURL'], $values['content']);
                 } else if ($values['type'] == 'HTML') {
                     // HTML
-                    $form->toggleVisibilityByClass('resourceHTML')->onSelect('type')->when('HTML');
                     $row = $form->addRow()->addClass('resourceHTML');
                         $column = $row->addColumn()->setClass('');
                         $column->addLabel('html', __('HTML'));
                         $column->addEditor('html', $guid)->isRequired()->setValue($values['content']);
                 } else if ($values['type'] == 'Link') {
                     // Link
-                    $form->toggleVisibilityByClass('resourceLink')->onSelect('type')->when('Link');
                     $row = $form->addRow()->addClass('resourceLink');
                         $row->addLabel('link', __('Link'));
                         $row->addURL('link')->maxLength(255)->isRequired()->setValue($values['content']);
