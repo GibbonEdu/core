@@ -2800,6 +2800,8 @@ function sidebar($gibbon, $pdo)
             $loginReturnMessage = __($guid, 'Incorrect username and password.');
         } elseif ($loginReturn == 'fail2') {
             $loginReturnMessage = __($guid, 'You do not have sufficient privileges to login.');
+        } elseif ($loginReturn == 'fail2b') {
+            $loginReturnMessage = __($guid, 'Your account requires activation before you can login. <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=parentInformation.php">Please visit the account confirmation page to continue</a>');
         } elseif ($loginReturn == 'fail5') {
             $loginReturnMessage = __($guid, 'Your request failed due to a database error.');
         } elseif ($loginReturn == 'fail6') {

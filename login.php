@@ -71,9 +71,9 @@ else {
     } else {
         $row = $result->fetch();
 
-        // Insufficient privledges to login
+        // Insufficient privledges / activation message if login not enabled
         if ($row['canLogin'] != 'Y') {
-            $URL .= '?loginReturn=fail2';
+            $URL .= ($row['canLogin'] == 'A')? '?loginReturn=fail2b' : '?loginReturn=fail2';
             header("Location: {$URL}");
             exit;
         }
