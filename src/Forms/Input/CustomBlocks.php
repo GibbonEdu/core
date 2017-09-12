@@ -77,6 +77,15 @@ class CustomBlocks implements OutputableInterface
                 $output .= '<div style="float:left; width:90%">';
                     $output .= $this->formOutput;
                 $output .= '</div>';
+                $output .= '<div style="float:right; width: 9.5%">';
+                    $output .= '<table class="smallIntBorder fullWidth standardForm">';
+                        $output .= '<tr>';
+                            $output .= '<td>';
+                                $output .= '<img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/Default/img/garbage.png"/> ';
+                            $output .= '</td>';
+                        $output .= '</tr>';
+                    $output .= '</table>';
+                $output .= '</div>';
             $output .= '</div>';
 
                 $output .= '<div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">';
@@ -98,8 +107,23 @@ class CustomBlocks implements OutputableInterface
                 $output .= '$("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));' . "\n";
                 $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count).find("input[name*=' . $this->name . 'order]").val(' . $this->name . 'Count);' . "\n";
                 $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("id", $(this).prop("id") + ' . $this->name . 'Count); });' . "\n";
+                $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . 'deleteTemplate]").each(function () {' . "\n";
+                    $output .= '$(this).prop("id", "' . $this->name . 'Delete" + ' . $this->name . 'Count);' . "\n";
+                    $output .= '$(this).unbind("click").click(function() {' . "\n";
+                        $output .= 'if (confirm("Are you sure you want to delete this record?")) {' . "\n";
+                            $output .= '$("#'. $this->name .'Outer" + $(this).attr("id").split("Delete")[1]).fadeOut(600, function(){' . "\n";
+                                $output .= '$(this).remove();' . "\n";
+                                $output .= 'if ($("#'. $this->name .'").children().length == 3) {' . "\n";
+                                    $output .= '$("#' . $this->name . 'Outer0").css("display", "block");' . "\n";
+                                $output .= '}' . "\n";
+                            $output .= '});' . "\n";
+                            
+                        $output .= '}' . "\n";
+                    $output .= '});' . "\n"; 
+                $output .= '});' . "\n";
                 $output .= $this->name . 'Count++;' . "\n";
             $output .= '}';
+
         $output .= '</script>';
 
         return $output;
