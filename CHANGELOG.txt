@@ -52,6 +52,7 @@ v15.0.00
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
+		Roll Groups: fixed bug preventing alerts from showing
 		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
         School Admin: added an Assign Houses tool to bulk assign students to houses by Year Group
 		Students: fixed School History section in Student Profile to exclude upcoming years
