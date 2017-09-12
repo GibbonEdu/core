@@ -3585,6 +3585,10 @@ function getUserPhoto($guid, $path, $size)
 function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential = true, $orderBy = 'Normal')
 {
     $return = false;
+    
+    if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
+        $confidential = false;
+    }
 
     try {
         $dataRollGroup = array('gibbonRollGroupID' => $gibbonRollGroupID);
