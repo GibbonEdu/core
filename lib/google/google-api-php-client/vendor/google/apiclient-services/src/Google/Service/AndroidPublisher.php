@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,6 +37,7 @@ class Google_Service_AndroidPublisher extends Google_Service
   public $edits;
   public $edits_apklistings;
   public $edits_apks;
+  public $edits_deobfuscationfiles;
   public $edits_details;
   public $edits_expansionfiles;
   public $edits_images;
@@ -47,6 +48,7 @@ class Google_Service_AndroidPublisher extends Google_Service
   public $inappproducts;
   public $purchases_products;
   public $purchases_subscriptions;
+  public $purchases_voidedpurchases;
   public $reviews;
   
   /**
@@ -338,6 +340,41 @@ class Google_Service_AndroidPublisher extends Google_Service
                   'required' => true,
                 ),
                 'editId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->edits_deobfuscationfiles = new Google_Service_AndroidPublisher_Resource_EditsDeobfuscationfiles(
+        $this,
+        $this->serviceName,
+        'deobfuscationfiles',
+        array(
+          'methods' => array(
+            'upload' => array(
+              'path' => '{packageName}/edits/{editId}/apks/{apkVersionCode}/deobfuscationFiles/{deobfuscationFileType}',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'packageName' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'editId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'apkVersionCode' => array(
+                  'location' => 'path',
+                  'type' => 'integer',
+                  'required' => true,
+                ),
+                'deobfuscationFileType' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -1196,6 +1233,46 @@ class Google_Service_AndroidPublisher extends Google_Service
           )
         )
     );
+    $this->purchases_voidedpurchases = new Google_Service_AndroidPublisher_Resource_PurchasesVoidedpurchases(
+        $this,
+        $this->serviceName,
+        'voidedpurchases',
+        array(
+          'methods' => array(
+            'list' => array(
+              'path' => '{packageName}/purchases/voidedpurchases',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'packageName' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'endTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'maxResults' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'startIndex' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'startTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'token' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
     $this->reviews = new Google_Service_AndroidPublisher_Resource_Reviews(
         $this,
         $this->serviceName,
@@ -1216,6 +1293,10 @@ class Google_Service_AndroidPublisher extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
+                'translationLanguage' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
               ),
             ),'list' => array(
               'path' => '{packageName}/reviews',
@@ -1235,6 +1316,10 @@ class Google_Service_AndroidPublisher extends Google_Service
                   'type' => 'integer',
                 ),
                 'token' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'translationLanguage' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),

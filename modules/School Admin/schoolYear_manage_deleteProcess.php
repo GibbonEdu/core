@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sql = "SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND NOT status='Current'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

@@ -31,6 +31,10 @@ use Gibbon\Forms\FormFactoryInterface;
  */
 class FormFactory implements FormFactoryInterface
 {
+    /**
+     * Create and return an instance of FormFactory.
+     * @return  object FormFactory
+     */
     public static function create()
     {
         return new FormFactory();
@@ -181,9 +185,12 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->setClass('right');
     }
 
-    public function createFooter()
+    public function createFooter($required = true)
     {
-        $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        $content = '';
+        if ($required) {
+            $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        }
         return $this->createContent($content);
     }
 
@@ -278,8 +285,10 @@ class FormFactory implements FormFactoryInterface
                 'NPR ₨' => 'Nepalese Rupee (₨)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
+                'ZAR R‎' => 'South African Rand (R‎)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
+                'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
             ),
         );

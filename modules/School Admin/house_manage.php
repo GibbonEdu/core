@@ -53,6 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     }
 
     echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/house_manage_assign.php'>".__($guid, 'Assign Houses')."<img style='margin-left: 5px' title='".__($guid, 'Assign Houses')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>  |  ";
+
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/house_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
@@ -106,7 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/house_manage_delete.php&gibbonHouseID='.$row['gibbonHouseID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
-
             ++$count;
         }
         echo '</table>';

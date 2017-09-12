@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
 //Module includes
@@ -40,47 +43,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
     echo '</h2>';
 
     $gibbonPersonID = null;
-    if (isset($_POST['gibbonPersonID'])) {
-        $gibbonPersonID = $_POST['gibbonPersonID'];
+    if (isset($_GET['gibbonPersonID'])) {
+        $gibbonPersonID = $_GET['gibbonPersonID'];
     }
-    ?>
-	
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentBorrowingRecord.php'?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Students') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-						<option value=''></value>
-						<?php
-                        try {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-						while ($rowSelect = $resultSelect->fetch()) {
-							$selected = '';
-							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentBorrowingRecord.php");
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', __('Student'));
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder()->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+    echo $form->getOutput();
 
     if ($gibbonPersonID != '') {
         echo '<h2>';

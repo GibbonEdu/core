@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,8 +30,8 @@ class Google_Service_Pubsub_Resource_ProjectsSnapshots extends Google_Service_Re
    * resource exists and does not have a policy set. (snapshots.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. `resource` is usually specified as a path. For example, a Project
-   * resource is specified as `projects/{project}`.
+   * requested. See the operation documentation for the appropriate value for this
+   * field.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_Policy
    */
@@ -46,8 +46,8 @@ class Google_Service_Pubsub_Resource_ProjectsSnapshots extends Google_Service_Re
    * existing policy. (snapshots.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. `resource` is usually specified as a path. For example, a Project
-   * resource is specified as `projects/{project}`.
+   * specified. See the operation documentation for the appropriate value for this
+   * field.
    * @param Google_Service_Pubsub_SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_Policy
@@ -59,12 +59,17 @@ class Google_Service_Pubsub_Resource_ProjectsSnapshots extends Google_Service_Re
     return $this->call('setIamPolicy', array($params), "Google_Service_Pubsub_Policy");
   }
   /**
-   * Returns permissions that a caller has on the specified resource.
-   * (snapshots.testIamPermissions)
+   * Returns permissions that a caller has on the specified resource. If the
+   * resource does not exist, this will return an empty set of permissions, not a
+   * NOT_FOUND error.
+   *
+   * Note: This operation is designed to be used for building permission-aware UIs
+   * and command-line tools, not for authorization checking. This operation may
+   * "fail open" without warning. (snapshots.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. `resource` is usually specified as a path. For example, a
-   * Project resource is specified as `projects/{project}`.
+   * being requested. See the operation documentation for the appropriate value
+   * for this field.
    * @param Google_Service_Pubsub_TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_TestIamPermissionsResponse

@@ -29,26 +29,45 @@ class Number extends TextField
 {
     protected $min;
     protected $max;
-    protected $decimal;
+    protected $decimal = 0;
 
+    /**
+     * Define a minimum for this numeric value.
+     * @param   int|float  $value
+     * @return  self
+     */
     public function minimum($value)
     {
         $this->min = $value;
         return $this;
     }
 
+    /**
+     * Define a maximum for this numeric value.
+     * @param   int|float  $value
+     * @return  self
+     */
     public function maximum($value)
     {
         $this->max = $value;
         return $this;
     }
 
+    /**
+     * Define a required number of decimal places (max) for this numeric value.
+     * @param   int  $value
+     * @return  self
+     */
     public function decimalPlaces($value)
     {
-        $this->decimal = $value;
+        $this->decimal = intval($value);
         return $this;
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
 
@@ -60,10 +79,14 @@ class Number extends TextField
             $validateParams[] = 'maximum: '.$this->max;
         }
 
+        if ($this->decimal == 0) {
+            $validateParams[] = 'onlyInteger: true';
+        }
+
         $this->addValidation('Validate.Numericality', implode(', ', $validateParams));
 
         if (!empty($this->decimal) && $this->decimal > 0) {
-            $this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{'.$this->decimal.'})+$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimal+2, '0')).'"');
+            $this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{1,'.$this->decimal.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimal+2, '0')).'"');
         }
 
         $output = '<input type="text" '.$this->getAttributeString().'>';

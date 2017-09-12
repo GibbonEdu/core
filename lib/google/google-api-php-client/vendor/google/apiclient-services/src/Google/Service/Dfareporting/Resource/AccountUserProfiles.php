@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -54,8 +54,8 @@ class Google_Service_Dfareporting_Resource_AccountUserProfiles extends Google_Se
     return $this->call('insert', array($params), "Google_Service_Dfareporting_AccountUserProfile");
   }
   /**
-   * Retrieves a list of account user profiles, possibly filtered.
-   * (accountUserProfiles.listAccountUserProfiles)
+   * Retrieves a list of account user profiles, possibly filtered. This method
+   * supports paging. (accountUserProfiles.listAccountUserProfiles)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -73,7 +73,7 @@ class Google_Service_Dfareporting_Resource_AccountUserProfiles extends Google_Se
    * search string of "user profile" will match objects with name "my user
    * profile", "user profile 2015", or simply "user profile".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @opt_param string subaccountId Select only user profiles with the specified
    * subaccount ID.
    * @opt_param string userRoleId Select only user profiles with the specified

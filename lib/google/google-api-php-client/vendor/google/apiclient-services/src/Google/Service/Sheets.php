@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,6 +33,9 @@ class Google_Service_Sheets extends Google_Service
   /** View and manage the files in your Google Drive. */
   const DRIVE =
       "https://www.googleapis.com/auth/drive";
+  /** View and manage Google Drive files and folders that you have opened or created with this app. */
+  const DRIVE_FILE =
+      "https://www.googleapis.com/auth/drive.file";
   /** View the files in your Google Drive. */
   const DRIVE_READONLY =
       "https://www.googleapis.com/auth/drive.readonly";
@@ -148,11 +151,23 @@ class Google_Service_Sheets extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'valueInputOption' => array(
+                'includeValuesInResponse' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'responseValueRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
                 'insertDataOption' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'valueInputOption' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'responseDateTimeRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -176,11 +191,6 @@ class Google_Service_Sheets extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'ranges' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
-                ),
                 'valueRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -188,6 +198,11 @@ class Google_Service_Sheets extends Google_Service
                 'dateTimeRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'ranges' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ),
                 'majorDimension' => array(
                   'location' => 'query',
@@ -259,6 +274,18 @@ class Google_Service_Sheets extends Google_Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ),
+                'responseDateTimeRenderOption' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'includeValuesInResponse' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'responseValueRenderOption' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
                 'valueInputOption' => array(
                   'location' => 'query',

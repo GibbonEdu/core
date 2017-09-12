@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -73,8 +73,8 @@ class Google_Service_Dfareporting_Resource_CreativeFieldValues extends Google_Se
     return $this->call('insert', array($params), "Google_Service_Dfareporting_CreativeFieldValue");
   }
   /**
-   * Retrieves a list of creative field values, possibly filtered.
-   * (creativeFieldValues.listCreativeFieldValues)
+   * Retrieves a list of creative field values, possibly filtered. This method
+   * supports paging. (creativeFieldValues.listCreativeFieldValues)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param string $creativeFieldId Creative field ID for this creative field
@@ -88,7 +88,7 @@ class Google_Service_Dfareporting_Resource_CreativeFieldValues extends Google_Se
    * @opt_param string searchString Allows searching for creative field values by
    * their values. Wildcards (e.g. *) are not allowed.
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @return Google_Service_Dfareporting_CreativeFieldValuesListResponse
    */
   public function listCreativeFieldValues($profileId, $creativeFieldId, $optParams = array())

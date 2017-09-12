@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -54,7 +54,8 @@ class Google_Service_Dfareporting_Resource_Subaccounts extends Google_Service_Re
     return $this->call('insert', array($params), "Google_Service_Dfareporting_Subaccount");
   }
   /**
-   * Gets a list of subaccounts, possibly filtered. (subaccounts.listSubaccounts)
+   * Gets a list of subaccounts, possibly filtered. This method supports paging.
+   * (subaccounts.listSubaccounts)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -71,7 +72,7 @@ class Google_Service_Dfareporting_Resource_Subaccounts extends Google_Service_Re
    * "subaccount" will match objects with name "my subaccount", "subaccount 2015",
    * or simply "subaccount".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @return Google_Service_Dfareporting_SubaccountsListResponse
    */
   public function listSubaccounts($profileId, $optParams = array())

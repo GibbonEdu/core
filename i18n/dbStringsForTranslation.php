@@ -2087,9 +2087,9 @@ __($guid, 'Allow students to choose a backup, in case enroled activity is full.'
 __($guid, 'Allow users who do not have access to the unit planner to see Unit Outlines via the lesson planner?') ;
 __($guid, 'Allowable choices for category') ;
 __($guid, 'Allowable choices for purpose when creating a resource') ;
-__($guid, 'Allowalbe choices for negative behaviour') ;
-__($guid, 'Allowalbe choices for positive behaviour') ;
-__($guid, 'Allowalbe choices for severity level (from lowest to highest)') ;
+__($guid, 'Allowable choices for negative behaviour') ;
+__($guid, 'Allowable choices for positive behaviour') ;
+__($guid, 'Allowable choices for severity level (from lowest to highest)') ;
 __($guid, 'Allows members of the public to register to use the system.') ;
 __($guid, 'Allows privileged users to add expenses without going through request process.') ;
 __($guid, 'An HTML template to be used in the description field of expense requests.') ;

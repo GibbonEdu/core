@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -40,7 +40,8 @@ class Google_Service_Dfareporting_Resource_Accounts extends Google_Service_Resou
     return $this->call('get', array($params), "Google_Service_Dfareporting_Account");
   }
   /**
-   * Retrieves the list of accounts, possibly filtered. (accounts.listAccounts)
+   * Retrieves the list of accounts, possibly filtered. This method supports
+   * paging. (accounts.listAccounts)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -58,7 +59,7 @@ class Google_Service_Dfareporting_Resource_Accounts extends Google_Service_Resou
    * the end of the search string. For example, a search string of "account" will
    * match objects with name "my account", "account 2015", or simply "account".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @return Google_Service_Dfareporting_AccountsListResponse
    */
   public function listAccounts($profileId, $optParams = array())

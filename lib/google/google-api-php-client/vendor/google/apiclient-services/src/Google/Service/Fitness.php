@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -36,12 +36,30 @@ class Google_Service_Fitness extends Google_Service
   /** View and store your activity information in Google Fit. */
   const FITNESS_ACTIVITY_WRITE =
       "https://www.googleapis.com/auth/fitness.activity.write";
+  /** View blood glucose data in Google Fit. */
+  const FITNESS_BLOOD_GLUCOSE_READ =
+      "https://www.googleapis.com/auth/fitness.blood_glucose.read";
+  /** View and store blood glucose data in Google Fit. */
+  const FITNESS_BLOOD_GLUCOSE_WRITE =
+      "https://www.googleapis.com/auth/fitness.blood_glucose.write";
+  /** View blood pressure data in Google Fit. */
+  const FITNESS_BLOOD_PRESSURE_READ =
+      "https://www.googleapis.com/auth/fitness.blood_pressure.read";
+  /** View and store blood pressure data in Google Fit. */
+  const FITNESS_BLOOD_PRESSURE_WRITE =
+      "https://www.googleapis.com/auth/fitness.blood_pressure.write";
   /** View body sensor information in Google Fit. */
   const FITNESS_BODY_READ =
       "https://www.googleapis.com/auth/fitness.body.read";
   /** View and store body sensor data in Google Fit. */
   const FITNESS_BODY_WRITE =
       "https://www.googleapis.com/auth/fitness.body.write";
+  /** View body temperature data in Google Fit. */
+  const FITNESS_BODY_TEMPERATURE_READ =
+      "https://www.googleapis.com/auth/fitness.body_temperature.read";
+  /** View and store body temperature data in Google Fit. */
+  const FITNESS_BODY_TEMPERATURE_WRITE =
+      "https://www.googleapis.com/auth/fitness.body_temperature.write";
   /** View your stored location data in Google Fit. */
   const FITNESS_LOCATION_READ =
       "https://www.googleapis.com/auth/fitness.location.read";
@@ -54,6 +72,18 @@ class Google_Service_Fitness extends Google_Service
   /** View and store nutrition information in Google Fit. */
   const FITNESS_NUTRITION_WRITE =
       "https://www.googleapis.com/auth/fitness.nutrition.write";
+  /** View oxygen saturation data in Google Fit. */
+  const FITNESS_OXYGEN_SATURATION_READ =
+      "https://www.googleapis.com/auth/fitness.oxygen_saturation.read";
+  /** View and store oxygen saturation data in Google Fit. */
+  const FITNESS_OXYGEN_SATURATION_WRITE =
+      "https://www.googleapis.com/auth/fitness.oxygen_saturation.write";
+  /** View reproductive health data in Google Fit. */
+  const FITNESS_REPRODUCTIVE_HEALTH_READ =
+      "https://www.googleapis.com/auth/fitness.reproductive_health.read";
+  /** View and store reproductive health data in Google Fit. */
+  const FITNESS_REPRODUCTIVE_HEALTH_WRITE =
+      "https://www.googleapis.com/auth/fitness.reproductive_health.write";
 
   public $users_dataSources;
   public $users_dataSources_datasets;

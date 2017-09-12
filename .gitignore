@@ -4,3 +4,4 @@ uploads/*
 Thumb.db
 .DS_Store
 tests/log/*
+nbproject/

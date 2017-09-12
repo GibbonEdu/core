@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,6 +23,8 @@ class Google_Service_ShoppingContent_Inventory extends Google_Model
   public $kind;
   protected $loyaltyPointsType = 'Google_Service_ShoppingContent_LoyaltyPoints';
   protected $loyaltyPointsDataType = '';
+  protected $pickupType = 'Google_Service_ShoppingContent_InventoryPickup';
+  protected $pickupDataType = '';
   protected $priceType = 'Google_Service_ShoppingContent_Price';
   protected $priceDataType = '';
   public $quantity;
@@ -39,10 +41,16 @@ class Google_Service_ShoppingContent_Inventory extends Google_Model
   {
     return $this->availability;
   }
+  /**
+   * @param Google_Service_ShoppingContent_Installment
+   */
   public function setInstallment(Google_Service_ShoppingContent_Installment $installment)
   {
     $this->installment = $installment;
   }
+  /**
+   * @return Google_Service_ShoppingContent_Installment
+   */
   public function getInstallment()
   {
     return $this->installment;
@@ -55,18 +63,44 @@ class Google_Service_ShoppingContent_Inventory extends Google_Model
   {
     return $this->kind;
   }
+  /**
+   * @param Google_Service_ShoppingContent_LoyaltyPoints
+   */
   public function setLoyaltyPoints(Google_Service_ShoppingContent_LoyaltyPoints $loyaltyPoints)
   {
     $this->loyaltyPoints = $loyaltyPoints;
   }
+  /**
+   * @return Google_Service_ShoppingContent_LoyaltyPoints
+   */
   public function getLoyaltyPoints()
   {
     return $this->loyaltyPoints;
   }
+  /**
+   * @param Google_Service_ShoppingContent_InventoryPickup
+   */
+  public function setPickup(Google_Service_ShoppingContent_InventoryPickup $pickup)
+  {
+    $this->pickup = $pickup;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_InventoryPickup
+   */
+  public function getPickup()
+  {
+    return $this->pickup;
+  }
+  /**
+   * @param Google_Service_ShoppingContent_Price
+   */
   public function setPrice(Google_Service_ShoppingContent_Price $price)
   {
     $this->price = $price;
   }
+  /**
+   * @return Google_Service_ShoppingContent_Price
+   */
   public function getPrice()
   {
     return $this->price;
@@ -79,10 +113,16 @@ class Google_Service_ShoppingContent_Inventory extends Google_Model
   {
     return $this->quantity;
   }
+  /**
+   * @param Google_Service_ShoppingContent_Price
+   */
   public function setSalePrice(Google_Service_ShoppingContent_Price $salePrice)
   {
     $this->salePrice = $salePrice;
   }
+  /**
+   * @return Google_Service_ShoppingContent_Price
+   */
   public function getSalePrice()
   {
     return $this->salePrice;

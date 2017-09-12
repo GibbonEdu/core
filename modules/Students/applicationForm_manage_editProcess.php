@@ -651,12 +651,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                             // Write files to database, if there is one
                             if (!empty($attachment)) {
+                                // Check for uniqueness
                                 try {
-                                    $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment);
-                                    $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
+                                    $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName);
+                                    $sqlFile = 'SELECT gibbonApplicationFormFileID FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID, name=:name ORDER BY gibbonApplicationFormFileID DESC';
                                     $resultFile = $connection2->prepare($sqlFile);
                                     $resultFile->execute($dataFile);
                                 } catch (PDOException $e) {
+                                    $partialFail = true;
+                                }
+
+                                if ($resultFile->rowCount() > 0) {
+                                    // If the file exists, replace the most recent one
+                                    $gibbonApplicationFormFileID = $resultFile->fetchColumn(0);
+                                    try {
+                                        $dataFile = array('gibbonApplicationFormFileID' => $gibbonApplicationFormFileID, 'path' => $attachment);
+                                        $sqlFile = 'UPDATE gibbonApplicationFormFile SET path=:path WHERE gibbonApplicationFormFileID=:gibbonApplicationFormFileID';
+                                        $resultFile = $connection2->prepare($sqlFile);
+                                        $resultFile->execute($dataFile);
+                                    } catch (PDOException $e) {
+                                        $partialFail = true;
+                                    }
+                                } else {
+                                    // Otherwise add the new file to the database
+                                    try {
+                                        $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment);
+                                        $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
+                                        $resultFile = $connection2->prepare($sqlFile);
+                                        $resultFile->execute($dataFile);
+                                    } catch (PDOException $e) {
+                                        $partialFail = true;
+                                    }
                                 }
                             } else {
                                 $partialFail = true;

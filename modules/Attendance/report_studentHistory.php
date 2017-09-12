@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -49,47 +52,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             if (isset($_GET['gibbonPersonID'])) {
                 $gibbonPersonID = $_GET['gibbonPersonID'];
             }
-            ?>
-			
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Student') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonID">
-								<?php
-                                echo "<option value=''></option>";
-								try {
-									$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-									$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-									}
-								}
-								?>				
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_studentHistory.php">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('noIntBorder fullWidth');
+
+            $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
+
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonID', __('Student'));
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder()->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+            echo $form->getOutput();
 
             if ($gibbonPersonID != '') {
                 $output = '';
@@ -116,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             }
         } elseif ($highestAction == 'Student History_myChildren') {
             $gibbonPersonID = null;
-            if (isset($_GET['search'])) {
-                $gibbonPersonID = $_GET['search'];
+            if (isset($_GET['gibbonPersonID'])) {
+                $gibbonPersonID = $_GET['gibbonPersonID'];
             }
             //Test data access field for permission
             try {
@@ -134,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 echo '</div>';
             } else {
                 //Get child list
-                $count = 0;
+                $countChild = 0;
                 $options = '';
                 while ($row = $result->fetch()) {
                     try {
@@ -145,64 +124,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
-
-                    while ($rowChild = $resultChild->fetch()) {
-                        $select = '';
-                        if ($rowChild['gibbonPersonID'] == $gibbonPersonID) {
-                            $select = 'selected';
+                    if ($resultChild->rowCount() > 0) {
+                        if ($resultChild->rowCount() == 1) {
+                            $rowChild = $resultChild->fetch();
+                            $gibbonPersonID = $rowChild['gibbonPersonID'];
+                            $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                            ++$countChild;
                         }
-
-                        $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
-                        $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
-                        ++$count;
+                        else {
+                            while ($rowChild = $resultChild->fetch()) {
+                                $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                                ++$countChild;
+                            }
+                        }
                     }
                 }
 
-                if ($count == 0) {
+                if ($countChild == 0) {
                     echo "<div class='error'>";
                     echo __($guid, 'Access denied.');
                     echo '</div>';
-                } elseif ($count == 1) {
-                    $gibbonPersonID = $gibbonPersonID[0];
                 } else {
                     echo '<h2>';
                     echo __($guid, 'Choose');
                     echo '</h2>';
 
-                    ?>
-					<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-						<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Search For') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
-								</td>
-								<td class="right">
-									<select name="search" id="search" class="standardWidth">
-										<option value=""></value>
-										<?php echo $options;
-                    					?> 
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2 class="right">
-									<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_studentHistory.php">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<?php
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory.php'>".__($guid, 'Clear Search').'</a>';
-                    				?>
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
+                    $form->setClass('noIntBorder fullWidth');
+
+                    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
+
+                    if ($countChild > 0) {
+                        $row = $form->addRow();
+                            $row->addLabel('gibbonPersonID', __('Child'));
+                            if ($countChild > 1) {
+                                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder()->isRequired();
+                            }
+                            else {
+                                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->isRequired();
+                            }
+                    }
+
+                    $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+                    echo $form->getOutput();
                 }
 
-                if ($gibbonPersonID != '' and $count > 0) {
+                if ($gibbonPersonID != '' and $countChild > 0) {
                     //Confirm access to this student
                     try {
                         $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);

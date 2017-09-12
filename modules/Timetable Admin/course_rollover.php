@@ -75,9 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             } else {
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=2' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td colspan=2 style='text-align: justify'> 
+							<td colspan=2 style='text-align: justify'>
 								<?php
                                 echo sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'); ?>
 							</td>
@@ -130,9 +130,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 echo '<h4>';
                 echo sprintf(__($guid, 'Options'), $nameNext);
                 echo '</h4>'; ?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Include Students') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 							</td>
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Include Teachers') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 					<?php
 
                     echo '<h4>';
-                echo __($guid, 'Map Classess');
+                echo __($guid, 'Map Classes');
                 echo '</h4>';
                 echo '<p>';
                 echo __($guid, 'Determine which classes from this year roll to which classes in next year, and which not to rollover at all.');
@@ -320,16 +320,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                                 //Get staff and students and copy them over
                                 if ($rollStudents == 'on' and $rollTeachers == 'on') {
-                                    $sqlWhere = " AND (role='Student' OR role='Teacher')";
+                                    $sqlWhere = " AND (gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Teacher')";
                                 } elseif ($rollStudents == 'on' and $rollTeachers == '') {
-                                    $sqlWhere = " AND role='Student'";
+                                    $sqlWhere = " AND gibbonCourseClassPerson.role='Student'";
                                 } else {
-                                    $sqlWhere = " AND role='Teacher'";
+                                    $sqlWhere = " AND gibbonCourseClassPerson.role='Teacher'";
                                 }
-                                //Get current enrolment
+                                //Get current enrolment, exclude people already enrolled or their status is not Full
                                 try {
-                                    $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlCurrent = "SELECT gibbonPersonID, role FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID $sqlWhere";
+                                    $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassIDNext' => $gibbonCourseClassIDNext);
+                                    $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role
+                                    FROM gibbonCourseClassPerson
+                                    JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                    LEFT JOIN gibbonCourseClassPerson as gibbonCourseClassPersonNext ON (gibbonCourseClassPersonNext.gibbonCourseClassID=:gibbonCourseClassIDNext AND gibbonCourseClassPersonNext.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                                    AND gibbonCourseClassPersonNext.gibbonCourseClassPersonID IS NULL
+                                    AND gibbonPerson.status='Full'
+                                    $sqlWhere";
                                     $resultCurrent = $connection2->prepare($sqlCurrent);
                                     $resultCurrent->execute($dataCurrent);
                                 } catch (PDOException $e) {

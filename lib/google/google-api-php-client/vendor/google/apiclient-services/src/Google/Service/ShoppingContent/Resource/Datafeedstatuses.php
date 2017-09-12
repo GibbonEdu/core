@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -39,7 +39,8 @@ class Google_Service_ShoppingContent_Resource_Datafeedstatuses extends Google_Se
     return $this->call('custombatch', array($params), "Google_Service_ShoppingContent_DatafeedstatusesCustomBatchResponse");
   }
   /**
-   * Retrieves the status of a datafeed from your Merchant Center account.
+   * Retrieves the status of a datafeed from your Merchant Center account. This
+   * method can only be called for non-multi-client accounts.
    * (datafeedstatuses.get)
    *
    * @param string $merchantId
@@ -54,7 +55,8 @@ class Google_Service_ShoppingContent_Resource_Datafeedstatuses extends Google_Se
     return $this->call('get', array($params), "Google_Service_ShoppingContent_DatafeedStatus");
   }
   /**
-   * Lists the statuses of the datafeeds in your Merchant Center account.
+   * Lists the statuses of the datafeeds in your Merchant Center account. This
+   * method can only be called for non-multi-client accounts.
    * (datafeedstatuses.listDatafeedstatuses)
    *
    * @param string $merchantId The ID of the managing account.

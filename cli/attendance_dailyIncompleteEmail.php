@@ -79,6 +79,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                 AND attendance = 'Y'
+                AND gibbonPerson.status='Full'
                 ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
 
                 $result = $connection2->prepare($sql);
@@ -144,10 +145,9 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
 
 
         //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
-
         if ($enabledByClass == 'Y') {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate);
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate, 'time' => date("H:i:s"));
 
                 // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
                 $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) AS studentCount
@@ -156,11 +156,16 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
                 JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
-                WHERE gibbonTTDayDate.date =:date
-                AND gibbonCourseClassPerson.role = 'Teacher'
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonTTDayDate.date=:date
+                AND gibbonTTColumnRow.timeStart<=:time
+                AND gibbonCourseClassPerson.role='Teacher'
                 AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonCourseClass.attendance = 'Y'
+                AND gibbonCourseClass.attendance='Y'
+                AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
+                AND gibbonPerson.status='Full'
                 ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $result = $connection2->prepare($sql);
@@ -297,7 +302,12 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
         }
 
         $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').' '.$report);
-        $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        if ($enabledByRollGroup == 'N' && $enabledByClass == 'Y') {
+            $event->setActionLink('/index.php?q=/modules/Attendance/report_courseClassesNotRegistered_byDate.php');
+        }
+        else {
+            $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        }
 
         // Add admin, then push the event to the notification sender
         $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);

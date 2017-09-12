@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,8 +26,7 @@
 class Google_Service_AndroidEnterprise_Resource_Entitlements extends Google_Service_Resource
 {
   /**
-   * Removes an entitlement to an app for a user and uninstalls it.
-   * (entitlements.delete)
+   * Removes an entitlement to an app for a user. (entitlements.delete)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
@@ -58,7 +57,7 @@ class Google_Service_AndroidEnterprise_Resource_Entitlements extends Google_Serv
     return $this->call('get', array($params), "Google_Service_AndroidEnterprise_Entitlement");
   }
   /**
-   * List of all entitlements for the specified user. Only the ID is set.
+   * Lists all entitlements for the specified user. Only the ID is set.
    * (entitlements.listEntitlements)
    *
    * @param string $enterpriseId The ID of the enterprise.

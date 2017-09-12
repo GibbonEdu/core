@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -56,83 +59,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
     if (isset($_GET['hideName'])) {
         $hideName = $_GET['hideName'];
     }
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b>Transport *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="transport">
-						<?php
-                        echo "<option value=''></option>";
-						if ($transport == '*') {
-							echo "<option selected value='*'>All</option>";
-						} else {
-							echo "<option value='*'>All</option>";
-						}
-						try {
-							$dataSelect = array();
-							$sqlSelect = 'SELECT DISTINCT transport FROM gibbonPerson ORDER BY transport';
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($rowSelect['transport'] != '') {
-								if ($transport == $rowSelect['transport']) {
-									echo "<option selected value='".$rowSelect['transport']."'>".htmlPrep($rowSelect['transport']).'</option>';
-								} else {
-									echo "<option value='".$rowSelect['transport']."'>".htmlPrep($rowSelect['transport']).'</option>';
-								}
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>Prefix</b><br/>
-				</td>
-				<td class="right">
-					<input name='prefix' style='width: 302px' type='text' maxlength='30' value=<?php echo $prefix ?>>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>Append</b><br/>
-				</td>
-				<td class="right">
-					<input name='append' style='width: 302px' type='text' maxlength='30' value=<?php echo $append ?>>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b>Hide student name?</b><br/>
-				</td>
-				<td class="right">
-					<?php
-                    $checked = '';
-					if ($hideName == 'on') {
-						$checked = 'checked ';
-					}
-					?>
-					<input <?php echo $checked ?> type='checkbox' name='hideName'>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_emergencySMS_byTransport.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', "get");
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_emergencySMS_byTransport.php", "get");
+
+    $row = $form->addRow();
+        $row->addLabel('transport', _('Transport'));
+        $row->addSelectTransport('transport', true)->isRequired()->selected($transport);
+
+    $row = $form->addRow();
+        $row->addLabel('prefix', __('Prefix'));
+        $row->addTextField('prefix')->setValue($prefix)->maxLength(30);
+
+    $row = $form->addRow();
+        $row->addLabel('append', __('Suffix'));
+        $row->addTextField('append')->setValue($append)->maxLength(30);
+
+    $row = $form->addRow();
+        $row->addLabel('hideName', __('Hide Student Name?'));
+        $row->addYesNo('hideName')->selected($hideName);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 
     if ($transport != '') {
         echo '<h2>';
@@ -155,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
-        if ($hideName != 'on') {
+        if ($hideName == 'N') {
             echo '<th>';
             echo 'Student';
             echo '</th>';
@@ -176,9 +130,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-            if ($hideName != 'on') {
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
+            if ($hideName == 'N') {
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';
