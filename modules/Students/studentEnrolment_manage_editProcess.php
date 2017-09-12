@@ -124,7 +124,11 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
                         $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
                                 SELECT gibbonCourseClassMap.gibbonCourseClassID, gibbonStudentEnrolment.gibbonPersonID, 'Student', 'Y'
-                                FROM gibbonStudentEnrolment JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID";
+                                FROM gibbonStudentEnrolment
+                                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
+                                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                         $pdo->executeQuery($data, $sql);
 
                         if ($pdo->getQuerySuccess() == false) {
