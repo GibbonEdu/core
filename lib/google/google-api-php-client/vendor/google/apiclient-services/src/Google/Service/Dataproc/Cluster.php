@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -22,6 +22,9 @@ class Google_Service_Dataproc_Cluster extends Google_Collection
   public $clusterUuid;
   protected $configType = 'Google_Service_Dataproc_ClusterConfig';
   protected $configDataType = '';
+  public $labels;
+  protected $metricsType = 'Google_Service_Dataproc_ClusterMetrics';
+  protected $metricsDataType = '';
   public $projectId;
   protected $statusType = 'Google_Service_Dataproc_ClusterStatus';
   protected $statusDataType = '';
@@ -44,13 +47,41 @@ class Google_Service_Dataproc_Cluster extends Google_Collection
   {
     return $this->clusterUuid;
   }
+  /**
+   * @param Google_Service_Dataproc_ClusterConfig
+   */
   public function setConfig(Google_Service_Dataproc_ClusterConfig $config)
   {
     $this->config = $config;
   }
+  /**
+   * @return Google_Service_Dataproc_ClusterConfig
+   */
   public function getConfig()
   {
     return $this->config;
+  }
+  public function setLabels($labels)
+  {
+    $this->labels = $labels;
+  }
+  public function getLabels()
+  {
+    return $this->labels;
+  }
+  /**
+   * @param Google_Service_Dataproc_ClusterMetrics
+   */
+  public function setMetrics(Google_Service_Dataproc_ClusterMetrics $metrics)
+  {
+    $this->metrics = $metrics;
+  }
+  /**
+   * @return Google_Service_Dataproc_ClusterMetrics
+   */
+  public function getMetrics()
+  {
+    return $this->metrics;
   }
   public function setProjectId($projectId)
   {
@@ -60,18 +91,30 @@ class Google_Service_Dataproc_Cluster extends Google_Collection
   {
     return $this->projectId;
   }
+  /**
+   * @param Google_Service_Dataproc_ClusterStatus
+   */
   public function setStatus(Google_Service_Dataproc_ClusterStatus $status)
   {
     $this->status = $status;
   }
+  /**
+   * @return Google_Service_Dataproc_ClusterStatus
+   */
   public function getStatus()
   {
     return $this->status;
   }
+  /**
+   * @param Google_Service_Dataproc_ClusterStatus
+   */
   public function setStatusHistory($statusHistory)
   {
     $this->statusHistory = $statusHistory;
   }
+  /**
+   * @return Google_Service_Dataproc_ClusterStatus
+   */
   public function getStatusHistory()
   {
     return $this->statusHistory;

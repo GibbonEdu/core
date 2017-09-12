@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,6 +27,7 @@ class Google_Service_Bigquery_JobStatistics2 extends Google_Collection
   protected $referencedTablesDataType = 'array';
   protected $schemaType = 'Google_Service_Bigquery_TableSchema';
   protected $schemaDataType = '';
+  public $statementType;
   public $totalBytesBilled;
   public $totalBytesProcessed;
   protected $undeclaredQueryParametersType = 'Google_Service_Bigquery_QueryParameter';
@@ -56,29 +57,55 @@ class Google_Service_Bigquery_JobStatistics2 extends Google_Collection
   {
     return $this->numDmlAffectedRows;
   }
+  /**
+   * @param Google_Service_Bigquery_ExplainQueryStage
+   */
   public function setQueryPlan($queryPlan)
   {
     $this->queryPlan = $queryPlan;
   }
+  /**
+   * @return Google_Service_Bigquery_ExplainQueryStage
+   */
   public function getQueryPlan()
   {
     return $this->queryPlan;
   }
+  /**
+   * @param Google_Service_Bigquery_TableReference
+   */
   public function setReferencedTables($referencedTables)
   {
     $this->referencedTables = $referencedTables;
   }
+  /**
+   * @return Google_Service_Bigquery_TableReference
+   */
   public function getReferencedTables()
   {
     return $this->referencedTables;
   }
+  /**
+   * @param Google_Service_Bigquery_TableSchema
+   */
   public function setSchema(Google_Service_Bigquery_TableSchema $schema)
   {
     $this->schema = $schema;
   }
+  /**
+   * @return Google_Service_Bigquery_TableSchema
+   */
   public function getSchema()
   {
     return $this->schema;
+  }
+  public function setStatementType($statementType)
+  {
+    $this->statementType = $statementType;
+  }
+  public function getStatementType()
+  {
+    return $this->statementType;
   }
   public function setTotalBytesBilled($totalBytesBilled)
   {
@@ -96,10 +123,16 @@ class Google_Service_Bigquery_JobStatistics2 extends Google_Collection
   {
     return $this->totalBytesProcessed;
   }
+  /**
+   * @param Google_Service_Bigquery_QueryParameter
+   */
   public function setUndeclaredQueryParameters($undeclaredQueryParameters)
   {
     $this->undeclaredQueryParameters = $undeclaredQueryParameters;
   }
+  /**
+   * @return Google_Service_Bigquery_QueryParameter
+   */
   public function getUndeclaredQueryParameters()
   {
     return $this->undeclaredQueryParameters;

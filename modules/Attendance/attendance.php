@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 @session_start() ;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -52,67 +54,27 @@ else {
 	$accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGroupsNotRegistered_byDate.php") && isActionAccessible($guid, $connection2, "/modules/Attendance/report_courseClassesNotRegistered_byDate.php");
 
 	$gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : $_SESSION[$guid]["gibbonPersonID"];
-	?>
 
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-			<tr>
-				<td style='width: 275px'>
-					<b><?php print __('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
-				</td>
-				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
-						date.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#currentDate" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<?php if ( $accessNotRegistered ) : ?>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Staff') ?></b>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="gibbonPersonID">
-							<?php
-							try {
-		                        $dataSelect = array();
-		                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-		                        $resultSelect = $connection2->prepare($sqlSelect);
-		                        $resultSelect->execute($dataSelect);
-		                    } catch (PDOException $e) {}
+	$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
-                            echo "<option value=''></option>";
-							while ($rowSelect = $resultSelect->fetch() ) {
-								$selected = ($gibbonPersonID == $rowSelect['gibbonPersonID'])? 'selected' : '';
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
-								echo "<option value='".$rowSelect['gibbonPersonID']."' $selected>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/attendance.php");
 
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<?php endif; ?>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/attendance.php">
-					<input type="submit" value="<?php print __("Submit") ; ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
+	$row = $form->addRow();
+	    $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+	    $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
 
-	<?php
+	$row = $form->addRow();
+	    $row->addLabel('gibbonPersonID', __('Staff'));
+	    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
 
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+
+    echo $form->getOutput();
 
 	if (isset($_SESSION[$guid]["username"])) {
 

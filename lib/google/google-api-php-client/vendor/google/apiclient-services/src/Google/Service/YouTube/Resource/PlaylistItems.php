@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,6 +32,19 @@ class Google_Service_YouTube_Resource_PlaylistItems extends Google_Service_Resou
    * the playlist item that is being deleted. In a playlistItem resource, the id
    * property specifies the playlist item's ID.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string onBehalfOfContentOwner Note: This parameter is intended
+   * exclusively for YouTube content partners.
+   *
+   * The onBehalfOfContentOwner parameter indicates that the request's
+   * authorization credentials identify a YouTube CMS user who is acting on behalf
+   * of the content owner specified in the parameter value. This parameter is
+   * intended for YouTube content partners that own and manage many different
+   * YouTube channels. It allows content owners to authenticate once and get
+   * access to all their video and channel data, without having to provide
+   * authentication credentials for each individual channel. The CMS account that
+   * the user authenticates with must be linked to the specified YouTube content
+   * owner.
    */
   public function delete($id, $optParams = array())
   {
@@ -141,6 +154,19 @@ class Google_Service_YouTube_Resource_PlaylistItems extends Google_Service_Resou
    * replaced with the default settings.
    * @param Google_Service_YouTube_PlaylistItem $postBody
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string onBehalfOfContentOwner Note: This parameter is intended
+   * exclusively for YouTube content partners.
+   *
+   * The onBehalfOfContentOwner parameter indicates that the request's
+   * authorization credentials identify a YouTube CMS user who is acting on behalf
+   * of the content owner specified in the parameter value. This parameter is
+   * intended for YouTube content partners that own and manage many different
+   * YouTube channels. It allows content owners to authenticate once and get
+   * access to all their video and channel data, without having to provide
+   * authentication credentials for each individual channel. The CMS account that
+   * the user authenticates with must be linked to the specified YouTube content
+   * owner.
    * @return Google_Service_YouTube_PlaylistItem
    */
   public function update($part, Google_Service_YouTube_PlaylistItem $postBody, $optParams = array())

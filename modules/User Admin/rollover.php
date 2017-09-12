@@ -75,9 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             } else {
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rollover.php&step=2' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td colspan=2 style='text-align: justify'> 
+							<td colspan=2 style='text-align: justify'>
 								<?php
                                 echo sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'); ?>
 							</td>
@@ -161,9 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 					echo sprintf(__($guid, 'Add Year Following %1$s'), $nameNext);
 					echo '</h4>';
 					?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'School Year Name') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 							</td>
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Status') ?> *</b>
 							</td>
 							<td class="right">
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
 							</td>
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'First Day') ?> *</b><br/>
 								<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 							</td>
@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } );  
+								?>." } );
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Last Day') ?> *</b><br/>
 								<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 							</td>
@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } );  
+								?>." } );
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -1006,8 +1006,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count = $_POST['expect-count'];
                         }
                         if ($count == '') {
-                            echo "<div class='error'>";
-                            echo __($guid, 'Your request failed because your inputs were invalid.');
+                            echo "<div class='warning'>";
+                            echo __($guid, 'No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
@@ -1061,8 +1061,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count = $_POST['enrol-count'];
                         }
                         if ($count == '') {
-                            echo "<div class='error'>";
-                            echo __($guid, 'Your request failed because your inputs were invalid.');
+                            echo "<div class='warning'>";
+                            echo __($guid, 'No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
@@ -1157,8 +1157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count = $_POST['enrolFull-count'];
                         }
                         if ($count == '') {
-                            echo "<div class='error'>";
-                            echo __($guid, 'Your request failed because your inputs were invalid.');
+                            echo "<div class='warning'>";
+                            echo __($guid, 'No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
@@ -1278,8 +1278,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count = $_POST['reenrol-count'];
                         }
                         if ($count == '') {
-                            echo "<div class='error'>";
-                            echo __($guid, 'Your request failed because your inputs were invalid.');
+                            echo "<div class='warning'>";
+                            echo __($guid, 'No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
@@ -1377,8 +1377,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count = $_POST['final-count'];
                         }
                         if ($count == '') {
-                            echo "<div class='error'>";
-                            echo __($guid, 'Your request failed because your inputs were invalid.');
+                            echo "<div class='warning'>";
+                            echo __($guid, 'No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
@@ -1428,8 +1428,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $count = $_POST['register-count'];
                         }
                         if ($count == '') {
-                            echo "<div class='error'>";
-                            echo __($guid, 'Your request failed because your inputs were invalid.');
+                            echo "<div class='warning'>";
+                            echo __($guid, 'No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;

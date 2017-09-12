@@ -35,11 +35,19 @@ class DatabaseFormFactory extends FormFactory
 
     protected $cachedQueries = array();
 
+    /**
+     * Create a factory with access to the provided a database connection.
+     * @param  \Gibbon\sqlConnection  $pdo
+     */
     public function __construct(\Gibbon\sqlConnection $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * Create and return an instance of DatabaseFormFactory.
+     * @return  object DatabaseFormFactory
+     */
     public static function create(\Gibbon\sqlConnection $pdo = null)
     {
         return new DatabaseFormFactory($pdo);
@@ -67,10 +75,40 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
-    public function createSelectYearGroup($name)
+    /*
+    The optional $all function adds an option to the top of the select, using * to allow selection of all year groups
+    */
+    public function createSelectYearGroup($name, $all = false)
     {
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
         $results = $this->pdo->executeQuery(array(), $sql);
+
+        if (!$all)
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        else
+            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+    }
+
+    /*
+    The optional $all function adds an option to the top of the select, using * to allow selection of all roll groups
+    */
+    public function createSelectRollGroup($name, $gibbonSchoolYearID, $all = false)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        if (!$all)
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        else
+            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+    }
+
+    public function createSelectClass($name, $gibbonSchoolYearID)
+    {
+        $data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID);
+        $sql="SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
+        $results = $this->pdo->executeQuery($data, $sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -144,23 +182,86 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectStudent($name, $allStudents = false)
+    /*
+    $params is an array, with the following options as keys:
+        allStudents - false by default. true displays students regardless of status and start/end date
+        byName - true by default, adds students organised by name
+        byRoll - false by default, adds students organised by roll group. Can be used in conjunction with byName to have multiple sections
+    */
+    public function createSelectStudent($name, $gibbonSchoolYearID, $params = array())
     {
-        if ($allStudents) {
-            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
-                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student'";
-        } else {
-            $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
-                FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY surname, preferredName";
+        //Create arrays for use later on
+        $values = array();
+        $data = array();
+
+        // Check params and set defaults if not defined
+        $params = array_replace(array('allStudents' => false, 'byName' => true, 'byRoll' => false), $params);
+
+        //Check for multiple by methods, so we know when to apply optgroups
+        $multipleBys = false;
+        if ($params["byName"] && $params["byRoll"]) {
+            $multipleBys = true;
         }
 
-        $results = $this->pdo->executeQuery(array(), $sql);
+        //Add students by roll group
+        if ($params["byRoll"]) {
+            if ($params["allStudents"]) {
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
+                    WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
+                        AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID
+                        AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                    ORDER BY name, surname, preferredName";
 
-        $values = array();
-        if ($results && $results->rowCount() > 0) {
-            while ($row = $results->fetch()) {
-                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+            } else {
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
+                    WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
+                        AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID
+                        AND status='Full'
+                        AND (dateStart IS NULL OR dateStart<=:date)
+                        AND (dateEnd IS NULL  OR dateEnd>=:date)
+                        AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                    ORDER BY name, surname, preferredName";
+            }
+
+            $results = $this->pdo->executeQuery($data, $sql);
+
+            if ($results && $results->rowCount() > 0) {
+                while ($row = $results->fetch()) {
+                    if ($multipleBys) {
+                        $values[__('Students by Roll Group')][$row['gibbonPersonID']] = htmlPrep($row['name']).' - '.formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                    } else {
+                        $values[$row['gibbonPersonID']] = htmlPrep($row['name']).' - '.formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                    }
+                }
+            }
+        }
+
+        //Add students by name
+        if ($params["byName"]) {
+            if ($params["allStudents"]) {
+                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                    FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonRole.category='Student' ORDER BY surname, preferredName";
+            } else {
+                $data = array('date' => date('Y-m-d'));
+                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                    FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY surname, preferredName";
+            }
+
+            $results = $this->pdo->executeQuery($data, $sql);
+
+            if ($results && $results->rowCount() > 0) {
+                while ($row = $results->fetch()) {
+                    if ($multipleBys) {
+                        $values[__('Students by Name')][$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                    } else {
+                        $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                    }
+                }
             }
         }
 
@@ -212,6 +313,20 @@ class DatabaseFormFactory extends FormFactory
         }
 
         return $field;
+    }
+
+    /*
+    The optional $all function adds an option to the top of the select, using * to allow selection of all year groups
+    */
+    public function createSelectTransport($name, $all = false)
+    {
+        $sql = "SELECT DISTINCT transport AS value, transport AS name FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        if (!$all)
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        else
+            return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
     protected function getCachedQuery($name)

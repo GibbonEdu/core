@@ -210,7 +210,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                             $mail = getGibbonMailer($guid);
                             $mail->IsSMTP();
-                            $mail->SetFrom($from, $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']);
+                            $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
                             foreach ($emails as $address) {
                                 $mail->AddBCC($address);
                             }

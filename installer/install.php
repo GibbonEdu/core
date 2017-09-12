@@ -227,8 +227,11 @@ $_SESSION[$guid]['stringReplacement'] = array();
 														<option value='fr_FR'>Français - France</option>
 														<option value='it_IT'>Italiano - Italia</option>
 														<option value='ro_RO'>Română</option>
-														<option value='zh_HK'>體字 - 香港</option>
+                                                        <option value="sq_AL">Shqip - Shqipëri</option>
+                                                        <option value="vi_VN">Tiếng Việt - Việt Nam</option>
 														<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
+                                                        <option value="th_TH">ภาษาไทย - ราชอาณาจักรไทย </option>
+                                                        <option value='zh_HK'>體字 - 香港</option>
 													</select>
 												</td>
 											</tr>
@@ -684,7 +687,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																	}
 																	$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
 																	?>
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22) ?>" type="text" class="standardWidth">
+																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=100 value="<?php echo $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22) ?>" type="text" class="standardWidth">
 																<script type="text/javascript">
 																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 																	<?php echo $row['name'] ?>.add(Validate.Presence);
@@ -712,7 +715,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 				?></span>
 															</td>
 															<td stclass="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo substr(__FILE__, 0, -22) ?>" type="text" class="standardWidth">
+																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=100 value="<?php echo substr(__FILE__, 0, -22) ?>" type="text" class="standardWidth">
 																<script type="text/javascript">
 																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 																	<?php echo $row['name'] ?>.add(Validate.Presence);
@@ -991,8 +994,10 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                         							<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																	<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																	<option value='PKR ₨'>Pakistani Rupee (₨)</option>
+																	<option value='ZAR R'>South African Rand (R)</option>
 																	<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
 																	<option value='TZS TSh'>Tanzania Shillings (TSh)</option>
+																	<option value='TTD $'>Trinidad & Tobago Dollar (TTD)</option>
 																	<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																</optgroup>
 															</select>

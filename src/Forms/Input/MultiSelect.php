@@ -47,14 +47,14 @@ class MultiSelect implements OutputableInterface
         $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true)->setSize(8)->setClass('mediumWidth');
 
         $this->sortBySelect = $factory->createSelect($name . "Sort")
-            ->placeholder("Sort by Name")
+            ->placeholder(__("Sort by Name"))
             ->setClass("shortWidth")
             ->addClass("floatNone");
 
-        $this->addButton = $factory->createButton("Add")
+        $this->addButton = $factory->createButton(__("Add"))
             ->onClick('optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')')
             ->setClass("shortWidth");
-        $this->removeButton = $factory->createButton("Remove")
+        $this->removeButton = $factory->createButton(__("Remove"))
             ->onClick('optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')')
             ->setClass("shortWidth");
     }
@@ -62,7 +62,7 @@ class MultiSelect implements OutputableInterface
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
-        $this->sortBySelect->fromArray(array($attribute => "Sort by " . $attribute));
+        $this->sortBySelect->fromArray(array($attribute => __("Sort by " . $attribute));
         return $this;
     }
 

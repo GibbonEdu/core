@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Layout;
 
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\RowDependancyInterface;
 
 /**
  * Content
@@ -31,18 +32,30 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
 {
     protected $row;
 
+    /**
+     * Add a generic heading element.
+     * @param  string  $content
+     */
     public function __construct($content)
     {
         $this->content = $content;
     }
 
-    public function setRow(Row $row)
+    /**
+     * Method for RowDependancyInterface to automatically set a reference to the parent Row object.
+     * @param  object  $row
+     */
+    public function setRow($row)
     {
         $this->row = $row;
 
         $this->row->setClass('break');
     }
 
+    /**
+     * Get the content text of the element.
+     * @return  string
+     */
     protected function getElement()
     {
         return '<h3>'.$this->content.'</h3>';

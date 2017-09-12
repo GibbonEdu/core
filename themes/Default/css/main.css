@@ -676,10 +676,15 @@ input[type="text"], input[type="password"], input[type="file"] {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
+    box-sizing: border-box;
 }
 
-input[readonly] {
-	border: none ;
+input[type="text"], input[type="password"] {
+    padding-left: 4px;
+}
+
+input[readonly], textarea[readonly], select[readonly] {
+	border: none;
 	background: none;
 }
 
@@ -689,6 +694,8 @@ textarea {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
+    box-sizing: border-box;
+    padding: 4px;
 }
 
 select {
@@ -698,6 +705,7 @@ select {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
+    box-sizing: border-box;
 }
 
 
@@ -1203,19 +1211,18 @@ div.resourceAddSlider {
 	margin-bottom: -5px
 }
 
-/* V12 NEW CLASSES */
+/* v12 NEW CLASSES */
 p.emphasis, span.emphasis {
 	font-style: italic ;
 }
 span.small {
 	font-size: 93% ;
 }
-input.standardWidth, textarea.standardWidth, div.standardWidth {
+
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth {
 	width: 300px ;
 }
-select.standardWidth {
-	width: 302px ;
-}
+
 .fullWidth {
 	width: 100% ;
 }
@@ -1234,7 +1241,7 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
 }
 
-/* V13 NEW CLASSES */
+/* v13 NEW CLASSES */
 td.wordWrap {
 	overflow-wrap: break-word;
   	word-wrap: break-word;
@@ -1259,7 +1266,7 @@ div.notificationTray a.inactive {
 	text-decoration: none;
 }
 
-/* v14 */
+/* v14 NEW CLASSES */
 
 /* Ensure forms leave enough room in the second column for LiveValidation to fit. Updated to fix nested tables in forms. */
 table.standardForm td.standardWidth:last-child:nth-child(2) {
@@ -1353,9 +1360,37 @@ input[name*="phone"] ~ .LV_invalid {
     display: none;
 }
 
-/* Remove the tiny gap that appears near valid elements */
-.LV_valid {
+/* Remove the tiny gap that appears near validation elements */
+.LV_valid:empty, .LV_invalid:empty {
     margin: 0;
+}
+
+/* v15 NEW CLASSES */
+.input-box {
+	float: right;
+	display: table;
+	border: 1px solid #BFBFBF;
+	background-color: #ffffff;
+}
+
+.input-box .inline-label {
+	display:table-cell;
+	padding: 5px;
+	text-align:left;
+	vertical-align:middle;
+	word-break: break-all;
+}
+
+.input-box .inline-button {
+	display:table-cell;
+	border-left: 1px solid #BFBFBF;
+	background: #fafafa;
+	background: -moz-linear-gradient(top, #fbfbfb, #fafafa);
+	width:48px;
+	height:48px;
+	vertical-align:middle;
+	text-align:center;
+	cursor: pointer;
 }
 
 .floatNone {

@@ -3,5 +3,5 @@ uploads/*
 /config.php
 Thumb.db
 .DS_Store
-#gibbon.po
 tests/log/*
+nbproject/

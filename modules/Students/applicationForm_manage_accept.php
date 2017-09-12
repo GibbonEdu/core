@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\UsernameGenerator;
+
 @session_start();
 
 //Module includes
@@ -64,11 +67,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             // Grab family ID from Sibling Applications that have been accepted
             $data = array( 'gibbonApplicationFormID' => $gibbonApplicationFormID );
-            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm 
-                    JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2) 
-                    WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL 
+            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm
+                    JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                    WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL
                     AND gibbonApplicationForm.status='Accepted'
-                    AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID) 
+                    AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID)
                     LIMIT 1";
 
             $resultLinked = $pdo->executeQuery($data, $sql);
@@ -141,6 +144,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<li><?php echo __($guid, 'Set the status of the application to "Accepted".') ?></li>
 								</ol>
 								<br/>
+                                <?php
+                                // Handle optional auto-enrol feature
+                                if (!empty($row['gibbonRollGroupID'])) {
+                                    $data = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                                    $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap WHERE gibbonRollGroupID=:gibbonRollGroupID";
+                                    $resultClassMap = $pdo->executeQuery($data, $sql);
+
+                                    $classMapCount = ($resultClassMap->rowCount() > 0)? $resultClassMap->fetchColumn(0) : 0;
+
+                                    // Student has a roll group and mapped classes exist
+                                    if ($classMapCount > 0) {
+                                        $checkedAutoEnrol = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses') == 'Y'? 'checked' : '';
+
+                                        echo '<u><i>'.__($guid, 'The system can optionally perform the following actions:').'</i></u><br/>';
+                                        echo '<ol>';
+                                            echo '<li><input type="checkbox" name="autoEnrolStudent" value="Y" '.$checkedAutoEnrol.'> ';
+                                            echo __('Automatically enrol student in classes for their Roll Group.').'</li>';
+                                        echo '</ol><br/>';
+                                    }
+                                }
+                                ?>
+
 								<i><u><?php echo __($guid, 'But you may wish to manually do the following:') ?></u></i><br/>
 								<ol>
 									<?php
@@ -198,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $failStudent = true;
                 $lock = true;
                 try {
-                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE';
+                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE, gibbonUsernameFormat WRITE';
                     $result = $connection2->query($sql);
                 } catch (PDOException $e) {
                     $lock = false;
@@ -218,44 +243,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $rowAI = $resultAI->fetch();
                         $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                        //Set username & password
-                        $username = '';
-                        $usernameFormat = getSettingByScope($connection2, 'Application Form', 'usernameFormat');
-                        if ($usernameFormat == '') {
-                            $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['preferredName'], 0, 1).$row['surname']))), 0, 12);
-                        } else {
-                            $username = $usernameFormat;
-                            $username = str_replace('[preferredNameInitial]', strtolower(substr($row['preferredName'], 0, 1)), $username);
-                            $username = str_replace('[preferredName]', strtolower($row['preferredName']), $username);
-                            $username = str_replace('[surname]', strtolower($row['surname']), $username);
-                            $username = str_replace(' ', '', $username);
-                            $username = str_replace("'", '', $username);
-                            $username = str_replace("-", '', $username);
-                            $username = substr($username, 0, 12);
-                        }
-                        $usernameBase = $username;
-                        $count = 1;
-                        $continueLoop = true;
-                        while ($continueLoop == true and $count < 10000) {
-                            $gotUsername = true;
-                            try {
-                                $dataUsername = array('username' => $username);
-                                $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                $resultUsername = $connection2->prepare($sqlUsername);
-                                $resultUsername->execute($dataUsername);
-                            } catch (PDOException $e) {
-                                $gotUsername = false;
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                        // Generate a unique username for the new student
+                        $generator = new UsernameGenerator($pdo);
+                        $generator->addToken('preferredName', $row['preferredName']);
+                        $generator->addToken('firstName', $row['firstName']);
+                        $generator->addToken('surname', $row['surname']);
 
-                            if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                $continueLoop = false;
-                            } else {
-                                $username = $usernameBase.$count;
-                            }
-                            ++$count;
-                        }
+                        $username = $generator->generateByRole('003');
 
+                        // Generate a random password
                         $password = randomPassword(8);
                         $salt = getSalt();
                         $passwordStrong = hash('sha256', $salt.$password);
@@ -266,6 +262,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         } elseif ($row['schoolDate2'] > $row['schoolDate1']) {
                             $lastSchool = $row['schoolName2'];
                         }
+
+                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                         //Set default email address for student
                         $email = $row['email'];
@@ -283,6 +281,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $website = str_replace('[username]', $username, $studentDefaultWebsite);
                         }
 
+                        // Get student's school year at entry info
+                        try {
+                            $dataSchoolYear = array('gibbonSchoolYearID' => $row['gibbonSchoolYearIDEntry']);
+                            $sqlSchoolYear = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                            $resultSchoolYear = $connection2->prepare($sqlSchoolYear);
+                            $resultSchoolYear->execute($dataSchoolYear);
+                        } catch (PDOException $e) {
+                        }
+                        $schoolYearName = ($resultSchoolYear->rowCount() == 1)? $resultSchoolYear->fetchColumn(0) : '';
+
+                        // Get student's year group info
+                        try {
+                            $dataYearGroup = array('gibbonYearGroupID' => $row['gibbonYearGroupIDEntry']);
+                            $sqlYearGroup = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
+                            $resultYearGroup = $connection2->prepare($sqlYearGroup);
+                            $resultYearGroup->execute($dataYearGroup);
+                        } catch (PDOException $e) {
+                        }
+                        $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
+
+                        // Get student's roll group info (if any)
+                        try {
+                            $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                            $sqlRollGroup = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                            $resultRollGroup = $connection2->prepare($sqlRollGroup);
+                            $resultRollGroup->execute($dataRollGroup);
+                        } catch (PDOException $e) {
+                        }
+                        $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
+
                         //Email website and email address to admin for creation
                         if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
                             echo '<h4>';
@@ -297,53 +325,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             if ($studentDefaultWebsite != '') {
                                 $body .= __($guid, 'Website').': '.$website."<br/>";
                             }
-                            if ($row['gibbonSchoolYearIDEntry'] != '') {
-                                try {
-                                    $dataYearGroup = array('gibbonSchoolYearID' => $row['gibbonSchoolYearIDEntry']);
-                                    $sqlYearGroup = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                    $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                                    $resultYearGroup->execute($dataYearGroup);
-                                } catch (PDOException $e) {
-                                }
-
-                                if ($resultYearGroup->rowCount() == 1) {
-                                    $rowYearGroup = $resultYearGroup->fetch();
-                                    if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'School Year').': '.$rowYearGroup['name']."<br/>";
-                                    }
-                                }
+                            if ($row['gibbonSchoolYearIDEntry'] != '' && !empty($schoolYearName)) {
+                                $body .= __($guid, 'School Year').': '.$schoolYearName."<br/>";
                             }
-                            if ($row['gibbonYearGroupIDEntry'] != '') {
-                                try {
-                                    $dataYearGroup = array('gibbonYearGroupID' => $row['gibbonYearGroupIDEntry']);
-                                    $sqlYearGroup = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-                                    $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                                    $resultYearGroup->execute($dataYearGroup);
-                                } catch (PDOException $e) {
-                                }
-
-                                if ($resultYearGroup->rowCount() == 1) {
-                                    $rowYearGroup = $resultYearGroup->fetch();
-                                    if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Year Group').': '.$rowYearGroup['name']."<br/>";
-                                    }
-                                }
+                            if ($row['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
+                                $body .= __($guid, 'Year Group').': '.$yearGroupName."<br/>";
                             }
-                            if ($row['gibbonRollGroupID'] != '') {
-                                try {
-                                    $dataYearGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                    $sqlYearGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                                    $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                                    $resultYearGroup->execute($dataYearGroup);
-                                } catch (PDOException $e) {
-                                }
-
-                                if ($resultYearGroup->rowCount() == 1) {
-                                    $rowYearGroup = $resultYearGroup->fetch();
-                                    if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Roll Group').': '.$rowYearGroup['name']."<br/>";
-                                    }
-                                }
+                            if ($row['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
+                                $body .= __($guid, 'Roll Group').': '.$rollGroupName."<br/>";
                             }
                             if ($row['dateStart'] != '') {
                                 $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."<br/>";
@@ -522,6 +511,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</h4>';
                             echo '<ul>';
                             echo '<li>'.__($guid, 'The student has successfully been enroled in the specified school year, year group and roll group.').'</li>';
+
+                            // Handle automatic course enrolment if enabled
+                            $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                            if ($autoEnrolStudent == 'Y') {
+                                $data = array(
+                                    'gibbonRollGroupID' => $row['gibbonRollGroupID'],
+                                    'gibbonPersonID' => $gibbonPersonID,
+                                );
+
+                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
+                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                                        FROM gibbonCourseClassMap
+                                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
+                                $pdo->executeQuery($data, $sql);
+
+                                if (!$pdo->getQuerySuccess()) {
+                                    echo '<li class="warning">'.__($guid, 'Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
+                                } else {
+                                    echo '<li>'.__($guid, 'The student has automatically been enroled in courses for their Roll Group.').'</li>';
+                                }
+                            }
+
                             echo '</ul>';
                         }
                     }
@@ -661,7 +672,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                             }
-                            
+
                             //Add relationship record for each parent
                             try {
                                 $dataRelationship = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonPersonID' => $rowParents['gibbonPersonID']);
@@ -912,7 +923,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             } else {
                                 $lock = true;
                                 try {
-                                    $sql = 'LOCK TABLES gibbonPerson WRITE';
+                                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonUsernameFormat WRITE';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $lock = false;
@@ -932,46 +943,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $rowAI = $resultAI->fetch();
                                         $gibbonPersonIDParent1 = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                                        //Set username & password
-                                        $username = '';
-                                        if ($usernameFormat == '') {
-                                            $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['parent1preferredName'], 0, 1).$row['parent1surname']))), 0, 12);
-                                        } else {
-                                            $username = $usernameFormat;
-                                            $username = str_replace('[preferredNameInitial]', strtolower(substr($row['parent1preferredName'], 0, 1)), $username);
-                                            $username = str_replace('[preferredName]', strtolower($row['parent1preferredName']), $username);
-                                            $username = str_replace('[surname]', strtolower($row['parent1surname']), $username);
-                                            $username = str_replace(' ', '', $username);
-                                            $username = str_replace("'", '', $username);
-                                            $username = str_replace("-", '', $username);
-                                            $username = substr($username, 0, 12);
-                                        }
-                                        $usernameBase = $username;
-                                        $count = 1;
-                                        $continueLoop = true;
-                                        while ($continueLoop == true and $count < 10000) {
-                                            $gotUsername = true;
-                                            try {
-                                                $dataUsername = array('username' => $username);
-                                                $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                                $resultUsername = $connection2->prepare($sqlUsername);
-                                                $resultUsername->execute($dataUsername);
-                                            } catch (PDOException $e) {
-                                                $gotUsername = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+                                        // Generate a unique username for parent 1
+                                        $generator = new UsernameGenerator($pdo);
+                                        $generator->addToken('preferredName', $row['parent1preferredName']);
+                                        $generator->addToken('firstName', $row['parent1firstName']);
+                                        $generator->addToken('surname', $row['parent1surname']);
 
-                                            if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                                $continueLoop = false;
-                                            } else {
-                                                $username = $usernameBase.$count;
-                                            }
-                                            ++$count;
-                                        }
+                                        $username = $generator->generateByRole('004');
 
+                                        // Generate a random password
                                         $password = randomPassword(8);
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
+
+                                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                                         if ($continueLoop == false) {
                                             $insertOK = true;
@@ -1077,7 +1062,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $failParent2 = true;
                                 $lock = true;
                                 try {
-                                    $sql = 'LOCK TABLES gibbonPerson WRITE';
+                                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonUsernameFormat WRITE';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $lock = false;
@@ -1097,43 +1082,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         $rowAI = $resultAI->fetch();
                                         $gibbonPersonIDParent2 = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                                        //Set username & password
-                                        $username = '';
-                                        if ($usernameFormat == '') {
-                                            $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['parent2preferredName'], 0, 1).$row['parent2surname']))), 0, 12);
-                                        } else {
-                                            $username = $usernameFormat;
-                                            $username = str_replace('[preferredNameInitial]', strtolower(substr($row['parent2preferredName'], 0, 1)), $username);
-                                            $username = str_replace('[preferredName]', strtolower($row['parent2preferredName']), $username);
-                                            $username = str_replace('[surname]', strtolower($row['parent2surname']), $username);
-                                            $username = substr($username, 0, 12);
-                                        }
-                                        $usernameBase = $username;
-                                        $count = 1;
-                                        $continueLoop = true;
-                                        while ($continueLoop == true and $count < 10000) {
-                                            $gotUsername = true;
-                                            try {
-                                                $dataUsername = array('username' => $username);
-                                                $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                                $resultUsername = $connection2->prepare($sqlUsername);
-                                                $resultUsername->execute($dataUsername);
-                                            } catch (PDOException $e) {
-                                                $gotUsername = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+                                        // Generate a unique username for parent 2
+                                        $generator = new UsernameGenerator($pdo);
+                                        $generator->addToken('preferredName', $row['parent2preferredName']);
+                                        $generator->addToken('firstName', $row['parent2firstName']);
+                                        $generator->addToken('surname', $row['parent2surname']);
 
-                                            if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                                $continueLoop = false;
-                                            } else {
-                                                $username = $usernameBase.$count;
-                                            }
-                                            ++$count;
-                                        }
+                                        $username = $generator->generateByRole('004');
 
+                                        // Generate a random password
                                         $password = randomPassword(8);
                                         $salt = getSalt();
                                         $passwordStrong = hash('sha256', $salt.$password);
+
+                                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
                                         if ($continueLoop == false) {
                                             $insertOK = true;
@@ -1317,6 +1279,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             }
                         }
                     }
+
+                    // Raise a new notification event
+                    $event = new NotificationEvent('Students', 'Application Form Accepted');
+
+                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student');
+                    $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
+
+                    $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
+                    if ($enrolmentOK && !empty($row['gibbonRollGroupID'])) {
+                        $notificationText .= ' '.__('The student has successfully been enroled in the specified school year, year group and roll group.');
+                    } else {
+                        $notificationText .= ' '.__('Student could not be enroled, so this will have to be done manually at a later date.');
+                    }
+
+                    $event->addScope('gibbonYearGroupID', $row['gibbonYearGroupIDEntry']);
+                    $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
+                    $event->setNotificationText($notificationText);
+                    $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=".$row['gibbonSchoolYearIDEntry']."&search=");
+
+                    $event->sendNotifications($pdo, $gibbon->session);
+
                     //SET STATUS TO ACCEPTED
                     $failStatus = false;
                     try {

@@ -102,10 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             $gibbonINArchiveID = null;
-            if (isset($_POST['gibbonINArchiveID'])) {
-                if ($_POST['gibbonINArchiveID'] != '') {
-                    $gibbonINArchiveID = $_POST['gibbonINArchiveID'];
-                }
+            if (isset($_POST['gibbonINArchiveID']) && $_POST['gibbonINArchiveID'] != '') {
+                $gibbonINArchiveID = $_POST['gibbonINArchiveID'];
             }
             $archiveStrategies = null;
             $archiveTargets = null;
@@ -181,10 +179,114 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 echo $statusTable;
             }
 
+            //LIST EDUCATIONAL ASSISTANTS
+            echo '<h3>';
+            echo __($guid, 'Educational Assistants');
+            echo '</h3>';
+
+            try {
+                $data = array('gibbonPersonIDStudent' => $gibbonPersonID);
+                $sql = "SELECT gibbonPersonIDAssistant, preferredName, surname, comment FROM gibbonINAssistant JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($result->rowCount() < 1) {
+                echo "<div class='warning'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            } else {
+                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Name');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Comment');
+                echo '</th>';
+                if ($highestAction == 'Individual Needs Records_viewEdit') {
+                    echo '<th>';
+                    echo __($guid, 'Action');
+                    echo '</th>';
+                }
+                echo '</tr>';
+
+                $count = 0;
+                $rowNum = 'odd';
+                while ($row = $result->fetch()) {
+                    if ($count % 2 == 0) {
+                        $rowNum = 'even';
+                    } else {
+                        $rowNum = 'odd';
+                    }
+                    ++$count;
+
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
+                    echo '<td>';
+                    echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
+                    echo '</td>';
+                    echo '<td>';
+                    echo $row['comment'];
+                    echo '</td>';
+                    if ($highestAction == 'Individual Needs Records_viewEdit') {
+                        echo '<td>';
+                        echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record? Any unsaved changes to this record will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_edit_assistant_deleteProcess.php?address='.$_GET['q'].'&gibbonPersonIDAssistant='.$row['gibbonPersonIDAssistant']."&gibbonPersonIDStudent=$gibbonPersonID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                        echo '</td>';
+                    }
+                    echo '</tr>';
+                }
+                echo '</table>';
+            }
+
+            //ADD EDUCATIONAL ASSISTANTS
+            if ($highestAction == 'Individual Needs Records_viewEdit') {
+                echo '<h3>';
+                echo __($guid, 'Add New Assistants');
+                echo '</h3>';
+                ?>
+                <table class='smallIntBorder fullWidth' cellspacing='0'>
+                    <tr>
+                        <td>
+                            <b>Staff</b><br/>
+                            <span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
+                        </td>
+                        <td class="right">
+                            <select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
+                                <?php
+                                try {
+                                    $dataSelect = array();
+                                    $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+                                    $resultSelect = $connection2->prepare($sqlSelect);
+                                    $resultSelect->execute($dataSelect);
+                                } catch (PDOException $e) {
+                                }
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b><?php echo __($guid, 'Comment') ?></b><br/>
+                        </td>
+                        <td class="right">
+                            <textarea rows=4 name="comment" id="comment" class="standardWidth"></textarea>
+                        </td>
+                    </tr>
+
+                    </table>
+                <?php
+            }
+
+            //DISPLAY AND EDIT IEP
             echo '<h3>';
             echo __($guid, 'Individual Education Plan');
             echo '</h3>';
-
             if (is_null($gibbonINArchiveID) == false) { //SHOW ARCHIVE
                     ?>
 					<table class='smallIntBorder fullWidth' cellspacing='0'>
@@ -213,14 +315,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 					<?php
 
             } else { //SHOW CURRENT
-                    try {
-                        $dataIEP = array('gibbonPersonID' => $gibbonPersonID);
-                        $sqlIEP = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-                        $resultIEP = $connection2->prepare($sqlIEP);
-                        $resultIEP->execute($dataIEP);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+                try {
+                    $dataIEP = array('gibbonPersonID' => $gibbonPersonID);
+                    $sqlIEP = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
+                    $resultIEP = $connection2->prepare($sqlIEP);
+                    $resultIEP->execute($dataIEP);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
                 if ($resultIEP->rowCount() > 1) {
                     echo "<div class='error'>";
                     echo __($guid, 'Your request failed due to a database error.');

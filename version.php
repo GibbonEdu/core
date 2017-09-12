@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information.
  */
-$version = '14.0.00';
+$version = '15.0.00';
 
 
 /**
@@ -29,7 +29,7 @@ $version = '14.0.00';
 $systemRequirements = array(
 	'php' 			=> '5.5.0',
 	'mysql' 		=> '5',
-	'extensions' 	=> array('gettext', 'curl', 'zip', 'xml', 'gd'),
+	'extensions' 	=> array('gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd'),
 	'settings' 		=> array(
 						array('max_input_vars', '>=', 5000),
 						array('max_file_uploads', '>=', 20),

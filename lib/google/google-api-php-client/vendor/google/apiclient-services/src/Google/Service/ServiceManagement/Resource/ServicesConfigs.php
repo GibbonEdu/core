@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -50,8 +50,11 @@ class Google_Service_ServiceManagement_Resource_ServicesConfigs extends Google_S
    * @param string $serviceName The name of the service.  See the [overview
    * ](/service-management/overview) for naming requirements.  For example:
    * `example.googleapis.com`.
-   * @param string $configId
+   * @param string $configId The id of the service configuration resource.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string view Specifies which parts of the Service Config should be
+   * returned in the response.
    * @return Google_Service_ServiceManagement_Service
    */
   public function get($serviceName, $configId, $optParams = array())
@@ -69,9 +72,9 @@ class Google_Service_ServiceManagement_Resource_ServicesConfigs extends Google_S
    * `example.googleapis.com`.
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string pageToken The token of the page to retrieve.
    * @opt_param int pageSize The max number of items to include in the response
    * list.
-   * @opt_param string pageToken The token of the page to retrieve.
    * @return Google_Service_ServiceManagement_ListServiceConfigsResponse
    */
   public function listServicesConfigs($serviceName, $optParams = array())

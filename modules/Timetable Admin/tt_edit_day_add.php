@@ -63,9 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_edit_day_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this timetable.') ?></span>
 						</td>
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this timetable.') ?></span>
 						</td>
@@ -117,7 +117,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
+							<b><?php echo __($guid, 'Header Background Colour') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'RGB Hex value, without leading #.') ?></span>
+						</td>
+						<td class="right">
+							<input name="color" id="color" maxlength=6 value="" type="text" class="standardWidth">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b><?php echo __($guid, 'Header Font Colour') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'RGB Hex value, without leading #.') ?></span>
+						</td>
+						<td class="right">
+							<input name="fontColor" id="fontColor" maxlength=6 value="" type="text" class="standardWidth">
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<b><?php echo __($guid, 'Timetable Column') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -134,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 								while ($rowSelect = $resultSelect->fetch()) {
 									echo "<option value='".$rowSelect['gibbonTTColumnID']."'>".htmlPrep($rowSelect['name']).'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonTTColumnID=new LiveValidation('gibbonTTColumnID');
