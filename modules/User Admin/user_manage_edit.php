@@ -490,7 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                                     $.ajax({
                                         type : 'POST',
-                                        data : { email: $('#email').val(), gibbonPersonID: 0 },
+                                        data : { email: $('#email').val(), gibbonPersonID: <?php echo $gibbonPersonID; ?> },
                                         url: "./modules/User Admin/user_manage_emailAjax.php",
                                         success: function(responseText){
                                             if(responseText < 0){
