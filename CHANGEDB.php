@@ -828,4 +828,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable Admin' AND gibbonAction.name='Sync Course Enrolment'));end
 CREATE TABLE `gibbonCourseClassMap` (`gibbonCourseClassMapID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NULL,`gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NULL, `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NULL, UNIQUE KEY `gibbonCourseClassID` (gibbonCourseClassID), PRIMARY KEY (`gibbonCourseClassMapID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'autoEnrolCourses', 'Auto-Enrol Courses Default', 'Should auto-enrolment of new students into courses be turned on or off by default?', 'N');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'uniqueEmailAddress', 'Unique Email Address', 'Should user email addresses be a unique field?', 'N');end
+
 ";

@@ -428,12 +428,48 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			<tr>
 				<td>
 					<b><?php echo __($guid, 'Email') ?></b><br/>
+                    <?php $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+                    if ($uniqueEmailAddress == 'Y') {
+                        echo '<span class="emphasis small">'.__('Must be unique.').'</span>';
+                    } ?>
 				</td>
 				<td class="right">
 					<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
+                    <span></span><div class="LV_validation_message LV_invalid" id='email_availability_result'></div>
 					<script type="text/javascript">
-						var email=new LiveValidation('email');
-						email.add(Validate.Email);
+                        var email=new LiveValidation('email');
+                        email.add(Validate.Email);
+
+                    <?php if ($uniqueEmailAddress == 'Y') { ?>
+                        // Email Uniqueness
+                        $('#email').on('blur', function(){
+                            if (email.doValidations() == false || $('#email').val() == '') {
+                                $('#email_availability_result').html('');
+                                return;
+                            }
+
+                            $.ajax({
+                                type : 'POST',
+                                data : { email: $('#email').val(), gibbonPersonID: 0 },
+                                url: "./modules/User Admin/user_manage_emailAjax.php",
+                                success: function(responseText){
+                                    if(responseText < 0){
+                                        $('#email_availability_result').html('<?php echo __('An error occurred.'); ?>');
+                                        $('#email_availability_result').switchClass('LV_valid', 'LV_invalid');
+                                    } else if(responseText == 0){
+                                        $('#email_availability_result').html('<?php echo sprintf(__('%1$s available'), __('Email')); ?>');
+                                        $('#email_availability_result').switchClass('LV_invalid', 'LV_valid');
+                                    } else if(responseText > 0){
+                                        $('#email_availability_result').html('<?php echo sprintf(__('%1$s already in use'), __('Email')); ?>');
+                                        $('#email_availability_result').switchClass('LV_valid', 'LV_invalid');
+                                        // Prevent continuing with a non-unique email
+                                        $('#email').switchClass('LV_valid_field', 'LV_invalid_field');
+                                        email.add(Validate.Exclusion, { within: [$('#email').val()], failureMessage: "<?php echo sprintf(__('%1$s already in use'), __('Email')); ?>" });
+                                    }
+                                }
+                            });
+                        });
+                    <?php } ?>
 					</script>
 				</td>
 			</tr>
