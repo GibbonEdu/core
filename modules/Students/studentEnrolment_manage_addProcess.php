@@ -37,12 +37,14 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
     if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_add.php') == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
+        exit;
     } else {
         //Proceed!
         //Check if person specified
         if ($gibbonPersonID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
+            exit;
         } else {
             try {
                 $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -52,12 +54,13 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
-                exit();
+                exit;
             }
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
+                exit;
             } else {
                 //Check for existing enrolment
                 try {
@@ -68,12 +71,13 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
-                    exit();
+                    exit;
                 }
 
                 if ($result->rowCount() > 0) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
                     $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
@@ -91,11 +95,13 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
+                        exit;
                     }
 
                     if ($result->rowCount() > 0) {
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
+                        exit;
                     } else {
                         //Write to database
                         try {
@@ -106,14 +112,34 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         } catch (PDOException $e) {
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
-                            exit();
+                            exit;
                         }
 
                         //Last insert ID
                         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
+                        // Handle automatic course enrolment if enabled
+                        $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                        if ($autoEnrolStudent == 'Y') {
+                            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonPersonID' => $gibbonPersonID);
+                            $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
+                                    SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                                    FROM gibbonCourseClassMap
+                                    LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
+                                    WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID
+                                    AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+                            $pdo->executeQuery($data, $sql);
+
+                            if ($pdo->getQuerySuccess() == false) {
+                                $URL .= "&return=warning3&editID=$AI";
+                                header("Location: {$URL}");
+                                exit;
+                            }
+                        }
+
                         $URL .= "&return=success0&editID=$AI";
                         header("Location: {$URL}");
+                        exit;
                     }
                 }
             }

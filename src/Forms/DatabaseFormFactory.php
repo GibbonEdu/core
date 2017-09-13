@@ -95,7 +95,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectRollGroup($name, $gibbonSchoolYearID, $all = false)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
         $results = $this->pdo->executeQuery($data, $sql);
 
         if (!$all)
