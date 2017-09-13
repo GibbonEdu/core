@@ -147,6 +147,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $row = $form->addRow()->addHeading(__('User Data Options'));
+
+    $setting = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value']);
+
     $row = $form->addRow()->addHeading(__('User Interface Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'personalBackground', true);

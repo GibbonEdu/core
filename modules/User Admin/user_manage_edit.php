@@ -229,8 +229,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$form->addRow()->addHeading(__('Contact Information'));
 
 			$row = $form->addRow();
-				$row->addLabel('email', __('Email'));
-				$row->addEmail('email')->maxLength(50);
+                $emailLabel = $row->addLabel('email', __('Email'));
+                $email = $row->addEmail('email')->maxLength(50);
+				
+			$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+			if ($uniqueEmailAddress == 'Y') {
+                $emailLabel->description(__('Must be unique.'));
+                $email->append('<span></span><div class="LV_validation_message LV_invalid" id="email_availability_result"></div>');
+			}
 
 			$row = $form->addRow();
 				$row->addLabel('emailAlternate', __('Alternate Email'));
@@ -647,6 +653,35 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						}
 						});
 				});
+
+				<?php if ($uniqueEmailAddress == 'Y') : ?>
+				// Email Uniqueness
+				$('#email').on('input', function(){
+					if (emailValidate.doValidations() == false || $('#email').val() == '') {
+						$('#email_availability_result').html('');
+						return;
+					}
+
+					$.ajax({
+						type : 'POST',
+						data : { email: $('#email').val(), gibbonPersonID: '<?php echo $gibbonPersonID; ?>' },
+						url: "./modules/User Admin/user_manage_emailAjax.php",
+						success: function(responseText){
+							if(responseText == 0){
+								$('#email + .LV_validation_message').hide();
+								$('#email_availability_result').html('<?php echo sprintf(__('%1$s available'), __('Email')); ?>');
+								$('#email_availability_result').switchClass('LV_invalid', 'LV_valid');
+							} else if(responseText > 0){
+								$('#email_availability_result').html('');
+								$('#email_availability_result').switchClass('LV_valid', 'LV_invalid');
+								// Prevent submitting form with a non-unique email
+								$('#email').switchClass('LV_valid_field', 'LV_invalid_field');
+								emailValidate.add(Validate.Exclusion, { within: [$('#email').val()], failureMessage: "<?php echo sprintf(__('%1$s already in use'), __('Email')); ?>" });
+							}
+						}
+					});
+				});
+				<?php endif; ?>
 			</script>
 
 			<?php
