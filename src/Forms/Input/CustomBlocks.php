@@ -39,8 +39,8 @@ class CustomBlocks implements OutputableInterface
     public function __construct(FormFactoryInterface &$factory, $name, $form)
     {
         $this->name = $name;
-        $this->placeholder = "Blocks will appear here...";  
-        $this->addButton = $factory->createButton("Add Block", 'add'. $this->name .'Block()');
+        $this->placeholder = __("Blocks will appear here...");  
+        $this->addButton = $factory->createButton(__("Add Block"), 'add'. $this->name .'Block()');
         $this->formOutput = $form->getOutput();
     }
 
@@ -67,64 +67,57 @@ class CustomBlocks implements OutputableInterface
                 .<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
             </style>';
 
-        $output .= '<div class="' . $this->name. '" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
-            $output .= '<div id="' . $this->name . 'Outer0">';
-                $output .= '<div style="color: #ddd; font-size: 230%; margin: 15px 0 0 6px">' . $this->placeholder . '</div>';
-            $output .= '</div>';
+        $output .= '<div class="' . $this->name. '" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">
+            <div id="' . $this->name . 'Outer0">
+                <div style="color: #ddd; font-size: 230%; margin: 15px 0 0 6px">' . $this->placeholder . '</div>
+           </div>
 
-            $output .= '<div id="'. $this->name .'Template" style="display:none">';
-                $output .= '<input name="' . $this->name . 'order[]" type="hidden" value="-1">';
-                $output .= '<div style="float:left; width:90%">';
-                    $output .= $this->formOutput;
-                $output .= '</div>';
-                $output .= '<div style="float:right; width: 9.5%">';
-                    $output .= '<table class="smallIntBorder fullWidth standardForm">';
-                        $output .= '<tr>';
-                            $output .= '<td>';
-                                $output .= '<img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/Default/img/garbage.png"/> ';
-                            $output .= '</td>';
-                        $output .= '</tr>';
-                    $output .= '</table>';
-                $output .= '</div>';
-            $output .= '</div>';
+           <div id="'. $this->name .'Template" style="display:none">
+                <input name="' . $this->name . 'order[]" type="hidden" value="-1">
+                <div style="float:left; width:90%">'. $this->formOutput .'</div>
+                <div style="float:right; width: 9.5%">
+                    <table class="smallIntBorder fullWidth standardForm">
+                        <tr>
+                            <td>
+                                <img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/Default/img/garbage.png"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">
+                <table class="blank" cellspacing="0" style="width: 100%">
+                    <tr>
+                        <td style="width: 50%">'. $this->addButton->getOutput() .'</td>
+                    </tr>
+                </table>
+            </div>
+        </div>';
 
-                $output .= '<div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">';
-                    $output .= '<table class="blank" cellspacing="0" style="width: 100%">';
-                        $output .= '<tr>';
-                            $output .= '<td style="width: 50%">';
-                                $output .= $this->addButton->getOutput();
-                            $output .= '</td>';
-                        $output .= '</tr>';
-                    $output .= '</table>';
-                $output .= '</div>';
-
-        $output .= '</div>';
-
-        $output .= '<script type="text/javascript">' . "\n";
-            $output .= 'var ' . $this->name . 'Count = 1;' . "\n";
-            $output .= 'function add'. $this->name .'Block() {' . "\n";
-                $output .= '$("#' . $this->name . 'Outer0").css("display", "none");' . "\n";
-                $output .= '$("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));' . "\n";
-                $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count).find("input[name*=' . $this->name . 'order]").val(' . $this->name . 'Count);' . "\n";
-                $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("id", $(this).prop("id") + ' . $this->name . 'Count); });' . "\n";
-                $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . 'deleteTemplate]").each(function () {' . "\n";
-                    $output .= '$(this).prop("id", "' . $this->name . 'Delete" + ' . $this->name . 'Count);' . "\n";
-                    $output .= '$(this).unbind("click").click(function() {' . "\n";
-                        $output .= 'if (confirm("Are you sure you want to delete this record?")) {' . "\n";
-                            $output .= '$("#'. $this->name .'Outer" + $(this).attr("id").split("Delete")[1]).fadeOut(600, function(){' . "\n";
-                                $output .= '$(this).remove();' . "\n";
-                                $output .= 'if ($("#'. $this->name .'").children().length == 3) {' . "\n";
-                                    $output .= '$("#' . $this->name . 'Outer0").css("display", "block");' . "\n";
-                                $output .= '}' . "\n";
-                            $output .= '});' . "\n";
-                            
-                        $output .= '}' . "\n";
-                    $output .= '});' . "\n"; 
-                $output .= '});' . "\n";
-                $output .= $this->name . 'Count++;' . "\n";
-            $output .= '}';
-
-        $output .= '</script>';
+        $output .= '<script type="text/javascript">
+            var ' . $this->name . 'Count = 1;
+            function add'. $this->name .'Block() {
+                $("#' . $this->name . 'Outer0").css("display", "none");
+                $("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));
+                $("#'. $this->name .'Outer" + ' . $this->name . 'Count).find("input[name*=' . $this->name . 'order]").val(' . $this->name . 'Count);
+                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("id", $(this).prop("id") + ' . $this->name . 'Count); });
+                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . 'deleteTemplate]").each(function () {
+                    $(this).prop("id", "' . $this->name . 'Delete" + ' . $this->name . 'Count);
+                    $(this).unbind("click").click(function() {
+                        if (confirm("Are you sure you want to delete this record?")) {
+                            $("#'. $this->name .'Outer" + $(this).attr("id").split("Delete")[1]).fadeOut(600, function(){
+                               $(this).remove();
+                                if ($("#'. $this->name .'").children().length == 3) {
+                                    $("#' . $this->name . 'Outer0").css("display", "block");
+                                }
+                            });
+                        }
+                    });
+                });'.
+                $this->name . 'Count++;
+            }
+        </script>';
 
         return $output;
     }
