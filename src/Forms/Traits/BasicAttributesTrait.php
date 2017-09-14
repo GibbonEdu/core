@@ -155,7 +155,7 @@ trait BasicAttributesTrait
                     return $attributes[$key]? $key : '';
                 }
                 if (isset($attributes[$key]) && $attributes[$key] != '') {
-                    return $key.'="'.$attributes[$key].'"';
+                    return $key.'="'.htmlPrep($attributes[$key]).'"';
                 }
                 return '';
             },

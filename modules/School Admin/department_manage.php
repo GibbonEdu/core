@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -40,42 +42,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     echo __($guid, 'Department Access');
     echo '</h3>';
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manageProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<?php
-                try {
-                    $data = array();
-                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Departments' AND name='makeDepartmentsPublic'";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {}
-                $row = $result->fetch();
-                ?>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
-				</td>
-				<td class="right">
-					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manageProcess.php');
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $setting = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 
     echo '<h3>';
     echo __($guid, 'Departments');

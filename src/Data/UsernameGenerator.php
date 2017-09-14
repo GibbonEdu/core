@@ -184,7 +184,7 @@ class UsernameGenerator
         }
 
         // Remove illegal characters
-        str_replace(str_split(self::ILLEGAL_CHARS), '', $username);
+        $username = str_replace(str_split(self::ILLEGAL_CHARS), '', $username);
 
         // Limit to max length for database
         $username = mb_substr($username, 0, self::MAX_LENGTH);

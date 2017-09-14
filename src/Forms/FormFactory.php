@@ -94,6 +94,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createFinder($name)
+    {
+        return new Input\Finder($name);
+    }
+
     public function createEditor($name, $guid)
     {
         return new Input\Editor($name, $guid);
@@ -182,6 +187,15 @@ class FormFactory implements FormFactoryInterface
     {
         $content = sprintf('<input type="submit" value="%s">', $label);
         return $this->createContent($content)->setClass('right');
+    }
+
+    public function createSearchSubmit($session, $clearLabel = 'Clear Form')
+    {
+        $content = sprintf('<input type="submit" value="%s">', __('Go'));
+        $clearURL = $session->get('absoluteURL').'/index.php?q='.$_GET['q'];
+        $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
+
+        return $this->createContent($content)->prepend($clearLink)->setClass('right');
     }
 
     public function createFooter($required = true)

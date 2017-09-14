@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = $row['logo'];
+                    $attachment = $_POST['logo'];
                 }
 
                 //Scan through staff
