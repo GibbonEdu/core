@@ -340,13 +340,14 @@ div.minorLinks a:hover {
 ul.moduleMenu {
 	list-style: none;
 	margin-left: 0px ;
-	padding-left: 0px
+	padding-left: 0px;
 }
 
 ul.moduleMenu ul li {
 	list-style: none;
 	margin-left: 0px ;
-	padding-left: 0px
+	padding-left: 0px;
+	text-align: left;
 }
 
 ul.moduleMenu ul {
