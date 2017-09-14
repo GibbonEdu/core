@@ -38,15 +38,17 @@ trait MultipleOptionsTrait
      */
     public function fromString($value)
     {
-        if (empty($value) || !is_string($value)) {
+        if (!is_string($value)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->getName(), gettype($value)));
         }
 
-        $pieces = str_getcsv($value);
+        if (!empty($value)) {
+            $pieces = str_getcsv($value);
 
-        foreach ($pieces as $piece) {
-            $piece = trim($piece);
-            $this->options[$piece] = $piece;
+            foreach ($pieces as $piece) {
+                $piece = trim($piece);
+                $this->options[$piece] = $piece;
+            }
         }
 
         return $this;

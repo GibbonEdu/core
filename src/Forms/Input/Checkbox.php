@@ -33,6 +33,7 @@ class Checkbox extends Input
 
     protected $description;
     protected $checked = array();
+    protected $checkall = false;
 
     /**
      * Create a checkpox input with a default value of on when checked.
@@ -77,6 +78,32 @@ class Checkbox extends Input
     }
 
     /**
+     * Set the checked element(s) to include all available options.
+     * @return  self
+     */
+    public function checkAll()
+    {
+        if (!empty($this->options)) {
+            $this->checked = array_keys($this->options);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a checkall box to the top of the checkbox list, pass a label in otherwise defaults to All / None.
+     * @param   string  $label
+     * @return  self
+     */
+    public function addCheckAllNone($label = '')
+    {
+        if (empty($label)) $label = __('All').' / '.__('None');
+
+        $this->checkall = $label;
+        return $this;
+    }
+
+    /**
      * Return true if the passed value matches the current checkbox element value(s).
      * @param   mixed  $value
      * @return  bool
@@ -102,14 +129,28 @@ class Checkbox extends Input
         $name = (count($this->options)>1 && stripos($this->getName(), '[]') === false)? $this->getName().'[]' : $this->getName();
 
         if (!empty($this->options) && is_array($this->options)) {
+            $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
+
+            $output .= '<fieldset id="'.$this->getID().'" style="border: 0px;">';
+            if (!empty($this->checkall)) {
+                $checked = (count($this->options) == count($this->checked))? 'checked' : '';
+                $output .= '<label for="checkall'.$identifier.'">'.$this->checkall.'</label> ';
+                $output .= '<input id="checkall'.$identifier.'" class="checkall" type="checkbox" '.$checked.'><br/>';
+            }
+
+            $count = 0;
             foreach ($this->options as $value => $label) {
                 $this->setName($name);
+                $this->setID($identifier.'-'.$count);
                 $this->setAttribute('checked', $this->getIsChecked($value));
                 if ($value != 'on') $this->setValue($value);
 
-                $output .= '<label title="'.$label.'">'.$label.'</label> ';
+                $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
                 $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+
+                $count++;
             }
+            $output .= '</fieldset>';
         }
 
         return $output;

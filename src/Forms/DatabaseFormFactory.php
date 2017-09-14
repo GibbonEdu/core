@@ -329,6 +329,14 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
+    public function createSelectSpace($name)
+    {
+        $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
     protected function getCachedQuery($name)
     {
         return (isset($this->cachedQueries[$name]))? $this->cachedQueries[$name] : array();

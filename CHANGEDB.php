@@ -829,5 +829,6 @@ CREATE TABLE `gibbonCourseClassMap` (`gibbonCourseClassMapID` int(8) UNSIGNED ZE
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'autoEnrolCourses', 'Auto-Enrol Courses Default', 'Should auto-enrolment of new students into courses be turned on or off by default?', 'N');end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('am_ET','አማርኛ - ኢትዮጵያ', 'N', 'N', 'Bruce Banner', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'uniqueEmailAddress', 'Unique Email Address', 'Should user email addresses be a unique field?', 'N');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'availableYearsOfEntry', 'Available Years of Entry', 'Which school years should be available to apply to?', '');end
 
 ";

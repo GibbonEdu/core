@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationFormSettings.php') == false) {
     //Acess denied
@@ -37,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     }
 
     $form = Form::create('applicationFormSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormSettingsProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -86,6 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $years = $row->addSelectSchoolYear($setting['name'], 'Active')
+            ->setSize(3)
+            ->selectMultiple()
+            ->selected(explode(',', $setting['value']))
+            ->isRequired();
+
+        if (empty($setting['value'])) {
+            $years->selectAll();
+        }
 
     $row = $form->addRow()->addHeading(__('Required Documents Options'));
 

@@ -124,7 +124,10 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                             $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonPersonID' => $gibbonPersonID);
                             $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
                                     SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
-                                    FROM gibbonCourseClassMap WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
+                                    FROM gibbonCourseClassMap
+                                    LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
+                                    WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID
+                                    AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                             $pdo->executeQuery($data, $sql);
 
                             if ($pdo->getQuerySuccess() == false) {
