@@ -82,11 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active');
+                $row->addYesNo('active')->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('allowFileUpload', __('Allow File Upload'))->description(__('Should the student record include the option of a file upload?'));
-                $row->addYesNo('allowFileUpload')->selected('N');
+                $row->addYesNo('allowFileUpload')->isRequired()->selected('N');
 
             $row = $form->addRow();
                 $row->addFooter();
