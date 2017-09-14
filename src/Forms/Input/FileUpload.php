@@ -33,6 +33,7 @@ class FileUpload extends Input
     protected $attachmentName;
     protected $attachmentPath;
     protected $canDelete = true;
+    protected $maxUpload = true;
 
     /**
      * Set an array or CSV string of file extensions accepted by this file input.
@@ -88,6 +89,18 @@ class FileUpload extends Input
     }
 
     /**
+     * Set the hidden input MAX_FILE_SIZE in MB and displays the amount (false to disable max upload).
+     * @param   string  $value
+     * @return  self
+     */
+    public function setMaxUpload($value)
+    {
+        $this->maxUpload = $value;
+
+        return $this;
+    }
+
+    /**
      * Sets whether the attachment will have a delete option.
      * @param   bool  $value
      * @return  self
@@ -97,6 +110,48 @@ class FileUpload extends Input
         $this->canDelete = $value;
 
         return $this;
+    }
+
+    /**
+     * Sets whether the input accepts multiple files.
+     * @param   bool  $value
+     * @return  self
+     */
+    public function uploadMultiple($value = true)
+    {
+        $this->setAttribute('multiple', boolval($value));
+
+        return $this;
+    }
+
+    /**
+     * Gets the HTML output for the Maximum file size help-text
+     * @return   string
+     */
+    protected function getMaxUploadText()
+    {
+        $output = '';
+        $hidden = (!empty($this->absoluteURL) && !empty($this->attachmentPath))? 'display: none;' : '';
+        $post = substr(ini_get('post_max_size'), 0, (strlen(ini_get('post_max_size')) - 1));
+        $file = substr(ini_get('upload_max_filesize'), 0, (strlen(ini_get('upload_max_filesize')) - 1));
+        $label = ($post < $file)? $post : $file;
+
+        if ($this->maxUpload !== true && $this->maxUpload >= 1) {
+            $label = $this->maxUpload;
+            $output .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.(1024 * (1024 * $this->maxUpload)).'">';
+        }
+
+        $output .= '<div class="max-upload input-box standardWidth" style="'.$hidden.'">';
+        $output .= '<div class="inline-label right">';
+        if ($this->getAttribute('multiple') == true) {
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label).'<br/>';
+        } else {
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $label).'<br/>';
+        }
+        $output .= '</div>';
+        $output .= '</div>';
+
+        return $output;
     }
 
     /**
@@ -121,7 +176,7 @@ class FileUpload extends Input
                 if (!empty($this->deleteAction)) {
                     $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
                 } else {
-                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(\"#".$this->getID()." + .max-upload\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
                 }
             }
             $output .= '</div>';
@@ -131,6 +186,10 @@ class FileUpload extends Input
 
         $output .= '<input type="hidden" name="'.$this->attachmentName.'" value="'.$this->attachmentPath.'">';
         $output .= '<input type="file" '.$this->getAttributeString().'>';
+
+        if ($this->maxUpload !== false) {
+            $output .= $this->getMaxUploadText();
+        }
 
         return $output;
     }
