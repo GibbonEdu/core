@@ -337,8 +337,16 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearIDEntry', __('Anticipated Year of Entry'))->description(__('What school year will the student join in?'));
-        $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber";
-        $row->addSelect('gibbonSchoolYearIDEntry')->fromQuery($pdo, $sql)->isRequired()->placeholder(__('Please select...'));
+
+        $availableYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry');
+        if (!empty($availableYearsOfEntry)) {
+            $data = array('gibbonSchoolYearIDList' => $availableYearsOfEntry);
+            $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE FIND_IN_SET(gibbonSchoolYearID, :gibbonSchoolYearIDList) ORDER BY sequenceNumber";
+        } else {
+            $data = array();
+            $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber";
+        }
+        $row->addSelect('gibbonSchoolYearIDEntry')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder(__('Please select...'));
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Intended Start Date'))->description(__('Student\'s intended first day at school.'))->append('<br/>'.__('Format:'))->append(' '.$_SESSION[$guid]['i18n']['dateFormat']);
