@@ -93,7 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         $row->addLabel('file', __('Logo'))->description('125x125px jpg/png/gif');
         $row->addFileUpload('file')
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->append('<br/><br/>'.getMaxUpload($guid))
             ->addClass('right');
 
     $row = $form->addRow();

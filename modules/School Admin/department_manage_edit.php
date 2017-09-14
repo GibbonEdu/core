@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 $row->addLabel('file', 'Logo')->description('125x125px jpg/png/gif');
                 $row->addFileUpload('file')
                     ->accepts('.jpg,.jpeg,.gif,.png')
-                    ->append('<br/><br/>'.getMaxUpload($guid))
+                    ->setAttachment('logo', $_SESSION[$guid]['absoluteURL'], $values['logo'])
                     ->addClass('right');
 
             $form->addRow()->addHeading(__('Current Staff'));
