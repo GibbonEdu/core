@@ -137,7 +137,7 @@ class FileUpload extends Input
         $label = ($post < $file)? $post : $file;
 
         if ($this->maxUpload !== true && $this->maxUpload >= 1) {
-            $label = $this->maxUpload;
+            $label = ($this->maxUpload < $label)? $this->maxUpload : $label;
             $output .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.(1024 * (1024 * $this->maxUpload)).'">';
         }
 
