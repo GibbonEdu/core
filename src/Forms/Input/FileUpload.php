@@ -141,14 +141,12 @@ class FileUpload extends Input
             $output .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.(1024 * (1024 * $this->maxUpload)).'">';
         }
 
-        $output .= '<div class="max-upload input-box standardWidth" style="'.$hidden.'">';
-        $output .= '<div class="inline-label right">';
+        $output .= '<div class="max-upload standardWidth right" style="'.$hidden.'">';
         if ($this->getAttribute('multiple') == true) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label);
         } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $label).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $label);
         }
-        $output .= '</div>';
         $output .= '</div>';
 
         return $output;
@@ -176,12 +174,13 @@ class FileUpload extends Input
                 if (!empty($this->deleteAction)) {
                     $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
                 } else {
-                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(\"#".$this->getID()." + .max-upload\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(\"#".$this->getID()." + .max-upload\").show(); $(\"#".$this->getID()."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
                 }
             }
             $output .= '</div>';
 
             $this->setAttribute('style', 'display:none;');
+            $this->setAttribute('disabled', 'true');
         }
 
         $output .= '<input type="hidden" name="'.$this->attachmentName.'" value="'.$this->attachmentPath.'">';
