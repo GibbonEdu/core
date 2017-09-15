@@ -74,6 +74,7 @@ v15.0.00
         User Admin: updated Add User and Edit User to allow PDF files for ID documents
         User Admin: added ability to set username formats by role in User Settings
         User Admin: added a button to generate usernames in Add User
+        User Admin: added an Available Years of Entry setting to select which years are available in the student application
 
 v14.0.00
 --------
