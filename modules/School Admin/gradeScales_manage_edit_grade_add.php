@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 
             $row = $form->addRow();
                 $row->addLabel('isDefault', __('Is Default?'))->description(__('Preselects this option when using this grade scale in appropriate contexts.'));
-                $row->addYesNo('isDefault')->selected('N');
+                $row->addYesNo('isDefault')->isRequired()->selected('N');
 
             $row = $form->addRow();
                 $row->addFooter();

@@ -61,11 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active');
+        $row->addYesNo('active')->isRequired();
 
     $row = $form->addRow();
         $row->addLabel('numeric', __('Numeric'))->description(__('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.'));
-        $row->addYesNo('numeric');
+        $row->addYesNo('numeric')->isRequired();
 
     $row = $form->addRow();
         $row->addFooter();
