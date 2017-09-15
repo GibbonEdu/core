@@ -141,14 +141,12 @@ class FileUpload extends Input
             $output .= '<input type="hidden" name="MAX_FILE_SIZE" value="'.(1024 * (1024 * $this->maxUpload)).'">';
         }
 
-        $output .= '<div class="max-upload input-box standardWidth" style="'.$hidden.'">';
-        $output .= '<div class="inline-label right">';
+        $output .= '<div class="max-upload standardWidth right" style="'.$hidden.'">';
         if ($this->getAttribute('multiple') == true) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $label);
         } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $label).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $label);
         }
-        $output .= '</div>';
         $output .= '</div>';
 
         return $output;

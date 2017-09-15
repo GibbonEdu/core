@@ -1383,18 +1383,6 @@ input[name*="phone"] ~ .LV_invalid {
 	word-break: break-all;
 }
 
-.input-box.max-upload {
-    border-top: 0px;
-}
-
-.input-box.max-upload .inline-label {
-    background: #fafafa;
-    background: -moz-linear-gradient(top, #fbfbfb, #fafafa);
-    font-style: italic;
-    color: #c00;
-    line-height: 11px;
-}
-
 .input-box .inline-button {
 	display:table-cell;
 	border-left: 1px solid #BFBFBF;
@@ -1405,4 +1393,12 @@ input[name*="phone"] ~ .LV_invalid {
 	vertical-align:middle;
 	text-align:center;
 	cursor: pointer;
+}
+
+.max-upload {
+    float: right;
+    font-style: italic;
+    color: #c00;
+    line-height: 22px;
+    font-size: 93%;
 }
