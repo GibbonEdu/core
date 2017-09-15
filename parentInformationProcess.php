@@ -281,7 +281,7 @@ else {
                             'gibbonRecordID' => $row['gibbonFamilyID'],
                             'gibbonPersonIDRequested' => $gibbonPersonID,
                         );
-                        $sql = "INSERT INTO idCardRequest SET gibbonRecordType=:gibbonRecordType, gibbonRecordID=:gibbonRecordID, gibbonPersonIDRequested=:gibbonPersonIDRequested ON DUPLICATE KEY UPDATE gibbonPersonIDRequested=:gibbonPersonIDRequested, timestampRequested=CURRENT_TIMESTAMP";
+                        $sql = "INSERT INTO idCardRequest SET gibbonRecordType=:gibbonRecordType, gibbonRecordID=:gibbonRecordID, gibbonPersonIDRequested=:gibbonPersonIDRequested, status='New' ON DUPLICATE KEY UPDATE status='New', gibbonPersonIDRequested=:gibbonPersonIDRequested, timestampRequested=CURRENT_TIMESTAMP";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
