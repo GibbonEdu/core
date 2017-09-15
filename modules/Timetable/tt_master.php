@@ -60,10 +60,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_master.php');
 
-    $sql = "SELECT gibbonTTID as value, gibbonTT.name AS name FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name";
+    $sql = "SELECT gibbonSchoolYear.name as groupedBy, gibbonTTID as value, gibbonTT.name AS name FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name";
+    $result = $pdo->executeQuery(array(), $sql);
+
+    // Transform into an option list grouped by Year
+    $ttList = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+    $ttList = array_reduce($ttList, function($list, $item) {
+        $list[$item['groupedBy']][$item['value']] = $item['name'];
+        return $list;
+    }, array());
+
     $row = $form->addRow();
         $row->addLabel('gibbonTTID', __('Timetable'));
-        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql)->isRequired()->selected($gibbonTTID);
+        $row->addSelect('gibbonTTID')->fromArray($ttList)->isRequired()->selected($gibbonTTID);
 
     $row = $form->addRow();
         $row->addSubmit();
