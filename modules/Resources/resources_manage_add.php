@@ -72,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         // File
         $form->toggleVisibilityByClass('resourceFile')->onSelect('type')->when('File');
         $row = $form->addRow()->addClass('resourceFile');
-            $row->addLabel('file', __('Label'));
-            $row->addFileUpload('file')->isRequired()->addClass('right')->append('<br/><br/>'.getMaxUpload($guid));
+            $row->addLabel('file', __('File'));
+            $row->addFileUpload('file')->isRequired()->addClass('right');
 
         // HTML
         $form->toggleVisibilityByClass('resourceHTML')->onSelect('type')->when('HTML');

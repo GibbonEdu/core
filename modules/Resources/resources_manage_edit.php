@@ -75,6 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
             } else {
                 //Let's go!
                 $values = $result->fetch();
+                $values['gibbonYearGroupID'] = explode(',', $values['gibbonYearGroupIDList']);
 
                 $search = (isset($_GET['search']))? $_GET['search'] : null;
 
@@ -95,10 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 if ($values['type'] == 'File') {
                     // File
                     $row = $form->addRow()->addClass('resourceFile');
-                        $row->addLabel('file', __('Label'));
+                        $row->addLabel('file', __('File'));
                         $row->addFileUpload('file')
                             ->addClass('right')
-                            ->append('<br/><br/>'.getMaxUpload($guid))
+                            ->isRequired()
                             ->setAttachment('content', $_SESSION[$guid]['absoluteURL'], $values['content']);
                 } else if ($values['type'] == 'HTML') {
                     // HTML
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonYearGroupID', __('Year Groups'))->description(__('Students year groups which may participate'));
-                    $row->addCheckboxYearGroup('gibbonYearGroupID')->checkAll()->addCheckAllNone();
+                    $row->addCheckboxYearGroup('gibbonYearGroupID')->addCheckAllNone();
 
                 $row = $form->addRow();
                     $row->addLabel('description', __('Description'));
