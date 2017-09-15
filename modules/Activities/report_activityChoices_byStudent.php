@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php", "get");
 
+    $form->setClass('noIntBorder fullWidth');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byStudent.php");
@@ -57,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit();
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 

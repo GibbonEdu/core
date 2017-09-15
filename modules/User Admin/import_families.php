@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentEnrolment.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -42,166 +44,117 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 
     //STEP 1, SELECT TERM
     if ($step == 1) {
+        echo '<h2>';
+        echo __('Step 1 - Select CSV Files');
+        echo '</h2>';
+        echo '<p>';
+        echo __('This page allows you to import family data from a CSV file, and functions as follows: data contained in the CSV files that is new will be added to the system, whereas data that already exists in the system, but has been changed, will be updated.');
+        echo '</p>';
+
+        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_families.php&step=2');
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+            $row->addLabel('fileFamily', __('Family CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('fileFamily')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fileParent', __('Parent CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('fileParent')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fileChild', __('Child CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('fileChild')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+            $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+        $row = $form->addRow();
+            $row->addLabel('stringEnclosure', __('String Enclosure'));
+            $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-		</h2>
-		<p>
-			<?php echo __($guid, 'This page allows you to import family data from a CSV file, and functions as follows: data contained in the CSV files that is new will be added to the system, whereas data that already exists in the system, but has been changed, will be updated.') ?><br/>
-		</p>
-		
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_families.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php echo __($guid, 'Family CSV File') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-					</td>
-					<td class="right">
-						<input type="file" name="fileFamily" id="fileFamily" size="chars">
-						<script type="text/javascript">
-							var fileFamily=new LiveValidation('fileFamily');
-							fileFamily.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Parent CSV File') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-					</td>
-					<td class="right">
-						<input type="file" name="fileParent" id="fileParent" size="chars">
-						<script type="text/javascript">
-							var fileParent=new LiveValidation('fileParent');
-							fileParent.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Child CSV File') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-					</td>
-					<td class="right">
-						<input type="file" name="fileChild" id="fileChild" size="chars">
-						<script type="text/javascript">
-							var fileChild=new LiveValidation('fileChild');
-							fileChild.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
-						<script type="text/javascript">
-							var fieldDelimiter=new LiveValidation('fieldDelimiter');
-							fieldDelimiter.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
-						<script type="text/javascript">
-							var stringEnclosure=new LiveValidation('stringEnclosure');
-							stringEnclosure.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-					</td>
-					<td class="right">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		
-		<h4>
-			<?php echo __($guid, 'Notes') ?>
-		</h4>
-		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
-			<li><?php echo __($guid, 'The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field).') ?>: 
-				<ol>
-					<li><b><?php echo __($guid, 'Family Sync Key') ?> *</b> - <?php echo __($guid, 'Unique ID for family, according to source system.') ?></li>
-					<li><b><?php echo __($guid, 'Name') ?> *</b> - <?php echo __($guid, 'Name by which family is known.') ?></li>
-					<li><b><?php echo __($guid, 'Address Name') ?></b> - <?php echo __($guid, 'Name to appear on written communication to family.') ?></li>
-					<li><b><?php echo __($guid, 'Home Address') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
-					<li><b><?php echo __($guid, 'Home Address (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
-					<li><b><?php echo __($guid, 'Home Address (Country)') ?></b></li>
-					<li><b><?php echo __($guid, 'Marital Status') ?></b> - <?php echo __($guid, 'Married, Separated, Divorced, De Facto or Other') ?></li>
-					<li><b><?php echo __($guid, 'Home Language - Primary') ?></b></li>
-				</ol>
-			</li>
-			<li><?php echo __($guid, 'The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
-				<ol>
-					<li><b><?php echo __($guid, 'Family Sync Key') ?> *</b> - <?php echo __($guid, 'Unique ID for family, according to source system.') ?></li>
-					<li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Parent username') ?>.</li>
-					<li><b><?php echo __($guid, 'Contact Priority') ?> *</b> - <?php echo __($guid, '1, 2 or 3 (each family needs one and only one 1).') ?></li>
-				</ol>
-			</li>
-			<li><?php echo __($guid, 'The submitted <b><u>child file</u></b> must have the following fields in the following order (* denotes required field):') ?> 
-				<ol>
-					<li><b><?php echo __($guid, 'Family Sync Key') ?> *</b> - <?php echo __($guid, 'Unique ID for family, according to source system.') ?></li>
-					<li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Child username.') ?></li>
-				</ol>
-			</li>
-			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
-		</ol>
-	<?php
+
+        <h4>
+            <?php echo __($guid, 'Notes') ?>
+        </h4>
+        <ol>
+            <li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+            <li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
+            <li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+            <li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
+            <li><?php echo __($guid, 'The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field).') ?>:
+                <ol>
+                    <li><b><?php echo __($guid, 'Family Sync Key') ?> *</b> - <?php echo __($guid, 'Unique ID for family, according to source system.') ?></li>
+                    <li><b><?php echo __($guid, 'Name') ?> *</b> - <?php echo __($guid, 'Name by which family is known.') ?></li>
+                    <li><b><?php echo __($guid, 'Address Name') ?></b> - <?php echo __($guid, 'Name to appear on written communication to family.') ?></li>
+                    <li><b><?php echo __($guid, 'Home Address') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
+                    <li><b><?php echo __($guid, 'Home Address (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
+                    <li><b><?php echo __($guid, 'Home Address (Country)') ?></b></li>
+                    <li><b><?php echo __($guid, 'Marital Status') ?></b> - <?php echo __($guid, 'Married, Separated, Divorced, De Facto or Other') ?></li>
+                    <li><b><?php echo __($guid, 'Home Language - Primary') ?></b></li>
+                </ol>
+            </li>
+            <li><?php echo __($guid, 'The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field):') ?>
+                <ol>
+                    <li><b><?php echo __($guid, 'Family Sync Key') ?> *</b> - <?php echo __($guid, 'Unique ID for family, according to source system.') ?></li>
+                    <li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Parent username') ?>.</li>
+                    <li><b><?php echo __($guid, 'Contact Priority') ?> *</b> - <?php echo __($guid, '1, 2 or 3 (each family needs one and only one 1).') ?></li>
+                </ol>
+            </li>
+            <li><?php echo __($guid, 'The submitted <b><u>child file</u></b> must have the following fields in the following order (* denotes required field):') ?>
+                <ol>
+                    <li><b><?php echo __($guid, 'Family Sync Key') ?> *</b> - <?php echo __($guid, 'Unique ID for family, according to source system.') ?></li>
+                    <li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Child username.') ?></li>
+                </ol>
+            </li>
+            <li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+        </ol>
+    <?php
 
     } elseif ($step == 2) {
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
-		</h2>
-		<?php
+        <h2>
+            <?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+        </h2>
+        <?php
 
         //DEAL WITH FAMILIES
         //Check file type
         if (($_FILES['fileFamily']['type'] != 'text/csv') and ($_FILES['fileFamily']['type'] != 'text/comma-separated-values') and ($_FILES['fileFamily']['type'] != 'text/x-comma-separated-values') and ($_FILES['fileFamily']['type'] != 'application/vnd.ms-excel')) {
             ?>
-			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted family file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileFamily']['type']) ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted family file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileFamily']['type']) ?><br/>
+            </div>
+            <?php
 
         } elseif (($_FILES['fileParent']['type'] != 'text/csv') and ($_FILES['fileParent']['type'] != 'text/comma-separated-values') and ($_FILES['fileParent']['type'] != 'text/x-comma-separated-values') and ($_FILES['fileParent']['type'] != 'application/vnd.ms-excel')) {
             ?>
-			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileParent']['type']) ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileParent']['type']) ?><br/>
+            </div>
+            <?php
 
         } elseif (($_FILES['fileChild']['type'] != 'text/csv') and ($_FILES['fileChild']['type'] != 'text/comma-separated-values') and ($_FILES['fileChild']['type'] != 'text/x-comma-separated-values') and ($_FILES['fileChild']['type'] != 'application/vnd.ms-excel')) {
             ?>
-			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileChild']['type']) ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted parent file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['fileChild']['type']) ?><br/>
+            </div>
+            <?php
 
         } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
             ?>
-			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+            </div>
+            <?php
 
         } else {
             $proceed = true;

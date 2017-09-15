@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -42,179 +44,135 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 
     //STEP 1, SELECT TERM
     if ($step == 1) {
+        echo '<h2>';
+        echo __('Step 1 - Select CSV Files');
+        echo '</h2>';
+        echo '<p>';
+        echo __('This page allows you to import user data from a CSV file, in one of two modes: 1) Sync - the import file includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system, or 2) Import - the import file includes only users you wish to add to the system. New users will be assigned a random password, unless a default is set or the Password field is not blank. Select the CSV file you wish to use for the synchronise operation.');
+        echo '</p>';
+
+        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_users.php&step=2');
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+            $row->addLabel('mode', __('Mode'));
+            $row->addSelect('mode')->fromArray(array('import' => __('Import'), 'sync' => __('Sync')))->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('file')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+            $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+        $row = $form->addRow();
+            $row->addLabel('stringEnclosure', __('String Enclosure'));
+            $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+        $row = $form->addRow();
+            $row->addLabel('defaultPassword', __('Default Password'))->description(__('If not set, and Password field is empty, random passwords will be used.'));
+            $row->addTextField('defaultPassword')->maxLength(20);
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-		</h2>
-		<p>
-			<?php echo __($guid, 'This page allows you to import user data from a CSV file, in one of two modes: 1) Sync - the import file includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system, or 2) Import - the import file includes only users you wish to add to the system. New users will be assigned a random password, unless a default is set or the Password field is not blank. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
-		</p>
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_users.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td>
-						<b>Mode *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<select name="mode" id="mode" class="standardWidth">
-                            <option value="import"><?php echo __($guid, 'Import') ?></option>
-							<option value="sync"><?php echo __($guid, 'Sync') ?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-					</td>
-					<td class="right">
-						<input type="file" name="file" id="file" size="chars">
-						<script type="text/javascript">
-							var file=new LiveValidation('file');
-							file.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
-						<script type="text/javascript">
-							var fieldDelimiter=new LiveValidation('fieldDelimiter');
-							fieldDelimiter.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
-						<script type="text/javascript">
-							var stringEnclosure=new LiveValidation('stringEnclosure');
-							stringEnclosure.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Default Password') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'If not set, and Password field is empty, random passwords will be used.') ?></span>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="defaultPassword" value='' maxlength=20>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-					</td>
-					<td class="right">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
 
-
-
-		<h4>
-			<?php echo __($guid, 'Notes') ?>
-		</h4>
-		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
-				<ol>
-					<li><b><?php echo __($guid, 'Title') ?></b> - <?php echo __($guid, 'e.g. Ms., Miss, Mr., Mrs., Dr.') ?></li>
-					<li><b><?php echo __($guid, 'Surname') ?> *</b> - <?php echo __($guid, 'Family name') ?></li>
-					<li><b><?php echo __($guid, 'First Name') ?> *</b> - <?php echo __($guid, 'Given name') ?></li>
-					<li><b><?php echo __($guid, 'Preferred Name') ?> *</b> - <?php echo __($guid, 'Most common name, alias, nickname, handle, etc') ?></li>
-					<li><b><?php echo __($guid, 'Official Name') ?> *</b> - <?php echo __($guid, 'Full name as shown in ID documents.') ?></li>
-					<li><b><?php echo __($guid, 'Name In Characters') ?></b> - <?php echo __($guid, 'e.g. Chinese name') ?></li>
-					<li><b><?php echo __($guid, 'Gender') ?> *</b> - <?php echo __($guid, 'F or M') ?></li>
-					<li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique') ?></li>
-					<li><b><?php echo __($guid, 'Password') ?></b> - <?php echo __($guid, 'If blank, default password or random password will be used.') ?></li>
-					<li><b><?php echo __($guid, 'House') ?></b> - <?php echo __($guid, 'House short name, as set in School Admin. Must already exist).') ?></li>
-					<li><b><?php echo __($guid, 'DOB') ?></b> - <?php echo __($guid, 'Date of birth') ?> (yyyy-mm-dd)</li>
-					<li><b><?php echo __($guid, 'Role') ?> *</b> - <?php echo __($guid, 'Teacher, Support Staff, Student or Parent') ?></li>
-					<li><b><?php echo __($guid, 'Email') ?></b></li>
-					<li><b><?php echo __($guid, 'Image (240)') ?></b> - <?php echo __($guid, 'path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
-					<li><b><?php echo __($guid, 'Address 1') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
-					<li><b><?php echo __($guid, 'Address 1 (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
-					<li><b><?php echo __($guid, 'Address 1 (Country)') ?></b></li>
-					<li><b><?php echo __($guid, 'Address 2') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
-					<li><b><?php echo __($guid, 'Address 2 (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
-					<li><b><?php echo __($guid, 'Address 2 (Country)') ?></b></li>
-					<li><b><?php echo __($guid, 'Phone 1 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-					<li><b><?php echo __($guid, 'Phone 1 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-					<li><b><?php echo __($guid, 'Phone 1') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php echo __($guid, 'Phone 2 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-					<li><b><?php echo __($guid, 'Phone 2 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-					<li><b><?php echo __($guid, 'Phone 2') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php echo __($guid, 'Phone 3 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-					<li><b><?php echo __($guid, 'Phone 3 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-					<li><b><?php echo __($guid, 'Phone 3') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php echo __($guid, 'Phone 4 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-					<li><b><?php echo __($guid, 'Phone 4 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-					<li><b><?php echo __($guid, 'Phone 4') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-					<li><b><?php echo __($guid, 'Website') ?></b> - <?php echo __($guid, 'Must start with http:// or https://') ?></li>
-					<li><b><?php echo __($guid, 'First Language') ?></b></li>
-					<li><b><?php echo __($guid, 'Second Language') ?></b></li>
-					<li><b><?php echo __($guid, 'Profession') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
-					<li><b><?php echo __($guid, 'Employer') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
-					<li><b><?php echo __($guid, 'Job Title') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 1 Name') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 1 Number 1') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 1 Number 2') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 1  Relationship') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 2 Name') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 2 Number 1') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 2 Number 2') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Emergency 2  Relationship') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-					<li><b><?php echo __($guid, 'Start Date') ?></b> - yyyy-mm-dd</li>
-				</ol>
-			</li>
-			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
-		</ol>
-	<?php
+        <h4>
+            <?php echo __($guid, 'Notes') ?>
+        </h4>
+        <ol>
+            <li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+            <li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
+            <li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+            <li><?php echo __($guid, 'Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
+            <li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+                <ol>
+                    <li><b><?php echo __($guid, 'Title') ?></b> - <?php echo __($guid, 'e.g. Ms., Miss, Mr., Mrs., Dr.') ?></li>
+                    <li><b><?php echo __($guid, 'Surname') ?> *</b> - <?php echo __($guid, 'Family name') ?></li>
+                    <li><b><?php echo __($guid, 'First Name') ?> *</b> - <?php echo __($guid, 'Given name') ?></li>
+                    <li><b><?php echo __($guid, 'Preferred Name') ?> *</b> - <?php echo __($guid, 'Most common name, alias, nickname, handle, etc') ?></li>
+                    <li><b><?php echo __($guid, 'Official Name') ?> *</b> - <?php echo __($guid, 'Full name as shown in ID documents.') ?></li>
+                    <li><b><?php echo __($guid, 'Name In Characters') ?></b> - <?php echo __($guid, 'e.g. Chinese name') ?></li>
+                    <li><b><?php echo __($guid, 'Gender') ?> *</b> - <?php echo __($guid, 'F or M') ?></li>
+                    <li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique') ?></li>
+                    <li><b><?php echo __($guid, 'Password') ?></b> - <?php echo __($guid, 'If blank, default password or random password will be used.') ?></li>
+                    <li><b><?php echo __($guid, 'House') ?></b> - <?php echo __($guid, 'House short name, as set in School Admin. Must already exist).') ?></li>
+                    <li><b><?php echo __($guid, 'DOB') ?></b> - <?php echo __($guid, 'Date of birth') ?> (yyyy-mm-dd)</li>
+                    <li><b><?php echo __($guid, 'Role') ?> *</b> - <?php echo __($guid, 'Teacher, Support Staff, Student or Parent') ?></li>
+                    <li><b><?php echo __($guid, 'Email') ?></b></li>
+                    <li><b><?php echo __($guid, 'Image (240)') ?></b> - <?php echo __($guid, 'path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
+                    <li><b><?php echo __($guid, 'Address 1') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
+                    <li><b><?php echo __($guid, 'Address 1 (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
+                    <li><b><?php echo __($guid, 'Address 1 (Country)') ?></b></li>
+                    <li><b><?php echo __($guid, 'Address 2') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
+                    <li><b><?php echo __($guid, 'Address 2 (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
+                    <li><b><?php echo __($guid, 'Address 2 (Country)') ?></b></li>
+                    <li><b><?php echo __($guid, 'Phone 1 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 1 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 1') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 2 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 2 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 2') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 3 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 3 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 3') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 4 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 4 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __($guid, 'Phone 4') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __($guid, 'Website') ?></b> - <?php echo __($guid, 'Must start with http:// or https://') ?></li>
+                    <li><b><?php echo __($guid, 'First Language') ?></b></li>
+                    <li><b><?php echo __($guid, 'Second Language') ?></b></li>
+                    <li><b><?php echo __($guid, 'Profession') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
+                    <li><b><?php echo __($guid, 'Employer') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
+                    <li><b><?php echo __($guid, 'Job Title') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 1 Name') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 1 Number 1') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 1 Number 2') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 1  Relationship') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 2 Name') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 2 Number 1') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 2 Number 2') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Emergency 2  Relationship') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
+                    <li><b><?php echo __($guid, 'Start Date') ?></b> - yyyy-mm-dd</li>
+                </ol>
+            </li>
+            <li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+        </ol>
+    <?php
 
     } elseif ($step == 2) {
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
-		</h2>
-		<?php
+        <h2>
+            <?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+        </h2>
+        <?php
 
         //Check file type
         if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
             ?>
-			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+            </div>
+            <?php
 
         } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
             ?>
-			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+            </div>
+            <?php
 
         } elseif ($_POST['mode'] != 'sync' and $_POST['mode'] != 'import') {
             ?>
-			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Mode" field have been left blank.') ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo __($guid, 'Import cannot proceed, as the "Mode" field have been left blank.') ?><br/>
+            </div>
+            <?php
 
         } else {
             $proceed = true;

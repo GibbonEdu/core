@@ -69,10 +69,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
-    
+
     // Cancel out early if we have no gibbonActivityID
     if (empty($gibbonActivityID)) {
         return;

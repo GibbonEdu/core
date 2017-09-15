@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'], __('Clear Form')));
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 
