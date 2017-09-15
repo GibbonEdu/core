@@ -43,12 +43,14 @@ class Finder extends TextField
     {
         $this->params = array(
             'theme'             => 'facebook',
-            'hintText'          => __('Start typing a name...'),
+            'hintText'          => __('Start typing...'),
             'noResultsText'     => __('No results'),
             'searchingText'     => __('Searching...'),
             'allowCreation'     => false,
             'preventDuplicates' => true,
             'tokenLimit'        => null,
+            'minChars'          => 1,
+            'resultsLimit'      => null,
         );
 
         parent::__construct($name);
@@ -67,15 +69,19 @@ class Finder extends TextField
 
     /**
      * Sets the selected element(s) of the token list.
-     * @param   mixed  $value
+     * @param   mixed  $values
      * @return  self
      */
-    public function selected($value)
+    public function selected($values)
     {
-        if (is_string($value)) $value = explode(',', $value);
+        if (is_string($values)) $values = explode(',', $values);
 
-        if (!empty($value)) {
-            $this->selected = array_combine($value, $value);
+        if (!empty($values) && is_array($values)) {
+            if (array_values($values) === $values) {
+                $this->selected = array_combine($values, $values);
+            } else {
+                $this->selected = $values;
+            }
         }
         return $this;
     }
@@ -126,7 +132,7 @@ class Finder extends TextField
             $output .= '$("#'.$this->getID().'").tokenInput(';
 
             if (!empty($this->ajaxURL)) {
-                $output .= '"'.$_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php",';
+                $output .= '"'.$this->ajaxURL.'",';
             } else {
                 $output .= '['.$this->getTokenizedList($this->options).'],';
             }
