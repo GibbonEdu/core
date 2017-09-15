@@ -82,14 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
             $row = $form->addRow();
                 $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".'));
-                $column = $row->addColumn();
+                $column = $row->addColumn()->addClass('stacked');
                 $column->addSelectStaff('gibbonPersonIDTutor')->placeholder();
                 $column->addSelectStaff('gibbonPersonIDTutor2')->placeholder();
                 $column->addSelectStaff('gibbonPersonIDTutor3')->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('EAs', __('Educational Assistant'))->description(__('Up to 3 per roll group.'));
-                $column = $row->addColumn();
+                $column = $row->addColumn()->addClass('stacked');
                 $column->addSelectStaff('gibbonPersonIDEA')->placeholder();
                 $column->addSelectStaff('gibbonPersonIDEA2')->placeholder();
                 $column->addSelectStaff('gibbonPersonIDEA3')->placeholder();
