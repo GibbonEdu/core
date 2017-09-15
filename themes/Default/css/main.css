@@ -1400,5 +1400,5 @@ input[name*="phone"] ~ .LV_invalid {
     font-style: italic;
     color: #c00;
     line-height: 22px;
-    font-size: 93%;
+    font-size: 11px;
 }

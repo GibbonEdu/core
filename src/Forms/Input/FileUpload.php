@@ -174,12 +174,13 @@ class FileUpload extends Input
                 if (!empty($this->deleteAction)) {
                     $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
                 } else {
-                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(\"#".$this->getID()." + .max-upload\").show(); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
+                    $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"input[name=".$this->attachmentName."]\").val(\"\"); $(\"#".$this->getID()."\").show(); $(\"#".$this->getID()." + .max-upload\").show(); $(\"#".$this->getID()."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
                 }
             }
             $output .= '</div>';
 
             $this->setAttribute('style', 'display:none;');
+            $this->setAttribute('disabled', 'true');
         }
 
         $output .= '<input type="hidden" name="'.$this->attachmentName.'" value="'.$this->attachmentPath.'">';
