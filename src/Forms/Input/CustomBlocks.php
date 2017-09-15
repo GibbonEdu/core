@@ -33,20 +33,34 @@ class CustomBlocks implements OutputableInterface
 
     protected $name;
     protected $placeholder;
-    protected $addButton;
+    protected $toolButtons;
     protected $formOutput;
+    protected $factory;
 
     public function __construct(FormFactoryInterface &$factory, $name, $form)
     {
+        $this->factory = $factory;
         $this->name = $name;
-        $this->placeholder = __("Blocks will appear here...");  
-        $this->addButton = $factory->createButton(__("Add Block"), 'add'. $this->name .'Block()');
+        $this->placeholder = __("Blocks will appear here..."); 
+        $this->toolButtons = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
         $this->formOutput = $form->getOutput();
     }
 
     public function placeholder($value)
     {
         $this->placeholder = $value;
+        return $this;
+    }
+
+    public function addToolButton($name, $onClick)
+    {
+        $this->toolButtons[] = $this->factory->createButton($name, $onClick);
+        return $this;
+    }
+
+    public function addBlockButton()
+    {
+        
     }
 
     public function getClass()
@@ -88,9 +102,11 @@ class CustomBlocks implements OutputableInterface
             
             <div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">
                 <table class="blank" cellspacing="0" style="width: 100%">
-                    <tr>
-                        <td style="width: 50%">'. $this->addButton->getOutput() .'</td>
-                    </tr>
+                    <tr>';
+                        foreach ($this->toolButtons as $toolButton) {
+                            $output .= '<td style="float: left">' . $toolButton->getOutput() . '</td>';
+                        }
+                    $output .= '</tr>
                 </table>
             </div>
         </div>';
