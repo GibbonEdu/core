@@ -1395,6 +1395,10 @@ input[name*="phone"] ~ .LV_invalid {
 	cursor: pointer;
 }
 
+.floatNone {
+	float:none;
+}
+
 .max-upload {
     float: right;
     font-style: italic;
