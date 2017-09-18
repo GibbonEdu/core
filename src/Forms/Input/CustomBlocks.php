@@ -87,7 +87,6 @@ class CustomBlocks implements OutputableInterface
            </div>
 
            <div id="'. $this->name .'Template" style="display:none">
-                <input name="' . $this->name . 'order[]" type="hidden" value="-1">
                 <div style="float:left; width:90%">'. $this->formOutput .'</div>
                 <div style="float:right; width: 9.5%">
                     <table class="smallIntBorder fullWidth standardForm">
@@ -118,6 +117,10 @@ class CustomBlocks implements OutputableInterface
                 $("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));
                 $("#'. $this->name .'Outer" + ' . $this->name . 'Count).find("input[name*=' . $this->name . 'order]").val(' . $this->name . 'Count);
                 $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("id", $(this).prop("id") + ' . $this->name . 'Count); });
+                $(\'<input>\').attr({
+                            type: \'hidden\',
+                            name: \'' . $this->name . 'Order[]\'
+                        }).val(' . $this->name . 'Count).appendTo($("#'. $this->name .'Outer" + ' . $this->name . 'Count));
                 $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . 'deleteTemplate]").each(function () {
                     $(this).prop("id", "' . $this->name . 'Delete" + ' . $this->name . 'Count);
                     $(this).unbind("click").click(function() {
