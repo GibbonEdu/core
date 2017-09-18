@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
             WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)
             GROUP BY gibbonYearGroup.gibbonYearGroupID
-            ORDER BY LENGTH(gibbonRollGroup.name), gibbonYearGroup.name";
+            ORDER BY gibbonYearGroup.sequenceNumber";
 
     $results = $pdo->executeQuery($data, $sql);
 

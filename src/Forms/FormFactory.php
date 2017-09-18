@@ -94,6 +94,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createFinder($name)
+    {
+        return new Input\Finder($name);
+    }
+
     public function createEditor($name, $guid)
     {
         return new Input\Editor($name, $guid);
@@ -154,11 +159,21 @@ class FormFactory implements FormFactoryInterface
         return new Input\Select($name);
     }
 
+    public function createMultiSelect($name)
+    {
+        return new Input\MultiSelect($this, $name);
+    }
+
+    public function createButton($label = 'Button', $onClick = '')
+    {
+        return new Input\Button($label, $onClick);
+    }
+
     public function createCustomBlocks($name, $form)
     {
         return new Input\CustomBlocks($this, $name, $form);
     }
-
+    
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($label)
@@ -179,10 +194,13 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->setClass('right');
     }
 
-    public function createButton($label = 'Button', $onClick = '')
+    public function createSearchSubmit($session, $clearLabel = 'Clear Form')
     {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
-        return $this->createContent($content)->setClass('right');
+        $content = sprintf('<input type="submit" value="%s">', __('Go'));
+        $clearURL = $session->get('absoluteURL').'/index.php?q='.$_GET['q'];
+        $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
+
+        return $this->createContent($content)->prepend($clearLink)->setClass('right');
     }
 
     public function createFooter($required = true)

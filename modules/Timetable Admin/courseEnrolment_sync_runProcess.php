@@ -51,7 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, 'Y'
                         FROM gibbonCourseClassMap
-                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
+                        LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
+                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID
+                        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                 $pdo->executeQuery($data, $sql);
 
                 if (!$pdo->getQuerySuccess()) $partialFail = true;

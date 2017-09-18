@@ -340,13 +340,14 @@ div.minorLinks a:hover {
 ul.moduleMenu {
 	list-style: none;
 	margin-left: 0px ;
-	padding-left: 0px
+	padding-left: 0px;
 }
 
 ul.moduleMenu ul li {
 	list-style: none;
 	margin-left: 0px ;
-	padding-left: 0px
+	padding-left: 0px;
+	text-align: left;
 }
 
 ul.moduleMenu ul {
@@ -1371,6 +1372,7 @@ input[name*="phone"] ~ .LV_invalid {
 	display: table;
 	border: 1px solid #BFBFBF;
 	background-color: #ffffff;
+    box-sizing: border-box;
 }
 
 .input-box .inline-label {
@@ -1391,4 +1393,24 @@ input[name*="phone"] ~ .LV_invalid {
 	vertical-align:middle;
 	text-align:center;
 	cursor: pointer;
+}
+
+.floatNone {
+	float:none;
+}
+
+.max-upload {
+    float: right;
+    font-style: italic;
+    color: #c00;
+    line-height: 22px;
+    font-size: 11px;
+}
+
+
+#content .smallIntBorder {
+  max-width: 752px;
+}
+#content-wide .smallIntBorder {
+  max-width: 1052px;
 }

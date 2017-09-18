@@ -95,7 +95,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectRollGroup($name, $gibbonSchoolYearID, $all = false)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
         $results = $this->pdo->executeQuery($data, $sql);
 
         if (!$all)
@@ -327,6 +327,14 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromResults($results)->placeholder();
         else
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
+    }
+
+    public function createSelectSpace($name)
+    {
+        $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     protected function getCachedQuery($name)
