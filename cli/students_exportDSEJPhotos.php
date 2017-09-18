@@ -32,7 +32,7 @@ setCurrentSchoolYear($guid, $connection2);
 //Check for CLI, so this cannot be run through browser
 if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
 } else {
-   
+
     $photoPathDSEJ = $_SESSION[$guid]['absolutePath'] .'/uploads/photosDSEJ/';
     if (is_dir($photoPathDSEJ)==FALSE) {
         mkdir($photoPathDSEJ, 0755, TRUE);
@@ -53,11 +53,11 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-        $sql = "SELECT username, surname, preferredName, studentID, image_240, fields, gibbonRollGroup.nameShort as rollGroup from gibbonPerson 
-        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
+        $sql = "SELECT username, surname, preferredName, studentID, image_240, fields, gibbonRollGroup.nameShort as rollGroup from gibbonPerson
+        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
         JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
-        AND gibbonPerson.status = 'Full' 
+        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+        AND gibbonPerson.status = 'Full'
         ORDER BY surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -84,46 +84,44 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         $fields = unserialize( $row['fields'] );
         $dsejID = (isset($fields[$fieldID]))? $fields[$fieldID] : '';
 
-        if ( !empty($dsejID) ) {
+        $photoPath = $_SESSION[$guid]['absolutePath'] .'/'. $row['image_240'];
+        $photoPathRollGroup = $photoPathDSEJ . $row['rollGroup'] .'/';
 
+        if (is_dir( $photoPathRollGroup )==FALSE) {
+            mkdir( $photoPathRollGroup , 0777, TRUE) ;
+        }
+
+        if (file_exists($photoPath) && !empty($dsejID)) {
             $countDSEJID++;
 
-            $photoPath = $_SESSION[$guid]['absolutePath'] .'/'. $row['image_240'];
-            $photoPathRollGroup = $photoPathDSEJ . $row['rollGroup'] .'/';
-
-            if (is_dir( $photoPathRollGroup )==FALSE) {
-                mkdir( $photoPathRollGroup , 0777, TRUE) ;
-            }
-
-            if (file_exists($photoPath)) {
-
-                if ( filesize($photoPath) < $sizeLimit) {
-                    copy($photoPath, $photoPathRollGroup . $dsejID . '.jpg' );
-
-                    $countCopied++;
-                } else {
-
-                    //create a image resource from the contents of the uploaded image
-                    $resource = @imagecreatefromjpeg( $photoPath );
-
-                    if(!$resource)
-                        die('Something wrong with the file reader!');
-
-                    //move the uploaded file with a lesser quality
-                    imagejpeg($resource, $photoPathRollGroup . $dsejID . '.jpg', $restrainedQuality); 
-                    imagedestroy($resource);
-
-                    if ( filesize($photoPathRollGroup . $dsejID . '.jpg') > $sizeLimit ) {
-                        echo "File still too large: " . $dsejID . '.jpg' . "\n";
-                    }
-                    $countResized++;
-                }
-                
+            if ( filesize($photoPath) < $sizeLimit) {
+                $countCopied++;
+                copy($photoPath, $photoPathRollGroup . $dsejID . '.jpg' );
             } else {
-                $missingPhoto .= $row['surname'].', '. $row['preferredName'] .' ('.$row['rollGroup'].', Student ID:'. $row['studentID'] .')' . "\n";
+                //create a image resource from the contents of the uploaded image
+                $resource = @imagecreatefromjpeg( $photoPath );
+
+                if(!$resource) {
+                    die('Something wrong with the file reader!');
+                }
+
+                //move the uploaded file with a lesser quality
+                imagejpeg($resource, $photoPathRollGroup . $dsejID . '.jpg', $restrainedQuality);
+                imagedestroy($resource);
+
+                if ( filesize($photoPathRollGroup . $dsejID . '.jpg') > $sizeLimit ) {
+                    echo "File still too large: " . $dsejID . '.jpg' . "\n";
+                }
+                $countResized++;
             }
         } else {
-            $missingDSEJ .= $row['surname'].', '. $row['preferredName'] .' ('.$row['rollGroup'].', Student ID:'. $row['studentID'] .')' . "\n";
+            if (empty($dsejID)) {
+                $missingDSEJ .= $row['surname'].', '. $row['preferredName'] .' ('.$row['rollGroup'].', Student ID:'. $row['studentID'] .')' . "\n";
+            }
+
+            if (!file_exists($photoPath)) {
+                $missingPhoto .= $row['surname'].', '. $row['preferredName'] .' ('.$row['rollGroup'].', Student ID:'. $row['studentID'] .')' . "\n";
+            }
         }
     }
 
