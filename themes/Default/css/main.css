@@ -1402,3 +1402,11 @@ input[name*="phone"] ~ .LV_invalid {
     line-height: 22px;
     font-size: 11px;
 }
+
+
+#content .smallIntBorder {
+  max-width: 752px;
+}
+#content-wide .smallIntBorder {
+  max-width: 1052px;
+}
