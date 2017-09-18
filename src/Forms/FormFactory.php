@@ -159,6 +159,16 @@ class FormFactory implements FormFactoryInterface
         return new Input\Select($name);
     }
 
+    public function createMultiSelect($name)
+    {
+        return new Input\MultiSelect($this, $name);
+    }
+
+    public function createButton($label = 'Button', $onClick = '')
+    {
+        return new Input\Button($label, $onClick);
+    }
+    
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($label)
@@ -186,12 +196,6 @@ class FormFactory implements FormFactoryInterface
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createContent($content)->prepend($clearLink)->setClass('right');
-    }
-
-    public function createButton($label = 'Button', $onClick = '')
-    {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
-        return $this->createContent($content)->setClass('right');
     }
 
     public function createFooter($required = true)
