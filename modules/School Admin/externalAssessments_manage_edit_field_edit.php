@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     } else {
         try {
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID);
-            $sql = 'SELECT gibbonExternalAssessmentField.*, gibbonExternalAssessment.name AS assName FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
+            $sql = 'SELECT gibbonExternalAssessmentField.*, gibbonExternalAssessment.name AS assessmentName FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('External Assessment'));
-                $row->addTextField('name')->readonly();
+                $row->addLabel('assessmentName', __('External Assessment'));
+                $row->addTextField('assessmentName')->readonly()->setValue($values['assessmentName']);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
