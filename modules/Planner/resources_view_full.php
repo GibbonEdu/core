@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view_full.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_full.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'Your request failed because you do not have access to this action.');

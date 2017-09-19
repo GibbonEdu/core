@@ -25,7 +25,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 
                 if (!empty($search)) {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Resources/resources_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/resources_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
                     echo '</div>';
                 }
 

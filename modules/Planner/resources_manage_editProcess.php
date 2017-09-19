@@ -30,7 +30,7 @@ $gibbonResourceID = $_GET['gibbonResourceID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];
 $time = time();
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
