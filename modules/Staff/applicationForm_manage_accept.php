@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $failapplicant = true;
                     $lock = true;
                     try {
-                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE, gibbonUsernameFormat WRITE';
+                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE, gibbonUsernameFormat WRITE, gibbonRole WRITE';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
                         $lock = false;
