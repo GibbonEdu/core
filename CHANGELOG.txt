@@ -25,6 +25,7 @@ v15.0.00
 		...
 
 	Significant Changes
+		Planner: integrated Resources into the Planner module
 		Timetable Admin: added ability to map classes to Roll Group, sync enrolments, and auto-enrol new students
 
 	Security
