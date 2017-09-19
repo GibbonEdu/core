@@ -36,6 +36,7 @@ class UsernameGenerator
 
     protected $tokens = array();
 
+    protected $defaultValue = 'user';
     protected $defaultFormat = '[preferredName:1][surname]';
     protected $loopCount = 0;
 
@@ -120,13 +121,16 @@ class UsernameGenerator
 
         // Get the username format data by gibbonRoleID
         $data = array('gibbonRoleID' => $gibbonRoleID);
-        $sql = "SELECT * FROM gibbonUsernameFormat WHERE (FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList)) OR isDefault='Y' ORDER BY FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList) DESC LIMIT 1";
+        $sql = "SELECT gibbonUsernameFormat.*, gibbonRole.name as roleName FROM gibbonUsernameFormat JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonRoleIDList)) WHERE gibbonRoleID=:gibbonRoleID OR isDefault='Y' ORDER BY FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList) DESC LIMIT 1";
         $result = $this->pdo->executeQuery($data, $sql);
 
         if ($result->rowCount() > 0) {
             $row = $result->fetch(0);
 
             $usernameFormat = $row['format'];
+
+            // Update the default value to the role name
+            $this->defaultValue = strtolower($row['roleName']);
 
             // Add a numeric token with a callback to update the database value when generated.
             if ($row['isNumeric'] == 'Y') {
@@ -153,10 +157,11 @@ class UsernameGenerator
      */
     public function generate($format)
     {
-        $username = $format;
+        $username = (!empty($format))? $format : $this->defaultFormat;
 
-        if (empty($username)) {
-            $username = $this->defaultFormat;
+        // Prevent infinite loops
+        if (++$this->loopCount >= 1000) {
+            return $this->defaultValue.time();
         }
 
         // Split the format string into tokens
@@ -165,7 +170,6 @@ class UsernameGenerator
 
         if (!empty($formatTokens[1])) {
             foreach ($formatTokens[1] as $fullToken) {
-
                 // Split the full token name and assign params
                 list($name, $length) = array_pad(explode(':', $fullToken), 2, false);
 
@@ -190,19 +194,23 @@ class UsernameGenerator
         // Limit to max length for database
         $username = mb_substr($username, 0, self::MAX_LENGTH);
 
+        // Prevent blank usernames with a default value
+        if (empty($username)) {
+            $format = "[defaultValue][number]";
+            $this->addToken('defaultValue', $this->defaultValue);
+            $this->addNumericToken('number', 0, 3, 1);
+
+            return $this->generate($format);
+        }
+
+        // Keep generating non-unique usernames with an added numeric token
         if ($this->isUsernameUnique($username) == false) {
             if (stripos($format, '[number]') === false) {
                 $format .= '[number]';
             }
 
-            // Add a numeric token for incrementing possible usernames
             if ($this->getToken('number') == false) {
                 $this->addNumericToken('number', 0, 1, 1);
-            }
-
-            // Prevent infinite loops
-            if (++$this->loopCount > 1000) {
-                return 'usernamefailed';
             }
 
             return $this->generate($format);
