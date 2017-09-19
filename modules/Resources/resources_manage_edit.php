@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -71,328 +74,92 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 echo '</div>';
             } else {
                 //Let's go!
-                $row = $result->fetch();
+                $values = $result->fetch();
+                $values['gibbonYearGroupID'] = explode(',', $values['gibbonYearGroupIDList']);
 
-                if ($_GET['search'] != '') {
+                $search = (isset($_GET['search']))? $_GET['search'] : null;
+
+                if (!empty($search)) {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Resources/resources_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Resources/resources_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
                     echo '</div>';
                 }
 
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/resources_manage_editProcess.php?gibbonResourceID=$gibbonResourceID&search=".$_GET['search'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<input type="hidden" name="type" value="<?php echo $row['type'] ?>">
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Resource Contents') ?></h3>
-							</td>
-						</tr>
-						<?php
-                        if ($row['type'] == 'File') {
-                            ?>
-							<tr id="resourceFile">
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'File') ?></b><br/>
-									<?php if ($row['content'] != '') { ?>
-									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-									<?php } ?>
-								</td>
-								<td class="right">
-									<?php
-                                    if ($row['content'] != '') {
-                                        echo __($guid, 'Current attachment:')." <a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'>".$row['content'].'</a><br/><br/>';
-                                    }
-                            		?>
-									<input type="file" name="file" id="file"><br/><br/>
-									<script type="text/javascript">
-										<?php
-                                        //Get list of acceptable file extensions
-                                        try {
-                                            $dataExt = array();
-                                            $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                                            $resultExt = $connection2->prepare($sqlExt);
-                                            $resultExt->execute($dataExt);
-                                        } catch (PDOException $e) {
-                                        }
-										$ext = '';
-										while ($rowExt = $resultExt->fetch()) {
-											$ext = $ext."'.".$rowExt['extension']."',";
-										}
-										?>
-										var file=new LiveValidation('file');
-										file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-									</script>
-									<?php
-                                    echo getMaxUpload($guid);
-                            		?>
-								</td>
-							</tr>
-							<?php
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/resources_manage_editProcess.php?gibbonResourceID='.$gibbonResourceID.'&search='.$search);
+                $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                        } elseif ($row['type'] == 'HTML') {
-                            ?>
-							<tr id="resourceHTML">
-								<td colspan=2>
-									<b><?php echo __($guid, 'HTML') ?> *</b>
-									<?php echo getEditor($guid,  true, 'html', $row['content'], 20, true, true, false, false) ?>
-								</td>
-							</tr>
-							<?php
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('type', $values['type']);
 
-                        } elseif ($row['type'] == 'Link') {
-                            ?>
-							<tr id="resourceLink">
-								<td>
-									<b><?php echo __($guid, 'Link') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input name="link" id="link" maxlength=255 value="<?php echo $row['content'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var link=new LiveValidation('link');
-										link.add(Validate.Presence);
-										link.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-									</script>
-								</td>
-							</tr>
-							<?php
+                $form->addRow()->addHeading(__('Resource Contents'));
 
-                        }
-                		?>
+                if ($values['type'] == 'File') {
+                    // File
+                    $row = $form->addRow()->addClass('resourceFile');
+                        $row->addLabel('file', __('File'));
+                        $row->addFileUpload('file')
+                            ->addClass('right')
+                            ->isRequired()
+                            ->setAttachment('content', $_SESSION[$guid]['absoluteURL'], $values['content']);
+                } else if ($values['type'] == 'HTML') {
+                    // HTML
+                    $row = $form->addRow()->addClass('resourceHTML');
+                        $column = $row->addColumn()->setClass('');
+                        $column->addLabel('html', __('HTML'));
+                        $column->addEditor('html', $guid)->isRequired()->setValue($values['content']);
+                } else if ($values['type'] == 'Link') {
+                    // Link
+                    $row = $form->addRow()->addClass('resourceLink');
+                        $row->addLabel('link', __('Link'));
+                        $row->addURL('link')->maxLength(255)->isRequired()->setValue($values['content']);
+                }
 
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Resource Details') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Name') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input name="name" id="name" maxlength=30 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var name2=new LiveValidation('name');
-									name2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<?php
-                        try {
-                            $dataCategory = array();
-                            $sqlCategory = "SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='categories'";
-                            $resultCategory = $connection2->prepare($sqlCategory);
-                            $resultCategory->execute($dataCategory);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+                $form->addRow()->addHeading(__('Resource Details'));
 
-						if ($resultCategory->rowCount() == 1) {
-							$rowCategory = $resultCategory->fetch();
-							$options = $rowCategory['value'];
+                $row = $form->addRow();
+                    $row->addLabel('name', __('Name'));
+                    $row->addTextField('name')->isRequired()->maxLength(60);
 
-							if ($options != '') {
-								$options = explode(',', $options);
-								?>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Category') ?> *</b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<select name="category" id="category" class="standardWidth">
-											<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-											<?php
-                                            for ($i = 0; $i < count($options); ++$i) {
-                                                $selected = '';
-                                                if ($row['category'] == $options[$i]) {
-                                                    $selected = 'selected';
-                                                }
-                                                ?>
-												<option <?php echo $selected ?> value="<?php echo trim($options[$i]) ?>"><?php echo trim($options[$i]) ?></option>
-											<?php
+                $categories = getSettingByScope($connection2, 'Resources', 'categories');
+                $row = $form->addRow();
+                    $row->addLabel('category', __('Category'));
+                    $row->addSelect('category')->fromString($categories)->isRequired()->placeholder();
 
-                                            }
-                        			?>										</select>
-										<script type="text/javascript">
-											var category=new LiveValidation('category');
-											category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-									</td>
-								</tr>
-								<?php
+                $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
+                $purposesRestricted = getSettingByScope($connection2, 'Resources', 'purposesRestricted');
+                $row = $form->addRow();
+                    $row->addLabel('purpose', __('Purpose'));
+                    $row->addSelect('purpose')->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder();
 
-							}
-						}
+                $sql = "SELECT tag as value, CONCAT(tag, ' <i>(', count, ')</i>') as name FROM gibbonResourceTag WHERE count>0 ORDER BY tag";
+                $row = $form->addRow()->addClass('tags');
+                    $column = $row->addColumn();
+                    $column->addLabel('tags', __('Tags'))->description(__('Use lots of tags!'));
+                    $column->addFinder('tags')
+                        ->fromQuery($pdo, $sql)
+                        ->isRequired()
+                        ->setParameter('hintText', __('Type a tag...'))
+                        ->setParameter('allowCreation', true);
 
-						try {
-							$dataPurpose = array();
-							$sqlPurpose = "(SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesGeneral')";
-							if ($highestAction == 'Manage Resources_all') {
-								$sqlPurpose .= " UNION (SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesRestricted')";
-							}
-							$resultPurpose = $connection2->prepare($sqlPurpose);
-							$resultPurpose->execute($dataPurpose);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
+                $row = $form->addRow();
+                    $row->addLabel('gibbonYearGroupID', __('Year Groups'))->description(__('Students year groups which may participate'));
+                    $row->addCheckboxYearGroup('gibbonYearGroupID')->addCheckAllNone();
 
-						if ($resultPurpose->rowCount() > 0) {
-							$options = '';
-							while ($rowPurpose = $resultPurpose->fetch()) {
-								$options .= $rowPurpose['value'].',';
-							}
-							$options = substr($options, 0, -1);
+                $row = $form->addRow();
+                    $row->addLabel('description', __('Description'));
+                    $row->addTextArea('description')->setRows(8);
 
-							if ($options != '') {
-								$options = explode(',', $options);
-								?>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Purpose') ?></b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<select name="purpose" id="purpose" class="standardWidth">
-											<option value=""></option>
-											<?php
-                                            for ($i = 0; $i < count($options); ++$i) {
-                                                $selected = '';
-                                                if ($row['purpose'] == $options[$i]) {
-                                                    $selected = 'selected';
-                                                }
-                                                ?>
-												<option <?php echo $selected ?> value="<?php echo trim($options[$i]) ?>"><?php echo trim($options[$i]) ?></option>
-											<?php
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
 
-                                            }
-                        				?>
-                        				</select>
-									</td>
-								</tr>
-								<?php
+                $form->loadAllValuesFrom($values);
 
-								}
-							}
-						?>
-						<tr>
-							<td class='long' colspan=2>
-								<b><?php echo __($guid, 'Tags') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Use lots of tags!') ?></span><br/>
-                                <?php
-                                //Get tag list
-                                try {
-                                    $dataList = array();
-                                    $sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
-                                    $resultList = $connection2->prepare($sqlList);
-                                    $resultList->execute($dataList);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+                echo $form->getOutput();
 
-								$list = '';
-								while ($rowList = $resultList->fetch()) {
-									$list = $list.'{id: "'.addslashes($rowList['tag']).'", name: "'.addslashes($rowList['tag']).' <i>('.$rowList['count'].')</i>"},';
-								}
-								?>
-								<style>
-                                    td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
-                                    td.long div.token-input-dropdown-facebook { width: 120px }
-								</style>
-								<input type="text" id="tags" name="tags" class='standardWidth' />
-								<?php
-                                    $prepopulate = '';
-									$tags = explode(',', $row['tags']);
-									foreach ($tags as $tag) {
-                                        $prepopulate .= '{id: \''.addslashes($tag).'\', name: \''.addslashes($tag).'\'}, ';
-									}
-									$prepopulate = substr($prepopulate, 0, -2);
-									?>
-								<script type="text/javascript">
-									$(document).ready(function() {
-										 $("#tags").tokenInput([
-												<?php echo substr($list, 0, -1) ?>
-											],
-											{theme: "facebook",
-											hintText: "Start typing a tag...",
-											allowCreation: true,
-											<?php
-                                            if ($prepopulate != '{id: , name: }') {
-                                                echo "prePopulate: [ $prepopulate ],";
-                                            }
-                						?>
-											preventDuplicates: true});
-									});
-								</script>
-								<script type="text/javascript">
-									var tags=new LiveValidation('tags');
-									tags.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-							</td>
-							<td class="right">
-								<?php
-                                echo "<fieldset style='border: none'>"; ?>
-								<script type="text/javascript">
-									$(function () {
-										$('.checkall').click(function () {
-											$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-										});
-									});
-								</script>
-								<?php
-                                echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-								$yearGroups = getYearGroups($connection2);
-								if ($yearGroups == '') {
-									echo '<i>'.__($guid, 'No year groups available.').'</i>';
-								} else {
-									$selectedYears = explode(',', $row['gibbonYearGroupIDList']);
-									for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-										$checked = '';
-										foreach ($selectedYears as $selectedYear) {
-											if ($selectedYear == $yearGroups[$i]) {
-												$checked = 'checked';
-											}
-										}
-
-										echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-										echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-									}
-								}
-								echo '</fieldset>'; ?>
-								<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Description') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<textarea name="description" id="description" rows=8 class="standardWidth"><?php echo $row['description'] ?></textarea>
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-
+                // HACK: Otherwise FastFinder width overrides this one :(
+                echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
             }
         }
     }
 }
-?>
