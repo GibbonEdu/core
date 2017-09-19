@@ -64,6 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $scholarshipOptionsActive = (isset($_POST['scholarshipOptionsActive']))? $_POST['scholarshipOptionsActive'] : '';
     $paymentOptionsActive = (isset($_POST['paymentOptionsActive']))? $_POST['paymentOptionsActive'] : '';
 
+    $availableYearsOfEntry = (isset($_POST['availableYearsOfEntry']))? $_POST['availableYearsOfEntry'] : '';
+    $availableYearsOfEntry = (is_array($availableYearsOfEntry))? implode(',', $availableYearsOfEntry) : $availableYearsOfEntry;
+
     //Write to database
     $fail = false;
 
@@ -317,6 +320,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     try {
         $data = array('value' => $paymentOptionsActive);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='paymentOptionsActive'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $availableYearsOfEntry);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='availableYearsOfEntry'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
