@@ -1310,6 +1310,10 @@ select[multiple] {
 	width:auto;
 }
 
+.column.stacked div:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
 .formTable input,
 .formTable select,
 .formTable textarea {
@@ -1395,10 +1399,22 @@ input[name*="phone"] ~ .LV_invalid {
 	cursor: pointer;
 }
 
+.floatNone {
+	float:none;
+}
+
 .max-upload {
     float: right;
     font-style: italic;
     color: #c00;
     line-height: 22px;
     font-size: 11px;
+}
+
+
+#content .smallIntBorder {
+  max-width: 752px;
+}
+#content-wide .smallIntBorder {
+  max-width: 1052px;
 }

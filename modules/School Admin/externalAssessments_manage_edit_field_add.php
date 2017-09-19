@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     } else {
         try {
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
-            $sql = 'SELECT name FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
+            $sql = 'SELECT name as assessmentName FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage.php'>".__($guid, 'Manage External Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__($guid, 'Edit External Assessment')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Field').'</div>';
@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('External Assessment'));
-                $row->addTextField('name')->readonly();
+                $row->addLabel('assessmentName', __('External Assessment'));
+                $row->addTextField('assessmentName')->readonly()->setValue($values['assessmentName']);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));

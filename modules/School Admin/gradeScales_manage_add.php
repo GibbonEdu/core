@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -41,84 +43,33 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    ?>
-	
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
-				</td>
-				<td class="right">
-					<input name="name" id="name" maxlength=40 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var name2=new LiveValidation('name');
-						name2.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
-				</td>
-				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var nameShort=new LiveValidation('nameShort');
-						nameShort.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Usage') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Brief description of how scale is used.') ?></span>
-				</td>
-				<td class="right">
-					<input name="usage" id="usage" maxlength=50 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var usage=new LiveValidation('usage');
-						usage.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Active') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="active" id="active" class="standardWidth">
-						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Numeric') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.') ?></span>
-				</td>
-				<td class="right">
-					<select name="numeric" id="numeric" class="standardWidth">
-						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('gradeScaleAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_addProcess.php');
 
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+        $row->addTextField('name')->isRequired()->maxLength(40);
+
+    $row = $form->addRow();
+        $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+        $row->addTextField('nameShort')->isRequired()->maxLength(5);
+
+    $row = $form->addRow();
+        $row->addLabel('usage', __('Usage'))->description(__('Brief description of how scale is used.'));
+        $row->addTextField('usage')->isRequired()->maxLength(50);
+
+    $row = $form->addRow();
+        $row->addLabel('active', __('Active'));
+        $row->addYesNo('active')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('numeric', __('Numeric'))->description(__('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.'));
+        $row->addYesNo('numeric')->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>
