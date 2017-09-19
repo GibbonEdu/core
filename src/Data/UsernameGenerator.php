@@ -48,6 +48,7 @@ class UsernameGenerator
     public function __construct(sqlConnection $pdo)
     {
         $this->pdo = $pdo;
+        mb_internal_encoding("utf-8");
     }
 
     /**
@@ -176,7 +177,7 @@ class UsernameGenerator
                 if ($token['type'] == 'numeric') {
                     $value = $this->incrementNumericToken($name);
                 } else {
-                    $value = (!empty($length))? substr($token['value'], 0, $length) : $token['value'];
+                    $value = (!empty($length))? mb_substr($token['value'], 0, $length) : $token['value'];
                 }
 
                 $username = str_replace('['.$fullToken.']', $value, $username);
