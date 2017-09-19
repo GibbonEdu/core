@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $failStudent = true;
                 $lock = true;
                 try {
-                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE, gibbonUsernameFormat WRITE';
+                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE, gibbonUsernameFormat WRITE, gibbonRole READ';
                     $result = $connection2->query($sql);
                 } catch (PDOException $e) {
                     $lock = false;
