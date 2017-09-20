@@ -45,7 +45,7 @@ class CustomBlocks implements OutputableInterface
         $this->placeholder = __("Blocks will appear here..."); 
         $this->toolInputs = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
         $this->blockButtons = array();
-        $this->formOutput = $form->getOutput();
+        $this->formOutput = $form->setClass("blank")->getOutput();
     }
 
     public function placeholder($value)
@@ -76,23 +76,23 @@ class CustomBlocks implements OutputableInterface
         $output = '';
 
         $output .= '<style>
-                #<?php print $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-                #<?php print $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+                #' . $this->name . ' { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+                #' . $this->name . ' div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
                 div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-                html>body #<?php print $type ?> li { min-height: 58px; line-height: 1.2em; }
-                .<?php print $type ?>-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-                .<?php print $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
+                html>body #' . $this->name . ' li { min-height: 58px; line-height: 1.2em; }
+                .' . $this->name . '-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+                .' . $this->name . '-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
             </style>';
 
         $output .= '<div class="' . $this->name. '" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">
             <div id="' . $this->name . 'Outer0">
-                <div style="color: #ddd; font-size: 230%; margin: 15px 0 0 6px">' . $this->placeholder . '</div>
+                <div style="color: #ddd; font-size: 230%; margin: 15px 0 15px 6px">' . $this->placeholder . '</div>
            </div>
 
-           <div id="'. $this->name .'Template" style="display:none; overflow:hidden">
-                <div style="float:left; width:89%;">'. $this->formOutput .'</div>
-                <div style="float:left; width: 10%; padding: 0 0 0 0.5% ">
-                    <table class="smallIntBorder fullWidth standardForm">
+           <div id="'. $this->name .'Template" class="hiddenReveal" style="display:none; overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">
+                <div style="float:left; width:92%;">'. $this->formOutput .'</div>
+                <div style="float:right; width: 8%; ">
+                    <table class="blank">
                         <tr>
                             <td>
                                 <img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/Default/img/garbage.png"/>
