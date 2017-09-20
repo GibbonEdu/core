@@ -59,13 +59,13 @@ if (isset($_GET['alpha'])) {
     $alpha = $_GET['alpha'];
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __($guid, 'Your request failed because you do not have access to this action.');
     $output .= '</div>';
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Resources/resources_manage.php', $connection2);
+    $highestAction = getHighestGroupedAction($guid, '/modules/Planner/resources_manage.php', $connection2);
     if ($highestAction == false) {
         $output .= "<div class='error'>";
         $output .= __($guid, 'The highest grouped action cannot be determined.');
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         $output .= 'success: function(response) {';
         $output .= "tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\".".$id.'resourceAddSlider").slideUp();';
         $output .= '}, ';
-        $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Resources/resources_add_ajaxProcess.php',";
+        $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Planner/resources_add_ajaxProcess.php',";
         $output .= "type: 'POST'";
         $output .= '};';
 
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         $output .= "<td colspan=2 style='padding-top: 0px'>";
         $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\".".$id."resourceAddSlider\").slideUp();'><img title='Close' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
         $output .= "<h3 style='margin-top: 0px; font-size: 140%'>".__($guid, 'Add & Insert A New Resource').'</h3>';
-        $output .= '<p>'.__($guid, 'Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you cannot create HTML resources here (you have to go to the Resources module for that).').'</p>';
+        $output .= '<p>'.__($guid, 'Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you cannot create HTML resources here (you have to go to the Planner module for that).').'</p>';
         $output .= "<form id='".$id."ajaxForm' action='#'>";
         $output .= "<table cellspacing='0' style='width: 100%'>";
         $output .= "<tr><td style='width: 30%'></td><td></td></tr>";

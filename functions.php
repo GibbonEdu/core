@@ -2569,12 +2569,12 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
         $output .= '</script>';
 
         $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__($guid, 'Shared Resources').'</u>:</div> ';
-        $output .= "<a title='".__($guid, 'Insert Existing Resource')."' style='float: left' class='".$id."show_hide' onclick='\$(\".".$id.'resourceSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Resources/resources_insert_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/search_mini.png' alt='".__($guid, 'Insert Existing Resource')."' onclick='return false;' /></a>";
+        $output .= "<a title='".__($guid, 'Insert Existing Resource')."' style='float: left' class='".$id."show_hide' onclick='\$(\".".$id.'resourceSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_insert_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/search_mini.png' alt='".__($guid, 'Insert Existing Resource')."' onclick='return false;' /></a>";
         if ($allowUpload == true) {
-            $output .= "<a title='".__($guid, 'Create & Insert New Resource')."' style='float: left' class='".$id."show_hideAdd' onclick='\$(\".".$id.'resourceAddSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Resources/resources_add_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/upload_mini.png' alt='".__($guid, 'Create & Insert New Resource')."' onclick='return false;' /></a>";
+            $output .= "<a title='".__($guid, 'Create & Insert New Resource')."' style='float: left' class='".$id."show_hideAdd' onclick='\$(\".".$id.'resourceAddSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_add_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/upload_mini.png' alt='".__($guid, 'Create & Insert New Resource')."' onclick='return false;' /></a>";
         }
         $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__($guid, 'Quick File Upload').'</u>:</div> ';
-        $output .= "<a title='".__($guid, 'Quick Add')."' style='float: left' class='".$id."show_hideQuickAdd' onclick='\$(\".".$id.'resourceQuickSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Resources/resources_addQuick_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_new_mini.png' alt='".__($guid, 'Quick Add')."' onclick='return false;' /></a>";
+        $output .= "<a title='".__($guid, 'Quick Add')."' style='float: left' class='".$id."show_hideQuickAdd' onclick='\$(\".".$id.'resourceQuickSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_addQuick_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_new_mini.png' alt='".__($guid, 'Quick Add')."' onclick='return false;' /></a>";
         $output .= '</div>';
     }
     $output .= '</div>';
@@ -3337,14 +3337,14 @@ function sidebar($gibbon, $pdo)
     }
 
     //Show tag cloud
-    if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.php')) {
-        include './modules/Resources/moduleFunctions.php';
+    if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
+        include './modules/Planner/moduleFunctions.php';
         echo "<h2 class='sidebar'>";
         echo __($guid, 'Resource Tags');
         echo '</h2>';
-        echo getTagCloud($guid, $connection2, 20);
+        echo getResourcesTagCloud($guid, $connection2, 20);
         echo "<p style='margin-bototm: 20px; text-align: right'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Resources/resources_view.php'>".__($guid, 'View Resources').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>".__($guid, 'View Resources').'</a>';
         echo '</p>';
     }
 
@@ -3634,7 +3634,7 @@ function getUserPhoto($guid, $path, $size)
 function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential = true, $orderBy = 'Normal')
 {
     $return = false;
-    
+
     if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
         $confidential = false;
     }

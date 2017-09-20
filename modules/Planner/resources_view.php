@@ -25,7 +25,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -245,6 +245,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     }
 
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2);
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraResources($guid, $connection2);
 }
 ?>

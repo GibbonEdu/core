@@ -40,7 +40,7 @@ $output .= "<script type='text/javascript'>";
             $output .= 'success: function(response) {';
                 $output .= "tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\".".$id.'resourceQuickSlider").slideUp();';
             $output .= '}, ';
-            $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Resources/resources_addQuick_ajaxProcess.php',";
+            $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Planner/resources_addQuick_ajaxProcess.php',";
             $output .= "type: 'POST'";
         $output .= '};';
 

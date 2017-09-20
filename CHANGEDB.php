@@ -830,5 +830,6 @@ CREATE TABLE `gibbonCourseClassMap` (`gibbonCourseClassMapID` int(8) UNSIGNED ZE
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'autoEnrolCourses', 'Auto-Enrol Courses Default', 'Should auto-enrolment of new students into courses be turned on or off by default?', 'N');end
 UPDATE `gibbonNotificationEvent` SET actionName='View Student Profile_full' WHERE (event='Application Form Accepted' OR event='New Application Form') AND moduleName='Students';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'availableYearsOfEntry', 'Available Years of Entry', 'Which school years should be available to apply to?', '');end
-
+UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
+DELETE FROM gibbonModule WHERE name='Resources';end
 ";

@@ -36,13 +36,13 @@ echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteU
 			<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" title="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo']; ?>"/></a>
 		</div>
 		<div id="header-right">
-		
+
 		</div>
 	</div>
 	<div id="content-wrap">
 		<div id="content">
 			<?php
-            if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view_full.php') == false) {
+            if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_full.php') == false) {
                 //Acess denied
                 echo "<div class='error'>";
                 echo __($guid, 'Your request failed because you do not have access to this action.');

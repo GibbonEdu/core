@@ -28,7 +28,7 @@ $connection2 = $pdo->getConnection();
 
 $time = time();
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
     echo __($guid, 'Your request failed because you do not have access to this action.');
     echo '</span>';
