@@ -33,7 +33,8 @@ class CustomBlocks implements OutputableInterface
 
     protected $name;
     protected $placeholder;
-    protected $toolButtons;
+    protected $toolInputs;
+    protected $blockButtons;
     protected $formOutput;
     protected $factory;
 
@@ -42,7 +43,8 @@ class CustomBlocks implements OutputableInterface
         $this->factory = $factory;
         $this->name = $name;
         $this->placeholder = __("Blocks will appear here..."); 
-        $this->toolButtons = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
+        $this->toolInputs = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
+        $this->blockButtons = array();
         $this->formOutput = $form->getOutput();
     }
 
@@ -52,15 +54,16 @@ class CustomBlocks implements OutputableInterface
         return $this;
     }
 
-    public function addToolButton($name, $onClick)
+    public function addToolInput($input)
     {
-        $this->toolButtons[] = $this->factory->createButton($name, $onClick);
+        $this->toolInputs[] = $input;
         return $this;
     }
 
-    public function addBlockButton()
+    public function addBlockButton($name, $icon, $function)
     {
-        
+        $this->blockButtons[] = array("name" => $name, "icon" => $icon, "function" => $function);
+        return $this;
     }
 
     public function getClass()
@@ -86,14 +89,31 @@ class CustomBlocks implements OutputableInterface
                 <div style="color: #ddd; font-size: 230%; margin: 15px 0 0 6px">' . $this->placeholder . '</div>
            </div>
 
-           <div id="'. $this->name .'Template" style="display:none">
-                <div style="float:left; width:90%">'. $this->formOutput .'</div>
-                <div style="float:right; width: 9.5%">
+           <div id="'. $this->name .'Template" style="display:none; overflow:hidden">
+                <div style="float:left; width:89%;">'. $this->formOutput .'</div>
+                <div style="float:left; width: 10%; padding: 0 0 0 0.5% ">
                     <table class="smallIntBorder fullWidth standardForm">
                         <tr>
                             <td>
                                 <img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/Default/img/garbage.png"/>
                             </td>
+                            ';
+                            $count = 1;
+                            foreach ($this->blockButtons as $blockButton) {
+                                if ($count % 2 == 0) {
+                                    $output.= '</tr><tr>';
+                                }
+                                $output .= '<td>
+                                    <img id="' . $this->name . $count . 'ButtonTemplate" title="' . $blockButton["name"] . '" src="' . $blockButton["icon"] . '"/>
+                                </td>';
+                                $count++;
+                            }
+
+                            if ($count % 2 == 1) {
+                                $output .= '<td></td>';
+                            }
+
+                            $output .= '
                         </tr>
                     </table>
                 </div>
@@ -102,8 +122,8 @@ class CustomBlocks implements OutputableInterface
             <div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">
                 <table class="blank" cellspacing="0" style="width: 100%">
                     <tr>';
-                        foreach ($this->toolButtons as $toolButton) {
-                            $output .= '<td style="float: left">' . $toolButton->getOutput() . '</td>';
+                        foreach ($this->toolInputs as $toolInput) {
+                            $output .= '<td style="float: left">' . $toolInput->getOutput() . '</td>';
                         }
                     $output .= '</tr>
                 </table>
@@ -133,8 +153,21 @@ class CustomBlocks implements OutputableInterface
                             });
                         }
                     });
-                });'.
-                $this->name . 'Count++;
+                });';
+
+                $count = 1;
+                foreach ($this->blockButtons as $blockButton)
+                {
+                    $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . $count . 'ButtonTemplate]").each(function () {
+                        $(this).prop("id", "' . $this->name . $count . 'Button" + ' . $this->name . 'Count);
+                        $(this).unbind("click").click(function() {
+                           ' . $blockButton["function"] . '($(this).attr("id").split("Button")[1]);
+                        });
+                    });';
+                    $count++;
+                }
+
+                $output .= $this->name . 'Count++;
             }
         </script>';
 
