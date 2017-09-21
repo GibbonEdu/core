@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
     //Acess denied
@@ -43,11 +44,100 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         returnProcess($guid, $_GET['return'], $editLink, $returns);
     }
 
-    if ($_GET['search'] != '') {
+    $search = (isset($_GET['search']))? $_GET['search'] : '';
+
+    if (!empty($search)) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
+
+    $form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$search);
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    // BASIC INFORMATION
+    $form->addRow()->addHeading(__('Basic Information'));
+
+    $row = $form->addRow();
+        $row->addLabel('title', __('Title'));
+        $row->addSelectTitle('title');
+
+    $row = $form->addRow();
+        $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
+        $row->addTextField('surname')->isRequired()->maxLength(30);
+
+    $row = $form->addRow();
+        $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
+        $row->addTextField('firstName')->isRequired()->maxLength(30);
+
+    $row = $form->addRow();
+        $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+        $row->addTextField('preferredName')->isRequired()->maxLength(30);
+
+    $row = $form->addRow();
+        $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
+        $row->addTextField('officialName')->isRequired()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+
+    $row = $form->addRow();
+        $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+        $row->addTextField('nameInCharacters')->maxLength(20);
+
+    $row = $form->addRow();
+        $row->addLabel('gender', __('Gender'));
+        $row->addSelectGender('gender')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dob');
+
+    $row = $form->addRow();
+        $row->addLabel('file1', __('User Photo'))
+            ->description(__('Displayed at 240px by 320px.'))
+            ->description(__('Accepts images up to 360px by 480px.'))
+            ->description(__('Accepts aspect ratio between 1:1.2 and 1:1.4.'));
+        $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false);
+
+    // SYSTEM ACCESS
+    $form->addRow()->addHeading(__('System Access'));
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
+        $row->addSelectRole('gibbonRoleIDPrimary')->isRequired();
+
+    // CONTACT INFORMATION
+    $form->addRow()->addHeading(__('Contact Information'));
+
+    $row = $form->addRow();
+        $row->addLabel('email', __('Email'));
+        $row->addEmail('email')->maxLength(50);
+
+    $row = $form->addRow();
+        $row->addLabel('emailAlternate', __('Alternate Email'));
+        $row->addEmail('emailAlternate')->maxLength(50);
+
+    // SCHOOL INFORMATION
+    $form->addRow()->addHeading(__('School Information'));
+
+    // BACKGROUND INFORMATION
+    $form->addRow()->addHeading(__('Background Information'));
+
+    // EMPLOYMENT
+    $form->addRow()->addHeading(__('Employment'));
+
+    // EMERGENCY CONTACTS
+    $form->addRow()->addHeading(__('Emergency Contacts'));
+
+    // MISCELLANEOUS
+    $form->addRow()->addHeading(__('Miscellaneous'));
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$_GET['search'] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>

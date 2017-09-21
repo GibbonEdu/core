@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
     //Acess denied
@@ -59,10 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            if ($_GET['search'] != '') {
+            $values = $result->fetch();
+
+            $search = (isset($_GET['search']))? $_GET['search'] : '';
+            if (!empty($search)) {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -72,6 +74,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 echo $policy;
                 echo '</div>';
             }
+
+            $form = Form::create('resetUserPassword', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('username', __('Username'));
+                $row->addTextField('username')->isRequired()->readOnly()->setValue($values['username']);
+
+            $row = $form->addRow();
+                $row->addLabel('passwordNew', __('Password'));
+                $column = $row->addColumn()->addClass('inline right');
+                $column->addButton(__('Generate Password'));
+                $column->addPassword('passwordNew')->maxLength(30);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
+
+            $row = '';
+
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$_GET['search'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
