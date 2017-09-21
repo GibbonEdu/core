@@ -338,8 +338,9 @@ if ($proceed == false) {
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearIDEntry', __('Anticipated Year of Entry'))->description(__('What school year will the student join in?'));
 
+        $enableLimitedYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'enableLimitedYearsOfEntry');
         $availableYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry');
-        if (!empty($availableYearsOfEntry)) {
+        if ($enableLimitedYearsOfEntry == 'Y' && !empty($availableYearsOfEntry)) {
             $data = array('gibbonSchoolYearIDList' => $availableYearsOfEntry);
             $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE FIND_IN_SET(gibbonSchoolYearID, :gibbonSchoolYearIDList) ORDER BY sequenceNumber";
         } else {

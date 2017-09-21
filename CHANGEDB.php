@@ -832,4 +832,6 @@ UPDATE `gibbonNotificationEvent` SET actionName='View Student Profile_full' WHER
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'availableYearsOfEntry', 'Available Years of Entry', 'Which school years should be available to apply to?', '');end
 UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
 DELETE FROM gibbonModule WHERE name='Resources';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'enableLimitedYearsOfEntry', 'Enable Limited Years of Entry', 'If yes, applicants choices for Year of Entry can be limited to specific school years.', 'N');end
+
 ";
