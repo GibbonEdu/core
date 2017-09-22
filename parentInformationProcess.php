@@ -53,7 +53,7 @@ else {
 
     try {
         $data = array('email' => $input);
-        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonRole.category='Parent' AND email=:email AND gibbonPerson.status='Full' AND canLogin<>'N' AND NOT email=''";
+        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE (gibbonRole.category='Parent' OR gibbonRole.category='Staff') AND email=:email AND gibbonPerson.status='Full' AND canLogin<>'N' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
