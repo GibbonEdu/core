@@ -27,28 +27,35 @@ $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 $URL = './index.php';
-$role = $_GET['gibbonRoleID'];
+$role = (isset($_GET['gibbonRoleID']))? $_GET['gibbonRoleID'] : '';
+$role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);
+
 $_SESSION[$guid]['pageLoads'] = null;
 
 //Check for parameter
-if ($role == '') {
+if (empty(intval($role))) {
     $URL .= '?return=error0';
     header("Location: {$URL}");
-}
-//Check for access to role
-else {
+    exit;
+} else {
+    //Check for access to role
     try {
-        $data = array('username' => $_SESSION[$guid]['username'], 'gibbonRoleIDAll' => "%$role%");
-        $sql = 'SELECT * FROM gibbonPerson WHERE (username=:username) AND (gibbonRoleIDAll LIKE :gibbonRoleIDAll)';
+        $data = array('username' => $_SESSION[$guid]['username'], 'gibbonRoleID' => $role);
+        $sql = 'SELECT gibbonPerson.gibbonPersonID
+                FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                WHERE (gibbonPerson.username=:username) AND gibbonRole.gibbonRoleID=:gibbonRoleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
+        exit;
     }
 
     if ($result->rowCount() != 1) {
         $URL .= '?return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
         //Make the switch
         $gibbon->session->set('gibbonRoleIDCurrent', $role);
@@ -62,5 +69,6 @@ else {
 
         $URL .= '?return=success0';
         header("Location: {$URL}");
+        exit;
     }
 }
