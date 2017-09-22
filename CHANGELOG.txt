@@ -16,6 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v14.0.01
+--------
+	Security
+		Fixed role switcher privilege escalation issue
+
 v14.0.00
 --------
 	Headlines
