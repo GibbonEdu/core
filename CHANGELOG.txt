@@ -34,7 +34,7 @@ v15.0.00
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
 		System: added Greek and Amharic as development languages
-		System: added South African Rand and Trinidad & Tobago Dollar as currenies
+		System: added South African Rand and Trinidad & Tobago Dollar as currencies
 		System: fixed missing form validation for dropdowns created with User Custom Fields
 		System: updated Google OAuth library to latest version (v2.2.0)
 		System: fixed Sign In With Google to fix missing token refresh issue
