@@ -16,6 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * Compares two version number strings.
+ * @param    string  a
+ * @param    string  b
+ * @return   Return values:
+            - a number < 0 if a < b
+            - a number > 0 if a > b
+            - 0 if a = b
+ */
 function versionCompare(a, b) {
     var i, diff;
     var regExStrip0 = /(\.0+)+$/;
