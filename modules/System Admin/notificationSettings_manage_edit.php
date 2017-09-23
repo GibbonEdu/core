@@ -165,10 +165,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
             $data=array( 'action' => $event['actionName']);
             $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                     FROM gibbonPerson
-                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID OR gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonPermission.gibbonRoleID, '%'))
+                    JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID OR FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                    JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                     JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
-                    WHERE status='Full'
+                    WHERE gibbonPerson.status='Full'
                     AND (gibbonAction.name=:action)
                     GROUP BY gibbonPerson.gibbonPersonID
                     ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
