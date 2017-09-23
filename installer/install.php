@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 include '../version.php';
 include '../functions.php';
 
@@ -250,98 +253,45 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 }
                             }
                             if ($step == 1) { //Set database options
-                                ?>
-								<form method="post" action="./install.php?step=2&guid=<?php echo $guid ?>">
-									<table class='smallIntBorder fullWidth' cellspacing='0'>
-										<tr class='break'>
-											<td colspan=2>
-												<h3><?php echo __($guid, 'Database Information') ?></h3>
-											</td>
-										</tr>
-										<tr>
-											<td style='width: 275px'>
-												<b><?php echo __($guid, 'Database Type') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-											</td>
-											<td class="right">
-												<input readonly name="type" id="type" value="MySQL" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td style='width: 275px'>
-												<b><?php echo __($guid, 'Database Server') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Localhost, IP address or domain.') ?></span>
-											</td>
-											<td class="right">
-												<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var databaseServer=new LiveValidation('databaseServer');
-													databaseServer.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Database Name') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></span>
-											</td>
-											<td class="right">
-												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var databaseName=new LiveValidation('databaseName');
-													databaseName.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Database Username') ?>*</b><br/>
-											</td>
-											<td class="right">
-												<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var databaseUsername=new LiveValidation('databaseUsername');
-													databaseUsername.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Database Password') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" class="standardWidth">
-												<script type="text/javascript">
-													var databasePassword=new LiveValidation('databasePassword');
-													databasePassword.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
+                                //START FORM
+                                $form = Form::create('action', "./install.php?step=2&guid=$guid");
 
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Install Demo Data?') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<select name="demoData" id="demoData" class="standardWidth">
-													<?php
-                                                    echo "<option selected value='N'>".ynExpander($guid, 'N').'</option>';echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';?>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
-											</td>
-											<td class="right">
-												<input type="hidden" name="code" value="<?php echo $code ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-											</td>
-										</tr>
-									</table>
-								</form>
-								<?php
+                                $form->setClass('smallIntBorder fullWidth');
 
+                                $form->addHiddenValue('code', $code);
+                                $form->addRow()->addHeading(__('Database Settings'));
+
+                                $row = $form->addRow();
+                                    $row->addLabel('type', __('Database Type'));
+                                    $row->addTextField('type')->setValue('MySQL')->readonly()->isRequired();
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databaseServer', __('Database Server'))->description(__('Localhost, IP address or domain.'));
+                                    $row->addTextField('databaseServer')->isRequired()->maxLength(255);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be utf8_general_ci.'));
+                                    $row->addTextField('databaseName')->isRequired()->maxLength(50);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databaseUsername', __('Database Username'));
+                                    $row->addTextField('databaseUsername')->isRequired()->maxLength(50);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databasePassword', __('Database Password'));
+                                    $row->addPassword('databasePassword')->isRequired()->maxLength(255);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('demoData', __('Install Demo Data?'));
+                                    $row->addYesNo('demoData')->selected('N');
+
+
+                                //FINISH & OUTPUT FORM
+                                $row = $form->addRow();
+                                    $row->addFooter();
+                                    $row->addSubmit();
+
+                                echo $form->getOutput();
                             } elseif ($step == 2) {
                                 //Check for db values
                                 if ($databaseServer == '' or $databaseName == '' or $databaseUsername == '' or $databasePassword == '' or $demoData == '') {
