@@ -142,17 +142,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                     $form = Form::create('action', "./install.php?step=1&guid=$guid");
 
-                                    $form->setClass('smallIntBorder fullWidth');
-
                                     $form->addRow()->addHeading(__('System Requirements'));
 
                                     $row = $form->addRow();
-                                        $row->addLabel('phpVersion', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement));
+                                        $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement));
                                         $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
                                         $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
 
                                     $row = $form->addRow();
-                                        $row->addLabel('pdoSupport', __($guid, 'MySQL PDO Support'));
+                                        $row->addLabel('pdoSupportLabel', __($guid, 'MySQL PDO Support'));
                                         $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'))->readonly();
                                         $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
@@ -160,7 +158,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                         foreach ($extensions as $extension) {
                                             $installed = @extension_loaded($extension);
                                             $row = $form->addRow();
-                                                $row->addLabel('extension', __($guid, 'Extension').' '. $extension);
+                                                $row->addLabel('extensionLabel', __($guid, 'Extension').' '. $extension);
                                                 $row->addTextField('extension')->setValue(($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'))->readonly();
                                                 $row->addContent(($installed)? $trueIcon : $falseIcon);
                                         }
@@ -195,8 +193,6 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             }
                             if ($step == 1) { //Set database options
                                 $form = Form::create('action', "./install.php?step=2&guid=$guid");
-
-                                $form->setClass('smallIntBorder fullWidth');
 
                                 $form->addHiddenValue('code', $code);
 
