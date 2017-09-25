@@ -186,16 +186,14 @@ class FormFactory implements FormFactoryInterface
     
     /* PRE-DEFINED LAYOUT --------------------------- */
 
-    public function createSubheading($label)
+    public function createSubheading($content, $tag = 'h4')
     {
-        $content = sprintf('<h4>%s</h4>', $label);
-        return $this->createContent($content);
+        return $this->createContent($content)->wrap("<$tag>", "</$tag>");
     }
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, $content);
-        return $this->createContent($content);
+        return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
     public function createSubmit($label = 'Submit')
@@ -263,6 +261,15 @@ class FormFactory implements FormFactoryInterface
             'Uncle'           => __('Uncle'),
             'Nanny/Helper'    => __('Nanny/Helper'),
             'Other'           => __('Other'),
+        ))->placeholder();
+    }
+
+    public function createSelectStatus($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Full'     => __('Full'),
+            'Expected' => __('Expected'),
+            'Left'     => __('Left'),
         ))->placeholder();
     }
 
