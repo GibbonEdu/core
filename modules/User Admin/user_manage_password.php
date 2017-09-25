@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('passwordNew', __('Password'));
-                $column = $row->addColumn()->addClass('inline right');
+                $column = $row->addColumn('passwordNew')->addClass('inline right');
                 $column->addButton(__('Generate Password'))->addClass('generatePassword');
                 $column->addPassword('passwordNew')->isRequired()->maxLength(30)->addValidationOption('onlyOnSubmit: true');
 

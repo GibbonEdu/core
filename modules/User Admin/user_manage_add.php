@@ -102,9 +102,68 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // SYSTEM ACCESS
     $form->addRow()->addHeading(__('System Access'));
 
+	// Put together an array of this user's current roles
+	$currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
+	$currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
+	$data = array();
+	$sql = "SELECT * FROM gibbonRole ORDER BY name";
+	$result = $pdo->executeQuery($data, $sql);
+
+	// Get all roles and filter roles based on role restrictions
+	$availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+	$availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles) {
+		if ($item['restriction'] == 'Admin Only') {
+			if (!in_array('001', $currentUserRoles)) return $carry;
+		} else if ($item['restriction'] == 'Same Role') {
+			if (!in_array($item['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) return $carry;
+		}
+		$carry[$item['gibbonRoleID']] = $item['name'];
+		return $carry;
+	}, array());
+
     $row = $form->addRow();
         $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
-        $row->addSelectRole('gibbonRoleIDPrimary')->isRequired();
+		$row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
+		
+	$row = $form->addRow();
+        $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
+		$column = $row->addColumn('username')->addClass('inline right');
+		$column->addButton(__('Generate Username'))->addClass('generateUsername');
+		$column->addTextField('username')->isRequired()->maxLength(20);
+		
+	$policy = getPasswordPolicy($guid, $connection2);
+	if ($policy != false) {
+		$form->addRow()->addAlert($policy, 'warning');
+	}
+	$row = $form->addRow();
+		$row->addLabel('passwordNew', __('Password'));
+		$column = $row->addColumn('passwordNew')->addClass('inline right');
+		$column->addButton(__('Generate Password'))->addClass('generatePassword');
+		$column->addPassword('passwordNew')
+			->isRequired()
+			->maxLength(30)
+			->addValidationOption('onlyOnSubmit: true');
+
+	$row = $form->addRow();
+		$row->addLabel('passwordConfirm', __('Confirm Password'));
+		$row->addPassword('passwordConfirm')
+			->isRequired()
+			->maxLength(30)
+			->addValidationOption('onlyOnSubmit: true')
+			->addValidation('Validate.Confirmation', "{ match: 'passwordNew' }");
+
+	$row = $form->addRow();
+		$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
+		$row->addSelectStatus('status')->isRequired();
+
+	$row = $form->addRow();
+		$row->addLabel('canLogin', __('Can Login?'));
+		$row->addYesNo('canLogin')->isRequired();
+
+	$row = $form->addRow();
+		$row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
+		$row->addYesNo('passwordForceReset')->isRequired();
 
     // CONTACT INFORMATION
     $form->addRow()->addHeading(__('Contact Information'));
@@ -115,7 +174,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('emailAlternate', __('Alternate Email'));
-        $row->addEmail('emailAlternate')->maxLength(50);
+		$row->addEmail('emailAlternate')->maxLength(50);
+		
+	$row = $form->addRow();
+	$row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
+		->append('<ol>')
+		->append('<li>'.__('If the user is not in a family.').'</li>')
+		->append('<li>'.__('If the user\'s family does not have a home address set.').'</li>')
+		->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
+		->append('</ol>');
 
     // SCHOOL INFORMATION
     $form->addRow()->addHeading(__('School Information'));
@@ -138,7 +205,99 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     echo $form->getOutput();
 
-    ?>
+	?>
+	<script type="text/javascript">
+		var passwordNew=new LiveValidation('passwordNew');
+		passwordNew.add(Validate.Presence);
+		<?php
+		$alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+		$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+		$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+		$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+		if ($alpha == 'Y') {
+			echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+		}
+		if ($numeric == 'Y') {
+			echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+		}
+		if ($punctuation == 'Y') {
+			echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+		}
+		if (is_numeric($minLength)) {
+			echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
+		}
+		?>
+
+		$(".generatePassword").click(function(){
+			var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
+			var text = '';
+			for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
+				if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+				else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+				else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+				else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+				else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+			}
+			$('input[name="passwordNew"]').val(text);
+			$('input[name="passwordConfirm"]').val(text);
+			alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
+		});
+	</script>
+
+	<script type="text/javascript">
+		// Username Generation
+		$(".generateUsername").click(function(){
+			$.ajax({
+				type : 'POST',
+				data : {
+					gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
+					preferredName: $('#preferredName').val(),
+					firstName: $('#firstName').val(),
+					surname: $('#surname').val(),
+				},
+				url: "./modules/User Admin/user_manage_usernameAjax.php",
+				success: function(responseText){
+					if (responseText == 0) {
+						$('#gibbonRoleIDPrimary').change();
+						$('#preferredName').blur();
+						$('#firstName').blur();
+						$('#surname').blur();
+						alert("<?php
+							echo __('The following fields are required to generate a username:').'\n\n';
+							echo __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname').'\n';
+						?>");
+					} else {
+						$('#username').val(responseText);
+						$('#username').trigger('input');
+						$('#username').blur();
+					}
+				}
+			});
+		});
+
+		// Username Uniqueness
+		$('#username').on('input', function(){
+			if ($('#username').val() == '') {
+				$('#username_availability_result').html('');
+				return;
+			}
+			$.ajax({
+				type : 'POST',
+				data : { username: $('#username').val() },
+				url: "./publicRegistrationCheck.php",
+				success: function(responseText){
+					if(responseText == 0){
+						$('#username_availability_result').html('<?php echo __('Username available'); ?>');
+						$('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
+					}else if(responseText > 0){
+						$('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
+						$('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
+					}
+				}
+			});
+		});
+	</script>
+			
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$_GET['search'] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
@@ -338,59 +497,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth"><br/>
                     <div class="LV_validation_message LV_invalid" id='username_availability_result'></div><br/>
                     <script type="text/javascript">
-
-                        // Username Generation
-                        $(".generateUsername").click(function(){
-                            $.ajax({
-                                type : 'POST',
-                                data : {
-                                    gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
-                                    preferredName: $('#preferredName').val(),
-                                    firstName: $('#firstName').val(),
-                                    surname: $('#surname').val(),
-                                },
-                                url: "./modules/User Admin/user_manage_usernameAjax.php",
-                                success: function(responseText){
-                                    if (responseText == 0) {
-                                        $('#gibbonRoleIDPrimary').change();
-                                        $('#preferredName').blur();
-                                        $('#firstName').blur();
-                                        $('#surname').blur();
-                                        alert("<?php
-                                            echo __('The following fields are required to generate a username:').'\n\n';
-                                            echo __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname').'\n';
-                                        ?>");
-                                    } else {
-                                        $('#username').val(responseText);
-                                        $('#username').trigger('input');
-                                        $('#username').blur();
-                                    }
-                               }
-                            });
-                        });
-
-                        // Username Uniqueness
-                        $('#username').on('input', function(){
-                            if ($('#username').val() == '') {
-                                $('#username_availability_result').html('');
-                                return;
-                            }
-                            $.ajax({
-                                type : 'POST',
-                                data : { username: $('#username').val() },
-                                url: "./publicRegistrationCheck.php",
-                                success: function(responseText){
-                                    if(responseText == 0){
-                                        $('#username_availability_result').html('<?php echo __('Username available'); ?>');
-                                        $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
-                                    }else if(responseText > 0){
-                                        $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
-                                        $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
-                                    }
-                                }
-                            });
-                        });
-
 						var username=new LiveValidation('username');
 						username.add(Validate.Presence);
 					</script>
@@ -420,41 +526,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<script type="text/javascript">
 						var passwordNew=new LiveValidation('passwordNew');
 						passwordNew.add(Validate.Presence);
-						<?php
-                        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-						$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-						$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-						$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-						if ($alpha == 'Y') {
-							echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-						}
-						if ($numeric == 'Y') {
-							echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-						}
-						if ($punctuation == 'Y') {
-							echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-						}
-						if (is_numeric($minLength)) {
-							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-						}
-						?>
-
-						$(".generatePassword").click(function(){
-							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
-							var text = '';
-							for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-								for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-									if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-									else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-									else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-									else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
-									else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
-								}
-							}
-							$('input[name="passwordNew"]').val(text);
-							$('input[name="passwordConfirm"]').val(text);
-							alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
-						});
 					</script>
 				</td>
 			</tr>
