@@ -89,8 +89,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry', true);
+    $setting = getSettingByScope($connection2, 'Application Form', 'enableLimitedYearsOfEntry', true);
     $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
+    $form->toggleVisibilityByClass('yearsOfEntry')->onSelect('enableLimitedYearsOfEntry')->when('Y');
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry', true);
+    $row = $form->addRow()->addClass('yearsOfEntry');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $years = $row->addSelectSchoolYear($setting['name'], 'Active')
             ->setSize(3)
