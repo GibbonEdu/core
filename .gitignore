@@ -1,6 +1,8 @@
 uploads/*
 !uploads/.htaccess
 /config.php
+/index_custom.php
+/index_customSidebar.php
 Thumb.db
 .DS_Store
 tests/log/*
