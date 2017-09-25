@@ -168,7 +168,7 @@ class FormFactory implements FormFactoryInterface
     {
         return new Input\Button($label, $onClick);
     }
-    
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($label)
@@ -257,27 +257,28 @@ class FormFactory implements FormFactoryInterface
         $currencies = array(
             'PAYPAL SUPPORTED' => array(
                 'AUD $' => 'Australian Dollar (A$)',
-                'BRL R$' => 'Brazilian Real',
+                'BRL R$' => 'Brazilian Real (R$)',
                 'GBP £' => 'British Pound (£)',
                 'CAD $' => 'Canadian Dollar (C$)',
-                'CZK Kč' => 'Czech Koruna',
-                'DKK kr' => 'Danish Krone',
+                'CZK Kč' => 'Czech Koruna (Kč)',
+                'DKK kr' => 'Danish Krone (kr)',
                 'EUR €' => 'Euro (€)',
                 'HKD $' => 'Hong Kong Dollar ($)',
-                'HUF Ft' => 'Hungarian Forint',
-                'ILS ₪' => 'Israeli New Shekel',
+                'HUF Ft' => 'Hungarian Forint (Ft)',
+                'ILS ₪' => 'Israeli New Shekel (₪)',
                 'JPY ¥' => 'Japanese Yen (¥)',
-                'MYR RM' => 'Malaysian Ringgit',
-                'MXN $' => 'Mexican Peso',
-                'TWD $' => 'New Taiwan Dollar',
+                'MYR RM' => 'Malaysian Ringgit (RM)',
+                'MXN $' => 'Mexican Peso ($)',
+                'TWD $' => 'New Taiwan Dollar ($)',
                 'NZD $' => 'New Zealand Dollar ($)',
-                'NOK kr' => 'Norwegian Krone',
-                'PHP ₱' => 'Philippine Peso',
-                'PLN zł' => 'Polish Zloty',
+                'NOK kr' => 'Norwegian Krone (kr)',
+                'PHP ₱' => 'Philippine Peso (₱)',
+                'PLN zł' => 'Polish Zloty (zł)',
+                'RUB ₽' => 'Russian Ruble (₽)',
                 'SGD $' => 'Singapore Dollar ($)',
-                'CHF' => 'Swiss Franc',
-                'THB ฿' => 'Thai Baht',
-                'TRY' => 'Turkish Lira',
+                'SEK kr‎' => 'Swedish Krona (kr)',
+                'CHF' => 'Swiss Franc (CHF)',
+                'THB ฿' => 'Thai Baht (฿)',
                 'USD $' => 'U.S. Dollar ($)',
                 ),
             'OTHERS' => array(
@@ -285,6 +286,7 @@ class FormFactory implements FormFactoryInterface
                 'BTC' => 'Bitcoin',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
+                'CNY ¥' => 'Chinese Renminbi (¥)',
                 'EGP £' => 'Egyptian Pound (£)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
@@ -298,10 +300,11 @@ class FormFactory implements FormFactoryInterface
                 'NPR ₨' => 'Nepalese Rupee (₨)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
-                'ZAR R‎' => 'South African Rand (R‎)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
+                'ZAR R‎' => 'South African Rand (R‎)',
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
+                'TRY ₺' => 'Turkish Lira (₺)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
             ),
         );

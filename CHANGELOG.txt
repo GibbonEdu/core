@@ -34,7 +34,7 @@ v15.0.00
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
 		System: added Greek and Amharic as development languages
-		System: added South African Rand and Trinidad & Tobago Dollar as currenies
+		System: added South African Rand, Trinidad & Tobago Dollar, Swedish Krona, Chinese Renminbi and Russian Ruble as currencies
 		System: fixed missing form validation for dropdowns created with User Custom Fields
 		System: updated Google OAuth library to latest version (v2.2.0)
 		System: fixed Sign In With Google to fix missing token refresh issue
@@ -77,6 +77,11 @@ v15.0.00
         User Admin: added ability to set username formats by role in User Settings
         User Admin: added a button to generate usernames in Add User
         User Admin: added an Available Years of Entry setting to select which years are available in the student application
+
+v14.0.01
+--------
+	Security
+		Fixed role switcher privilege escalation issue
 
 v14.0.00
 --------
