@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add a new Resource with an invalid filetype');
 $I->loginAsAdmin();
-$I->amOnModulePage('Resources', 'resources_manage_add.php');
+$I->amOnModulePage('Planner', 'resources_manage_add.php');
 
 // Add ------------------------------------------------
 $I->seeBreadcrumb('Add Resource');
