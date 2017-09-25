@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete resources');
 $I->loginAsAdmin();
-$I->amOnModulePage('Resources', 'resources_manage.php');
+$I->amOnModulePage('Planner', 'resources_manage.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
@@ -24,7 +24,7 @@ $I->seeSuccessMessage();
 $gibbonResourceID = $I->grabEditIDFromURL();
 
 // Edit ------------------------------------------------
-$I->amOnModulePage('Resources', 'resources_manage_edit.php', array('gibbonResourceID' => $gibbonResourceID, 'search' => ' '));
+$I->amOnModulePage('Planner', 'resources_manage_edit.php', array('gibbonResourceID' => $gibbonResourceID, 'search' => ' '));
 $I->seeBreadcrumb('Edit Resource');
 
 $I->seeInFormFields('#content form', $addFormValues);
