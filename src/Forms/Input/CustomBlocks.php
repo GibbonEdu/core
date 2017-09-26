@@ -25,8 +25,8 @@ use Gibbon\Forms\FormFactoryInterface;
 /**
  * Custom Blocks
  *
- * @version v14
- * @since   v14
+ * @version v15
+ * @since   v15
  */
 class CustomBlocks implements OutputableInterface
 {
@@ -39,6 +39,13 @@ class CustomBlocks implements OutputableInterface
     protected $factory;
     protected $session;
 
+    /**
+     * Create a Blocks input with a given template.
+     * @param  FormFactoryInterface $factory
+     * @param  string               $name
+     * @param  Form                 $form
+     * @param  Session              $session
+     */
     public function __construct(FormFactoryInterface &$factory, $name, $form, \Gibbon\Session $session)
     {
         $this->session = $session;
@@ -50,18 +57,36 @@ class CustomBlocks implements OutputableInterface
         $this->formOutput = $form->setClass("blank")->getOutput();
     }
 
+    /**
+     * Changes the placeholder string when no blocks are present.
+     * @param  string  $value
+     * @return self
+     */
     public function placeholder($value)
     {
         $this->placeholder = $value;
         return $this;
     }
 
-    public function addToolInput($input)
+    /**
+     * Adds the given input into the tool bar.
+     * @param  OutputableInterface  $value
+     * @return self
+     */
+    public function addToolInput(OutputableInterface $input)
     {
         $this->toolInputs[] = $input;
         return $this;
     }
 
+    /**
+     * Adds the given button to each block. 
+     * Note: $function must be the name of the function (i.e. "func" not "func()"). The function must only take in one input (the id of the block).
+     * @param  string  $name
+     * @param  string  $icon
+     * @param  string  $function
+     * @return self
+     */
     public function addBlockButton($name, $icon, $function)
     {
         $this->blockButtons[] = array("name" => $name, "icon" => $icon, "function" => $function);
@@ -73,6 +98,10 @@ class CustomBlocks implements OutputableInterface
         return '';
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';
