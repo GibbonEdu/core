@@ -838,5 +838,16 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
 DELETE FROM gibbonModule WHERE name='Resources';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'enableLimitedYearsOfEntry', 'Enable Limited Years of Entry', 'If yes, applicants choices for Year of Entry can be limited to specific school years.', 'N');end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricColumnID`);end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricRowID`);end
+ALTER TABLE `gibbonRubricColumn` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonPersonID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonRubricCellID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTable`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTableID`);end
+ALTER TABLE `gibbonRubricRow` ADD INDEX(`gibbonRubricID`);end
+
 
 ";
