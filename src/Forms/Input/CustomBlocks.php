@@ -37,9 +37,11 @@ class CustomBlocks implements OutputableInterface
     protected $blockButtons;
     protected $formOutput;
     protected $factory;
+    protected $session;
 
-    public function __construct(FormFactoryInterface &$factory, $name, $form)
+    public function __construct(FormFactoryInterface &$factory, $name, $form, \Gibbon\Session $session)
     {
+        $this->session = $session;
         $this->factory = $factory;
         $this->name = $name;
         $this->placeholder = __("Blocks will appear here..."); 
@@ -95,7 +97,7 @@ class CustomBlocks implements OutputableInterface
                     <table class="blank">
                         <tr>
                             <td>
-                                <img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/Default/img/garbage.png"/>
+                                <img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/' . $this->session->get("gibbonThemeName") . '/img/garbage.png"/>
                             </td>
                             ';
                             $count = 1;
