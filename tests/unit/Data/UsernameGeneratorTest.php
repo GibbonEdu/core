@@ -57,11 +57,6 @@ class UsernameGeneratorTest extends TestCase
         $this->usernameGenerator = $mock;
     }
 
-    public function testThisMustFail()
-    {
-        $this->assertTrue(false);
-    }
-
     public function testCanCheckUniqueUsername()
     {
         $this->assertTrue($this->usernameGenerator->isUsernameUnique('foo'));
