@@ -197,6 +197,15 @@ $I->seeBreadcrumb('Edit Form');
 
 $I->seeInFormFields('#content form', $formValues);
 
+$file0path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload0']);
+$file1path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload1']);
+
+// Check to see the uploaded files are there
+$I->see('FileUpload0');
+$I->see(basename($file0path));
+$I->see('FileUpload1');
+$I->see(basename($file1path));
+
 // Cleanup ------------------------------------------------
 
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -207,11 +216,9 @@ $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete Files ------------------------------------------------
-$filepath = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload0']);
-$I->deleteFile('../'.$filepath);
-$filepath = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload1']);
-$I->deleteFile('../'.$filepath);
 
+$I->deleteFile('../'.$file0path);
+$I->deleteFile('../'.$file1path);
 $I->deleteFromDatabase('gibbonApplicationFormFile', ['gibbonApplicationFormID' => $gibbonApplicationFormID]);
 
 // Restore Original Settings -----------------------------------
