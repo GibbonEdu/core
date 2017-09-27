@@ -141,7 +141,7 @@ class Checkbox extends Input
             $count = 0;
             foreach ($this->options as $value => $label) {
                 $this->setName($name);
-                $this->setID($identifier.'-'.$count);
+                $this->setID($identifier.$count);
                 $this->setAttribute('checked', $this->getIsChecked($value));
                 if ($value != 'on') $this->setValue($value);
 
