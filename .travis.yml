@@ -1,0 +1,38 @@
+# see http://about.travis-ci.org/docs/user/languages/php/ for more hints
+language: php
+
+# list any PHP version you want to test against
+php:
+  # using major version aliases
+
+  # aliased to a recent 5.5.x version
+  - 5.5
+  # aliased to a recent 5.6.x version
+  - 5.6
+  # aliased to a recent 7.x version
+  - 7.0
+
+# optionally specify a list of environments, for example to test different RDBMS
+env:
+  - DB=mysql
+
+# optionally set up exclutions and allowed failures in the matrix
+#matrix:
+#  allow_failures:
+#    - php: 7.0
+
+# execute any number of scripts before the test run, custom env's are available as variables
+before_script:
+  - mysql -e "create database IF NOT EXISTS gibbon_test;" -uroot;
+  - mysql -uroot gibbon_test < gibbon.sql;
+  - mysql -uroot gibbon_test < gibbon_demo.sql;
+
+# omitting "script:" will default to phpunit
+# use the $DB env variable to determine the phpunit.xml to use
+script: cd tests
+script: phpunit . --coverage-text
+script: codecept run
+
+# configure notifications (email, IRC, campfire etc)
+notifications:
+  email: "sandra.kuipers@tis.edu.mo"
