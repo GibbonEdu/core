@@ -444,7 +444,7 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
     echo '</table>';
 }
 
-function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gibbonCourseClassID, $gibbonSchoolYearID) {
+function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gibbonCourseClassID, $gibbonSchoolYearID = '') {
 
     $guid = $gibbon->guid();
     $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
