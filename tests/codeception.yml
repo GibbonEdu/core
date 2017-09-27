@@ -31,7 +31,7 @@ settings:
     memory_limit: 1024M
 
     # This value controls whether PHPUnit attempts to backup global variables
-    backup_globals: true
+    backup_globals: false
 params:
     - env
     - config/environment.php

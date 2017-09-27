@@ -17,9 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once __DIR__ . './../gibbon.php';
+global $gibbon, $guid;
+
+require_once __DIR__ . '/../gibbon.php';
 
 $installType = getSettingByScope($connection2, 'System', 'installType');
 if ($installType == 'Production') {
     die('ERROR: Test suite cannot run on a production system.'."\n");
 }
+
+echo $gibbon->session->get('absolutePath')."\n";
+echo $gibbon->session->get('absoluteURL')."\n";

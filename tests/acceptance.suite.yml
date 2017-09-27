@@ -8,6 +8,7 @@ class_name: AcceptanceTester
 settings:
     bootstrap: acceptance/bootstrap.php
 params:
+    - env
     - config/environment.php
 modules:
     enabled:

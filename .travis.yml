@@ -11,22 +11,29 @@ php:
   # using major version aliases
 
   # aliased to a recent 5.5.x version
-  #- 5.5
+  # - 5.5
   # aliased to a recent 5.6.x version
   # - 5.6
   # aliased to a recent 7.x version
   - 7.0
 
-#services:
-#  - mysql
-
 # optionally specify a list of environments, for example to test different RDBMS
-env:
-  - DB=mysql
+# env:
+#  global:
+#    - LANG='en_GB' 
+#    - LC_ALL='en_GB'
+#    - LANGUAGE='en_GB'
 
 # Dont need the extra depth
 git:
-  depth: 3
+  depth: 2
+
+# enable php extensions
+addons:
+  apt:
+    packages:
+#      - language-pack-en
+      - gettext
 
 # optionally set up exclutions and allowed failures in the matrix
 #matrix:
@@ -37,25 +44,24 @@ git:
 sudo: false
 
 # Cache folder, you can delete cache from Travis CI web interface
-# cache:
-#   directories:
-#     - vendor
-#     - $HOME/.composer/cache
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
 
 # Disable x-debug to speed up things
 before_install:
   - phpenv config-rm xdebug.ini
-   - >
-     touch config.php; printf '<?php $databaseServer=\"127.0.0.1\"; $databaseUsername=\"root\"; $databasePassword=\"\"; $databaseName=\"gibbon_test\"; $guid=\"testing\"; $caching=1;' > config.php;
-  # - >
-  #   touch composer.json; printf '{\"require-dev\": {\"codeception/codeception\": \"^2.1\"}}' > composer.json;
+  - >
+    touch config.php; printf '<?php $databaseServer=\"127.0.0.1\"; $databaseUsername=\"root\"; $databasePassword=\"\"; $databaseName=\"gibbon_test\"; $guid=\"testing\"; $caching=1; $testEnvironment=\"codeception\"; $testURL=\"http://127.0.0.1:8888\";' > config.php;
+  - >
+    touch composer.json; printf '{\"require-dev\": {\"codeception/codeception\": \"^2.1\"}}' > composer.json;
 
 # Install packages those will be required during build
 # install:
-#   - travis_retry composer self-update
-#   - travis_retry composer global require "phpunit/phpunit:5.7.*@dev"
-#   - travis_retry composer global require "codeception/codeception:2.1.*@dev"
-#   - travis_retry composer install --prefer-dist
+  - travis_retry composer self-update
+  - travis_retry composer global require "codeception/codeception:2.1.*@dev"
+  - travis_retry composer install --prefer-dist
 
 # execute any number of scripts before the test run, custom env's are available as variables
 before_script:
@@ -63,17 +69,16 @@ before_script:
   - mysql -uroot gibbon_test < gibbon.sql;
   - mysql -uroot gibbon_test < gibbon_demo.sql;
   - mysql -uroot gibbon_test < tests/config/data/install.sql;
+  - mysql -e "UPDATE gibbon_test.gibbonSetting SET value='${TRAVIS_BUILD_DIR}' WHERE scope='System' AND name='absolutePath';" -uroot;
+  - php -S 127.0.0.1:8888 -t $TRAVIS_BUILD_DIR >/dev/null 2>&1 &
+  - sleep 1
   - cd tests
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
 script:
-  - which php
-  - which mysql
-  - which phpunit
-  - phpunit --version
   - phpunit --verbose --configuration phpunit.xml
-  # - ~/.composer/vendor/bin/codecept run
+  - ~/.composer/vendor/bin/codecept run --env travis_ci
 
 #after_script:
 
@@ -83,7 +88,7 @@ script:
 
 # Tell Travis CI to monitor only 'Travis_CI' branch (for now)
 branches:
- only: feature/Travis_CI
+  only: feature/Travis_CI
 
 # configure notifications (email, IRC, campfire etc)
 notifications:

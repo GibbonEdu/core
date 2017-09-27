@@ -21,5 +21,5 @@ $gibbonResourceID = $I->grabEditIDFromURL();
 // Delete ------------------------------------------------
 $filepath = $I->grabFromDatabase('gibbonResource', 'content', ['gibbonResourceID' => $gibbonResourceID]);
 
-$I->deleteFile('../'.$filepath);
+$I->deleteFile(getcwd().'/../'.$filepath);
 $I->deleteFromDatabase('gibbonResource', ['gibbonResourceID' => $gibbonResourceID]);

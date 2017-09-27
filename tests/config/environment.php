@@ -1,6 +1,6 @@
 <?php
 // Load the Gibbon config.php file and format it into Codeinception params
-require '../config.php';
+require __DIR__ . '/../../config.php';
 
 if (empty($testEnvironment) || $testEnvironment != 'codeception') {
     die('WARNING: Cannot run Codeception tests without defining the test environment in config.php'."\n");
@@ -12,5 +12,5 @@ return [
     'DB_PASSWORD' => (isset($testDatabasePassword))? $testDatabasePassword: $databasePassword,
     'DB_NAME' => (isset($testDatabaseName))? $testDatabaseName: $databaseName,
     'ABSOLUTE_PATH' => (isset($testPath))? rtrim($testPath, '/') : 'localhost',
-    'ABSOLUTE_URL' => (isset($testURL))? rtrim($testURL, '/') : 'http://localhost',
+    'ABSOLUTE_URL' => (isset($testURL))? rtrim($testURL, '/') : 'http://127.0.0.1:8888',
 ];
