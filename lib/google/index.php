@@ -96,7 +96,8 @@ if (isset($authUrl)){
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
         $form->setClass('blank fullWidth loginTableGoogle');
 
-        $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
+        $themeName = (isset($_SESSION[$guid]['gibbonThemeName']))? $_SESSION[$guid]['gibbonThemeName'] : 'Default';
+        $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');
             $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
