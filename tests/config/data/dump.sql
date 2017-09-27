@@ -22,3 +22,15 @@ INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `o
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
 ('Ms. ', 'TestUser', 'Support', 'Support', 'Support TestUser', 'testingsupport', '', 'bd0688e5ca1c86f1f03417556ed53b9b1deed66bd4a0e75f660efb0ba0cb4671', 'aCdHikKlnpPqRstvXyY026', 'N', 'Full', 'Y', 006, '006') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
 
+--- Create a Testing Family, add testingparent and testingstudent
+ALTER TABLE `gibbonFamily` ADD UNIQUE( `name`, `familySync`);
+INSERT INTO `gibbonFamily` (`name`, `nameAddress`, `homeAddress`, `homeAddressDistrict`, `homeAddressCountry`, `status`, `languageHomePrimary`, `languageHomeSecondary`, `familySync`) VALUES ('Testing Family', '123 ', '123 Fictitious Lane', 'Nowhere', 'Antarctica', 'Married', 'English', 'Danish', 'TESTINGFAMILY') ON DUPLICATE KEY UPDATE `familySync`='TESTINGFAMILY';
+
+ALTER TABLE `gibbonFamilyAdult` ADD UNIQUE( `gibbonFamilyID`, `gibbonPersonID`);
+INSERT INTO `gibbonFamilyAdult` (`gibbonFamilyID`, `gibbonPersonID`, `comment`, `childDataAccess`, `contactPriority`, `contactCall`, `contactSMS`, `contactEmail`, `contactMail`) VALUES ((SELECT gibbonFamilyID FROM gibbonFamily WHERE `name`='Testing Family' AND `familySync`='TESTINGFAMILY'), (SELECT gibbonPersonID FROM gibbonPerson WHERE username='testingparent'), '', 'Y', '1', 'Y', 'Y', 'Y', 'Y') ON DUPLICATE KEY UPDATE `comment`='';
+
+ALTER TABLE `gibbonFamilyChild` ADD UNIQUE( `gibbonFamilyID`, `gibbonPersonID`);
+INSERT INTO `gibbonFamilyChild` (`gibbonFamilyID`, `gibbonPersonID`, `comment`) VALUES ((SELECT gibbonFamilyID FROM gibbonFamily WHERE `name`='Testing Family' AND `familySync`='TESTINGFAMILY'), (SELECT gibbonPersonID FROM gibbonPerson WHERE username='testingstudent'), '') ON DUPLICATE KEY UPDATE `comment`='';
+
+ALTER TABLE `gibbonFamilyRelationship` ADD UNIQUE(`gibbonFamilyID`, `gibbonPersonID1`, `gibbonPersonID2`);
+INSERT INTO `gibbonFamilyRelationship` (`gibbonFamilyID`, `gibbonPersonID1`, `gibbonPersonID2`, `relationship`) VALUES ((SELECT gibbonFamilyID FROM gibbonFamily WHERE `name`='Testing Family' AND `familySync`='TESTINGFAMILY'), (SELECT gibbonPersonID FROM gibbonPerson WHERE username='testingparent'), (SELECT gibbonPersonID FROM gibbonPerson WHERE username='testingstudent'), 'Mother') ON DUPLICATE KEY UPDATE `relationship`='Mother';
