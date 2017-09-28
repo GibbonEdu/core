@@ -7,7 +7,7 @@ if (!file_exists($configPath)) {
 
 require $configPath;
 
-// Can't run tests unless intentionally adding configuration params (or via Travis CI)
+// Can only run tests after intentionally adding configuration params (or via environment variable)
 if (getenv('TEST_ENV') != 'codeception' && (empty($testEnvironment) || $testEnvironment != 'codeception')) {
     die('WARNING: Cannot run Codeception tests without defining the test environment in config.php'."\n");
 }
