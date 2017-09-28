@@ -63,10 +63,6 @@ script:
   - ~/.composer/vendor/bin/codecept run acceptance --env travis_ci
   - phpunit --verbose --configuration phpunit.xml
 
-# Tell Travis CI to monitor only 'Travis_CI' branch (for now)
-branches:
-  only: feature/Travis_CI
-
 # configure notifications (email, IRC, campfire etc)
 #notifications:
 #  email: ""
