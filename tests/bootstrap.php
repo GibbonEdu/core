@@ -19,12 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 global $gibbon, $guid;
 
-require_once __DIR__ . '/../gibbon.php';
-
-$installType = getSettingByScope($connection2, 'System', 'installType');
-if ($installType == 'Production') {
-    die('ERROR: Test suite cannot run on a production system.'."\n");
+// Prevent installer redirect
+if (!file_exists(__DIR__ . '/../config.php')) {
+    $_SERVER['PHP_SELF'] = 'installer/install.php';
 }
 
-echo $gibbon->session->get('absolutePath')."\n";
-echo $gibbon->session->get('absoluteURL')."\n";
+require_once __DIR__ . '/../gibbon.php';
+
+if ($gibbon->isInstalled()) {
+    $installType = getSettingByScope($connection2, 'System', 'installType');
+    if ($installType == 'Production') {
+        die('ERROR: Test suite cannot run on a production system.'."\n");
+    }
+}
