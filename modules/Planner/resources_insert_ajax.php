@@ -69,7 +69,7 @@ if (isset($_GET['alpha'])) {
     $alpha = $_GET['alpha'];
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __($guid, 'Your request failed because you do not have access to this action.');
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $output .= '$(document).ready(function() {';
     $output .= 'var optionsSearch={';
     $output .= 'target: $(".'.$id.'resourceSlider"),';
-    $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Resources/resources_insert_ajax.php?id=$id',";
+    $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Planner/resources_insert_ajax.php?id=$id',";
     $output .= "type: 'POST'";
     $output .= '};';
 
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $output .= "<td colspan=2 style='padding-top: 0px'>";
     $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'><img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
     $output .= "<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>";
-    $output .= '<p>'.sprintf(__($guid, 'The table below shows shared resources drawn from the %1$sResources%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Resources/resources_view.php'>", '</a>').'</p>';
+    $output .= '<p>'.sprintf(__($guid, 'The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
     $output .= "<form id='".$id."ajaxFormSearch' name='".$id."ajaxFormSearch'>";
     $output .= "<table cellspacing='0' style='width: 200px'>";
     $output .= '<tr>';
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $output .= "<td style='padding: 0px 2px 0px 0px'>";
     try {
         $dataCategory = array();
-        $sqlCategory = "SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='categories'";
+        $sqlCategory = "SELECT * FROM gibbonSetting WHERE scope='Planner' AND name='categories'";
         $resultCategory = $connection2->prepare($sqlCategory);
         $resultCategory->execute($dataCategory);
     } catch (PDOException $e) {
@@ -335,7 +335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             } elseif ($row['type'] == 'File') {
                 $output .= "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'>".$row['name'].'</a><br/>';
             } elseif ($row['type'] == 'HTML') {
-                $output .= "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/modules/Resources/resources_view_standalone.php?gibbonResourceID='.$row['gibbonResourceID']."'>".$row['name'].'</a><br/>';
+                $output .= "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_view_standalone.php?gibbonResourceID='.$row['gibbonResourceID']."'>".$row['name'].'</a><br/>';
             }
             $output .= "<span style='font-size: 85%; font-style: italic'>".formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
             $output .= '</td>';

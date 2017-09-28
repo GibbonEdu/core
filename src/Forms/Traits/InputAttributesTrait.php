@@ -77,7 +77,7 @@ trait InputAttributesTrait
     {
         $name = str_replace('[]', '', $this->getName());
 
-        if (!empty($data[$name])) {
+        if (isset($data[$name])) {
             $value = $data[$name];
 
             if (method_exists($this, 'selected')) {
@@ -98,7 +98,7 @@ trait InputAttributesTrait
     {
         $name = str_replace('[]', '', $this->getName());
 
-        if (!empty($data[$name])) {
+        if (isset($data[$name])) {
             $data[$name] = explode(',', $data[$name]);
         }
 

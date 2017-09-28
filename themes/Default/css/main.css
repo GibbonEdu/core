@@ -1310,6 +1310,10 @@ select[multiple] {
 	width:auto;
 }
 
+.column.stacked div:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
 .formTable input,
 .formTable select,
 .formTable textarea {

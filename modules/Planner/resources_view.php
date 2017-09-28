@@ -19,10 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
@@ -37,186 +40,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     echo '</h3>';
 
     //Get current filter values
-    $tags = null;
-    if (isset($_POST['tag'])) {
-        $tags = trim($_POST['tag']);
-    } elseif (isset($_GET['tag'])) {
-        $tags = trim($_GET['tag']);
-    }
-    $category = null;
-    if (isset($_POST['category'])) {
-        $category = trim($_POST['category']);
-    } elseif (isset($_GET['category'])) {
-        $category = trim($_GET['category']);
-    }
-    $purpose = null;
-    if (isset($_POST['purpose'])) {
-        $purpose = trim($_POST['purpose']);
-    } elseif (isset($_GET['purpose'])) {
-        $purpose = trim($_GET['purpose']);
-    }
-    $gibbonYearGroupID = null;
-    if (isset($_POST['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
-    } elseif (isset($_GET['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = trim($_GET['gibbonYearGroupID']);
-    }
+    $tags = (isset($_REQUEST['tag']))? trim($_REQUEST['tag']) : null;
+    $tagsArray = (!empty($tags))? explode(',', $tags) : array();
+    $category = (isset($_REQUEST['category']))? trim($_REQUEST['category']) : null;
+    $purpose = (isset($_REQUEST['purpose']))? trim($_REQUEST['purpose']) : null;
+    $gibbonYearGroupID = (isset($_REQUEST['gibbonYearGroupID']))? trim($_REQUEST['gibbonYearGroupID']) : null;
 
     //Display filters
-    echo "<form method='post'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-    echo '<tr>';
-    echo '<td>';
-    echo '<b>'.__($guid, 'Tags').'</b>';
-    echo '</td>';
-    echo "<td style='padding: 0px 2px 0px 0px'>";
-	//Tag selector
-	try {
-		$dataList = array();
-		$sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
-		$resultList = $connection2->prepare($sqlList);
-		$resultList->execute($dataList);
-	} catch (PDOException $e) {
-		echo "<div class='error'>".$e->getMessage().'</div>';
-	}
 
-    $list = '';
-    while ($rowList = $resultList->fetch()) {
-        $list = $list.'{id: "'.addslashes($rowList['tag']).'", name: "'.addslashes($rowList['tag']).' <i>('.$rowList['count'].')</i>"},';
-    }
-    ?>
-	<style>
-		ul.token-input-list-facebook { width: 300px; height: 25px!important; float: right }
-		div.token-input-dropdown-facebook { width: 300px }
-	</style>
-	<input type="text" id="tag" name="tag" />
-	<script type="text/javascript">
-		$(document).ready(function() {
-			 $("#tag").tokenInput([
-				<?php echo substr($list, 0, -1) ?>
-			],
-				{theme: "facebook",
-				hintText: "Type a tag...",
-				allowCreation: false,
-				preventDuplicates: true,
-				<?php
-				$tagString = '';
-				if ($tags != '') {
-					$tagList = explode(',', $tags);
-					foreach ($tagList as $tag) {
-						$tagString .= "{id: '".addslashes($tag)."', name: '".addslashes($tag)."'},";
-					}
-				}
-				echo 'prePopulate: ['.substr($tagString, 0, -1).'],';?>
-				tokenLimit: null});
-				});
-			</script>
-			<?php
-		echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo '<td>';
-    echo '<b>'.__($guid, 'Category').'</b>';
-    echo '</td>';
-    echo "<td style='padding: 0px 2px 0px 0px'>";
-    try {
-        $dataCategory = array();
-        $sqlCategory = "SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='categories'";
-        $resultCategory = $connection2->prepare($sqlCategory);
-        $resultCategory->execute($dataCategory);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    echo "<select name='category' id='category' style='width:302px'>";
-    echo "<option value=''></option>";
-    if ($resultCategory->rowCount() == 1) {
-        $rowCategory = $resultCategory->fetch();
-        $options = $rowCategory['value'];
-        if ($options != '') {
-            $options = explode(',', $options);
+    $form = Form::create('resourcesView', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
-            for ($i = 0; $i < count($options); ++$i) {
-                $selected = '';
-                if (trim($options[$i]) == $category) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".trim($options[$i])."'>".trim($options[$i]).'</option>';
-            }
-        }
-    }
-    echo '</select>';
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo '<td>';
-    echo '<b>'.__($guid, 'Purpose').'</b>';
-    echo '</td>';
-    echo "<td style='padding: 0px 2px 0px 0px'>";
-    try {
-        $dataPurpose = array();
-        $sqlPurpose = "(SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesGeneral') UNION (SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesRestricted')";
-        $resultPurpose = $connection2->prepare($sqlPurpose);
-        $resultPurpose->execute($dataPurpose);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    if ($resultPurpose->rowCount() > 0) {
-        $options = '';
-        while ($rowPurpose = $resultPurpose->fetch()) {
-            $options .= $rowPurpose['value'].',';
-        }
-        $options = substr($options, 0, -1);
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/resources_view.php');
 
-        if ($options != '') {
-            $options = explode(',', $options);
-        }
-    }
-    echo "<select name='purpose' id='purpose' style='width:302px'>";
-    echo "<option value=''></option>";
-    for ($i = 0; $i < count($options); ++$i) {
-        $selected = '';
-        if (trim($options[$i]) == $purpose) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".trim($options[$i])."'>".trim($options[$i]).'</option>';
-    }
-    echo '</select>';
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo '<td>';
-    echo '<b>'.__($guid, 'Year Group').'</b>';
-    echo '</td>';
-    echo "<td style='padding: 0px 2px 0px 0px'>";
-    try {
-        $dataPurpose = array();
-        $sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-        $resultPurpose = $connection2->prepare($sqlPurpose);
-        $resultPurpose->execute($dataPurpose);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-    }
-    echo '</select>';
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo "<td class='right' colspan=2>";
-    echo "<input type='hidden' name='q' value='/modules/Resources/resources_view.php'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Resources/resources_view.php'>".__($guid, 'Clear Filters').'</a> ';
-    echo "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='".__($guid, 'Go')."'>";
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
-    echo '</form>';
+    $sql = "SELECT tag as value, CONCAT(tag, ' <i>(', count, ')</i>') as name FROM gibbonResourceTag WHERE count>0 ORDER BY tag";
+    $row = $form->addRow();
+        $row->addLabel('tag', __('Tags'));
+        $row->addFinder('tag')->fromQuery($pdo, $sql)->setParameter('hintText', __('Type a tag...'))->selected($tagsArray);
+
+    $categories = getSettingByScope($connection2, 'Resources', 'categories');
+    $row = $form->addRow();
+        $row->addLabel('category', __('Category'));
+        $row->addSelect('category')->fromString($categories)->placeholder()->selected($category);
+
+    $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
+    $purposesRestricted = getSettingByScope($connection2, 'Resources', 'purposesRestricted');
+    $row = $form->addRow();
+        $row->addLabel('purpose', __('Purpose'));
+        $row->addSelect('purpose')->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder()->selected($purpose);
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput();
 
     //Set pagination variable
     $page = null;
@@ -384,6 +245,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     }
 
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2);
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraResources($guid, $connection2);
 }
 ?>

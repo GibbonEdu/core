@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -48,82 +50,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $ttDate = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
 
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Timetable') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="gibbonTTID" id="gibbonTTID" class="standardWidth">
-						<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>
-						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'].' ORDER BY name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
+    $viewBy = (isset($_GET['viewBy']))? $_GET['viewBy'] : '';
 
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($resultSelect->rowCount() == 1) {
-								$gibbonTTID = $rowSelect['gibbonTTID'];
-							}
-							$selected = '';
-							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".$rowSelect['name'].'</option>';
-						}
-						?>
-					</select>
-					<script type="text/javascript">
-						var gibbonTTID=new LiveValidation('gibbonTTID');
-						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>	
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Date') ?></b><br/>
-				</td>
-				<td class="right">
-					<input name="ttDate" id="ttDate" maxlength=10 value="<?php echo $ttDate ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var ttDate=new LiveValidation('ttDate');
-						ttDate.add(Validate.Presence);
-						ttDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#ttDate" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewAvailableTeachers.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('viewAvailableTeachers', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_viewAvailableTeachers.php');
+
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sql = 'SELECT gibbonTTID as value, name FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonTTID', __('Timetable'));
+        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder(__('Please select...'))->selected($gibbonTTID);
+
+    $row = $form->addRow();
+        $row->addLabel('viewBy', __('View'));
+        $row->addSelect('viewBy')->fromArray(array('username' => __('Username'), 'name' => __('Preferred Name') ))->selected($viewBy);
+
+    $row = $form->addRow();
+        $row->addLabel('ttDate', __('Date'));
+        $row->addDate('ttDate')->setValue($ttDate);
+
+    $row = $form->addRow();
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
 
     if ($gibbonTTID != '') {
         echo '<h2>';
@@ -293,6 +245,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                     //Run through days of the week
                     foreach ($days as $day) {
                         $dayOut = '';
+                        $zCount = 0;
+
                         if ($day['schoolDay'] == 'Y') {
                             $dateCorrection = ($day['sequenceNumber'] - 1);
 
@@ -433,7 +387,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                                 if ($rowPeriods['type'] == 'Lesson') {
                                                     $vacancies = '';
                                                     try {
-                                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
+                                                        $dataSelect = array();
+                                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
                                                         $resultSelect = $connection2->prepare($sqlSelect);
                                                         $resultSelect->execute($dataSelect);
                                                     } catch (PDOException $e) {
@@ -447,7 +402,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                                         } catch (PDOException $e) {
                                                         }
                                                         if ($resultUnique->rowCount() < 1) {
-                                                            if (isset($rowSelect['initials'])) {
+
+                                                            if ($viewBy == 'name') {
+                                                                $vacancies .= formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
+                                                            }
+                                                            else if ($viewBy == 'username') {
+                                                                $vacancies .= $rowSelect['username'].', ';
+                                                            }
+                                                            else if (isset($rowSelect['initials'])) {
                                                                 $vacancies .= $rowSelect['initials'].', ';
                                                             } else {
                                                                 $vacancies .= $rowSelect['username'].', ';

@@ -30,7 +30,7 @@ $gibbonResourceID = $_GET['gibbonResourceID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];
 $time = time();
 
-if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -88,15 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                     $category = $_POST['category'];
                     $purpose = $_POST['purpose'];
                     $tags = strtolower($_POST['tags']);
-                    $gibbonYearGroupIDList = '';
-                    for ($i = 0; $i < $_POST['count']; ++$i) {
-                        if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
-                            if ($_POST["gibbonYearGroupIDCheck$i"] == 'on') {
-                                $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST["gibbonYearGroupID$i"].',';
-                            }
-                        }
-                    }
-                    $gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
+                    $gibbonYearGroupIDList = (!empty($_POST['gibbonYearGroupID']))? implode(',', $_POST['gibbonYearGroupID']) : '';
                     $description = $_POST['description'];
 
                     if (($type != 'File' and $type != 'HTML' and $type != 'Link') or (is_null($content) and $type != 'File') or $name == '' or $category == '' or $tags == '') {

@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 include '../version.php';
 include '../functions.php';
 
@@ -87,32 +90,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
 					<div id='content'>
 						<?php
                             //Get and set database variables (not set until step 1)
-                            $databaseServer = '';
-                            if (isset($_POST['databaseServer'])) {
-                                $databaseServer = $_POST['databaseServer'];
-                            }
-                            $databaseName = '';
-                            if (isset($_POST['databaseName'])) {
-                                $databaseName = $_POST['databaseName'];
-                            }
-                            $databaseUsername = '';
-                            if (isset($_POST['databaseUsername'])) {
-                                $databaseUsername = $_POST['databaseUsername'];
-                            }
-                            $databasePassword = '';
-                            if (isset($_POST['databasePassword'])) {
-                                $databasePassword = $_POST['databasePassword'];
-                            }
-                            $demoData = '';
-                            if (isset($_POST['demoData'])) {
-                                $demoData = $_POST['demoData'];
-                            }
+                            $databaseServer = (isset($_POST['databaseServer']))? $_POST['databaseServer'] : '';
+                            $databaseName = (isset($_POST['databaseName']))? $_POST['databaseName'] : '';
+                            $databaseUsername = (isset($_POST['databaseUsername']))? $_POST['databaseUsername'] : '';
+                            $databasePassword = (isset($_POST['databasePassword']))? $_POST['databasePassword'] : '';
+                            $demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
 
                             //Set language
-                            $code = 'en_GB';
-                            if (isset($_POST['code'])) {
-                                $code = $_POST['code'];
-                            }
+                            $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
                             putenv('LC_ALL='.$code);
                             setlocale(LC_ALL, $code);
                             bindtextdomain('gibbon', '../i18n');
@@ -155,193 +140,95 @@ $_SESSION[$guid]['stringReplacement'] = array();
 									$phpRequirement = $gibbon->getSystemRequirement('php');
 									$extensions = $gibbon->getSystemRequirement('extensions');
 
-                                    //Set language options
-                                    ?>
-									<form method="post" action="./install.php?step=1&guid=<?php echo $guid ?>">
-										<table class='smallIntBorder fullWidth' cellspacing='0'>
-											<tr class='break'>
-												<td colspan=3>
-													<h3><?php echo __($guid, 'System Requirements') ?></h3>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<b><?php printf($versionTitle, 'PHP'); ?></b><br/>
-													<span class="emphasis small">
-														<?php printf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement ); ?>
-													</span>
-												</td>
-												<td style="width:60px;padding-left:10px!important;">
-													<b><?php echo $phpVersion; ?></b>
-												</td>
-												<td class="right" style="width:60px;">
-													<?php echo (version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon; ?>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<b><?php echo __($guid, 'MySQL PDO Support'); ?></b><br/>
-												</td>
-												<td style="padding-left:10px!important;">
-													<?php echo (@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
-												</td>
-												<td class="right">
-													<?php echo (@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon; ?>
-												</td>
-											</tr>
-											<?php
-									            if (!empty($extensions) && is_array($extensions)) {
-									                foreach ($extensions as $extension) {
-									                    $installed = @extension_loaded($extension);
-									                    ?>
-									                    <tr>
-									                        <td>
-									                            <b><?php echo __($guid, 'Extension').' '. $extension; ?></b><br/>
-									                        </td>
-									                        <td style="padding-left:10px!important;">
-									                            <?php echo ($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'); ?>
-									                        </td>
-									                        <td colspan=2 class="right">
-									                            <?php echo ($installed)? $trueIcon : $falseIcon; ?>
-									                        </td>
-									                    </tr>
-									                    <?php
-									                }
-									            }
-									        ?>
-											<tr class='break'>
-												<td colspan=3>
-													<h3><?php echo __($guid, 'Language Settings') ?></h3>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<b><?php echo __($guid, 'System Language') ?> *</b><br/>
-												</td>
-												<td colspan=2 class="right" style='width: 275px'>
-													<select name="code" id="code" class="standardWidth">
-														<option value='nl_NL'>Dutch - Nederland</option>
-														<option selected value='en_GB'>English - United Kingdom</option>
-														<option value='en_US'>English - United States</option>
-														<option value='es_ES'>Español</option>
-														<option value='fr_FR'>Français - France</option>
-														<option value='it_IT'>Italiano - Italia</option>
-														<option value='ro_RO'>Română</option>
-                                                        <option value="sq_AL">Shqip - Shqipëri</option>
-                                                        <option value="vi_VN">Tiếng Việt - Việt Nam</option>
-														<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
-                                                        <option value="th_TH">ภาษาไทย - ราชอาณาจักรไทย </option>
-                                                        <option value='zh_HK'>體字 - 香港</option>
-													</select>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-												</td>
-												<td colspan=2 class="right">
-													<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-												</td>
-											</tr>
-										</table>
-									</form>
-									<?php
+                                    $form = Form::create('action', "./install.php?step=1&guid=$guid");
 
+                                    $form->addRow()->addHeading(__('System Requirements'));
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement));
+                                        $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
+                                        $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('pdoSupportLabel', __($guid, 'MySQL PDO Support'));
+                                        $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'))->readonly();
+                                        $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+
+                                    if (!empty($extensions) && is_array($extensions)) {
+                                        foreach ($extensions as $extension) {
+                                            $installed = @extension_loaded($extension);
+                                            $row = $form->addRow();
+                                                $row->addLabel('extensionLabel', __($guid, 'Extension').' '. $extension);
+                                                $row->addTextField('extension')->setValue(($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'))->readonly();
+                                                $row->addContent(($installed)? $trueIcon : $falseIcon);
+                                        }
+                                    }
+
+                                    $form->addRow()->addHeading(__('Language Settings'));
+
+                                    $languages = array(
+                                        'nl_NL' => 'Dutch - Nederland',
+                                        'en_GB' => 'English - United Kingdom',
+                                        'en_US' => 'English - United States',
+                                        'es_ES' => 'Español',
+                                        'fr_FR' => 'Français - France',
+                                        'it_IT' => 'Italiano - Italia',
+                                        'ro_RO' => 'Română',
+                                        'sq_AL' => 'Shqip - Shqipëri',
+                                        'vi_VN' => 'Tiếng Việt - Việt Nam',
+                                        'ar_SA' => 'العربية - المملكة العربية السعودية',
+                                        'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+                                        'zh_HK' => '體字 - 香港');
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('code', __('System Language'));
+                                        $row->addSelect('code')->fromArray($languages)->selected($code)->isRequired();
+
+                                    $row = $form->addRow();
+                                        $row->addFooter();
+                                        $row->addSubmit();
+
+                                    echo $form->getOutput();
                                 }
                             }
                             if ($step == 1) { //Set database options
-                                ?>
-								<form method="post" action="./install.php?step=2&guid=<?php echo $guid ?>">
-									<table class='smallIntBorder fullWidth' cellspacing='0'>
-										<tr class='break'>
-											<td colspan=2>
-												<h3><?php echo __($guid, 'Database Information') ?></h3>
-											</td>
-										</tr>
-										<tr>
-											<td style='width: 275px'>
-												<b><?php echo __($guid, 'Database Type') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-											</td>
-											<td class="right">
-												<input readonly name="type" id="type" value="MySQL" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td style='width: 275px'>
-												<b><?php echo __($guid, 'Database Server') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Localhost, IP address or domain.') ?></span>
-											</td>
-											<td class="right">
-												<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var databaseServer=new LiveValidation('databaseServer');
-													databaseServer.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Database Name') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></span>
-											</td>
-											<td class="right">
-												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var databaseName=new LiveValidation('databaseName');
-													databaseName.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Database Username') ?>*</b><br/>
-											</td>
-											<td class="right">
-												<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var databaseUsername=new LiveValidation('databaseUsername');
-													databaseUsername.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Database Password') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" class="standardWidth">
-												<script type="text/javascript">
-													var databasePassword=new LiveValidation('databasePassword');
-													databasePassword.add(Validate.Presence);
-												</script>
-											</td>
-										</tr>
+                                $form = Form::create('action', "./install.php?step=2&guid=$guid");
 
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Install Demo Data?') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<select name="demoData" id="demoData" class="standardWidth">
-													<?php
-                                                    echo "<option selected value='N'>".ynExpander($guid, 'N').'</option>';echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';?>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
-											</td>
-											<td class="right">
-												<input type="hidden" name="code" value="<?php echo $code ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-											</td>
-										</tr>
-									</table>
-								</form>
-								<?php
+                                $form->addHiddenValue('code', $code);
 
+                                $form->addRow()->addHeading(__('Database Settings'));
+
+                                $row = $form->addRow();
+                                    $row->addLabel('type', __('Database Type'));
+                                    $row->addTextField('type')->setValue('MySQL')->readonly()->isRequired();
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databaseServer', __('Database Server'))->description(__('Localhost, IP address or domain.'));
+                                    $row->addTextField('databaseServer')->isRequired()->maxLength(255);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be utf8_general_ci.'));
+                                    $row->addTextField('databaseName')->isRequired()->maxLength(50);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databaseUsername', __('Database Username'));
+                                    $row->addTextField('databaseUsername')->isRequired()->maxLength(50);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('databasePassword', __('Database Password'));
+                                    $row->addPassword('databasePassword')->isRequired()->maxLength(255);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('demoData', __('Install Demo Data?'));
+                                    $row->addYesNo('demoData')->selected('N');
+
+
+                                //FINISH & OUTPUT FORM
+                                $row = $form->addRow();
+                                    $row->addFooter();
+                                    $row->addSubmit();
+
+                                echo $form->getOutput();
                             } elseif ($step == 2) {
                                 //Check for db values
                                 if ($databaseServer == '' or $databaseName == '' or $databaseUsername == '' or $databasePassword == '' or $demoData == '') {
@@ -953,27 +840,28 @@ $_SESSION[$guid]['stringReplacement'] = array();
 															<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 																<optgroup label='--<?php echo __($guid, 'PAYPAL SUPPORTED') ?>--'/>
 																	<option value='AUD $'>Australian Dollar (A$)</option>
-																	<option value='BRL R$'>Brazilian Real</option>
+																	<option value='BRL R$'>Brazilian Real (R$)</option>
 																	<option value='GBP £'>British Pound (£)</option>
 																	<option value='CAD $'>Canadian Dollar (C$)</option>
-																	<option value='CZK Kč'>Czech Koruna</option>
-																	<option value='DKK kr'>Danish Krone</option>
+																	<option value='CZK Kč'>Czech Koruna (Kč)</option>
+																	<option value='DKK kr'>Danish Krone (kr)</option>
 																	<option value='EUR €'>Euro (€)</option>
 																	<option value='HKD $'>Hong Kong Dollar ($)</option>
-																	<option value='HUF Ft'>Hungarian Forint</option>
-																	<option value='ILS ₪'>Israeli New Shekel</option>
+																	<option value='HUF Ft'>Hungarian Forint (Ft)</option>
+																	<option value='ILS ₪'>Israeli New Shekel (₪)</option>
 																	<option value='JPY ¥'>Japanese Yen (¥)</option>
-																	<option value='MYR RM'>Malaysian Ringgit</option>
-																	<option value='MXN $'>Mexican Peso</option>
-																	<option value='TWD $'>New Taiwan Dollar</option>
+																	<option value='MYR RM'>Malaysian Ringgit (RM)</option>
+																	<option value='MXN $'>Mexican Peso ($)</option>
+																	<option value='TWD $'>New Taiwan Dollar ($)</option>
 																	<option value='NZD $'>New Zealand Dollar ($)</option>
-																	<option value='NOK kr'>Norwegian Krone</option>
-																	<option value='PHP ₱'>Philippine Peso</option>
-																	<option value='PLN zł'>Polish Zloty</option>
+																	<option value='NOK kr'>Norwegian Krone (kr)</option>
+																	<option value='PHP ₱'>Philippine Peso (₱)</option>
+																	<option value='PLN zł'>Polish Zloty (zł)</option>
+																	<option value='RUB ₽'>Russian Ruble (₽)</option>
 																	<option value='SGD $'>Singapore Dollar ($)</option>
-																	<option value='CHF'>Swiss Franc</option>
-																	<option value='THB ฿'>Thai Baht</option>
-																	<option value='TRY'>Turkish Lira</option>
+																	<option value='SEK kr'>Swedish Krona (kr)</option>
+																	<option value='CHF'>Swiss Franc (CHF)</option>
+																	<option value='THB ฿'>Thai Baht (฿)</option>
 																	<option value='USD $'>U.S. Dollar ($)</option>
 																</optgroup>
 																<optgroup label='--<?php echo __($guid, 'OTHERS') ?>--'/>
@@ -981,6 +869,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																	<option value='BTC'>Bitcoin</option>
                                                                     <option value='BGN лв.'>Bulgarian Lev (лв.)</option>
                                         							<option value='XAF FCFA'>Central African Francs (FCFA)</option>
+																	<option value='CNY ¥'>Chinese Renminbi (¥)</option>
 																	<option value='EGP £'>Egyptian Pound (£)</option>
 																	<option value='GHS GH₵'>Ghanaian Cedi (GH₵)</option>
 																	<option value='INR ₹'>Indian Rupee (₹)</option>
@@ -994,10 +883,11 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                         							<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																	<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																	<option value='PKR ₨'>Pakistani Rupee (₨)</option>
+                                                                    <option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
 																	<option value='ZAR R'>South African Rand (R)</option>
-																	<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
 																	<option value='TZS TSh'>Tanzania Shillings (TSh)</option>
 																	<option value='TTD $'>Trinidad & Tobago Dollar (TTD)</option>
+																	<option value='TRY ₺'>Turkish Lira (₺)</option>
 																	<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																</optgroup>
 															</select>

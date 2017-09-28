@@ -799,6 +799,11 @@ UPDATE gibboni18n SET maintainerName='Enrique Snitzes' WHERE code='es_ES';end
 UPDATE gibboni18n SET active='Y' WHERE (code='sq_AL' OR code='vi_VN' OR code='th_TH');end
 ";
 
+//v14.0.01
+++$count;
+$sql[$count][0] = '14.0.01';
+$sql[$count][1] = "";
+
 //v15.0.00
 ++$count;
 $sql[$count][0] = '15.0.00';
@@ -829,5 +834,20 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 CREATE TABLE `gibbonCourseClassMap` (`gibbonCourseClassMapID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NULL,`gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NULL, `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NULL, UNIQUE KEY `gibbonCourseClassID` (gibbonCourseClassID), PRIMARY KEY (`gibbonCourseClassMapID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'autoEnrolCourses', 'Auto-Enrol Courses Default', 'Should auto-enrolment of new students into courses be turned on or off by default?', 'N');end
 UPDATE `gibbonNotificationEvent` SET actionName='View Student Profile_full' WHERE (event='Application Form Accepted' OR event='New Application Form') AND moduleName='Students';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'availableYearsOfEntry', 'Available Years of Entry', 'Which school years should be available to apply to?', '');end
+UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
+DELETE FROM gibbonModule WHERE name='Resources';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'enableLimitedYearsOfEntry', 'Enable Limited Years of Entry', 'If yes, applicants choices for Year of Entry can be limited to specific school years.', 'N');end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricColumnID`);end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricRowID`);end
+ALTER TABLE `gibbonRubricColumn` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonPersonID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonRubricCellID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTable`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTableID`);end
+ALTER TABLE `gibbonRubricRow` ADD INDEX(`gibbonRubricID`);end
+
 
 ";

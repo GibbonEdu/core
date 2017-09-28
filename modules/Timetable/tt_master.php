@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -53,47 +55,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
             $gibbonTTID = $rowSelect['gibbonTTID'];
         }
     }
-    ?>
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonTTID">
-						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT gibbonTTID, gibbonTT.name AS TT, gibbonSchoolYear.name AS year FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($resultSelect->rowCount() == 1) {
-								$gibbonTTID = $rowSelect['gibbonTTID'];
-							}
-							$selected = '';
-							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".htmlPrep($rowSelect['TT']).'</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/tt_master.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('ttMaster', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_master.php');
+
+    $sql = "SELECT gibbonSchoolYear.name as groupedBy, gibbonTTID as value, gibbonTT.name AS name FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name";
+    $result = $pdo->executeQuery(array(), $sql);
+
+    // Transform into an option list grouped by Year
+    $ttList = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+    $ttList = array_reduce($ttList, function($list, $item) {
+        $list[$item['groupedBy']][$item['value']] = $item['name'];
+        return $list;
+    }, array());
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonTTID', __('Timetable'));
+        $row->addSelect('gibbonTTID')->fromArray($ttList)->isRequired()->selected($gibbonTTID);
+
+    $row = $form->addRow();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 
     if ($gibbonTTID != '') {
         //CHECK FOR TT
