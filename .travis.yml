@@ -68,5 +68,5 @@ branches:
   only: feature/Travis_CI
 
 # configure notifications (email, IRC, campfire etc)
-notifications:
-  email: "sandra.kuipers@tis.edu.mo"
+#notifications:
+#  email: ""
