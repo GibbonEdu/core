@@ -166,8 +166,7 @@ class CustomBlocks implements OutputableInterface
             function add'. $this->name .'Block() {
                 $("#' . $this->name . 'Outer0").css("display", "none");
                 $("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));
-                $("#'. $this->name .'Outer" + ' . $this->name . 'Count).find("input[name*=' . $this->name . 'order]").val(' . $this->name . 'Count);
-                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("id", $(this).prop("id") + ' . $this->name . 'Count); });
+                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("name", $(this).prop("id") + "[" + ' . $this->name . 'Count + "]"); });
                 $(\'<input>\').attr({
                             type: \'hidden\',
                             name: \'' . $this->name . 'Order[]\'
