@@ -35,7 +35,7 @@ class CustomBlocks implements OutputableInterface
     protected $placeholder;
     protected $toolInputs;
     protected $blockButtons;
-    protected $formOutput;
+    protected $blockTemplate;
     protected $factory;
     protected $session;
 
@@ -43,10 +43,10 @@ class CustomBlocks implements OutputableInterface
      * Create a Blocks input with a given template.
      * @param  FormFactoryInterface $factory
      * @param  string               $name
-     * @param  Form                 $form
+     * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, $form, \Gibbon\Session $session)
+    public function __construct(FormFactoryInterface &$factory, $name, OutputableInterface $block, \Gibbon\Session $session)
     {
         $this->session = $session;
         $this->factory = $factory;
@@ -54,7 +54,7 @@ class CustomBlocks implements OutputableInterface
         $this->placeholder = __("Blocks will appear here..."); 
         $this->toolInputs = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
         $this->blockButtons = array();
-        $this->formOutput = $form->setClass("blank")->getOutput();
+        $this->blockTemplate = $block->setClass("blank")->getOutput();
     }
 
     /**
@@ -121,7 +121,7 @@ class CustomBlocks implements OutputableInterface
            </div>
 
            <div id="'. $this->name .'Template" class="hiddenReveal" style="display:none; overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">
-                <div style="float:left; width:92%;">'. $this->formOutput .'</div>
+                <div style="float:left; width:92%;">'. $this->blockTemplate .'</div>
                 <div style="float:right; width: 8%; ">
                     <table class="blank">
                         <tr>
