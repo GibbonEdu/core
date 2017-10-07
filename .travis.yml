@@ -1,0 +1,68 @@
+# see http://about.travis-ci.org/docs/user/languages/php/ for more hints
+language: php
+
+# The platforms you wants to test on
+dist: trusty
+os:
+  - linux
+
+# list any PHP version you want to test against
+php:
+  - 7.0
+
+# optionally specify a list of environments, for example to test different RDBMS
+env:
+  global:
+    - TEST_ENV='codeception'
+    - ABSOLUTE_URL='http://127.0.0.1:8888'
+    - DB_HOST='127.0.0.1'
+    - DB_NAME='gibbon_test'
+    - DB_USERNAME='root'
+    - DB_PASSWORD=''
+
+# set git depth to reduce download size
+git:
+  depth: 2
+
+# enable php extensions
+addons:
+  apt:
+    packages:
+      - gettext
+
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# Cache folder, you can delete cache from Travis CI web interface
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+# Disable x-debug to speed up things
+before_install:
+  - phpenv config-rm xdebug.ini
+  - touch composer.json; printf '{}' > composer.json;
+
+# Install packages those will be required during build
+install:
+  - travis_retry composer self-update
+  - travis_retry composer global require "codeception/codeception:2.1.*@dev"
+  - travis_retry composer install --prefer-dist --no-interaction
+
+# execute any number of scripts before the test run, custom env's are available as variables
+before_script:
+  - php -S 127.0.0.1:8888 -t $TRAVIS_BUILD_DIR >/dev/null 2>&1 &
+  - sleep 1
+  - cd tests
+
+# omitting "script:" will default to phpunit
+# use the $DB env variable to determine the phpunit.xml to use
+script:
+  - ~/.composer/vendor/bin/codecept run install --env travis_ci
+  - ~/.composer/vendor/bin/codecept run acceptance --env travis_ci
+  - phpunit --verbose --configuration phpunit.xml
+
+# configure notifications (email, IRC, campfire etc)
+#notifications:
+#  email: ""
