@@ -65,4 +65,4 @@ script:
 
 # configure notifications (email, IRC, campfire etc)
 #notifications:
-#  email: ""
+  email: "tests@gibbonedu.org"
