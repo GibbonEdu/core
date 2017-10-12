@@ -54,6 +54,7 @@ class Editor extends Input
     public function setRows($count)
     {
         $this->rows = $count;
+        return $this;
     }
 
     /**
