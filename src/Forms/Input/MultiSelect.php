@@ -40,7 +40,7 @@ class MultiSelect implements OutputableInterface
     protected $removeButton;
     protected $sortBySelect;
 
-    public function __construct(FormFactoryInterface &$factory, $name) {        
+    public function __construct(FormFactoryInterface &$factory, $name) {
         $this->name = $name;
 
         $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true)->setSize(8)->setClass('mediumWidth')->addClass("floatNone");
@@ -62,7 +62,7 @@ class MultiSelect implements OutputableInterface
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
-        $this->sortBySelect->fromArray(array($attribute => __("Sort by " . $attribute));
+        $this->sortBySelect->fromArray(array($attribute => __("Sort by " . $attribute)));
         return $this;
     }
 
@@ -106,7 +106,7 @@ class MultiSelect implements OutputableInterface
         $output .= 'function sortSelect(list, sortValues) {
             var options = $(\'option\', list);
             if(sortValues == null) {
-                sortValues = {};  
+                sortValues = {};
             }
             var arr = options.map(function(_, o) { return { tSort: sortValues[o.value] + $(o).text(), t: $(o).text(), v: o.value }; }).get();
             arr.sort(function(o1, o2) { return o1.tSort > o2.tSort ? 1 : o1.tSort < o2.tSort ? -1 : 0; });
@@ -142,7 +142,7 @@ class MultiSelect implements OutputableInterface
                     var values = null;
 
                     if (sortBy != \'Sort by Name\') {
-                        values = sortables[sortBy];   
+                        values = sortables[sortBy];
                     }
 
                     sortSelect(sourceSelect, values);

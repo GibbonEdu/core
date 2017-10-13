@@ -1,6 +1,6 @@
 <?php
 $I = new AcceptanceTester($scenario);
-$I->wantTo('submit a student application form with most settings enabled');
+$I->wantTo('submit a student application form logged in as a parent');
 $I->loginAsAdmin();
 
 // Change Application Settings ---------------------------------
@@ -47,8 +47,15 @@ $I->seeInFormFields('#content form', $newUserSettings);
 // Go To Application  ------------------------------------------
 
 $I->click('Logout', 'a');
+$I->loginAsParent();
+
 $I->amOnModulePage('Students', 'applicationForm.php');
 $I->seeBreadcrumb('Application Form');
+
+// Verify logged-in parent data
+$I->see('Choose the family you wish to associate this application with');
+$I->see('Testing Family');
+$I->selectOption('select[name$="relationships[]"]', 'Other');
 
 // Fill in Form ------------------------------------------------
 $formValues = array(
@@ -93,67 +100,6 @@ $formValues = array(
     'schoolGrades2'               => 'Previous Grade 2',
     'schoolLanguage2'             => 'Language 2',
     'schoolDate2'                 => '01/01/2011',
-    'homeAddress'                 => '123 Fictitious Lane',
-    'homeAddressDistrict'         => 'Nowhere',
-    'homeAddressCountry'          => 'Antarctica',
-    'parent1title'                => 'Ms.',
-    'parent1surname'              => 'McTest',
-    'parent1firstName'            => 'Parent 1',
-    'parent1preferredName'        => 'Parent 1',
-    'parent1officialName'         => 'Parent 1 McTest',
-    'parent1nameInCharacters'     => 'P1T',
-    'parent1gender'               => 'F',
-    'parent1relationship'         => 'Mother',
-    'parent1languageFirst'        => 'Latin',
-    'parent1languageSecond'       => 'English',
-    'parent1citizenship1'         => 'Nationality 2',
-    'parent1nationalIDCardNumber' => 'GHI12345',
-    'parent1residencyStatus'      => 'Status 2',
-    'parent1visaExpiryDate'       => '02/02/2020',
-    'parent1email'                => 'parent1.mctest@testingemail.test',
-    'parent1phone1'               => '34567890',
-    'parent1phone1Type'           => 'Mobile',
-    'parent1phone1CountryCode'    => '1',
-    'parent1phone2'               => '23456789',
-    'parent1phone2Type'           => 'Work',
-    'parent1phone2CountryCode'    => '1',
-    'parent1profession'           => 'Neurosurgeon',
-    'parent1employer'             => 'Parent 1 Employer',
-    'parent2title'                => 'Mr.',
-    'parent2surname'              => 'McTest',
-    'parent2firstName'            => 'Parent 2',
-    'parent2preferredName'        => 'Parent 2',
-    'parent2officialName'         => 'Parent 2 McTest',
-    'parent2nameInCharacters'     => 'P2T',
-    'parent2gender'               => 'M',
-    'parent2relationship'         => 'Father',
-    'parent2languageFirst'        => 'German',
-    'parent2languageSecond'       => 'Urdu',
-    'parent2citizenship1'         => 'Nationality 3',
-    'parent2nationalIDCardNumber' => 'JKL12345',
-    'parent2residencyStatus'      => 'Status 3',
-    'parent2visaExpiryDate'       => '03/03/2030',
-    'parent2email'                => 'parent2.mctest@testingemail.test',
-    'parent2phone1'               => '87654321',
-    'parent2phone1Type'           => 'Home',
-    'parent2phone1CountryCode'    => '1',
-    'parent2phone2'               => '19876543',
-    'parent2phone2Type'           => 'Work',
-    'parent2phone2CountryCode'    => '1',
-    'parent2profession'           => 'Thespian',
-    'parent2employer'             => 'Parent 2 Employer',
-    'siblingName1'                => 'Sibling 1 McTest',
-    'siblingDOB1'                 => '01/01/2001',
-    'siblingSchool1'              => 'Sibling 1 School',
-    'siblingSchoolJoiningDate1'   => '01/01/2017',
-    'siblingName2'                => 'Sibling 2 McTest',
-    'siblingDOB2'                 => '02/02/2002',
-    'siblingSchool2'              => 'Sibling 2 School',
-    'siblingSchoolJoiningDate2'   => '02/02/2017',
-    'siblingName3'                => 'Sibling 3 McTest',
-    'siblingDOB3'                 => '03/03/2003',
-    'siblingSchool3'              => 'Sibling 3 School',
-    'siblingSchoolJoiningDate3'   => '03/03/2017',
     'languageChoice'              => 'Latin',
     'languageChoiceExperience'    => 'Language Choice Test',
     'scholarshipInterest'         => 'Y',
@@ -167,7 +113,7 @@ $formValues = array(
     'companyPhone'                => '54329876',
     'howDidYouHear'               => 'Others',
     'howDidYouHearMore'           => 'Testing',
-    'gibbonFamily'                => 'FALSE',
+    'gibbonFamily'                => 'TRUE',
 );
 
 // Maually select some items (relative values)
@@ -177,10 +123,6 @@ $I->selectFromDropdown('gibbonYearGroupIDEntry', 2);
 // Check the agreement
 $I->checkOption('agreement');
 
-// Attach required documents
-$I->attachFile('file0', 'attachment.jpg');
-$I->attachFile('file1', 'attachment.txt');
-
 $I->submitForm('#content form', $formValues, 'Submit');
 
 $I->see('Your application was successfully submitted', '.success');
@@ -188,6 +130,8 @@ $I->see('Your application was successfully submitted', '.success');
 $applicationFormHash = $I->grabValueFromURL('id');
 $gibbonApplicationFormID = $I->grabTextFrom('.success b u');
 $gibbonSchoolYearID = $I->grabFromDatabase('gibbonApplicationForm', 'gibbonSchoolYearIDEntry', array('gibbonApplicationFormID' => $gibbonApplicationFormID));
+
+$I->click('Logout', 'a');
 
 // Verify ------------------------------------------------
 $I->loginAsAdmin();
@@ -197,15 +141,6 @@ $I->seeBreadcrumb('Edit Form');
 
 $I->seeInFormFields('#content form', $formValues);
 
-$file0path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload0']);
-$file1path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload1']);
-
-// Check to see the uploaded files are there
-$I->see('FileUpload0');
-$I->see(basename($file0path));
-$I->see('FileUpload1');
-$I->see(basename($file1path));
-
 // Cleanup ------------------------------------------------
 
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -214,12 +149,6 @@ $I->seeBreadcrumb('Delete Form');
 
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
-
-// Delete Files ------------------------------------------------
-
-$I->deleteFile('../'.$file0path);
-$I->deleteFile('../'.$file1path);
-$I->deleteFromDatabase('gibbonApplicationFormFile', ['gibbonApplicationFormID' => $gibbonApplicationFormID]);
 
 // Restore Original Settings -----------------------------------
 

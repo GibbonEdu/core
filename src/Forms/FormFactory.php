@@ -169,6 +169,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Button($label, $onClick);
     }
 
+    public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
+    {
+        return new Input\CustomBlocks($this, $name, $block, $session);
+    }
+    
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($label)
