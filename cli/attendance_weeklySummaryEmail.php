@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -34,6 +36,7 @@ if (!isCommandLineInterface()) {
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
     
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
+    $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
     
     $dateEnd = new DateTime();
     $dateStart = new DateTime();
@@ -56,7 +59,7 @@ if (!isCommandLineInterface()) {
             WHERE gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd
             AND gibbonPerson.status='Full'
             AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-            ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName, gibbonAttendanceLogPerson.timestampTaken
+            ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken
     ";
 
     $reportByYearGroup = array();
@@ -96,7 +99,7 @@ if (!isCommandLineInterface()) {
 
                     // Remove all logs that aren't absent or late
                     $filtered = array_filter($filtered, function($log) use (&$attendance)  {
-                        return $log['type'] == 'Absent - Unexcused' || $attendance->isTypeLate($log['type']);
+                        return $attendance->isTypeAbsent($log['type']) || $attendance->isTypeLate($log['type']);
                     });
                     
                     return $filtered;
@@ -129,6 +132,7 @@ if (!isCommandLineInterface()) {
                     $report .= '<br/><span style="display:inline-block; width:45px;margin-left:30px;">'.date('D', strtotime($date)) .'</span>';
                     $report .= '<span style="display:inline-block; width:65px;">'.date('M j', strtotime($date)) .'</span>';
 
+                    // Display frequencies of each absence type
                     $types = array_count_values(array_column($logs, 'type'));
                     $types = array_map(function($type, $count) {
                         return ($count > 1)? $type.' ('.$count.')' : $type;
@@ -143,8 +147,12 @@ if (!isCommandLineInterface()) {
             $reportByYearGroup[$gibbonYearGroupID][$rollGroupName] = $report;
         }
     }
-
+    
     if (!empty($reportByYearGroup)) {
+        // Initialize the notification sender & gateway objects
+        $notificationGateway = new NotificationGateway($pdo);
+        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+
         $reportHeading = '<h3>'.__('Weekly Attendance Summary').': '.$dateStart->format('M j').' - '.$dateEnd->format('M j').'</h3>';
 
         foreach ($reportByYearGroup as $gibbonYearGroupID => $reportByRollGroup) {
@@ -153,13 +161,16 @@ if (!isCommandLineInterface()) {
 
             $event->addScope('gibbonYearGroupID', $gibbonYearGroupID);
             $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByRollGroup));
-            $event->setActionLink('/index.php?q=/modules/Attendance/report_studentsNotPresent_byDate.php');
+            $event->setActionLink('/index.php?q=/modules/Attendance/report_summary_byDate.php&dateStart='.$dateStart->format($dateFormat).'dateEnd='.$dateEnd->format($dateFormat).'&group=all&sort=rollGroup');
 
-            // Send event notifications
-            $sendReport = $event->sendNotifications($pdo, $gibbon->session);
-
-            // Output the result to terminal
-            echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
+            // Push the event to the notification sender
+            $event->pushNotifications($notificationGateway, $notificationSender);
         }
+
+        // Send all notifications
+        $sendReport = $notificationSender->sendNotifications();
+
+        // Output the result to terminal
+        echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
     }
 }
