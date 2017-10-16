@@ -64,5 +64,5 @@ script:
   - phpunit --verbose --configuration phpunit.xml
 
 # configure notifications (email, IRC, campfire etc)
-#notifications:
+notifications:
   email: "tests@gibbonedu.org"

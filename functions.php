@@ -4624,7 +4624,7 @@ function getModuleIDFromName($connection2, $name)
     return $row['gibbonModuleID'];
 }
 
-function setLike($connection2, $moduleName, $gibbonSchoolYearID, $contextKeyName, $contextKeyValue, $gibbonPersonIDGiver, $gibbonPersonIDRecipient, $title, $comment = null)
+function setLike($connection2, $moduleName, $gibbonSchoolYearID, $contextKeyName, $contextKeyValue, $gibbonPersonIDGiver, $gibbonPersonIDRecipient, $title, $comment = '')
 {
     $return = true;
 

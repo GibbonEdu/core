@@ -49,6 +49,7 @@ v15.0.00
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
 		Attendance: added count column to Students Not Present and Students Not Onsite reports
+		Attendance: granted like to those students who successfully self register
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
