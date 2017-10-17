@@ -61,7 +61,16 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getName()
     {
-        return 'label-'.$this->for;
+        return 'label'.$this->for;
+    }
+
+    /**
+     * Overload the getID method to prepend a label prefix.
+     * @return  string
+     */
+    public function getID()
+    {
+        return 'label'.$this->for;
     }
 
     /**

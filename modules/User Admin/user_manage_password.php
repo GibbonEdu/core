@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('passwordConfirm', __('Confirm Password'));
-                $row->addPassword('passwordConfirm')->isRequired()->maxLength(30)->addValidationOption('onlyOnSubmit: true')->addValidation('Validate.Confirmation', "{ match: 'passwordNew' }");
+                $row->addPassword('passwordConfirm')->isRequired()->maxLength(30)->addValidationOption('onlyOnSubmit: true')->addValidation('Validate.Confirmation', "match: 'passwordNew'");
 
             $row = $form->addRow();
                 $row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));

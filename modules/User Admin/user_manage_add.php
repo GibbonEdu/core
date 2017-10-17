@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			->isRequired()
 			->maxLength(30)
 			->addValidationOption('onlyOnSubmit: true')
-			->addValidation('Validate.Confirmation', "{ match: 'passwordNew' }");
+			->addValidation('Validate.Confirmation', "match: 'passwordNew'");
 
 	$row = $form->addRow();
 		$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
@@ -184,11 +184,178 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
 		->append('</ol>');
 
+	$row = $form->addRow();
+		$row->addLabel('showAddresses', __('Enter Personal Address?'));
+		$row->addCheckbox('showAddresses')->setValue('Yes');
+
+	$form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
+
+	$sql = "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name";
+	$result = $pdo->executeQuery(array(), $sql);
+	$districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+
+	$row = $form->addRow()->addClass('address');
+		$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
+		$row->addTextField('address1')->maxLength(255);
+
+	$row = $form->addRow()->addClass('address');
+		$row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
+		$row->addTextField('address1District')->maxLength(30)->autocomplete($districts);
+
+	$row = $form->addRow()->addClass('address');
+		$row->addLabel('address1Country', __('Address 1 Country'));
+		$row->addSelectCountry('address1Country');
+
+	$row = $form->addRow()->addClass('address');
+		$row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
+		$row->addTextField('address2')->maxLength(255);
+
+	$row = $form->addRow()->addClass('address');
+		$row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
+		$row->addTextField('address2District')->maxLength(30)->autocomplete($districts);
+
+	$row = $form->addRow()->addClass('address');
+		$row->addLabel('address2Country', __('Address 2 Country'));
+		$row->addSelectCountry('address2Country');
+
+    for ($i = 1; $i < 5; ++$i) {
+		$row = $form->addRow();
+		$row->addLabel('phone'.$i, __('Phone').' '.$i)->description(__('Type, country code, number.'));
+        $row->addPhoneNumber('phone'.$i);
+	}
+	
+	$row = $form->addRow();
+		$row->addLabel('website', __('Website'))->description(__('Include http://'));
+		$row->addURL('website');
+
     // SCHOOL INFORMATION
-    $form->addRow()->addHeading(__('School Information'));
+	$form->addRow()->addHeading(__('School Information'));
+	
+	$dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+	if (!empty($dayTypeOptions)) {
+		$dayTypeText = getSettingByScope($connection2, 'User Admin', 'dayTypeText');
+		$row = $form->addRow();
+			$row->addLabel('dayType', __('Day Type'))->description($dayTypeText);
+			$row->addSelect('dayType')->fromString($dayTypeOptions)->placeholder();
+	}
+
+	$sql = "SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool";
+	$result = $pdo->executeQuery(array(), $sql);
+	$schools = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+
+	$row = $form->addRow();
+		$row->addLabel('lastSchool', __('Last School'));
+		$row->addTextField('lastSchool')->autocomplete($schools);
+
+	$row = $form->addRow();
+		$row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
+		$row->addDate('dateStart');
+
+	$row = $form->addRow();
+		$row->addLabel('gibbonSchoolYearIDClassOf', __('Class Of'))->description(__('When is the student expected to graduate?'));
+		$row->addSelectSchoolYear('gibbonSchoolYearIDClassOf');
+
+	// $row = $form->addRow();
+	// 	$row->addLabel('test', __('Testing'));
+	// 	$column = $row->addColumn()->addClass('right');
+	// 	$column->addSelect('foo');
+	// 	$column->addButton('bar')->addClass('inline shortWidth');
+	// 	$column->addButton('baz')->addClass('inline shortWidth');
 
     // BACKGROUND INFORMATION
-    $form->addRow()->addHeading(__('Background Information'));
+	$form->addRow()->addHeading(__('Background Information'));
+	
+	$row = $form->addRow();
+		$row->addLabel('languageFirst', __('First Language'));
+		$row->addSelectLanguage('languageFirst');
+
+	$row = $form->addRow();
+		$row->addLabel('languageSecond', __('Second Language'));
+		$row->addSelectLanguage('languageSecond');
+
+	$row = $form->addRow();
+		$row->addLabel('languageThird', __('Third Language'));
+		$row->addSelectLanguage('languageThird');
+
+	$row = $form->addRow();
+		$row->addLabel('countryOfBirth', __('Country of Birth'));
+		$row->addSelectCountry('countryOfBirth');
+
+	$row = $form->addRow();
+		$row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+		$row->addFileUpload('birthCertificateScan');
+		
+	$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
+	$row = $form->addRow();
+		$row->addLabel('ethnicity', __('Ethnicity'));
+		$row->addSelect('ethnicity')->fromString($ethnicities);
+
+	$religions = getSettingByScope($connection2, 'User Admin', 'religions');
+	$row = $form->addRow();
+		$row->addLabel('religion', __('Religion'));
+		$row->addSelect('religion')->fromString($religions);
+
+	$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+	$row = $form->addRow();
+		$row->addLabel('citizenship1', __('Citizenship 1'));
+		if (!empty($nationalityList)) {
+			$row->addSelect('citizenship1')->fromString($nationalityList);
+		} else {
+			$row->addSelectCountry('citizenship1');
+		}
+	
+	$row = $form->addRow();
+		$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
+		$row->addTextField('citizenship1Passport')->maxLength(30);
+
+	$row = $form->addRow();
+		$row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+		$row->addFileUpload('citizenship1PassportScan');
+
+	$row = $form->addRow();
+		$row->addLabel('citizenship2', __('Citizenship 2'));
+		if (!empty($nationalityList)) {
+			$row->addSelect('citizenship2')->fromString($nationalityList);
+		} else {
+			$row->addSelectCountry('citizenship2');
+		}
+	
+	$row = $form->addRow();
+		$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
+		$row->addTextField('citizenship2Passport')->maxLength(30);
+
+	if (empty($_SESSION[$guid]['country'])) {
+		$nationalIDCardNumberLabel = __('National ID Card Number');
+		$nationalIDCardScanLabel = __('National ID Card Scan');
+		$residencyStatusLabel = __('Residency/Visa Type');
+		$visaExpiryDateLabel = __('Visa Expiry Date');
+	} else {
+		$nationalIDCardNumberLabel = $_SESSION[$guid]['country'].' '.__('ID Card Number');
+		$nationalIDCardScanLabel = $_SESSION[$guid]['country'].' '.__('ID Card Scan');
+		$residencyStatusLabel = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
+		$visaExpiryDateLabel = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+	}
+
+	$row = $form->addRow();
+		$row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
+		$row->addTextField('nationalIDCardNumber')->maxLength(30);
+
+	$row = $form->addRow();
+		$row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel);
+		$row->addFileUpload('nationalIDCardScan');
+
+	$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+	$row = $form->addRow();
+		$row->addLabel('residencyStatus', $residencyStatusLabel);
+		if (!empty($residencyStatusList)) {
+			$row->addSelect('residencyStatus')->fromArray($residencyStatusList);
+		} else {
+            $row->addTextField('residencyStatus')->maxLength(30);
+		}
+		
+		$row = $form->addRow();
+		$row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
+		$row->addDate('visaExpiryDate');
 
     // EMPLOYMENT
     $form->addRow()->addHeading(__('Employment'));
@@ -866,25 +1033,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				<td class="right">
 					<input name="lastSchool" id="lastSchool" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-                            try {
-                                $dataAuto = array();
-                                $sqlAuto = 'SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool';
-                                $resultAuto = $connection2->prepare($sqlAuto);
-                                $resultAuto->execute($dataAuto);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowAuto = $resultAuto->fetch()) {
-								echo '"'.$rowAuto['lastSchool'].'", ';
-							}
-							?>
-						];
-						$( "#lastSchool" ).autocomplete({source: availableTags});
-					});
-				</script>
+
 			</tr>
 			<tr>
 				<td>

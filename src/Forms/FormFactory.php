@@ -286,7 +286,7 @@ class FormFactory implements FormFactoryInterface
             'Full'     => __('Full'),
             'Expected' => __('Expected'),
             'Left'     => __('Left'),
-        ))->placeholder();
+        ));
     }
 
 >>>>>>> Form Class: updated content wrapping to allow multiple wraps
