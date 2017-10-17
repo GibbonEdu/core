@@ -43,8 +43,15 @@ class MultiSelect implements OutputableInterface
     public function __construct(FormFactoryInterface &$factory, $name) {
         $this->name = $name;
 
-        $this->sourceSelect = $factory->createSelect($name . "Source")->selectMultiple(true)->setSize(8)->setClass('mediumWidth')->addClass("floatNone");
-        $this->destinationSelect = $factory->createSelect($name . "Destination")->selectMultiple(true)->setSize(8)->setClass('mediumWidth');
+        $this->sourceSelect = $factory->createSelect($name . "Source")
+            ->selectMultiple(true)
+            ->setSize(8)
+            ->setClass('mediumWidth')
+            ->addClass("floatNone");
+        $this->destinationSelect = $factory->createSelect($name . "Destination")
+            ->selectMultiple(true)
+            ->setSize(8)
+            ->setClass('mediumWidth');
 
         $this->sortBySelect = $factory->createSelect($name . "Sort")
             ->placeholder(__("Sort by Name"))

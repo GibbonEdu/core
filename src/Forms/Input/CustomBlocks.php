@@ -54,7 +54,7 @@ class CustomBlocks implements OutputableInterface
         $this->placeholder = __("Blocks will appear here..."); 
         $this->toolInputs = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
         $this->blockButtons = array();
-        $this->blockTemplate = $block->setClass("blank")->getOutput();
+        $this->blockTemplate = $block->setClass("blank fullWidth")->getOutput();
     }
 
     /**
