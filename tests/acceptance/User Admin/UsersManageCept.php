@@ -105,12 +105,11 @@ $I->selectFromDropdown('gibbonHouseID', 2);
 
 // Handle privacy and student agreements?
 
-// File Uploads?
-// 'file1'                     => '',
-// 'birthCertificateScan'      => '',
-// 'citizenship1PassportScan'  => '',
-// 'nationalIDCardScan'        => '',
-
+// File Uploads
+$I->attachFile('file1', 'attachment.jpg');
+$I->attachFile('birthCertificateScan', 'attachment.jpg');
+$I->attachFile('citizenship1PassportScan', 'attachment.jpg');
+$I->attachFile('nationalIDCardScan', 'attachment.jpg');
 
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
@@ -122,6 +121,10 @@ $I->amOnModulePage('User Admin', 'user_manage_edit.php', array('gibbonPersonID' 
 $I->seeBreadcrumb('Edit User');
 
 $I->seeInFormFields('#content form', $formValues);
+$I->seeFieldIsNotEmpty('input[name="attachment1"]');
+$I->seeFieldIsNotEmpty('input[name="birthCertificateScanCurrent"]');
+$I->seeFieldIsNotEmpty('input[name="citizenship1PassportScanCurrent"]');
+$I->seeFieldIsNotEmpty('input[name="nationalIDCardScanCurrent"]');
 
 $formValues = array(
     'title'                     => 'Mr.',
@@ -186,6 +189,13 @@ $formValues = array(
 
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
+
+// Cleanup Files ------------------------------------------------
+
+$I->deleteFile('../'.$I->grabValueFrom('input[name="attachment1"]'));
+$I->deleteFile('../'.$I->grabValueFrom('input[name="birthCertificateScanCurrent"]'));
+$I->deleteFile('../'.$I->grabValueFrom('input[name="citizenship1PassportScanCurrent"]'));
+$I->deleteFile('../'.$I->grabValueFrom('input[name="nationalIDCardScanCurrent"]'));
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
