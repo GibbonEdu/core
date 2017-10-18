@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                 }
 
                 if ($result->rowCount() > 0) { //Records! Return error
-                    $URL .= '&return=error0';
+                    $URL .= '&return=error1';
                     header("Location: {$URL}");
                 }
                 else { //If no records, set status to Present
