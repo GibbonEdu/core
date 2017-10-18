@@ -1399,15 +1399,22 @@ input[name*="phone"] ~ .LV_invalid {
 	cursor: pointer;
 }
 
+.input-box ~ .input-box {
+	border-top-width: 0px;
+}
+
+.input-box-meta {
+	float: right;
+	line-height: 22px;
+}
+
 .floatNone {
 	float:none;
 }
 
 .max-upload {
-    float: right;
     font-style: italic;
-    color: #c00;
-    line-height: 22px;
+	color: #c00;
     font-size: 11px;
 }
 

@@ -68,6 +68,7 @@ v15.0.00
 		Students: fixed display of Other Fields heading for parents in Application Form
         Students: added a notification event for Application Form Accepted
         Students: added an option for logged-in users to link new Application Forms to an existing user or family
+		Students: added ability to delete files and upload multiple files in Edit Application Form
 		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
         System Admin: updated version check to handle semantic version numbers
 		Timetable: added ability to set and display text and background colour for timetable day headers
