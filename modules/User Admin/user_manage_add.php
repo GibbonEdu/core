@@ -97,7 +97,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             ->description(__('Displayed at 240px by 320px.'))
             ->description(__('Accepts images up to 360px by 480px.'))
             ->description(__('Accepts aspect ratio between 1:1.2 and 1:1.4.'));
-        $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false);
+		$row->addFileUpload('file1')
+			->accepts('.jpg,.jpeg,.gif,.png')
+			->setMaxUpload(false);
 
     // SYSTEM ACCESS
     $form->addRow()->addHeading(__('System Access'));
@@ -292,13 +294,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-		$row->addFileUpload('birthCertificateScan');
+		$row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf');
 		
 	$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
 	$row = $form->addRow();
 		$row->addLabel('ethnicity', __('Ethnicity'));
 		if (!empty($ethnicities)) {
-			$row->addSelect('ethnicity')->fromString($ethnicities);
+			$row->addSelect('ethnicity')->fromString($ethnicities)->placeholder();
 		} else {
 			$row->addTextField('ethnicity')->maxLength(255);
 		}
@@ -307,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 	$row = $form->addRow();
 		$row->addLabel('religion', __('Religion'));
 		if (!empty($religions)) {
-			$row->addSelect('religion')->fromString($religions);
+			$row->addSelect('religion')->fromString($religions)->placeholder();
 		} else {
 			$row->addTextField('religion')->maxLength(30);
 		}
@@ -316,7 +318,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 	$row = $form->addRow();
 		$row->addLabel('citizenship1', __('Citizenship 1'));
 		if (!empty($nationalityList)) {
-			$row->addSelect('citizenship1')->fromString($nationalityList);
+			$row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
 		} else {
 			$row->addSelectCountry('citizenship1');
 		}
@@ -327,12 +329,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-		$row->addFileUpload('citizenship1PassportScan');
+		$row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf');
 
 	$row = $form->addRow();
 		$row->addLabel('citizenship2', __('Citizenship 2'));
 		if (!empty($nationalityList)) {
-			$row->addSelect('citizenship2')->fromString($nationalityList);
+			$row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
 		} else {
 			$row->addSelectCountry('citizenship2');
 		}
@@ -358,15 +360,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		$row->addTextField('nationalIDCardNumber')->maxLength(30);
 
 	$row = $form->addRow();
-		$row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel);
-		$row->addFileUpload('nationalIDCardScan');
+		$row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+		$row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf');
 
 	$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 	
 	$row = $form->addRow();
 		$row->addLabel('residencyStatus', $residencyStatusLabel);
 		if (!empty($residencyStatusList)) {
-			$row->addSelect('residencyStatus')->fromString($residencyStatusList);
+			$row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
 		} else {
             $row->addTextField('residencyStatus')->maxLength(30);
 		}
@@ -401,7 +403,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
-		$row->addSelectRelationship('emergency1Relationship');
+		$row->addSelectEmergencyRelationship('emergency1Relationship');
 
 	$row = $form->addRow();
 		$row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
@@ -417,7 +419,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
-		$row->addSelectRelationship('emergency2Relationship');
+		$row->addSelectEmergencyRelationship('emergency2Relationship');
 
 	$row = $form->addRow();
 		$row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
