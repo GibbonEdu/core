@@ -849,5 +849,5 @@ ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTable`);end
 ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTableID`);end
 ALTER TABLE `gibbonRubricRow` ADD INDEX(`gibbonRubricID`);end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Weekly Attendance Summary ', 'Attendance', 'Attendance Summary by Date', 'CLI', 'All,gibbonYearGroupID', 'Y');end
-
+ALTER TABLE `gibbonActivityStaff` MODIFY `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000';end
 ";
