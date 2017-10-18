@@ -265,7 +265,6 @@ class FormFactory implements FormFactoryInterface
         ))->placeholder();
     }
 
-<<<<<<< HEAD
     public function createSelectEmergencyRelationship($name)
     {
         return $this->createSelect($name)->fromArray(array(
@@ -278,18 +277,7 @@ class FormFactory implements FormFactoryInterface
             'Other'          => __('Other'),
         ))->placeholder();
     }
-    
-=======
-    public function createSelectStatus($name)
-    {
-        return $this->createSelect($name)->fromArray(array(
-            'Full'     => __('Full'),
-            'Expected' => __('Expected'),
-            'Left'     => __('Left'),
-        ));
-    }
-
->>>>>>> Form Class: updated content wrapping to allow multiple wraps
+ 
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
