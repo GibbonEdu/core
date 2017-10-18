@@ -65,7 +65,7 @@ $formValues = array(
     'languageFirst'             => 'Albanian',
     'languageSecond'            => 'Bulgarian',
     'languageThird'             => 'Cambodian',
-    'countryOfBirth'            => '',
+    'countryOfBirth'            => 'Antarctica',
     'ethnicity'                 => 'Ethnicity 2',
     'religion'                  => 'Religion 3',
     'citizenship1'              => 'Nationality 1',
@@ -123,12 +123,69 @@ $I->seeBreadcrumb('Edit User');
 
 $I->seeInFormFields('#content form', $formValues);
 
-// $formValues = array(
+$formValues = array(
+    'title'                     => 'Mr.',
+    'surname'                   => 'McTesting',
+    'firstName'                 => 'Testing',
+    'preferredName'             => 'Testing',
+    'officialName'              => 'Test E. McTesting',
+    'nameInCharacters'          => 'TST',
+    'gender'                    => 'M',
+    'dob'                       => '10/10/2010',
+    'status'                    => 'Left',
+    'canLogin'                  => 'Y',
+    'passwordForceReset'        => 'Y',
+    'email'                     => 'testmctesting@gibbon.test',
+    'emailAlternate'            => 'testmctest2ing@gibbon.test',
+    'address1'                  => '321 Ficticious Lane',
+    'address1District'          => 'Somewhere',
+    'address1Country'           => 'Zimbabwe',
+    'address2'                  => '4321 No Place',
+    'address2District'          => 'Nowhere',
+    'address2Country'           => 'Zimbabwe',
+    'phone1'                    => '87654321',
+    'phone1CountryCode'         => '',
+    'phone1Type'                => 'Pager',
+    'phone2'                    => '98765432',
+    'phone2CountryCode'         => '',
+    'phone2Type'                => 'Other',
+    'phone3'                    => '09876543',
+    'phone3CountryCode'         => '',
+    'phone3Type'                => 'Fax',
+    'website'                   => 'http://testing.gibbon.test',
+    'dayType'                   => 'Day Type 2',
+    'lastSchool'                => 'Testing Also',
+    'dateStart'                 => '10/10/2010',
+    'languageFirst'             => 'Xhosa',
+    'languageSecond'            => 'Welsh',
+    'languageThird'             => 'Uzbek',
+    'countryOfBirth'            => 'Zimbabwe',
+    'ethnicity'                 => 'Ethnicity 1',
+    'religion'                  => 'Religion 2',
+    'citizenship1'              => 'Nationality 2',
+    'citizenship1Passport'      => '4321ABC',
+    'citizenship2'              => 'Nationality 3',
+    'citizenship2Passport'      => 'ABC4321',
+    'nationalIDCardNumber'      => '4321-5678',
+    'visaExpiryDate'            => '10/10/2110',
+    'residencyStatus'           => 'Status 1',
+    'emergency1Name'            => 'Emergency Person 1 Also',
+    'emergency1Relationship'    => 'Friend',
+    'emergency1Number1'         => '87654321',
+    'emergency1Number2'         => '98765432',
+    'emergency2Name'            => 'Emergency Person 2 Also',
+    'emergency2Relationship'    => 'Spouse',
+    'emergency2Number1'         => '12345678',
+    'emergency2Number2'         => '23456789',
+    'studentID'                 => 'testmctesting',
+    'transport'                 => 'ABC321',
+    'transportNotes'            => 'Tardis',
+    'lockerNumber'              => '321',
+    'vehicleRegistration'       => '4321',
+);
 
-// );
-
-// $I->submitForm('#content form', $formValues, 'Submit');
-// $I->see('Your request was completed successfully.', '.success');
+$I->submitForm('#content form', $formValues, 'Submit');
+$I->see('Your request was completed successfully.', '.success');
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
