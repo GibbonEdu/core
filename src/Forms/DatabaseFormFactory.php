@@ -164,6 +164,21 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
+    public function createSelectStatus($name)
+    {   
+        $statuses = array(
+            'Full'     => __('Full'),
+            'Expected' => __('Expected'),
+            'Left'     => __('Left'),
+        );
+
+        if (getSettingByScope($this->pdo->getConnection(), 'User Admin', 'enablePublicRegistration') == 'Y') {
+            $statuses['Pending Approval'] = __('Pending Approval');
+        }
+
+        return $this->createSelect($name)->fromArray($statuses);
+    }
+
     public function createSelectStaff($name)
     {
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName

@@ -264,15 +264,19 @@ class FormFactory implements FormFactoryInterface
         ))->placeholder();
     }
 
-    public function createSelectStatus($name)
+    public function createSelectEmergencyRelationship($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'Full'     => __('Full'),
-            'Expected' => __('Expected'),
-            'Left'     => __('Left'),
+            'Parent'         => __('Parent'),
+            'Spouse'         => __('Spouse'),
+            'Offspring'      => __('Offspring'),
+            'Friend'         => __('Friend'),
+            'Other Relation' => __('Other Relation'),
+            'Doctor'         => __('Doctor'),
+            'Other'          => __('Other'),
         ))->placeholder();
     }
-
+    
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
