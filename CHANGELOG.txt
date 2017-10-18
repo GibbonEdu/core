@@ -45,6 +45,7 @@ v15.0.00
 		System: fixed text alginment in module menu
 		System: fixed long-string and large image issue causing content to bleed under sidebar
 		Activities: added new payment fields to activities (cost type and cost status)
+		Activities: fixed database field length issue in gibbonActivityStaff
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
