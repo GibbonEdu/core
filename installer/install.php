@@ -396,7 +396,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('email', __('Email'));
-                                                    $row->addEmail('email')->maxLength(50);
+                                                    $row->addEmail('email')->maxLength(50)->isRequired();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__($guid, 'Join our mailing list and recieve a welcome email from the team.'));
@@ -534,7 +534,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'country', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelectCountry($setting['name']);
+                                                    $row->addSelectCountry($setting['name'])->isRequired();
 
                                                 $setting = getSettingByScope($connection2, 'System', 'currency', true);
                                                 $row = $form->addRow();
@@ -544,7 +544,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'timezone', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue()->isRequired();
+                                                    $row->addTextField($setting['name'])->setValue('Asia/Hong_Kong')->isRequired();
 
                                                 $row = $form->addRow();
                                                     $row->addFooter();
