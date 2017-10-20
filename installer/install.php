@@ -369,675 +369,189 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 }
 
                                                 //Let's gather some more information
-                                                ?>
-												<form method="post" action="./install.php?step=3&guid=<?php echo $guid ?>">
-													<table class='smallIntBorder fullWidth' cellspacing='0'>
-														<tr class='break'>
-															<td colspan=2>
-																<h3><?php echo __($guid, 'User Account') ?></h3>
-															</td>
-														</tr>
-														<tr>
-															<td style='width: 275px'>
-																<b><?php echo __($guid, 'Title') ?></b><br/>
-															</td>
-															<td class="right">
-																<select class="standardWidth" name="title">
-																	<option value=""></option>
-																	<option value="Ms. "><?php echo __($guid, 'Ms.') ?></option>
-																	<option value="Miss "><?php echo __($guid, 'Miss') ?></option>
-																	<option value="Mr. "><?php echo __($guid, 'Mr.') ?></option>
-																	<option value="Mrs. "><?php echo __($guid, 'Mrs.') ?></option>
-																	<option value="Dr. "><?php echo __($guid, 'Dr.') ?></option>
-																</select>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'Surname') ?> *</b><br/>
-																<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
-															</td>
-															<td class="right">
-																<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var surname=new LiveValidation('surname');
-																	surname.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'First Name') ?>*</b><br/>
-																<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
-															</td>
-															<td class="right">
-																<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var firstName=new LiveValidation('firstName');
-																	firstName.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'Email') ?> *</b><br/>
-															</td>
-															<td class="right">
-																<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var email=new LiveValidation('email');
-																	email.add(Validate.Email);
-																	email.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'Receive Support?') ?></b><br/>
-																<span class="emphasis small"><?php echo __($guid, 'Join our mailing list and recieve a welcome email from the team.') ?></span>
-															</td>
-															<td class="right">
-																<input checked name="support" id="support" value="true" type="checkbox">
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'Username') ?> *</b><br/>
-																<span class="emphasis small"><?php echo __($guid, 'Must be unique. System login name. Cannot be changed.') ?></span>
-															</td>
-															<td class="right">
-																<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
-																<?php
-                                                                $idList = '';
-																try {
-																	$dataSelect = array();
-																	$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
-																	$resultSelect = $connection2->prepare($sqlSelect);
-																	$resultSelect->execute($dataSelect);
-																} catch (PDOException $e) {
-																}
-																while ($rowSelect = $resultSelect->fetch()) {
-																	$idList .= "'".$rowSelect['username']."',";
-																}
-																?>
-																<script type="text/javascript">
-																	var username=new LiveValidation('username');
-																	username.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<td colspan=2>
-																<?php
-                                                                $policy = getPasswordPolicy($guid, $connection2);
-																if ($policy != false) {
-																	echo "<div class='warning'>";
-																	echo $policy;
-																	echo '</div>';
-																}
-																?>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'Password') ?> *</b><br/>
-																<span class="emphasis small"></span>
-															</td>
-															<td class="right">
-																<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
-																<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" class="standardWidth"><br/>
 
-																<script type="text/javascript">
-																	var passwordNew=new LiveValidation('passwordNew');
-																	passwordNew.add(Validate.Presence);
-																	<?php
-                                                                    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-																	$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-																	$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-																	$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-																	if ($alpha == 'Y') {
-																		echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-																	}
-																	if ($numeric == 'Y') {
-																		echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-																	}
-																	if ($punctuation == 'Y') {
-																		echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-																	}
-																	if (is_numeric($minLength)) {
-																		echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-																	}
-																	?>
+                                                $form = Form::create('action', "./install.php?step=3&guid=$guid");
 
-																	$(".generatePassword").click(function(){
-																		var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
-																		var text = '';
-																		for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-																			if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-																			else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-																			else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-																			else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
-																			else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
-																		}
-																		$('input[name="passwordNew"]').val(text);
-																		$('input[name="passwordConfirm"]').val(text);
-																		alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\n\n' + text) ;
-																	});
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<b><?php echo __($guid, 'Confirm Password') ?> *</b><br/>
-																<span class="emphasis small"></span>
-															</td>
-															<td class="right">
-																<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" class="standardWidth">
-																<script type="text/javascript">
-																	var passwordConfirm=new LiveValidation('passwordConfirm');
-																	passwordConfirm.add(Validate.Presence);
-																	passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
-																</script>
-															</td>
-														</tr>
+                                                $form->setFactory(DatabaseFormFactory::create($pdo));
+                                                $form->addHiddenValue('code', $code);
+                                                $form->addHiddenValue('databaseServer', $databaseServer);
+                                                $form->addHiddenValue('databaseName', $databaseName);
+                                                $form->addHiddenValue('databaseUsername', $databaseUsername);
+                                                $form->addHiddenValue('databasePassword', $databasePassword);
 
-														<tr class='break'>
-															<td colspan=2>
-																<h3><?php echo __($guid, 'System Settings') ?></h3>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='absoluteURL'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td style='width: 275px'>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-                                                				?></span>
-															</td>
-															<td stclass="right">
-																<?php
-                                                                    $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-																	$port = '';
-																	if ($_SERVER['SERVER_PORT'] != '80') {
-																		$port = ':'.$_SERVER['SERVER_PORT'];
-																	}
-																	$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-																	?>
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=100 value="<?php echo $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22) ?>" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Presence);
-																	<?php echo $row['name'] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='absolutePath'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-                                                				?></span>
-															</td>
-															<td stclass="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=100 value="<?php echo substr(__FILE__, 0, -22) ?>" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='systemName'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-                                                				?></span>
-															</td>
-															<td class="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="Gibbon" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='installType'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																		echo __($guid, $row['description']);
-																	}
-                                                				?></span>
-															</td>
-															<td class="right">
-																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-																	<?php
-                                                                    echo "<option selected value='Testing'>Testing</option>";
-																	echo "<option value='Production'>Production</option>";
-																	echo "<option value='Development'>Development</option>";
-																	?>
-																					</select>
-																				</td>
-																			</tr>
-																			<?php
-																			echo '<tr>';
-																	echo '<td colspan=2>';
-																	echo "<div id='status' class='warning'>";
-																	echo "<div style='width: 100%; text-align: center'>";
-																	echo "<img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>";
-																	echo __($guid, 'Checking for Cutting Edge Code.');
-																	echo '</div>';
-																	echo '</div>';
-																echo '</td>';
-															echo '</tr>'
-                                                        ?>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='cuttingEdgeCode'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php echo __($guid, $row['description']) ?>. <?php echo '<b>'.__($guid, 'Not recommended for non-experts!.').'<b>' ?></span>
-															</td>
-															<td class="right">
-																<select disabled name="<?php echo $row['name'] ?>Disabled" id="<?php echo $row['name'] ?>" class="standardWidth">
-																	<?php
-                                                                    echo "<option selected value='N'>".ynExpander($guid, 'N').'</option>';
-                                                					echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';?>
-																</select>
-																<input type='hidden' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>Hidden" value="N">
-															</td>
-														</tr>
-														<?php
-                                                        //Check and set cutting edge code based on gibbonedu.org services value
-                                                        echo '<script type="text/javascript">';
-														echo '$(document).ready(function(){';
-														echo '$.ajax({';
-														echo 'crossDomain: true, type:"GET", contentType: "application/json; charset=utf-8",async:false,';
-														echo 'url: "https://gibbonedu.org/services/version/devCheck.php?version='.$version.'&callback=?",';
-														echo "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult',";
-														echo 'success: function(data) {';
-														echo '$("#status").attr("class","success");';
-														echo "if (data['status']==='false') {";
-														echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
-														echo '}';
-														echo 'else {';
-														echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
-														echo "$(\"#cuttingEdgeCode\").val('Y');";
-														echo "$(\"#cuttingEdgeCodeHidden\").val('Y');";
-														echo '}';
-														echo '},';
-														echo 'error: function (data, textStatus, errorThrown) {';
-														echo '$("#status").attr("class","error");';
-														echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check failed').".') ;";
-														echo '}';
-														echo '});';
-														echo '});';
-														echo '</script>';
-														?>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='statsCollection'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-                                               				 	?></span>
-															</td>
-															<td class="right">
-																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-																	<?php
-                                                                    echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';
-																	echo "<option value='N'>".ynExpander($guid, 'N').'</option>';
-																	?>
-																</select>
-															</td>
-														</tr>
+                                                $form->addRow()->addHeading(__('User Account'));
 
-														<tr class='break'>
-															<td colspan=2>
-																<h3><?php echo __($guid, 'Organisation Settings') ?></h3>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationName'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-                                               				 	?></span>
-															</td>
-															<td class="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationNameShort'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-															</td>
-															<td class="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
-														<tr>
-														<?php
-                                                        try {
-                                                            $data = array();
-                                                            $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='currency'";
-                                                            $result = $connection2->prepare($sql);
-                                                            $result->execute($data);
-                                                        } catch (PDOException $e) {
-                                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                                        }
-														$row = $result->fetch();
-														?>
-														<td>
-															<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-															<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-														</td>
-														<td class="right">
-															<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-																<optgroup label='--<?php echo __($guid, 'PAYPAL SUPPORTED') ?>--'/>
-																	<option value='AUD $'>Australian Dollar (A$)</option>
-																	<option value='BRL R$'>Brazilian Real (R$)</option>
-																	<option value='GBP £'>British Pound (£)</option>
-																	<option value='CAD $'>Canadian Dollar (C$)</option>
-																	<option value='CZK Kč'>Czech Koruna (Kč)</option>
-																	<option value='DKK kr'>Danish Krone (kr)</option>
-																	<option value='EUR €'>Euro (€)</option>
-																	<option value='HKD $'>Hong Kong Dollar ($)</option>
-																	<option value='HUF Ft'>Hungarian Forint (Ft)</option>
-																	<option value='ILS ₪'>Israeli New Shekel (₪)</option>
-																	<option value='JPY ¥'>Japanese Yen (¥)</option>
-																	<option value='MYR RM'>Malaysian Ringgit (RM)</option>
-																	<option value='MXN $'>Mexican Peso ($)</option>
-																	<option value='TWD $'>New Taiwan Dollar ($)</option>
-																	<option value='NZD $'>New Zealand Dollar ($)</option>
-																	<option value='NOK kr'>Norwegian Krone (kr)</option>
-																	<option value='PHP ₱'>Philippine Peso (₱)</option>
-																	<option value='PLN zł'>Polish Zloty (zł)</option>
-																	<option value='RUB ₽'>Russian Ruble (₽)</option>
-																	<option value='SGD $'>Singapore Dollar ($)</option>
-																	<option value='SEK kr'>Swedish Krona (kr)</option>
-																	<option value='CHF'>Swiss Franc (CHF)</option>
-																	<option value='THB ฿'>Thai Baht (฿)</option>
-																	<option value='USD $'>U.S. Dollar ($)</option>
-																</optgroup>
-																<optgroup label='--<?php echo __($guid, 'OTHERS') ?>--'/>
-																	<option value='BDT ó'>Bangladeshi Taka (ó)</option>
-																	<option value='BTC'>Bitcoin</option>
-                                                                    <option value='BGN лв.'>Bulgarian Lev (лв.)</option>
-                                        							<option value='XAF FCFA'>Central African Francs (FCFA)</option>
-																	<option value='CNY ¥'>Chinese Renminbi (¥)</option>
-																	<option value='EGP £'>Egyptian Pound (£)</option>
-																	<option value='GHS GH₵'>Ghanaian Cedi (GH₵)</option>
-																	<option value='INR ₹'>Indian Rupee (₹)</option>
-																	<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
-																	<option value='JMD $'>Jamaican Dollar ($)</option>
-																	<option value='KES KSh'>Kenyan Shilling (KSh)</option>
-																	<option value='MOP MOP$'>Macanese Pataca (MOP$)</option>
-                                                                    <option value='MAD'>Moroccan Dirham (MAD)</option>
-                                                                    <option value='MMK K'>Myanmar Kyat (K)</option>
-                                                                    <option value='NAD N$'>Namibian Dollar (N$)</option>
-                                        							<option value='NPR ₨'>Nepalese Rupee (₨)</option>
-																	<option value='NGN ₦'>Nigerian Naira (₦)</option>
-																	<option value='PKR ₨'>Pakistani Rupee (₨)</option>
-                                                                    <option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
-																	<option value='ZAR R'>South African Rand (R)</option>
-																	<option value='TZS TSh'>Tanzania Shillings (TSh)</option>
-																	<option value='TTD $'>Trinidad & Tobago Dollar (TTD)</option>
-																	<option value='TRY ₺'>Turkish Lira (₺)</option>
-																	<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
-																</optgroup>
-															</select>
-														</td>
-													</tr>
+                                                $row = $form->addRow();
+                                                    $row->addLabel('title', __('Title'));
+                                                    $row->addSelectTitle('title');
 
-														<tr class='break'>
-															<td colspan=2>
-																<h3><?php echo __($guid, 'gibbonedu.com Value-Added Services') ?></h3>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationName'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-															</td>
-															<td class="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="" type="text" class="standardWidth">
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='gibboneduComOrganisationKey'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-															</td>
-															<td class="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="" type="text" class="standardWidth">
-															</td>
-														</tr>
+                                                $row = $form->addRow();
+                                                    $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
+                                                    $row->addTextField('surname')->isRequired()->maxLength(30);
 
-														<tr class='break'>
-															<td colspan=2>
-																<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='country'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-															</td>
-															<td class="right">
-																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-																	<?php
-                                                                    echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-																	try {
-																		$dataSelect = array();
-																		$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-																		$resultSelect = $connection2->prepare($sqlSelect);
-																		$resultSelect->execute($dataSelect);
-																	} catch (PDOException $e) {
-																		echo "<div class='error'>".$e->getMessage().'</div>';
-																	}
-																	while ($rowSelect = $resultSelect->fetch()) {
-																		echo "<option value='".$rowSelect['printable_name']."'>".__($guid, $rowSelect['printable_name']).'</option>';
-																	}
-																	?>
-																</select>
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-																</script>
-															</td>
-														</tr>
-														<tr>
-															<?php
-                                                            try {
-                                                                $data = array();
-                                                                $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='timezone'";
-                                                                $result = $connection2->prepare($sql);
-                                                                $result->execute($data);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-															$row = $result->fetch();
-															?>
-															<td>
-																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-																<span class="emphasis small"><?php if ($row['description'] != '') {
-																	echo __($guid, $row['description']);
-																}
-																?></span>
-															</td>
-															<td class="right">
-																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" class="standardWidth">
-																<script type="text/javascript">
-																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
-																	<?php echo $row['name'] ?>.add(Validate.Presence);
-																</script>
-															</td>
-														</tr>
+                                                $row = $form->addRow();
+                                                    $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
+                                                    $row->addTextField('firstName')->isRequired()->maxLength(30);
 
-														<tr>
-															<td>
-																<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-															</td>
-															<td class="right">
-																<input type="hidden" name="code" value="<?php echo $code ?>">
-																<input type="hidden" name="databaseServer" value="<?php echo $databaseServer ?>">
-																<input type="hidden" name="databaseName" value="<?php echo $databaseName ?>">
-																<input type="hidden" name="databaseUsername" value="<?php echo $databaseUsername ?>">
-																<input type="hidden" name="databasePassword" value="<?php echo $databasePassword ?>">
-																<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-															</td>
-														</tr>
-													</table>
-												</form>
-												<?php
+                                                $row = $form->addRow();
+                                                    $row->addLabel('email', __('Email'));
+                                                    $row->addEmail('email')->maxLength(50);
 
+                                                $row = $form->addRow();
+                                                    $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__($guid, 'Join our mailing list and recieve a welcome email from the team.'));
+                                                    $row->addCheckbox('support')->fromArray(array('on' => __('Yes')))->isRequired()->checked('on');
+
+                                                $row = $form->addRow();
+                                                    $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
+                                            		$row->addTextField('username')->isRequired()->maxLength(20);
+
+                                                $policy = getPasswordPolicy($guid, $connection2);
+                                            	if ($policy != false) {
+                                            		$form->addRow()->addAlert($policy, 'warning');
+                                            	}
+                                            	$row = $form->addRow();
+                                            		$row->addLabel('passwordNew', __('Password'));
+                                            		$column = $row->addColumn('passwordNew')->addClass('inline right');
+                                            		$column->addButton(__('Generate Password'))->addClass('generatePassword');
+                                            		$password = $column->addPassword('passwordNew')
+                                            			->isRequired()
+                                            			->maxLength(30);
+
+                                            	$alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+                                            	$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+                                            	$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+                                            	$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+
+                                            	if ($alpha == 'Y') {
+                                            		$password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
+                                            	}
+                                            	if ($numeric == 'Y') {
+                                            		$password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+                                            	}
+                                            	if ($punctuation == 'Y') {
+                                            		$password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+                                            	}
+                                            	if (!empty($minLength) && is_numeric($minLength)) {
+                                            		$password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
+                                            	}
+
+                                            	$row = $form->addRow();
+                                            		$row->addLabel('passwordConfirm', __('Confirm Password'));
+                                            		$row->addPassword('passwordConfirm')
+                                            			->isRequired()
+                                            			->maxLength(30)
+                                            			->addValidation('Validate.Confirmation', "match: 'passwordNew'");
+
+                                                $form->addRow()->addHeading(__('System Settings'));
+
+                                                $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+                                                $port = '';
+                                                if ($_SERVER['SERVER_PORT'] != '80') {
+                                                    $port = ':'.$_SERVER['SERVER_PORT'];
+                                                }
+                                                $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+                                                $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->isRequired();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->isRequired();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'systemName', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->maxLength(50)->isRequired();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'installType', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected('Testing')->isRequired();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue('No')->readonly();
+
+                                                //Check and set cutting edge code based on gibbonedu.org services value
+                                                echo '<script type="text/javascript">';
+                                                echo '$(document).ready(function(){';
+                                                echo '$.ajax({';
+                                                echo 'crossDomain: true, type:"GET", contentType: "application/json; charset=utf-8",async:false,';
+                                                echo 'url: "https://gibbonedu.org/services/version/devCheck.php?version='.$version.'&callback=?",';
+                                                echo "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult',";
+                                                echo 'success: function(data) {';
+                                                echo '$("#status").attr("class","success");';
+                                                echo "if (data['status']==='false') {";
+                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
+                                                echo '}';
+                                                echo 'else {';
+                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
+                                                echo "$(\"#cuttingEdgeCode\").val('Y');";
+                                                echo "$(\"#cuttingEdgeCodeHidden\").val('Y');";
+                                                echo '}';
+                                                echo '},';
+                                                echo 'error: function (data, textStatus, errorThrown) {';
+                                                echo '$("#status").attr("class","error");';
+                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check failed').".') ;";
+                                                echo '}';
+                                                echo '});';
+                                                echo '});';
+                                                echo '</script>';
+
+                                                $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addYesNo($setting['name'])->selected('Y')->isRequired();
+
+                                                $form->addRow()->addHeading(__('Organisation Settings'));
+
+                                                $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue('')->maxLength(50)->isRequired();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'organisationNameShort', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue('')->maxLength(50)->isRequired();
+
+                                                $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
+
+                                                $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue();
+
+                                                $form->addRow()->addHeading(__('Miscellaneous'));
+
+                                                $setting = getSettingByScope($connection2, 'System', 'country', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addSelectCountry($setting['name']);
+
+                                                $setting = getSettingByScope($connection2, 'System', 'currency', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addSelectCurrency($setting['name'])->isRequired();
+
+                                                $setting = getSettingByScope($connection2, 'System', 'timezone', true);
+                                                $row = $form->addRow();
+                                                    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+                                                    $row->addTextField($setting['name'])->setValue()->isRequired();
+
+                                                $row = $form->addRow();
+                                                    $row->addFooter();
+                                                    $row->addSubmit();
+
+                                                echo $form->getOutput();
                                             }
                                         }
                                     }
