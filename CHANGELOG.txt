@@ -45,11 +45,13 @@ v15.0.00
 		System: fixed text alginment in module menu
 		System: fixed long-string and large image issue causing content to bleed under sidebar
 		Activities: added new payment fields to activities (cost type and cost status)
+		Activities: fixed database field length issue in gibbonActivityStaff
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
 		Attendance: added count column to Students Not Present and Students Not Onsite reports
 		Attendance: granted like to those students who successfully self register
+		Attendance: added selective auto-redirect to move students to self-registration page under certain conditions
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
@@ -67,6 +69,7 @@ v15.0.00
 		Students: fixed display of Other Fields heading for parents in Application Form
         Students: added a notification event for Application Form Accepted
         Students: added an option for logged-in users to link new Application Forms to an existing user or family
+		Students: added ability to delete files and upload multiple files in Edit Application Form
 		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
         System Admin: updated version check to handle semantic version numbers
 		Timetable: added ability to set and display text and background colour for timetable day headers

@@ -643,48 +643,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         for ($i = 0; $i < $fileCount; ++$i) {
                             if (empty($_FILES["file$i"]['tmp_name'])) continue;
 
-                            $file = (isset($_FILES["file$i"]))? $_FILES["file$i"] : null;
                             $fileName = (isset($_POST["fileName$i"]))? $_POST["fileName$i"] : null;
 
-                            // Upload the file, return the /uploads relative path
-                            $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
-
-                            // Write files to database, if there is one
-                            if (!empty($attachment)) {
-                                // Check for uniqueness
-                                try {
-                                    $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName);
-                                    $sqlFile = 'SELECT gibbonApplicationFormFileID FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID, name=:name ORDER BY gibbonApplicationFormFileID DESC';
-                                    $resultFile = $connection2->prepare($sqlFile);
-                                    $resultFile->execute($dataFile);
-                                } catch (PDOException $e) {
-                                    $partialFail = true;
+                            // Handle multiple file uploads (and transpose array)
+                            $uploads = array();
+                            foreach ($_FILES["file$i"] as $key => $subarr) {
+                                foreach ($subarr as $subkey => $subvalue) {
+                                    $uploads[$subkey][$key] = $subvalue;
                                 }
+                            }
 
-                                if ($resultFile->rowCount() > 0) {
-                                    // If the file exists, replace the most recent one
-                                    $gibbonApplicationFormFileID = $resultFile->fetchColumn(0);
+                            foreach ($uploads as $file) {
+                                if ($file['error'] == UPLOAD_ERR_NO_FILE) continue;
+
+                                // Upload the file, return the /uploads relative path
+                                $attachment = $fileUploader->uploadFromPost($file, 'ApplicationDocument');
+    
+                                // Write files to database, if there is one
+                                if (!empty($attachment)) {
                                     try {
-                                        $dataFile = array('gibbonApplicationFormFileID' => $gibbonApplicationFormFileID, 'path' => $attachment);
-                                        $sqlFile = 'UPDATE gibbonApplicationFormFile SET path=:path WHERE gibbonApplicationFormFileID=:gibbonApplicationFormFileID';
+                                        $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment);
+                                        $sqlFile = "INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path";
                                         $resultFile = $connection2->prepare($sqlFile);
                                         $resultFile->execute($dataFile);
                                     } catch (PDOException $e) {
                                         $partialFail = true;
                                     }
                                 } else {
-                                    // Otherwise add the new file to the database
-                                    try {
-                                        $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $fileName, 'path' => $attachment);
-                                        $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
-                                        $resultFile = $connection2->prepare($sqlFile);
-                                        $resultFile->execute($dataFile);
-                                    } catch (PDOException $e) {
-                                        $partialFail = true;
-                                    }
+                                    $partialFail = true;
                                 }
-                            } else {
-                                $partialFail = true;
+                            }
+                        }
+
+                        $attachments = (isset($_POST['attachment']))? $_POST['attachment'] : array();
+
+                        // File is flagged for deletion if the attachment path has been removed
+                        foreach ($attachments as $gibbonApplicationFormFileID => $attachment) {
+                            if (!empty($gibbonApplicationFormFileID) && empty($attachment)) {
+                                try {
+                                    $dataFile = array('gibbonApplicationFormFileID' => $gibbonApplicationFormFileID);
+                                    $sqlFile = "DELETE FROM gibbonApplicationFormFile WHERE gibbonApplicationFormFileID=:gibbonApplicationFormFileID";
+                                    $resultFile = $connection2->prepare($sqlFile);
+                                    $resultFile->execute($dataFile);
+                                } catch (PDOException $e) {
+                                    $partialFail = true;
+                                }
                             }
                         }
                     }
