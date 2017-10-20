@@ -378,6 +378,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $form->addHiddenValue('databaseName', $databaseName);
                                                 $form->addHiddenValue('databaseUsername', $databaseUsername);
                                                 $form->addHiddenValue('databasePassword', $databasePassword);
+                                                $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
 
                                                 $form->addRow()->addHeading(__('User Account'));
 
