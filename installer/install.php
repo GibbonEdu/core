@@ -462,7 +462,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'systemName', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->maxLength(50)->isRequired();
+                                                    $row->addTextField($setting['name'])->maxLength(50)->isRequired()->setValue('Gibbon');
 
                                                 $setting = getSettingByScope($connection2, 'System', 'installType', true);
                                                 $row = $form->addRow();
