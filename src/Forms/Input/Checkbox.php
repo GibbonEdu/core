@@ -130,8 +130,12 @@ class Checkbox extends Input
 
         if (!empty($this->options) && is_array($this->options)) {
             $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
+            $hasMultiple = count($this->options) > 1;
 
-            $output .= '<fieldset id="'.$this->getID().'" style="border: 0px;">';
+            if ($hasMultiple) {
+                $output .= '<fieldset id="'.$this->getID().'" style="border: 0px;">';
+            }
+            
             if (!empty($this->checkall)) {
                 $checked = (count($this->options) == count($this->checked))? 'checked' : '';
                 $output .= '<label for="checkall'.$identifier.'">'.$this->checkall.'</label> ';
@@ -140,7 +144,7 @@ class Checkbox extends Input
 
             $count = 0;
             foreach ($this->options as $value => $label) {
-                if (count($this->options) > 1) {
+                if ($hasMultiple) {
                     $this->setID($identifier.$count);
                 }
                 $this->setName($name);
@@ -152,7 +156,10 @@ class Checkbox extends Input
 
                 $count++;
             }
-            $output .= '</fieldset>';
+
+            if ($hasMultiple) {
+                $output .= '</fieldset>';
+            }
         }
 
         return $output;
