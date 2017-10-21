@@ -164,9 +164,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\MultiSelect($this, $name);
     }
 
-    public function createButton($label = 'Button', $onClick = '')
+    public function createButton($name, $label = 'Button', $onClick = '')
     {
-        return new Input\Button($label, $onClick);
+        return new Input\Button($name, $label, $onClick);
     }
 
     public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
