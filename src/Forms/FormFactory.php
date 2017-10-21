@@ -114,6 +114,13 @@ class FormFactory implements FormFactoryInterface
         return (new Input\TextField($name))->addValidation('Validate.Email');
     }
 
+    //Allows elements to be embedded
+    public function createWebLink($name,$url)
+    {
+    	return new Input\WebLink($name,$url);
+    }
+
+    //A URL web link
     public function createURL($name)
     {
         return (new Input\TextField($name) )
