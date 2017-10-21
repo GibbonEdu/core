@@ -146,27 +146,54 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			// Put together an array of this user's current roles
 			$currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
 			$currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
-		
-			$data = array();
-			$sql = "SELECT * FROM gibbonRole ORDER BY name";
-			$result = $pdo->executeQuery($data, $sql);
-		
-			// Get all roles and filter roles based on role restrictions
-			$availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
-			$availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles) {
-				if ($item['restriction'] == 'Admin Only') {
-					if (!in_array('001', $currentUserRoles)) return $carry;
-				} else if ($item['restriction'] == 'Same Role') {
-					if (!in_array($item['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) return $carry;
-				}
-				$carry[$item['gibbonRoleID']] = $item['name'];
-				return $carry;
-			}, array());
-		
+
+			// Get info on the user role being edited
+			try {
+				$dataRole = array('gibbonRoleID' => $values['gibbonRoleIDPrimary']);
+				$sqlRole = 'SELECT gibbonRoleID, restriction, name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+				$resultRole = $connection2->prepare($sqlRole);
+				$resultRole->execute($dataRole);
+			} catch (PDOException $e) {
+				echo "<div class='error'>".$e->getMessage().'</div>';
+			}
+
+			$roleDetails = ($resultRole && $resultRole->rowCount() > 0)? $resultRole->fetch() : null;
+			$roleRestriction = $roleDetails['restriction'];
+
+			// Display a readonly field if the current role cannot be changed
+			if (empty($roleRestriction) || ($roleRestriction == 'Admin Only' && !in_array('001', $currentUserRoles)) || ($roleRestriction == 'Same Role' && !in_array($values['gibbonRoleIDPrimary'], $currentUserRoles) && !in_array('001', $currentUserRoles)) ) {
+				$row = $form->addRow();
+				$row->addLabel('gibbonRoleIDPrimaryName', __('Primary Role'))->description(__('Controls what a user can do and see.'));
+				$row->addTextField('gibbonRoleIDPrimaryName')->readOnly()->setValue($roleDetails['name']);
+				$form->addHiddenValue('gibbonRoleIDPrimary', $values['gibbonRoleIDPrimary']);
+			} else {
+
+				$data = array();
+				$sql = "SELECT * FROM gibbonRole ORDER BY name";
+				$result = $pdo->executeQuery($data, $sql);
+			
+				// Get all roles and filter roles based on role restrictions
+				$availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+				$availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles) {
+					if ($item['restriction'] == 'Admin Only') {
+						if (!in_array('001', $currentUserRoles)) return $carry;
+					} else if ($item['restriction'] == 'Same Role') {
+						if (!in_array($item['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) return $carry;
+					}
+					$carry[$item['gibbonRoleID']] = $item['name'];
+					return $carry;
+				}, array());
+
+                $row = $form->addRow();
+                $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
+                $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
+			}
+
 			$row = $form->addRow();
-				$row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
-				$row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
-			// TODO
+				$row->addLabel('gibbonRoleIDAll', __('All Roles'))->description(__('Controls what a user can do and see.'));
+				$row->addSelect('gibbonRoleIDAll')->selectMultiple();
+			
+			
 				
 			$row = $form->addRow();
 				$row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
@@ -215,6 +242,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$result = $pdo->executeQuery(array(), $sql);
 			$districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
 		
+			// TODO: highlight address match
+
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
 				$row->addTextField('address1')->maxLength(255);
@@ -252,29 +281,57 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			// SCHOOL INFORMATION
 			$form->addRow()->addHeading(__('School Information'));
 			
-			$dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
-			if (!empty($dayTypeOptions)) {
-				$dayTypeText = getSettingByScope($connection2, 'User Admin', 'dayTypeText');
-				$row = $form->addRow();
-					$row->addLabel('dayType', __('Day Type'))->description($dayTypeText);
-					$row->addSelect('dayType')->fromString($dayTypeOptions)->placeholder();
-			}
+            if ($student) {
+                $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+                if (!empty($dayTypeOptions)) {
+                    $dayTypeText = getSettingByScope($connection2, 'User Admin', 'dayTypeText');
+                    $row = $form->addRow();
+                    $row->addLabel('dayType', __('Day Type'))->description($dayTypeText);
+                    $row->addSelect('dayType')->fromString($dayTypeOptions)->placeholder();
+                }
+            }
 		
-			$sql = "SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool";
-			$result = $pdo->executeQuery(array(), $sql);
-			$schools = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
-		
-			$row = $form->addRow();
-				$row->addLabel('lastSchool', __('Last School'));
-				$row->addTextField('lastSchool')->autocomplete($schools);
+            if ($student || $staff) {
+                $sql = "SELECT DISTINCT lastSchool FROM gibbonPerson ORDER BY lastSchool";
+                $result = $pdo->executeQuery(array(), $sql);
+                $schools = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+        
+                $row = $form->addRow();
+                $row->addLabel('lastSchool', __('Last School'));
+                $row->addTextField('lastSchool')->autocomplete($schools);
+            }
 		
 			$row = $form->addRow();
 				$row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
 				$row->addDate('dateStart');
 		
-			$row = $form->addRow();
-				$row->addLabel('gibbonSchoolYearIDClassOf', __('Class Of'))->description(__('When is the student expected to graduate?'));
-				$row->addSelectSchoolYear('gibbonSchoolYearIDClassOf');
+            if ($student) {
+                $row = $form->addRow();
+                	$row->addLabel('gibbonSchoolYearIDClassOf', __('Class Of'))->description(__('When is the student expected to graduate?'));
+                	$row->addSelectSchoolYear('gibbonSchoolYearIDClassOf');
+			}
+			
+			if ($student || $staff) {
+                $sql = "SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY lastSchool";
+                $result = $pdo->executeQuery(array(), $sql);
+                $schools = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+        
+                $row = $form->addRow();
+                $row->addLabel('nextSchool', __('Next School'));
+                $row->addTextField('nextSchool')->autocomplete($schools);
+			}
+			
+			if ($student or $staff) {
+				$departureReasonsList = getSettingByScope($connection2, 'User Admin', 'departureReasons');
+
+				$row = $form->addRow();
+				$row->addLabel('departureReason', __('Departure Reason'));
+				if (!empty($departureReasonsList)) {
+					$row->addSelect('departureReason')->fromString($departureReasonsList);
+				} else {
+					$row->addTextField('departureReason')->maxLength(30);
+				}
+			}
 		
 			// BACKGROUND INFORMATION
 			$form->addRow()->addHeading(__('Background Information'));
@@ -693,7 +750,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						</td>
 						<td class="right">
                             <?php
-
                             // Put together an array of this user's current roles
                             $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
                             $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
