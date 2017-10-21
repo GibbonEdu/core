@@ -77,6 +77,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Element($content);
     }
 
+    public function createCollection($content)
+    {
+    	return new Layout\ElementCollection($content);
+    }
+
     /* BASIC INPUT --------------------------- */
 
     public function createCustomField($name, $fields = array())
