@@ -47,7 +47,7 @@ class WebLink extends Input
 		return $this;
 	}
 
-	public function addEmbeddedElement(OutputableInterface $element)
+	public function addEmbeddedElement(Input $element)
 	{
 		array_push($this->embeddedElements,$element);
 		return $this;
