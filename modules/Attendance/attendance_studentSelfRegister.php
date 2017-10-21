@@ -40,6 +40,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+
+    if (isset($_GET['redirect']) && $_GET['redirect'] == 'true') {
+        echo '<div class=\'warning\'>';
+            echo __('Please self register!');
+        echo '</div>';
+    }
+
     //Check to see if IP addresses are set
     $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
     $realIP = getIPAddress();
