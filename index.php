@@ -100,6 +100,49 @@ if (isset($_SESSION[$guid]['passwordForceReset'])) {
     }
 }
 
+//Deal with attendance self-registration redirect
+if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { //First page load, so proceed
+    if (!empty($_SESSION[$guid]['username'])) { //Are we logged in?
+        if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Student') { //Are we a student?
+            if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) { //Can we self register?
+                //Check to see if student is on site
+                $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+                $realIP = getIPAddress();
+                if ($studentSelfRegistrationIPAddresses != '' && !is_null($studentSelfRegistrationIPAddresses)) {
+                    $inRange = false ;
+                    foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
+                        if (trim($ipAddress) == $realIP) {
+                            $inRange = true ;
+                        }
+                    }
+                    if ($inRange) {
+                        $currentDate = date('Y-m-d');
+                        if (isSchoolOpen($guid, $currentDate, $connection2, true)) { //Is school open today
+                            //Check for existence of records today
+                            try {
+                                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
+                                $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+
+                            if ($result->rowCount() == 0) { //No registration yet
+                                //Redirect!
+                                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_studentSelfRegister.php&redirect=true';
+                                $_SESSION[$guid]['pageLoads'] = null;
+                                header("Location: {$URL}");
+                                exit;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
     try {
         $dataSidebar = array('action' => '%'.$_SESSION[$guid]['action'].'%', 'name' => $_SESSION[$guid]['module']);

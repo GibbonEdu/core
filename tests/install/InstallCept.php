@@ -35,6 +35,7 @@ $formValues = array(
     'username'              => 'admin',
     'passwordNew'           => 'travisci',
     'passwordConfirm'       => 'travisci',
+    'systemName'            => 'Gibbon',
     'installType'           => 'Testing',
     'cuttingEdgeCode'       => 'Y',
     'cuttingEdgeCodeHidden' => 'Y',
