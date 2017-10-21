@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -72,194 +75,72 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     echo '<h3>';
     echo __($guid, 'Filter');
     echo '</h3>';
-    echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/2Fbehaviour_pattern.php'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-    if ($enableDescriptors == 'Y') {
-        ?>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Descriptor') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<?php
-                        try {
-                            $sqlNegative = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'";
-                            $resultNegative = $connection2->query($sqlNegative);
-                        } catch (PDOException $e) {
-                        }
 
-						if ($resultNegative->rowCount() == 1) {
-							$rowNegative = $resultNegative->fetch();
-							$optionsNegative = $rowNegative['value'];
-							if ($optionsNegative != '') {
-								$optionsNegative = explode(',', $optionsNegative);
-							}
-						}
-
-						echo "<select name='descriptor' id='descriptor' style='width:302px;'>";
-						echo "<option value=''></option>";
-						for ($i = 0; $i < count($optionsNegative); ++$i) {
-							?>
-												<option <?php if ($descriptor == $optionsNegative[$i]) { echo 'selected '; } ?>value="<?php echo trim($optionsNegative[$i]) ?>"><?php echo trim($optionsNegative[$i]) ?></option>
-											<?php
-
-						}
-						echo '</select>';
-						?>
-					</td>
-				</tr>
-				<?php
-
+    //$optionsNegative - Behaviours
+    try {
+        $sqlNegative = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'";
+        $resultNegative = $connection2->query($sqlNegative);
+    } catch (PDOException $e) {
     }
-    if ($enableLevels == 'Y') {
-        ?>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Level') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-					$optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
-					if ($optionsLevels != '') {
-						$optionsLevels = explode(',', $optionsLevels);
-					}
 
-					echo "<select name='level' id='level' style='width:302px'>";
-					echo "<option value=''></option>";
-					for ($i = 0; $i < count($optionsLevels); ++$i) {
-						?>
-						<option <?php if ($level == $optionsLevels[$i]) { echo 'selected '; } ?>value="<?php echo trim($optionsLevels[$i]) ?>"><?php echo trim($optionsLevels[$i]) ?></option>
-						<?php
-						}
-						echo '</select>';
-						?>
-					</td>
-				</tr>
-				<?php
+    if ($resultNegative->rowCount() == 1) {
+        $rowNegative = $resultNegative->fetch();
+        $optionsNegative = $rowNegative['value'];
+        if ($optionsNegative != '') {
+            $optionsNegative = explode(',', $optionsNegative);
+        }
+    }
 
-			}
-			?>
-			
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'From Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-						echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?></span>
-				</td>
-				<td class="right">
-					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate != '') { echo $fromDate; } ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var fromDate=new LiveValidation('fromDate');
-						fromDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#fromDate" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Roll Group') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataPurpose = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlPurpose = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                        $resultPurpose = $connection2->prepare($sqlPurpose);
-                        $resultPurpose->execute($dataPurpose);
-                    } catch (PDOException $e) {
-                    }
+    //$optionsLevels - Behaviour Levels
+    $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+    if ($optionsLevels != '') {
+        $optionsLevels = explode(',', $optionsLevels);
+    }
 
-					echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
-					echo "<option value=''></option>";
-					while ($rowPurpose = $resultPurpose->fetch()) {
-						$selected = '';
-						if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
-							$selected = 'selected';
-						}
-						echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
-					}
-					echo '</select>';?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Year Group') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataPurpose = array();
-                        $sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-                        $resultPurpose = $connection2->prepare($sqlPurpose);
-                        $resultPurpose->execute($dataPurpose);
-                    } catch (PDOException $e) {
-                    }
+     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setClass('noIntBorder fullWidth');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+            
+        $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage.php");
 
-					echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
-					echo "<option value=''></option>";
-					while ($rowPurpose = $resultPurpose->fetch()) {
-						$selected = '';
-						if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-							$selected = 'selected';
-						}
-						echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-					}
-					echo '</select>';?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Minimum Count') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    echo "<select name='minimumCount' id='minimumCount' style='width:302px'>";
-					for ($i = 0; $i < 51; ++$i) {
-						if ($i == 0 or $i == 1 or $i == 2 or $i == 3 or $i == 4 or $i == 5 or $i == 10 or $i == 25 or $i == 50) {
-							?>
-								<option <?php if ($minimumCount == $i) { echo 'selected '; } ?>value="<?php echo $i ?>"><?php echo $i ?></option>
-								<?php
+    //Descriptor
+    $row = $form->addRow();
+        $row->addLabel('descriptor', __('Descriptor'));
+        $row->addSelect('descriptor')->fromArray($optionsNegative)->selected($descriptor)->placeholder();
 
-							}
-						}
-						echo '</select>';?>
-				</td>
-			</tr>
-			<?php
-            echo '<tr>';
-				echo "<td class='right' colspan=2>";
-				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_pattern.php'>".__($guid, 'Clear Filters').'</a> ';
-				echo "<input type='submit' value='".__($guid, 'Go')."'>";
-				echo '</td>';
-    		echo '</tr>';?>
-		</table>
-		<?php
-    echo '</form>';
+    //Level
+    $row = $form->addRow();
+        $row->addLabel('level', __('Level'));
+        $row->addSelect('level')->fromArray($optionsLevels)->selected($level);
+
+    //"From Date"
+    $row = $form->addRow();
+        $row->addLabel('fromDate', __('From Date'))->description('Format: '.$_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addDate('fromDate')->setValue(dateConvertBack($guid, $values['fromDate']));
+
+    //Form (Roll?) Group
+    $row = $form->addRow();
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
+        $row->addLabel('gibbonRollGroupID',__('Form Group'));
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
+
+    //Year Group
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addLabel('gibbonYearGroupID',__('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
+
+    //Minimum Count
+    $row = $form->addRow();
+        $row->addLabel('minimumCount', __('Minimum Count'));
+        $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($type);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput(); 
+
+
 
     echo '<h3>';
     echo __($guid, 'Behaviour Records');
