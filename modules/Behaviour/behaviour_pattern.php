@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $form->setClass('noIntBorder fullWidth');
         $form->setFactory(DatabaseFormFactory::create($pdo));
             
-        $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage.php");
+        $form->addHiddenValue('q', "/modules/Behaviour/behaviour_pattern.php");
 
     //Descriptor
     $row = $form->addRow();
