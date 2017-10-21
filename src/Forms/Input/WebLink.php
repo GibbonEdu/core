@@ -18,7 +18,7 @@ class WebLink extends Input
 		return $this->id;
 	}
 
-	public function setName($name)
+	public function setName($name = '')
 	{
 		$this->id = $name;
 		$this->setAttrbitue('id',$this->id);
