@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -48,47 +51,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '<h3>';
             echo __($guid, 'Choose A Student');
             echo '</h3>';
-            echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>";
-            echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Student') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-								<option value=""></option>
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-									}
-								}
-								?>			
-							</select>
-						</td>
-					</tr>
-					
-					<?php
-                    echo '<tr>';
-					echo "<td class='right' colspan=2>";
-					echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-					echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_view.php'>".__($guid, 'Clear Filters').'</a> ';
-					echo "<input type='submit' value='".__($guid, 'Go')."'>";
-					echo '</td>';
-					echo '</tr>';
-					echo '</table>';
-					echo '</form>';
 
+            try {
+                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                $resultSelect = $connection2->prepare($sqlSelect);
+                $resultSelect->execute($dataSelect);
+            } catch (PDOException $e) {
+            }
+
+            $options = array();
+
+            while ($rowSelect = $resultSelect->fetch()) {
+                $options[$rowSelect['gibbonPersonID']]=formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
+
+            }
+
+            $form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get", "noIntBorder fullWidth standardForm");
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->addHiddenValue("q", '/modules/Formal Assessment/internalAssessment_view.php');
+//TODO: Append Form Name
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonID', __('Student'));
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]["gibbonSchoolYearID"], array())->selected($gibbonPersonID)->placeholder();
+            $row = $form->addRow();
+                $row->addSubmit();
+            print $form->getOutput();
 					if ($gibbonPersonID) {
 						echo '<h3>';
 						echo __($guid, 'Internal Assessments');
@@ -134,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 					} else {
 						//Get child list
 						$count = 0;
-						$options = '';
+						$options = array();
 						while ($row = $result->fetch()) {
 							try {
 								$dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -151,8 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 										$select = 'selected';
 									}
 								}
-
-								$options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
+                $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
 								$gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
 								++$count;
 							}
@@ -168,18 +156,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 							echo '<h2>';
 							echo 'Choose Student';
 							echo '</h2>';
-
+              $row = $form->addRow();
+	             $row->addLabel('search', __('Student'));
+	             $row->addSelect('search')->fromArray($options)->placeholder();
+               print $form->getOutput();
 							echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
 							echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
 							?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Student') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
-										<?php echo $options; ?> 
+
 									</select>
 								</td>
 							</tr>
