@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
             }
 
             $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-            $form->setClass('noIntBorder fullWidth');
+                $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
