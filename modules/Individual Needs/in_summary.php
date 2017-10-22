@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -56,6 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     echo '<h3>';
     echo __($guid, 'Filter');
     echo '</h3>';
+
+    //SELECT FROM ARRAY
+    $row = $form->addRow();
+    	$row->addLabel('gibbonINDescriptorID', __('Descriptor'));
+    	$row->addSelect('gibbonINDescriptorID')->fromArray($dataPurpose);
+
+
     echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/in_summary.php'>";
     echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
 	<tr>
@@ -72,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 				$resultPurpose->execute($dataPurpose);
 			} catch (PDOException $e) {
 			}
-
+            
 			echo "<select name='gibbonINDescriptorID' id='gibbonINDescriptorID' style='width:302px'>";
 			echo "<option value=''></option>";
 			while ($rowPurpose = $resultPurpose->fetch()) {
