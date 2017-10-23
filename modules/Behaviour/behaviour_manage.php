@@ -69,24 +69,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         echo '<h3>';
         echo __($guid, 'Filter');
         echo '</h3>';
-        
 
         $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            
+
             $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage.php");
 
         //Students
         $students = array();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonPersonID',__('Student')); //TODO: Append roll group name
+            $row->addLabel('gibbonPersonID',__('Student'));
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
 
-        //Form (Roll?) Group
+        //Roll Group
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID',__('Form Group'));
+            $row->addLabel('gibbonRollGroupID',__('Roll Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
 
         //Year Group
@@ -99,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addLabel('type',__('Type'));
             $row->addSelect('type')->fromArray(array('Positive', 'Negative'))->selected($type)->placeholder();
 
-        
+
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
 
