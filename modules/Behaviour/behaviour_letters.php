@@ -17,13 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letters.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
@@ -40,46 +43,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
     echo '<h3>';
     echo __($guid, 'Filter');
     echo '</h3>';
-    echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_letters.php'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Student') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-						<option value=""></option>
-						<?php
-                        try {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-							} else {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-							}
-						}
-						?>			
-					</select>
-				</td>
-			</tr>
-			<?php
 
-            echo '<tr>';
-				echo "<td class='right' colspan=2>";
-				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_letters.php'>".__($guid, 'Clear Filters').'</a> ';
-				echo "<input type='submit' value='".__($guid, 'Go')."'>";
-				echo '</td>';
-			echo '</tr>';
-    	echo '</table>';
-    echo '</form>';
+    
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL']."/index.php", 'get', 'noIntBorder fullWidth standardForm');
+        $form->addHiddenValue('q', '/modules/Behaviour/behaviour_letters.php');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', __('Student'));
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput();
 
     echo '<h3>';
     echo __($guid, 'Behaviour Records');

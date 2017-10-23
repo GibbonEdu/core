@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -77,7 +80,86 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 }
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__($guid, 'Back to Search Results').'</a>';
             }
-            echo '</div>'; ?>
+            echo '</div>'; 
+
+            //$optionsPositive / $optionsNegative - Behaviour (the same?) TODO: Revise this part of code so that user can properly select from query.
+            // if ($enableDescriptors == 'Y') {
+            // 	$resultPositive = $connection2->query($sqlPositive);
+            // 	$resultNegative = $connection2->query($sqlNegative);
+
+            //     if ($resultPositive->rowCount() == 1 and $resultNegative->rowCount() == 1) {
+            //         $rowPositive = $resultPositive->fetch();
+            //         $rowNegative = $resultNegative->fetch();
+
+            //         $optionsPositive = $rowPositive['value'];
+            //         $optionsNegative = $rowNegative['value'];
+
+            //         if ($optionsPositive != '' and $optionsNegative != '') {
+            //             $optionsPositive = explode(',', $optionsPositive);
+            //             $optionsNegative = explode(',', $optionsNegative);
+            //         }
+            //     }
+            // }
+
+
+            //$optionsLevels - Behaviour levels
+            if ($enableLevels == 'Y') {
+                $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+                if ($optionsLevels != '') {
+                    $optionsLevels = explode(',', $optionsLevels);
+                }
+            }
+
+            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/index.php');
+                $form->setClass('smallIntBorder fullWidth');
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage_add.php");
+                $form->addRow()->addHeading(__('STEP 1'));
+
+            //Student
+            $row = $form->addRow();
+            	$row->addLabel('gibbonPersonID', __('Student'));
+            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->isRequired();
+
+            //Date
+            $row = $form->addRow();
+            	$row->addLabel('fromdate', __('Date'));
+            	$row->addDate('fromDate')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+
+            //Type
+            $row = $form->addRow();
+            	$row->addLabel('type', __('Type'));
+            	$row->addSelect('type')->fromArray(array('Positive', 'Negative'))->isRequired();
+
+            //Descriptor
+            $row = $form->addRow();
+        		$row->addLabel('descriptor', __('Descriptor'));
+        		//$row->addSelect('descriptor')->fromArray($optionsNegative)->placeholder(__('Please select...'))->isRequired();
+
+            //Level
+            $row = $form->addRow();
+            	$row->addLabel('level', __('Level'));
+            	$row->addSelect('level')->fromArray($optionsLevels)->placeholder()->isRequired();
+
+			//Incident
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('comment', __('Incident'))->description();
+            	$column->addTextArea('comment')->setRows(5)->setClass('fullWidth');
+
+            //Follow Up
+            $row = $form->addRow();
+            	$column = $row->addColumn();
+            	$column->addLabel('followup', __('Follow Up'))->description();
+            	$column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
+
+            $row = $form->addRow();
+            	$row->addFooter();
+            	$row->addSubmit();         
+
+           echo $form->getOutput();
+
+            ?>
 		
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
