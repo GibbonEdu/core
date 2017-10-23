@@ -44,8 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
     echo __($guid, 'Filter');
     echo '</h3>';
 
-    
-
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL']."/index.php", 'get', 'noIntBorder fullWidth standardForm');
         $form->addHiddenValue('q', '/modules/Behaviour/behaviour_letters.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
