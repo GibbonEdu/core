@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $row = $form->addRow();
             		$row->addLabel('descriptor', __('Descriptor'));
             		$row->addSelect('descriptor')->fromArray($positiveDescriptors)->fromArray($negativeDescriptors)->placeholder()->isRequired();
-                }
+            }
 
             //Level
             if ($enableLevels == 'Y') {

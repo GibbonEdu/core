@@ -91,37 +91,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
     }
 
-    //$optionsLevels - Behaviour Levels
-    $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
-    if ($optionsLevels != '') {
-        $optionsLevels = explode(',', $optionsLevels);
-    }
-
-     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
         $form->setFactory(DatabaseFormFactory::create($pdo));
-            
+
         $form->addHiddenValue('q', "/modules/Behaviour/behaviour_pattern.php");
 
     //Descriptor
-    $row = $form->addRow();
-        $row->addLabel('descriptor', __('Descriptor'));
-        $row->addSelect('descriptor')->fromArray($optionsNegative)->selected($descriptor)->placeholder();
+    if ($enableDescriptors == 'Y') {
+        $negativeDescriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
+        if ($negativeDescriptors != '') {
+            $negativeDescriptors = explode(',', $negativeDescriptors);
+        }
+        $row = $form->addRow();
+            $row->addLabel('descriptor', __('Descriptor'));
+            $row->addSelect('descriptor')->fromArray($negativeDescriptors)->placeholder()->selected($descriptor);
+    }
 
-    //Level
-    $row = $form->addRow();
-        $row->addLabel('level', __('Level'));
-        $row->addSelect('level')->fromArray($optionsLevels)->selected($level);
+    //Levels
+    if ($enableLevels == 'Y') {
+        $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+        if ($optionsLevels != '') {
+            $optionsLevels = explode(',', $optionsLevels);
+        }
+        $row = $form->addRow();
+            $row->addLabel('level', __('Level'));
+            $row->addSelect('level')->fromArray($optionsLevels)->placeholder()->selected($level);
+    }
 
     //"From Date"
     $row = $form->addRow();
-        $row->addLabel('fromDate', __('From Date'))->description('Format: '.$_SESSION[$guid]['i18n']['dateFormat']);
-        $row->addDate('fromDate')->setValue(dateConvertBack($guid, $values['fromDate']));
+        $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('fromDate')->setValue(dateConvertBack($guid, $fromDate));
 
-    //Form (Roll?) Group
+    //Roll Group
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addLabel('gibbonRollGroupID',__('Form Group'));
+        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
 
     //Year Group
@@ -133,12 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Minimum Count
     $row = $form->addRow();
         $row->addLabel('minimumCount', __('Minimum Count'));
-        $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($type);
+        $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($minimumCount);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
 
-    echo $form->getOutput(); 
+    echo $form->getOutput();
 
 
 
