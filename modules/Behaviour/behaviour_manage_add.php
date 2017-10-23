@@ -82,10 +82,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
             echo '</div>';
 
-            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/index.php');
+            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 $form->setClass('smallIntBorder fullWidth');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage_add.php");
+                $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                 $form->addRow()->addHeading(__('STEP 1'));
 
             //Student
@@ -95,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             //Date
             $row = $form->addRow();
-            	$row->addLabel('fromdate', __('Date'));
-            	$row->addDate('fromDate')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+            	$row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
 
             //Type
             $row = $form->addRow();
