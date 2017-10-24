@@ -101,21 +101,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Type
             $row = $form->addRow();
             	$row->addLabel('type', __('Type'));
-            	$row->addSelect('type')->fromArray(array('Positive', 'Negative'))->isRequired();
+            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->isRequired();
 
             //Descriptor
             if ($enableDescriptors == 'Y') {
                 $negativeDescriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
-                if ($negativeDescriptors != '') {
-                    $negativeDescriptors = explode(',', $negativeDescriptors);
-                }
+                $negativeDescriptors = (!empty($negativeDescriptors))? explode(',', $negativeDescriptors) : array();
                 $positiveDescriptors = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors');
-                if ($positiveDescriptors != '') {
-                    $positiveDescriptors = explode(',', $positiveDescriptors);
-                }
+                $positiveDescriptors = (!empty($positiveDescriptors))? explode(',', $positiveDescriptors) : array();
+
+                $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
+                $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
+                $chainedTo = array_merge($chainedToNegative, $chainedToPositive);
+
                 $row = $form->addRow();
             		$row->addLabel('descriptor', __('Descriptor'));
-            		$row->addSelect('descriptor')->fromArray($positiveDescriptors)->fromArray($negativeDescriptors)->placeholder()->isRequired();
+                    $row->addSelect('descriptor')
+                        ->fromArray($positiveDescriptors)
+                        ->fromArray($negativeDescriptors)
+                        ->chainedTo('type', $chainedTo)
+                        ->isRequired()
+                        ->placeholder();
             }
 
             //Level
@@ -126,19 +132,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 }
                 $row = $form->addRow();
                 	$row->addLabel('level', __('Level'));
-                	$row->addSelect('level')->fromArray($optionsLevels)->placeholder()->isRequired();
+                	$row->addSelect('level')->fromArray($optionsLevels)->placeholder();
             }
 
 			//Incident
             $row = $form->addRow();
                 $column = $row->addColumn();
-                $column->addLabel('comment', __('Incident'))->description();
+                $column->addLabel('comment', __('Incident'));
             	$column->addTextArea('comment')->setRows(5)->setClass('fullWidth');
 
             //Follow Up
             $row = $form->addRow();
             	$column = $row->addColumn();
-            	$column->addLabel('followup', __('Follow Up'))->description();
+            	$column->addLabel('followup', __('Follow Up'));
             	$column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
 
             $row = $form->addRow();
