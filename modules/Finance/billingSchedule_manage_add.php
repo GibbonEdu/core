@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage_add.php') == false) {
@@ -52,6 +54,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
             echo '</div>';
         }
+
+        $form = Form::create("scheduleManageAdd", $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+
+        $form->addHiddenValue("address", $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+        	$row->addLabel("yearName", __("School Year"))->description(__("This value cannot be changed."));
+        	$row->addTextField("yearName")->setValue($_SESSION[$guid]['gibbonSchoolYearName'])->readonly(true)->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel("name", __("Name"));
+        	$row->addTextField("name")->maxLength(100)->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel("active", __("Active"));
+        	$row->addYesNo("active")->isRequired();
+
+        $row = $form->addRow();
+        	$row->addLabel("description", __("Description"));
+        	$row->addTextArea("description")->setRows(5);
+
+        $row = $form->addRow();
+        	$row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__($guid, 'Intended issue date.') . '<br/>' . (empty($_SESSION[$guid]['i18n']['dateFormat']) ? "dd/mm/yy" : $_SESSION[$guid]['i18n']['dateFormat']));
+        	$row->addDate('invoiceIssueDate')->isRequired();
+
+        $row = $form->addRow();
+			$row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__($guid, 'Final Payment Date.') . '<br/>' . (empty($_SESSION[$guid]['i18n']['dateFormat']) ? "dd/mm/yy" : $_SESSION[$guid]['i18n']['dateFormat']));;
+			$row->addDate('invoiceDueDate')->isRequired();
+
+        $row = $form->addRow();
+        	$row->addFooter();
+        	$row->addSubmit();
+
+        echo $form->getOutput();
+
         ?>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
