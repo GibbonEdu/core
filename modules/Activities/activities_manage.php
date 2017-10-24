@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     <div id="optionRow" style="display: none;">
                         <select style="width: 182px" name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo">
                             <?php
-                            print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+                            print "<option value='Please select...'>" . __('Please select...') . "</option>" ;
 
                             try {
                                 $dataSelect = array();
