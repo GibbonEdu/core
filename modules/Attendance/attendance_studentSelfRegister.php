@@ -55,58 +55,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         echo __($guid, 'You do not have access to this action.');
         echo '</div>';
     } else {
-        $inRange = false ;
-        foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
-            if (trim($ipAddress) == $realIP)
-                $inRange = true ;
-        }
-
-        if (!$inRange) {
-            echo "<div class='error'>";
-            echo __($guid, 'It appears that you are not in school, and so cannot register yourself as present.');
-            echo '</div>';
+        //Check if school day
+        $currentDate = date('Y-m-d');
+        if (isSchoolOpen($guid, $currentDate, $connection2, true) == false) {
+            print "<div class='error'>" ;
+                print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
+            print "</div>" ;
         }
         else {
-            //Check if school day
-            $currentDate = date('Y-m-d');
-            if (isSchoolOpen($guid, $currentDate, $connection2, true) == false) {
-                print "<div class='error'>" ;
-					print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
-				print "</div>" ;
+            //Check for existence of records today
+            try {
+                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
+                $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
             }
-            else {
-                //Check for existence of records today
-                try {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
-                    $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+
+
+
+            if ($result->rowCount() > 0) { //Records! Output current status
+                $row = $result->fetch();
+                print "<div class='message'>" ;
+                    print sprintf(_('Attendance has been taken for you today. Your current status is: %1$s'), "<b>".$row['type']."</b>") ;
+                print "</div>" ;
+            }
+            else { //If no records, give option to self register
+                $inRange = false ;
+                foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
+                    if (trim($ipAddress) == $realIP)
+                        $inRange = true ;
                 }
 
-                if ($result->rowCount() > 0) { //Records! Output current status
-                    $row = $result->fetch();
-                    print "<div class='message'>" ;
-    					print sprintf(_('Attendance has been taken for you today. Your current status is: %1$s'), "<b>".$row['type']."</b>") ;
-    				print "</div>" ;
-                }
-                else { //If no records, give option to self register
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendance_studentSelfRegisterProcess.php');
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendance_studentSelfRegisterProcess.php');
 
-                    $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                if (!$inRange) { //Out of school, offer ability to register as absent
+                    $form->addHiddenValue('status', 'Absent');
 
                     $row = $form->addRow();
-                        $row->addLabel('submit','Click the Submit button below to register yourself as Present today.');
+                        $row->addLabel('submit',sprintf(__('It seems that you are out of school right now. Click the Submit button below to register yourself as %1$sAbsent%2$s today.'), '<span style=\'color: #CC0000; text-decoration: underline\'>', '</span>'));
+                }
+                else { //In school, offer ability to register as present
+                    $form->addHiddenValue('status', 'Present');
 
                     $row = $form->addRow();
-                        $row->addFooter(false);
-                        $row->addSubmit();
-
-                    echo $form->getOutput();
+                        $row->addLabel('submit',sprintf(__('Welcome back to %1$s. Click the Submit button below to register yourself as %2$sPresent%3$s today.'), $_SESSION[$guid]['organisationNameShort'], '<span style=\'color: #390; text-decoration: underline\'>', '</span>'));
                 }
+
+                $row = $form->addRow();
+                    $row->addFooter(false);
+                    $row->addSubmit();
+
+                echo $form->getOutput();
             }
         }
 

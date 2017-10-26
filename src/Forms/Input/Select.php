@@ -156,7 +156,10 @@ class Select extends Input
         }
 
         if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
-            $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
+            // Add a placeholder only if the first option is not already blank
+            if (key($this->getOptions()) != '') {
+                $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
+            }
 
             if ($this->getRequired() && !empty($this->placeholder)) {
                 $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
