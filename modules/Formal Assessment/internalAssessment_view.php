@@ -52,151 +52,113 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo __($guid, 'Choose A Student');
             echo '</h3>';
 
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-
-            $options = array();
-
-            while ($rowSelect = $resultSelect->fetch()) {
-                $options[$rowSelect['gibbonPersonID']]=formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
-
-            }
-
             $form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get", "noIntBorder fullWidth standardForm");
+			$form->setFactory(DatabaseFormFactory::create($pdo));
+			
+			$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-            $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->addHiddenValue("q", '/modules/Formal Assessment/internalAssessment_view.php');
-//TODO: Append Form Name
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Student'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]["gibbonSchoolYearID"], array())->selected($gibbonPersonID)->placeholder();
+				$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]["gibbonSchoolYearID"], array())->selected($gibbonPersonID)->placeholder();
+				
             $row = $form->addRow();
-                $row->addSubmit();
-            print $form->getOutput();
-					if ($gibbonPersonID) {
-						echo '<h3>';
-						echo __($guid, 'Internal Assessments');
-						echo '</h3>';
+				$row->addSearchSubmit($gibbon->session);
+				
+			echo $form->getOutput();
+			
+			if ($gibbonPersonID) {
+				echo '<h3>';
+				echo __($guid, 'Internal Assessments');
+				echo '</h3>';
 
-						//Check for access
-						try {
-							$dataCheck = array('gibbonPersonID' => $gibbonPersonID);
-							$sqlCheck = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')";
-							$resultCheck = $connection2->prepare($sqlCheck);
-							$resultCheck->execute($dataCheck);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
+				//Check for access
+				try {
+					$dataCheck = array('gibbonPersonID' => $gibbonPersonID);
+					$sqlCheck = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')";
+					$resultCheck = $connection2->prepare($sqlCheck);
+					$resultCheck->execute($dataCheck);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
 
-						if ($resultCheck->rowCount() != 1) {
-							echo "<div class='error'>";
-							echo __($guid, 'The selected record does not exist, or you do not have access to it.');
-							echo '</div>';
-						} else {
-							echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
-						}
-					}
-				} elseif ($highestAction == 'View Internal Assessments_myChildrens') { //MY CHILDREN
-					echo "<div class='trail'>";
-					echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View My Childrens\'s Internal Assessments').'</div>';
+				if ($resultCheck->rowCount() != 1) {
+					echo "<div class='error'>";
+					echo __($guid, 'The selected record does not exist, or you do not have access to it.');
 					echo '</div>';
+				} else {
+					echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
+				}
+			}
+		} elseif ($highestAction == 'View Internal Assessments_myChildrens') { //MY CHILDREN
+			echo "<div class='trail'>";
+			echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View My Childrens\'s Internal Assessments').'</div>';
+			echo '</div>';
 
-					//Test data access field for permission
+			//Test data access field for permission
+			try {
+				$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+				$sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+				$result = $connection2->prepare($sql);
+				$result->execute($data);
+			} catch (PDOException $e) {
+				echo "<div class='error'>".$e->getMessage().'</div>';
+			}
+
+			if ($result->rowCount() < 1) {
+				echo "<div class='error'>";
+				echo __($guid, 'Access denied.');
+				echo '</div>';
+			} else {
+				//Get child list
+				$options = array();
+				while ($row = $result->fetch()) {
 					try {
-						$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-						$sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-						$result = $connection2->prepare($sql);
-						$result->execute($data);
+						$dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+						$resultChild = $connection2->prepare($sqlChild);
+						$resultChild->execute($dataChild);
 					} catch (PDOException $e) {
 						echo "<div class='error'>".$e->getMessage().'</div>';
 					}
+					while ($rowChild = $resultChild->fetch()) {
+						$options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+					}
+				}
 
-					if ($result->rowCount() < 1) {
-						echo "<div class='error'>";
-						echo __($guid, 'Access denied.');
-						echo '</div>';
-					} else {
-						//Get child list
-						$count = 0;
-						$options = array();
-						while ($row = $result->fetch()) {
-							try {
-								$dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-								$sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-								$resultChild = $connection2->prepare($sqlChild);
-								$resultChild->execute($dataChild);
-							} catch (PDOException $e) {
-								echo "<div class='error'>".$e->getMessage().'</div>';
-							}
-							while ($rowChild = $resultChild->fetch()) {
-								$select = '';
-								if (isset($_GET['search'])) {
-									if ($rowChild['gibbonPersonID'] == $_GET['search']) {
-										$select = 'selected';
-									}
-								}
-                $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
-								$gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
-								++$count;
-							}
-						}
+				$gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
-						if ($count == 0) {
-							echo "<div class='error'>";
-							echo __($guid, 'Access denied.');
-							echo '</div>';
-						} elseif ($count == 1) {
-							$_GET['search'] = $gibbonPersonID[0];
-						} else {
-							echo '<h2>';
-							echo 'Choose Student';
-							echo '</h2>';
-              $row = $form->addRow();
-	             $row->addLabel('search', __('Student'));
-	             $row->addSelect('search')->fromArray($options)->placeholder();
-               print $form->getOutput();
-							echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-							echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-							?>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Student') ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="search" id="search" class="standardWidth">
-										<option value=""></value>
+				if (count($options) == 0) {
+					echo "<div class='error'>";
+					echo __($guid, 'Access denied.');
+					echo '</div>';
+				} elseif (count($options) == 1) {
+					$gibbonPersonID = key($options);
+				} else {
+					echo '<h2>';
+					echo 'Choose Student';
+					echo '</h2>';
 
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2 class="right">
-									<input type="hidden" name="q" value="/modules/Formal Assessment/internalAssessment_view.php">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<?php
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+					$form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get");
+					$form->setClass('noIntBorder fullWidth standardForm');
 
+					$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
+					$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+					
+					$row = $form->addRow();
+						$row->addLabel('search', __('Student'));
+						$row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
+
+					$row = $form->addRow();
+						$row->addSearchSubmit($gibbon->session);
+
+					echo $form->getOutput();
                 }
-
-                $gibbonPersonID = null;
-                if (isset($_GET['search'])) {
-                    $gibbonPersonID = $_GET['search'];
-                }
+				
                 $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
                 $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
 
-                if ($gibbonPersonID != '' and $count > 0) {
+                if ($gibbonPersonID != '' and count($options) > 0) {
                     //Confirm access to this student
                     try {
                         $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
