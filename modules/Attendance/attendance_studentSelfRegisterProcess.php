@@ -42,41 +42,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $inRange = false ;
-        foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
-            if (trim($ipAddress) == $realIP)
-                $inRange = true ;
-        }
-
-        if (!$inRange) {
+        //Check if school day
+        $currentDate = date('Y-m-d');
+        if (isSchoolOpen($guid, $currentDate, $connection2, true) == false) {
             $URL .= '&return=error0';
             header("Location: {$URL}");
         }
         else {
-            //Check if school day
-            $currentDate = date('Y-m-d');
-            if (isSchoolOpen($guid, $currentDate, $connection2, true) == false) {
-                $URL .= '&return=error0';
+            //Check for existence of records today
+            try {
+                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
+                $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            if ($result->rowCount() > 0) { //Records! Return error
+                $URL .= '&return=error1';
                 header("Location: {$URL}");
             }
-            else {
-                //Check for existence of records today
-                try {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
-                    $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
+            else { //If no records, set status to Present
+                $inRange = false ;
+                foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
+                    if (trim($ipAddress) == $realIP)
+                        $inRange = true ;
+                }
+
+                $status = (isset($_POST['status']))? $_POST['status'] : null;
+
+                if (!$inRange && $status == 'Absent') {
+                    try {
+                        $dataUpdate = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
+                        $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=\'Absent\'), gibbonPersonID=:gibbonPersonID, direction=\'In\', type=\'Absent\', context=\'Self Registration\', reason=\'\', comment=\'\', gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=NULL, date=:date, timestampTaken=:timestampTaken';
+                        $resultUpdate = $connection2->prepare($sqlUpdate);
+                        $resultUpdate->execute($dataUpdate);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    //Give student a like for their effort
+                    $gibbonAttendanceLogPersonID = $connection2->lastInsertId();
+                    setLike($connection2, 'Attendance', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonPersonID'], 'Attendance - Self Registration');
+                    $_SESSION[$guid]['pageLoads'] = null;
+
+                    $URL .= '&return=success0';
                     header("Location: {$URL}");
                     exit();
                 }
-
-                if ($result->rowCount() > 0) { //Records! Return error
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
-                }
-                else { //If no records, set status to Present
+                else if ($inRange && $status == 'Present') {
                     try {
                         $dataUpdate = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
                         $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=\'Present\'), gibbonPersonID=:gibbonPersonID, direction=\'In\', type=\'Present\', context=\'Self Registration\', reason=\'\', comment=\'\', gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=NULL, date=:date, timestampTaken=:timestampTaken';
@@ -88,13 +107,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                         exit();
                     }
 
-
                     //Give student a like for their effort
                     $gibbonAttendanceLogPersonID = $connection2->lastInsertId();
                     setLike($connection2, 'Attendance', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonPersonID'], 'Attendance - Self Registration');
                     $_SESSION[$guid]['pageLoads'] = null;
 
                     $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                    exit();
+                }
+                else {
+                    $URL .= '&return=error0';
                     header("Location: {$URL}");
                 }
             }
