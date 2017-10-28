@@ -173,6 +173,7 @@ class FormFactory implements FormFactoryInterface
         else
         {
             $button = new Input\Button($label, $onClick);
+            $button->setID($id);
             $button->setName($id);
             return $button;
         }
