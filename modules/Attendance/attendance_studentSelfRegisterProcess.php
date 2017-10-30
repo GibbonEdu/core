@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                 if (!$inRange && $status == 'Absent') {
                     try {
                         $dataUpdate = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                        $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=\'Absent\'), gibbonPersonID=:gibbonPersonID, direction=\'In\', type=\'Absent\', context=\'Self Registration\', reason=\'\', comment=\'\', gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=NULL, date=:date, timestampTaken=:timestampTaken';
+                        $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=\'Absent\'), gibbonPersonID=:gibbonPersonID, direction=\'Out\', type=\'Absent\', context=\'Self Registration\', reason=\'\', comment=\'\', gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=NULL, date=:date, timestampTaken=:timestampTaken';
                         $resultUpdate = $connection2->prepare($sqlUpdate);
                         $resultUpdate->execute($dataUpdate);
                     } catch (PDOException $e) {
