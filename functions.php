@@ -2986,45 +2986,45 @@ function sidebar($gibbon, $pdo)
                             $order .= "$pos, ";
                             $message = $_SESSION[$guid]['messageWallOutput'][$pos];
 
-                                //COLOR ROW BY STATUS!
-                                echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
+                            //COLOR ROW BY STATUS!
+                            echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
                             echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
-                                        //Image
-                                        $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
+                            //Image
+                            $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
                             if ($message['photo'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$message['photo']) == false) {
                                 echo "<img $style  src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_75.jpg'/>";
                             } else {
                                 echo "<img $style src='".$_SESSION[$guid]['absoluteURL'].'/'.$message['photo']."'/>";
                             }
 
-                                        //Message number
-                                        echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
+                            //Message number
+                            echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
 
-                                        //Title
-                                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['gibbonMessengerID'];
+                            //Title
+                            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['gibbonMessengerID'];
                             if (strlen($message['subject']) <= 16) {
                                 echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
                             } else {
-                                echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".substr($message['subject'], 0, 16).'...</a><br/>';
+                                echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".mb_substr($message['subject'], 0, 16).'...</a><br/>';
                             }
 
-                                        //Text
-                                        echo "<div style='margin-top: 5px'>";
+                            //Text
+                            echo "<div style='margin-top: 5px'>";
                             $message = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message);
                             if (strlen(strip_tags($message['details'])) <= 40) {
                                 echo strip_tags($message['details']).'<br/>';
                             } else {
-                                echo substr(strip_tags($message['details']), 0, 40).'...<br/>';
+                                echo mb_substr(strip_tags($message['details']), 0, 40).'...<br/>';
                             }
                             echo '</div>';
                             echo '</td>';
                             echo '</tr>';
                             echo "
-									<script type=\"text/javascript\">
-										$(document).ready(function(){
-											$(\"#messageWall$pos\").hide();
-										});
-									</script>";
+							<script type=\"text/javascript\">
+								$(document).ready(function(){
+									$(\"#messageWall$pos\").hide();
+								});
+							</script>";
                         }
                         echo '</table>';
                         $order = substr($order, 0, strlen($order) - 2);
