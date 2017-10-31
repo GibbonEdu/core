@@ -77,6 +77,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Element($content);
     }
 
+    public function createCollection($content)
+    {
+    	return new Layout\ElementCollection($content);
+    }
+
     /* BASIC INPUT --------------------------- */
 
     public function createCustomField($name, $fields = array())
@@ -109,6 +114,13 @@ class FormFactory implements FormFactoryInterface
         return (new Input\TextField($name))->addValidation('Validate.Email');
     }
 
+    //Allows elements to be embedded
+    public function createWebLink($name,$url)
+    {
+    	return new Input\WebLink($name,$url);
+    }
+
+    //A URL web link
     public function createURL($name)
     {
         return (new Input\TextField($name) )
@@ -164,9 +176,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\MultiSelect($this, $name);
     }
 
-    public function createButton($label = 'Button', $onClick = '')
+    public function createButton($name, $label = 'Button', $onClick = '')
     {
-        return new Input\Button($label, $onClick);
+        return new Input\Button($name, $label, $onClick);
     }
 
     public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
