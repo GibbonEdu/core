@@ -27,23 +27,25 @@ namespace Gibbon\Forms\Input;
  */
 class Button extends Input
 {
+    private $onclick;
 
     public function __construct($name, $onClick)
     {
-        $this->setAttribute('value', $name);
+        $this->setName($name);
         $this->onClick($onClick);
+        $this->setValue($name);
+        $this->setID($name);
     }
 
     public function onClick($value)
     {
-        $this->setAttribute('onClick', $value);
+        $this->setAttribute('onClick',$value);
         return $this;
     }
 
     protected function getElement()
     {
         $output = '<input type="button" '.$this->getAttributeString().'>';
-
         return $output;
     }
 }
