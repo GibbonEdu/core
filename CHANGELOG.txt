@@ -58,6 +58,7 @@ v15.0.00
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
+		Messenger: fixed multibyte substring issue in homepage widget
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Roll Groups: fixed bug preventing alerts from showing
 		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
