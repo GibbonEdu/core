@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         	$row->addTextArea("description")->setRows(5);
 
         $row = $form->addRow();
-        	$row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__($guid, 'Intended issue date.') . '<br/>' . (empty($_SESSION[$guid]['i18n']['dateFormat']) ? "dd/mm/yy" : $_SESSION[$guid]['i18n']['dateFormat']));
+        	$row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__($guid, 'Intended issue date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
         	$row->addDate('invoiceIssueDate')->isRequired();
 
         $row = $form->addRow();
-			$row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__($guid, 'Final Payment Date.') . '<br/>' . (empty($_SESSION[$guid]['i18n']['dateFormat']) ? "dd/mm/yy" : $_SESSION[$guid]['i18n']['dateFormat']));;
+			$row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__($guid, 'Final payment date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
 			$row->addDate('invoiceDueDate')->isRequired();
 
         $row = $form->addRow();

@@ -56,15 +56,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     		$row->addSelect("status")->fromArray(array(__("Upcoming"), __("Current"), __("Past")));
 
     	$row = $form->addRow();
-    		$row->addLabel("sequenceNumber", "Sequence Number");
+    		$row->addLabel("sequenceNumber", "Sequence Number")->description(__($guid, 'Must be unique. Controls chronological ordering.'));
     		$row->addNumber("sequenceNumber")->isRequired()->maxLength(3);
 
     	$row = $form->addRow();
-    		$row->addLabel("dateStart", "Start Date")->description($_SESSION[$guid]['i18n']['dateFormat']);
+    		$row->addLabel("dateStart", "Start Date")->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
     		$row->addDate("dateStart")->isRequired();
 
     	$row = $form->addRow();
-    		$row->addLabel("dateEnd", "End Date")->description($_SESSION[$guid]['i18n']['dateFormat']);
+    		$row->addLabel("dateEnd", "End Date")->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
     		$row->addDate("dateEnd")->isRequired();
 
     	$row = $form->addRow();
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 					$row->addNumber("values[]")->maxLength(15)->decimalPlaces(2)->setValue("0.00");
 					$form->addHiddenValue("gibbonFinanceBudgetIDs[]", $rowBudget['gibbonFinanceBudgetID']);
 			}
-		}    		
+		}
 
 		$row = $form->addRow();
 			$row->addFooter();
