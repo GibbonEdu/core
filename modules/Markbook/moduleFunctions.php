@@ -444,6 +444,91 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
     echo '</table>';
 }
 
+function renderStudentCourseAverage($pdo, $guid, $gibbonPersonIDStudent)
+{
+    global $gibbon;
+    require_once './modules/Markbook/src/markbookView.php';
+
+    $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
+
+    $data = array(
+        'gibbonPersonID' => $gibbonPersonIDStudent,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    );
+    $sql = "SELECT gibbonCourseClassPerson.gibbonCourseClassID, gibbonCourse.weight as courseWeight, (CASE WHEN gibbonCourse.orderBy > 0 THEN gibbonCourse.orderBy ELSE 80 end) as courseOrder
+            FROM gibbonCourseClassPerson
+            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID = gibbonCourseClassPerson.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID = gibbonCourseClass.gibbonCourseID)
+            JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            WHERE gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID
+            AND gibbonCourseClassPerson.role = 'Student'
+            AND gibbonCourseClass.reportable = 'Y'
+            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+            GROUP BY gibbonCourseClass.gibbonCourseClassID
+            ORDER BY courseOrder";
+
+    $result = $pdo->executeQuery($data, $sql);
+
+    if ($result->rowCount() == 0) return;
+
+    $total = 0;
+    $cumulative = 0;
+
+    while ($course = $result->fetch())
+    {
+        // Build the markbook object for this class & student
+        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $course['gibbonCourseClassID'] );
+        $markbook->cacheWeightings($gibbonPersonIDStudent);
+        
+        // Grab the course weight and grade
+        $weight = $course['courseWeight'];
+        $grade = $markbook->getCumulativeAverage($gibbonPersonIDStudent);
+        
+        // Skip any empty or incomplete marks
+        if ($grade == '' || $grade == '-' || $grade == 'INC') continue;
+
+        // Sum the cumulative weight & grades
+        $total += $weight;
+        $cumulative += ($grade * $weight);
+    }
+
+    if (empty($total) || empty($cumulative) ) return;
+    
+    // Calculate the GPA
+    $gpa = ( $cumulative / $total );
+    $gpa = round( min(100.0, max(0.0, $gpa)), 2);
+
+    if ($gpa >= 95.0) {
+        $status = 'Scholars';
+    } else if ($gpa >= 90.0) {
+        $status = 'Distinction';
+    } else if ($gpa >= 80.0) {
+        $status = 'Honours';
+    } else if ($gpa >= 60.0) {
+        $status = 'Good Standing';
+    } else {
+        $status = 'At Risk';
+    }
+    
+    echo '<h4>Current Cumulative Average</h4>';
+    
+    echo '<table class="mini fullWidth" cellspacing="0">';
+        echo '<tr class="head">';
+
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 85px;font-size: 11px;">'.__('Average').'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 85px;font-size: 11px;">'.__('Status').'</td>';
+
+        echo '<td rowspan="2" style="padding: 10px 30px !important; border: 0; border-left: 1px solid #dfdfdf;">';
+            echo '<span class="small emphasis">The current average is weighted per course and calculated from ongoing course work. All markbook grades are subject to change. The average listed here is not a posted grade and may differ from the final GPA for this term. <b>Only visible to teachers and staff at this time.</b></span>';
+        echo '</td>';
+    echo '</tr>';
+    echo '<tr>';
+        echo '<td style="padding: 10px !important; text-align: center;">'.round( $gpa, 1 ).'%</td>';
+        echo '<td style="padding: 10px !important; text-align: center;">'.$status.'</td>';
+    echo '</tr>';
+    echo '</table>';
+}
+
 function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gibbonCourseClassID, $gibbonSchoolYearID = '') {
 
     $guid = $gibbon->guid();

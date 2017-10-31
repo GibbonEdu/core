@@ -2148,6 +2148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 if ($resultList->rowCount() > 0) {
                                     renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'] );
 
+                                    // Only visible to teachers and admin for now
+                                    if ($highestAction == 'View Markbook_allClassesAllData') {
+                                        renderStudentCourseAverage($pdo, $guid, $_GET['gibbonPersonID']);
+                                    }
+
                                     while ($rowList = $resultList->fetch()) {
                                         echo "<a name='".$rowList['gibbonCourseClassID']."'></a><h4>".$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
 
