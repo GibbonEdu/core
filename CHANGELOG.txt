@@ -52,6 +52,7 @@ v15.0.00
 		Attendance: added count column to Students Not Present and Students Not Onsite reports
 		Attendance: granted like to those students who successfully self register
 		Attendance: added selective auto-redirect to move students to self-registration page under certain conditions
+		Attendance: added a warning to Attendance by Class when not currently timetabled for the selected date
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name

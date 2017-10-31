@@ -248,6 +248,29 @@ else {
 					}
 					$last5SchoolDaysCount=$count ;
 
+					// Check if the class is a timetabled course AND if it's timetabled on the current day
+					try {
+						$dataTT = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $currentDate);
+						$sqlTT = "SELECT MIN(gibbonTTDayDateID) as currentlyTimetabled, COUNT(*) AS totalTimetableCount
+						FROM gibbonTTDayRowClass
+						LEFT JOIN gibbonTTDayDate ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID AND gibbonTTDayDate.date=:date)
+						WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+						GROUP BY gibbonTTDayRowClass.gibbonCourseClassID";
+						$resultTT=$connection2->prepare($sqlTT);
+						$resultTT->execute($dataTT);
+					} catch(PDOException $e) {
+						print "<div class='error'>" . $e->getMessage() . "</div>" ;
+					}
+
+					if ($resultTT && $resultTT->rowCount() > 0) {
+						$ttCheck = $resultTT->fetch();
+						if ($ttCheck['totalTimetableCount'] > 0 && empty($ttCheck['currentlyTimetabled'])) {
+							echo "<div class='warning'>" ;
+								echo __('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.');
+							echo "</div>" ;
+						}
+					}
+
 					//Show attendance log for the current day
 					try {
 						$dataLog=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate . "%");
