@@ -44,6 +44,7 @@ v15.0.00
         System: added mbstring extension to the system requirements list
 		System: fixed text alginment in module menu
 		System: fixed long-string and large image issue causing content to bleed under sidebar
+		System: fixed bug causing two entries in a module menu to be highlighted as active in some cases
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
