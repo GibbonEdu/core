@@ -49,7 +49,7 @@ $I->seeBreadcrumb('Add Class');
 
 $addFormValues = array(
     'name'       => 'C-1',
-    'nameShort'  => '1',
+    'nameShort'  => 'C-1',
     'reportable' => 'Y',
     'attendance' => 'Y',
 );
@@ -67,7 +67,7 @@ $I->seeInFormFields('#content form', $addFormValues);
 
 $editFormValues = array(
     'name'       => 'C-2',
-    'nameShort'  => '2',
+    'nameShort'  => 'C-2',
     'reportable' => 'N',
     'attendance' => 'N',
 );
