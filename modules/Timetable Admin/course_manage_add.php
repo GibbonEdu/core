@@ -102,8 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
 				$row->addNumber('orderBy')->maxLength(6);
 
-			$data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-            $sql = "SELECT gibbonCourseID as value, CONCAT(nameShort, ' - ', name) as name FROM gibbonCourse WHERE gibbonCourseID<>:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseIDParent IS NULL ORDER BY nameShort";
+			$data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = "SELECT gibbonCourseID as value, CONCAT(nameShort, ' - ', name) as name FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseIDParent IS NULL ORDER BY nameShort";
 			$row = $form->addRow();
 				$row->addLabel('gibbonCourseIDParent', __('Parent Course'))->description(__('Is this course a module or sub-set of another course?'));
 				$row->addSelect('gibbonCourseIDParent')->fromQuery($pdo, $sql, $data)->placeholder();
