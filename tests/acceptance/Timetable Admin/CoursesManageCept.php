@@ -10,7 +10,7 @@ $I->seeBreadcrumb('Add Course');
 
 $addFormValues = array(
     'name'               => 'Test Course',
-    'nameShort'          => 'TEST101',
+    'nameShort'          => 'TEST01',
     'orderBy'            => '1',
     'description'        => 'This is a test.',
     'map'                => 'Y',
@@ -32,7 +32,7 @@ $I->seeInFormFields('#content form', $addFormValues);
 
 $editFormValues = array(
     'name'               => 'Test Course Too',
-    'nameShort'          => 'TEST102',
+    'nameShort'          => 'TEST02',
     'orderBy'            => '2',
     'description'        => 'This is also a test.',
     'map'                => 'N',
@@ -48,7 +48,7 @@ $I->clickNavigation('Add');
 $I->seeBreadcrumb('Add Class');
 
 $addFormValues = array(
-    'name'       => 'Class 1',
+    'name'       => 'C-1',
     'nameShort'  => '1',
     'reportable' => 'Y',
     'attendance' => 'Y',
@@ -66,7 +66,7 @@ $I->seeBreadcrumb('Edit Class');
 $I->seeInFormFields('#content form', $addFormValues);
 
 $editFormValues = array(
-    'name'       => 'Class 2',
+    'name'       => 'C-2',
     'nameShort'  => '2',
     'reportable' => 'N',
     'attendance' => 'N',
