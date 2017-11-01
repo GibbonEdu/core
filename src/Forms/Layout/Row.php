@@ -86,7 +86,7 @@ class Row
      */
     public function addElement(OutputableInterface $element)
     {
-        if (method_exists($element, 'getName')) {
+        if (method_exists($element, 'getName') && !empty($element->getName())) {
             $id = $element->getName();
         } else {
             $id = 'element-'.count($this->formElements);

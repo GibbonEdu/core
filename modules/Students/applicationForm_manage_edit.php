@@ -729,17 +729,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     // LANGUAGE OPTIONS
     $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
+    $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
+    $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
 
-    if ($languageOptionsActive == 'Y') {
+    if ($languageOptionsActive == 'Y' && $languageOptionsLanguageList != '') {
 
         $heading = $form->addRow()->addHeading(__('Language Selection'));
 
-        $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
         if (!empty($languageOptionsBlurb)) {
             $heading->append($languageOptionsBlurb)->wrap('<p>','</p>');
         }
 
-        $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
         $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
 
         $row = $form->addRow();

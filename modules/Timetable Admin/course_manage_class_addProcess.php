@@ -73,7 +73,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 exit();
             }
 
-            $URL .= '&return=success0';
+            //Last insert ID
+            $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
+
+            $URL .= "&return=success0&editID=$AI";
             header("Location: {$URL}");
         }
     }

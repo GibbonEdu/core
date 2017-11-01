@@ -100,7 +100,7 @@ if ($proceed == false) {
     }
 
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
+        echo "<div class='warning'>";
         echo __($guid, 'There are no job openings at this time: please try again later.');
         echo '</div>';
     } else {

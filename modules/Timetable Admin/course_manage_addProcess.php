@@ -37,20 +37,9 @@ $orderBy = $_POST['orderBy'];
 $description = $_POST['description'];
 $map = $_POST['map'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$count = $_POST['count'];
-
 $credits = $_POST['credits'];
 $weight = $_POST['weight'];
-
-$gibbonYearGroupIDList = '';
-for ($i = 0; $i < $count; ++$i) {
-    if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
-        if ($_POST["gibbonYearGroupIDCheck$i"] == 'on') {
-            $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST["gibbonYearGroupID$i"].',';
-        }
-    }
-}
-$gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
+$gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? implode(',', $_POST['gibbonYearGroupIDList']) : '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
