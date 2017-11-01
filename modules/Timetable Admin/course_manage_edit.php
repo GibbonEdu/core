@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
 			$row = $form->addRow();
 				$row->addLabel('gibbonDepartmentID', __('Learning Area'));
-				$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql);
+				$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql)->placeholder();
 			
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
