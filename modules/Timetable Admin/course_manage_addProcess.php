@@ -40,6 +40,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $credits = $_POST['credits'];
 $weight = $_POST['weight'];
 $gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? implode(',', $_POST['gibbonYearGroupIDList']) : '';
+$gibbonCourseIDParent = (!empty($_POST['gibbonCourseIDParent']))? $_POST['gibbonCourseIDParent'] : null;
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
@@ -71,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'credits' => $credits, 'weight' => $weight);
-                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList, credits=:credits, weight=:weight';
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'credits' => $credits, 'weight' => $weight, 'gibbonCourseIDParent' => $gibbonCourseIDParent);
+                $sql = 'INSERT INTO gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList, credits=:credits, weight=:weight, gibbonCourseIDParent=:gibbonCourseIDParent';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

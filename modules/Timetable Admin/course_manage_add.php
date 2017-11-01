@@ -84,23 +84,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-				$row->addTextField('name')->isRequired()->maxLength(45);
+				$row->addTextField('name')->isRequired()->maxLength(60);
 			
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->isRequired()->maxLength(6);
+				$row->addTextField('nameShort')->isRequired()->maxLength(12);
 			
 			$row = $form->addRow();
 				$row->addLabel('credits', __('Credits'))->description(__('For GPA calculations and transcripts.'));
-				$row->addNumber('credits')->maxLength(5);
+				$row->addNumber('credits')->maxLength(5)->decimalPlaces(2);
 
 			$row = $form->addRow();
 				$row->addLabel('weight', __('Weight'))->description(__('For GPA calculations and transcripts.'));
-				$row->addNumber('weight')->maxLength(5);
+				$row->addNumber('weight')->maxLength(5)->decimalPlaces(2);
 
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
 				$row->addNumber('orderBy')->maxLength(6);
+
+			$data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
+            $sql = "SELECT gibbonCourseID as value, CONCAT(nameShort, ' - ', name) as name FROM gibbonCourse WHERE gibbonCourseID<>:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseIDParent IS NULL ORDER BY nameShort";
+			$row = $form->addRow();
+				$row->addLabel('gibbonCourseIDParent', __('Parent Course'))->description(__('Is this course a module or sub-set of another course?'));
+				$row->addSelect('gibbonCourseIDParent')->fromQuery($pdo, $sql, $data)->placeholder();
 			
 			$row = $form->addRow();
 				$column = $row->addColumn('blurb');
