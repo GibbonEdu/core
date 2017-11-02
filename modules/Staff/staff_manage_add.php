@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
                         echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
 						try {
 							$data = array();
-							$sql = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE concat('%', gibbonRoleID, '%')) WHERE status='Full' AND gibbonRole.category='Staff' ORDER BY surname, preferredName";
+							$sql = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE status='Full' AND gibbonRole.category='Staff' ORDER BY surname, preferredName";
 							$result = $connection2->prepare($sql);
 							$result->execute($data);
 						} catch (PDOException $e) {
