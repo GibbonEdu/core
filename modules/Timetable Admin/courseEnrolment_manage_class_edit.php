@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
                             <select style="width: 182px" name="gibbonCourseClassIDCopyTo">
                                 <?php
-                                print "<option value=''>" . _('Please select...') . "</option>" ;
+                                print "<option value=''>" . __('Please select...') . "</option>" ;
 
                                 try {
                                     $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
