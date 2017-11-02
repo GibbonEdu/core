@@ -1299,7 +1299,7 @@ select[multiple] {
 	width: 70px;
 }
 
-.column div:after {
+.column > div:after {
   content: "";
   display: table;
   clear: both;
