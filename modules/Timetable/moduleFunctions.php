@@ -505,9 +505,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
-            //Sunday week adjust for timetable on home page (so Sunday's show next week)
+            //Sunday week adjust for timetable on home page (so Sunday's show next week if week starts on Monday, it's Sunday now and Sunday is not a school day)
             $homeSunday = true ;
-            if ($q == '') {
+            if ($q == '' && $_SESSION[$guid]['firstDayOfTheWeek'] == 'Monday') {
                 try {
                     $dataDays = array();
                     $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
