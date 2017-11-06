@@ -1768,7 +1768,10 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $count = 0;
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    if ($count == 0) {
+                        $firstSequence = $day['sequenceNumber'];
+                    }
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     $output .= "<th style='vertical-align: top; text-align: center; width: ";
                     $output .= (550 / $daysInWeek);
@@ -1861,7 +1864,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             foreach ($days as $day) {
                 $dayOut = '';
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     //Check to see if day is term time
                     $isDayInTerm = false;
