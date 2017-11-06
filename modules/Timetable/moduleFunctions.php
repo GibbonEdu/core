@@ -789,7 +789,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $count = 0;
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    if ($count == 0) {
+                        $firstSequence = $day['sequenceNumber'];
+                    }
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     $color = '';
                     try {
@@ -883,7 +886,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             //Run through days of the week
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     //Check to see if day is term time
                     $isDayInTerm = false;
