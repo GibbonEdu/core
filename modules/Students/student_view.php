@@ -409,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 } else {
                     $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status, NULL AS gibbonStudentEnrolmentID, gibbonPerson.surname, gibbonPerson.preferredName, NULL AS yearGroup, NULL AS rollGroup
                         FROM gibbonPerson
-                            JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDAll LIKE concat('%', gibbonRole.gibbonRoleID , '%'))
+                            JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
                         $familySQL
                         WHERE gibbonRole.category='Student'";
                 }
