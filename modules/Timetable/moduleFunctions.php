@@ -505,9 +505,28 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
-            //Count back to first dayOfWeek before specified calendar date
-            while (date('D', $startDayStamp) != $days[0]['nameShort']) {
-                $startDayStamp = $startDayStamp - 86400;
+            //Sunday week adjust for timetable on home page (so Sunday's show next week)
+            $homeSunday = true ;
+            if ($q == '') {
+                try {
+                    $dataDays = array();
+                    $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
+                    $resultDays = $connection2->prepare($sqlDays);
+                    $resultDays->execute($dataDays);
+                } catch (PDOException $e) { echo $e->getMessage(); }
+                if ($resultDays->rowCount() == 1) {
+                    $homeSunday = false ;
+                }
+            }
+
+            //If school is closed on Sunday, and it is a Sunday, count forward, otherwise count back
+            if (!$homeSunday AND date('D', $startDayStamp) == 'Sun') {
+                $startDayStamp = $startDayStamp + 86400;
+            }
+            else {
+                while (date('D', $startDayStamp) != $days[0]['nameShort']) {
+                    $startDayStamp = $startDayStamp - 86400;
+                }
             }
 
             //Count forward to the end of the week
