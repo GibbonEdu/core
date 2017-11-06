@@ -40,11 +40,15 @@ if ($action == '' or $countTotal == '') { echo 'Fatal error loading this page!';
         $students = array();
         $count = 0;
         for ($i = 1; $i <= $countTotal; ++$i) {
-            if (isset($_POST["gibbonActivityStudentID-$i"])) {
-                if ($_POST["gibbonActivityStudentID-$i"] != '') {
-                    $students[$count] = $_POST["gibbonActivityStudentID-$i"];
-                    ++$count;
+            if (isset($_POST["gibbonActivityStudentID-$i"]) && $_POST["gibbonActivityStudentID-$i"] != '') {
+                $students[$count][0] = $_POST["gibbonActivityStudentID-$i"];
+                if (isset($_POST["payment$i"]) && $_POST["payment$i"] != '') {
+                    $students[$count][1] = $_POST["payment$i"];
                 }
+                else {
+                    $students[$count][1] = 0.00;
+                }
+                ++$count;
             }
         }
 
@@ -68,7 +72,9 @@ if ($action == '' or $countTotal == '') { echo 'Fatal error loading this page!';
 
             $partialFail = false;
             if ($action == 'Generate Invoice - Simulate') {
-                foreach ($students as $gibbonActivityStudentID) {
+                foreach ($students as $student) {
+                    $gibbonActivityStudentID = $student[0];
+
                     //Write generation back to gibbonActivityStudent
                     try {
                         $data = array('gibbonActivityStudentID' => $gibbonActivityStudentID);
@@ -93,7 +99,10 @@ if ($action == '' or $countTotal == '') { echo 'Fatal error loading this page!';
                 }
 
                 if ($checkFail == false) {
-                    foreach ($students as $gibbonActivityStudentID) {
+                    foreach ($students as $student) {
+                        $gibbonActivityStudentID = $student[0];
+                        $payment = $student[1];
+
                         //Check student is invoicee
                         $checkFail2 = false;
                         try {
@@ -168,8 +177,15 @@ if ($action == '' or $countTotal == '') { echo 'Fatal error loading this page!';
                                                 //Add fees to invoice
                                                 $invoiceFail2 = false;
                                                 try {
-                                                    $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'feeType' => 'Ad Hoc', 'name' => 'Activity Fee', 'gibbonActivityStudentID' => $gibbonActivityStudentID, 'gibbonFinanceFeeCategoryID' => 1, 'gibbonActivityStudentID2' => $gibbonActivityStudentID);
-                                                    $sqlInvoiceFee = 'INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, name=:name, description=(SELECT gibbonActivity.name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonActivityStudentID=:gibbonActivityStudentID), gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID, fee=(SELECT gibbonActivity2.payment FROM gibbonActivity AS gibbonActivity2 JOIN gibbonActivityStudent AS gibbonActivityStudent2 ON (gibbonActivityStudent2.gibbonActivityID=gibbonActivity2.gibbonActivityID) WHERE gibbonActivityStudentID=:gibbonActivityStudentID2), sequenceNumber=0';
+                                                    $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'feeType' => 'Ad Hoc', 'name' => 'Activity Fee', 'gibbonActivityStudentID' => $gibbonActivityStudentID, 'gibbonFinanceFeeCategoryID' => 1, 'fee' => $payment);
+                                                    $sqlInvoiceFee = 'INSERT INTO gibbonFinanceInvoiceFee
+                                                        SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID,
+                                                            feeType=:feeType,
+                                                            name=:name,
+                                                            description=(SELECT gibbonActivity.name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonActivityStudentID=:gibbonActivityStudentID),
+                                                            gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID,
+                                                            fee=:fee,
+                                                            sequenceNumber=0';
                                                     $resultInvoiceFee = $connection2->prepare($sqlInvoiceFee);
                                                     $resultInvoiceFee->execute($dataInvoiceFee);
                                                 } catch (PDOException $e) {
