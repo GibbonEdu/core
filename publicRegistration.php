@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 $proceed = false;
@@ -60,264 +62,133 @@ if ($proceed == false) {
         echo $intro;
         echo '</p>';
     }
-    ?>
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php' ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-	        <tr class='break'>
-				<th colspan=2>
-					<?php echo __($guid, 'Account Details'); ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'First Name') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var firstName=new LiveValidation('firstName');
-						firstName.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Surname') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var surname=new LiveValidation('surname');
-						surname.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/passwordResetProcess.php?step=1');
 
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Email') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var email=new LiveValidation('email');
-						email.add(Validate.Email);
-						email.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
+    $form->setClass('smallIntBorder fullWidth');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Gender') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select name="gender" id="gender" class="standardWidth">
-						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-						<option value="F"><?php echo __($guid, 'Female') ?></option>
-						<option value="M"><?php echo __($guid, 'Male') ?></option>
-						<option value="Other"><?php echo __($guid, 'Other') ?></option>
-						<option value="Unspecified"><?php echo __($guid, 'Unspecified') ?></option>
-					</select>
-					<script type="text/javascript">
-						var gender=new LiveValidation('gender');
-						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Date of Birth') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="dob" id="dob" maxlength=10 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var dob=new LiveValidation('dob');
-						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-					 	dob.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#dob" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Username') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-                    <input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth"><br/><br/><br/>
-                    <div class="LV_validation_message LV_invalid" id='username_availability_result'></div><br/>
-                    <script type="text/javascript">
-                        $(document).ready(function(){
-                            $('#username').on('input', function(){
-                                if ($('#username').val() == '') {
-                                    $('#username_availability_result').html('');
-                                    return;
-                                }
-                                $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
-                                $.ajax({
-                                    type : 'POST',
-                                    data : { username: $('#username').val() },
-                                    url: "./publicRegistrationCheck.php",
-                                    success: function(responseText){
-                                        if(responseText == 0){
-                                            $('#username_availability_result').html('<?php echo __('Username available'); ?>');
-                                            $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
-                                        }else if(responseText > 0){
-                                            $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
-                                            $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
-                                        }
-                                    }
-                                });
-                            });
-                        });
+    $form->addRow()->addHeading(__('Account Details'));
 
+    $row = $form->addRow();
+        $row->addLabel('surname', __('Surname'));
+        $row->addTextField('surname')->isRequired()->maxLength(30);
 
-                        // Validation
-                        var username =  new LiveValidation('username');
-                        username.add(Validate.Presence);
-                    </script>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2>
-					<?php
-                    $policy = getPasswordPolicy($guid, $connection2);
-					if ($policy != false) {
-						echo "<div class='warning'>";
-						echo $policy;
-						echo '</div>';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Password') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
-					<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" class="standardWidth"><br/>
+    $row = $form->addRow();
+        $row->addLabel('firstName', __('First Name'));
+        $row->addTextField('firstName')->isRequired()->maxLength(30);
 
-					<script type="text/javascript">
-						var passwordNew=new LiveValidation('passwordNew');
-						passwordNew.add(Validate.Presence);
-						<?php
-                        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-						$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-						$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-						$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-						if ($alpha == 'Y') {
-							echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-						}
-						if ($numeric == 'Y') {
-							echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-						}
-						if ($punctuation == 'Y') {
-							echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-						}
-						if (is_numeric($minLength)) {
-							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-						}
-						?>
+    $row = $form->addRow();
+        $row->addLabel('email', __('Email'))->description(__('Must be unique.'));
+        $row->addEmail('email')->maxLength(50)->isRequired();
 
-						$(".generatePassword").click(function(){
-							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
-							var text = '';
-							for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-								for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-									if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-									else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-									else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-									else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
-									else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
-								}
-							}
-							$('input[name="passwordNew"]').val(text);
-							alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\n\n' + text) ;
-						});
-					</script>
-				</td>
-			</tr>
+    $row = $form->addRow();
+        $row->addLabel('gender', __('Gender'));
+        $row->addSelectGender('gender')->isRequired();
 
-			<?php
-            //Privacy statement
-            $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
-			if ($privacyStatement != '') {
-				echo "<tr class='break'>";
-				echo '<th colspan=2>';
-				echo __($guid, 'Privacy Statement');
-				echo '</th>';
-				echo '</tr>';
-				echo '<tr>';
-				echo '<td colspan=2>';
-				echo '<p>';
-				echo $privacyStatement;
-				echo '</p>';
-				echo '</td>';
-				echo '</tr>';
-			}
+    $row = $form->addRow();
+        $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dob')->isRequired();
 
-            //Get agreement
-            $agreement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement');
-			if ($agreement != '') {
-				echo "<tr class='break'>";
-				echo '<th colspan=2>';
-				echo __($guid, 'Agreement');
-				echo '</td>';
-				echo '</tr>';
+    $row = $form->addRow();
+        $row->addLabel('username', __('Username'))->description(__('Must be unique.'));
+        $row->addTextField('username')->maxLength(20)->isRequired();
+        $form->addRow()->addContent('<div class="LV_validation_message LV_invalid" id="username_availability_result"></div><br/>');
 
-				echo '<tr>';
-				echo '<td colspan=2>';
-				echo $agreement;
-				echo '</td>';
-				echo '</tr>';
-				echo '<tr>';
-				echo '<td>';
-				echo '<b>'.__($guid, 'Do you agree to the above?').'</b><br/>';
-				echo '</td>';
-				echo "<td class='right'>";
-				echo "Yes <input type='checkbox' name='agreement' id='agreement'>";
-				?>
-				<script type="text/javascript">
-					var agreement=new LiveValidation('agreement');
-					agreement.add( Validate.Acceptance );
-				</script>
-				 <?php
-			echo '</td>';
-        echo '</tr>';
+    $policy = getPasswordPolicy($guid, $connection2);
+    if ($policy != false) {
+        $form->addRow()->addAlert($policy, 'warning');
     }
 
+    $row = $form->addRow();
+        $row->addLabel('passwordNewLabel', __('Password'));
+        $column = $row->addColumn('passwordNewLabel')->addClass('inline right');
+        $column->addButton(__('Generate Password'))->addClass('generatePassword');
+        $password = $column->addPassword('passwordNew')->isRequired()->maxLength(30);
+
+    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+
+    if ($alpha == 'Y') {
+        $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
+    }
+    if ($numeric == 'Y') {
+        $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+    }
+    if ($punctuation == 'Y') {
+        $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+    }
+    if (!empty($minLength) && is_numeric($minLength)) {
+        $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
+    }
+
+    $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
+    if ($privacyStatement != '') {
+        $form->addRow()->addHeading(__('Privacy Statement'));
+        $form->addRow()->addContent($privacyStatement);
+    }
+
+    $agreement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement');
+    if ($agreement != '') {
+        $form->addRow()->addHeading(__('Agreement'));
+        $form->addRow()->addContent($agreement);
+
+        $row = $form->addRow();
+            $row->addLabel('agreement', __('Do you agree to the above?'));
+            $row->addCheckbox('agreement')->isRequired()->prepend('Yes');
+    }
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
     ?>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#username').on('input', function(){
+                if ($('#username').val() == '') {
+                    $('#username_availability_result').html('');
+                    return;
+                }
+                $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
+                $.ajax({
+                    type : 'POST',
+                    data : { username: $('#username').val() },
+                    url: "./publicRegistrationCheck.php",
+                    success: function(responseText){
+                        if(responseText == 0){
+                            $('#username_availability_result').html('<?php echo __('Username available'); ?>');
+                            $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
+                        }else if(responseText > 0){
+                            $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
+                            $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        // Password Generation
+        $(".generatePassword").click(function(){
+            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
+            var text = '';
+            for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
+                if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+                else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+                else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+                else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+                else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+            }
+            $('input[name="passwordNew"]').val(text);
+            $('input[name="passwordConfirm"]').val(text);
+            alert('<?php echo __('Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
+        });
+    </script>
 
 	<?php
     //Get postscrript

@@ -127,7 +127,7 @@ if (!isset($_SESSION[$guid]["username"])) {
     <script type="text/javascript">
         // Password Generation
         $(".generatePassword").click(function(){
-            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
             var text = '';
             for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
                 if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
