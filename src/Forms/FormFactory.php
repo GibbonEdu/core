@@ -188,7 +188,8 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubheading($content, $tag = 'h4')
     {
-        return $this->createContent($content)->wrap("<$tag>", "</$tag>");
+        $content = sprintf('<%1$s>%2$s</%1$s>', $tag, $content);
+        return $this->createContent($content);
     }
 
     public function createAlert($content, $level = 'warning')
