@@ -68,24 +68,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->maxLength(50)->isRequired()->setValue($values['name']);
+                $row->addTextField('name')->maxLength(50)->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired()->setValue($values['active']);
+                $row->addYesNo('active')->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
-                $row->addTextField('description')->maxLength(255)->isRequired()->setValue($values['description']);
+                $row->addTextField('description')->maxLength(255)->isRequired();
 
-            $types = array('varchar' => __('Short Text (max 255 characters)'),
-            'text' => __('Long Text'),
-            'date' => __('Date'),
-            'url' => __('Link'),
-            'select' => __('Dropdown'));
+            $types = array(
+                'varchar' => __('Short Text (max 255 characters)'),
+                'text'    => __('Long Text'),
+                'date'    => __('Date'),
+                'url'     => __('Link'),
+                'select'  => __('Dropdown')
+            );
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addSelect('type')->fromArray($types)->isRequired()->placeholder()->selected($values['type']);
+                $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
 
             $form->toggleVisibilityByClass('optionsRow')->onSelect('type')->when(array('varchar', 'text', 'select'));
 
@@ -98,42 +100,34 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 
             $row = $form->addRow();
                 $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
-                $row->addYesNo('required')->isRequired()->selected($values['required']);
+                $row->addYesNo('required')->isRequired();
 
             $activePersonOptions = array(
                 'activePersonStudent' => __('Student'),
-                'activePersonStaff' => __('Staff'),
-                'activePersonParent' => __('Parent'),
-                'activePersonOther' => __('Other'),
+                'activePersonStaff'   => __('Staff'),
+                'activePersonParent'  => __('Parent'),
+                'activePersonOther'   => __('Other'),
             );
-            $checked = array() ;
-            if ($values['activePersonStudent']) {
-                $checked['activePersonStudent'] = 'activePersonStudent';
-            }
-            if ($values['activePersonStaff']) {
-                $checked['activePersonStaff'] = 'activePersonStaff';
-            }
-            if ($values['activePersonParent']) {
-                $checked['activePersonParent'] = 'activePersonParent';
-            }
-            if ($values['activePersonOther']) {
-                $checked['activePersonOther'] = 'activePersonOther';
-            }
+            $checked = array_intersect_key($values, $activePersonOptions);
+            $checked = array_filter($checked);
+
             $row = $form->addRow();
                 $row->addLabel('roleCategories', __('Role Categories'));
-                $row->addCheckbox('roleCategories')->fromArray($activePersonOptions)->checked($checked);
+                $row->addCheckbox('roleCategories')->fromArray($activePersonOptions)->checked(array_keys($checked));
 
             $row = $form->addRow();
                 $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
-                $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected($values['activeDataUpdater'])->isRequired();
+                $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
-                $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected($values['activeApplicationForm'])->isRequired();
+                $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->isRequired();
 
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
 
             echo $form->getOutput();
         }

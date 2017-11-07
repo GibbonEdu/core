@@ -58,11 +58,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
         $row->addLabel('description', __('Description'));
         $row->addTextField('description')->maxLength(255)->isRequired();
 
-    $types = array('varchar' => __('Short Text (max 255 characters)'),
-    'text' => __('Long Text'),
-    'date' => __('Date'),
-    'url' => __('Link'),
-    'select' => __('Dropdown'));
+    $types = array(
+        'varchar' => __('Short Text (max 255 characters)'),
+        'text'    => __('Long Text'),
+        'date'    => __('Date'),
+        'url'     => __('Link'),
+        'select'  => __('Dropdown')
+    );
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
@@ -82,9 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 
     $activePersonOptions = array(
         'activePersonStudent' => __('Student'),
-        'activePersonStaff' => __('Staff'),
-        'activePersonParent' => __('Parent'),
-        'activePersonOther' => __('Other'),
+        'activePersonStaff'   => __('Staff'),
+        'activePersonParent'  => __('Parent'),
+        'activePersonOther'   => __('Other'),
     );
     $row = $form->addRow();
         $row->addLabel('roleCategories', __('Role Categories'));
