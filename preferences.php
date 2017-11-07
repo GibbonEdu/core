@@ -86,8 +86,9 @@ if (!isset($_SESSION[$guid]["username"])) {
             ->maxLength(30);
 
     $row = $form->addRow();
-		$row->addLabel('passwordNewLabel', __('New Password'));
-		$column = $row->addColumn('passwordNewLabel')->addClass('inline right');
+
+		$row->addLabel('passwordNew', __('New Password'));
+		$column = $row->addColumn('passwordNew')->addClass('inline right');
 		$column->addButton(__('Generate Password'))->addClass('generatePassword');
 		$password = $column->addPassword('passwordNew')->isRequired()->maxLength(30);
 
