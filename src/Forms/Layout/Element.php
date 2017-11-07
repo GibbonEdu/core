@@ -35,6 +35,8 @@ class Element implements OutputableInterface
     protected $content;
     protected $appended;
     protected $prepended;
+    protected $before;
+    protected $after;
 
     /**
      * Create a generic form element that only holds content.
@@ -85,8 +87,8 @@ class Element implements OutputableInterface
      */
     public function wrap($before, $after)
     {
-        $this->prepend($before);
-        $this->append($after);
+        $this->before = $before . $this->before;
+        $this->after = $this->after . $after;
 
         return $this;
     }
@@ -97,7 +99,7 @@ class Element implements OutputableInterface
      */
     public function getOutput()
     {
-        return $this->prepended.$this->getElement().$this->appended;
+        return $this->before.$this->prepended.$this->getElement().$this->appended.$this->after;
     }
 
     /**

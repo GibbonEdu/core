@@ -1308,6 +1308,7 @@ select[multiple] {
 .column.inline div {
 	display:inline-block;
 	width:auto;
+    vertical-align: middle;
 }
 
 .column.stacked div:not(:last-of-type) {
