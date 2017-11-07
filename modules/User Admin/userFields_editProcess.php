@@ -44,10 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
         $active = $_POST['active'];
         $description = $_POST['description'];
         $type = $_POST['type'];
-        $options = '';
-        if (isset($_POST['options'])) {
-            $options = $_POST['options'];
-        }
+        $options = (isset($_POST['options']))? $_POST['options'] : '';
+        if ($type == 'varchar') $options = min(max(1, intval($options)), 255);
+        if ($type == 'text') $options = max(1, intval($options));
         $required = $_POST['required'];
 
         $roleCategories = (isset($_POST['roleCategories']))? $_POST['roleCategories'] : array();
