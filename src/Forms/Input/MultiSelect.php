@@ -96,7 +96,7 @@ class MultiSelect implements OutputableInterface
         // TODO: Move javascript to somewhere more sensible
 
         $output .= '<script type="text/javascript">';
-
+        $output .= 'var '.$this->name.'sortBy = null;';
         $output .= 'function optionTransfer(select0Name, select1Name) {
             var select0 = $(\'#\'+select0Name);
             var select1 = $(\'#\'+select1Name);
@@ -106,8 +106,7 @@ class MultiSelect implements OutputableInterface
                 $(this).detach().remove();
             });
 
-            sortSelect(select0, null);
-            sortSelect(select1, null);
+            sortSelects("'.$this->name.'");
         }' . "\n";
 
         $output .= 'function sortSelect(list, sortValues) {
@@ -130,7 +129,6 @@ class MultiSelect implements OutputableInterface
                 var sourceSelect = $(\'#'.$this->sourceSelect->getID().'\');
                 var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
                 var form = destinationSelect.parents(\'form\');
-                var sortables = $(\'#'. $this->name .'\').data(\'sortable\');
 
                 form.submit(function(){
                     var options = $(\'option\', destinationSelect);
@@ -144,19 +142,21 @@ class MultiSelect implements OutputableInterface
                 });
 
                 $(\'#'. $this->sortBySelect->getID() .'\').change(function(){
-                    var sortBy = $(this).val();
-
-                    var values = null;
-
-                    if (sortBy != \'Sort by Name\') {
-                        values = sortables[sortBy];
-                    }
-
-                    sortSelect(sourceSelect, values);
-                    sortSelect(destinationSelect, values);
-
+                    '.$this->name.'sortBy = $(this).val();
+                    sortSelects("'.$this->name.'");
                 });
             });
+
+            function sortSelects(name) {
+                var values = null;
+
+                if (window[name+"sortBy"] != \'Sort by Name\') {
+                    values = $(\'#\' + name).data(\'sortable\')[window[name+"sortBy"]];
+                }
+
+                sortSelect($(\'#\' + name + "Source"), values);
+                sortSelect($(\'#\' + name + "Destination"), values);
+            }
 
         ';
         $output .= '</script>';
