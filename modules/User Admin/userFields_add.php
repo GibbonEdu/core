@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.php') == false) {
@@ -38,157 +40,68 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    ?>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_addProcess.php');
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<input name="name" id="name2" maxlength=50 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var name2=new LiveValidation('name2');
-						name2.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Active') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="active">
-						<?php
-                        echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-    					echo "<option value='N'>".__($guid, 'No').'</option>';?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Description') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<input name="description" id="description" maxlength=255 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var description=new LiveValidation('description');
-						description.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
+    $form->setClass('smallIntBorder fullWidth');
 
-			<script type="text/javascript">
-				$(document).ready(function(){
-					$("#optionsRow").css("display","none");
-					$("#type").change(function(){
-                        if ($('#type').val()=="varchar" || $('#type').val()=="text" || $('#type').val()=="select") {
-							$("#optionsRow").slideDown("fast", $("#optionsRow").css("display","table-row"));
-						}
-						else {
-							$("#optionsRow").css("display","none");
-						}
-					 });
-				});
-			</script>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Type') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="type" id="type" class="type">
-						<?php
-                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-							echo "<option value='varchar'>Short Text (max 255 characters)</option>";
-							echo "<option value='text'>Long Text</option>";
-							echo "<option value='date'>Date</option>";
-							echo "<option value='url'>Link</option>";
-							echo "<option value='select'>Dropdown</option>"; ?>
-					</select>
-					<script type="text/javascript">
-						var type=new LiveValidation('type');
-						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>
-				</td>
-			</tr>
-			<tr id="optionsRow">
-				<td>
-					<b><?php echo __($guid, 'Options') ?> *</b><br/>
-					<span class="emphasis small">
-						<?php
-						echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
-						echo __($guid, 'Long Text: number of rows for field.').'<br/>';
-						echo __($guid, 'Dropdown: comma separated list of options.').'<br/>';?>
-					</span>
-				</td>
-				<td class="right">
-					<textarea name="options" id="options" class="standardWidth" rows='3'></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Required') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Is this field compulsory?') ?></span>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="required">
-						<?php
-                        echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-    					echo "<option value='N'>".__($guid, 'No').'</option>';?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Role Categories') ?></b><br/>
-				</td>
-				<td class="right">
-					<?php
-                        echo __($guid, 'Student')." <input checked type='checkbox' name='activePersonStudent' value='1'/><br/>";
-						echo __($guid, 'Staff')." <input type='checkbox' name='activePersonStaff' value='1'/><br/>";
-						echo __($guid, 'Parent')." <input type='checkbox' name='activePersonParent' value='1'/><br/>";
-						echo __($guid, 'Other')." <input type='checkbox' name='activePersonOther' value='1'/><br/>"; ?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Include In Data Updater?') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="activeDataUpdater">
-						<?php
-                        echo "<option value='1'>".__($guid, 'Yes').'</option>';
-    					echo "<option value='0'>".__($guid, 'No').'</option>';?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Include In Application Form?') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="activeApplicationForm">
-						<?php
-                        echo "<option value='1'>".__($guid, 'Yes').'</option>';
-   						 echo "<option selected value='0'>".__($guid, 'No').'</option>';?>
-					</select>
-				</td>
-			</tr>
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'));
+        $row->addTextField('name')->maxLength(50)->isRequired();
 
+    $row = $form->addRow();
+        $row->addLabel('active', __('Active'));
+        $row->addYesNo('active')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextField('description')->maxLength(255)->isRequired();
+
+    $types = array('varchar' => __('Short Text (max 255 characters)'),
+    'text' => __('Long Text'),
+    'date' => __('Date'),
+    'url' => __('Link'),
+    'select' => __('Dropdown'));
+    $row = $form->addRow();
+        $row->addLabel('type', __('Type'));
+        $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
+
+    $form->toggleVisibilityByClass('optionsVarchar')->onSelect('type')->when('varchar');
+    $form->toggleVisibilityByClass('optionsText')->onSelect('type')->when('text');
+    $form->toggleVisibilityByClass('optionsSelect')->onSelect('type')->when('select');
+
+    $description = __($guid, 'Short Text: number of characters, up to 255.').'<br/>'.__($guid, 'Long Text: number of rows for field.').'<br/>'.__($guid, 'Dropdown: comma separated list of options.').'<br/>';
+    $row = $form->addRow()->addClass('optionsVarchar optionsText optionsSelect');
+        $row->addLabel('options', __('Options'))->description($description);
+        $row->addTextArea('options')->setRows(3)->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
+        $row->addYesNo('required')->isRequired();
+
+    $activePersonOptions = array(
+        'activePersonStudent' => __('Student'),
+        'activePersonStaff' => __('Staff'),
+        'activePersonParent' => __('Parent'),
+        'activePersonOther' => __('Other'),
+    );
+    $row = $form->addRow();
+        $row->addLabel('roleCategories', __('Role Categories'));
+        $row->addCheckbox('roleCategories')->fromArray($activePersonOptions)->checked('activePersonStudent');
+
+    $row = $form->addRow();
+        $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
+        $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('1')->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
+        $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
 ?>

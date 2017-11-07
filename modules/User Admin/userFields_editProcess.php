@@ -49,21 +49,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             $options = $_POST['options'];
         }
         $required = $_POST['required'];
-        $activePersonStudent = '';
-        if (isset($_POST['activePersonStudent'])) {
-            $activePersonStudent = $_POST['activePersonStudent'];
-        }
-        $activePersonStaff = '';
-        if (isset($_POST['activePersonStaff'])) {
-            $activePersonStaff = $_POST['activePersonStaff'];
-        }
-        $activePersonParent = '';
-        if (isset($_POST['activePersonParent'])) {
-            $activePersonParent = $_POST['activePersonParent'];
-        }
-        $activePersonOther = '';
-        if (isset($_POST['activePersonOther'])) {
-            $activePersonOther = $_POST['activePersonOther'];
+        $activePersonStudent = 0;
+        $activePersonStaff = 0;
+        $activePersonParent = 0;
+        $activePersonOther = 0;
+        if (isset($_POST['roleCategories']) && is_array($_POST['roleCategories'])) {
+            foreach ($_POST['roleCategories'] as $roleCategory) {
+                if ($roleCategory == 'activePersonStudent') {
+                    $activePersonStudent = 1;
+                }
+                if ($roleCategory == 'activePersonStaff') {
+                    $activePersonStaff = 1;
+                }
+                if ($roleCategory == 'activePersonParent') {
+                    $activePersonParent = 1;
+                }
+                if ($roleCategory == 'activePersonOther') {
+                    $activePersonOther = 1;
+                }
+            }
         }
         $activeDataUpdater = $_POST['activeDataUpdater'];
         $activeApplicationForm = $_POST['activeApplicationForm'];
