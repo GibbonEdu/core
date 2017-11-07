@@ -101,8 +101,8 @@ if ($proceed == false) {
     }
 
     $row = $form->addRow();
-        $row->addLabel('passwordNewLabel', __('Password'));
-        $column = $row->addColumn('passwordNewLabel')->addClass('inline right');
+        $row->addLabel('passwordNew', __('Password'));
+        $column = $row->addColumn('passwordNew')->addClass('inline right');
         $column->addButton(__('Generate Password'))->addClass('generatePassword');
         $password = $column->addPassword('passwordNew')->isRequired()->maxLength(30);
 
