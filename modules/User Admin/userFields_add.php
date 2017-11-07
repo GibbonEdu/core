@@ -67,13 +67,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
 
-    $form->toggleVisibilityByClass('optionsVarchar')->onSelect('type')->when('varchar');
-    $form->toggleVisibilityByClass('optionsText')->onSelect('type')->when('text');
-    $form->toggleVisibilityByClass('optionsSelect')->onSelect('type')->when('select');
+    $form->toggleVisibilityByClass('optionsRow')->onSelect('type')->when(array('varchar', 'text', 'select'));
 
-    $description = __($guid, 'Short Text: number of characters, up to 255.').'<br/>'.__($guid, 'Long Text: number of rows for field.').'<br/>'.__($guid, 'Dropdown: comma separated list of options.').'<br/>';
-    $row = $form->addRow()->addClass('optionsVarchar optionsText optionsSelect');
-        $row->addLabel('options', __('Options'))->description($description);
+    $row = $form->addRow()->addClass('optionsRow');
+        $row->addLabel('options', __('Options'))
+            ->description(__('Short Text: number of characters, up to 255.'))
+            ->description(__('Long Text: number of rows for field.'))
+            ->description(__('Dropdown: comma separated list of options.'));
         $row->addTextArea('options')->setRows(3)->isRequired();
 
     $row = $form->addRow();
