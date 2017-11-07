@@ -58,22 +58,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
         $row->addLabel('description', __('Description'));
         $row->addTextField('description')->maxLength(255)->isRequired();
 
-    $types = array('varchar' => __('Short Text (max 255 characters)'),
-    'text' => __('Long Text'),
-    'date' => __('Date'),
-    'url' => __('Link'),
-    'select' => __('Dropdown'));
+    $types = array(
+        'varchar' => __('Short Text (max 255 characters)'),
+        'text'    => __('Long Text'),
+        'date'    => __('Date'),
+        'url'     => __('Link'),
+        'select'  => __('Dropdown')
+    );
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
 
-    $form->toggleVisibilityByClass('optionsVarchar')->onSelect('type')->when('varchar');
-    $form->toggleVisibilityByClass('optionsText')->onSelect('type')->when('text');
-    $form->toggleVisibilityByClass('optionsSelect')->onSelect('type')->when('select');
+    $form->toggleVisibilityByClass('optionsRow')->onSelect('type')->when(array('varchar', 'text', 'select'));
 
-    $description = __($guid, 'Short Text: number of characters, up to 255.').'<br/>'.__($guid, 'Long Text: number of rows for field.').'<br/>'.__($guid, 'Dropdown: comma separated list of options.').'<br/>';
-    $row = $form->addRow()->addClass('optionsVarchar optionsText optionsSelect');
-        $row->addLabel('options', __('Options'))->description($description);
+    $row = $form->addRow()->addClass('optionsRow');
+        $row->addLabel('options', __('Options'))
+            ->description(__('Short Text: number of characters, up to 255.'))
+            ->description(__('Long Text: number of rows for field.'))
+            ->description(__('Dropdown: comma separated list of options.'));
         $row->addTextArea('options')->setRows(3)->isRequired();
 
     $row = $form->addRow();
@@ -82,9 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 
     $activePersonOptions = array(
         'activePersonStudent' => __('Student'),
-        'activePersonStaff' => __('Staff'),
-        'activePersonParent' => __('Parent'),
-        'activePersonOther' => __('Other'),
+        'activePersonStaff'   => __('Staff'),
+        'activePersonParent'  => __('Parent'),
+        'activePersonOther'   => __('Other'),
     );
     $row = $form->addRow();
         $row->addLabel('roleCategories', __('Role Categories'));
