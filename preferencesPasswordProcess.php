@@ -43,7 +43,6 @@ if (isset($_POST['forceReset'])) {
 if ($forceReset != 'Y') {
     $forceReset = 'N';
 }
-print_r($_POST); echo"<br/>";
 
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php&forceReset=$forceReset";
 
@@ -70,7 +69,6 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                 header("Location: {$URL}");
             } else {
                 //Check current password
-                echo $password;exit;
                 if (hash('sha256', $_SESSION[$guid]['passwordStrongSalt'].$password) != $_SESSION[$guid]['passwordStrong']) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
