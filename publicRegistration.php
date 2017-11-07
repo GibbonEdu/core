@@ -92,8 +92,10 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('username', __('Username'))->description(__('Must be unique.'));
-        $row->addTextField('username')->maxLength(20)->isRequired();
-        $form->addRow()->addContent('<div class="LV_validation_message LV_invalid" id="username_availability_result"></div><br/>');
+        $row->addTextField('username')
+            ->maxLength(20)
+            ->isRequired()
+            ->append('<span></span><div class="LV_validation_message LV_invalid" id="username_availability_result"></div><br/>');
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
