@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -73,24 +76,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
                 echo '</div>';
             } else {
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rollover.php&step=2' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td colspan=2 style='text-align: justify'>
-								<?php
-                                echo sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'); ?>
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<input type="hidden" name="nextYear" value="<?php echo $nextYear ?>">
-								<input type="submit" value="Proceed">
-							</td>
-						</tr>
-					</table>
-				<?php
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rollover.php&step=2');
 
+                $form->setClass('smallIntBorder fullWidth');
+
+                $form->addHiddenValue('nextYear', $nextYear);
+
+                $row = $form->addRow();
+                    $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit('Proceed');
+
+                echo $form->getOutput();
             }
         }
     } elseif ($step == 2) {
@@ -126,10 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 echo sprintf(__($guid, 'In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext);
                 echo '</p>';
 
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollover.php&step=3'>";
-
-                    //Set enrolment select values
-                    $yearGroupOptions = '';
+                //Set up years, roll groups and statuses arrays for use later on
+                $yearGroups = array();
                 try {
                     $dataSelect = array();
                     $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
@@ -139,10 +136,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $yearGroupOptions = $yearGroupOptions."<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                    $yearGroups[$rowSelect['gibbonYearGroupID']] =  htmlPrep($rowSelect['name']);
                 }
 
-                $rollGroupOptions = '';
+                $rollGroups = '';
                 try {
                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
                     $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
@@ -152,116 +149,51 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $rollGroupOptions = $rollGroupOptions."<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                    $rollGroups[$rowSelect['gibbonRollGroupID']] =  htmlPrep($rowSelect['name']);
                 }
 
-				//ADD YEAR FOLLOWING NEXT
-				if (getNextSchoolYearID($nextYear, $connection2) == false) {
-					echo '<h4>';
-					echo sprintf(__($guid, 'Add Year Following %1$s'), $nameNext);
-					echo '</h4>';
-					?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'School Year Name') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-							</td>
-							<td class="right">
-								<input name="nextname" id="nextname" maxlength=9 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var nextname=new LiveValidation('nextname');
-									nextname2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Status') ?> *</b>
-							</td>
-							<td class="right">
-								<input readonly name="next-status" id="next-status" value="Upcoming" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<?php echo $sequenceNext + 1 ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'First Day') ?> *</b><br/>
-								<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-							</td>
-							<td class="right">
-								<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var nextfirstDay=new LiveValidation('nextfirstDay');
-									nextfirstDay.add(Validate.Presence);
-									nextfirstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-									echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-								}
-														?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#nextfirstDay" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Last Day') ?> *</b><br/>
-								<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-							</td>
-							<td class="right">
-								<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var nextlastDay=new LiveValidation('nextlastDay');
-									nextlastDay.add(Validate.Presence);
-									nextlastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-									echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-								}
-														?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#nextlastDay" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-					</table>
-					<?php
+                $statuses = array(
+                    'Expected'     => __('Expected'),
+                    'Full'  => __('Full'),
+                    'Left' => __('Left'),
+                );
 
-				}
+                //START FORM
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollover.php&step=3");
 
-				//SET EXPECTED USERS TO FULL
-				echo '<h4>';
-                echo __($guid, 'Set Expected Users To Full');
-                echo '</h4>';
-                echo '<p>';
-                echo __($guid, 'This step primes newcomers who have status set to "Expected" to be enroled as students or added as staff (below).');
-                echo '</p>';
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setClass('smallIntBorder fullWidth');
+
+                $form->addHiddenValue('nextYear', $nextYear);
+
+                //ADD YEAR FOLLOWING NEXT
+                if (getNextSchoolYearID($nextYear, $connection2) == false) {
+                    $form->addRow()->addHeading(sprintf(__('Add Year Following %1$s'), $nameNext));
+
+                    $row = $form->addRow();
+                        $row->addLabel('name', __('School Year Name'))->description(__('Must be unique.'));
+                        $row->addTextField('name')->isRequired()->maxLength(9);
+
+                    $row = $form->addRow();
+                        $row->addLabel('status', __('Status'));
+                        $row->addTextField('status')->setValue(__('Upcoming'))->isRequired()->readonly();
+
+                    $row = $form->addRow();
+                        $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
+                        $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYear')->isRequired()->maxLength(3)->readonly();
+
+                    $row = $form->addRow();
+                        $row->addLabel('firstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                        $row->addDate('firstDay')->isRequired();
+
+                    $row = $form->addRow();
+                        $row->addLabel('lastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                        $row->addDate('lastDay')->isRequired();
+                }
+
+                //SET EXPECTED USERS TO FULL
+                $form->addRow()->addHeading(__('Set Expected Users To Full'));
+                $form->addRow()->addContent(__('This step primes newcomers who have status set to "Expected" to be enroled as students or added as staff (below).'));
 
                 try {
                     $dataExpect = array();
@@ -269,76 +201,37 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $resultExpect = $connection2->prepare($sqlExpect);
                     $resultExpect->execute($dataExpect);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $form->addRow()->addAlert($e->getMessage(), 'warning');
                 }
-
                 if ($resultExpect->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
-                    echo '</div>';
+                    $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __($guid, 'Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Primary Role');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Current Status');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'New Status');
-                    echo '</th>';
-                    echo '</tr>';
+                    $row = $form->addRow();
+                        $row->addColumn()->addContent('<b>'.__('Name').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Current Status').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('New Status').'</b>');
 
                     $count = 0;
-                    $rowNum = 'odd';
                     while ($rowExpect = $resultExpect->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
-
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo "<input type='hidden' name='$count-expect-gibbonPersonID' value='".$rowExpect['gibbonPersonID']."'>";
-                        echo formatName('', $rowExpect['preferredName'], $rowExpect['surname'], 'Student', true);
-                        echo '</td>';
-                        echo '<td>';
-                        echo __($guid, $rowExpect['name']);
-                        echo '</td>';
-                        echo '<td>';
-                        echo 'Expected';
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<select name='$count-expect-status' id='$count-expect-status' style='float: left; width:110px'>";
-                        echo "<option value='Expected'>".__($guid, 'Expected').'</option>';
-                        echo "<option selected value='Full'>".__($guid, 'Full').'</option>';
-                        echo "<option value='Left'>".__($guid, 'Left').'</option>';
-                        echo '</select>';
-                        echo '</td>';
-                        echo '</tr>';
+                        $form->addHiddenValue($count."-expect-gibbonPersonID", $rowExpect['gibbonPersonID']);
+                        $row = $form->addRow();
+                            $row->addColumn()->addContent(formatName('', $rowExpect['preferredName'], $rowExpect['surname'], 'Student', true));
+                            $row->addColumn()->addContent(__($rowExpect['name']));
+                            $row->addColumn()->addContent(__('Expected'));
+                            $column = $row->addColumn();
+                                $column->addSelect($count."-expect-status")->fromArray($statuses)->isRequired()->selected('Upcoming');
+                        $count++;
                     }
-                    echo '</table>';
-
-                    echo "<input type='hidden' name='expect-count' value='$count'>";
+                    $form->addHiddenValue("expect-count", $count);
                 }
 
-				//ENROL NEW STUDENTS
-				echo '<h4>';
-                echo __($guid, 'Enrol New Students (Status Expected)');
-                echo '</h4>';
-                echo '<p>';
-                echo __($guid, 'Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left".');
-                echo '</p>';
+                //ENROL NEW STUDENTS
+                $form->addRow()->addHeading(__('Enrol New Students (Status Expected)'));
+                $form->addRow()->addContent(__('Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left".'));
 
-                if ($yearGroupOptions == '' or $rollGroupOptions == '') {
-                    echo "<div class='error'>".__($guid, 'Year groups or roll groups are not properly set up, so you cannot proceed with this section.').'</div>';
+                if (count($yearGroups) < 1 or count($rollGroups) < 1) {
+                    $form->addRow()->addAlert(__('Year groups or roll groups are not properly set up, so you cannot proceed with this section.'), 'error');
                 } else {
                     try {
                         $dataEnrol = array();
@@ -346,72 +239,72 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $resultEnrol = $connection2->prepare($sqlEnrol);
                         $resultEnrol->execute($dataEnrol);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $form->addRow()->addAlert($e->getMessage(), 'warning');
                     }
 
                     if ($resultEnrol->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
+                        $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
-                        echo "<table cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='head'>";
-                        echo '<th>';
-                        echo __($guid, 'Name');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Primary Role');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Enrol');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Year Group');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Roll Group');
-                        echo '</th>';
-                        echo '</tr>';
+                        $row = $form->addRow();
+                            $row->addColumn()->addContent('<b>'.__('Name').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Enrol').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Year Group').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Form Group').'</b>');
 
                         $count = 0;
-                        $rowNum = 'odd';
                         while ($rowEnrol = $resultEnrol->fetch()) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$count;
-
-                                    //COLOR ROW BY STATUS!
-                                    echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo "<input type='hidden' name='$count-enrol-gibbonPersonID' value='".$rowEnrol['gibbonPersonID']."'>";
-                            echo formatName('', $rowEnrol['preferredName'], $rowEnrol['surname'], 'Student', true);
-                            echo '</td>';
-                            echo '<td>';
-                            echo __($guid, $rowEnrol['name']);
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<input checked type='checkbox' name='$count-enrol-enrol' value='Y'>";
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<select name='$count-enrol-gibbonYearGroupID' id='$count-enrol-gibbonYearGroupID' style='float: left; width:110px'>";
-                            echo $yearGroupOptions;
-                            echo '</select>';
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<select name='$count-enrol-gibbonRollGroupID' id='$count-enrol-gibbonRollGroupID' style='float: left; width:110px'>";
-                            echo $rollGroupOptions;
-                            echo '</select>';
-                            echo '</td>';
-                            echo '</tr>';
+                            $form->addHiddenValue($count."-enrol-gibbonPersonID", $rowEnrol['gibbonPersonID']);
+                            $row = $form->addRow();
+                                $row->addColumn()->addContent(formatName('', $rowEnrol['preferredName'], $rowEnrol['surname'], 'Student', true));
+                                $row->addColumn()->addContent(__($rowEnrol['name']));
+                                $column = $row->addColumn();
+                                    $column->addCheckbox($count."-enrol-enrol")->setValue('Y')->checked('Y');
+                                $column = $row->addColumn();
+                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->selected('Upcoming');
+                                $column = $row->addColumn();
+                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->selected('Upcoming');
+                            $count++;
                         }
-                        echo '</table>';
-
-                        echo "<input type='hidden' name='enrol-count' value='$count'>";
+                        $form->addHiddenValue("enrol-count", $count);
                     }
                 }
+
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit('Proceed');
+
+                echo $form->getOutput();
+
+
+
+                //OLD FORM CONTENTS!
+                //Set enrolment select values
+                 $yearGroupOptions = '';
+                 try {
+                     $dataSelect = array();
+                     $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+                     $resultSelect = $connection2->prepare($sqlSelect);
+                     $resultSelect->execute($dataSelect);
+                 } catch (PDOException $e) {
+                     echo "<div class='error'>".$e->getMessage().'</div>';
+                 }
+                 while ($rowSelect = $resultSelect->fetch()) {
+                     $yearGroupOptions = $yearGroupOptions."<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                 }
+                 $rollGroupOptions = '';
+                 try {
+                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
+                     $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+                     $resultSelect = $connection2->prepare($sqlSelect);
+                     $resultSelect->execute($dataSelect);
+                 } catch (PDOException $e) {
+                     echo "<div class='error'>".$e->getMessage().'</div>';
+                 }
+                 while ($rowSelect = $resultSelect->fetch()) {
+                     $rollGroupOptions = $rollGroupOptions."<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                 }
 
                 echo '<h4>';
                 echo __($guid, 'Enrol New Students (Status Full)');
