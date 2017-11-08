@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
             <li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
                 <ol>
                     <li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique.') ?></li>
-                    <li><b><?php echo __($guid, 'Roll Group') ?> *</b> - <?php echo __($guid, 'Roll group short name, as set in School Admim. Must already exist.') ?></li>
+                    <li><b><?php echo __($guid, 'Roll Group') ?> *</b> - <?php echo __($guid, 'Roll group short name, as set in School Admin. Must already exist.') ?></li>
                     <li><b><?php echo __($guid, 'Year Group') ?> *</b> - <?php echo __($guid, 'Year group short name, as set in School Admin. Must already exist.') ?></li>
                     <li><b><?php echo __($guid, 'Roll Order') ?></b> - <?php echo __($guid, 'Must be unique to roll group if set.') ?></li>
                 </ol>
