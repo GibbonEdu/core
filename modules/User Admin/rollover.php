@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $row->addColumn()->addContent(__($rowExpect['name']));
                             $row->addColumn()->addContent(__('Expected'));
                             $column = $row->addColumn();
-                                $column->addSelect($count."-expect-status")->fromArray($statuses)->isRequired()->selected('Upcoming');
+                                $column->addSelect($count."-expect-status")->fromArray($statuses)->isRequired()->setClass('shortWidth floatNone');
                         $count++;
                     }
                     $form->addHiddenValue("expect-count", $count);
@@ -261,9 +261,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $column = $row->addColumn();
                                     $column->addCheckbox($count."-enrol-enrol")->setValue('Y')->checked('Y');
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->selected('Upcoming');
+                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone');;
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->selected('Upcoming');
+                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone');;
                             $count++;
                         }
                         $form->addHiddenValue("enrol-count", $count);
