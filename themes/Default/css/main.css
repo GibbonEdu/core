@@ -1220,7 +1220,7 @@ span.small {
 	font-size: 93% ;
 }
 
-input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth {
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth, table.standardWidth {
 	width: 300px ;
 }
 
@@ -1409,6 +1409,10 @@ input[name*="phone"] ~ .LV_invalid {
 	line-height: 22px;
 }
 
+.floatRight {
+	float: right;
+}
+
 .floatNone {
 	float:none!important;
 }
@@ -1425,4 +1429,9 @@ input[name*="phone"] ~ .LV_invalid {
 }
 #content-wide .smallIntBorder {
   max-width: 1052px;
+}
+
+.matchHighlight > td {
+	border-top: 1px dashed #c00;
+	border-bottom: 1px dashed #c00;
 }

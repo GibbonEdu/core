@@ -143,9 +143,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			// SYSTEM ACCESS
 			$form->addRow()->addHeading(__('System Access'));
 		
+			$data = array();
+			$sql = "SELECT * FROM gibbonRole ORDER BY name";
+			$result = $pdo->executeQuery($data, $sql);
+		
+			// Get all roles
+			$allRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+
 			// Put together an array of this user's current roles
 			$currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
 			$currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+
+			// Filter all roles based on role restrictions
+			$availableRoles = array_reduce($allRoles, function ($carry, $item) use (&$currentUserRoles) {
+				if ($item['restriction'] == 'Admin Only') {
+					if (!in_array('001', $currentUserRoles)) {
+						return $carry;
+					}
+				} elseif ($item['restriction'] == 'Same Role') {
+					if (!in_array($item['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) {
+						return $carry;
+					}
+				}
+				$carry[$item['gibbonRoleID']] = $item['name'];
+				return $carry;
+			}, array());
 
 			// Get info on the user role being edited
 			try {
@@ -167,39 +189,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addTextField('gibbonRoleIDPrimaryName')->readOnly()->setValue($roleDetails['name']);
 				$form->addHiddenValue('gibbonRoleIDPrimary', $values['gibbonRoleIDPrimary']);
 			} else {
-
-				$data = array();
-				$sql = "SELECT * FROM gibbonRole ORDER BY name";
-				$result = $pdo->executeQuery($data, $sql);
-			
-				// Get all roles and filter roles based on role restrictions
-				$availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
-				$availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles) {
-					if ($item['restriction'] == 'Admin Only') {
-						if (!in_array('001', $currentUserRoles)) return $carry;
-					} else if ($item['restriction'] == 'Same Role') {
-						if (!in_array($item['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) return $carry;
-					}
-					$carry[$item['gibbonRoleID']] = $item['name'];
-					return $carry;
-				}, array());
-
                 $row = $form->addRow();
                 $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
                 $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
 			}
 
+			// TODO: Finish this!?
+			$selectedRoles = explode(',', $values['gibbonRoleIDAll']);
+
+			$selectableRoles = array_intersect_key($selectedRoles, $availableRoles);
+			$restrictedRoles = array_diff_key($selectedRoles, $availableRoles);
+			
 			$row = $form->addRow();
 				$row->addLabel('gibbonRoleIDAll', __('All Roles'))->description(__('Controls what a user can do and see.'));
-				$row->addSelect('gibbonRoleIDAll')->selectMultiple();
-			
-			
+				$column = $row->addColumn();
+				$column->addSelect('gibbonRoleIDAll')->fromArray($availableRoles)->selectMultiple()->selected($selectableRoles);
+
+			if (!empty($restrictedRoles)) {
+				$restrictedRolesList = implode(', ', array_column($restrictedRoles, 'name'));
+
+				$column->addTextField('gibbonRoleIDAllNames')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth')->prepend(__('Resticted roles.'));
+			}
 				
 			$row = $form->addRow();
 				$row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
-				$column = $row->addColumn('username')->addClass('inline right');
-				$column->addButton(__('Generate Username'))->addClass('generateUsername');
-				$column->addTextField('username')->isRequired()->maxLength(20);
+				$row->addTextField('username')->readOnly()->maxLength(20);
 				
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
@@ -232,9 +246,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
 				->append('</ol>');
 		
+			$addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
+
 			$row = $form->addRow();
 				$row->addLabel('showAddresses', __('Enter Personal Address?'));
-				$row->addCheckbox('showAddresses')->setValue('Yes');
+				$row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
 		
 			$form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 		
@@ -242,8 +258,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$result = $pdo->executeQuery(array(), $sql);
 			$districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
 		
-			// TODO: highlight address match
-
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
 				$row->addTextField('address1')->maxLength(255);
@@ -255,6 +269,37 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1Country', __('Address 1 Country'));
 				$row->addSelectCountry('address1Country');
+
+			if ($values['address1'] != '') {
+				try {
+					$dataAddress = array('gibbonPersonID' => $values['gibbonPersonID'], 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%');
+					$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
+					$resultAddress = $connection2->prepare($sqlAddress);
+					$resultAddress->execute($dataAddress);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
+
+				if ($resultAddress->rowCount() > 0) {
+					$addressCount = 0;
+
+					$row = $form->addRow()->addClass('address  matchHighlight');
+					$row->addLabel('matchAddress', __('Matching Address 1'))->description(__('These users have similar Address 1. Do you want to change them too?'));
+					$table = $row->addTable()->setClass('formTable standardWidth floatRight');
+
+                    while ($rowAddress = $resultAddress->fetch()) {
+                        $adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
+
+                        $row = $table->addRow()->addClass('address');
+                        $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee);
+                        $row->addCheckbox($addressCount.'-matchAddress')->setValue($rowAddress['gibbonPersonID']);
+
+                        $addressCount++;
+					}
+					
+					$form->addHiddenValue('matchAddressCount', $addressCount);
+				}
+			}
 		
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
@@ -304,6 +349,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$row = $form->addRow();
 				$row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
 				$row->addDate('dateStart');
+
+			$row = $form->addRow();
+                $row->addLabel('dateEnd', __('End Date'))->description(__("Users's last day at school."));
+                $row->addDate('dateEnd');
 		
             if ($student) {
                 $row = $form->addRow();
@@ -319,9 +368,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row = $form->addRow();
                 $row->addLabel('nextSchool', __('Next School'));
                 $row->addTextField('nextSchool')->autocomplete($schools);
-			}
-			
-			if ($student or $staff) {
+
 				$departureReasonsList = getSettingByScope($connection2, 'User Admin', 'departureReasons');
 
 				$row = $form->addRow();
@@ -356,6 +403,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
 				$row->addFileUpload('birthCertificateScan')
 					->accepts('.jpg,.jpeg,.gif,.png,.pdf')
+					->setMaxUpload(false)
 					->setAttachment('birthCertificateScanCurrent', $_SESSION[$guid]['absoluteURL'], $values['birthCertificateScan']);
 				
 			$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
@@ -393,6 +441,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
 				$row->addFileUpload('citizenship1PassportScan')
 					->accepts('.jpg,.jpeg,.gif,.png,.pdf')
+					->setMaxUpload(false)
 					->setAttachment('citizenship1PassportScanCurrent', $_SESSION[$guid]['absoluteURL'], $values['citizenship1PassportScan']);
 		
 			$row = $form->addRow();
@@ -427,6 +476,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
 				$row->addFileUpload('nationalIDCardScan')
 					->accepts('.jpg,.jpeg,.gif,.png,.pdf')
+					->setMaxUpload(false)
 					->setAttachment('nationalIDCardScanCurrent', $_SESSION[$guid]['absoluteURL'], $values['nationalIDCardScan']);
 		
 			$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
@@ -444,57 +494,62 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addDate('visaExpiryDate');
 		
 			// EMPLOYMENT
-			$form->addRow()->addHeading(__('Employment'));
+			if ($parent) {
+				$form->addRow()->addHeading(__('Employment'));
 			
-			$row = $form->addRow();
-				$row->addLabel('profession', __('Profession'));
-				$row->addTextField('profession')->maxLength(30);
+				$row = $form->addRow();
+					$row->addLabel('profession', __('Profession'));
+					$row->addTextField('profession')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('employer', __('Employer'));
+					$row->addTextField('employer')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('jobTitle', __('Job Title'));
+					$row->addTextField('jobTitle')->maxLength(30);
+			}
 		
-			$row = $form->addRow();
-				$row->addLabel('employer', __('Employer'));
-				$row->addTextField('employer')->maxLength(30);
-		
-			$row = $form->addRow();
-				$row->addLabel('jobTitle', __('Job Title'));
-				$row->addTextField('jobTitle')->maxLength(30);
-		
+			
 			// EMERGENCY CONTACTS
-			$form->addRow()->addHeading(__('Emergency Contacts'));
+			if ($student || $staff) {
+				$form->addRow()->addHeading(__('Emergency Contacts'));
+				
+				$form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 			
-			$form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency1Name', __('Contact 1 Name'));
-				$row->addTextField('emergency1Name')->maxLength(30);
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
-				$row->addSelectRelationship('emergency1Relationship');
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
-				$row->addTextField('emergency1Number1')->maxLength(30);
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
-				$row->addTextField('emergency1Number2')->maxLength(30);
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency2Name', __('Contact 1 Name'));
-				$row->addTextField('emergency2Name')->maxLength(30);
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
-				$row->addSelectEmergencyRelationship('emergency2Relationship');
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
-				$row->addTextField('emergency2Number1')->maxLength(30);
-		
-			$row = $form->addRow();
-				$row->addLabel('emergency2Number2', __('Contact 2 Number 2'));
-				$row->addTextField('emergency2Number2')->maxLength(30);
-		
+				$row = $form->addRow();
+					$row->addLabel('emergency1Name', __('Contact 1 Name'));
+					$row->addTextField('emergency1Name')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
+					$row->addSelectRelationship('emergency1Relationship');
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
+					$row->addTextField('emergency1Number1')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
+					$row->addTextField('emergency1Number2')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency2Name', __('Contact 1 Name'));
+					$row->addTextField('emergency2Name')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
+					$row->addSelectEmergencyRelationship('emergency2Relationship');
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
+					$row->addTextField('emergency2Number1')->maxLength(30);
+			
+				$row = $form->addRow();
+					$row->addLabel('emergency2Number2', __('Contact 2 Number 2'));
+					$row->addTextField('emergency2Number2')->maxLength(30);
+			}
+
 			// MISCELLANEOUS
 			$form->addRow()->addHeading(__('Miscellaneous'));
 		
@@ -503,56 +558,77 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addLabel('gibbonHouseID', __('House'));
 				$row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
 			
-			$row = $form->addRow();
-				$row->addLabel('studentID', __('Student ID'));
-				$row->addTextField('studentID')->maxLength(10);
+            if ($student) {
+                $row = $form->addRow();
+                	$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
+                	$row->addTextField('studentID')->maxLength(10);
+            }
 		
-			$sql = "SELECT DISTINCT transport FROM gibbonPerson
-					JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-					WHERE gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
-					ORDER BY transport";
-			$result = $pdo->executeQuery(array(), $sql);
-			$transport = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
-		
-			$row = $form->addRow();
-				$row->addLabel('transport', __('Transport'));
-				$row->addTextField('transport')->maxLength(255)->autocomplete($transport);
-		
-			$row = $form->addRow();
-				$row->addLabel('transportNotes', __('Transport Notes'));
-				$row->addTextArea('transportNotes')->setRows(4);
-		
-			$row = $form->addRow();
-				$row->addLabel('lockerNumber', __('Locker Number'));
-				$row->addTextField('lockerNumber')->maxLength(20);
+			if ($student || $staff) {
+				$sql = "SELECT DISTINCT transport FROM gibbonPerson
+						JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+						WHERE gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
+						ORDER BY transport";
+				$result = $pdo->executeQuery(array(), $sql);
+				$transport = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+			
+				$row = $form->addRow();
+					$row->addLabel('transport', __('Transport'));
+					$row->addTextField('transport')->maxLength(255)->autocomplete($transport);
+			
+				$row = $form->addRow();
+					$row->addLabel('transportNotes', __('Transport Notes'));
+					$row->addTextArea('transportNotes')->setRows(4);
+			}
+
+			if ($student || $staff) {
+				$row = $form->addRow();
+					$row->addLabel('lockerNumber', __('Locker Number'));
+					$row->addTextField('lockerNumber')->maxLength(20);
+			}
 		
 			$row = $form->addRow();
 				$row->addLabel('vehicleRegistration', __('Vehicle Registration'));
 				$row->addTextField('vehicleRegistration')->maxLength(20);
 		
-			$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-				$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-				$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
-		
-			if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
-				$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
-		
-				$row = $form->addRow();
-					$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
-					$row->addCheckbox('privacyOptions[]')->fromArray($options);
-			}
+			if ($student) {
+				$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+					$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+					$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 			
-			$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
-			if (!empty($studentAgreementOptions)) {
-				$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
-		
-				$row = $form->addRow();
-				$row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
-				$row->addCheckbox('studentAgreements[]')->fromArray($options);
+				if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+					$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+			
+					$row = $form->addRow();
+						$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+						$row->addCheckbox('privacyOptions[]')->fromArray($options);
+				}
+				
+				$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
+				if (!empty($studentAgreementOptions)) {
+					$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
+			
+					$row = $form->addRow();
+					$row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
+					$row->addCheckbox('studentAgreements[]')->fromArray($options);
+				}
+			}
+
+			// CUSTOM FIELDS
+			$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other);
+			if ($resultFields->rowCount() > 0) {
+				$heading = $form->addRow()->addHeading(__('Custom Fields'));
+
+				while ($rowFields = $resultFields->fetch()) {
+					$name = 'custom'.$rowFields['gibbonPersonFieldID'];
+					$row = $form->addRow();
+					$row->addLabel($name, $rowFields['name']);
+					$row->addCustomField($name, $rowFields);
+				}
 			}
 		
 			$row = $form->addRow();
-				$row->addFooter();
+				$row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
 				$row->addSubmit();
 
 			$form->loadAllValuesFrom($values);
@@ -972,39 +1048,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						$addressSet = true;
 					}
 					?>
-					<tr>
-						<td>
-							<b><?php echo __('Enter Personal Address?') ?></b><br/>
-						</td>
-						<td class='right' colspan=2>
-							<script type="text/javascript">
-								/* Advanced Options Control */
-								$(document).ready(function(){
-									<?php
-                                    if ($addressSet == false) {
-                                        echo '$(".address").slideUp("fast"); ';
-                                    }
-           	 					?>
-									$("#showAddresses").click(function(){
-										if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
-											$(".address").slideDown("fast", $(".address").css("display","table-row"));
-										}
-										else {
-											$(".address").slideUp("fast");
-											$("#address1").val("");
-											$("#address1District").val("");
-											$("#address1Country").val("");
-											$("#address2").val("");
-											$("#address2District").val("");
-											$("#address2Country").val("");
 
-										}
-									 });
-								});
-							</script>
-							<input <?php if ($addressSet) { echo 'checked'; } ?> id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
-						</td>
-					</tr>
 					<tr class='address'>
 						<td>
 							<b><?php echo __('Address 1') ?></b><br/>
@@ -1266,7 +1310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                         }
                     }
-					if ($student or $staff) {
+					if ($student || $staff) {
 						?>
 						<tr>
 							<td>
@@ -1401,7 +1445,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						<?php
 
                     }
-					if ($student or $staff) {
+					if ($student || $staff) {
 						?>
 						<tr>
 							<td>
@@ -1433,7 +1477,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						<?php
 
             }
-            if ($student or $staff) {
+            if ($student || $staff) {
                 ?>
 						<tr>
 							<td>
@@ -1926,7 +1970,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 
 					<?php
-                    if ($student or $staff) {
+                    if ($student || $staff) {
                         ?>
 						<tr class='break'>
 							<td colspan=2>
@@ -2072,7 +2116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						<?php
 
                     }
-					if ($student or $staff) {
+					if ($student || $staff) {
 						?>
 						<tr>
 							<td>
@@ -2116,7 +2160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					<?php
 
             }
-            if ($student or $staff) {
+            if ($student || $staff) {
                 ?>
 				<tr>
 					<td>

@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-		$row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf');
+		$row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 		
 	$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
 	$row = $form->addRow();
@@ -329,7 +329,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-		$row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf');
+		$row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
 	$row = $form->addRow();
 		$row->addLabel('citizenship2', __('Citizenship 2'));
@@ -361,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow();
 		$row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-		$row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf');
+		$row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
 	$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 	
@@ -438,7 +438,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		$row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
 	
 	$row = $form->addRow();
-		$row->addLabel('studentID', __('Student ID'));
+		$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
 		$row->addTextField('studentID')->maxLength(10);
 
 	$sql = "SELECT DISTINCT transport FROM gibbonPerson
@@ -486,7 +486,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     }
 
     $row = $form->addRow();
-        $row->addFooter();
+        $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
         $row->addSubmit();
 
     echo $form->getOutput();

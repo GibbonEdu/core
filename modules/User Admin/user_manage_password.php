@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
-                $row->addYesNo('passwordForceReset')->isRequired();
+                $row->addYesNo('passwordForceReset')->isRequired()->selected('N');
 
             $row = $form->addRow();
                 $row->addFooter();
