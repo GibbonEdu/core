@@ -45,6 +45,16 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
     }
 
     /**
+     * Gets the required attribute of the internal element matching the column's ID.
+     * @return  bool
+     */
+    public function getRequired()
+    {
+        $primaryElement = $this->getElement($this->getID());
+        return (!empty($primaryElement))? $primaryElement->getRequired() : false;
+    }
+
+    /**
      * Iterate over each element in the collection and concatenate the output.
      * @return  string
      */

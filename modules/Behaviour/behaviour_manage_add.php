@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $form->setClass('smallIntBorder fullWidth');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                $form->addRow()->addHeading(__('STEP 1'));
+                $form->addRow()->addHeading(__('Step 1'));
 
             //Student
             $row = $form->addRow();
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             	$row->addFooter();
             	$row->addSubmit();
 
-           echo $form->getOutput();
+            echo $form->getOutput();
 
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             if ($gibbonBehaviourID == '') {
@@ -173,91 +173,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     echo __($guid, 'The specified record cannot be found.');
                     echo '</div>';
                 } else {
-                    $row = $result->fetch();
+                    $values = $result->fetch();
 
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'].'&editID='.$editID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Step 2 (Optional)') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Student') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="gibbonPersonID" value="<?php echo $row['gibbonPersonID'] ?>">
-									<input readonly name="name" id="name" value="<?php echo formatName('', $row['preferredName'], $row['surname'], 'Student') ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Link To Lesson?') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'From last 30 days') ?></span>
-								</td>
-								<td class="right">
-									<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" class="standardWidth">
-										<option value=""></option>
-										<?php
-                                        $minDate = date('Y-m-d', (time() - (24 * 60 * 60 * 30)));
-										try {
-											$dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonID']);
-											$sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$show = true;
-											if ($highestAction == 'Manage Behaviour Records_my') {
-												try {
-													$dataShow = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-													$sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
-													$resultShow = $connection2->prepare($sqlShow);
-													$resultShow->execute($dataShow);
-												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
-												}
-												if ($resultShow->rowCount() != 1) {
-													$show = false;
-												}
-											}
-											if ($show == true) {
-												$submission = '';
-												if ($rowSelect['homework'] == 'Y') {
-													$submission = 'HW';
-													if ($rowSelect['homeworkSubmission'] == 'Y') {
-														$submission .= '+OS';
-													}
-												}
-												if ($submission != '') {
-													$submission = ' - '.$submission;
-												}
-												echo "<option value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(dateConvertBack($guid, $rowSelect['date']), 0, 5)."$submission</option>";
-											}
-										}
-										?>
-									</select>
-								</td>
-							</tr>
+                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+                        $form->setClass('smallIntBorder fullWidth');
+                        $form->setFactory(DatabaseFormFactory::create($pdo));
+                        $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+                        $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
+                        $form->addRow()->addHeading(__($guid, 'Step 2 (Optional)'));
 
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="gibbonBehaviourID" value="<?php echo $gibbonBehaviourID ?>">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+                    //Student
+                    $row = $form->addRow();
+                    	$row->addLabel('students', __('Student'));
+                    	$row->addTextField('students')->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student'))->readonly();
+                        $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
+                    //Lessons
+                    $lessons = array();
+                    $minDate = date('Y-m-d', (time() - (24 * 60 * 60 * 30)));
+                    try {
+                        $dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $values['gibbonPersonID']);
+                        $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date DESC, timeStart";
+                        $resultSelect = $connection2->prepare($sqlSelect);
+                        $resultSelect->execute($dataSelect);
+                    } catch (PDOException $e) {
+                    }
+                    while ($rowSelect = $resultSelect->fetch()) {
+                        $show = true;
+                        if ($highestAction == 'Manage Behaviour Records_my') {
+                            try {
+                                $dataShow = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
+                                $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
+                                $resultShow = $connection2->prepare($sqlShow);
+                                $resultShow->execute($dataShow);
+                            } catch (PDOException $e) { }
+                            if ($resultShow->rowCount() != 1) {
+                                $show = false;
+                            }
+                        }
+                        if ($show == true) {
+                            $submission = '';
+                            if ($rowSelect['homework'] == 'Y') {
+                                $submission = 'HW';
+                                if ($rowSelect['homeworkSubmission'] == 'Y') {
+                                    $submission .= '+OS';
+                                }
+                            }
+                            if ($submission != '') {
+                                $submission = ' - '.$submission;
+                            }
+                            $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(dateConvertBack($guid, $rowSelect['date']), 0, 5).$submission;
+                        }
+                    }
+
+                    $row = $form->addRow();
+                        $row->addLabel('gibbonPlannerEntryID', __('Link To Lesson?'))->description(__('From last 30 days'));
+                        if (count($lessons) < 1) {
+                            $row->addSelect('gibbonPlannerEntryID')->placeholder();
+                        }
+                        else {
+                            $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons)->placeholder();
+                        }
+
+                    $row = $form->addRow();
+                    	$row->addFooter();
+                    	$row->addSubmit();
+
+                    echo $form->getOutput();
                 }
             }
         }

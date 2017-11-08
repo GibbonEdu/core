@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonActivityStudentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, gibbonActivity.name, programStart, programEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='N' ORDER BY surname, preferredName, name";
+        $sql = "SELECT gibbonActivityStudentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, paymentType, gibbonActivity.name, programStart, programEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='N' ORDER BY surname, preferredName, name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 		echo '<th>';
 		echo __($guid, 'Activity');
 		echo '</th>';
-		echo '<th>';
+		echo '<th style=\'width: 320px\'>';
 		echo __($guid, 'Cost').'<br/>';
 		echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
 		echo '</th>';
@@ -139,10 +139,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo $row['name'];
             echo '</td>';
             echo "<td style='text-align: left'>";
-            if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                echo substr($_SESSION[$guid]['currency'], 4);
-            }
-            echo number_format($row['payment']);
+            echo "<input type='text' name='payment$count' id='payment$count' value='".$row['payment']."'><br/>";
+            echo "<script type='text/javascript'>";
+                echo "var payment$count=new LiveValidation('payment$count');";
+                echo "payment$count.add(Validate.Presence);";
+                echo "payment$count.add(Validate.Numericality);";
+            echo "</script>";
             echo '</td>';
             echo '<td>';
             echo "<input type='checkbox' name='gibbonActivityStudentID-$count' id='gibbonActivityStudentID-$count' value='".$row['gibbonActivityStudentID']."'>";
@@ -198,10 +200,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         echo __($guid, 'Activity');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Cost').'<br/>';
-        echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
-        echo '</th>';
-        echo '<th>';
         echo __($guid, 'Invoice Number').'<br/>';
         echo '</th>';
         echo '</tr>';
@@ -226,12 +224,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo '</td>';
             echo '<td>';
             echo $row['name'];
-            echo '</td>';
-            echo "<td style='text-align: left'>";
-            if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                echo substr($_SESSION[$guid]['currency'], 4);
-            }
-            echo number_format($row['payment']);
             echo '</td>';
             echo '<td>';
             $invoiceNumber = getSettingByScope($connection2, 'Finance', 'invoiceNumber');

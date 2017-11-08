@@ -186,16 +186,15 @@ class FormFactory implements FormFactoryInterface
     
     /* PRE-DEFINED LAYOUT --------------------------- */
 
-    public function createSubheading($label)
+    public function createSubheading($content, $tag = 'h4')
     {
-        $content = sprintf('<h4>%s</h4>', $label);
+        $content = sprintf('<%1$s>%2$s</%1$s>', $tag, $content);
         return $this->createContent($content);
     }
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, $content);
-        return $this->createContent($content);
+        return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
     public function createSubmit($label = 'Submit')
@@ -266,6 +265,19 @@ class FormFactory implements FormFactoryInterface
         ))->placeholder();
     }
 
+    public function createSelectEmergencyRelationship($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Parent'         => __('Parent'),
+            'Spouse'         => __('Spouse'),
+            'Offspring'      => __('Offspring'),
+            'Friend'         => __('Friend'),
+            'Other Relation' => __('Other Relation'),
+            'Doctor'         => __('Doctor'),
+            'Other'          => __('Other'),
+        ))->placeholder();
+    }
+    
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?

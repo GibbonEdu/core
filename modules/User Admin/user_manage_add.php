@@ -350,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						?>
 
 						$(".generatePassword").click(function(){
-							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
 							var text = '';
 							for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
 								for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {

@@ -638,10 +638,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Show timetable
                         echo "<a name='timetable'></a>";
-                        echo '<h4>';
-                        echo __($guid, 'Timetable');
-                        echo '</h4>';
+                        //Display timetable if available, otherwise just list classes
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
+                            echo '<h4>';
+                            echo __($guid, 'Timetable');
+                            echo '</h4>';
+
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
                                 if ($role == 'Student' or $role == 'Staff') {
@@ -663,6 +665,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo "<div class='error'>";
                                 echo __($guid, 'There are no records to display.');
                                 echo '</div>';
+                            }
+                        }
+                        else {
+                            echo '<h4>';
+                            echo __($guid, 'Class List');
+                            echo '</h4>';
+                            try {
+                                $dataDetail = array('gibbonPersonID' => $gibbonPersonID);
+                                $sqlDetail = "SELECT DISTINCT gibbonCourse.name AS courseFull, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class
+                                    FROM gibbonCourseClassPerson
+                                        JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                                    WHERE gibbonCourseClassPerson.role='Student' AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
+                                $resultDetail = $connection2->prepare($sqlDetail);
+                                $resultDetail->execute($dataDetail);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            if ($resultDetail->rowCount() < 1 ) {
+                                echo "<div class='error'>";
+                                echo __($guid, 'There are no records to display.');
+                                echo '</div>';
+                            }
+                            else {
+                                echo '<ul>';
+                                while ($rowDetail = $resultDetail->fetch()) {
+                                    echo '<li>';
+                                        echo htmlPrep($rowDetail['courseFull'].' ('.$rowDetail['course'].'.'.$rowDetail['class'].')');
+                                    echo '</li>';
+                                }
+                                echo '</ul>';
                             }
                         }
                     } elseif ($subpage == 'Personal') {

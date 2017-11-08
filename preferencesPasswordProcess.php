@@ -43,6 +43,7 @@ if (isset($_POST['forceReset'])) {
 if ($forceReset != 'Y') {
     $forceReset = 'N';
 }
+
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php&forceReset=$forceReset";
 
 //Check passwords are not blank

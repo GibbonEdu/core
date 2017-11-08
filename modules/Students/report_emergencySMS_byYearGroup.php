@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_emergencySMS_byYearGroup.php", "get");
 
     $row = $form->addRow();
-        $row->addLabel('gibbonYearGroupID', _('Year Group'));
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
         $row->addSelectYearGroup('gibbonYearGroupID', true)->isRequired()->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
