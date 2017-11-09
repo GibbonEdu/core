@@ -204,30 +204,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->setClass('smallIntBorder fullWidth');
+                $form->setClass('colorOddEven fullWidth');
 
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                $row = $form->addRow();
-                    $row->addColumn()->addContent('<b>'.__('Adults').'</b>');
+                $row = $form->addRow()->addClass('head break');
+                    $row->addContent('<b>'.__('Adults').'</b>');
                     foreach ($children as $child) {
-                        $row->addColumn()->addContent('<b>'.formatName('', $child['preferredName'], $child['surname'], 'Student').'</b>');
+                        $row->addContent('<b>'.formatName('', $child['preferredName'], $child['surname'], 'Student').'</b>');
                     }
 
                 $count = 0;
                 foreach ($adults as $adult) {
                     ++$count;
                     $row = $form->addRow();
-                        $row->addColumn()->addContent('<b>'.formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</b>');
+                        $row->addContent('<b>'.formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</b>');
                         foreach ($children as $child) {
                             $form->addHiddenValue('gibbonPersonID1[]', $adult['gibbonPersonID']);
                             $form->addHiddenValue('gibbonPersonID2[]', $child['gibbonPersonID']);
-                            $row->addColumn()->addSelectRelationship('relationships[]');
+                            $row->addSelectRelationship('relationships['.$adult['gibbonPersonID'].']['.$child['gibbonPersonID'].']')->setClass('mediumWidth');
                         }
                 }
 
                 $row = $form->addRow();
-                    $row->addFooter();
                     $row->addSubmit();
 
                 $form->loadAllValuesFrom($values);
