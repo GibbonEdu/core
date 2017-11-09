@@ -183,7 +183,7 @@ class FormFactory implements FormFactoryInterface
     {
         return new Input\CustomBlocks($this, $name, $block, $session);
     }
-    
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($content, $tag = 'h4')
@@ -279,7 +279,18 @@ class FormFactory implements FormFactoryInterface
             'Other'          => __('Other'),
         ))->placeholder();
     }
- 
+
+    public function createSelectMaritalStatus($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Married'         => __('Married'),
+            'Separated'         => __('Separated'),
+            'Divorced'      => __('Divorced'),
+            'De Facto'         => __('De Facto'),
+            'Other'          => __('Other'),
+        ))->placeholder();
+    }
+
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
