@@ -58,6 +58,24 @@ class Date extends TextField
     }
 
     /**
+     * Adds date format to the label description (if not already present)
+     * @return string|bool
+     */
+    public function getLabelContext()
+    {
+        global $guid;
+
+        if ($label = $this->getLabel()) {
+            $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
+            if (stristr($label->getDescription(), $dateFormat) === false) {
+                return __('Format').': '.$_SESSION[$guid]['i18n']['dateFormat'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Gets the HTML output for this form element.
      * @return  string
      */

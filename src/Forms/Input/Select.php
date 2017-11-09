@@ -85,11 +85,18 @@ class Select extends Input
     {
         $this->setAttribute('multiple', $value);
 
-        if ($value == true && !empty($this->getLabel())) {
-            $this->getLabel()->description(__('Use Control, Command and/or Shift to select multiple.'));
-        }
-
         return $this;
+    }
+
+    /**
+     * Add extra help text to multi-select inputs.
+     * @return string
+     */
+    public function getLabelContext()
+    {
+        if ($this->getAttribute('multiple') == true) {
+            return __('Use Control, Command and/or Shift to select multiple.');
+        }
     }
 
     /**
