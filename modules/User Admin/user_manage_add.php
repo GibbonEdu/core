@@ -127,13 +127,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $row = $form->addRow();
         $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
 		$row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
-		
+
 	$row = $form->addRow();
         $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
 		$column = $row->addColumn('username')->addClass('inline right');
 		$column->addButton(__('Generate Username'))->addClass('generateUsername');
 		$column->addTextField('username')->isRequired()->maxLength(20);
-		
+
 	$policy = getPasswordPolicy($guid, $connection2);
 	if ($policy != false) {
 		$form->addRow()->addAlert($policy, 'warning');
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $row = $form->addRow();
         $row->addLabel('emailAlternate', __('Alternate Email'));
 		$row->addEmail('emailAlternate')->maxLength(50);
-		
+
 	$row = $form->addRow();
 	$row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
 		->append('<ol>')
@@ -208,17 +208,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
-	$sql = "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name";
-	$result = $pdo->executeQuery(array(), $sql);
-	$districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
-
 	$row = $form->addRow()->addClass('address');
 		$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
 		$row->addTextField('address1')->maxLength(255);
 
 	$row = $form->addRow()->addClass('address');
 		$row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
-		$row->addTextField('address1District')->maxLength(30)->autocomplete($districts);
+		$row->addTextFieldDistrict('address1District');
 
 	$row = $form->addRow()->addClass('address');
 		$row->addLabel('address1Country', __('Address 1 Country'));
@@ -230,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
 	$row = $form->addRow()->addClass('address');
 		$row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
-		$row->addTextField('address2District')->maxLength(30)->autocomplete($districts);
+		$row->addTextFieldDistrict('address2District');
 
 	$row = $form->addRow()->addClass('address');
 		$row->addLabel('address2Country', __('Address 2 Country'));
@@ -241,14 +237,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		$row->addLabel('phone'.$i, __('Phone').' '.$i)->description(__('Type, country code, number.'));
         $row->addPhoneNumber('phone'.$i);
 	}
-	
+
 	$row = $form->addRow();
 		$row->addLabel('website', __('Website'))->description(__('Include http://'));
 		$row->addURL('website');
 
     // SCHOOL INFORMATION
 	$form->addRow()->addHeading(__('School Information'));
-	
+
 	$dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
 	if (!empty($dayTypeOptions)) {
 		$dayTypeText = getSettingByScope($connection2, 'User Admin', 'dayTypeText');
@@ -275,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     // BACKGROUND INFORMATION
 	$form->addRow()->addHeading(__('Background Information'));
-	
+
 	$row = $form->addRow();
 		$row->addLabel('languageFirst', __('First Language'));
 		$row->addSelectLanguage('languageFirst');
@@ -295,7 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 	$row = $form->addRow();
 		$row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
 		$row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
-		
+
 	$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
 	$row = $form->addRow();
 		$row->addLabel('ethnicity', __('Ethnicity'));
@@ -322,7 +318,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		} else {
 			$row->addSelectCountry('citizenship1');
 		}
-	
+
 	$row = $form->addRow();
 		$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
 		$row->addTextField('citizenship1Passport')->maxLength(30);
@@ -338,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		} else {
 			$row->addSelectCountry('citizenship2');
 		}
-	
+
 	$row = $form->addRow();
 		$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
 		$row->addTextField('citizenship2Passport')->maxLength(30);
@@ -364,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		$row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
 	$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-	
+
 	$row = $form->addRow();
 		$row->addLabel('residencyStatus', $residencyStatusLabel);
 		if (!empty($residencyStatusList)) {
@@ -372,14 +368,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 		} else {
             $row->addTextField('residencyStatus')->maxLength(30);
 		}
-		
+
 	$row = $form->addRow();
 		$row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
 		$row->addDate('visaExpiryDate');
 
     // EMPLOYMENT
 	$form->addRow()->addHeading(__('Employment'));
-	
+
 	$row = $form->addRow();
 		$row->addLabel('profession', __('Profession'));
 		$row->addTextField('profession')->maxLength(30);
@@ -394,7 +390,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     // EMERGENCY CONTACTS
 	$form->addRow()->addHeading(__('Emergency Contacts'));
-	
+
 	$form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 
 	$row = $form->addRow();
@@ -436,7 +432,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 	$row = $form->addRow();
 		$row->addLabel('gibbonHouseID', __('House'));
 		$row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
-	
+
 	$row = $form->addRow();
 		$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
 		$row->addTextField('studentID')->maxLength(10);
@@ -475,7 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
 	}
-	
+
 	$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
     if (!empty($studentAgreementOptions)) {
 		$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));

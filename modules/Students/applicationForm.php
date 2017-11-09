@@ -440,13 +440,9 @@ if ($proceed == false) {
                 $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
                 $row->addTextField('homeAddress')->isRequired()->maxLength(255);
 
-            // Grab some languages, for auto-complete
-            $results = $pdo->executeQuery(array(), "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name");
-            $districts = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
-
             $row = $form->addRow();
                 $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
-                $row->addTextField('homeAddressDistrict')->isRequired()->autocomplete($districts)->maxLength(30);
+                $row->addTextFieldDistrict('homeAddressDistrict')->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('homeAddressCountry', __('Home Address (Country)'));

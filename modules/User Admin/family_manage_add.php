@@ -18,9 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 @session_start();
-use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_add.php') == false) {
     //Acess denied
@@ -81,13 +81,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
         $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
         $row->addTextField('homeAddress')->maxLength(255);
 
-    $sql = "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name";
-	$result = $pdo->executeQuery(array(), $sql);
-	$districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
-
     $row = $form->addRow();
         $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
-        $row->addTextField('homeAddressDistrict')->maxLength(30)->autocomplete($districts);
+        $row->addTextFieldDistrict('homeAddressDistrict');
 
     $row = $form->addRow();
         $row->addLabel('homeAddressCountry', __('Home Address (Country)'));

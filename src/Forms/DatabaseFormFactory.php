@@ -165,7 +165,7 @@ class DatabaseFormFactory extends FormFactory
     }
 
     public function createSelectStatus($name)
-    {   
+    {
         $statuses = array(
             'Full'     => __('Full'),
             'Expected' => __('Expected'),
@@ -365,6 +365,15 @@ class DatabaseFormFactory extends FormFactory
         $results = $this->pdo->executeQuery(array(), $sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
+    public function createTextFieldDistrict($name)
+    {
+        $sql = "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name";
+        $result = $this->pdo->executeQuery(array(), $sql);
+        $districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+
+        return $this->createTextField($name)->maxLength(30)->autocomplete($districts);
     }
 
     protected function getCachedQuery($name)
