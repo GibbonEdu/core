@@ -31,14 +31,23 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
-    if (is_null(ini_get('max_input_vars')) != false and ini_get('max_input_vars') <= count($_POST)) {
+    $permissions = isset($_POST['permission'])? $_POST['permission'] : array();
+    $maxInputVars = ini_get('max_input_vars');
+
+    if (empty($permissions)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    } else if (is_null($maxInputVars) != false && $maxInputVars <= count($_POST, COUNT_RECURSIVE)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
+        exit;
     } else {
         try {
             $data = array();
-            $sql = 'DELETE FROM gibbonPermission';
+            $sql = 'TRUNCATE TABLE gibbonPermission';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -48,22 +57,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         }
 
         $insertFail = false;
-        for ($i = 0;$i < count($_POST);++$i) {
-            if (isset($_POST[$i])) {
-                $gibbonActionID = substr($_POST[$i], 0, 7);
-                $gibbonRoleID = substr($_POST[$i], 8);
-                $value = $gibbonActionID.'-'.$gibbonRoleID;
-                if (isset($_POST[$value])) {
-                    if ($_POST[$value] == 'on') {
-                        try {
-                            $data = array('gibbonActionID' => $gibbonActionID, 'gibbonRoleID' => $gibbonRoleID);
-                            $sql = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=:gibbonRoleID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $insertFail = true;
-                        }
-                    }
+        foreach ($permissions as $gibbonActionID => $roles) {
+            if (empty($roles)) continue;
+
+            foreach ($roles as $gibbonRoleID => $checked) {
+                if ($checked != 'on') continue;
+
+                try {
+                    $data = array('gibbonActionID' => $gibbonActionID, 'gibbonRoleID' => $gibbonRoleID);
+                    $sql = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=:gibbonRoleID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $insertFail = true;
                 }
             }
         }
@@ -71,12 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         if ($insertFail == true) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
+            exit;
         } else {
             $_SESSION[$guid]['pageLoads'] = null;
 
             //Success0
             $URL .= '&return=success0';
             header("Location: {$URL}");
+            exit;
         }
     }
 }
