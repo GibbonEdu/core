@@ -48,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     echo __($guid, 'Search');
     echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Family name.') ?></span>
 				</td>
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
         echo __($guid, 'Name');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Status');
+        echo __($guid, 'Marital Status');
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Adults');

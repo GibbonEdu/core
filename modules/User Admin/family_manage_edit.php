@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
@@ -66,188 +69,68 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
-            ?>
-			
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr class='break'>
-						<td colspan=2> 
-							<h3>
-								<?php echo __($guid, 'General Information') ?>
-							</h3>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Family Name') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=100 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Status') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="status" id="status" class="standardWidth">
-								<option <?php if ($row['status'] == 'Married') { echo 'selected '; } ?>value="Married"><?php echo __($guid, 'Married') ?></option>
-								<option <?php if ($row['status'] == 'Separated') { echo 'selected '; } ?>value="Separated"><?php echo __($guid, 'Separated') ?></option>
-								<option <?php if ($row['status'] == 'Divorced') { echo 'selected '; } ?>value="Divorced"><?php echo __($guid, 'Divorced') ?></option>
-								<option <?php if ($row['status'] == 'De Facto') { echo 'selected '; } ?>value="De Facto"><?php echo __($guid, 'De Facto') ?></option>
-								<option <?php if ($row['status'] == 'Other') { echo 'selected '; } ?>value="Other"><?php echo __($guid, 'Other') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Home Language - Primary') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
-								<?php
-                                echo "<option value=''></option>";
-								try {
-									$dataSelect = array();
-									$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if ($row['languageHomePrimary'] == $rowSelect['name']) {
-										$selected = 'selected';
-									}
-									echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-								}
-								?>				
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Home Language - Secondary') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
-								<?php
-                                echo "<option value=''></option>";
-								try {
-									$dataSelect = array();
-									$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if ($row['languageHomeSecondary'] == $rowSelect['name']) {
-										$selected = 'selected';
-									}
-									echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-								}
-								?>				
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Address Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Formal name to address parents with.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php echo $row['nameAddress'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameAddress=new LiveValidation('nameAddress');
-								nameAddress.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Home Address') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
-						</td>
-						<td class="right">
-							<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php echo $row['homeAddress'] ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Home Address (District)') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
-						</td>
-						<td class="right">
-							<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php echo $row['homeAddressDistrict'] ?>" type="text" class="standardWidth">
-						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags=[
-									<?php
-                                    try {
-                                        $dataAuto = array();
-                                        $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
-                                        $resultAuto = $connection2->prepare($sqlAuto);
-                                        $resultAuto->execute($dataAuto);
-                                    } catch (PDOException $e) {
-                                    }
-								while ($rowAuto = $resultAuto->fetch()) {
-									echo '"'.$rowAuto['name'].'", ';
-								}
-								?>
-								];
-								$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
-							});
-						</script>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Home Address (Country)') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
-								<?php
-                                echo "<option value=''></option>";
-								try {
-									$dataSelect = array();
-									$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if ($rowSelect['printable_name'] == $row['homeAddressCountry']) {
-										$selected = ' selected';
-									}
-									echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-								}
-								?>				
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			
-			<?php
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_addProcess.php?search=$search");
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $form->addRow()->addHeading(__('General Information'));
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Family Name'));
+                $row->addTextField('name')->maxLength(100)->isRequired();
+
+            $row = $form->addRow();
+        		$row->addLabel('status', __('Marital Status'));
+        		$row->addSelectMaritalStatus('status')->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('languageHomePrimary', __('Home Language - Primary'));
+                $row->addSelectLanguage('languageHomePrimary');
+
+            $row = $form->addRow();
+                $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
+                $row->addSelectLanguage('languageHomeSecondary');
+
+            $row = $form->addRow();
+                $row->addLabel('nameAddress', __('Address Name'))->description(__('Formal name to address parents with.'));
+                $row->addTextField('nameAddress')->maxLength(100)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
+                $row->addTextField('homeAddress')->maxLength(255);
+
+            $sql = "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name";
+        	$result = $pdo->executeQuery(array(), $sql);
+        	$districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+
+            $row = $form->addRow();
+                $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
+                $row->addTextField('homeAddressDistrict')->maxLength(30)->autocomplete($districts);
+
+            $row = $form->addRow();
+                $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
+                $row->addSelectCountry('homeAddressCountry');
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
+
+
             //Get children and prep array
             try {
                 $dataChildren = array('gibbonFamilyID' => $gibbonFamilyID);
@@ -321,6 +204,41 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             if ($resultChildren->rowCount() < 1 or $resultAdults->rowCount() < 1) {
                 echo "<div class='error'>".__($guid, 'There are not enough people in this family to form relationships.').'</div>';
             } else {
+
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setClass('smallIntBorder fullWidth');
+
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                $row = $form->addRow();
+                    $row->addColumn()->addContent('<b>'.__('Adults').'</b>');
+                    foreach ($children as $child) {
+                        $row->addColumn()->addContent('<b>'.formatName('', $child['preferredName'], $child['surname'], 'Student').'</b>');
+                    }
+
+                $count = 0;
+                foreach ($adults as $adult) {
+                    ++$count;
+                    $row = $form->addRow();
+                        $row->addColumn()->addContent('<b>'.formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</b>');
+                        foreach ($children as $child) {
+                            $form->addHiddenValue('gibbonPersonID1[]', $adult['gibbonPersonID']);
+                            $form->addHiddenValue('gibbonPersonID2[]', $child['gibbonPersonID']);
+                            $row->addColumn()->addSelectRelationship('relationships[]');
+                        }
+                }
+                
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                $form->loadAllValuesFrom($values);
+
+                echo $form->getOutput();
+
+
                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search'>";
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
@@ -461,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
 							<h3>
@@ -470,7 +388,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Child\'s Name') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -517,7 +435,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Comment') ?></b><br/>
 						</td>
 						<td class="right">
@@ -537,7 +455,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 				</table>
 			</form>
 
-			<?php	
+			<?php
             echo '<h3>';
             echo __($guid, 'View Adults');
             echo '</h3>';
@@ -635,7 +553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
 							<h3>
@@ -644,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Adult\'s Name') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -666,7 +584,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 									}
 									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected.'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
@@ -675,7 +593,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Comment') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Data displayed in full Student Profile') ?><br/></span>
 						</td>
@@ -688,7 +606,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Data Access?') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Access data on family\'s children?') ?></span>
 						</td>
@@ -700,7 +618,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Contact Priority') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'The order in which school should contact family members.') ?></span>
 						</td>
@@ -713,11 +631,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							<script type="text/javascript">
 								/* Advanced Options Control */
 								$(document).ready(function(){
-									<?php 
+									<?php
                                     echo '$("#contactCall").attr("disabled", "disabled");';
 									echo '$("#contactSMS").attr("disabled", "disabled");';
 									echo '$("#contactEmail").attr("disabled", "disabled");';
-									echo '$("#contactMail").attr("disabled", "disabled");'; ?>	
+									echo '$("#contactMail").attr("disabled", "disabled");'; ?>
 									$("#contactPriority").change(function(){
 										if ($('#contactPriority').val()=="1" ) {
 											$("#contactCall").attr("disabled", "disabled");
@@ -728,7 +646,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 											$("#contactEmail").val("Y");
 											$("#contactMail").attr("disabled", "disabled");
 											$("#contactMail").val("Y");
-										} 
+										}
 										else {
 											$("#contactCall").removeAttr("disabled");
 											$("#contactSMS").removeAttr("disabled");
@@ -740,9 +658,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							</script>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Call?') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Receive non-emergency phone calls from school?') ?></span>
 						</td>
@@ -754,7 +672,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'SMS?') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Receive non-emergency SMS messages from school?') ?></span>
 						</td>
@@ -766,7 +684,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Email?') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Receive non-emergency emails from school?') ?></span>
 						</td>
@@ -778,7 +696,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Mail?') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Receive postage mail from school?') ?></span>
 						</td>
@@ -789,7 +707,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							</select>
 						</td>
 					</tr>
-					
+
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
