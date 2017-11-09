@@ -86,8 +86,9 @@ if (!isset($_SESSION[$guid]["username"])) {
             ->maxLength(30);
 
     $row = $form->addRow();
-		$row->addLabel('passwordNewLabel', __('New Password'));
-		$column = $row->addColumn('passwordNewLabel')->addClass('inline right');
+
+		$row->addLabel('passwordNew', __('New Password'));
+		$column = $row->addColumn('passwordNew')->addClass('inline right');
 		$column->addButton(__('Generate Password'))->addClass('generatePassword');
 		$password = $column->addPassword('passwordNew')->isRequired()->maxLength(30);
 
@@ -127,7 +128,7 @@ if (!isset($_SESSION[$guid]["username"])) {
     <script type="text/javascript">
         // Password Generation
         $(".generatePassword").click(function(){
-            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
             var text = '';
             for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
                 if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }

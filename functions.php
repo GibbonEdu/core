@@ -3781,8 +3781,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $sqlAlert = 'SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {
-        }
+        } catch (PDOException $e) { }
         if ($resultAlert->rowCount() > 0) {
             $rowAlert = $resultAlert->fetch();
             $highestLevel = __($guid, $rowAlert['name']);
@@ -3800,8 +3799,19 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
         try {
-            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlAlert = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND (attainmentConcern='Y' OR effortConcern='Y') AND complete='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID";
+            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+            $sqlAlert = "SELECT *
+                FROM gibbonMarkbookEntry
+                    JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                    JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
+                    AND (attainmentConcern='Y' OR effortConcern='Y')
+                    AND complete='Y'
+                    AND gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND completeDate<=:today
+                    AND completeDate>:date
+                    ";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
         } catch (PDOException $e) {
@@ -3825,7 +3835,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
-                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern in the current academic year.'), __($guid, $alert['name'])).' '.$alertThresholdText;
+                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern over the past 60 days.'), __($guid, $alert['name'])).' '.$alertThresholdText;
                 $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'A').'</div></a>';
             }
         }
@@ -3834,8 +3844,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
         try {
-            $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-            $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>'".date('Y-m-d', (time() - (24 * 60 * 60 * 60)))."'";
+            $dataAlert = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+            $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
         } catch (PDOException $e) {
@@ -4379,6 +4389,26 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonYearGroupID'];
+        }
+    }
+
+    return $output;
+}
+
+//Take a roll group, and return the next one, or false if none
+function getNextRollGroupID($gibbonRollGroupID, $connection2)
+{
+    $output = false;
+    try {
+        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+        $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) { }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        if (!is_null($row['gibbonRollGroupIDNext'])) {
+            $output = $row['gibbonRollGroupIDNext'];
         }
     }
 

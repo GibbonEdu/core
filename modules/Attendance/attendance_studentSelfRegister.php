@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         $currentDate = date('Y-m-d');
         if (isSchoolOpen($guid, $currentDate, $connection2, true) == false) {
             print "<div class='error'>" ;
-                print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
+                print __("School is closed on the specified date, and so attendance information cannot be recorded.") ;
             print "</div>" ;
         }
         else {
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
             if ($result->rowCount() > 0) { //Records! Output current status
                 $row = $result->fetch();
                 print "<div class='message'>" ;
-                    print sprintf(_('Attendance has been taken for you today. Your current status is: %1$s'), "<b>".$row['type']."</b>") ;
+                    print sprintf(__('Attendance has been taken for you today. Your current status is: %1$s'), "<b>".$row['type']."</b>") ;
                 print "</div>" ;
             }
             else { //If no records, give option to self register

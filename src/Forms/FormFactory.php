@@ -164,28 +164,37 @@ class FormFactory implements FormFactoryInterface
         return new Input\MultiSelect($this, $name);
     }
 
-    public function createButton($label = 'Button', $onClick = '')
+    public function createButton($label = 'Button', $onClick = '', $id = null)
     {
-        return new Input\Button($label, $onClick);
+        if($id == null)
+        {
+            return new Input\Button($label, $onClick);
+        }
+        else
+        {
+            $button = new Input\Button($label, $onClick);
+            $button->setID($id);
+            $button->setName($id);
+            return $button;
+        }
     }
 
     public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
     {
         return new Input\CustomBlocks($this, $name, $block, $session);
     }
-    
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
-    public function createSubheading($label)
+    public function createSubheading($content, $tag = 'h4')
     {
-        $content = sprintf('<h4>%s</h4>', $label);
+        $content = sprintf('<%1$s>%2$s</%1$s>', $tag, $content);
         return $this->createContent($content);
     }
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, $content);
-        return $this->createContent($content);
+        return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
     public function createSubmit($label = 'Submit')
@@ -233,8 +242,10 @@ class FormFactory implements FormFactoryInterface
     public function createSelectGender($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'F' => __('Female'),
-            'M' => __('Male'),
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified'),
         ))->placeholder();
     }
 
@@ -253,6 +264,30 @@ class FormFactory implements FormFactoryInterface
             'Uncle'           => __('Uncle'),
             'Nanny/Helper'    => __('Nanny/Helper'),
             'Other'           => __('Other'),
+        ))->placeholder();
+    }
+
+    public function createSelectEmergencyRelationship($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Parent'         => __('Parent'),
+            'Spouse'         => __('Spouse'),
+            'Offspring'      => __('Offspring'),
+            'Friend'         => __('Friend'),
+            'Other Relation' => __('Other Relation'),
+            'Doctor'         => __('Doctor'),
+            'Other'          => __('Other'),
+        ))->placeholder();
+    }
+
+    public function createSelectMaritalStatus($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Married'         => __('Married'),
+            'Separated'         => __('Separated'),
+            'Divorced'      => __('Divorced'),
+            'De Facto'         => __('De Facto'),
+            'Other'          => __('Other'),
         ))->placeholder();
     }
 

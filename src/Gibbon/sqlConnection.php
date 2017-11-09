@@ -171,13 +171,12 @@ class sqlConnection
 			$this->result = $this->getConnection()->prepare($query);
 			$this->result->execute($data);
 		}
-		catch(PDOException $e)
+		catch(\PDOException $e)
 		{
 			$this->error = $e->getMessage();
 			$this->querySuccess = false;
 			if ($error !== NULL)
 				echo str_replace('{message}', $this->error, $error);
-			$this->result = NULL;
 		}
 
 		return $this->result ;

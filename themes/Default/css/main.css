@@ -1220,7 +1220,7 @@ span.small {
 	font-size: 93% ;
 }
 
-input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth {
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth, table.standardWidth {
 	width: 300px ;
 }
 
@@ -1299,7 +1299,7 @@ select[multiple] {
 	width: 70px;
 }
 
-.column div:after {
+.column > div:after {
   content: "";
   display: table;
   clear: both;
@@ -1308,6 +1308,7 @@ select[multiple] {
 .column.inline div {
 	display:inline-block;
 	width:auto;
+    vertical-align: middle;
 }
 
 .column.stacked div:not(:last-of-type) {
@@ -1408,8 +1409,12 @@ input[name*="phone"] ~ .LV_invalid {
 	line-height: 22px;
 }
 
+.floatRight {
+	float: right;
+}
+
 .floatNone {
-	float:none;
+	float:none!important;
 }
 
 .max-upload {
@@ -1424,4 +1429,9 @@ input[name*="phone"] ~ .LV_invalid {
 }
 #content-wide .smallIntBorder {
   max-width: 1052px;
+}
+
+.matchHighlight > td {
+	border-top: 1px dashed #c00;
+	border-bottom: 1px dashed #c00;
 }

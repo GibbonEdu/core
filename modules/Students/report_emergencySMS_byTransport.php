@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_emergencySMS_byTransport.php", "get");
 
     $row = $form->addRow();
-        $row->addLabel('transport', _('Transport'));
+        $row->addLabel('transport', __('Transport'));
         $row->addSelectTransport('transport', true)->isRequired()->selected($transport);
 
     $row = $form->addRow();

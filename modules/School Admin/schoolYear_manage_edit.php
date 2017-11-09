@@ -99,11 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                 $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYear', $values['sequenceNumber'])->isRequired()->maxLength(3)->setValue($values['sequenceNumber']);
 
             $row = $form->addRow();
-                $row->addLabel('firstDay', __('First Day'));
+                $row->addLabel('firstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
                 $row->addDate('firstDay')->isRequired()->setValue(dateConvertBack($guid, $values['firstDay']));
 
             $row = $form->addRow();
-                $row->addLabel('lastDay', __('Last Day'));
+                $row->addLabel('lastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
                 $row->addDate('lastDay')->isRequired()->setValue(dateConvertBack($guid, $values['lastDay']));
 
             $row = $form->addRow();

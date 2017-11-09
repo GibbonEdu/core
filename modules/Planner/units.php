@@ -230,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                 <div id="courseClassRow" style="display: none;">
                                     <select style="width: 182px" name="gibbonCourseIDCopyTo" id="gibbonCourseIDCopyTo">
                                         <?php
-                                        print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+                                        print "<option value='Please select...'>" . __('Please select...') . "</option>" ;
 
                                         try {
                                             $dataSelect['gibbonSchoolYearID'] = $gibbonSchoolYearID;

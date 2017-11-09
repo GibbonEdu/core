@@ -192,12 +192,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             }
             echo "<span style='font-weight: normal; font-style: italic;'>".__($guid, 'Time').'<span>';
             echo '</th>';
+            $count = 0;
             foreach ($days as $day) {
-                $dateCorrection = ($day['sequenceNumber'] - 1);
+                if ($count == 0) {
+                    $firstSequence = $day['sequenceNumber'];
+                }
+                $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
                 echo "<th style='vertical-align: top; text-align: center; width: ".(550 / $daysInWeek)."px'>";
                 echo __($guid, $day['nameShort']).'<br/>';
                 echo "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                 echo '</th>';
+                $count ++;
             }
             echo '</tr>';
 
@@ -252,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 			foreach ($days as $day) {
 				$dayOut = '';
 				if ($day['schoolDay'] == 'Y') {
-					$dateCorrection = ($day['sequenceNumber'] - 1);
+					$dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
 					//Check to see if day is term time
 					$isDayInTerm = false;

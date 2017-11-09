@@ -254,13 +254,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                         }
 
                 printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], date('D<\b\r>M j', $sessionTimestamp));
-                echo "<a class='editColumn' data-checked='' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='"._('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a class='editColumn' data-checked='' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             } else {
                 echo "<td style='color: #bbb; vertical-align:top; width: 45px;'>";
                 echo date('D<\b\r>M j', $sessionTimestamp).'<br/>&nbsp;<br/>';
-                echo "<a class='editColumn' data-checked='checked' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='"._('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
+                echo "<a class='editColumn' data-checked='checked' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
             }
-            echo "<a class='clearColumn hidden' data-column='$i'><img style='margin-top: 3px' title='"._('Clear')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a class='clearColumn hidden' data-column='$i'><img style='margin-top: 3px' title='".__('Clear')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             ++$i;
         }

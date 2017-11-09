@@ -505,9 +505,28 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
-            //Count back to first dayOfWeek before specified calendar date
-            while (date('D', $startDayStamp) != $days[0]['nameShort']) {
-                $startDayStamp = $startDayStamp - 86400;
+            //Sunday week adjust for timetable on home page (so Sunday's show next week if week starts on Monday, it's Sunday now and Sunday is not a school day)
+            $homeSunday = true ;
+            if ($q == '' && $_SESSION[$guid]['firstDayOfTheWeek'] == 'Monday') {
+                try {
+                    $dataDays = array();
+                    $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
+                    $resultDays = $connection2->prepare($sqlDays);
+                    $resultDays->execute($dataDays);
+                } catch (PDOException $e) { echo $e->getMessage(); }
+                if ($resultDays->rowCount() == 1) {
+                    $homeSunday = false ;
+                }
+            }
+
+            //If school is closed on Sunday, and it is a Sunday, count forward, otherwise count back
+            if (!$homeSunday AND date('D', $startDayStamp) == 'Sun') {
+                $startDayStamp = $startDayStamp + 86400;
+            }
+            else {
+                while (date('D', $startDayStamp) != $days[0]['nameShort']) {
+                    $startDayStamp = $startDayStamp - 86400;
+                }
             }
 
             //Count forward to the end of the week
@@ -770,7 +789,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $count = 0;
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    if ($count == 0) {
+                        $firstSequence = $day['sequenceNumber'];
+                    }
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     $color = '';
                     try {
@@ -864,7 +886,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             //Run through days of the week
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     //Check to see if day is term time
                     $isDayInTerm = false;
@@ -1746,7 +1768,10 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $count = 0;
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    if ($count == 0) {
+                        $firstSequence = $day['sequenceNumber'];
+                    }
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     $output .= "<th style='vertical-align: top; text-align: center; width: ";
                     $output .= (550 / $daysInWeek);
@@ -1839,7 +1864,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             foreach ($days as $day) {
                 $dayOut = '';
                 if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                     //Check to see if day is term time
                     $isDayInTerm = false;
