@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/user_manage.php');
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description('Preferred, surname, username, role, student ID, email, phone number, vehicle registration');
+        $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
         $row->addTextField('search')->setValue($search);
 
     $row = $form->addRow();
