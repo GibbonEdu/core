@@ -320,10 +320,12 @@ class DatabaseFormFactory extends FormFactory
         return new Input\PhoneNumber($this, $name, $countryCodes);
     }
 
-    public function createSequenceNumber($name, $tableName, $sequenceNumber = '')
+    public function createSequenceNumber($name, $tableName, $sequenceNumber = '', $columnName = null)
     {
+        $columnName = empty($columnName)? $name : $columnName;
+        
         $data = array('sequenceNumber' => $sequenceNumber);
-        $sql = "SELECT GROUP_CONCAT(DISTINCT {$name} SEPARATOR '\',\'') FROM {$tableName} WHERE ({$name} IS NOT NULL AND {$name} <> :sequenceNumber) ORDER BY {$name}";
+        $sql = "SELECT GROUP_CONCAT(DISTINCT `{$columnName}` SEPARATOR '\',\'') FROM `{$tableName}` WHERE (`{$columnName}` IS NOT NULL AND `{$columnName}` <> :sequenceNumber) ORDER BY `{$columnName}`";
         $results = $this->pdo->executeQuery($data, $sql);
 
         $field = $this->createTextField($name);
@@ -335,7 +337,7 @@ class DatabaseFormFactory extends FormFactory
         if (!empty($sequenceNumber) || $sequenceNumber === false) {
             $field->setValue($sequenceNumber);
         } else {
-            $sql = "SELECT MAX({$name}) FROM {$tableName}";
+            $sql = "SELECT MAX(`{$columnName}`) FROM `{$tableName}`";
             $results = $this->pdo->executeQuery(array(), $sql);
             $sequenceNumber = ($results && $results->rowCount() > 0)? $results->fetchColumn(0) : 1;
 
