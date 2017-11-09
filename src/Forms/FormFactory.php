@@ -242,8 +242,10 @@ class FormFactory implements FormFactoryInterface
     public function createSelectGender($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'F' => __('Female'),
-            'M' => __('Male'),
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified'),
         ))->placeholder();
     }
 
