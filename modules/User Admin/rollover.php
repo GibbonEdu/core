@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $yearGroups[$rowSelect['gibbonYearGroupID']] =  htmlPrep($rowSelect['name']);
                 }
 
-                $rollGroups = '';
+                $rollGroups = array();
                 try {
                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
                     $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
@@ -483,7 +483,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 } catch (PDOException $e) {
                     $form->addRow()->addAlert($e->getMessage(), 'error');
                 }
-                if ($resultEnrol->rowCount() < 1) {
+                if ($resultRegister->rowCount() < 1) {
                     $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
                     $row = $form->addRow();
