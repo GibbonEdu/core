@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
@@ -96,9 +98,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					<?php echo __($guid, 'This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.') ?><br/>
 				</p>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2" ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
 							</td>
@@ -111,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -124,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -148,9 +150,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 						</tr>
 					</table>
 				</form>
-				
-				
-				
+
+
+
 				<h4>
 					<?php echo __($guid, 'Notes') ?>
 				</h4>
@@ -159,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 					<li><?php echo __($guid, 'The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.') ?></li>
 					<li><?php echo __($guid, 'The import does not include student lists.') ?></li>
-					<li><?php echo __($guid, 'The submitted file must have the following fields in the following order:') ?></li> 
+					<li><?php echo __($guid, 'The submitted file must have the following fields in the following order:') ?></li>
 						<ol>
 							<li><b><?php echo __($guid, 'Course Short Name</b> - e.g. DR10 for Year 10 Drama') ?></li>
 							<li><b><?php echo __($guid, 'Class Short Name</b> - e.g 1 for DR10.1') ?></li>
@@ -684,7 +686,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                             sort($staffs);
                                             $staffs = array_unique($staffs);
 
-                                            //Add teachers 
+                                            //Add teachers
                                             foreach ($staffs as $staff) {
                                                 //Convert username into ID
                                                 try {
@@ -758,7 +760,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 				<h2>
 					<?php echo __($guid, 'Step 3 - Import') ?>
 				</h2>
-				<?php	
+				<?php
 
                 $proceed = true;
 

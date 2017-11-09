@@ -1423,7 +1423,6 @@ input[name*="phone"] ~ .LV_invalid {
     font-size: 11px;
 }
 
-
 #content .smallIntBorder {
   max-width: 752px;
 }
@@ -1439,4 +1438,8 @@ input[name*="phone"] ~ .LV_invalid {
 tr.head td {
 	font-weight: bold;
 	font-size: 110%;
+}
+
+.right {
+	text-align: right!important;
 }
