@@ -282,7 +282,12 @@ class DatabaseFormFactory extends FormFactory
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
                     if ($multipleBys) {
-                        $values[__('Students by Name')][$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                        if (!$params['allStudents'] && $params['byName'] && $params['showRoll']) {
+                            $values[__('Students by Name')][$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true)." (".$row['name'].")";
+                        }
+                        else {
+                            $values[__('Students by Name')][$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                        }
                     } else {
                         if (!$params['allStudents'] && $params['byName'] && $params['showRoll']) {
                             $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true)." (".$row['name'].")";
