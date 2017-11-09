@@ -242,8 +242,10 @@ class FormFactory implements FormFactoryInterface
     public function createSelectGender($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'F' => __('Female'),
-            'M' => __('Male'),
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified'),
         ))->placeholder();
     }
 
@@ -277,7 +279,7 @@ class FormFactory implements FormFactoryInterface
             'Other'          => __('Other'),
         ))->placeholder();
     }
-    
+ 
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
