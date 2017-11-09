@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addSelectGender('gender')->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'));
         $row->addDate('dob');
 
     $row = $form->addRow();
