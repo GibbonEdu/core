@@ -66,7 +66,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     public function getLabel()
     {
         if (empty($this->row)) return null;
-        return $this->row->getElement('label-'.$this->getID());
+        return $this->row->getElement('label'.$this->getID());
     }
 
     /**
