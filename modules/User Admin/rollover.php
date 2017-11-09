@@ -171,24 +171,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $form->addRow()->addHeading(sprintf(__('Add Year Following %1$s'), $nameNext));
 
                     $row = $form->addRow();
-                        $row->addLabel('name', __('School Year Name'))->description(__('Must be unique.'));
-                        $row->addTextField('name')->isRequired()->maxLength(9);
+                        $row->addLabel('nextname', __('School Year Name'))->description(__('Must be unique.'));
+                        $row->addTextField('nextname')->isRequired()->maxLength(9);
 
                     $row = $form->addRow();
-                        $row->addLabel('status', __('Status'));
-                        $row->addTextField('status')->setValue(__('Upcoming'))->isRequired()->readonly();
+                        $row->addLabel('nextstatus', __('Status'));
+                        $row->addTextField('nextstatus')->setValue(__('Upcoming'))->isRequired()->readonly();
 
                     $row = $form->addRow();
-                        $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-                        $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYear')->isRequired()->maxLength(3)->readonly();
+                        $row->addLabel('nextsequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
+                        $row->addSequenceNumber('nextsequenceNumber', 'gibbonSchoolYear')->isRequired()->maxLength(3)->readonly();
 
                     $row = $form->addRow();
-                        $row->addLabel('firstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('firstDay')->isRequired();
+                        $row->addLabel('nextfirstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                        $row->addDate('nextfirstDay')->isRequired();
 
                     $row = $form->addRow();
-                        $row->addLabel('lastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('lastDay')->isRequired();
+                        $row->addLabel('nextlastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                        $row->addDate('nextlastDay')->isRequired();
                 }
 
                 //SET EXPECTED USERS TO FULL
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $resultExpect = $connection2->prepare($sqlExpect);
                     $resultExpect->execute($dataExpect);
                 } catch (PDOException $e) {
-                    $form->addRow()->addAlert($e->getMessage(), 'warning');
+                    $form->addRow()->addAlert($e->getMessage(), 'error');
                 }
                 if ($resultExpect->rowCount() < 1) {
                     $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
@@ -214,6 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $count = 0;
                     while ($rowExpect = $resultExpect->fetch()) {
+                        $count++;
                         $form->addHiddenValue($count."-expect-gibbonPersonID", $rowExpect['gibbonPersonID']);
                         $row = $form->addRow();
                             $row->addColumn()->addContent(formatName('', $rowExpect['preferredName'], $rowExpect['surname'], 'Student', true));
@@ -221,12 +222,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $row->addColumn()->addContent(__('Expected'));
                             $column = $row->addColumn();
                                 $column->addSelect($count."-expect-status")->fromArray($statuses)->isRequired()->setClass('shortWidth floatNone');
-                        $count++;
                     }
                     $form->addHiddenValue("expect-count", $count);
                 }
 
-                //ENROL NEW STUDENTS
+                //ENROL NEW STUDENTS - EXPECTED
                 $form->addRow()->addHeading(__('Enrol New Students (Status Expected)'));
                 $form->addRow()->addContent(__('Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left".'));
 
@@ -239,7 +239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $resultEnrol = $connection2->prepare($sqlEnrol);
                         $resultEnrol->execute($dataEnrol);
                     } catch (PDOException $e) {
-                        $form->addRow()->addAlert($e->getMessage(), 'warning');
+                        $form->addRow()->addAlert($e->getMessage(), 'error');
                     }
 
                     if ($resultEnrol->rowCount() < 1) {
@@ -254,6 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                         $count = 0;
                         while ($rowEnrol = $resultEnrol->fetch()) {
+                            $count++;
                             $form->addHiddenValue($count."-enrol-gibbonPersonID", $rowEnrol['gibbonPersonID']);
                             $row = $form->addRow();
                                 $row->addColumn()->addContent(formatName('', $rowEnrol['preferredName'], $rowEnrol['surname'], 'Student', true));
@@ -261,76 +262,42 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $column = $row->addColumn();
                                     $column->addCheckbox($count."-enrol-enrol")->setValue('Y')->checked('Y');
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone');;
+                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone');
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone');;
-                            $count++;
+                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone');
                         }
                         $form->addHiddenValue("enrol-count", $count);
                     }
                 }
 
+                //ENROL NEW STUDENTS - FULL
+                $form->addRow()->addHeading(__('Enrol New Students (Status Full)'));
+                $form->addRow()->addContent(__('Take new students who are already set as full, but who were not enroled last year, and enrol them. These students probably came through the Online Application form, and may already be enroled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left"'));
 
-                $row = $form->addRow();
-                    $row->addFooter();
-                    $row->addSubmit('Proceed');
-
-                echo $form->getOutput();
-
-
-
-                //OLD FORM CONTENTS!
-                //Set enrolment select values
-                 $yearGroupOptions = '';
-                 try {
-                     $dataSelect = array();
-                     $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-                     $resultSelect = $connection2->prepare($sqlSelect);
-                     $resultSelect->execute($dataSelect);
-                 } catch (PDOException $e) {
-                     echo "<div class='error'>".$e->getMessage().'</div>';
-                 }
-                 while ($rowSelect = $resultSelect->fetch()) {
-                     $yearGroupOptions = $yearGroupOptions."<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                 }
-                 $rollGroupOptions = '';
-                 try {
-                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
-                     $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                     $resultSelect = $connection2->prepare($sqlSelect);
-                     $resultSelect->execute($dataSelect);
-                 } catch (PDOException $e) {
-                     echo "<div class='error'>".$e->getMessage().'</div>';
-                 }
-                 while ($rowSelect = $resultSelect->fetch()) {
-                     $rollGroupOptions = $rollGroupOptions."<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                 }
-
-                echo '<h4>';
-                echo __($guid, 'Enrol New Students (Status Full)');
-                echo '</h4>';
-                echo '<p>';
-                echo __($guid, 'Take new students who are already set as full, but who were not enroled last year, and enrol them. These students probably came through the Online Application form, and may already be enroled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left"');
-                echo '</p>';
-
-                if ($yearGroupOptions == '' or $rollGroupOptions == '') {
-                    echo "<div class='error'>".__($guid, 'Year groups or roll groups are not properly set up, so you cannot proceed with this section.').'</div>';
+                if (count($yearGroups) < 1 or count($rollGroups) < 1) {
+                    $form->addRow()->addAlert(__('Year groups or roll groups are not properly set up, so you cannot proceed with this section.'), 'error');
                 } else {
                     $students = array();
                     $count = 0;
                     try {
                         $dataEnrol = array();
-                        $sqlEnrol = "SELECT gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND category='Student' ORDER BY surname, preferredName";
+                        $sqlEnrol = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRole.name, category
+                            FROM gibbonPerson
+                                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                                LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                LEFT JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                            WHERE gibbonPerson.status='Full'
+                                AND category='Student'
+                                AND (gibbonStudentEnrolment.gibbonPersonID IS NULL OR gibbonSchoolYear.status='Upcoming')
+                            ORDER BY surname, preferredName";
                         $resultEnrol = $connection2->prepare($sqlEnrol);
                         $resultEnrol->execute($dataEnrol);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $form->addRow()->addAlert($e->getMessage());
                     }
 
                     if ($resultEnrol->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
+                        $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
                         while ($rowEnrol = $resultEnrol->fetch()) {
                             try {
@@ -339,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $resultEnrolled = $connection2->prepare($sqlEnrolled);
                                 $resultEnrolled->execute($dataEnrolled);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $form->addRow()->addAlert($e->getMessage(), 'error');
                             }
                             if ($resultEnrolled->rowCount() < 1) {
                                 $students[$count][0] = $rowEnrol['gibbonPersonID'];
@@ -352,53 +319,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     }
 
                     if ($count < 1) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
+                        $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
-                        echo "<table cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='head'>";
-                        echo '<th>';
-                        echo __($guid, 'Name');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Primary Role');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Enrol');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Year Group');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Roll Group');
-                        echo '</th>';
-                        echo '</tr>';
+                        $row = $form->addRow();
+                            $row->addColumn()->addContent('<b>'.__('Name').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Enrol').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Year Group').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Form Group').'</b>');
 
                         $count = 0;
-                        $rowNum = 'odd';
-                        foreach ($students as $student) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$count;
-
-                                    //COLOR ROW BY STATUS!
-                                    echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo "<input type='hidden' name='$count-enrolFull-gibbonPersonID' value='".$student[0]."'>";
-                            echo formatName('', $student[2], $student[1], 'Student', true);
-                            echo '</td>';
-                            echo '<td>';
-                            echo __($guid, $student[3]);
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<input checked type='checkbox' name='$count-enrolFull-enrol' value='Y'>";
-                            echo '</td>';
-                                        //Check for enrolment in next year (caused by automated enrolment on application form accept)
-                                        $yearGroupSelect = '';
+                        foreach ($students AS $student) {
+                            $count++;
+                            //Check for enrolment in next year (caused by automated enrolment on application form accept)
+                            $yearGroupSelect = '';
                             $rollGroupSelect = '';
                             try {
                                 $dataEnrolled = array('gibbonSchoolYearID' => $nextYear, 'gibbonPersonID' => $student[0]);
@@ -406,135 +340,74 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $resultEnrolled = $connection2->prepare($sqlEnrolled);
                                 $resultEnrolled->execute($dataEnrolled);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $form->addRow()->addAlert($e->getMessage(), 'error');
                             }
                             if ($resultEnrolled->rowCount() == 1) {
                                 $rowEnrolled = $resultEnrolled->fetch();
                                 $yearGroupSelect = $rowEnrolled['gibbonYearGroupID'];
                                 $rollGroupSelect = $rowEnrolled['gibbonRollGroupID'];
                             }
-                            echo '<td>';
-                            echo "<select name='$count-enrolFull-gibbonYearGroupID' id='$count-enrolFull-gibbonYearGroupID' style='float: left; width:110px'>";
-                            try {
-                                $dataSelect = array();
-                                $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if ($yearGroupSelect == $rowSelect['gibbonYearGroupID']) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                            }
-                            echo '</select>';
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<select name='$count-enrolFull-gibbonRollGroupID' id='$count-enrolFull-gibbonRollGroupID' style='float: left; width:110px'>";
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $nextYear);
-                                $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if ($rollGroupSelect == $rowSelect['gibbonRollGroupID']) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                            }
-                            echo '</select>';
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
 
-                        echo "<input type='hidden' name='enrolFull-count' value='$count'>";
+                            $form->addHiddenValue($count."-enrolFull-gibbonPersonID", $student[0]);
+                            $row = $form->addRow();
+                                $row->addColumn()->addContent(formatName('', $student[2], $student[2], 'Student', true));
+                                $row->addColumn()->addContent(__($student[3]));
+                                $column = $row->addColumn();
+                                    $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
+                                $column = $row->addColumn();
+                                    $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
+                                $column = $row->addColumn();
+                                    $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
+                        }
+                        $form->addHiddenValue("enrolFull-count", $count);
                     }
                 }
 
-				//RE-ENROL OTHER STUDENTS
-				echo '<h4>';
-                echo __($guid, 'Re-Enrol Other Students');
-                echo '</h4>';
-                echo '<p>';
-                echo __($guid, 'Any students who are not re-enroled will have their status set to "Left".').' '.__($guid, 'Students who are already enroled will have their enrolment updated.');
-                echo '</p>';
+                //RE-ENROL OTHER STUDENTS
+                $form->addRow()->addHeading(__('Re-Enrol Other Students'));
+                $form->addRow()->addContent(__('Any students who are not re-enroled will have their status set to "Left".').' '.__($guid, 'Students who are already enroled will have their enrolment updated.'));
 
                 $lastYearGroup = getLastYearGroupID($connection2);
 
-                if ($yearGroupOptions == '' or $rollGroupOptions == '') {
-                    echo "<div class='error'>".__($guid, 'Year groups or roll groups are not properly set up, so you cannot proceed with this section.').'</div>';
+                if (count($yearGroups) < 1 or count($rollGroups) < 1) {
+                    $form->addRow()->addAlert(__('Year groups or roll groups are not properly set up, so you cannot proceed with this section.'), 'error');
                 } else {
                     try {
                         $dataReenrol = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $lastYearGroup);
-                        $sqlReenrol = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRole.name, category, gibbonStudentEnrolment.gibbonYearGroupID, gibbonRollGroupIDNext FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND NOT gibbonYearGroupID=:gibbonYearGroupID ORDER BY surname, preferredName";
+                        $sqlReenrol = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRole.name, category, gibbonStudentEnrolment.gibbonYearGroupID, gibbonRollGroupIDNext
+                            FROM gibbonPerson
+                                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND NOT gibbonYearGroupID=:gibbonYearGroupID ORDER BY surname, preferredName";
                         $resultReenrol = $connection2->prepare($sqlReenrol);
                         $resultReenrol->execute($dataReenrol);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $form->addRow()->addAlert($e->getMessage(), 'error');
                     }
-                    if ($resultReenrol->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
+
+                    if ($resultEnrol->rowCount() < 1) {
+                        $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
-                        echo "<table cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='head'>";
-                        echo '<th>';
-                        echo __($guid, 'Name');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Primary Role');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Reenrol');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Year Group');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __($guid, 'Roll Group');
-                        echo '</th>';
-                        echo '</tr>';
+                        $row = $form->addRow();
+                            $row->addColumn()->addContent('<b>'.__('Name').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Re-Enrol').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Year Group').'</b>');
+                            $row->addColumn()->addContent('<b>'.__('Form Group').'</b>');
 
                         $count = 0;
-                        $rowNum = 'odd';
                         while ($rowReenrol = $resultReenrol->fetch()) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
+                            $count++;
+                            //Check for enrolment in next year
+                            try {
+                                $dataEnrolmentCheck = array('gibbonPersonID' => $rowReenrol['gibbonPersonID'], 'gibbonSchoolYearID' => $nextYear);
+                                $sqlEnrolmentCheck = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
+                                $resultEnrolmentCheck = $connection2->prepare($sqlEnrolmentCheck);
+                                $resultEnrolmentCheck->execute($dataEnrolmentCheck);
+                            } catch (PDOException $e) {
+                                $form->addRow()->addAlert($e->getMessage(), 'error');
                             }
-                            ++$count;
-
-                                    //COLOR ROW BY STATUS!
-                                    echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo "<input type='hidden' name='$count-reenrol-gibbonPersonID' value='".$rowReenrol['gibbonPersonID']."'>";
-                            echo formatName('', $rowReenrol['preferredName'], $rowReenrol['surname'], 'Student', true);
-                            echo '</td>';
-                            echo '<td>';
-                            echo __($guid, $rowReenrol['name']);
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<input checked type='checkbox' name='$count-reenrol-enrol' value='Y'>";
-                            echo '</td>';
-                                        //Check for enrolment
-                                        try {
-                                            $dataEnrolmentCheck = array('gibbonPersonID' => $rowReenrol['gibbonPersonID'], 'gibbonSchoolYearID' => $nextYear);
-                                            $sqlEnrolmentCheck = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                                            $resultEnrolmentCheck = $connection2->prepare($sqlEnrolmentCheck);
-                                            $resultEnrolmentCheck->execute($dataEnrolmentCheck);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                             $enrolmentCheckYearGroup = null;
                             $enrolmentCheckRollGroup = null;
                             if ($resultEnrolmentCheck->rowCount() == 1) {
@@ -542,68 +415,30 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $enrolmentCheckYearGroup = $rowEnrolmentCheck['gibbonYearGroupID'];
                                 $enrolmentCheckRollGroup = $rowEnrolmentCheck['gibbonRollGroupID'];
                             }
-                            echo '<td>';
-                            echo "<select name='$count-reenrol-gibbonYearGroupID' id='$count-reenrol-gibbonYearGroupID' style='float: left; width:110px'>";
-                            try {
-                                $dataSelect = array();
-                                $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if (is_null($enrolmentCheckYearGroup)) {
-                                    if ($rowSelect['gibbonYearGroupID'] == getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2)) {
-                                        $selected = 'selected';
-                                    }
-                                } else {
-                                    if ($rowSelect['gibbonYearGroupID'] == $enrolmentCheckYearGroup) {
-                                        $selected = 'selected';
-                                    }
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                            }
-                            echo '</select>';
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<select name='$count-reenrol-gibbonRollGroupID' id='$count-reenrol-gibbonRollGroupID' style='float: left; width:110px'>";
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $nextYear);
-                                $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if (is_null($enrolmentCheckRollGroup)) {
-                                    if ($rowSelect['gibbonRollGroupID'] == $rowReenrol['gibbonRollGroupIDNext']) {
-                                        $selected = 'selected';
-                                    }
-                                } else {
-                                    if ($rowSelect['gibbonRollGroupID'] == $enrolmentCheckRollGroup) {
-                                        $selected = 'selected';
-                                    }
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                            }
-                            echo '</select>';
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
 
-                        echo "<input type='hidden' name='reenrol-count' value='$count'>";
+                            $form->addHiddenValue($count."-reenrol-gibbonPersonID", $rowReenrol['gibbonPersonID']);
+                            $row = $form->addRow();
+                                $row->addColumn()->addContent(formatName('', $rowReenrol['preferredName'], $rowReenrol['surname'], 'Student', true));
+                                $row->addColumn()->addContent(__($rowReenrol['name']));
+                                $column = $row->addColumn();
+                                    $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked('Y');
+                                //If no enrolment, try and work out next year and roll group
+                                if (is_null($enrolmentCheckYearGroup)) {
+                                    $enrolmentCheckYearGroup=getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2);
+                                    $enrolmentCheckRollGroup=$rowReenrol['gibbonRollGroupIDNext'];
+                                }
+                                $column = $row->addColumn();
+                                    $column->addSelect($count."-reenrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($enrolmentCheckYearGroup);
+                                $column = $row->addColumn();
+                                        $column->addSelect($count."-reenrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($enrolmentCheckRollGroup);
+                        }
+                        $form->addHiddenValue("reenrol-count", $count);
                     }
                 }
 
-				//SET FINAL YEAR STUDENTS TO LEFT
-				echo '<h4>';
-                echo __($guid, 'Set Final Year Students To Left');
-                echo '</h4>';
+                //SET FINAL YEAR USERS TO LEFT
+                $form->addRow()->addHeading(__('Set Final Year Students To Left'));
+                $form->addRow()->addContent(__('This step finds students in the last year of school and sets their status.'));
 
                 try {
                     $dataFinal = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $lastYearGroup);
@@ -611,72 +446,34 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $resultFinal = $connection2->prepare($sqlFinal);
                     $resultFinal->execute($dataFinal);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $form->addRow()->addAlert($e->getMessage(), 'error');
                 }
-
                 if ($resultFinal->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
-                    echo '</div>';
+                    $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __($guid, 'Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Primary Role');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Current Status');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'New Status');
-                    echo '</th>';
-                    echo '</tr>';
+                    $row = $form->addRow();
+                        $row->addColumn()->addContent('<b>'.__('Name').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Current Status').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('New Status').'</b>');
 
                     $count = 0;
-                    $rowNum = 'odd';
                     while ($rowFinal = $resultFinal->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
-
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo "<input type='hidden' name='$count-final-gibbonPersonID' value='".$rowFinal['gibbonPersonID']."'>";
-                        echo formatName('', $rowFinal['preferredName'], $rowFinal['surname'], 'Student', true);
-                        echo '</td>';
-                        echo '<td>';
-                        echo __($guid, $rowFinal['name']);
-                        echo '</td>';
-                        echo '<td>';
-                        echo 'Full';
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<select name='$count-final-status' id='$count-final-status' style='float: left; width:110px'>";
-                        echo "<option value='Full'>".__($guid, 'Full').'</option>';
-                        echo "<option selected value='Left'>".__($guid, 'Left').'</option>';
-                        echo '</select>';
-                        echo '</td>';
-                        echo '</tr>';
+                        $count++;
+                        $form->addHiddenValue($count."-final-gibbonPersonID", $rowFinal['gibbonPersonID']);
+                        $row = $form->addRow();
+                            $row->addColumn()->addContent(formatName('', $rowFinal['preferredName'], $rowFinal['surname'], 'Student', true));
+                            $row->addColumn()->addContent(__($rowFinal['name']));
+                            $row->addColumn()->addContent(__('Expected'));
+                            $column = $row->addColumn();
+                                $column->addSelect($count."-final-status")->fromArray($statuses)->isRequired()->setClass('shortWidth floatNone')->selected('Left');
                     }
-                    echo '</table>';
-
-                    echo "<input type='hidden' name='final-count' value='$count'>";
+                    $form->addHiddenValue("final-count", $count);
                 }
 
-				//REGISTER NEW STAFF
-				echo '<h4>';
-                echo __($guid, 'Register New Staff');
-                echo '</h4>';
-                echo '<p>';
-                echo __($guid, 'Any staff who are not registered will have their status set to "Left".');
-                echo '</p>';
+                //REGISTER NEW STAFF
+                $form->addRow()->addHeading(__('Register New Staff'));
+                $form->addRow()->addContent(__('Any staff who are not registered will have their status set to "Left".'));
 
                 try {
                     $dataRegister = array();
@@ -684,83 +481,41 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $resultRegister = $connection2->prepare($sqlRegister);
                     $resultRegister->execute($dataRegister);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $form->addRow()->addAlert($e->getMessage(), 'error');
                 }
-
-                if ($resultRegister->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
-                    echo '</div>';
+                if ($resultEnrol->rowCount() < 1) {
+                    $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __($guid, 'Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Primary Role');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Register');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Type');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Job Title');
-                    echo '</th>';
-                    echo '</tr>';
+                    $row = $form->addRow();
+                        $row->addColumn()->addContent('<b>'.__('Name').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Register').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Type').'</b>');
+                        $row->addColumn()->addContent('<b>'.__('Job Title').'</b>');
 
                     $count = 0;
-                    $rowNum = 'odd';
                     while ($rowRegister = $resultRegister->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
-
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo "<input type='hidden' name='$count-register-gibbonPersonID' value='".$rowRegister['gibbonPersonID']."'>";
-                        echo formatName('', $rowRegister['preferredName'], $rowRegister['surname'], 'Student', true);
-                        echo '</td>';
-                        echo '<td>';
-                        echo __($guid, $rowRegister['name']);
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<input checked type='checkbox' name='$count-register-enrol' value='Y'>";
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<select name='$count-register-type' id='$count-register-type' style='float: left; width:110px'>";
-                        echo "<option value='Teaching'>".__($guid, 'Teaching').'</option>';
-                        echo "<option value='Support'>".__($guid, 'Support').'</option>';
-                        echo '</select>';
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<input name='$count-register-jobTitle' id='$count-register-jobTitle' maxlength=100 value='' type='text' style='float: left; width:110px'>";
-                        echo '</td>';
-                        echo '</tr>';
+                        $count++;
+                        $form->addHiddenValue($count."-register-gibbonPersonID", $rowRegister['gibbonPersonID']);
+                        $row = $form->addRow();
+                            $row->addColumn()->addContent(formatName('', $rowRegister['preferredName'], $rowRegister['surname'], 'Student', true));
+                            $row->addColumn()->addContent(__($rowRegister['name']));
+                            $column = $row->addColumn();
+                                $column->addCheckbox($count."-register-enrol")->setValue('Y')->checked('Y');
+                            $column = $row->addColumn();
+                                $column->addSelect($count."-register-type")->fromArray(array('Teaching' => __('Teaching'), 'Support' => __('Support')))->isRequired()->setClass('shortWidth floatNone');
+                            $column = $row->addColumn();
+                                $column->addtextField($count."-register-jobTitle")->setClass('shortWidth floatNone')->maxLength(100);
                     }
-                    echo '</table>';
-
-                    echo "<input type='hidden' name='register-count' value='$count'>";
+                    $form->addHiddenValue("register-count", $count);
                 }
 
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo '<tr>';
-                echo '<td>';
-                echo "<span style='font-size: 90%'><i>* ".__($guid, 'denotes a required field').'</span>';
-                echo '</td>';
-                echo "<td class='right'>";
-                echo "<input type='hidden' name='nextYear' value='$nextYear'>";
-                echo "<input type='submit' value='Proceed'>";
-                echo '</td>';
-                echo '</tr>';
-                echo '</table>';
-                echo '</form>';
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit('Proceed');
+
+                echo $form->getOutput();
             }
         }
     } elseif ($step == 3) {
@@ -800,8 +555,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     echo '</h4>';
 
                     $name = $_POST['nextname'];
-                    $status = $_POST['next-status'];
-                    $sequenceNumber = $_POST['next-sequenceNumber'];
+                    $status = $_POST['nextstatus'];
+                    $sequenceNumber = $_POST['nextsequenceNumber'];
                     $firstDay = dateConvert($guid, $_POST['nextfirstDay']);
                     $lastDay = dateConvert($guid, $_POST['nextlastDay']);
 

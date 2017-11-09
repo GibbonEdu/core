@@ -1410,7 +1410,7 @@ input[name*="phone"] ~ .LV_invalid {
 }
 
 .floatNone {
-	float:none;
+	float:none!important;
 }
 
 .max-upload {
