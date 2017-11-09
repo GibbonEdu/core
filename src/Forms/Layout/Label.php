@@ -90,7 +90,13 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getDescription()
     {
-        return $this->description;
+        $output = '';
+
+        $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
+        $output .= $this->description;
+        $output .= (!empty($this->appended))? ' '.$this->appended : '';
+
+        return $output;
     }
 
     /**
@@ -170,11 +176,7 @@ class Label extends Element implements RowDependancyInterface
 
         if (!empty($this->description)) {
             $output .= '<span class="emphasis small">';
-
-            $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
-            $output .= $this->description;
-            $output .= (!empty($this->appended))? ' '.$this->appended : '';
-
+            $output .= $this->getDescription();
             $output .= '</span><br/>';
         }
 

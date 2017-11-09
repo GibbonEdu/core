@@ -66,8 +66,7 @@ class Date extends TextField
         global $guid;
 
         if ($label = $this->getLabel()) {
-            $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
-            if (stristr($label->getDescription(), $dateFormat) === false) {
+            if (stristr($label->getDescription(), 'Format') === false) {
                 return __('Format').': '.$_SESSION[$guid]['i18n']['dateFormat'];
             }
         }
