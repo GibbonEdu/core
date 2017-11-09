@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->isRequired();
 
-            $yearGroups = getNonTTYearGroups($connection2, $gibbonSchoolYearID);
+            $yearGroups = getNonTTYearGroups($connection2, $_GET['gibbonSchoolYearID'], $gibbonTTID);
             $row = $form->addRow();
                 $row->addLabel('active', __('Year Groups'))->description(__('Groups not in an active TT this year.'));
                 if ($yearGroups == '') {

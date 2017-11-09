@@ -84,41 +84,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                     returnProcess($guid, $_GET['return'], null, null);
                 }
 
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_exception_addProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID"; ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Participants') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-							</td>
-							<td class="right">
-								<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
-									<?php
-                                    try {
-                                        $dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND NOT gibbonPerson.status='Left' ORDER BY surname, preferredName";
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-									while ($rowSelect = $resultSelect->fetch()) {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_exception_addProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID");
 
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('gibbonTTID', $gibbonTTID);
+                $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+                $participants = array();
+                try {
+                    $dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname
+                        FROM gibbonPerson
+                            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                            LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonTTDayRowClassException.gibbonTTDayRowClassID=".$gibbonTTDayRowClassID.")
+                        WHERE gibbonCourseClassID=:gibbonCourseClassID
+                            AND NOT role='Student - Left'
+                            AND NOT role='Teacher - Left'
+                            AND NOT gibbonPerson.status='Left'
+                            AND gibbonTTDayRowClassExceptionID IS NULL
+                        ORDER BY surname, preferredName";
+                    $resultSelect = $connection2->prepare($sqlSelect);
+                    $resultSelect->execute($dataSelect);
+                } catch (PDOException $e) { echo $e->getMessage();}
+                while ($rowSelect = $resultSelect->fetch()) {
+                    $participants[$rowSelect['gibbonPersonID']] = formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
+                }
+
+                $row = $form->addRow();
+                    $row->addLabel('Members', __('Participants'));
+                    if (count($participants) > 0 ) {
+                        $row->addSelect('Members')->fromArray($participants)->selectMultiple()->isRequired();
+                    }
+                    else {
+                        $row->addSelect('Members')->selectMultiple()->isRequired();
+                    }
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                echo $form->getOutput();
             }
         }
     }
