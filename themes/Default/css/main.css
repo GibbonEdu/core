@@ -1435,3 +1435,8 @@ input[name*="phone"] ~ .LV_invalid {
 	border-top: 1px dashed #c00;
 	border-bottom: 1px dashed #c00;
 }
+
+tr.head td {
+	font-weight: bold;
+	font-size: 110%;
+}

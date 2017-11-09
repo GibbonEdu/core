@@ -209,16 +209,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
                 $row = $form->addRow()->addClass('head break');
-                    $row->addContent('<b>'.__('Adults').'</b>');
+                    $row->addContent(__('Adults'));
                     foreach ($children as $child) {
-                        $row->addContent('<b>'.formatName('', $child['preferredName'], $child['surname'], 'Student').'</b>');
+                        $row->addContent(formatName('', $child['preferredName'], $child['surname'], 'Student'));
                     }
 
                 $count = 0;
                 foreach ($adults as $adult) {
                     ++$count;
                     $row = $form->addRow();
-                        $row->addContent('<b>'.formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</b>');
+                        $row->addContent(formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent'));
                         foreach ($children as $child) {
                             $form->addHiddenValue('gibbonPersonID1[]', $adult['gibbonPersonID']);
                             $form->addHiddenValue('gibbonPersonID2[]', $child['gibbonPersonID']);
