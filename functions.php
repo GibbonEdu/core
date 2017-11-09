@@ -4395,6 +4395,26 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
     return $output;
 }
 
+//Take a roll group, and return the next one, or false if none
+function getNextRollGroupID($gibbonRollGroupID, $connection2)
+{
+    $output = false;
+    try {
+        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+        $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) { }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        if (!is_null($row['gibbonRollGroupIDNext'])) {
+            $output = $row['gibbonRollGroupIDNext'];
+        }
+    }
+
+    return $output;
+}
+
 //Return the last school year in the school, or false if none
 function getLastYearGroupID($connection2)
 {
