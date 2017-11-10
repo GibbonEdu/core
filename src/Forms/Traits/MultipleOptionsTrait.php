@@ -61,7 +61,7 @@ trait MultipleOptionsTrait
      */
     public function fromArray($values)
     {
-        if (empty($values) || !is_array($values)) {
+        if (!is_array($values)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($values)));
         }
 
