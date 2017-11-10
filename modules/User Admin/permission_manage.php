@@ -38,9 +38,42 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
+    echo '<h2>';
+    echo __($guid, 'Filter');
+    echo '</h2>';
+
+    $gibbonModuleID = isset($_GET['gibbonModuleID'])? $_GET['gibbonModuleID'] : '';
+    $gibbonRoleID = isset($_GET['gibbonRoleID'])? $_GET['gibbonRoleID'] : '';
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/permission_manage.php');
+
+    $sql = "SELECT gibbonModuleID as value, name FROM gibbonModule WHERE active='Y' ORDER BY name";
+    $row = $form->addRow();
+        $row->addLabel('gibbonModuleID', __('Module'));
+        $row->addSelect('gibbonModuleID')->fromQuery($pdo, $sql)->selected($gibbonModuleID)->placeholder();
+
+    $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY type, nameShort";
+    $row = $form->addRow();
+        $row->addLabel('gibbonRoleID', __('Role'));
+        $row->addSelect('gibbonRoleID')->fromQuery($pdo, $sql)->selected($gibbonRoleID)->placeholder();
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput();
+
     try {
-        $dataModules = array();
-        $sqlModules = "SELECT * FROM gibbonModule WHERE active='Y' ORDER BY name";
+        if (!empty($gibbonModuleID)) {
+            $dataModules = array('gibbonModuleID' => $gibbonModuleID);
+            $sqlModules = "SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID AND active='Y'";
+        } else {
+            $dataModules = array();
+            $sqlModules = "SELECT * FROM gibbonModule WHERE active='Y' ORDER BY name";
+        }
+        
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {
@@ -48,8 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     }
 
     try {
-        $dataRoles = array();
-        $sqlRoles = 'SELECT gibbonRoleID, nameShort, category, name FROM gibbonRole ORDER BY type, nameShort';
+        if (!empty($gibbonRoleID)) {
+            $dataRoles = array('gibbonRoleID' => $gibbonRoleID);
+            $sqlRoles = 'SELECT gibbonRoleID, nameShort, category, name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+        } else {
+            $dataRoles = array();
+            $sqlRoles = 'SELECT gibbonRoleID, nameShort, category, name FROM gibbonRole ORDER BY type, nameShort';
+        }
         $resultRoles = $connection2->prepare($sqlRoles);
         $resultRoles->execute($dataRoles);
     } catch (PDOException $e) {
@@ -77,6 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/permission_manageProcess.php');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
+        $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
         
         // To render the form as multiple tables
         $form->getRenderer()->setWrapper('form', 'div');
@@ -136,6 +176,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                 }
             }
         }
+
+        $form->addHiddenValue('totalCount', $totalCount);
 
         $max_input_vars = ini_get('max_input_vars');
         $total_vars = $totalCount + 10;

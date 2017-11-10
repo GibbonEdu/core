@@ -34,9 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     exit;
 } else {
     $permissions = isset($_POST['permission'])? $_POST['permission'] : array();
+    $totalCount = isset($_POST['totalCount'])? $_POST['totalCount'] : array();
     $maxInputVars = ini_get('max_input_vars');
 
-    if (empty($permissions)) {
+    if (empty($totalCount)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -45,9 +46,33 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         header("Location: {$URL}");
         exit;
     } else {
+        $gibbonModuleID = isset($_POST['gibbonModuleID'])? $_POST['gibbonModuleID'] : '';
+        $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '';
+
+        $data = array();
+
+        if (empty($gibbonModuleID) && empty($gibbonRoleID)) {
+            $sql = "TRUNCATE TABLE gibbonPermission";
+        } else {
+            $where = array();
+
+            if (!empty($gibbonModuleID)) {
+                $data['gibbonModuleID'] = $gibbonModuleID;
+                $where[] = "gibbonAction.gibbonModuleID=:gibbonModuleID";
+            }
+
+            if (!empty($gibbonRoleID)) {
+                $data['gibbonRoleID'] = $gibbonRoleID;
+                $where[] = "gibbonPermission.gibbonRoleID=:gibbonRoleID";
+            }
+
+            $sql = "DELETE gibbonPermission 
+                    FROM gibbonPermission 
+                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+                    WHERE ".implode(' AND ', $where);
+        }
+
         try {
-            $data = array();
-            $sql = 'TRUNCATE TABLE gibbonPermission';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
