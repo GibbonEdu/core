@@ -20,13 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
+$gibbonModuleID = isset($_POST['gibbonModuleID'])? $_POST['gibbonModuleID'] : '';
+$gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '';
 
-@session_start();
-
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php&gibbonModuleID='.$gibbonModuleID.'&gibbonRoleID='.$gibbonRoleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
     $URL .= '&return=error0';
@@ -46,9 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         header("Location: {$URL}");
         exit;
     } else {
-        $gibbonModuleID = isset($_POST['gibbonModuleID'])? $_POST['gibbonModuleID'] : '';
-        $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '';
-
         $data = array();
 
         if (empty($gibbonModuleID) && empty($gibbonRoleID)) {
