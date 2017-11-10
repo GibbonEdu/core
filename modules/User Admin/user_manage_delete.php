@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
                 $column->addContent(__('Are you sure you want to delete this record?'))->wrap('<strong>','</strong>');
                 $column->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))->wrap('<span style="color: #cc0000"><i>', '</i></span>');
 
-            $form->addRow()->addSubmit();
+            $form->addRow()->addSubmit(__('Yes'));
 
             echo $form->getOutput();
         }
