@@ -235,7 +235,7 @@ class FormFactory implements FormFactoryInterface
             'Miss' => __('Miss'),
             'Mr.'  => __('Mr.'),
             'Mrs.' => __('Mrs.'),
-            'Dr.'  => __('Dr.'),
+            'Dr.'  => __('Dr.')
         ))->placeholder();
     }
 
@@ -245,7 +245,7 @@ class FormFactory implements FormFactoryInterface
             'F'           => __('Female'),
             'M'           => __('Male'),
             'Other'       => __('Other'),
-            'Unspecified' => __('Unspecified'),
+            'Unspecified' => __('Unspecified')
         ))->placeholder();
     }
 
@@ -263,7 +263,7 @@ class FormFactory implements FormFactoryInterface
             'Aunt'            => __('Aunt'),
             'Uncle'           => __('Uncle'),
             'Nanny/Helper'    => __('Nanny/Helper'),
-            'Other'           => __('Other'),
+            'Other'           => __('Other')
         ))->placeholder();
     }
 
@@ -276,7 +276,7 @@ class FormFactory implements FormFactoryInterface
             'Friend'         => __('Friend'),
             'Other Relation' => __('Other Relation'),
             'Doctor'         => __('Doctor'),
-            'Other'          => __('Other'),
+            'Other'          => __('Other')
         ))->placeholder();
     }
 
@@ -287,7 +287,20 @@ class FormFactory implements FormFactoryInterface
             'Separated'         => __('Separated'),
             'Divorced'      => __('Divorced'),
             'De Facto'         => __('De Facto'),
-            'Other'          => __('Other'),
+            'Other'          => __('Other')
+        ))->placeholder();
+    }
+    public function createSelectBloodType($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'O+' => 'O+',
+            'A+' => 'A+',
+            'B+' => 'B+',
+            'AB+' => 'AB+',
+            'O-' => 'O-',
+            'A-' => 'A-',
+            'B-' => 'B-',
+            'AB-' => 'AB-'
         ))->placeholder();
     }
 
@@ -345,7 +358,7 @@ class FormFactory implements FormFactoryInterface
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
-                'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'VND ₫‎' => 'Vietnamese Dong (₫‎)'
             ),
         );
 

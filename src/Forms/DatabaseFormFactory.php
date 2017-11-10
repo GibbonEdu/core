@@ -328,7 +328,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSequenceNumber($name, $tableName, $sequenceNumber = '', $columnName = null)
     {
         $columnName = empty($columnName)? $name : $columnName;
-        
+
         $data = array('sequenceNumber' => $sequenceNumber);
         $sql = "SELECT GROUP_CONCAT(DISTINCT `{$columnName}` SEPARATOR '\',\'') FROM `{$tableName}` WHERE (`{$columnName}` IS NOT NULL AND `{$columnName}` <> :sequenceNumber) ORDER BY `{$columnName}`";
         $results = $this->pdo->executeQuery($data, $sql);
@@ -381,6 +381,14 @@ class DatabaseFormFactory extends FormFactory
         $districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
 
         return $this->createTextField($name)->maxLength(30)->autocomplete($districts);
+    }
+
+    public function createSelectAlert($name)
+    {
+        $sql = 'SELECT gibbonAlertLevelID AS value, name FROM gibbonAlertLevel ORDER BY sequenceNumber';
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     protected function getCachedQuery($name)
