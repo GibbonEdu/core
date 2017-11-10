@@ -1957,7 +1957,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $and2 = '';
                                 $dataList = array();
                                 $dataEntry = array();
-                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : null;
+                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : '*';
                                 if ($filter == '') {
                                     $filter = $_SESSION[$guid]['gibbonSchoolYearID'];
                                 }
@@ -1966,13 +1966,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     $and .= ' AND gibbonSchoolYearID=:filter';
                                 }
 
-                                $filter2 = isset($_REQUEST['filter2'])? $_REQUEST['filter2'] : null;
-                                if ($filter2 != '') {
+                                $filter2 = isset($_REQUEST['filter2'])? $_REQUEST['filter2'] : '*';
+                                if ($filter2 != '*') {
                                     $dataList['filter2'] = $filter2;
                                     $and .= ' AND gibbonDepartmentID=:filter2';
                                 }
 
-                                $filter3 = isset($_REQUEST['filter3'])? $_REQUEST['filter3'] : null;
+                                $filter3 = isset($_REQUEST['filter3'])? $_REQUEST['filter3'] : '';
                                 if ($filter3 != '') {
                                     $dataEntry['filter3'] = $filter3;
                                     $and2 .= ' AND type=:filter3';
@@ -1981,6 +1981,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '<p>';
                                 echo __($guid, 'This page displays academic results for a student throughout their school career. Only subjects with published results are shown.');
                                 echo '</p>';
+
+                                // For the clear filters link...
+                                $_GET['q'] .= "&gibbonPersonID=$gibbonPersonID&allStudents=$allStudents&search=$search&subpage=Markbook";
 
                                 $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
                                 $form->setClass('noIntBorder fullWidth');
@@ -2018,11 +2021,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->placeholder();
                                 }
 
-                                $showHideLink = "<input checked type='checkbox' name='details' class='details' value='Yes' />";
+                                $showHideLink = "  &nbsp; <input checked type='checkbox' name='details' class='details' value='Yes' />";
                                 $showHideLink .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show/Hide Details').'</span> &nbsp;';
                                 
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addSubmit(__('Go'))->prepend($showHideLink);
+                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'))->prepend($showHideLink);
                                 
                                 echo $form->getOutput();
                                 ?>
