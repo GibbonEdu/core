@@ -1443,3 +1443,8 @@ tr.head td {
 .right {
 	text-align: right!important;
 }
+
+/* Hide breadcrumbs in fullscreen */
+#TB_window .trail {
+	display: none;
+}
