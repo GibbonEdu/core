@@ -364,4 +364,10 @@ class FormFactory implements FormFactoryInterface
 
         return $this->createSelect($name)->fromArray($currencies)->placeholder();
     }
+
+    public function createCurrency($name)
+    {
+        return $this->createNumber($name)
+            ->decimalPlaces(2);
+    }
 }
