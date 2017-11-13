@@ -36,7 +36,7 @@ $I->loginAsAdmin();
 $I->amOnModulePage('Data Updater', 'data_family_manage.php');
 $I->seeBreadcrumb('Family Data Updates');
 
-$I->click('Edit');
+$I->click('', 'a[title="Edit"]');
 
 $I->see('234', 'td');
 $I->see('234 Ficticious Ave.', 'td');
