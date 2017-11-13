@@ -1444,7 +1444,19 @@ tr.head td {
 	text-align: right!important;
 }
 
+.textCenter {
+	text-align: center !important;
+}
+
 /* Hide breadcrumbs in fullscreen */
 #TB_window .trail {
 	display: none;
 }
+
+.ttDates {
+	height: 80px;
+	width: 8%;
+	vertical-align: top;
+	font-size: 10px;
+}
+
