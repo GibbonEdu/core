@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     } else {
         try {
             $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
-            $sql = 'SELECT gibbonFamilyUpdate.gibbonFamilyID, gibbonFamily.name AS name, gibbonFamily.nameAddress AS nameAddress, gibbonFamily.homeAddress AS homeAddress, gibbonFamily.homeAddressDistrict AS homeAddressDistrict, gibbonFamily.homeAddressCountry AS homeAddressCountry, gibbonFamily.languageHomePrimary AS languageHomePrimary, gibbonFamily.languageHomeSecondary AS languageHomeSecondary, gibbonFamilyUpdate.nameAddress AS newnameAddress, gibbonFamilyUpdate.homeAddress AS newhomeAddress, gibbonFamilyUpdate.homeAddressDistrict AS newhomeAddressDistrict, gibbonFamilyUpdate.homeAddressCountry AS newhomeAddressCountry, gibbonFamilyUpdate.languageHomePrimary AS newlanguageHomePrimary, gibbonFamilyUpdate.languageHomeSecondary AS newlanguageHomeSecondary FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
+            $sql = 'SELECT gibbonFamily.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -56,169 +58,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         } else {
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
-            }
+			}
+			
+			$data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
+			$sql = 'SELECT gibbonFamilyUpdate.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
+			$newResult = $pdo->executeQuery($data, $sql);
 
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_family_manage_editProcess.php?gibbonFamilyUpdateID=$gibbonFamilyUpdateID" ?>">
-				<?php
-				echo "<table cellspacing='0' style='width: 100%'>";
-				echo "<tr class='head'>";
-				echo '<th>';
-				echo __($guid, 'Field');
-				echo '</th>';
-				echo '<th>';
-				echo __($guid, 'Current Value');
-				echo '</th>';
-				echo '<th>';
-				echo __($guid, 'New Value');
-				echo '</th>';
-				echo '<th>';
-				echo __($guid, 'Accept');
-				echo '</th>';
-				echo '</tr>';
+			$oldValues = $result->fetch(); 
+			$newValues = $newResult->fetch();
 
-				$rowNum = 'even';
+			$compare = array(
+				'nameAddress'           => __('Address Name'),
+				'homeAddress'           => __('Home Address'),
+				'homeAddressDistrict'   => __('Home Address (District)'),
+				'homeAddressCountry'    => __('Home Address (Country)'),
+				'languageHomePrimary'   => __('Home Language - Primary'),
+				'languageHomeSecondary' => __('Home Language - Secondary'),
+			);
 
-				//COLOR ROW BY STATUS!
-				echo "<tr class='odd'>";
-				echo '<td>';
-				echo __($guid, 'Address Name');
-				echo '</td>';
-				echo '<td>';
-				echo $row['nameAddress'];
-				echo '</td>';
-				echo '<td>';
-				$style = '';
-				if ($row['nameAddress'] != $row['newnameAddress']) {
-					$style = "style='color: #ff0000'";
-				}
-				echo "<span $style>";
-				echo $row['newnameAddress'];
-				echo '</td>';
-				echo '<td>';
-				if ($row['nameAddress'] != $row['newnameAddress']) {
-					echo "<input checked type='checkbox' name='newnameAddressOn'><input name='newnameAddress' type='hidden' value='".htmlprep($row['newnameAddress'])."'>";
-				}
-				echo '</td>';
-				echo '</tr>';
-				echo "<tr class='even'>";
-				echo '<td>';
-				echo __($guid, 'Home Address');
-				echo '</td>';
-				echo '<td>';
-				echo $row['homeAddress'];
-				echo '</td>';
-				echo '<td>';
-				$style = '';
-				if ($row['homeAddress'] != $row['newhomeAddress']) {
-					$style = "style='color: #ff0000'";
-				}
-				echo "<span $style>";
-				echo $row['newhomeAddress'];
-				echo '</td>';
-				echo '<td>';
-				if ($row['homeAddress'] != $row['newhomeAddress']) {
-					echo "<input checked type='checkbox' name='newhomeAddressOn'><input name='newhomeAddress' type='hidden' value='".htmlprep($row['newhomeAddress'])."'>";
-				}
-				echo '</td>';
-				echo '</tr>';
-				echo "<tr class='odd'>";
-				echo '<td>';
-				echo __($guid, 'Home Address (District)');
-				echo '</td>';
-				echo '<td>';
-				echo $row['homeAddressDistrict'];
-				echo '</td>';
-				echo '<td>';
-				$style = '';
-				if ($row['homeAddressDistrict'] != $row['newhomeAddressDistrict']) {
-					$style = "style='color: #ff0000'";
-				}
-				echo "<span $style>";
-				echo $row['newhomeAddressDistrict'];
-				echo '</td>';
-				echo '<td>';
-				if ($row['homeAddressDistrict'] != $row['newhomeAddressDistrict']) {
-					echo "<input checked type='checkbox' name='newhomeAddressDistrictOn'><input name='newhomeAddressDistrict' type='hidden' value='".htmlprep($row['newhomeAddressDistrict'])."'>";
-				}
-				echo '</td>';
-				echo '</tr>';
-				echo "<tr class='even'>";
-				echo '<td>';
-				echo __($guid, 'Home Address (Country)');
-				echo '</td>';
-				echo '<td>';
-				echo $row['homeAddressCountry'];
-				echo '</td>';
-				echo '<td>';
-				$style = '';
-				if ($row['homeAddressCountry'] != $row['newhomeAddressCountry']) {
-					$style = "style='color: #ff0000'";
-				}
-				echo "<span $style>";
-				echo $row['newhomeAddressCountry'];
-				echo '</td>';
-				echo '<td>';
-				if ($row['homeAddressCountry'] != $row['newhomeAddressCountry']) {
-					echo "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='".htmlprep($row['newhomeAddressCountry'])."'>";
-				}
-				echo '</td>';
-				echo '</tr>';
-				echo '<tr>';
-				echo '<td>';
-				echo __($guid, 'Home Language - Primary');
-				echo '</td>';
-				echo '<td>';
-				echo $row['languageHomePrimary'];
-				echo '</td>';
-				echo '<td>';
-				$style = '';
-				if ($row['languageHomePrimary'] != $row['newlanguageHomePrimary']) {
-					$style = "style='color: #ff0000'";
-				}
-				echo "<span $style>";
-				echo $row['newlanguageHomePrimary'];
-				echo '</td>';
-				echo '<td>';
-				if ($row['languageHomePrimary'] != $row['newlanguageHomePrimary']) {
-					echo "<input checked type='checkbox' name='newlanguageHomePrimaryOn'><input name='newlanguageHomePrimary' type='hidden' value='".htmlprep($row['newlanguageHomePrimary'])."'>";
-				}
-				echo '</td>';
-				echo '</tr>';
-				echo '<tr>';
-				echo '<td>';
-				echo __($guid, 'Home Language - Secondary');
-				echo '</td>';
-				echo '<td>';
-				echo $row['languageHomeSecondary'];
-				echo '</td>';
-				echo '<td>';
-				$style = '';
-				if ($row['languageHomeSecondary'] != $row['newlanguageHomeSecondary']) {
-					$style = "style='color: #ff0000'";
-				}
-				echo "<span $style>";
-				echo $row['newlanguageHomeSecondary'];
-				echo '</td>';
-				echo '<td>';
-				if ($row['languageHomeSecondary'] != $row['newlanguageHomeSecondary']) {
-					echo "<input checked type='checkbox' name='newlanguageHomeSecondaryOn'><input name='newlanguageHomeSecondary' type='hidden' value='".htmlprep($row['newlanguageHomeSecondary'])."'>";
-				}
-				echo '</td>';
-				echo '</tr>';
-				echo '<tr>';
-				echo "<td class='right' colspan=4>";
-				echo "<input name='gibbonFamilyID' type='hidden' value='".$row['gibbonFamilyID']."'>";
-				echo "<input name='address' type='hidden' value='".$_GET['q']."'>";
-				echo "<input type='submit' value='Submit'>";
-				echo '</td>';
-				echo '</tr>';
-				echo '</table>'; ?>
-			</form>
-			<?php
+			$form = Form::create('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_editProcess.php?gibbonFamilyUpdateID='.$gibbonFamilyUpdateID);
+			
+			$form->setClass('fullWidth colorOddEven');
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('gibbonFamilyID', $oldValues['gibbonFamilyID']);
 
+			$row = $form->addRow()->setClass('head heading');
+				$row->addContent(__('Field'));
+				$row->addContent(__('Current Value'));
+				$row->addContent(__('New Value'));
+				$row->addContent(__('Accept'));
+
+			foreach ($compare as $fieldName => $label) {
+				$isMatching = ($oldValues[$fieldName] != $newValues[$fieldName]);
+
+				$row = $form->addRow();
+					$row->addLabel('new'.$fieldName.'On', $label);
+					$row->addContent($oldValues[$fieldName]);
+					$row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
+				
+				if ($isMatching) {
+					$row->addCheckbox('new'.$fieldName.'On')->checked(true)->addClass('textCenter');
+					$form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
+				} else {
+					$row->addContent();
+				}
+			}
+			
+			$row = $form->addRow();
+				$row->addSubmit();
+
+			echo $form->getOutput();
+
+			$row = $oldValues;
         }
     }
 }
-?>

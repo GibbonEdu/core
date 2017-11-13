@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
             echo '</td>';
             echo '<td>';
             if ($row['status'] == 'Pending') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_edit.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_edit.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."' title='".__($guid, 'Edit')."'><img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_delete.php&gibbonFamilyUpdateID='.$row['gibbonFamilyUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
             echo '</td>';
