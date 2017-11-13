@@ -518,6 +518,9 @@ table th {
 	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
 	text-align: left;
 }
+table .heading td:not(:first-child) {
+	border-left: 0px;
+}
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:3px;
 	-webkit-border-top-left-radius:3px;
@@ -1433,6 +1436,10 @@ input[name*="phone"] ~ .LV_invalid {
 .matchHighlight > td {
 	border-top: 1px dashed #c00;
 	border-bottom: 1px dashed #c00;
+}
+
+.matchHighlightText {
+	color: #e00;
 }
 
 tr.head td {
