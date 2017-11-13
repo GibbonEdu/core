@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -69,73 +72,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
         $gibbonPersonID = null;
         if (isset($_GET['gibbonPersonID'])) {
             $gibbonPersonID = $_GET['gibbonPersonID'];
-        }
-        ?>
+		}
+		
+		$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
 
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'Person') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="gibbonPersonID">
-							<?php
-                            if ($highestAction == 'Update Medical Data_any') {
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelect = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-                                        echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-                                    } else {
-                                        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-                                    }
-                                }
-                            } else {
-                                try {
-                                    $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                    $sqlSelect = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    try {
-                                        $dataSelect2 = array('gibbonFamilyID' => $rowSelect['gibbonFamilyID']);
-                                        $sqlSelect2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
-                                        $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                        $resultSelect2->execute($dataSelect2);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowSelect2 = $resultSelect2->fetch()) {
-                                        if ($gibbonPersonID == $rowSelect2['gibbonPersonID']) {
-                                            echo "<option selected value='".$rowSelect2['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect2['preferredName']), htmlPrep($rowSelect2['surname']), 'Student', true).'</option>';
-                                        } else {
-                                            echo "<option value='".$rowSelect2['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect2['preferredName']), htmlPrep($rowSelect2['surname']), 'Student', true).'</option>';
-                                        }
-                                    }
-                                }
-                            }
-        					?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_medical.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+		$form = Form::create('selectFamily', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+		$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_medical.php');
+			
+		if ($highestAction == 'Update Medical Data_any') {
+			$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sql = "SELECT gibbonPerson.gibbonPersonID, username, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName";
+		} else {
+			$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID
+					FROM gibbonFamilyAdult 
+					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+					LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+					LEFT JOIN gibbonPerson AS child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
+					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
+					AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full'
+					ORDER BY gibbonFamily.name, child.surname, child.preferredName";
+		}
+
+		$result = $pdo->executeQuery($data, $sql);
+		$resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
+		$people = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
+			$value = $person['gibbonPersonID'];
+			$carry[$value] = formatName('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
+			if ($highestAction == 'Update Medical Data_any') {
+				$carry[$value] .= ' ('.$person['username'].')';
+			}
+			return $carry;
+		}, array());
+
+		$row = $form->addRow();
+			$row->addLabel('gibbonPersonID', __('Person'));
+			$row->addSelect('gibbonPersonID')
+                ->fromArray($people)
+                ->isRequired()
+                ->selected($gibbonPersonID)
+				->placeholder();
+		
+		$row = $form->addRow();
+            $row->addSubmit();
+        
+		echo $form->getOutput();
+	
 
         if ($gibbonPersonID != '') {
             echo '<h2>';
@@ -234,75 +216,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     }
 
                     if ($proceed == true) {
-                        $rowForm = $resultForm->fetch();
-                        ?>
-						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medicalProcess.php?gibbonPersonID='.$gibbonPersonID ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>
-								<tr>
-									<td style='width: 275px'>
-										<b><?php echo __($guid, 'Blood Type') ?></b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<select class="standardWidth" name="bloodType">
-											<option <?php if ($rowForm['bloodType'] == '') { echo 'selected '; } ?>value=""></option>
-											<option <?php if ($rowForm['bloodType'] == 'O+') { echo 'selected '; } ?>value="O+">O+</option>
-											<option <?php if ($rowForm['bloodType'] == 'A+') { echo 'selected '; } ?>value="A+">A+</option>
-											<option <?php if ($rowForm['bloodType'] == 'B+') { echo 'selected '; } ?>value="B+">B+</option>
-											<option <?php if ($rowForm['bloodType'] == 'AB+') { echo 'selected '; } ?>value="AB+">AB+</option>
-											<option <?php if ($rowForm['bloodType'] == 'O-') { echo 'selected '; } ?>value="O-">O-</option>
-											<option <?php if ($rowForm['bloodType'] == 'A-') { echo 'selected '; } ?>value="A-">A-</option>
-											<option <?php if ($rowForm['bloodType'] == 'B-') { echo 'selected '; } ?>value="B-">B-</option>
-											<option <?php if ($rowForm['bloodType'] == 'AB-') { echo 'selected '; } ?>value="AB-">AB-</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Long-Term Medication?') ?></b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<select class="standardWidth" name="longTermMedication">
-											<option <?php if ($rowForm['longTermMedication'] == '') { echo 'selected '; } ?>value=""></option>
-											<option <?php if ($rowForm['longTermMedication'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-											<option <?php if ($rowForm['longTermMedication'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Medication Details') ?></b><br/>
-									</td>
-									<td class="right">
-										<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rowForms=8 class="standardWidth"><?php echo $rowForm['longTermMedicationDetails'] ?></textarea>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<select class="standardWidth" name="tetanusWithin10Years">
-											<option <?php if ($rowForm['tetanusWithin10Years'] == '') { echo 'selected '; } ?>value=""></option>
-											<option <?php if ($rowForm['tetanusWithin10Years'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-											<option <?php if ($rowForm['tetanusWithin10Years'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-										</select>
-									</td>
-								</tr>
+						$values = $resultForm->fetch();
+                    
+						$form = Form::create('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medicalProcess.php?gibbonPersonID='.$gibbonPersonID);
+						$form->setFactory(DatabaseFormFactory::create($pdo));
 
-								<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<?php echo htmlPrep($rowForm['gibbonPersonMedicalID']) ?>" type="hidden">
+						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+						$form->addHiddenValue('gibbonPersonMedicalID', $values['gibbonPersonMedicalID']);
+						$form->addHiddenValue('existing', isset($values['gibbonPersonMedicalUpdateID'])? $values['gibbonPersonMedicalUpdateID'] : 'N');
 
-								<?php
-                                $count = 0;
-                        if ($rowForm['gibbonPersonMedicalID'] != '' or $existing == true) {
+						$row = $form->addRow();
+							$row->addLabel('bloodType', __('Blood Type'));
+							$row->addSelectBloodType('bloodType')->placeholder();
+
+						$row = $form->addRow();
+							$row->addLabel('longTermMedication', __('Long-Term Medication?'));
+							$row->addYesNo('longTermMedication')->placeholder();
+
+						$form->toggleVisibilityByClass('longTermMedicationDetails')->onSelect('longTermMedication')->when('Y');
+
+						$row = $form->addRow()->addClass('longTermMedicationDetails');
+							$row->addLabel('longTermMedicationDetails', __('Medication Details'));
+							$row->addTextArea('longTermMedicationDetails')->setRows(5);
+
+						$row = $form->addRow();
+							$row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
+							$row->addYesNo('tetanusWithin10Years')->placeholder();
+
+						// EXISTING CONDITIONS
+						$count = 0;
+						if ($values['gibbonPersonMedicalID'] != '' or $existing == true) {
                             try {
                                 if ($existing == true) {
-                                    $dataCond = array('gibbonPersonMedicalUpdateID' => $rowForm['gibbonPersonMedicalUpdateID']);
+                                    $dataCond = array('gibbonPersonMedicalUpdateID' => $values['gibbonPersonMedicalUpdateID']);
                                     $sqlCond = 'SELECT * FROM gibbonPersonMedicalConditionUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID ORDER BY name';
                                 } else {
-                                    $dataCond = array('gibbonPersonMedicalID' => $rowForm['gibbonPersonMedicalID']);
+                                    $dataCond = array('gibbonPersonMedicalID' => $values['gibbonPersonMedicalID']);
                                     $sqlCond = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
                                 }
                                 $resultCond = $connection2->prepare($sqlCond);
@@ -312,343 +261,110 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                             }
 
                             while ($rowCond = $resultCond->fetch()) {
-                                ?>
-								<tr class='break'>
-									<td colspan=2>
-										<h3><?php echo __($guid, 'Medical Condition') ?> <?php echo $count + 1 ?></h3>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
-									</td>
-									<td class="right">
-										<select class="standardWidth" name="name<?php echo $count ?>" id="name<?php echo $count ?>">
-											<?php
-											try {
-												$dataSelect = array();
-												$sqlSelect = 'SELECT * FROM gibbonMedicalCondition ORDER BY name';
-												$resultSelect = $connection2->prepare($sqlSelect);
-												$resultSelect->execute($dataSelect);
-											} catch (PDOException $e) {
-											}
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-											while ($rowSelect = $resultSelect->fetch()) {
-												if ($rowCond['name'] == $rowSelect['name']) {
-													echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-												} else {
-													echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-												}
-											}
-											?>
-												</select>
-												<script type="text/javascript">
-													var name<?php echo $count ?>=new LiveValidation('name<?php echo $count ?>');
-													name<?php echo $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Risk') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<select name="gibbonAlertLevelID<?php echo $count ?>" id="gibbonAlertLevelID<?php echo $count ?>" class="standardWidth">
-													<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>
-													<?php
-                                                    try {
-                                                        $dataSelect = array();
-                                                        $sqlSelect = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
-                                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                                        $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
+								$form->addHiddenValue('gibbonPersonMedicalConditionID'.$count, $rowCond['gibbonPersonMedicalConditionID']);
+								$form->addHiddenValue('gibbonPersonMedicalConditionUpdateID'.$count, $existing ? $rowCond['gibbonPersonMedicalConditionUpdateID'] : 0);
 
-													while ($rowSelect = $resultSelect->fetch()) {
-														$selected = '';
-														if ($rowCond['gibbonAlertLevelID'] == $rowSelect['gibbonAlertLevelID']) {
-															$selected = 'selected';
-														}
-														echo "<option $selected value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
-													}
-													?>
-												</select>
-												<script type="text/javascript">
-													var gibbonAlertLevelID<?php echo $count ?>=new LiveValidation('gibbonAlertLevelID<?php echo $count ?>');
-													gibbonAlertLevelID<?php echo $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Triggers') ?></b><br/>
-											</td>
-											<td class="right">
-												<input name="triggers<?php echo $count ?>" id="triggers<?php echo $count ?>" maxlength=255 value="<?php echo htmlPrep($rowCond['triggers']) ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Reaction') ?></b><br/>
-											</td>
-											<td class="right">
-												<input name="reaction<?php echo $count ?>" id="reaction<?php echo $count ?>" maxlength=255 value="<?php echo htmlPrep($rowCond['reaction']) ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Response') ?></b><br/>
-											</td>
-											<td class="right">
-												<input name="response<?php echo $count ?>" id="response<?php echo $count ?>" maxlength=255 value="<?php echo htmlPrep($rowCond['response']) ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Medication') ?></b><br/>
-											</td>
-											<td class="right">
-												<input name="medication<?php echo $count ?>" id="medication<?php echo $count ?>" maxlength=255 value="<?php echo htmlPrep($rowCond['medication']) ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Last Episode Date') ?></b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-											</td>
-											<td class="right">
-												<input name="lastEpisode<?php echo $count ?>" id="lastEpisode<?php echo $count ?>" maxlength=10 value="<?php echo dateConvertBack($guid, $rowCond['lastEpisode']) ?>" type="text" class="standardWidth">
-												<script type="text/javascript">
-													var lastEpisode<?php echo $count ?>=new LiveValidation('lastEpisode<?php echo $count ?>');
-													lastEpisode<?php echo $count ?>.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-														echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-													} else {
-														echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-													}
-																					?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-														echo 'dd/mm/yyyy';
-													} else {
-														echo $_SESSION[$guid]['i18n']['dateFormat'];
-													}
-                               					?>." } );
-												</script>
-												 <script type="text/javascript">
-													$(function() {
-														$( "#lastEpisode<?php echo $count ?>" ).datepicker();
-													});
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Last Episode Treatment') ?></b><br/>
-											</td>
-											<td class="right">
-												<input name="lastEpisodeTreatment<?php echo $count ?>" id="lastEpisodeTreatment<?php echo $count ?>" maxlength=255 value="<?php echo htmlPrep($rowCond['lastEpisodeTreatment']) ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Comment') ?></b><br/>
-											</td>
-											<td class="right">
-												<textarea name="comment<?php echo $count ?>" id="comment<?php echo $count ?>" rows=8 class="standardWidth"><?php echo $rowCond['comment'] ?></textarea>
-											</td>
-										</tr>
-										<input name="gibbonPersonMedicalConditionID<?php echo $count ?>" id="gibbonPersonMedicalConditionID<?php echo $count ?>" value="<?php echo htmlPrep($rowCond['gibbonPersonMedicalConditionID']) ?>" type="hidden">
-										<input name="gibbonPersonMedicalConditionUpdateID<?php echo $count ?>" id="gibbonPersonMedicalConditionUpdateID<?php echo $count ?>" value="<?php echo htmlPrep($rowCond['gibbonPersonMedicalConditionUpdateID']) ?>" type="hidden">
-										<?php
-                                        ++$count;
-										}
+								$form->addRow()->addHeading(__('Medical Condition').' '.($count+1) );
 
-										echo "<input name='count' id='count' value='$count' type='hidden'>";
-									}
-									?>
-								<tr class='break'>
-									<td colspan=2>
-										<h3><?php echo __($guid, 'Add Medical Condition') ?></h3>
-									</td>
-								</tr>
-								<tr>
-									<td class='right' colspan=2>
-										<script type="text/javascript">
-											/* Advanced Options Control */
-											$(document).ready(function(){
-                                                namex.disable();
-                                                gibbonAlertLevelIDx.disable();
-                                                $("#addCondition").click(function(){
-													if ($('input[name=addCondition]:checked').val()=="Yes" ) {
-														$(".addConditionRow").slideDown("fast", $(".addConditionRow").css("display","table-row"));
-														namex.enable();
-														gibbonAlertLevelIDx.enable();
-													}
-													else {
-														$(".addConditionRow").slideUp("fast");
-														namex.disable();
-														gibbonAlertLevelIDx.disable();
-													}
-												 });
-											});
-										</script>
-										<span style='font-weight: bold; font-style: italic'><?php echo __($guid, 'Check the box to add a new medical condition') ?> <input id='addCondition' name='addCondition' type='checkbox' value='Yes'/></span>
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
-									</td>
-									<td class="right">
-										<select class="standardWidth" name="name" id="namex">
-											<?php
-                                            try {
-                                                $dataSelect = array();
-                                                $sqlSelect = 'SELECT * FROM gibbonMedicalCondition ORDER BY name';
-                                                $resultSelect = $connection2->prepare($sqlSelect);
-                                                $resultSelect->execute($dataSelect);
-                                            } catch (PDOException $e) {
-                                            }
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-											while ($rowSelect = $resultSelect->fetch()) {
-												if ($rowCond['name'] == $rowSelect['name']) {
-													echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-												} else {
-													echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-												}
-											}
-											?>
-										</select>
-										<script type="text/javascript">
-											var namex=new LiveValidation('namex');
-											namex.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Risk') ?> *</b><br/>
-									</td>
-									<td class="right">
-										<select name="gibbonAlertLevelID" id="gibbonAlertLevelIDx" class="standardWidth">
-											<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>
-											<?php
-                                            try {
-                                                $dataSelect = array();
-                                                $sqlSelect = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
-                                                $resultSelect = $connection2->prepare($sqlSelect);
-                                                $resultSelect->execute($dataSelect);
-                                            } catch (PDOException $e) {
-                                            }
+								$sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+								$row = $form->addRow();
+									$row->addLabel('name'.$count, __('Condition Name'));
+									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($rowCond['name']);
 
-											while ($rowSelect = $resultSelect->fetch()) {
-												echo "<option value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
-											}
-											?>
-										</select>
-										<script type="text/javascript">
-											var gibbonAlertLevelIDx=new LiveValidation('gibbonAlertLevelIDx');
-											gibbonAlertLevelIDx.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Triggers') ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="triggers" id="triggers" maxlength=255 value="" type="text" class="standardWidth">
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Reaction') ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="reaction" id="reaction" maxlength=255 value="" type="text" class="standardWidth">
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Response') ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="response" id="response" maxlength=255 value="" type="text" class="standardWidth">
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Medication') ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="medication" id="medication" maxlength=255 value="" type="text" class="standardWidth">
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Last Episode Date') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-									</td>
-									<td class="right">
-										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="" type="text" class="standardWidth">
-										<script type="text/javascript">
-											var lastEpisode=new LiveValidation('lastEpisode');
-											lastEpisode.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-												echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-											} else {
-												echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-											}
-																	?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-												echo 'dd/mm/yyyy';
-											} else {
-												echo $_SESSION[$guid]['i18n']['dateFormat'];
-											}
-                        					?>." } );
-										</script>
-										 <script type="text/javascript">
-											$(function() {
-												$( "#lastEpisode" ).datepicker();
-											});
-										</script>
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Last Episode Treatment') ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="" type="text" class="standardWidth">
-									</td>
-								</tr>
-								<tr style='display: none' class='addConditionRow'>
-									<td>
-										<b><?php echo __($guid, 'Comment') ?></b><br/>
-									</td>
-									<td class="right">
-										<textarea name="comment" id="comment" rows=8 class="standardWidth"></textarea>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-									</td>
-									<td class="right">
-										<?php
-                                        if ($existing) {
-                                            echo "<input type='hidden' name='existing' value='".$rowForm['gibbonPersonMedicalUpdateID']."'>";
-                                        } else {
-                                            echo "<input type='hidden' name='existing' value='N'>";
-                                        }
-                        			?>										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-									</td>
-								</tr>
-							</table>
-						</form>
-						<?php
+								$row = $form->addRow();
+									$row->addLabel('gibbonAlertLevelID'.$count, __('Risk'));
+									$row->addSelectAlert('gibbonAlertLevelID'.$count)->isRequired()->selected($rowCond['gibbonAlertLevelID']);
 
+								$row = $form->addRow();
+									$row->addLabel('triggers'.$count, __('Triggers'));
+									$row->addTextField('triggers'.$count)->maxLength(255)->setValue($rowCond['triggers']);
+
+								$row = $form->addRow();
+									$row->addLabel('reaction'.$count, __('Reaction'));
+									$row->addTextField('reaction'.$count)->maxLength(255)->setValue($rowCond['reaction']);
+
+								$row = $form->addRow();
+									$row->addLabel('response'.$count, __('Response'));
+									$row->addTextField('response'.$count)->maxLength(255)->setValue($rowCond['response']);
+
+								$row = $form->addRow();
+									$row->addLabel('medication'.$count, __('Medication'));
+									$row->addTextField('medication'.$count)->maxLength(255)->setValue($rowCond['medication']);
+
+								$row = $form->addRow();
+									$row->addLabel('lastEpisode'.$count, __('Last Episode Date'));
+									$row->addDate('lastEpisode'.$count)->setValue(dateConvertBack($guid, $rowCond['lastEpisode']) );
+
+								$row = $form->addRow();
+									$row->addLabel('lastEpisodeTreatment'.$count, __('Last Episode Treatment'));
+									$row->addTextField('lastEpisodeTreatment'.$count)->maxLength(255)->setValue($rowCond['lastEpisodeTreatment']);
+
+								$row = $form->addRow();
+									$row->addLabel('comment'.$count, __('Comment'));
+									$row->addTextArea('comment'.$count)->setValue($rowCond['comment']);
+								
+								$count++;
+							}
+
+							$form->addHiddenValue('count', $count);
+						}
+
+						// ADD NEW CONDITION
+						$form->addRow()->addHeading(__('Add Medical Condition'));
+
+						$form->toggleVisibilityByClass('addConditionRow')->onCheckbox('addCondition')->when('Yes');
+
+						$row = $form->addRow();
+							$row->addCheckbox('addCondition')->setValue('Yes')->description(__('Check the box to add a new medical condition'));
+
+						$sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('name', __('Condition Name'));
+							$row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('gibbonAlertLevelID', __('Risk'));
+							$row->addSelectAlert('gibbonAlertLevelID')->isRequired();
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('triggers', __('Triggers'));
+							$row->addTextField('triggers')->maxLength(255);
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('reaction', __('Reaction'));
+							$row->addTextField('reaction')->maxLength(255);
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('response', __('Response'));
+							$row->addTextField('response')->maxLength(255);
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('medication', __('Medication'));
+							$row->addTextField('medication')->maxLength(255);
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('lastEpisode', __('Last Episode Date'));
+							$row->addDate('lastEpisode');
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('lastEpisodeTreatment', __('Last Episode Treatment'));
+							$row->addTextField('lastEpisodeTreatment')->maxLength(255);
+
+						$row = $form->addRow()->addClass('addConditionRow');
+							$row->addLabel('comment', __('Comment'));
+							$row->addTextArea('comment');
+				
+						$row = $form->addRow();
+							$row->addFooter();
+							$row->addSubmit();
+
+						$form->loadAllValuesFrom($values);
+
+						echo $form->getOutput();
                     }
                 }
             }
         }
     }
 }
-?>
+
