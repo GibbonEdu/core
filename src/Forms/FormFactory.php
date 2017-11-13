@@ -124,6 +124,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Number($name);
     }
 
+    public function createCurrency($name)
+    {
+        return new Input\Currency($name);
+    }
+
     public function createPassword($name)
     {
         return new Input\Password($name);
@@ -363,11 +368,5 @@ class FormFactory implements FormFactoryInterface
         );
 
         return $this->createSelect($name)->fromArray($currencies)->placeholder();
-    }
-
-    public function createCurrency($name)
-    {
-        return $this->createNumber($name)
-            ->decimalPlaces(2);
     }
 }
