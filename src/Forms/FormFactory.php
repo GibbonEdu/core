@@ -208,10 +208,13 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->setClass('right');
     }
 
-    public function createSearchSubmit($session, $clearLabel = 'Clear Form')
+    public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())
     {
+        $passParams[] = 'q';
+        $parameters = array_intersect_key($_GET, array_flip($passParams));
         $content = sprintf('<input type="submit" value="%s">', __('Go'));
-        $clearURL = $session->get('absoluteURL').'/index.php?q='.$_GET['q'];
+
+        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createContent($content)->prepend($clearLink)->setClass('right');
