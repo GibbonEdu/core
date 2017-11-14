@@ -143,13 +143,13 @@ if (!isset($_SESSION[$guid]["username"])) {
     </script>
     <?php
     if ($forceReset != 'Y') {
-      $staff = false;
-      foreach ($_SESSION[$guid]['gibbonRoleIDAll'] as $role) {
-        $roleCategory = getRoleCategory($role[0], $connection2);
-        $staff = $staff || ($roleCategory == 'Staff');
-      }
-    
-      $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
+        $staff = false;
+        foreach ($_SESSION[$guid]['gibbonRoleIDAll'] as $role) {
+            $roleCategory = getRoleCategory($role[0], $connection2);
+            $staff = $staff || ($roleCategory == 'Staff');
+        }
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
 
         $form->addRow()->addHeading(__('Settings'));
 
@@ -177,23 +177,23 @@ if (!isset($_SESSION[$guid]["username"])) {
             $row->addLabel('gibboni18nIDPersonal', __('Personal Language'))->description(__('Override the system default language.'));
             $row->addSelect('gibboni18nIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
 
-    $row = $form->addRow();
-        $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
-        $row->addYesNo('receiveNotificationEmails');
-        
-    if ($staff) {
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sql = "SELECT smartWorkflowHelp FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID";
-        $result = $pdo->executeQuery($data, $sql);
+        $row = $form->addRow();
+            $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
+            $row->addYesNo('receiveNotificationEmails');
 
-        if ($result && $result->rowCount() > 0) {
-            $smartWorkflowHelp = $result->fetchColumn(0);
+        if ($staff) {
+            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT smartWorkflowHelp FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID";
+            $result = $pdo->executeQuery($data, $sql);
 
-            $row = $form->addRow();
-                $row->addLabel('smartWorkflowHelp', __('Enable Smart Workflow Help?'));
-                $row->addYesNo('smartWorkflowHelp')->selected($smartWorkflowHelp);
+            if ($result && $result->rowCount() > 0) {
+                $smartWorkflowHelp = $result->fetchColumn(0);
+
+                $row = $form->addRow();
+                    $row->addLabel('smartWorkflowHelp', __('Enable Smart Workflow Help?'));
+                    $row->addYesNo('smartWorkflowHelp')->selected($smartWorkflowHelp);
+            }
         }
-    }
 
         $row = $form->addRow();
             $row->addFooter();
