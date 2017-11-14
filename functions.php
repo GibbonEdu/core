@@ -1363,7 +1363,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             } else {
                 $gradesOutput .= '<td>';
                 if ($rowEntry['comment'] != '') {
-                    if (strlen($rowEntry['comment']) > 50) {
+                    if (mb_strlen($rowEntry['comment']) > 50) {
                         $gradesOutput .= "<script type='text/javascript'>";
                         $gradesOutput .= '$(document).ready(function(){';
                         $gradesOutput .= "\$(\".comment-$entryCount-$gibbonPersonID\").hide();";
@@ -1373,7 +1373,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $gradesOutput .= '});';
                         $gradesOutput .= '});';
                         $gradesOutput .= '</script>';
-                        $gradesOutput .= '<span>'.substr($rowEntry['comment'], 0, 50).'...<br/>';
+                        $gradesOutput .= '<span>'.mb_substr($rowEntry['comment'], 0, 50).'...<br/>';
                         $gradesOutput .= "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount-$gibbonPersonID' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
                     } else {
                         $gradesOutput .= nl2br($rowEntry['comment']);

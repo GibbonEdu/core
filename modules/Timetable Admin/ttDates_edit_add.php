@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
@@ -52,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 echo __($guid, 'The specified record does not exist.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $values = $result->fetch();
 
                 //Proceed!
                 echo "<div class='trail'>";
@@ -61,99 +63,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
-                }
+				}
+				
+				$form = Form::create('addTTDate', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_addProcess.php');
+				
+				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+				$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+				$form->addHiddenValue('dateStamp', $dateStamp);
+				
+				$row = $form->addRow();
+					$row->addLabel('schoolYearName', __('School Year'));
+					$row->addTextField('schoolYearName')->readonly()->setValue($values['name']);
 
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_addProcess.php' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
-						<tr>
-							<td style='width: 275px'> 
-								<b><?php echo __($guid, 'Year') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var courseName=new LiveValidation('courseName');
-									coursename2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<?php echo $dateStamp ?>" type="text" class="standardWidth">
-								<input readonly name="date" id="date" maxlength=20 value="<?php echo date('d/m/Y l', $dateStamp) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var courseName=new LiveValidation('courseName');
-									coursename2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Day') ?></b><br/>
-							</td>
-							<td class="right">
-								<select class="standardWidth" name="gibbonTTDayID">
-									<?php
-                                    //Check which timetables are not already linked to this date
-                                    try {
-                                        $dataCheck = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                                        $sqlCheck = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                                        $resultCheck = $connection2->prepare($sqlCheck);
-                                        $resultCheck->execute($dataCheck);
-                                    } catch (PDOException $e) {
-                                    }
+				$row = $form->addRow();
+                    $row->addLabel('dateName', __('Date'));
+					$row->addTextField('dateName')->readonly()->setValue(date('d/m/Y l', $dateStamp));
+					
+				$data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d', $dateStamp));
+				$sql = "SELECT gibbonTTDay.gibbonTTDayID as value, CONCAT(gibbonTT.name, ': ', gibbonTTDay.nameShort) as name
+						FROM gibbonTT 
+						JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)
+						LEFT JOIN (SELECT gibbonTTDay.gibbonTTID, gibbonTTDayDate.date
+                        	FROM gibbonTTDay
+                        	JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
+                        ) AS dateCheck ON (dateCheck.gibbonTTID=gibbonTT.gibbonTTID AND dateCheck.date=:date)
+						WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID 
+						AND dateCheck.gibbonTTID IS NULL
+						ORDER BY name";
 
-									$tt = array();
-									$count = 0;
-									while ($rowCheck = $resultCheck->fetch()) {
-										try {
-											$dataCheckInner = array('gibbonTTID' => $rowCheck['gibbonTTID'], 'date' => date('Y-m-d', $dateStamp));
-											$sqlCheckInner = 'SELECT * FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND date=:date';
-											$resultCheckInner = $connection2->prepare($sqlCheckInner);
-											$resultCheckInner->execute($dataCheckInner);
-										} catch (PDOException $e) {
-										}
-										if ($resultCheckInner->fetch() == 0) {
-											$tt[$count] = $rowCheck['gibbonTTID'];
-											++$count;
-										}
-									}
-									for ($i = 0; $i < count($tt); ++$i) {
-										try {
-											$dataSelect = array('gibbonTTID' => $tt[$i]);
-											$sqlSelect = 'SELECT gibbonTTDay.*, gibbonTT.name AS ttName FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE gibbonTT.gibbonTTID=:gibbonTTID ORDER BY gibbonTTDay.name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											echo "<option value='".$rowSelect['gibbonTTDayID']."'>".$rowSelect['ttName'].': '.$rowSelect['nameShort'].'</option>';
-										}
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-							</td>
-							<td class="right">
-								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-
+				$row = $form->addRow();
+                    $row->addLabel('gibbonTTDayID', __('Day'));
+                    $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->isRequired();
+				
+				$row = $form->addRow();
+					$row->addFooter();
+					$row->addSubmit();
+				
+				echo $form->getOutput();
             }
         }
     }

@@ -1789,18 +1789,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
                                     $form->setClass('noIntBorder fullWidth');
-                                
+
                                     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
                                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                     $form->addHiddenValue('allStudents', $allStudents);
                                     $form->addHiddenValue('search', $search);
                                     $form->addHiddenValue('subpage', 'Notes');
-                                
+
                                     $sql = "SELECT gibbonStudentNoteCategoryID as value, name FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
                                     $rowFilter = $form->addRow();
                                         $rowFilter->addLabel('category', __('Category'));
                                         $rowFilter->addSelect('category')->fromQuery($pdo, $sql)->selected($category)->placeholder();
-                                    
+
                                     $rowFilter = $form->addRow();
                                         $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
                                     
@@ -1981,13 +1981,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
                                 $form->setClass('noIntBorder fullWidth');
-                            
+
                                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
                                 $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                 $form->addHiddenValue('allStudents', $allStudents);
                                 $form->addHiddenValue('search', $search);
                                 $form->addHiddenValue('subpage', 'Markbook');
-                            
+
                                 $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
                                 $rowFilter = $form->addRow();
                                     $rowFilter->addLabel('filter2', __('Learning Areas'));
@@ -2017,7 +2017,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $showHideLink = "  &nbsp; <input checked type='checkbox' name='details' class='details' value='Yes' />";
                                 $showHideLink .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show/Hide Details').'</span> &nbsp;';
-                                
+
                                 $rowFilter = $form->addRow();
                                     $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHideLink);
                                 
@@ -2266,7 +2266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 } else {
                                                     echo '<td>';
                                                     if ($rowEntry['comment'] != '') {
-                                                        if (strlen($rowEntry['comment']) > 50) {
+                                                        if (mb_strlen($rowEntry['comment']) > 200) {
                                                             echo "<script type='text/javascript'>";
                                                             echo '$(document).ready(function(){';
                                                             echo "\$(\".comment-$entryCount\").hide();";
@@ -2276,7 +2276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                             echo '});';
                                                             echo '});';
                                                             echo '</script>';
-                                                            echo '<span>'.substr($rowEntry['comment'], 0, 50).'...<br/>';
+                                                            echo '<span>'.mb_substr($rowEntry['comment'], 0, 200).'...<br/>';
                                                             echo "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
                                                         } else {
                                                             echo nl2br($rowEntry['comment']);
@@ -2747,13 +2747,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo "<div class='linkTop'>";
                                 $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
                                 $form->setClass('blank fullWidth');
-                            
+
                                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
                                 $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                 $form->addHiddenValue('allStudents', $allStudents);
                                 $form->addHiddenValue('search', $search);
                                 $form->addHiddenValue('subpage', 'Homework');
-                            
+
                                 $dataSelect = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
                                 $sqlSelect = "SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND date<=:date ORDER BY name";
 
@@ -2765,7 +2765,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->setClass('mediumWidth')
                                         ->placeholder();
                                     $column->addSubmit(__('Go'));
-                                
+
                                 echo $form->getOutput();
                                 echo '</div>';
 

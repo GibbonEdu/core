@@ -107,8 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 
             $row = $form->addRow();
                 $row->addLabel('fee', __('Fee'))
-                    ->description(__('Numeric value of the fee.'))
-                    ->append(sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']));
+                    ->description(__('Numeric value of the fee.'));
                 $row->addCurrency('fee')->isRequired();
 
             $row = $form->addRow();

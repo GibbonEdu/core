@@ -113,7 +113,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $output .= '<th>';
+                $output .= '<th class="'.$element->getClass().'">';
                     $output .= $element->getOutput();
                 $output .= '</th>';
             }
