@@ -63,6 +63,7 @@ v15.0.00
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
 		Messenger: fixed multibyte substring issue in homepage widget
+		Messenger: added username to Individual select, to distinguish people with the same name
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Roll Groups: fixed bug preventing alerts from showing
 		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
