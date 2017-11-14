@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                 $bloodType = $_POST['bloodType'];
                 $longTermMedication = $_POST['longTermMedication'];
-                $longTermMedicationDetails = $_POST['longTermMedicationDetails'];
+                $longTermMedicationDetails = isset($_POST['longTermMedicationDetails'])? $_POST['longTermMedicationDetails'] : '';
                 $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
 
                 //Update existing medical conditions
