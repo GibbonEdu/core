@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 $row->addContent(__('Accept'));
 
             // Create a reusable function for adding comparisons to the form
-            $comparisonFields = function ($form, $oldValues, $newValues, $fieldName, $label, $count = '') use ($conditions, $alerts) {
+            $comparisonFields = function ($form, $oldValues, $newValues, $fieldName, $label, $count = '') use ($guid, $conditions, $alerts) {
                 $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
                 $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
                 $isMatching = ($oldValue != $newValue);
@@ -126,6 +126,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 if ($fieldName == 'gibbonAlertLevelID') {
                     $oldValue = isset($alerts[$oldValue])? $alerts[$oldValue] : $oldValue;
                     $newValue = isset($alerts[$newValue])? $alerts[$newValue] : $newValue;
+                }
+
+                if ($fieldName == 'lastEpisode') {
+                    $oldValue = dateConvertBack($guid, $oldValue);
+                    $newValue = dateConvertBack($guid, $newValue);
                 }
 
                 $row = $form->addRow();
