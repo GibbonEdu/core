@@ -367,4 +367,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
         }
     }
 }
-
