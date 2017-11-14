@@ -45,6 +45,7 @@ v15.0.00
 		System: fixed text alginment in module menu
 		System: fixed long-string and large image issue causing content to bleed under sidebar
 		System: fixed bug causing two entries in a module menu to be highlighted as active in some cases
+		System: removed personal settings form from Preferences when force reset in effect
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
@@ -75,7 +76,7 @@ v15.0.00
 		Students: added ability to delete files and upload multiple files in Edit Application Form
 		Students: amended Academic alert to account only for data in the last 60 days
 		Students: when Timetable is disabled, View Student Details now displays list of classes in Overview
-		Students: adjusted Application Form acceptance emails to students and parents to come from admissions administrator, not system administrator 
+		Students: adjusted Application Form acceptance emails to students and parents to come from admissions administrator, not system administrator
 		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
         System Admin: updated version check to handle semantic version numbers
 		Timetable: added ability to set and display text and background colour for timetable day headers

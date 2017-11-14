@@ -117,7 +117,6 @@ if (!isset($_SESSION[$guid]["username"])) {
 			->maxLength(30)
 			->addValidation('Validate.Confirmation', "match: 'passwordNew'");
 
-
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
@@ -144,44 +143,47 @@ if (!isset($_SESSION[$guid]["username"])) {
     </script>
     <?php
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
+    if ($forceReset != 'Y') {
 
-    $form->addRow()->addHeading(__('Settings'));
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
 
-    $row = $form->addRow();
-        $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__($guid, 'Only enables timetable integration when logging in via Google.'));
-        $password = $row->addTextField('calendarFeedPersonal');
+        $form->addRow()->addHeading(__('Settings'));
 
-    $personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground');
-    if ($personalBackground == 'Y') {
         $row = $form->addRow();
-            $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.'));
-            $password = $row->addURL('personalBackground');
+            $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__($guid, 'Only enables timetable integration when logging in via Google.'));
+            $password = $row->addTextField('calendarFeedPersonal');
+
+        $personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground');
+        if ($personalBackground == 'Y') {
+            $row = $form->addRow();
+                $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.'));
+                $password = $row->addURL('personalBackground');
+        }
+
+        $data = array();
+        $sql = "SELECT gibbonThemeID as value, (CASE WHEN active='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibbonTheme ORDER BY name";
+        $row = $form->addRow();
+            $row->addLabel('gibbonThemeIDPersonal', __('Personal Theme'))->description(__('Override the system theme.'));
+            $row->addSelect('gibbonThemeIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
+
+
+        $data = array();
+        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE active='Y' ORDER BY name";
+        $row = $form->addRow();
+            $row->addLabel('gibboni18nIDPersonal', __('Personal Language'))->description(__('Override the system default language.'));
+            $row->addSelect('gibboni18nIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
+
+        $row = $form->addRow();
+            $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
+            $row->addYesNo('receiveNotificationEmails');
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        $form->loadAllValuesFrom($values);
+
+        echo $form->getOutput();
     }
-
-    $data = array();
-    $sql = "SELECT gibbonThemeID as value, (CASE WHEN active='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibbonTheme ORDER BY name";
-    $row = $form->addRow();
-        $row->addLabel('gibbonThemeIDPersonal', __('Personal Theme'))->description(__('Override the system theme.'));
-        $row->addSelect('gibbonThemeIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
-
-
-    $data = array();
-    $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE active='Y' ORDER BY name";
-    $row = $form->addRow();
-        $row->addLabel('gibboni18nIDPersonal', __('Personal Language'))->description(__('Override the system default language.'));
-        $row->addSelect('gibboni18nIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
-
-    $row = $form->addRow();
-        $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
-        $row->addYesNo('receiveNotificationEmails');
-
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
-
-    $form->loadAllValuesFrom($values);
-
-    echo $form->getOutput();
 }
 ?>
