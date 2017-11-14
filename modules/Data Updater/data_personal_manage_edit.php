@@ -124,16 +124,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 'nationalIDCardNumber'   => __('National ID Card Number'),
                 'residencyStatus'        => __('Residency/Visa Type'),
                 'visaExpiryDate'         => __('Visa Expiry Date'),
-                'emergency1Name'         => __('Emergency 1 Name'),
-                'emergency1Number1'      => __('Emergency 1 Number 1'),
-                'emergency1Number2'      => __('Emergency 1 Number 2'),
-                'emergency1Relationship' => __('Emergency 1 Relationship'),
-                'emergency2Name'         => __('Emergency 2 Name'),
-                'emergency2Number1'      => __('Emergency 2 Number 1'),
-                'emergency2Number2'      => __('Emergency 2 Number 2'),
-                'emergency2Relationship' => __('Emergency 2 Relationship'),
                 'vehicleRegistration'    => __('Vehicle Registration'),
             );
+
+            if ($student || $staff) {
+                $compare['emergency1Name']         = __('Emergency 1 Name');
+                $compare['emergency1Number1']      = __('Emergency 1 Number 1');
+                $compare['emergency1Number2']      = __('Emergency 1 Number 2');
+                $compare['emergency1Relationship'] = __('Emergency 1 Relationship');
+                $compare['emergency2Name']         = __('Emergency 2 Name');
+                $compare['emergency2Number1']      = __('Emergency 2 Number 1');
+                $compare['emergency2Number2']      = __('Emergency 2 Number 2');
+                $compare['emergency2Relationship'] = __('Emergency 2 Relationship');
+            }
 
             if ($student) {
                 $compare['privacy'] = __('Privacy');
@@ -158,12 +161,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $row->addContent(__('Accept'));
 
             foreach ($compare as $fieldName => $label) {
-                $isMatching = ($oldValues[$fieldName] != $newValues[$fieldName]);
+                $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
+                $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
+                $isMatching = ($oldValue != $newValue);
+
+                if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
+                    $oldValue = dateConvertBack($guid, $oldValue);
+                    $newValue = dateConvertBack($guid, $newValue);
+                }
 
                 $row = $form->addRow();
                 $row->addLabel('new'.$fieldName.'On', $label);
-                $row->addContent($oldValues[$fieldName]);
-                $row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
+                $row->addContent($oldValue);
+                $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
                 
                 if ($isMatching) {
                     $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');

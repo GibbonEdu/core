@@ -99,7 +99,7 @@ trait InputAttributesTrait
         $name = str_replace('[]', '', $this->getName());
 
         if (isset($data[$name])) {
-            $data[$name] = explode(',', $data[$name]);
+            $data[$name] = array_map(function($item) { return trim($item); }, explode(',', $data[$name]));
         }
 
         $this->loadFrom($data);
