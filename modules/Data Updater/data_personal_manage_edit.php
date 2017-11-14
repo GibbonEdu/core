@@ -158,12 +158,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $row->addContent(__('Accept'));
 
             foreach ($compare as $fieldName => $label) {
-                $isMatching = ($oldValues[$fieldName] != $newValues[$fieldName]);
+                $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
+                $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
+                $isMatching = ($oldValue != $newValue);
+
+                if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
+                    $oldValue = dateConvertBack($guid, $oldValue);
+                    $newValue = dateConvertBack($guid, $newValue);
+                }
 
                 $row = $form->addRow();
                 $row->addLabel('new'.$fieldName.'On', $label);
-                $row->addContent($oldValues[$fieldName]);
-                $row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
+                $row->addContent($oldValue);
+                $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
                 
                 if ($isMatching) {
                     $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
