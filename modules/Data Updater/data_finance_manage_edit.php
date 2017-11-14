@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     } else {
         try {
             $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
-            $sql = 'SELECT gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID, gibbonFinanceInvoicee.invoiceTo AS invoiceTo, gibbonFinanceInvoicee.companyName AS companyName, gibbonFinanceInvoicee.companyContact AS companyContact, gibbonFinanceInvoicee.companyAddress AS companyAddress, gibbonFinanceInvoicee.companyEmail AS companyEmail, gibbonFinanceInvoicee.companyCCFamily AS companyCCFamily, gibbonFinanceInvoicee.companyPhone AS companyPhone, gibbonFinanceInvoicee.companyAll AS companyAll, gibbonFinanceInvoicee.gibbonFinanceFeeCategoryIDList AS gibbonFinanceFeeCategoryIDList, gibbonFinanceInvoiceeUpdate.invoiceTo AS newinvoiceTo, gibbonFinanceInvoiceeUpdate.companyName AS newcompanyName, gibbonFinanceInvoiceeUpdate.companyContact AS newcompanyContact, gibbonFinanceInvoiceeUpdate.companyAddress AS newcompanyAddress, gibbonFinanceInvoiceeUpdate.companyEmail AS newcompanyEmail, gibbonFinanceInvoiceeUpdate.companyCCFamily AS newcompanyCCFamily, gibbonFinanceInvoiceeUpdate.companyPhone AS newcompanyPhone, gibbonFinanceInvoiceeUpdate.companyAll AS newcompanyAll, gibbonFinanceInvoiceeUpdate.gibbonFinanceFeeCategoryIDList AS newgibbonFinanceFeeCategoryIDList FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
+            $sql = "SELECT gibbonFinanceInvoicee.* FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -58,237 +60,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
+            $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
+            $sql = "SELECT gibbonFinanceInvoiceeUpdate.* FROM gibbonFinanceInvoiceeUpdate JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID";
+            $newResult = $pdo->executeQuery($data, $sql);
+            
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_finance_manage_editProcess.php?gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID" ?>">
-				<?php
-                echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Field');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Current Value');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'New Value');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Accept');
-            echo '</th>';
-            echo '</tr>';
+            $oldValues = $result->fetch();
+            $newValues = $newResult->fetch();
+            
+            // An array of common fields to compare in each data set, and the field label
+            $compare = array(
+                'invoiceTo'                      => __('Invoice To'),
+                'companyName'                    => __('Company Name'),
+                'companyContact'                 => __('Company Contact Person'),
+                'companyAddress'                 => __('Company Address'),
+                'companyEmail'                   => __('Company Email'),
+                'companyCCFamily'                => __('CC Family?'),
+                'companyPhone'                   => __('Company Phone'),
+                'companyAll'                     => __('Company All?'),
+                'gibbonFinanceFeeCategoryIDList' => __('Company Fee Categories'),
+            );
 
-            $rowNum = 'even';
+            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_finance_manage_editProcess.php?gibbonFinanceInvoiceeUpdateID='.$gibbonFinanceInvoiceeUpdateID);
+            
+            $form->setClass('fullWidth colorOddEven');
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonFinanceInvoiceeID', $oldValues['gibbonFinanceInvoiceeID']);
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Invoice To');
-            echo '</td>';
-            echo '<td>';
-            echo $row['invoiceTo'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['invoiceTo'] != $row['newinvoiceTo']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newinvoiceTo'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['invoiceTo'] != $row['newinvoiceTo']) {
-                echo "<input checked type='checkbox' name='newinvoiceToOn'><input name='newinvoiceTo' type='hidden' value='".htmlprep($row['newinvoiceTo'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='even'>";
-            echo '<td>';
-            echo __($guid, 'Company Name');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyName'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyName'] != $row['newcompanyName']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyName'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyName'] != $row['newcompanyName']) {
-                echo "<input checked type='checkbox' name='newcompanyNameOn'><input name='newcompanyName' type='hidden' value='".htmlprep($row['newcompanyName'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Company Contact Person');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyContact'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyContact'] != $row['newcompanyContact']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyContact'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyContact'] != $row['newcompanyContact']) {
-                echo "<input checked type='checkbox' name='newcompanyContactOn'><input name='newcompanyContact' type='hidden' value='".htmlprep($row['newcompanyContact'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='even'>";
-            echo '<td>';
-            echo __($guid, 'Company Address');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyAddress'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyAddress'] != $row['newcompanyAddress']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyAddress'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyAddress'] != $row['newcompanyAddress']) {
-                echo "<input checked type='checkbox' name='newcompanyAddressOn'><input name='newcompanyAddress' type='hidden' value='".htmlprep($row['newcompanyAddress'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Company Email');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyEmail'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyEmail'] != $row['newcompanyEmail']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyEmail'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyEmail'] != $row['newcompanyEmail']) {
-                echo "<input checked type='checkbox' name='newcompanyEmailOn'><input name='newcompanyEmail' type='hidden' value='".htmlprep($row['newcompanyEmail'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='even'>";
-            echo '<td>';
-            echo __($guid, 'CC Family?');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyCCFamily'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyCCFamily'] != $row['newcompanyCCFamily']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyCCFamily'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyCCFamily'] != $row['newcompanyCCFamily']) {
-                echo "<input checked type='checkbox' name='newcompanyCCFamilyOn'><input name='newcompanyCCFamily' type='hidden' value='".htmlprep($row['newcompanyCCFamily'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Company Phone');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyPhone'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyPhone'] != $row['newcompanyPhone']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyPhone'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyPhone'] != $row['newcompanyPhone']) {
-                echo "<input checked type='checkbox' name='newcompanyPhoneOn'><input name='newcompanyPhone' type='hidden' value='".htmlprep($row['newcompanyPhone'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='even'>";
-            echo '<td>';
-            echo __($guid, 'Company All?');
-            echo '</td>';
-            echo '<td>';
-            echo $row['companyAll'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['companyAll'] != $row['newcompanyAll']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newcompanyAll'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['companyAll'] != $row['newcompanyAll']) {
-                echo "<input checked type='checkbox' name='newcompanyAllOn'><input name='newcompanyAll' type='hidden' value='".htmlprep($row['newcompanyAll'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Company Fee Categories');
-            echo '</td>';
-            echo '<td>';
-            echo $row['gibbonFinanceFeeCategoryIDList'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['gibbonFinanceFeeCategoryIDList'] != $row['newgibbonFinanceFeeCategoryIDList']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newgibbonFinanceFeeCategoryIDList'];
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            if ($row['gibbonFinanceFeeCategoryIDList'] != $row['newgibbonFinanceFeeCategoryIDList']) {
-                echo "<input checked type='checkbox' name='newgibbonFinanceFeeCategoryIDListOn'><input name='newgibbonFinanceFeeCategoryIDList' type='hidden' value='".htmlprep($row['newgibbonFinanceFeeCategoryIDList'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
+            $row = $form->addRow()->setClass('head heading');
+                $row->addContent(__('Field'));
+                $row->addContent(__('Current Value'));
+                $row->addContent(__('New Value'));
+                $row->addContent(__('Accept'));
 
-            echo '<tr>';
-            echo "<td class='right' colspan=4>";
-            echo "<input name='gibbonFinanceInvoiceeID' type='hidden' value='".$row['gibbonFinanceInvoiceeID']."'>";
-            echo "<input name='address' type='hidden' value='".$_GET['q']."'>";
-            echo "<input type='submit' value='Submit'>";
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>'; ?>
-			</form>
-			<?php
+            foreach ($compare as $fieldName => $label) {
+                $isMatching = ($oldValues[$fieldName] != $newValues[$fieldName]);
 
+                $row = $form->addRow();
+                $row->addLabel('new'.$fieldName.'On', $label);
+                $row->addContent($oldValues[$fieldName]);
+                $row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
+                
+                if ($isMatching) {
+                    $row->addCheckbox('new'.$fieldName.'On')->checked(true)->addClass('textCenter');
+                    $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
+                } else {
+                    $row->addContent();
+                }
+            }
+            
+            $row = $form->addRow();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
