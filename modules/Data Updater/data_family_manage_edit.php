@@ -109,8 +109,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 				$row->addSubmit();
 
 			echo $form->getOutput();
-
-			$row = $oldValues;
         }
     }
 }

@@ -61,8 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
             echo '</div>';
         } else {
             //Let's go!
-
-            $row = $result->fetch(); 
+            
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_family_manage_deleteProcess.php?gibbonFamilyUpdateID=".$gibbonFamilyUpdateID);
             echo $form->getOutput();
         }

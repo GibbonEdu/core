@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = 'SELECT gibbonFamilyUpdateID, gibbonFamily.name, timestamp, gibbonPersonIDUpdater, gibbonFamilyUpdate.status FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyUpdate.gibbonFamilyID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
+        $sql = 'SELECT gibbonFamilyUpdateID, gibbonFamily.name, timestamp, gibbonPersonIDUpdater, gibbonFamilyUpdate.status FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyUpdate.gibbonFamilyID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp DESC';
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
