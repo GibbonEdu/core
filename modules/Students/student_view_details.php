@@ -1787,9 +1787,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo __($guid, 'Filter');
                                     echo '</h3>';
 
-                                    // For the clear filters link...
-                                    $_GET['q'] .= "&gibbonPersonID=$gibbonPersonID&allStudents=$allStudents&search=$search&subpage=Notes";
-
                                     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
                                     $form->setClass('noIntBorder fullWidth');
 
@@ -1805,8 +1802,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $rowFilter->addSelect('category')->fromQuery($pdo, $sql)->selected($category)->placeholder();
 
                                     $rowFilter = $form->addRow();
-                                        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'));
-
+                                        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
+                                    
                                     echo $form->getOutput();
                                 }
 
@@ -1982,9 +1979,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __($guid, 'This page displays academic results for a student throughout their school career. Only subjects with published results are shown.');
                                 echo '</p>';
 
-                                // For the clear filters link...
-                                $_GET['q'] .= "&gibbonPersonID=$gibbonPersonID&allStudents=$allStudents&search=$search&subpage=Markbook";
-
                                 $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
                                 $form->setClass('noIntBorder fullWidth');
 
@@ -2025,8 +2019,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $showHideLink .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show/Hide Details').'</span> &nbsp;';
 
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'))->prepend($showHideLink);
-
+                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHideLink);
+                                
                                 echo $form->getOutput();
                                 ?>
 

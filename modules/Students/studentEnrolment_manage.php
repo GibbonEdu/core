@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $row->addTextField('search')->setValue($search);
         
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+            $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
         
         echo $form->getOutput();
 
