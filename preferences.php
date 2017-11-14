@@ -187,11 +187,13 @@ if (!isset($_SESSION[$guid]["username"])) {
         $sql = "SELECT smartWorkflowHelp FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID";
         $result = $pdo->executeQuery($data, $sql);
 
-        $smartWorkflowHelp = ($result && $result->rowCount() > 0)? $result->fetchColumn(0) : 'Y';
+        if ($result && $result->rowCount() > 0) {
+            $smartWorkflowHelp = $result->fetchColumn(0);
 
-        $row = $form->addRow();
-            $row->addLabel('smartWorkflowHelp', __('Enable Smart Workflow Help?'));
-            $row->addYesNo('smartWorkflowHelp')->selected($smartWorkflowHelp);
+            $row = $form->addRow();
+                $row->addLabel('smartWorkflowHelp', __('Enable Smart Workflow Help?'));
+                $row->addYesNo('smartWorkflowHelp')->selected($smartWorkflowHelp);
+        }
     }
 
     $row = $form->addRow();
