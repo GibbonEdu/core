@@ -62,6 +62,7 @@ v15.0.00
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
+		Markbook: fixed multibyte character error in comment summary
 		Messenger: fixed multibyte substring issue in homepage widget
 		Messenger: added username to Individual select, to distinguish people with the same name
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
