@@ -31,7 +31,7 @@ $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 $I->amOnModulePage('Data Updater', 'data_medical_manage.php');
 $I->seeBreadcrumb('Medical Data Updates');
 
-$I->click('Edit');
+$I->click('', 'a[title="Edit"]');
 
 $I->see('AB+', 'td');
 $I->see('Y', 'td');
