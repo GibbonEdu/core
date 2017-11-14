@@ -1203,21 +1203,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '<h4>';
                         echo __($guid, 'Student Welcome Email');
                         echo '</h4>';
+                        $emailCount = 0 ;
                         $notificationStudentMessage = getSettingByScope($connection2, 'Application Form', 'notificationStudentMessage');
                         foreach ($informStudentArray as $informStudentEntry) {
                             if ($informStudentEntry['email'] != '' and $informStudentEntry['surname'] != '' and $informStudentEntry['preferredName'] != '' and $informStudentEntry['username'] != '' and $informStudentEntry['password']) {
                                 $to = $informStudentEntry['email'];
                                 $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationStudentMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdministratorName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Administrator';
+                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdmissionsName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Admissions Administrator';
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = getGibbonMailer($guid);
                                 $mail->IsSMTP();
-                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
                                 $mail->Encoding = 'base64';
@@ -1235,7 +1236,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo __($guid, 'A welcome email could not be sent to').' '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').'.';
                                     echo '</div>';
                                 }
+                                $emailCount++ ;
                             }
+                        }
+                        if ($emailCount == 0) {
+                            echo '<div class=\'warning\'>';
+                            echo __('There are no student email addresses to send to.');
+                            echo '</div>';
                         }
                     }
 
@@ -1244,21 +1251,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '<h4>';
                         echo 'Parent Welcome Email';
                         echo '</h4>';
+                        $emailCount = 0 ;
                         $notificationParentsMessage = getSettingByScope($connection2, 'Application Form', 'notificationParentsMessage');
                         foreach ($informParentsArray as $informParentsEntry) {
                             if ($informParentsEntry['email'] != '' and $informParentsEntry['surname'] != '' and $informParentsEntry['preferredName'] != '' and $informParentsEntry['username'] != '' and $informParentsEntry['password']) {
                                 $to = $informParentsEntry['email'];
                                 $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = getGibbonMailer($guid);
                                 $mail->IsSMTP();
-                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
                                 $mail->Encoding = 'base64';
@@ -1276,7 +1284,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo __($guid, 'A welcome email could not be sent to').' '.formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student').'.';
                                     echo '</div>';
                                 }
+                                $emailCount++ ;
                             }
+                        }
+                        if ($emailCount == 0) {
+                            echo '<div class=\'warning\'>';
+                            echo __('There are no parent email addresses to send to.');
+                            echo '</div>';
                         }
                     }
 
