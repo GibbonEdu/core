@@ -248,12 +248,27 @@ class Form implements OutputableInterface
     /**
      * Loads an array of $key => $value pairs into any form elements with a matching name.
      * @param   array  &$data
-     * @return  object Form
+     * @return  self
      */
     public function loadAllValuesFrom(&$data)
     {
         foreach ($this->getRows() as $row) {
             $row->loadFrom($data);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Loads the state for several form elements by calling $method with values from $data.
+     * @param string $method
+     * @param array $data
+     * @return void
+     */
+    public function loadStateFrom($method, &$data)
+    {
+        foreach ($this->getRows() as $row) {
+            $row->loadState($method, $data);
         }
 
         return $this;
