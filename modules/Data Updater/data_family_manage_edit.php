@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 					$row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
 				
 				if ($isMatching) {
-					$row->addCheckbox('new'.$fieldName.'On')->checked(true)->addClass('textCenter');
+					$row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
 					$form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
 				} else {
 					$row->addContent();
