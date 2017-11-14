@@ -1452,7 +1452,7 @@ tr.head td {
 }
 
 .textCenter {
-	text-align: center !important;
+	text-align: center!important;
 }
 
 /* Hide breadcrumbs in fullscreen */
@@ -1466,4 +1466,3 @@ tr.head td {
 	vertical-align: top;
 	font-size: 10px;
 }
-
