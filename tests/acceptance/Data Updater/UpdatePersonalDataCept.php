@@ -29,7 +29,7 @@ $I->loginAsParent();
 $I->amOnModulePage('Data Updater', 'data_personal.php');
 $I->seeBreadcrumb('Update Personal Data');
 
-$I->selectFromDropdown('gibbonPersonID', 2);
+$I->selectFromDropdown('gibbonPersonID', 3);
 $I->click('Submit');
 
 // Update ------------------------------------------------
