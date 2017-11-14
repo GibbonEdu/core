@@ -1,12 +1,13 @@
 <?php 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('submit and approve a family data update');
-
-// Setup ------------------------------------------------
 $I->loginAsAdmin();
-$I->amOnModulePage('Data Updater', 'data_finance.php');
+
+// Setup Invoiceees --------------------------------------
+$I->amOnModulePage('Finance', 'invoicees_manage.php');
 
 // Select ------------------------------------------------
+$I->amOnModulePage('Data Updater', 'data_finance.php');
 $I->seeBreadcrumb('Update Finance Data');
 
 $I->selectFromDropdown('gibbonFinanceInvoiceeID', 2);
