@@ -559,10 +559,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
 							$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+							$values['privacyOptions'] = $values['privacy'];
 
 							$row = $form->addRow();
 								$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
-								$row->addCheckbox('privacyOptions[]')->fromArray($options);
+								$row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values);
 						}
 					}
 
