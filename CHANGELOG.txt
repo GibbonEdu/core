@@ -45,6 +45,7 @@ v15.0.00
 		System: fixed text alginment in module menu
 		System: fixed long-string and large image issue causing content to bleed under sidebar
 		System: fixed bug causing two entries in a module menu to be highlighted as active in some cases
+		System: added Enable Smart Workflow Help option to Preferences
 		System: removed personal settings form from Preferences when force reset in effect
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
