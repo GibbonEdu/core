@@ -15,3 +15,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/**
+ * Form Class: generic check All/None checkboxes
+ */
+jQuery(function($){
+    $('.checkall').click(function () {
+        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+    });
+});
