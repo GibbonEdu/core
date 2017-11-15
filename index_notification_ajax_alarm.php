@@ -65,12 +65,12 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
         if ($type == 'general') {
             $output .= __($guid, 'General Alarm!');
             $output .= '<audio loop autoplay volume=3>
-						<source src="./audio/alarm_general.mp3" type="audio/mpeg">
+						<source src="'.$_SESSION[$guid]['absoluteURL'].'/assets/audio/alarm_general.mp3" type="audio/mpeg">
 					</audio>';
         } elseif ($type == 'lockdown') {
             $output .= __($guid, 'Lockdown!');
             $output .= '<audio loop autoplay volume=3>
-						<source src="./audio/alarm_lockdown.mp3" type="audio/mpeg">
+						<source src="'.$_SESSION[$guid]['absoluteURL'].'/assets/audio/alarm_lockdown.mp3" type="audio/mpeg">
 					</audio>';
         } elseif ($type == 'custom') {
             $output .= __($guid, 'Alarm!');
