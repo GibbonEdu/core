@@ -1379,7 +1379,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             } else {
                 $gradesOutput .= '<td>';
                 if ($rowEntry['comment'] != '') {
-                    if (strlen($rowEntry['comment']) > 50) {
+                    if (mb_strlen($rowEntry['comment']) > 50) {
                         $gradesOutput .= "<script type='text/javascript'>";
                         $gradesOutput .= '$(document).ready(function(){';
                         $gradesOutput .= "\$(\".comment-$entryCount-$gibbonPersonID\").hide();";
@@ -1389,7 +1389,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $gradesOutput .= '});';
                         $gradesOutput .= '});';
                         $gradesOutput .= '</script>';
-                        $gradesOutput .= '<span>'.substr($rowEntry['comment'], 0, 50).'...<br/>';
+                        $gradesOutput .= '<span>'.mb_substr($rowEntry['comment'], 0, 50).'...<br/>';
                         $gradesOutput .= "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount-$gibbonPersonID' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
                     } else {
                         $gradesOutput .= nl2br($rowEntry['comment']);
@@ -4447,6 +4447,26 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonYearGroupID'];
+        }
+    }
+
+    return $output;
+}
+
+//Take a roll group, and return the next one, or false if none
+function getNextRollGroupID($gibbonRollGroupID, $connection2)
+{
+    $output = false;
+    try {
+        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+        $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) { }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        if (!is_null($row['gibbonRollGroupIDNext'])) {
+            $output = $row['gibbonRollGroupIDNext'];
         }
     }
 

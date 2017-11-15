@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_add.php') == false) {
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     } else {
         try {
             $data = array('gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT gibbonTTID, gibbonSchoolYear.name AS yearName, gibbonTT.name AS ttName FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sql = 'SELECT gibbonTTID, gibbonSchoolYear.name AS schoolYear, gibbonTT.name AS ttName FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -47,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Timetable')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Timetable Day').'</div>';
@@ -61,120 +63,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_edit_day_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $row['yearName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var yearName=new LiveValidation('yearName');
-								yearname2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="ttName" id="ttName" maxlength=20 value="<?php echo $row['ttName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var courseName=new LiveValidation('courseName');
-								coursename2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this timetable.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=12 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this timetable.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Header Background Colour') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'RGB Hex value, without leading #.') ?></span>
-						</td>
-						<td class="right">
-							<input name="color" id="color" maxlength=6 value="" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Header Font Colour') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'RGB Hex value, without leading #.') ?></span>
-						</td>
-						<td class="right">
-							<input name="fontColor" id="fontColor" maxlength=6 value="" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Timetable Column') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="gibbonTTColumnID" id="gibbonTTColumnID" class="standardWidth">
-								<?php
-                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-								try {
-									$dataSelect = array();
-									$sqlSelect = 'SELECT * FROM gibbonTTColumn ORDER BY name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									echo "<option value='".$rowSelect['gibbonTTColumnID']."'>".htmlPrep($rowSelect['name']).'</option>';
-								}
-								?>
-							</select>
-							<script type="text/javascript">
-								var gibbonTTColumnID=new LiveValidation('gibbonTTColumnID');
-								gibbonTTColumnID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $gibbonTTID ?>" type="hidden">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_edit_day_addProcess.php');
 
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonTTID', $gibbonTTID);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+            $row = $form->addRow();
+                $row->addLabel('schoolYear', __('School Year'));
+                $row->addTextField('schoolYear')->maxLength(20)->isRequired()->readonly()->setValue($values['schoolYear']);
+
+            $row = $form->addRow();
+                $row->addLabel('ttName', __('Timetable'));
+                $row->addTextField('ttName')->maxLength(20)->isRequired()->readonly()->setValue($values['ttName']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('name')->maxLength(12)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('nameShort')->maxLength(4)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('color', __('Header Background Colour'))->description(__('RGB Hex value, without leading #.'));
+                $row->addTextField('color')->maxLength(6);
+
+            $row = $form->addRow();
+                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('RGB Hex value, without leading #.'));
+                $row->addTextField('fontColor')->maxLength(6);
+
+            $data = array();
+            $sql = "SELECT gibbonTTColumnID as value, name FROM gibbonTTColumn ORDER BY name";
+            $row = $form->addRow();
+                $row->addLabel('gibbonTTColumnID', __('Timetable Column'));
+                $row->addSelect('gibbonTTColumnID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }

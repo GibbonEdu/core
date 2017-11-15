@@ -72,11 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
         $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYear')->isRequired()->maxLength(3);
 
     $row = $form->addRow();
-        $row->addLabel('firstDay', __('First Day'));
+        $row->addLabel('firstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
         $row->addDate('firstDay')->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('lastDay', __('Last Day'));
+        $row->addLabel('lastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
         $row->addDate('lastDay')->isRequired();
 
     $row = $form->addRow();
@@ -85,4 +85,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     echo $form->getOutput();
 }
-

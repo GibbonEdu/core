@@ -124,6 +124,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Number($name);
     }
 
+    public function createCurrency($name)
+    {
+        return new Input\Currency($name);
+    }
+
     public function createPassword($name)
     {
         return new Input\Password($name);
@@ -183,7 +188,7 @@ class FormFactory implements FormFactoryInterface
     {
         return new Input\CustomBlocks($this, $name, $block, $session);
     }
-    
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($content, $tag = 'h4')
@@ -203,10 +208,13 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->setClass('right');
     }
 
-    public function createSearchSubmit($session, $clearLabel = 'Clear Form')
+    public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())
     {
+        $passParams[] = 'q';
+        $parameters = array_intersect_key($_GET, array_flip($passParams));
         $content = sprintf('<input type="submit" value="%s">', __('Go'));
-        $clearURL = $session->get('absoluteURL').'/index.php?q='.$_GET['q'];
+
+        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createContent($content)->prepend($clearLink)->setClass('right');
@@ -235,15 +243,17 @@ class FormFactory implements FormFactoryInterface
             'Miss' => __('Miss'),
             'Mr.'  => __('Mr.'),
             'Mrs.' => __('Mrs.'),
-            'Dr.'  => __('Dr.'),
+            'Dr.'  => __('Dr.')
         ))->placeholder();
     }
 
     public function createSelectGender($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'F' => __('Female'),
-            'M' => __('Male'),
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified')
         ))->placeholder();
     }
 
@@ -261,7 +271,7 @@ class FormFactory implements FormFactoryInterface
             'Aunt'            => __('Aunt'),
             'Uncle'           => __('Uncle'),
             'Nanny/Helper'    => __('Nanny/Helper'),
-            'Other'           => __('Other'),
+            'Other'           => __('Other')
         ))->placeholder();
     }
 
@@ -274,10 +284,34 @@ class FormFactory implements FormFactoryInterface
             'Friend'         => __('Friend'),
             'Other Relation' => __('Other Relation'),
             'Doctor'         => __('Doctor'),
-            'Other'          => __('Other'),
+            'Other'          => __('Other')
         ))->placeholder();
     }
-    
+
+    public function createSelectMaritalStatus($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Married'         => __('Married'),
+            'Separated'         => __('Separated'),
+            'Divorced'      => __('Divorced'),
+            'De Facto'         => __('De Facto'),
+            'Other'          => __('Other')
+        ))->placeholder();
+    }
+    public function createSelectBloodType($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'O+' => 'O+',
+            'A+' => 'A+',
+            'B+' => 'B+',
+            'AB+' => 'AB+',
+            'O-' => 'O-',
+            'A-' => 'A-',
+            'B-' => 'B-',
+            'AB-' => 'AB-'
+        ))->placeholder();
+    }
+
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
@@ -332,7 +366,7 @@ class FormFactory implements FormFactoryInterface
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
-                'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'VND ₫‎' => 'Vietnamese Dong (₫‎)'
             ),
         );
 

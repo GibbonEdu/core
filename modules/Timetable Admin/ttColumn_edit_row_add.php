@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_add.php') == false) {
@@ -46,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn.php'>".__($guid, 'Manage Columns')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>".__($guid, 'Edit Column')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Column Row').'</div>';
@@ -60,144 +62,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Column') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="columnName" id="columnName" maxlength=20 value="<?php echo $row['columnName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var courseName=new LiveValidation('courseName');
-								coursename2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this column.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=12 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this column.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Start Time') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var timeStart=new LiveValidation('timeStart');
-								timeStart.add(Validate.Presence);
-								timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-							</script>
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT timeStart FROM gibbonTTColumnRow ORDER BY timeStart';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.substr($rowAuto['timeStart'], 0, 5).'", ';
-										}
-										?>
-									];
-									$( "#timeStart" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'End Time') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var timeEnd=new LiveValidation('timeEnd');
-								timeEnd.add(Validate.Presence);
-								timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-							</script>
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT timeEnd FROM gibbonTTColumnRow ORDER BY timeEnd';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.substr($rowAuto['timeEnd'], 0, 5).'", ';
-										}
-										?>
-									];
-									$( "#timeEnd" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Type</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="type">
-								<?php
-                                echo "<option value='Lesson'>".__($guid, 'Lesson').'</option>';
-								echo "<option value='Pastoral'>".__($guid, 'Pastoral').'</option>';
-								echo "<option value='Sport'>".__($guid, 'Sport').'</option>';
-								echo "<option value='Break'>".__($guid, 'Break').'</option>';
-								echo "<option value='Service'>".__($guid, 'Service').'</option>';
-								echo "<option value='Other'>".__($guid, 'Other').'</option>'; ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php echo $gibbonTTColumnID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_addProcess.php');
 
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonTTColumnID', $gibbonTTColumnID);
+
+            $row = $form->addRow();
+                $row->addLabel('columnName', __('Column'));
+                $row->addTextField('columnName')->maxLength(30)->isRequired()->readonly()->setValue($values['columnName']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('name')->maxLength(12)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('nameShort')->maxLength(4)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
+                $row->addTime('timeStart')->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
+                $row->addTime('timeEnd')->isRequired();
+
+            $types = array(
+                'Lesson' => __('Lesson'),
+                'Pastoral' => __('Pastoral'),
+                'Sport' => __('Sport'),
+                'Break' => __('Break'),
+                'Service' => __('Service'),
+                'Other' => __('Other'));
+            $row = $form->addRow();
+                $row->addLabel('type', __('Type'));
+                $row->addSelect('type')->fromArray($types)->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }

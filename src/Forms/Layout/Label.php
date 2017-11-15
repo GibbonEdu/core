@@ -61,7 +61,16 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getName()
     {
-        return 'label-'.$this->for;
+        return 'label'.$this->for;
+    }
+
+    /**
+     * Overload the getID method to prepend a label prefix.
+     * @return  string
+     */
+    public function getID()
+    {
+        return 'label'.$this->for;
     }
 
     /**
@@ -76,18 +85,32 @@ class Label extends Element implements RowDependancyInterface
     }
 
     /**
+     * Gets the current label description.
+     * @return string
+     */
+    public function getDescription()
+    {
+        $output = '';
+
+        $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
+        $output .= $this->description;
+        $output .= (!empty($this->appended))? ' '.$this->appended : '';
+
+        return $output;
+    }
+
+    /**
      * Get the required status of the input this label is linked to.
      * @return  bool
      */
     protected function getRequired()
     {
-        if (empty($this->for) || empty($this->row)) {
-            return false;
+        if ($element = $this->getLinkedElement())
+        {
+            return method_exists($element, 'getRequired')? $element->getRequired() : false;
         }
 
-        $element = $this->row->getElement($this->for);
-
-        return (!empty($element) && method_exists($element, 'getRequired'))? $element->getRequired() : false;
+        return false;
     }
 
     /**
@@ -96,13 +119,34 @@ class Label extends Element implements RowDependancyInterface
      */
     protected function getReadOnly()
     {
-        if (empty($this->for)) {
+        if ($element = $this->getLinkedElement())
+        {
+            return method_exists($element, 'getReadonly')? $element->getReadonly() : false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Allows an element to define a string that is appended to the current label description.
+     * @return bool|string
+     */
+    protected function getLabelContext()
+    {
+        if ($element = $this->getLinkedElement()) {
+            return method_exists($element, 'getLabelContext')? $element->getLabelContext() : false;
+        }
+
+        return false;
+    }
+
+    protected function getLinkedElement()
+    {
+        if (empty($this->for) || empty($this->row)) {
             return false;
         }
 
-        $element = $this->row->getElement($this->for);
-
-        return (!empty($element) && method_exists($element, 'getReadonly'))? $element->getReadonly() : false;
+        return $this->row->getElement($this->for);
     }
 
     /**
@@ -125,13 +169,14 @@ class Label extends Element implements RowDependancyInterface
             $this->description .= __('This value cannot be changed.');
         }
 
+        if ($context = $this->getLabelContext())
+        {
+            $this->description($context);
+        }
+
         if (!empty($this->description)) {
             $output .= '<span class="emphasis small">';
-
-            $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
-            $output .= $this->description;
-            $output .= (!empty($this->appended))? ' '.$this->appended : '';
-
+            $output .= $this->getDescription();
             $output .= '</span><br/>';
         }
 

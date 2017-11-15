@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -59,47 +61,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/ttColumn_editProcess.php?gibbonTTColumnID=$gibbonTTColumnID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=30 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=12 value="<?php echo htmlPrep($row['nameShort']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php echo $_GET['gibbonTTColumnID'] ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttColumn_addProcess.php');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('name')->maxLength(30)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'));
+                $row->addTextField('nameShort')->maxLength(12)->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
 
             echo '<h2>';
             echo __($guid, 'Edit Column Rows');

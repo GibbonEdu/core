@@ -518,6 +518,9 @@ table th {
 	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
 	text-align: left;
 }
+table .heading td:not(:first-child) {
+	border-left: 0px;
+}
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:3px;
 	-webkit-border-top-left-radius:3px;
@@ -1220,7 +1223,7 @@ span.small {
 	font-size: 93% ;
 }
 
-input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth {
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth, table.standardWidth {
 	width: 300px ;
 }
 
@@ -1409,8 +1412,12 @@ input[name*="phone"] ~ .LV_invalid {
 	line-height: 22px;
 }
 
+.floatRight {
+	float: right;
+}
+
 .floatNone {
-	float:none;
+	float:none!important;
 }
 
 .max-upload {
@@ -1419,10 +1426,43 @@ input[name*="phone"] ~ .LV_invalid {
     font-size: 11px;
 }
 
-
 #content .smallIntBorder {
   max-width: 752px;
 }
 #content-wide .smallIntBorder {
   max-width: 1052px;
+}
+
+.matchHighlight > td {
+	border-top: 1px dashed #c00;
+	border-bottom: 1px dashed #c00;
+}
+
+.matchHighlightText {
+	color: #e00;
+}
+
+tr.head td {
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.right {
+	text-align: right!important;
+}
+
+.textCenter {
+	text-align: center!important;
+}
+
+/* Hide breadcrumbs in fullscreen */
+#TB_window .trail {
+	display: none;
+}
+
+.ttDates {
+	height: 80px;
+	width: 8%;
+	vertical-align: top;
+	font-size: 10px;
 }

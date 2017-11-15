@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
@@ -36,9 +38,42 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
+    echo '<h2>';
+    echo __($guid, 'Filter');
+    echo '</h2>';
+
+    $gibbonModuleID = isset($_GET['gibbonModuleID'])? $_GET['gibbonModuleID'] : '';
+    $gibbonRoleID = isset($_GET['gibbonRoleID'])? $_GET['gibbonRoleID'] : '';
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/permission_manage.php');
+
+    $sql = "SELECT gibbonModuleID as value, name FROM gibbonModule WHERE active='Y' ORDER BY name";
+    $row = $form->addRow();
+        $row->addLabel('gibbonModuleID', __('Module'));
+        $row->addSelect('gibbonModuleID')->fromQuery($pdo, $sql)->selected($gibbonModuleID)->placeholder();
+
+    $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY type, nameShort";
+    $row = $form->addRow();
+        $row->addLabel('gibbonRoleID', __('Role'));
+        $row->addSelect('gibbonRoleID')->fromQuery($pdo, $sql)->selected($gibbonRoleID)->placeholder();
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput();
+
     try {
-        $dataModules = array();
-        $sqlModules = 'SELECT * FROM gibbonModule WHERE active=\'Y\' ORDER BY name';
+        if (!empty($gibbonModuleID)) {
+            $dataModules = array('gibbonModuleID' => $gibbonModuleID);
+            $sqlModules = "SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID AND active='Y'";
+        } else {
+            $dataModules = array();
+            $sqlModules = "SELECT * FROM gibbonModule WHERE active='Y' ORDER BY name";
+        }
+        
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {
@@ -46,8 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     }
 
     try {
-        $dataRoles = array();
-        $sqlRoles = 'SELECT * FROM gibbonRole ORDER BY type, nameShort';
+        if (!empty($gibbonRoleID)) {
+            $dataRoles = array('gibbonRoleID' => $gibbonRoleID);
+            $sqlRoles = 'SELECT gibbonRoleID, nameShort, category, name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+        } else {
+            $dataRoles = array();
+            $sqlRoles = 'SELECT gibbonRoleID, nameShort, category, name FROM gibbonRole ORDER BY type, nameShort';
+        }
         $resultRoles = $connection2->prepare($sqlRoles);
         $resultRoles->execute($dataRoles);
     } catch (PDOException $e) {
@@ -56,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
     try {
         $dataPermissions = array();
-        $sqlPermissions = 'SELECT * FROM gibbonPermission';
+        $sqlPermissions = 'SELECT gibbonRoleID, gibbonActionID FROM gibbonPermission';
         $resultPermissions = $connection2->prepare($sqlPermissions);
         $resultPermissions->execute($dataPermissions);
     } catch (PDOException $e) {
@@ -65,39 +105,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
     if ($resultRoles->rowCount() < 1 or $resultModules->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'Your request failed due to a database error.');
+        echo __('Your request failed due to a database error.');
         echo '</div>';
     } else {
-        //Fill role array
-        $roleArray = array();
-        $count = 0;
-        while ($rowRoles = $resultRoles->fetch()) {
-            $roleArray["$count"][0] = $rowRoles['gibbonRoleID'];
-            $roleArray["$count"][1] = $rowRoles['nameShort'];
-            $roleArray["$count"][2] = $rowRoles['category'];
-            $roleArray["$count"][3] = $rowRoles['name'];
-            ++$count;
-        }
-
-        //Fill permission array
-        $permissionsArray = array();
-        $count = 0;
-        while ($rowPermissions = $resultPermissions->fetch()) {
-            $permissionsArray["$count"][0] = $rowPermissions['gibbonRoleID'];
-            $permissionsArray["$count"][1] = $rowPermissions['gibbonActionID'];
-            ++$count;
-        }
-
+        //Fill role and permission arrays
+        $roleArray = ($resultRoles->rowCount() > 0)? $resultRoles->fetchAll() : array();
+        $permissionsArray = ($resultPermissions->rowCount() > 0)? $resultPermissions->fetchAll() : array();
         $totalCount = 0;
-        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/permission_manageProcess.php'>";
-        echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-        echo "<table class='mini rowHighlight' cellspacing='0' style='width: 100%'>";
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/permission_manageProcess.php');
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
+        $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
+        
+        // To render the form as multiple tables
+        $form->getRenderer()->setWrapper('form', 'div');
+        $form->getRenderer()->setWrapper('row', 'div');
+        $form->getRenderer()->setWrapper('cell', 'div');
+
         while ($rowModules = $resultModules->fetch()) {
-            echo "<tr class='break'>";
-            echo '<td colspan='.($resultRoles->rowCount() + 1).'>';
-            echo '<h3>'.__($guid, $rowModules['name']).'</h3>';
-            echo '</td>';
-            echo '</tr>';
+            $form->addRow()->addHeading($rowModules['name']);
+            $table = $form->addRow()->addTable()->setClass('mini rowHighlight fullWidth');
 
             try {
                 $dataActions = array('gibbonModuleID' => $rowModules['gibbonModuleID']);
@@ -109,85 +137,62 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
             }
 
             if ($resultActions->rowCount() > 0) {
-                echo "<tr class='head'>";
-                echo "<th class='width: 60px!important'>Action</td>";
-                for ($i = 0;$i < count($roleArray);++$i) {
-                    echo "<th style='padding: 0!important'><span title='".htmlPrep(__($guid, $roleArray[$i][3]))."'>".__($guid, $roleArray[$i][1]).'</span></th>';
+                $row = $table->addHeaderRow();
+                $row->addContent(__('Action'))->wrap('<div style="width: 350px;">', '</div>');
+
+                // Add headings for each Role
+                foreach ($roleArray as $role) {
+                    $row->addContent(__($role['nameShort']))->wrap('<span title="'.htmlPrep(__($role['name'])).'">', '</span>');
                 }
-                echo '</tr>';
+
                 while ($rowActions = $resultActions->fetch()) {
-                    echo '<tr>';
-                    echo "<td>";
-                        if ($rowModules['type'] == 'Core')
-                            echo "<span title='".htmlPrep(__($guid, $rowActions['description']))."'>".__($guid, $rowActions['name']).'</span>';
-                        else
-                            echo "<span title='".htmlPrep(__($guid, $rowActions['description'], $rowModules['name']))."'>".__($guid, $rowActions['name'], $rowModules['name']).'</span>';
-                    echo '</td>';
-                    for ($i = 0;$i < $resultRoles->rowCount();++$i) {
-                        echo '<td>';
-                        $checked = '';
-                        for ($x = 0;$x < count($permissionsArray);++$x) {
-                            if ($permissionsArray[$x][0] == $roleArray[$i][0] and $permissionsArray[$x][1] == $rowActions['gibbonActionID']) {
-                                $checked = 'checked';
-                            }
-                        }
+                    $row = $table->addRow();
 
-                        $readonly = '';
-                        if ($roleArray[$i][2] == 'Staff') {
-                            if ($rowActions['categoryPermissionStaff'] == 'N') {
-                                $readonly = 'disabled';
-                                $checked = '';
-                            }
-                        }
-                        if ($roleArray[$i][2] == 'Student') {
-                            if ($rowActions['categoryPermissionStudent'] == 'N') {
-                                $readonly = 'disabled';
-                                $checked = '';
-                            }
-                        }
-                        if ($roleArray[$i][2] == 'Parent') {
-                            if ($rowActions['categoryPermissionParent'] == 'N') {
-                                $readonly = 'disabled';
-                                $checked = '';
-                            }
-                        }
-                        if ($roleArray[$i][2] == 'Other') {
-                            if ($rowActions['categoryPermissionOther'] == 'N') {
-                                $readonly = 'disabled';
-                                $checked = '';
-                            }
-                        }
-
-                        echo "<input $readonly $checked name='".$rowActions['gibbonActionID'].'-'.$roleArray[$i][0]."' type='checkbox'/>";
-                        echo "<input type='hidden' name='$totalCount' value='".$rowActions['gibbonActionID'].'-'.$roleArray[$i][0]."'/>";
-                        ++$totalCount;
-                        echo '</td>';
+                    // Add names and hover-over descriptions for each Action
+                    if ($rowModules['type'] == 'Core') {
+                        $row->addContent($rowActions['name'])->wrap('<span title="'.htmlPrep(__($rowActions['description'])).'">', '</span>');
+                    } else {
+                        $row->addContent($rowActions['name'], $rowModules['name'])->wrap('<span title="'.htmlPrep(__($rowActions['description'], $rowModules['name'])).'">', '</span>');
                     }
-                    echo '</tr>';
+
+                    foreach ($roleArray as $role) {
+                        $checked = false;
+
+                        // Check to see if the current action is turned on
+                        foreach ($permissionsArray as $permission) {
+                            if ($permission['gibbonRoleID'] == $role['gibbonRoleID'] && $permission['gibbonActionID'] == $rowActions['gibbonActionID']) {
+                                $checked = true;
+                            }
+                        }
+
+                        $readonly = ($rowActions['categoryPermission'.$role['category']] == 'N');
+                        $checked = !$readonly && $checked;
+
+                        $name = 'permission['.$rowActions['gibbonActionID'].']['.$role['gibbonRoleID'].']';
+                        $row->addCheckbox($name)->setDisabled($readonly)->checked($checked)->setClass('');
+
+                        ++$totalCount;
+                    }
                 }
             }
         }
+
+        $form->addHiddenValue('totalCount', $totalCount);
+
         $max_input_vars = ini_get('max_input_vars');
-        $total_vars = (($totalCount * 2) + 10);
+        $total_vars = $totalCount + 10;
         $total_vars_rounded = (ceil($total_vars / 1000) * 1000) + 1000;
+
         if ($total_vars > $max_input_vars) {
-            echo '<tr>';
-            echo '<td colspan='.($resultRoles->rowCount() + 1).'>';
-            echo "<div class='error'>";
-            echo 'php.ini max_input_vars='.$max_input_vars.'<br />';
-            echo __($guid, 'Number of inputs on this page').'='.$total_vars.'<br/>';
-            echo sprintf(__($guid, 'This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=%1$s</i> to your php.ini file on your server.'), $total_vars_rounded);
-            echo '</div>';
-            echo '</td>';
-            echo '</tr>';
+            $row = $form->addRow();
+            $row->addAlert('php.ini max_input_vars='.$max_input_vars.'<br />')
+                ->append(__('Number of inputs on this page').'='.$total_vars.'<br/>')
+                ->append(sprintf(__('This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=%1$s</i> to your php.ini file on your server.'), $total_vars_rounded));
         } else {
-            echo '<tr>';
-            echo "<td style='padding-top: 20px' class='right' colspan=".(count($roleArray) + 1).'>';
-            echo "<input type='submit' value='Submit'>";
-            echo '</td>';
-            echo '</tr>';
+            $row = $form->addRow();
+            $row->addSubmit();
         }
-        echo '</table>';
-        echo '</form>';
+
+        echo $form->getOutput();
     }
 }
