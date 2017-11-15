@@ -628,13 +628,14 @@ table.smallIntBorder td {
 table.smallIntBorder td:last-child {
 	text-align: left;
 }
-table.smallIntBorder tr.break td {
+tr.break td {
 	background: none!important;
 }
-table.smallIntBorder tr.break td h3 {
+tr.break h3, tr.break h4 {
 	margin-top: 10px!important;
+	padding: 0;
 }
-table.smallIntBorder h3, table.smallIntBorder h4 {
+tr h3, tr h4 {
 	border: none!important;
 }
 table.mini td {
@@ -1243,6 +1244,11 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: -o-linear-gradient(center top , #F2F2F2, #F0F0F0);
 	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
+}
+
+/* Forms - ignore the colorOddEven stripe on footer */
+form table.colorOddEven tr:last-of-type td {
+	background: #fbfbfb;
 }
 
 /* v13 NEW CLASSES */
