@@ -333,7 +333,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 						$row->addTextField('emergency1Number2')->maxLength(30);
 
 						$row = $form->addRow();
-						$row->addLabel('emergency2Name', __('Contact 1 Name'));
+						$row->addLabel('emergency2Name', __('Contact 2 Name'));
 						$row->addTextField('emergency2Name')->maxLength(30);
 
 						$row = $form->addRow();
