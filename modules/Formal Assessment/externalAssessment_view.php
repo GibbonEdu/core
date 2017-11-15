@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -57,77 +59,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             } else {
                 //Get child list
                 $count = 0;
-                $options = '';
+                $options = array();
                 while ($row = $result->fetch()) {
                     try {
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
+                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     while ($rowChild = $resultChild->fetch()) {
-                        $select = '';
-                        if (isset($_GET['search'])) {
-                            if ($rowChild['gibbonPersonID'] == $_GET['search']) {
-                                $select = 'selected';
-                            }
-                        }
-
-                        $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
-                        $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
-                        ++$count;
+                        $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                     }
                 }
 
-                if ($count == 0) {
+                if (count($options) == 0) {
                     echo "<div class='error'>";
                     echo __($guid, 'Access denied.');
                     echo '</div>';
-                } elseif ($count == 1) {
-                    $_GET['search'] = $gibbonPersonID[0];
+                } elseif (count($options) == 1) {
+                    $gibbonPersonID = key($options);
                 } else {
                     echo '<h2>';
                     echo 'Choose Student';
                     echo '</h2>';
 
-                    echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-                    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Student') ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="search" id="search" class="standardWidth">
-										<option value=""></value>
-										<?php echo $options; ?> 
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2 class="right">
-									<input type="hidden" name="q" value="/modules/Formal Assessment/externalAssessment_view.php">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<?php
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+                    $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
+                    $form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get");
+                    $form->setClass('noIntBorder fullWidth standardForm');
+
+                    $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment_view.php');
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    
+                    $row = $form->addRow();
+                        $row->addLabel('search', __('Student'));
+                        $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
+
+                    $row = $form->addRow();
+                        $row->addSearchSubmit($gibbon->session);
+
+                    echo $form->getOutput();
                 }
 
-                $gibbonPersonID = null;
-                if (isset($_GET['search'])) {
-                    $gibbonPersonID = $_GET['search'];
-                }
                 $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
                 $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
 
-                if ($gibbonPersonID != '' and $count > 0) {
+                if ($gibbonPersonID != '' and count($options) > 0) {
                     //Confirm access to this student
                     try {
                         $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
