@@ -1246,6 +1246,11 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
 }
 
+/* Forms - ignore the colorOddEven stripe on footer */
+form table.colorOddEven tr:last-of-type td {
+	background: #fbfbfb;
+}
+
 /* v13 NEW CLASSES */
 td.wordWrap {
 	overflow-wrap: break-word;
