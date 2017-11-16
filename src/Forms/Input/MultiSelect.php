@@ -39,6 +39,7 @@ class MultiSelect implements OutputableInterface
     protected $addButton;
     protected $removeButton;
     protected $sortBySelect;
+    protected $searchBox;
 
     public function __construct(FormFactoryInterface &$factory, $name) {
         $this->name = $name;
@@ -64,6 +65,11 @@ class MultiSelect implements OutputableInterface
         $this->removeButton = $factory->createButton(__("Remove"))
             ->onClick('optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')')
             ->setClass("shortWidth");
+
+        $this->searchBox = $factory->createTextField($name . "Search")
+            ->placeholder(__("Search"))
+            ->setClass("smallWidth")
+            ->addClass("floatNone");
     }
 
     public function addSortableAttribute($attribute, $values)
@@ -145,6 +151,18 @@ class MultiSelect implements OutputableInterface
                     '.$this->name.'sortBy = $(this).val();
                     sortSelects("'.$this->name.'");
                 });
+
+                $(\'#'. $this->searchBox->getID() .'\').keyup(function(){
+                    var search = $(this).val();
+                    $(\'option\', sourceSelect).each(function(){
+                        var option = $(this);
+                        if (option.text().includes(search)) {
+                            option.show();
+                        } else {
+                            option.hide();
+                        }
+                    });
+                });
             });
 
             function sortSelects(name) {
@@ -173,6 +191,7 @@ class MultiSelect implements OutputableInterface
             if (!empty($this->sortableAttributes)) {
                 $output .= '<br/>' . $this->sortBySelect->getOutput();
             }
+            $output .= '<br/>' . $this->searchBox->getOutput();
         $output .= '</td>';
 
         $output .= '<td style="width:35%; vertical-align:top;">';
