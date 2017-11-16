@@ -104,27 +104,11 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('Password'));
-        $column = $row->addColumn('passwordNew')->addClass('inline right');
-        $column->addButton(__('Generate Password'))->addClass('generatePassword');
-        $password = $column->addPassword('passwordNew')->isRequired()->maxLength(30);
-
-    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-
-    if ($alpha == 'Y') {
-        $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
-    }
-    if ($numeric == 'Y') {
-        $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-    }
-    if ($punctuation == 'Y') {
-        $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-    }
-    if (!empty($minLength) && is_numeric($minLength)) {
-        $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
-    }
+        $row->addPassword('passwordNew')
+            ->addPasswordPolicy($pdo)
+            ->addGeneratePasswordButton($form)
+            ->isRequired()
+            ->maxLength(30);
 
     $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {
@@ -174,25 +158,7 @@ if ($proceed == false) {
             });
         });
     </script>
-    <script type="text/javascript">
-        // Password Generation
-        $(".generatePassword").click(function(){
-            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
-            var text = '';
-            for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-                if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-                else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-                else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-                else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
-                else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
-            }
-            $('input[name="passwordNew"]').val(text);
-            $('input[name="passwordConfirm"]').val(text);
-            alert('<?php echo __('Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
-        });
-    </script>
-
-	<?php
+    <?php
     //Get postscrript
     $postscript = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript');
     if ($postscript != '') {
