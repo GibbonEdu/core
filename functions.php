@@ -3946,6 +3946,32 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             }
         }
 
+        // Sports Activites - Currently Enroled
+        try {
+            $dataSports = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+            $sqlSports = "SELECT DISTINCT gibbonActivityStudent.gibbonActivityID FROM gibbonActivity 
+                    JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) 
+                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonActivityStudent.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID)
+                    WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
+                    AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND :today BETWEEN gibbonActivity.programStart AND gibbonActivity.programEnd
+                    AND gibbonActivity.active = 'Y'
+                    AND gibbonActivityStudent.status='Accepted'";
+            $resultSports = $connection2->prepare($sqlSports);
+            $resultSports->execute($dataSports);
+        } catch (PDOException $e) {
+        }
+
+        if ($resultSports->rowCount() > 0) {
+            $color = "#449045";
+            $colorBG = "#b1ed81";
+
+            $title = sprintf(__('Sports Activites').': '.$resultSports->rowCount());
+            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$color."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Activities'>";
+            $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: left; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.($width*1.2).'px; border-top: 2px solid '.$color.'; margin-right: 2px; color: '.$color.'; background-color: '.$colorBG.";font-variant:small-caps;'>Sp</span></div>";
+            $output .= "</a>";
+        }
+
         if ($div == true) {
             $output .= '</div>';
         }
