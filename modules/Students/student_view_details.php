@@ -2428,7 +2428,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID);
                         }
                     } elseif ($subpage == 'Individual Needs') {
-                        if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
+                        if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
                             echo "<div class='error'>";
                             echo __($guid, 'Your request failed because you do not have access to this action.');
                             echo '</div>';
