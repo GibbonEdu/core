@@ -60,10 +60,10 @@ class MultiSelect implements OutputableInterface
             ->addClass("floatNone");
 
         $this->addButton = $factory->createButton(__("Add"))
-            ->onClick('optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')')
+            ->onClick('optionTransfer(\'' . $this->name . '\', true)')
             ->setClass("shortWidth");
         $this->removeButton = $factory->createButton(__("Remove"))
-            ->onClick('optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')')
+            ->onClick('optionTransfer(\'' . $this->name . '\', false)')
             ->setClass("shortWidth");
 
         $this->searchBox = $factory->createTextField($name . "Search")
@@ -103,16 +103,16 @@ class MultiSelect implements OutputableInterface
 
         $output .= '<script type="text/javascript">';
         $output .= 'var '.$this->name.'sortBy = null;';
-        $output .= 'function optionTransfer(select0Name, select1Name) {
-            var select0 = $(\'#\'+select0Name);
-            var select1 = $(\'#\'+select1Name);
+        $output .= 'function optionTransfer(name, add) {
+            var select0 = $(\'#\'+name+(add ? \'Source\' : \'Destination\'));
+            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'Destination\'));
 
-            select0.find(\'option:selected\').each(function() {
+            select0.find(\'option:selected\').each(function(){
                 select1.append($(this).clone());
                 $(this).detach().remove();
             });
 
-            sortSelects("'.$this->name.'");
+            sortSelects(name);
         }' . "\n";
 
         $output .= 'function sortSelect(list, sortValues) {
@@ -168,7 +168,7 @@ class MultiSelect implements OutputableInterface
             function sortSelects(name) {
                 var values = null;
 
-                if (window[name+"sortBy"] != \'Sort by Name\') {
+                if (window[name+"sortBy"] != \'Sort by Name\' && window[name+"sortBy"] != null) {
                     values = $(\'#\' + name).data(\'sortable\')[window[name+"sortBy"]];
                 }
 
