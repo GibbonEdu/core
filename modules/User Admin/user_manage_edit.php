@@ -231,7 +231,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$row = $form->addRow();
                 $emailLabel = $row->addLabel('email', __('Email'));
                 $email = $row->addEmail('email')->maxLength(50);
-				
+
 			$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 			if ($uniqueEmailAddress == 'Y') {
                 $emailLabel->description(__('Must be unique.'));
@@ -374,7 +374,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row = $form->addRow();
 				$row->addLabel('departureReason', __('Departure Reason'));
 				if (!empty($departureReasonsList)) {
-					$row->addSelect('departureReason')->fromString($departureReasonsList);
+					$row->addSelect('departureReason')->fromString($departureReasonsList)->placeholder();
 				} else {
 					$row->addTextField('departureReason')->maxLength(30);
 				}
