@@ -16,15 +16,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * Form Class: generic check All/None checkboxes
- */
 jQuery(function($){
+   /**
+   * Form Class: generic check All/None checkboxes
+   */
     $('.checkall').click(function () {
         $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
     });
 
     /**
+     * Column Highlighting
+     */
+    var columnHighlight = $(".columnHighlight td");
+    columnHighlight.on("mouseover", function() {
+      columnHighlight.filter(":nth-child(" + ($(this).index() + 1) + ")").addClass("hover");
+    })
+    .on("mouseout", function() {
+      columnHighlight.removeClass("hover");
+    });
+
+    /*
      * Password Generator. Requires data-source, data-confirm and data-alert attributes.
      */
     $(".generatePassword").click(function(){
@@ -43,5 +54,4 @@ jQuery(function($){
         $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
         prompt($(this).data("alert"), text);
     });
-
 });
