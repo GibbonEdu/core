@@ -2445,6 +2445,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo $statusTable;
                             }
 
+                            //Get and display a list of student's educational assistants
+                            try {
+                                $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $gibbonPersonID);
+                                $sqlDetail = "(SELECT DISTINCT surname, preferredName, email
+                                    FROM gibbonPerson
+                                        JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                                    WHERE status='Full'
+                                        AND gibbonPersonIDStudent=:gibbonPersonID1)
+                                UNION
+                                (SELECT DISTINCT surname, preferredName, email
+                                    FROM gibbonPerson
+                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                                        AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
+                                )
+                                ORDER BY preferredName, surname, email";
+                                $resultDetail = $connection2->prepare($sqlDetail);
+                                $resultDetail->execute($dataDetail);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            if ($resultDetail->rowCount() > 0) {
+                                echo '<h3>';
+                                echo __($guid, 'Educational Assistants');
+                                echo '</h3>';
+
+                                echo '<ul>';
+                                while ($rowDetail = $resultDetail->fetch()) {
+                                    echo '<li>'.htmlPrep(formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+                                    if ($rowDetail['email'] != '') {
+                                        echo htmlPrep(' <'.$rowDetail['email'].'>');
+                                    }
+                                    echo '</li>';
+                                }
+                                echo '</ul>';
+                            }
+
+
                             echo '<h3>';
                             echo __($guid, 'Individual Education Plan');
                             echo '</h3>';
