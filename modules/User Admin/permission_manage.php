@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
         while ($rowModules = $resultModules->fetch()) {
             $form->addRow()->addHeading($rowModules['name']);
-            $table = $form->addRow()->addTable()->setClass('mini rowHighlight fullWidth');
+            $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
 
             try {
                 $dataActions = array('gibbonModuleID' => $rowModules['gibbonModuleID']);
