@@ -23,4 +23,15 @@ jQuery(function($){
     $('.checkall').click(function () {
         $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
     });
+
+    /**
+     * Column Highlighting
+     */
+    var columnHighlight = $(".columnHighlight td");
+    columnHighlight.on("mouseover", function() {
+      columnHighlight.filter(":nth-child(" + ($(this).index() + 1) + ")").addClass("hover");
+    })
+    .on("mouseout", function() {
+      columnHighlight.removeClass("hover");
+    });
 });
