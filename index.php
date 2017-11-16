@@ -228,6 +228,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             <link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-timepicker/jquery.timepicker.css" type="text/css" media="screen" />
             <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-cropit/exif.js"></script>
             <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-cropit/jquery.cropit.js"></script>
+            <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/assets/js/core.js"></script>
 			<?php
             if (isset($_SESSION[$guid]['username'])) {
                 $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
