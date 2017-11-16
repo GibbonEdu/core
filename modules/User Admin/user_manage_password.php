@@ -85,13 +85,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('passwordNew', __('Password'));
-                $column = $row->addColumn('passwordNew')->addClass('inline right');
-                $column->addButton(__('Generate Password'))->addClass('generatePassword');
-                $column->addPassword('passwordNew')->isRequired()->maxLength(30)->addValidationOption('onlyOnSubmit: true');
+                $row->addPassword('passwordNew')
+                    ->addPasswordPolicy($pdo)
+                    ->addGeneratePasswordButton($form)
+                    ->isRequired()
+                    ->maxLength(30);
 
             $row = $form->addRow();
                 $row->addLabel('passwordConfirm', __('Confirm Password'));
-                $row->addPassword('passwordConfirm')->isRequired()->maxLength(30)->addValidationOption('onlyOnSubmit: true')->addValidation('Validate.Confirmation', "match: 'passwordNew'");
+                $row->addPassword('passwordConfirm')
+                    ->addConfirmation('passwordNew')
+                    ->isRequired()
+                    ->maxLength(30);
 
             $row = $form->addRow();
                 $row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
@@ -102,49 +107,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $row->addSubmit();
 
             echo $form->getOutput();
-            ?>
-
-            <script type="text/javascript">
-                var passwordNew=new LiveValidation('passwordNew');
-                passwordNew.add(Validate.Presence);
-                <?php
-                $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-                $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-                $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-                $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-                if ($alpha == 'Y') {
-                    echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-                }
-                if ($numeric == 'Y') {
-                    echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-                }
-                if ($punctuation == 'Y') {
-                    echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-                }
-                if (is_numeric($minLength)) {
-                    echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-                }
-                ?>
-
-                $(".generatePassword").click(function(){
-                    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|';
-                    var text = '';
-                    for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-                        if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-                        else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-                        else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-                        else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
-                        else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
-                    }
-                    $('input[name="passwordNew"]').val(text);
-                    $('input[name="passwordConfirm"]').val(text);
-                    alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
-                });
-            </script>
-
-			<?php
-
         }
     }
 }
-?>
