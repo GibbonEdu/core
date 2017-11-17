@@ -405,7 +405,7 @@ else {
 
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
 
-									if ( $attendance->isTypePresent($rowLog["type"]) ) {
+									if ($attendance->isTypePresent($rowLog['type']) && $attendance->isTypeOnsite($rowLog['type'])) {
 										$countPresent++ ;
 									}
 
