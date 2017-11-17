@@ -86,11 +86,7 @@ class Row
      */
     public function addElement(OutputableInterface $element)
     {
-        if (method_exists($element, 'getName')) {
-            $id = $element->getName();
-        } else {
-            $id = 'element-'.count($this->formElements);
-        }
+        $id = $this->getUniqueIdentifier($element);
 
         $this->formElements[$id] = $element;
         return $element;
@@ -151,5 +147,42 @@ class Row
         }
 
         return $this;
+    }
+
+    /**
+     * Load the state of several fields at once by calling $method on each element present in $data by key, passing in the value of $data.
+     * @param string $method
+     * @param array $data
+     * @return self
+     */
+    public function loadState($method, &$data, $extract = true)
+    {
+        foreach ($this->getElements() as $element) {
+            $name = $this->getUniqueIdentifier($element);
+
+            if (isset($data[$name]) && method_exists($element, $method)) {
+                $element->$method($data[$name]);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the string identifier for an element that can be used as an array key.
+     * @param object $element
+     * @return void
+     */
+    protected function getUniqueIdentifier($element)
+    {
+        if (method_exists($element, 'getID') && !empty($element->getID())) {
+            return $element->getID();
+        }
+        
+        if (method_exists($element, 'getName') && !empty($element->getName())) {
+            return $element->getName();
+        }
+        
+        return 'element-'.$this->getElementCount();
     }
 }

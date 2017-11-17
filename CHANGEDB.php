@@ -850,4 +850,9 @@ ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTableID`);end
 ALTER TABLE `gibbonRubricRow` ADD INDEX(`gibbonRubricID`);end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Weekly Attendance Summary ', 'Attendance', 'Attendance Summary by Date', 'CLI', 'All,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonActivityStaff` MODIFY `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000';end
+UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a low level academic alert on a student.' WHERE scope='Students' AND name='academicAlertLowThreshold';end
+UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a medium level academic alert on a student.' WHERE scope='Students' AND name='academicAlertMediumThreshold';end
+UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a high level academic alert on a student.' WHERE scope='Students' AND name='academicAlertHighThreshold';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'uniqueEmailAddress', 'Unique Email Address', 'Are primary email addresses required to be unique?', 'N');end
+
 ";

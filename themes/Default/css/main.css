@@ -518,6 +518,9 @@ table th {
 	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
 	text-align: left;
 }
+table .heading td:not(:first-child) {
+	border-left: 0px;
+}
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:3px;
 	-webkit-border-top-left-radius:3px;
@@ -625,13 +628,14 @@ table.smallIntBorder td {
 table.smallIntBorder td:last-child {
 	text-align: left;
 }
-table.smallIntBorder tr.break td {
+tr.break td {
 	background: none!important;
 }
-table.smallIntBorder tr.break td h3 {
+tr.break h3, tr.break h4 {
 	margin-top: 10px!important;
+	padding: 0;
 }
-table.smallIntBorder h3, table.smallIntBorder h4 {
+tr h3, tr h4 {
 	border: none!important;
 }
 table.mini td {
@@ -1220,7 +1224,7 @@ span.small {
 	font-size: 93% ;
 }
 
-input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth {
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth, table.standardWidth {
 	width: 300px ;
 }
 
@@ -1240,6 +1244,11 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: -o-linear-gradient(center top , #F2F2F2, #F0F0F0);
 	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
+}
+
+/* Forms - ignore the colorOddEven stripe on footer */
+form table.colorOddEven tr:last-of-type td {
+	background: #fbfbfb;
 }
 
 /* v13 NEW CLASSES */
@@ -1299,7 +1308,7 @@ select[multiple] {
 	width: 70px;
 }
 
-.column div:after {
+.column > div:after {
   content: "";
   display: table;
   clear: both;
@@ -1308,6 +1317,7 @@ select[multiple] {
 .column.inline div {
 	display:inline-block;
 	width:auto;
+    vertical-align: middle;
 }
 
 .column.stacked div:not(:last-of-type) {
@@ -1350,7 +1360,8 @@ table tr.heading:first-child td:last-child {
 }
 
 /* Usability tweak to make large data tables like User Permissions easier to read */
-table.rowHighlight tr:not(.break):hover td {
+table.rowHighlight tr:not(.break):hover td,
+table.columnHighlight .hover:not(:first-child) {
 	background: #EDF7FF !important;
 }
 
@@ -1408,8 +1419,12 @@ input[name*="phone"] ~ .LV_invalid {
 	line-height: 22px;
 }
 
+.floatRight {
+	float: right;
+}
+
 .floatNone {
-	float:none;
+	float:none!important;
 }
 
 .max-upload {
@@ -1418,10 +1433,59 @@ input[name*="phone"] ~ .LV_invalid {
     font-size: 11px;
 }
 
-
 #content .smallIntBorder {
   max-width: 752px;
 }
 #content-wide .smallIntBorder {
   max-width: 1052px;
+}
+
+.matchHighlight > td {
+	border-top: 1px dashed #c00;
+	border-bottom: 1px dashed #c00;
+}
+
+.matchHighlightText {
+	color: #e00;
+}
+
+tr.head td {
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.right {
+	text-align: right!important;
+}
+
+.textCenter {
+	text-align: center!important;
+}
+
+/* Hide breadcrumbs in fullscreen */
+#TB_window .trail {
+	display: none;
+}
+
+.ttDates {
+	height: 80px;
+	width: 8%;
+	vertical-align: top;
+	font-size: 10px;
+}
+
+td.standardWidth {
+	position: relative;
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+	padding: 0px 6px;
+}
+
+input[type="button"].alignRight {
+	position: absolute;
+	right: 5px;
+	margin: 0;
 }

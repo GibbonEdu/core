@@ -22,19 +22,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo _('You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo _('The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
         echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>"._('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>"._(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/spaceBooking_manage.php'>"._('Manage Facility Bookings')."</a> > </div><div class='trailEnd'>"._('Delete Facility Booking').'</div>';
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/spaceBooking_manage.php'>".__('Manage Facility Bookings')."</a> > </div><div class='trailEnd'>".__('Delete Facility Booking').'</div>';
         echo '</div>';
 
         if (isset($_GET['return'])) {
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'];
         if ($gibbonTTSpaceBookingID == '') {
             echo "<div class='error'>";
-            echo _('You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo _('The specified record cannot be found.');
+                echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
                 //Let's go!
@@ -74,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
 							<td>
-								<b><?php echo _('Are you sure you want to delete this record?'); ?></b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i><?php echo _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
+								<b><?php echo __('Are you sure you want to delete this record?'); ?></b><br/>
+								<span style="font-size: 90%; color: #cc0000"><i><?php echo __('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 							</td>
 							<td class="right">
 
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 						<tr>
 							<td>
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo _('Yes'); ?>">
+								<input type="submit" value="<?php echo __('Yes'); ?>">
 							</td>
 							<td class="right">
 

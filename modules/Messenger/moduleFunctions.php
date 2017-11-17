@@ -154,7 +154,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     //My role categories
     try {
         $dataRoleCategory = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sqlRoleCategory = "SELECT DISTINCT category FROM gibbonRole JOIN gibbonPerson ON (gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonRole.gibbonRoleID, '%')) WHERE gibbonPersonID=:gibbonPersonID";
+        $sqlRoleCategory = "SELECT DISTINCT category FROM gibbonRole JOIN gibbonPerson ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE gibbonPersonID=:gibbonPersonID";
         $resultRoleCategory = $connection2->prepare($sqlRoleCategory);
         $resultRoleCategory->execute($dataRoleCategory);
     } catch (PDOException $e) {

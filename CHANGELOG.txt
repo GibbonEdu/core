@@ -44,6 +44,10 @@ v15.0.00
         System: added mbstring extension to the system requirements list
 		System: fixed text alginment in module menu
 		System: fixed long-string and large image issue causing content to bleed under sidebar
+		System: fixed bug causing two entries in a module menu to be highlighted as active in some cases
+		System: added Enable Smart Workflow Help option to Preferences
+		System: removed personal settings form from Preferences when force reset in effect
+		System: adjusted Today's Classes in Student and Parent dashboard to show on non-school days
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
@@ -52,12 +56,16 @@ v15.0.00
 		Attendance: added count column to Students Not Present and Students Not Onsite reports
 		Attendance: granted like to those students who successfully self register
 		Attendance: added selective auto-redirect to move students to self-registration page under certain conditions
+		Attendance: added a warning to Attendance by Class when not currently timetabled for the selected date
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
+		Markbook: fixed multibyte character error in comment summary
+		Messenger: fixed multibyte substring issue in homepage widget
+		Messenger: added username to Individual select, to distinguish people with the same name
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Roll Groups: fixed bug preventing alerts from showing
 		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
@@ -70,10 +78,15 @@ v15.0.00
         Students: added a notification event for Application Form Accepted
         Students: added an option for logged-in users to link new Application Forms to an existing user or family
 		Students: added ability to delete files and upload multiple files in Edit Application Form
+		Students: amended Academic alert to account only for data in the last 60 days
+		Students: when Timetable is disabled, View Student Details now displays list of classes in Overview
+		Students: adjusted Application Form acceptance emails to students and parents to come from admissions administrator, not system administrator
 		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
         System Admin: updated version check to handle semantic version numbers
 		Timetable: added ability to set and display text and background colour for timetable day headers
 		Timetable: adjusted font size for shorter lessons to allow display or facility name
+		Timetable: adjusted timetable on homepage to show next week if today is a Sunday with no school
+		Timetable: fixed rendering issue when week starts Sunday but Sunday is not a school day (and similar cases)
 		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
 		Timetable Admin: updated Course Enrolment Rollover to prevent duplicates and not copy users set to Left
         Timetable Admin: fixed Course Enrolment by Person to allow staff category without All Users checked
@@ -83,6 +96,7 @@ v15.0.00
         User Admin: added ability to set username formats by role in User Settings
         User Admin: added a button to generate usernames in Add User
         User Admin: added an Available Years of Entry setting to select which years are available in the student application
+		User Admin: added a setting to require a user's primary email address to be unique
 
 v14.0.01
 --------

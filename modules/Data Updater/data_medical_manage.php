@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             echo '</td>';
             echo '<td>';
             if ($row['status'] == 'Pending') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_edit.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_edit.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."' title='".__($guid, 'Edit')."'><img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_delete.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
             echo '</td>';

@@ -425,125 +425,123 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     //GET PLANNER
     $planner = false;
     $date = date('Y-m-d');
-    if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $_SESSION[$guid]['username'] != '') {
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date2' => $date, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $planner .= "<div class='error'>".$e->getMessage().'</div>';
-        }
-        $planner .= '<h2>';
-        $planner .= __($guid, "Today's Lessons");
-        $planner .= '</h2>';
-        if ($result->rowCount() < 1) {
-            $planner .= "<div class='warning'>";
-            $planner .= __($guid, 'There are no records to display.');
-            $planner .= '</div>';
-        } else {
-            $planner .= "<div class='linkTop'>";
-            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__($guid, 'View Planner').'</a>';
-            $planner .= '</div>';
+    try {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date2' => $date, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+        $sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $planner .= "<div class='error'>".$e->getMessage().'</div>';
+    }
+    $planner .= '<h2>';
+    $planner .= __($guid, "Today's Lessons");
+    $planner .= '</h2>';
+    if ($result->rowCount() < 1) {
+        $planner .= "<div class='warning'>";
+        $planner .= __($guid, 'There are no records to display.');
+        $planner .= '</div>';
+    } else {
+        $planner .= "<div class='linkTop'>";
+        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__($guid, 'View Planner').'</a>';
+        $planner .= '</div>';
 
-            $planner .= "<table cellspacing='0' style='width: 100%'>";
-            $planner .= "<tr class='head'>";
-            $planner .= '<th>';
-            $planner .= __($guid, 'Class').'<br/>';
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Lesson').'</br>';
-            $planner .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Homework');
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Summary');
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Like');
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Action');
-            $planner .= '</th>';
-            $planner .= '</tr>';
+        $planner .= "<table cellspacing='0' style='width: 100%'>";
+        $planner .= "<tr class='head'>";
+        $planner .= '<th>';
+        $planner .= __($guid, 'Class').'<br/>';
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Lesson').'</br>';
+        $planner .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Homework');
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Summary');
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Like');
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Action');
+        $planner .= '</th>';
+        $planner .= '</tr>';
 
-            $count = 0;
-            $rowNum = 'odd';
-            while ($row = $result->fetch()) {
-                if (!($row['role'] == 'Student' and $row['viewableStudents'] == 'N')) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
+        $count = 0;
+        $rowNum = 'odd';
+        while ($row = $result->fetch()) {
+            if (!($row['role'] == 'Student' and $row['viewableStudents'] == 'N')) {
+                if ($count % 2 == 0) {
+                    $rowNum = 'even';
+                } else {
+                    $rowNum = 'odd';
+                }
+                ++$count;
+
+                //Highlight class in progress
+                if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+                    $rowNum = 'current';
+                }
+
+                //COLOR ROW BY STATUS!
+                $planner .= "<tr class=$rowNum>";
+                $planner .= '<td>';
+                $planner .= $row['course'].'.'.$row['class'].'<br/>';
+                $planner .= "<span style='font-style: italic; font-size: 75%'>".substr($row['timeStart'], 0, 5).'-'.substr($row['timeEnd'], 0, 5).'</span>';
+                $planner .= '</td>';
+                $planner .= '<td>';
+                $planner .= '<b>'.$row['name'].'</b><br/>';
+                $planner .= "<div style='font-size: 85%; font-style: italic'>";
+                $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
+                if (isset($unit[0])) {
+                    $planner .= $unit[0];
+                    if ($unit[1] != '') {
+                        $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
                     }
-                    ++$count;
-
-                    //Highlight class in progress
-                    if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                        $rowNum = 'current';
-                    }
-
-                    //COLOR ROW BY STATUS!
-                    $planner .= "<tr class=$rowNum>";
-                    $planner .= '<td>';
-                    $planner .= $row['course'].'.'.$row['class'].'<br/>';
-                    $planner .= "<span style='font-style: italic; font-size: 75%'>".substr($row['timeStart'], 0, 5).'-'.substr($row['timeEnd'], 0, 5).'</span>';
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    $planner .= '<b>'.$row['name'].'</b><br/>';
-                    $planner .= "<div style='font-size: 85%; font-style: italic'>";
-                    $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
-                    if (isset($unit[0])) {
-                        $planner .= $unit[0];
-                        if ($unit[1] != '') {
-                            $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
-                        }
-                    }
-                    $planner .= '</div>';
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                        $planner .= __($guid, 'No');
-                    } else {
-                        if ($row['homework'] == 'Y') {
-                            $planner .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
-                            if ($row['homeworkSubmission'] == 'Y') {
-                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
-                                if ($row['homeworkCrowdAssess'] == 'Y') {
-                                    $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
-                                }
+                }
+                $planner .= '</div>';
+                $planner .= '</td>';
+                $planner .= '<td>';
+                if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
+                    $planner .= __($guid, 'No');
+                } else {
+                    if ($row['homework'] == 'Y') {
+                        $planner .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                        if ($row['homeworkSubmission'] == 'Y') {
+                            $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                            if ($row['homeworkCrowdAssess'] == 'Y') {
+                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
                             }
                         }
-                        if ($row['myHomeworkDueDateTime'] != '') {
-                            $planner .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
-                        }
                     }
-                    $planner .= '</td>';
-                    $planner .= '<td id="wordWrap">';
-                    $planner .= $row['summary'];
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    if ($row['role'] == 'Teacher') {
-                        $planner .= countLikesByContext($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID']);
-                    } else {
-                        $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
-                        if ($likesGiven != 1) {
-                            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
-                        } else {
-                            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
-                        }
+                    if ($row['myHomeworkDueDateTime'] != '') {
+                        $planner .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
                     }
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
-                    $planner .= '</td>';
-                    $planner .= '</tr>';
                 }
+                $planner .= '</td>';
+                $planner .= '<td id="wordWrap">';
+                $planner .= $row['summary'];
+                $planner .= '</td>';
+                $planner .= '<td>';
+                if ($row['role'] == 'Teacher') {
+                    $planner .= countLikesByContext($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID']);
+                } else {
+                    $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
+                    if ($likesGiven != 1) {
+                        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
+                    } else {
+                        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
+                    }
+                }
+                $planner .= '</td>';
+                $planner .= '<td>';
+                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                $planner .= '</td>';
+                $planner .= '</tr>';
             }
-            $planner .= '</table>';
         }
+        $planner .= '</table>';
     }
 
     //GET TIMETABLE
@@ -859,125 +857,123 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
     //GET PLANNER
     $planner = false;
     $date = date('Y-m-d');
-    if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $_SESSION[$guid]['username'] != '') {
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date2' => $date, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $planner .= "<div class='error'>".$e->getMessage().'</div>';
-        }
-        $planner .= '<h2>';
-        $planner .= __($guid, "Today's Lessons");
-        $planner .= '</h2>';
-        if ($result->rowCount() < 1) {
-            $planner .= "<div class='warning'>";
-            $planner .= __($guid, 'There are no records to display.');
-            $planner .= '</div>';
-        } else {
-            $planner .= "<div class='linkTop'>";
-            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__($guid, 'View Planner').'</a>';
-            $planner .= '</div>';
+    try {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date2' => $date, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+        $sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $planner .= "<div class='error'>".$e->getMessage().'</div>';
+    }
+    $planner .= '<h2>';
+    $planner .= __($guid, "Today's Lessons");
+    $planner .= '</h2>';
+    if ($result->rowCount() < 1) {
+        $planner .= "<div class='warning'>";
+        $planner .= __($guid, 'There are no records to display.');
+        $planner .= '</div>';
+    } else {
+        $planner .= "<div class='linkTop'>";
+        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__($guid, 'View Planner').'</a>';
+        $planner .= '</div>';
 
-            $planner .= "<table cellspacing='0' style='width: 100%'>";
-            $planner .= "<tr class='head'>";
-            $planner .= '<th>';
-            $planner .= __($guid, 'Class').'<br/>';
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Lesson').'</br>';
-            $planner .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Homework');
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Summary');
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Like');
-            $planner .= '</th>';
-            $planner .= '<th>';
-            $planner .= __($guid, 'Action');
-            $planner .= '</th>';
-            $planner .= '</tr>';
+        $planner .= "<table cellspacing='0' style='width: 100%'>";
+        $planner .= "<tr class='head'>";
+        $planner .= '<th>';
+        $planner .= __($guid, 'Class').'<br/>';
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Lesson').'</br>';
+        $planner .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Homework');
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Summary');
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Like');
+        $planner .= '</th>';
+        $planner .= '<th>';
+        $planner .= __($guid, 'Action');
+        $planner .= '</th>';
+        $planner .= '</tr>';
 
-            $count = 0;
-            $rowNum = 'odd';
-            while ($row = $result->fetch()) {
-                if (!($row['role'] == 'Student' and $row['viewableStudents'] == 'N')) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
+        $count = 0;
+        $rowNum = 'odd';
+        while ($row = $result->fetch()) {
+            if (!($row['role'] == 'Student' and $row['viewableStudents'] == 'N')) {
+                if ($count % 2 == 0) {
+                    $rowNum = 'even';
+                } else {
+                    $rowNum = 'odd';
+                }
+                ++$count;
+
+                //Highlight class in progress
+                if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+                    $rowNum = 'current';
+                }
+
+                //COLOR ROW BY STATUS!
+                $planner .= "<tr class=$rowNum>";
+                $planner .= '<td>';
+                $planner .= $row['course'].'.'.$row['class'].'<br/>';
+                $planner .= "<span style='font-style: italic; font-size: 75%'>".substr($row['timeStart'], 0, 5).'-'.substr($row['timeEnd'], 0, 5).'</span>';
+                $planner .= '</td>';
+                $planner .= '<td>';
+                $planner .= '<b>'.$row['name'].'</b><br/>';
+                $planner .= "<div style='font-size: 85%; font-style: italic'>";
+                $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
+                if (isset($unit[0])) {
+                    $planner .= $unit[0];
+                    if ($unit[1] != '') {
+                        $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
                     }
-                    ++$count;
-
-                    //Highlight class in progress
-                    if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                        $rowNum = 'current';
-                    }
-
-                    //COLOR ROW BY STATUS!
-                    $planner .= "<tr class=$rowNum>";
-                    $planner .= '<td>';
-                    $planner .= $row['course'].'.'.$row['class'].'<br/>';
-                    $planner .= "<span style='font-style: italic; font-size: 75%'>".substr($row['timeStart'], 0, 5).'-'.substr($row['timeEnd'], 0, 5).'</span>';
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    $planner .= '<b>'.$row['name'].'</b><br/>';
-                    $planner .= "<div style='font-size: 85%; font-style: italic'>";
-                    $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
-                    if (isset($unit[0])) {
-                        $planner .= $unit[0];
-                        if ($unit[1] != '') {
-                            $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
-                        }
-                    }
-                    $planner .= '</div>';
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                        $planner .= __($guid, 'No');
-                    } else {
-                        if ($row['homework'] == 'Y') {
-                            $planner .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
-                            if ($row['homeworkSubmission'] == 'Y') {
-                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
-                                if ($row['homeworkCrowdAssess'] == 'Y') {
-                                    $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
-                                }
+                }
+                $planner .= '</div>';
+                $planner .= '</td>';
+                $planner .= '<td>';
+                if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
+                    $planner .= __($guid, 'No');
+                } else {
+                    if ($row['homework'] == 'Y') {
+                        $planner .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                        if ($row['homeworkSubmission'] == 'Y') {
+                            $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                            if ($row['homeworkCrowdAssess'] == 'Y') {
+                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
                             }
                         }
-                        if ($row['myHomeworkDueDateTime'] != '') {
-                            $planner .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
-                        }
                     }
-                    $planner .= '</td>';
-                    $planner .= '<td id="wordWrap">';
-                    $planner .= $row['summary'];
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    if ($row['role'] == 'Teacher') {
-                        $planner .= countLikesByContext($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID']);
-                    } else {
-                        $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
-                        if ($likesGiven != 1) {
-                            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
-                        } else {
-                            $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
-                        }
+                    if ($row['myHomeworkDueDateTime'] != '') {
+                        $planner .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
                     }
-                    $planner .= '</td>';
-                    $planner .= '<td>';
-                    $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
-                    $planner .= '</td>';
-                    $planner .= '</tr>';
                 }
+                $planner .= '</td>';
+                $planner .= '<td id="wordWrap">';
+                $planner .= $row['summary'];
+                $planner .= '</td>';
+                $planner .= '<td>';
+                if ($row['role'] == 'Teacher') {
+                    $planner .= countLikesByContext($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID']);
+                } else {
+                    $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
+                    if ($likesGiven != 1) {
+                        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
+                    } else {
+                        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID='.$row['gibbonCourseClassID']."&date=&returnToIndex=Y'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
+                    }
+                }
+                $planner .= '</td>';
+                $planner .= '<td>';
+                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                $planner .= '</td>';
+                $planner .= '</tr>';
             }
-            $planner .= '</table>';
         }
+        $planner .= '</table>';
     }
 
     //GET TIMETABLE
@@ -1363,7 +1359,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             } else {
                 $gradesOutput .= '<td>';
                 if ($rowEntry['comment'] != '') {
-                    if (strlen($rowEntry['comment']) > 50) {
+                    if (mb_strlen($rowEntry['comment']) > 50) {
                         $gradesOutput .= "<script type='text/javascript'>";
                         $gradesOutput .= '$(document).ready(function(){';
                         $gradesOutput .= "\$(\".comment-$entryCount-$gibbonPersonID\").hide();";
@@ -1373,7 +1369,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $gradesOutput .= '});';
                         $gradesOutput .= '});';
                         $gradesOutput .= '</script>';
-                        $gradesOutput .= '<span>'.substr($rowEntry['comment'], 0, 50).'...<br/>';
+                        $gradesOutput .= '<span>'.mb_substr($rowEntry['comment'], 0, 50).'...<br/>';
                         $gradesOutput .= "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount-$gibbonPersonID' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
                     } else {
                         $gradesOutput .= nl2br($rowEntry['comment']);
@@ -2986,45 +2982,45 @@ function sidebar($gibbon, $pdo)
                             $order .= "$pos, ";
                             $message = $_SESSION[$guid]['messageWallOutput'][$pos];
 
-                                //COLOR ROW BY STATUS!
-                                echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
+                            //COLOR ROW BY STATUS!
+                            echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
                             echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
-                                        //Image
-                                        $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
+                            //Image
+                            $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
                             if ($message['photo'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$message['photo']) == false) {
                                 echo "<img $style  src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_75.jpg'/>";
                             } else {
                                 echo "<img $style src='".$_SESSION[$guid]['absoluteURL'].'/'.$message['photo']."'/>";
                             }
 
-                                        //Message number
-                                        echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
+                            //Message number
+                            echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
 
-                                        //Title
-                                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['gibbonMessengerID'];
+                            //Title
+                            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['gibbonMessengerID'];
                             if (strlen($message['subject']) <= 16) {
                                 echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
                             } else {
-                                echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".substr($message['subject'], 0, 16).'...</a><br/>';
+                                echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".mb_substr($message['subject'], 0, 16).'...</a><br/>';
                             }
 
-                                        //Text
-                                        echo "<div style='margin-top: 5px'>";
+                            //Text
+                            echo "<div style='margin-top: 5px'>";
                             $message = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message);
                             if (strlen(strip_tags($message['details'])) <= 40) {
                                 echo strip_tags($message['details']).'<br/>';
                             } else {
-                                echo substr(strip_tags($message['details']), 0, 40).'...<br/>';
+                                echo mb_substr(strip_tags($message['details']), 0, 40).'...<br/>';
                             }
                             echo '</div>';
                             echo '</td>';
                             echo '</tr>';
                             echo "
-									<script type=\"text/javascript\">
-										$(document).ready(function(){
-											$(\"#messageWall$pos\").hide();
-										});
-									</script>";
+							<script type=\"text/javascript\">
+								$(document).ready(function(){
+									$(\"#messageWall$pos\").hide();
+								});
+							</script>";
                         }
                         echo '</table>';
                         $order = substr($order, 0, strlen($order) - 2);
@@ -3781,8 +3777,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $sqlAlert = 'SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {
-        }
+        } catch (PDOException $e) { }
         if ($resultAlert->rowCount() > 0) {
             $rowAlert = $resultAlert->fetch();
             $highestLevel = __($guid, $rowAlert['name']);
@@ -3800,8 +3795,19 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
         try {
-            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlAlert = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND (attainmentConcern='Y' OR effortConcern='Y') AND complete='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID";
+            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+            $sqlAlert = "SELECT *
+                FROM gibbonMarkbookEntry
+                    JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                    JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
+                    AND (attainmentConcern='Y' OR effortConcern='Y')
+                    AND complete='Y'
+                    AND gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND completeDate<=:today
+                    AND completeDate>:date
+                    ";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
         } catch (PDOException $e) {
@@ -3825,7 +3831,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
-                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern in the current academic year.'), __($guid, $alert['name'])).' '.$alertThresholdText;
+                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern over the past 60 days.'), __($guid, $alert['name'])).' '.$alertThresholdText;
                 $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'A').'</div></a>';
             }
         }
@@ -3834,8 +3840,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
         try {
-            $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-            $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>'".date('Y-m-d', (time() - (24 * 60 * 60 * 60)))."'";
+            $dataAlert = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+            $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
         } catch (PDOException $e) {
@@ -4379,6 +4385,26 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonYearGroupID'];
+        }
+    }
+
+    return $output;
+}
+
+//Take a roll group, and return the next one, or false if none
+function getNextRollGroupID($gibbonRollGroupID, $connection2)
+{
+    $output = false;
+    try {
+        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+        $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) { }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        if (!is_null($row['gibbonRollGroupIDNext'])) {
+            $output = $row['gibbonRollGroupIDNext'];
         }
     }
 

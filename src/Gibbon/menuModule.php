@@ -116,9 +116,12 @@ class MenuModule
 								$moduleDomain = ($row['type'] == 'Core')? null : $row['moduleName'];
 
 								//Set active link class
-								$style="";
-								if (strpos($row['URLList'],getActionName($address))!==false) {
-									$style="class='active'";
+								$style = "";
+								$urls = explode(',', $row['URLList']);
+								foreach ($urls AS $url) {
+									if (trim(getActionName($address)) == trim($url)) {
+										$style = "class='active'";
+									}
 								}
 
 								// Grab the base action name if this is a grouped action

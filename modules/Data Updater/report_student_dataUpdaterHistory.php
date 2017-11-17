@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -40,115 +43,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo __($guid, 'Choose Students');
     echo '</h2>';
 
-    $choices = null;
-    if (isset($_POST['members'])) {
-        $choices = $_POST['members'];
-    }
-    $nonCompliant = null;
-    if (isset($_POST['nonCompliant'])) {
-        $nonCompliant = $_POST['nonCompliant'];
-    }
-    $date = null;
-    if (isset($_POST['date'])) {
-        $date = $_POST['date'];
-    }
-    ?>
+    $choices = isset($_POST['members'])? $_POST['members'] : null;
+    $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : null;
+    $date = isset($_POST['date'])? $_POST['date'] : date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26)));
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_student_dataUpdaterHistory.php'?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Students') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-				</td>
-				<td class="right">
-					<select name="members[]" id="members[]" multiple class='standardWidth' style="height: 150px">
-						<optgroup label='--<?php echo __($guid, 'Students by Roll Group') ?>--'>
-							<?php
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if (!empty($choices) && in_array($rowSelect['gibbonPersonID'], $choices)) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-							}
-							?>
-						</optgroup>
-						<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
-							<?php
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlSelect = 'SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowSelect = $resultSelect->fetch()) {
-                                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-							}
-							?>
-						</optgroup>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Date') ?> *</b><br/>
-					<span style="font-size: 85%"><i><?php echo __($guid, 'Earliest acceptable update') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?></span>
-				</td>
-				<td class="right">
-					<input name="date" id="date" maxlength=10 value="<?php if ($date != '') { echo $date; } else { echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26))); } ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-					 	date.add(Validate.Presence);
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#date" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr>
-			<td>
-				<b><?php echo __($guid, 'Show Only Non-Compliant?') ?></b><br/>
-				<span style="font-size: 85%"><i><?php echo __($guid, 'If not checked, show all. If checked, show only non-compliant students.') ?></i><br/>
-				</span>
-			</td>
-			<td class="right">
-				<input <?php if ($nonCompliant == 'Y') { echo 'checked'; } ?> type='checkbox' name='nonCompliant' value='Y'/>
-			</td>
-		</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_student_dataUpdaterHistory.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    
+    $row = $form->addRow();
+        $row->addLabel('members', __('Students'));
+        $row->addSelectStudent('members', $_SESSION[$guid]['gibbonSchoolYearID'], array('byRoll' => true, 'byName' => true))
+            ->selectMultiple()
+            ->isRequired()
+            ->selected($choices);
+
+    $row = $form->addRow();
+        $row->addLabel('date', __('Date'))->description(__('Earliest acceptable update'));
+        $row->addDate('date')->setValue($date)->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('nonCompliant', __('Show Only Non-Compliant?'))->description(__('If not checked, show all. If checked, show only non-compliant students.'));
+        $row->addCheckbox('nonCompliant')->setValue('Y')->checked($nonCompliant);
+    
+    $row = $form->addRow();
+        $row->addSubmit();
+    
+    echo $form->getOutput();
 
     if (count($choices) > 0) {
         echo '<h2>';

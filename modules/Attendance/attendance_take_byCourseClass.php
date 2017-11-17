@@ -27,13 +27,13 @@ require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanc
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Take Attendance by Class') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('Take Attendance by Class') . "</div>" ;
 	print "</div>" ;
 
 	if (isset($_GET['return'])) {
@@ -87,19 +87,19 @@ else {
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-					<?php print _('Choose Class') ?>
+					<?php print __('Choose Class') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
 				<td style='width: 275px'>
-					<b><?php print _('Class') ?></b><br/>
+					<b><?php print __('Class') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonCourseClassID">
 						<?php
-						print "<option value=''>" . _('Please select...') . "</option>" ;
+						print "<option value=''>" . __('Please select...') . "</option>" ;
 
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
@@ -110,7 +110,7 @@ else {
 						catch(PDOException $e) { }
 
 						if ($resultSelect->rowCount() > 0) {
-							print "<optgroup label='--" . _('My Classes') . "--'>" ;
+							print "<optgroup label='--" . __('My Classes') . "--'>" ;
 
 							while ($rowSelect=$resultSelect->fetch()) {
 
@@ -136,7 +136,7 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 
-						print "<optgroup label='--" . _('All Classes') . "--'>" ;
+						print "<optgroup label='--" . __('All Classes') . "--'>" ;
 
 						while ($rowSelect=$resultSelect->fetch()) {
 							if ($gibbonCourseClassID==$rowSelect["gibbonCourseClassID"]) {
@@ -153,8 +153,8 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __('Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
@@ -185,13 +185,13 @@ else {
 	if ($gibbonCourseClassID!="") {
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
-				print _("The specified date is in the future: it must be today or earlier.");
+				print __("The specified date is in the future: it must be today or earlier.");
 			print "</div>" ;
 		}
 		else {
 			if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 				print "<div class='error'>" ;
-					print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
+					print __("School is closed on the specified date, and so attendance information cannot be recorded.") ;
 				print "</div>" ;
 			}
 			else {
@@ -228,7 +228,7 @@ else {
 				}
 				else if ($row["attendance"] == 'N') {
 					print "<div class='error'>" ;
-						print _("Attendance taking has been disabled for this class.") ;
+						print __("Attendance taking has been disabled for this class.") ;
 					print "</div>" ;
 				}
 				else {
@@ -248,6 +248,29 @@ else {
 					}
 					$last5SchoolDaysCount=$count ;
 
+					// Check if the class is a timetabled course AND if it's timetabled on the current day
+					try {
+						$dataTT = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $currentDate);
+						$sqlTT = "SELECT MIN(gibbonTTDayDateID) as currentlyTimetabled, COUNT(*) AS totalTimetableCount
+						FROM gibbonTTDayRowClass
+						LEFT JOIN gibbonTTDayDate ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID AND gibbonTTDayDate.date=:date)
+						WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+						GROUP BY gibbonTTDayRowClass.gibbonCourseClassID";
+						$resultTT=$connection2->prepare($sqlTT);
+						$resultTT->execute($dataTT);
+					} catch(PDOException $e) {
+						print "<div class='error'>" . $e->getMessage() . "</div>" ;
+					}
+
+					if ($resultTT && $resultTT->rowCount() > 0) {
+						$ttCheck = $resultTT->fetch();
+						if ($ttCheck['totalTimetableCount'] > 0 && empty($ttCheck['currentlyTimetabled'])) {
+							echo "<div class='warning'>" ;
+								echo __('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.');
+							echo "</div>" ;
+						}
+					}
+
 					//Show attendance log for the current day
 					try {
 						$dataLog=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate . "%");
@@ -260,15 +283,15 @@ else {
 					}
 					if ($resultLog->rowCount()<1) {
 						print "<div class='error'>" ;
-							print _("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.") ;
+							print __("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='success'>" ;
-							print _("Attendance has been taken at the following times for the specified date for this group:") ;
+							print __("Attendance has been taken at the following times for the specified date for this group:") ;
 							print "<ul>" ;
 							while ($rowLog=$resultLog->fetch()) {
-								print "<li>" . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
+								print "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
 							}
 							print "</ul>" ;
 						print "</div>" ;
@@ -296,7 +319,7 @@ else {
 
 					if ($resultCourseClass->rowCount()<1) {
 						print "<div class='error'>" ;
-							print _("There are no records to display.") ;
+							print __("There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -309,7 +332,7 @@ else {
 							<tr class='break'>
 								<td colspan=<?php print $columns ?>>
 									<h3>
-										<?php print _('Take Attendance') .": ". $gibbonCourseClassName; ?>
+										<?php print __('Take Attendance') .": ". $gibbonCourseClassName; ?>
 									</h3>
 								</td>
 							</tr>
@@ -407,10 +430,10 @@ else {
 							print "<tr>" ;
 								print "<td class='right' colspan=5>" ;
 									print "<div class='success'>" ;
-										print "<b>" . _('Total students:') . " $count</b><br/>" ;
+										print "<b>" . __('Total students:') . " $count</b><br/>" ;
 										if ($resultLog->rowCount()>=1) {
-											print "<span title='" . _('e.g. Present or Present - Late') . "'>" . _('Total students present in room:') . " <b>$countPresent</b><br/>" ;
-											print "<span title='" . _('e.g. not Present and not Present - Late') . "'>" . _('Total students absent from room:') . " <b>" . ($count-$countPresent) . "</b><br/>" ;
+											print "<span title='" . __('e.g. Present or Present - Late') . "'>" . __('Total students present in room:') . " <b>$countPresent</b><br/>" ;
+											print "<span title='" . __('e.g. not Present and not Present - Late') . "'>" . __('Total students absent from room:') . " <b>" . ($count-$countPresent) . "</b><br/>" ;
 										}
 									print "</div>" ;
 								print "</td>" ;

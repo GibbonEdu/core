@@ -63,6 +63,20 @@ try {
     exit();
 }
 
+$smartWorkflowHelp = isset($_POST['smartWorkflowHelp'])? $_POST['smartWorkflowHelp'] : null;
+if (!empty($smartWorkflowHelp)) {
+    try {
+        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'smartWorkflowHelp' => $smartWorkflowHelp);
+        $sql = "UPDATE gibbonStaff SET smartWorkflowHelp=:smartWorkflowHelp WHERE gibbonPersonID=:gibbonPersonID";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
+}
+
 //Update personal preferences in session
 $_SESSION[$guid]['calendarFeedPersonal'] = $calendarFeedPersonal;
 $_SESSION[$guid]['personalBackground'] = $personalBackground;

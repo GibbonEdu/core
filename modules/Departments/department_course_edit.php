@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -51,17 +53,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             echo __($guid, 'The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             //Get role within learning area
             $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
 
             $extra = '';
-            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $row['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
-                $extra = ' '.$row['year'];
+            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $values['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
+                $extra = ' '.$values['year'];
             }
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__($guid, 'View All')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID']."'>".$row['department']."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department_course.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".$row['course']."$extra</a> ></div><div class='trailEnd'>".__($guid, 'Edit Course').'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__($guid, 'View All')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID']."'>".$values['department']."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department_course.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".$values['course']."$extra</a> ></div><div class='trailEnd'>".__($guid, 'Edit Course').'</div>';
             echo '</div>';
 
             if (isset($_GET['return'])) {
@@ -73,30 +75,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_course_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Overview') ?></h3> 
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2> 
-								<?php echo getEditor($guid,  true, 'description', $row['description'], 20) ?>
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
 
+                $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_course_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID.'&gibbonCourseID='.$gibbonCourseID);
+                
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                
+                $form->addRow()->addHeading(__('Overview'));
+                $form->addRow()->addEditor('description', $guid)->setRows(20)->setValue($values['description']);
+            
+                $row = $form->addRow();
+                    $row->addSubmit();
+                
+                echo $form->getOutput();
             }
         }
     }
 }
-?>

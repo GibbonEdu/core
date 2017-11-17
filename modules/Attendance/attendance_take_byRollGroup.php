@@ -199,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     }
                     else if ($row["attendance"] == 'N') {
                         print "<div class='error'>" ;
-                            print _("Attendance taking has been disabled for this roll group.") ;
+                            print __("Attendance taking has been disabled for this roll group.") ;
                         print "</div>" ;
                     } else {
 

@@ -461,7 +461,7 @@
                                 } else {
                                     echo '<td>';
                                     if ($rowEntry['comment'] != '') {
-                                        if (strlen($rowEntry['comment']) > 200) {
+                                        if (mb_strlen($rowEntry['comment']) > 200) {
                                             echo "<script type='text/javascript'>";
                                             echo '$(document).ready(function(){';
                                             echo "\$(\".comment-$entryCount\").hide();";

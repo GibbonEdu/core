@@ -66,7 +66,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     public function getLabel()
     {
         if (empty($this->row)) return null;
-        return $this->row->getElement('label-'.$this->getID());
+        return $this->row->getElement('label'.$this->getID());
     }
 
     /**
@@ -86,18 +86,8 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
      */
     public function addValidation($type, $params = '')
     {
-        $this->validation[$type] = $params;
+        $this->validation[] = array('type' => $type, 'params' => $params);
         return $this;
-    }
-
-    /**
-     * Get a LiveValidation setting by type (eg: Validate.Presence)
-     * @param   string  $type
-     * @return  string
-     */
-    public function getValidation($type)
-    {
-        return (isset($this->validation[$type]))? $this->validation[$type] : null;
     }
 
     /**
@@ -125,8 +115,8 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
             }
 
             if (!empty($this->validation) && is_array($this->validation)) {
-                foreach ($this->validation as $type => $params) {
-                    $output .= $this->getID().'Validate.add('.$type.', {'.$params.' } ); '."\r";
+                foreach ($this->validation as $valid) {
+                    $output .= $this->getID().'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
                 }
             }
         }
