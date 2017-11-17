@@ -135,7 +135,7 @@ class attendanceView
 
 	public function isTypeAbsent( $type ) {
 	    if ( isset($this->attendanceTypes[$type]) == false ) return false;
-	    return ($this->attendanceTypes[$type]['direction'] == 'Out' && $this->attendanceTypes[$type]['scope'] == 'Offsite');
+	    return ($this->attendanceTypes[$type]['direction'] == 'Out' && $this->isTypeOffsite($type));
 	}
 
     public function isTypeOnsite( $type ) {
