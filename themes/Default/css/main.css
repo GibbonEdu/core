@@ -1125,13 +1125,11 @@ span.ttPersonalCalendar {
 	padding: 5px 7px;
 	border: 1px solid #555;
 }
-
 div.ttPersonalCalendar {
 	background-color: rgb(103,153,207);
 	color: #fff;
 	font-weight: bold ;
 }
-
 span.ttSpaceBookingCalendar {
 	color: #fff;
 	font-weight: bold;
@@ -1140,13 +1138,11 @@ span.ttSpaceBookingCalendar {
 	padding: 5px 7px;
 	border: 1px solid #555;
 }
-
 div.ttSpaceBookingCalendar {
 	background-color: #E5760D;
 	color: #fff;
 	font-weight: bold ;
 }
-
 div.ttClosure {
 	border: 1px solid rgb(136,136,136);
 	background-color: rgb(255,196,202);
@@ -1227,7 +1223,6 @@ span.small {
 input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth, table.standardWidth {
 	width: 300px ;
 }
-
 .fullWidth {
 	width: 100% ;
 }
@@ -1257,7 +1252,6 @@ td.wordWrap {
   	word-wrap: break-word;
   	word-break: break-word !important;
 }
-
 div.notificationTray {
 	float: right;
 	font-size: 13px;
