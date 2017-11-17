@@ -374,8 +374,9 @@ else {
 									} else {
 										print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
 									}
-								}
-								else {
+								} else if ($attendance->isTypeOffsite($rowLog["type"])) {
+                                        echo "<td style='border: 1px solid #3B73AF!important; background: none; background-color: #D0EAFD; width:20%; text-align: center; vertical-align: top'>";
+                                } else {
 									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 								}
 
