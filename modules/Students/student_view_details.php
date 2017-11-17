@@ -1954,10 +1954,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $and2 = '';
                                 $dataList = array();
                                 $dataEntry = array();
-                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : '*';
-                                if ($filter == '') {
-                                    $filter = $_SESSION[$guid]['gibbonSchoolYearID'];
-                                }
+                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+
                                 if ($filter != '*') {
                                     $dataList['filter'] = $filter;
                                     $and .= ' AND gibbonSchoolYearID=:filter';
