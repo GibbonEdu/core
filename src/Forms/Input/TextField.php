@@ -71,6 +71,16 @@ class TextField extends Input
         return $this;
     }
 
+    public function isUnique($ajaxURL)
+    {
+        $this->addClass('checkUniqueness')
+            ->addData('ajax-url', $ajaxURL)
+            ->addData('alert-success', 'Success')
+            ->addData('alert-fail', 'Fail');
+
+        return $this;
+    }
+
     /**
      * Gets the HTML output for this form element.
      * @return  string

@@ -95,7 +95,7 @@ if ($proceed == false) {
         $row->addTextField('username')
             ->maxLength(20)
             ->isRequired()
-            ->append('<span></span><div class="LV_validation_message LV_invalid" id="username_availability_result"></div><br/>');
+            ->isUnique('./publicRegistrationCheck.php');
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -132,33 +132,6 @@ if ($proceed == false) {
 
     echo $form->getOutput();
 
-    ?>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#username').on('input', function(){
-                if ($('#username').val() == '') {
-                    $('#username_availability_result').html('');
-                    return;
-                }
-                $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
-                $.ajax({
-                    type : 'POST',
-                    data : { username: $('#username').val() },
-                    url: "./publicRegistrationCheck.php",
-                    success: function(responseText){
-                        if(responseText == 0){
-                            $('#username_availability_result').html('<?php echo __('Username available'); ?>');
-                            $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
-                        }else if(responseText > 0){
-                            $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
-                            $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
-                        }
-                    }
-                });
-            });
-        });
-    </script>
-    <?php
     //Get postscrript
     $postscript = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript');
     if ($postscript != '') {

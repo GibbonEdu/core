@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 jQuery(function($){
-   /**
-   * Form Class: generic check All/None checkboxes
-   */
+    /**
+     * Form Class: generic check All/None checkboxes
+     */
     $('.checkall').click(function () {
         $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
     });
@@ -35,7 +35,7 @@ jQuery(function($){
       columnHighlight.removeClass("hover");
     });
 
-    /*
+    /**
      * Password Generator. Requires data-source, data-confirm and data-alert attributes.
      */
     $(".generatePassword").click(function(){
@@ -54,4 +54,43 @@ jQuery(function($){
         $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
         prompt($(this).data("alert"), text);
     });
+
+    /**
+     * Generic Uniqueness Check.
+     */
+    $('input.checkUniqueness').after('<span></span><div class="LV_validation_message LV_invalid availability_result"></div>');
+
+    $('input.checkUniqueness').on('input', function () {
+        // First check the LV validation before proceeding
+        var self = $(this);
+        var validation = window[self.attr('id') + "Validate"];
+        if (validation != null) {
+            if (self.val() == '' || validation.doValidations() == false) {
+                self.parent().find('.availability_result').html('');
+                return;
+            }
+        }
+
+        if (self.data("ajax-url") == '') return;
+
+        $.ajax({
+            type: 'POST',
+            data: { username: self.val(), gibbonPersonID: 0 },
+            url: self.data("ajax-url"),
+            success: function (responseText) {
+                if (responseText == 0) {
+                    $(this).next('.LV_validation_message').hide();
+                    self.parent().find('.availability_result').html(self.data("alert-success"));
+                    self.parent().find('.availability_result').switchClass('LV_invalid', 'LV_valid');
+                } else {
+                    self.parent().find('.availability_result').html(self.data("alert-fail"));
+                    self.parent().find('.availability_result').switchClass('LV_valid', 'LV_invalid');
+                    
+                    // Prevent submitting form with a non-unique email
+                    validation.add(Validate.Exclusion, { within: [self.val()], failureMessage: self.data("alert-fail")});
+                }
+            }
+        });
+    });
+
 });
