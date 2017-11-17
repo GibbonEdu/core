@@ -153,10 +153,10 @@ class MultiSelect implements OutputableInterface
                 });
 
                 $(\'#'. $this->searchBox->getID() .'\').keyup(function(){
-                    var search = $(this).val();
+                    var search = $(this).val().toLowerCase();
                     $(\'option\', sourceSelect).each(function(){
                         var option = $(this);
-                        if (option.text().includes(search)) {
+                        if (option.text().toLowerCase().includes(search)) {
                             option.show();
                         } else {
                             option.hide();
