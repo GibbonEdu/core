@@ -30,6 +30,7 @@ use Gibbon\Forms\Element;
 class TextField extends Input
 {
     protected $autocomplete;
+    protected $isUnique = false;
 
     /**
      * Set a max character count for this text field.
@@ -71,14 +72,33 @@ class TextField extends Input
         return $this;
     }
 
-    public function isUnique($ajaxURL)
+    public function isUnique($ajaxURL, $data = array())
     {
+        $label = $this->row->getElement('label'.$this->getName());
+        $fieldName = (!empty($label))? $label->getLabel() : ucfirst($this->getName());
+
+        $this->isUnique = true;
         $this->addClass('checkUniqueness')
             ->addData('ajax-url', $ajaxURL)
-            ->addData('alert-success', 'Success')
-            ->addData('alert-fail', 'Fail');
+            ->addData('ajax-data', array_replace(array('fieldName' => $this->getName()), $data), true)
+            ->addData('alert-success', sprintf(__('%1$s available'), $fieldName))
+            ->addData('alert-fail', sprintf(__('%1$s already in use'), $fieldName))
+            ->addData('alert-error', __('An error has occurred.'));
 
         return $this;
+    }
+
+    /**
+     * Adds uniqueness text to the label description (if not already present)
+     * @return string|bool
+     */
+    public function getLabelContext($label)
+    {
+        if ($this->isUnique && stristr($label->getDescription(), __('Must be unique.')) === false) {
+            return __('Must be unique.');
+        }
+
+        return false;
     }
 
     /**

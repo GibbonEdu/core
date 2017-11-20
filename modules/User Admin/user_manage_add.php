@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             ->isRequired()
             ->maxLength(20)
             ->append($generateUsername->getOutput())
-            ->isUnique('./publicRegistrationCheck.php');
+            ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php');
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
-        $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
+        $email->isUnique($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/user_manage_emailAjax.php');
     }
 
     $row = $form->addRow();

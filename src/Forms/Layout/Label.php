@@ -74,6 +74,15 @@ class Label extends Element implements RowDependancyInterface
     }
 
     /**
+     * Get the label text.
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
      * Set the smaller description text to be output with the label.
      * @param   string  $value
      * @return  self
