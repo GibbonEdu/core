@@ -91,7 +91,7 @@ if ($proceed == false) {
         $row->addDate('dob')->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('username', __('Username'))->description(__('Must be unique.'));
+        $row->addLabel('username', __('Username'));
         $row->addTextField('username')
             ->maxLength(20)
             ->isRequired()
@@ -143,4 +143,3 @@ if ($proceed == false) {
         echo '</p>';
     }
 }
-?>
