@@ -58,39 +58,55 @@ jQuery(function($){
     /**
      * Generic Uniqueness Check.
      */
-    $('input.checkUniqueness').after('<span></span><div class="LV_validation_message LV_invalid availability_result"></div>');
+    $('input.checkUniqueness').each(function () {
+        var ajaxURL = $(this).data("ajax-url");
+        var ajaxData = $(this).data("ajax-data");
+        if (ajaxURL == '' || ajaxData == '') return;
 
-    $('input.checkUniqueness').on('input', function () {
-        // First check the LV validation before proceeding
-        var self = $(this);
-        var validation = window[self.attr('id') + "Validate"];
-        if (validation != null) {
-            if (self.val() == '' || validation.doValidations() == false) {
-                self.parent().find('.availability_result').html('');
-                return;
-            }
+        var validation = window[$(this).attr('id') + "Validate"];
+        if (validation == null || typeof validation != "object") {
+            validation = new LiveValidation($(this).attr('id'));
         }
 
-        if (self.data("ajax-url") == '') return;
+        $(this).removeAttr("data-ajax-url data-ajax-data");
 
-        $.ajax({
-            type: 'POST',
-            data: { username: self.val(), gibbonPersonID: 0 },
-            url: self.data("ajax-url"),
-            success: function (responseText) {
-                if (responseText == 0) {
-                    $(this).next('.LV_validation_message').hide();
-                    self.parent().find('.availability_result').html(self.data("alert-success"));
-                    self.parent().find('.availability_result').switchClass('LV_invalid', 'LV_valid');
-                } else {
-                    self.parent().find('.availability_result').html(self.data("alert-fail"));
-                    self.parent().find('.availability_result').switchClass('LV_valid', 'LV_invalid');
-                    
-                    // Prevent submitting form with a non-unique email
-                    validation.add(Validate.Exclusion, { within: [self.val()], failureMessage: self.data("alert-fail")});
-                }
+        $(this).on('input', function (event) {
+            // Give the LiveValidation priority - and don't proceed if it fails
+            if (validation.doValidations() != true) {
+                return;
             }
+    
+            // Pass the current value as POST data (optionally by a defined fieldName)
+            ajaxData[ajaxData.fieldName || "value"] = $(this).val();
+    
+            // Send an AJAX request to check uniqueness
+            // event.stopPropagation();
+            // event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                data: ajaxData,
+                url: ajaxURL,
+                context: this,
+                success: function (responseText) {
+                    console.log(responseText);
+                    if (responseText < 0) {
+                        validation.invalidMessage = $(this).data("alert-error");
+                        validation.onInvalid();
+                    } else if (responseText == 0) {
+                        validation.validMessage = $(this).data("alert-success");
+                        validation.onValid();
+                    } else if (responseText > 0){
+                        validation.invalidMessage = $(this).data("alert-fail");
+                        validation.onInvalid();
+                        validation.add(Validate.Exclusion, { within: [$(this).val()], failureMessage: $(this).data("alert-fail") });
+                    }
+                },
+                error: function() {
+                    validation.invalidMessage = $(this).data("alert-error");
+                    validation.onInvalid();
+                }
+            });
         });
     });
-
+    
 });
