@@ -47,6 +47,8 @@ v15.0.00
 		System: fixed bug causing two entries in a module menu to be highlighted as active in some cases
 		System: added Enable Smart Workflow Help option to Preferences
 		System: removed personal settings form from Preferences when force reset in effect
+		System: adjusted Today's Classes in Student and Parent dashboard to show on non-school days
+		System: shortened abbreviation of core system roles
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
