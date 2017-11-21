@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_myChildren.php') == false) {
@@ -51,7 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
     } else {
         //Get child list
         $count = 0;
-        $options = '';
+        $options = array();
+
         while ($row = $result->fetch()) {
             try {
                 $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -62,67 +65,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowChild = $resultChild->fetch()) {
-                $select = '';
-                if (isset($_GET['search'])) {
-                    if ($rowChild['gibbonPersonID'] == $_GET['search']) {
-                        $select = 'selected';
-                    }
-                }
-
-                $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
-                $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
-                ++$count;
+                $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
             }
         }
 
-        if ($count == 0) {
+        $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
+
+        if (count($options) == 0) {
             echo "<div class='error'>";
             echo __($guid, 'Access denied.');
             echo '</div>';
-        } elseif ($count == 1) {
-            $_GET['search'] = $gibbonPersonID[0];
+        } elseif (count($options) == 1) {
+            $gibbonPersonID = key($options);
         } else {
             echo '<h2>';
             echo 'Choose Student';
             echo '</h2>';
 
-            ?>
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Search For') ?></b><br/>
-							<span class="emphasis small">Preferred, surname, username.</span>
-						</td>
-						<td class="right">
-							<select name="search" id="search" class="standardWidth">
-								<option value=""></value>
-								<?php echo $options; ?> 
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/iep_view_myChildren.php">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/iep_view_myChildren.php'>".__($guid, 'Clear Search').'</a>'; ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form->setClass('noIntBorder fullWidth');
 
+            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/iep_view_myChildren.php');
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonID', __('Student'));
+                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder();
+
+            $row = $form->addRow();
+                $row->addSearchSubmit($gibbon->session);
+
+            echo $form->getOutput();
         }
 
-        $gibbonPersonID = null;
-        if (isset($_GET['search'])) {
-            $gibbonPersonID = $_GET['search'];
-        }
-
-        if ($gibbonPersonID != '' and $count > 0) {
+        if ($gibbonPersonID != '' && count($options) > 0) {
             //Confirm access to this student
             try {
                 $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);

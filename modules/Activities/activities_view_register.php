@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -52,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             $access = getSettingByScope($connection2, 'Activities', 'access');
 
             $gibbonPersonID = $_GET['gibbonPersonID'];
+            $search = isset($_GET['search'])? $_GET['search'] : '';
 
             if ($access != 'Register') {
                 echo "<div class='error'>";
@@ -113,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $countChild = 0;
                             while ($row = $result->fetch()) {
                                 try {
-                                    $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                                    $dataChild = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName ";
                                     $resultChild = $connection2->prepare($sqlChild);
                                     $resultChild->execute($dataChild);
@@ -168,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             } else {
-                                $row = $result->fetch();
+                                $values = $result->fetch();
 
                                 //Check for existing registration
                                 try {
@@ -192,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     //Check registration limit...
                                     $proceed = true;
                                     if ($dateType == 'Term' and $maxPerTerm > 0) {
-                                        $termsList = explode(',', $row['gibbonSchoolYearTermIDList']);
+                                        $termsList = explode(',', $values['gibbonSchoolYearTermIDList']);
                                         foreach ($termsList as $term) {
                                             try {
                                                 $dataActivityCount = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term.'%');
@@ -213,141 +216,77 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         echo __($guid, 'You have subscribed for the maximum number of activities in a term, and so cannot register for this activity.');
                                         echo '</div>';
                                     } else {
-                                        ?>
-										<p>
-											<?php
-                                            if (getSettingByScope($connection2, 'Activities', 'enrolmentType') == 'Selection') {
-                                                echo __($guid, 'After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.');
+
+                                        echo '<p>';
+                                        if (getSettingByScope($connection2, 'Activities', 'enrolmentType') == 'Selection') {
+                                            echo __($guid, 'After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.');
+                                        } else {
+                                            echo __($guid, 'If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.');
+                                        }
+                                        echo '</p>';
+
+                                        $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$search);
+                
+                                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                                        $form->addHiddenValue('mode', $mode);
+                                        $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                                        $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
+
+                                        $row = $form->addRow();
+                                            $row->addLabel('name', __('Activity'));
+                                            $row->addTextField('name')->readonly();
+
+                                        if ($dateType != 'Date') {
+                                            $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                                            $termList = array_map(function($item) use ($schoolTerms) {
+                                                $index = array_search($item, $schoolTerms);
+                                                return isset($schoolTerms[$index+1])? $schoolTerms[$index+1] : '';
+                                            }, explode(',', $values['gibbonSchoolYearTermIDList']));
+
+                                            $row = $form->addRow();
+                                                $row->addLabel('terms', __('Terms'));
+                                                $row->addTextField('terms')->readonly()->setValue(implode(', ', $termList));
+                                        } else {
+                                            $row = $form->addRow();
+                                                $row->addLabel('programStart', __('Program Start Date'));
+                                                $row->addDate('programStart')->readonly();
+
+                                            $row = $form->addRow();
+                                                $row->addLabel('programEnd', __('Program End Date'));
+                                                $row->addDate('programEnd')->readonly();
+                                        }
+
+                                        if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
+                                            $row = $form->addRow();
+                                                $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
+                                                $row->addCurrency('payment')->readonly();
+                                        }
+
+                                        if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
+                                            if ($dateType != 'Date') {
+                                                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
+                                                $sql = "SELECT DISTINCT gibbonActivity.gibbonActivityID as value, gibbonActivity.name FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' $and ORDER BY name";
                                             } else {
-                                                echo __($guid, 'If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.');
+                                                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
+                                                $sql = "SELECT DISTINCT gibbonActivity.gibbonActivityID as value, gibbonActivity.name FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' $and ORDER BY name";
                                             }
-                                        ?>
-										</p>
-										<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$_GET['search'] ?>">
-											<table class='smallIntBorder fullWidth' cellspacing='0'>	
-												<tr>
-													<td style='width: 275px'> 
-														<b><?php echo __($guid, 'Activity') ?></b><br/>
-													</td>
-													<td class="right">
-														<input readonly name="name" id="name" maxlength=40 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-													</td>
-												</tr>
-												<?php
-                                                if ($dateType != 'Date') {
-                                                    ?>
-													<tr>
-														<td> 
-															<b><?php echo __($guid, 'Terms') ?></b><br/>
-														</td>
-														<td class="right">
-															<?php
-                                                            $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-                                                    $termList = '';
-                                                    for ($i = 0; $i < count($terms); $i = $i + 2) {
-                                                        if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                                            $termList .= $terms[($i + 1)].', ';
-                                                        }
-                                                    }
-                                                    ?>
-															<input readonly name="terms" id="terms" maxlength=10 value="<?php echo substr($termList, 0, -2) ?>" type="text" class="standardWidth">
-														</td>
-													</tr>
-													<?php
+                                            $result = $pdo->executeQuery($data, $sql);
 
-                                                } else {
-                                                    ?>
-													<tr>
-														<td> 
-															<b><?php echo __($guid, 'Program Start Date') ?></b><br/>
-														</td>
-														<td class="right">
-															<input readonly name="programStart" id="programStart" maxlength=10 value="<?php echo dateConvertBack($guid, $row['programStart']) ?>" type="text" class="standardWidth">
-														</td>
-													</tr>
-													<tr>
-														<td> 
-															<b><?php echo __($guid, 'Program End Date') ?></b><br/>
-														</td>
-														<td class="right">
-															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $row['programEnd']) ?>" type="text" class="standardWidth">
-														</td>
-													</tr>
-													<?php
-													}
-													?>
-												<tr>
-													<td> 
-														<b><?php echo __($guid, 'Cost') ?></b><br/>
-														<span class="emphasis small"><?php echo __($guid, 'For entire programme').'. '.$_SESSION[$guid]['currency'].'.' ?><br/></span>
-													</td>
-													<td class="right">
-														<?php
-                                                            if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
-                                                                ?>
-																<input readonly name="payment" id="payment" maxlength=7 value="<?php if (substr($_SESSION[$guid]['currency'], 4) != '') { echo substr($_SESSION[$guid]['currency'], 4); } echo $row['payment']; ?>" type="text" class="standardWidth">
-																<?php
-																}
-                                        						?>
-													</td>
-												</tr>
-												
-												<?php
-                                                if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
-                                                    ?>
-													<tr>
-														<td> 
-															<b><?php echo __($guid, 'Backup Choice') ?> * </b><br/>
-															<span class="emphasis small"><?php echo sprintf(__($guid, 'Incase %1$s is full.'), $row['name']) ?><br/></span>
-														</td>
-														<td class="right">
-															<select name="gibbonActivityIDBackup" id="gibbonActivityIDBackup" class="standardWidth">
-																<?php
-                                                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                            $row = $form->addRow();
+                                                $row->addLabel('gibbonActivityIDBackup', __('Backup Choice'))
+                                                    ->description(sprintf(__('Incase %1$s is full.'), $values['name']));
+                                                $row->addSelect('gibbonActivityIDBackup')
+                                                    ->fromResults($result)
+                                                    ->isRequired($result->rowCount() > 0)
+                                                    ->placeholder();
+                                        }
 
-                                                    try {
-                                                        if ($dateType != 'Date') {
-                                                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
-                                                            $sqlSelect = "SELECT DISTINCT gibbonActivity.* FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' $and ORDER BY name";
-                                                        } else {
-                                                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                                                            $sqlSelect = "SELECT DISTINCT gibbonActivity.* FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' $and ORDER BY name";
-                                                        }
-                                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                                        $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
+                                        $row = $form->addRow();
+                                            $row->addSubmit(__('Register'));
 
-                                                    while ($rowSelect = $resultSelect->fetch()) {
-                                                        echo "<option value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                                    }
-                                                    ?>				
-															</select>
-															<script type="text/javascript">
-																var gibbonActivityIDBackup=new LiveValidation('gibbonActivityIDBackup');
-																gibbonActivityIDBackup.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-															</script>
-														</td>
-													</tr>
-													<?php
-													}
-													?>
-												<tr>
-													<td>
-														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
-													</td>
-													<td class="right">
-														<input type="hidden" name="mode" value="<?php echo $mode ?>">
-														<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-														<input type="hidden" name="gibbonActivityID" value="<?php echo $gibbonActivityID ?>">
-														<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-														<input style='width: 75px' type="submit" value="Register">
-													</td>
-												</tr>
-											</table>
-										</form>
-										<?php
+                                        $form->loadAllValuesFrom($values);
 
+                                        echo $form->getOutput();
                                     }
                                 }
                             }
@@ -382,7 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             } else {
-                                $row = $result->fetch();
+                                $values = $result->fetch();
 
                                 //Check for existing registration
                                 try {
@@ -403,26 +342,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         returnProcess($guid, $_GET['return'], null, null);
                                     }
 
-                                    ?>
-									<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$_GET['search'] ?>">
-										<table cellspacing='0' style="width: 100%">	
-											<tr>
-												<td> 
-													<b><?php echo sprintf(__($guid, 'Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $row['name']) ?></b><br/>
-												</td>
-											</tr>
-											<tr>
-												<td class="right" colspan=2>
-													<input type="hidden" name="mode" value="<?php echo $mode ?>">
-													<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-													<input type="hidden" name="gibbonActivityID" value="<?php echo $gibbonActivityID ?>">
-													<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-													<input style='width: 75px' type="submit" value="Unregister">
-												</td>
-											</tr>
-										</table>
-									</form>
-									<?php
+                                    $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$search);
+                                    $form->removeClass('smallIntBorder');
+                
+                                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                                    $form->addHiddenValue('mode', $mode);
+                                    $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                                    $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
+
+                                    $form->addRow()->addContent(sprintf(__($guid, 'Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $values['name']))->wrap('<strong>', '</strong>');
+
+                                    $row = $form->addRow();
+                                        $row->addSubmit(__('Unregister'));
+
+                                    echo $form->getOutput();
                                 }
                             }
                         }
