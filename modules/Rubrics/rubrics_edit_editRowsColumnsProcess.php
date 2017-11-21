@@ -86,12 +86,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $partialFail = false;
 
                     //DEAL WITH ROWS
-                    $rowTitles = $_POST['rowTitle'];
-                    $rowOutcomes = $_POST['gibbonOutcomeID'];
-                    $rowIDs = $_POST['gibbonRubricRowID'];
+                    $rowTitles = isset($_POST['rowTitle'])? $_POST['rowTitle'] : array();
+                    $rowOutcomes = isset($_POST['gibbonOutcomeID'])? $_POST['gibbonOutcomeID'] : array();
+                    $rowIDs = isset($_POST['gibbonRubricRowID'])? $_POST['gibbonRubricRowID'] : array();
                     $count = 0;
                     foreach ($rowIDs as $gibbonRubricRowID) {
-                        if ($_POST["type-$count"] == 'Standalone' or $rowOutcomes[$count] == '') {
+                        $type = isset($_POST["type$count"])? $_POST["type$count"] : 'Standalone';
+                        if ($type == 'Standalone' or $rowOutcomes[$count] == '') {
                             try {
                                 $data = array('title' => $rowTitles[$count], 'gibbonRubricRowID' => $gibbonRubricRowID);
                                 $sql = 'UPDATE gibbonRubricRow SET title=:title, gibbonOutcomeID=NULL WHERE gibbonRubricRowID=:gibbonRubricRowID';
@@ -100,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
-                        } elseif ($_POST["type-$count"] == 'Outcome Based') {
+                        } elseif ($type == 'Outcome Based') {
                             try {
                                 $data = array('gibbonOutcomeID' => $rowOutcomes[$count], 'gibbonRubricRowID' => $gibbonRubricRowID);
                                 $sql = "UPDATE gibbonRubricRow SET title='', gibbonOutcomeID=:gibbonOutcomeID WHERE gibbonRubricRowID=:gibbonRubricRowID";
@@ -119,8 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     //DEAL WITH COLUMNS
                     //If no grade scale specified
                     if ($row['gibbonScaleID'] == '') {
-                        $columnTitles = $_POST['columnTitle'];
-                        $columnIDs = $_POST['gibbonRubricColumnID'];
+                        $columnTitles = isset($_POST['columnTitle'])? $_POST['columnTitle'] : array();
+                        $columnIDs = isset($_POST['gibbonRubricColumnID'])? $_POST['gibbonRubricColumnID'] : array();
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {
                             try {
