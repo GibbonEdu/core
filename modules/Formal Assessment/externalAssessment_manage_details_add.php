@@ -402,15 +402,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                 if (($copyToIBCheck == 'Target' || $copyToIBCheck == 'Final') && $field['category'] == '0_Target Grade') {
                                     //Compare subject name to $regression and find entry for current subject
                                     foreach ($regression as $subject) {
+                                        //Compare subject name to $regression and find entry for current subject
                                         $match = true;
                                         $subjectName = explode(' ', $subject[1]);
                                         foreach ($subjectName as $subjectToken) {
                                             //General/rough match check for all subjects
-                                            $match = $match && (stripos($field['name'], $subjectToken) === false);
-
+                                            if (stripos($field['name'], $subjectToken) === false) {
+                                                $match = false;
+                                            }
                                             //Exact check for mathematics SL & HL
                                             if (stripos($field['name'], 'Mathematics') !== false) {
-                                                $match = $match && ($field['name'] != $subject);
+                                                if ($field['name'] != $subject) {
+                                                    $match = false;
+                                                }
                                             }
                                         }
 
