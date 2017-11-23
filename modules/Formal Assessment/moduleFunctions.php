@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 //$role can be teacher, student or parent. If no role is specified, the default is teacher.
 function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role = 'teacher')
 {
@@ -216,63 +218,46 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     $output .= __($guid, 'Select Class');
     $output .= '</h2>';
 
-    $selectCount = 0;
-    $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-    $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>";
-    $output .= '<tr>';
-    $output .= "<td style='width: 190px'>";
-    if ($mode == 'write') {
-        $output .= "<input name='q' id='q' type='hidden' value='/modules/Formal Assessment/internalAssessment_write.php'>";
-    } else {
-        $output .= "<input name='q' id='q' type='hidden' value='/modules/Formal Assessment/internalAssessment_manage.php'>";
-    }
-    $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:161px'>";
-    $output .= "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sqlSelect = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    $output .= "<optgroup label='--".__($guid, 'My Classes')."--'>";
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
-            $selected = 'selected';
-            ++$selectCount;
+    $classes = array();
+    
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+
+    if ($result->rowCount() > 0) {
+        $group = '--'.__('My Classes').'--';
+        while ($class = $result->fetch()) {
+            $classes[$group][$class['gibbonCourseClassID']] = $class['course'].'.'.$class['class'];
         }
-        $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
     }
-    $output .= '</optgroup>';
 
     if ($mode == 'manage' or ($mode == 'write' and getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_write_data.php', $connection2) == 'Write Internal Assessments_all')) {
-        try {
-            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlSelect = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        $output .= "<optgroup label='--".__($guid, 'All Classes')."--'>";
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
-                $selected = 'selected';
-                ++$selectCount;
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        if ($result->rowCount() > 0) {
+            $group = '--'.__('All Classes').'--';
+            while ($class = $result->fetch()) {
+                $classes[$group][$class['gibbonCourseClassID']] = $class['course'].'.'.$class['class'];
             }
-            $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
         }
-        $output .= '</optgroup>';
     }
-    $output .= '</select>';
-    $output .= '</td>';
-    $output .= "<td class='right'>";
-    $output .= "<input type='submit' value='".__($guid, 'Go')."'>";
-    $output .= '</td>';
-    $output .= '</tr>';
-    $output .= '</table>';
-    $output .= '</form>';
+
+    $form = Form::create('classSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_'.$mode.'.php');
+
+    $row = $form->addRow();
+        $row->addSelect('gibbonCourseClassID')
+            ->fromArray($classes)
+            ->selected($gibbonCourseClassID)
+            ->placeholder()
+            ->setClass('fullWidth');
+        $row->addSubmit(__('Go'));
+
+    $output .= $form->getOutput();
 
     return $output;
 }

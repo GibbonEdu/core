@@ -36,10 +36,8 @@ if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[
 $password = $_POST['password'];
 $passwordNew = $_POST['passwordNew'];
 $passwordConfirm = $_POST['passwordConfirm'];
-$forceReset = null;
-if (isset($_POST['forceReset'])) {
-    $forceReset = $_POST['forceReset'];
-}
+$forceReset = $_SESSION[$guid]['passwordForceReset'];
+
 if ($forceReset != 'Y') {
     $forceReset = 'N';
 }

@@ -112,6 +112,31 @@ trait BasicAttributesTrait
     }
 
     /**
+     * Set a data-* attribute for passing values to scripts.
+     * @param  string $name
+     * @param  mixed  $data
+     * @return self
+     */
+    public function addData($name, $data = '', $encode = false)
+    {
+        if ($encode || is_array($data)) $data = json_encode($data);
+        $this->setAttribute('data-'.$name, $data);
+
+        return $this;
+    }
+
+    /**
+     * Gets a data-* attribute value by name.
+     * @return  string $name
+     */
+    public function getData($name, $decode = false)
+    {
+        $data = $this->getAttribute('data-'.$name);
+
+        return ($decode)? json_decode($data) : $data;
+    }
+
+    /**
      * Add a $key => $value pair to the attributes collection.
      * @param  string  $key
      * @param  mixed   $value

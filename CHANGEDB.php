@@ -853,5 +853,10 @@ ALTER TABLE `gibbonActivityStaff` MODIFY `gibbonPersonID` INT(10) UNSIGNED ZEROF
 UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a low level academic alert on a student.' WHERE scope='Students' AND name='academicAlertLowThreshold';end
 UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a medium level academic alert on a student.' WHERE scope='Students' AND name='academicAlertMediumThreshold';end
 UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a high level academic alert on a student.' WHERE scope='Students' AND name='academicAlertHighThreshold';end
-
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'uniqueEmailAddress', 'Unique Email Address', 'Are primary email addresses required to be unique?', 'N');end
+UPDATE gibbonRole SET nameShort='Adm' WHERE name='Administrator';end
+UPDATE gibbonRole SET nameShort='Std' WHERE name='Student';end
+UPDATE gibbonRole SET nameShort='Tcr' WHERE name='Teacher';end
+UPDATE gibbonRole SET nameShort='Prt' WHERE name='Parent';end
+UPDATE gibbonRole SET nameShort='SSt' WHERE name='Support Staff';end
 ";

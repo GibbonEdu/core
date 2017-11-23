@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -81,139 +83,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                     echo '</div>';
                 } else {
                     //Let's go!
-                    $row = $result->fetch();
+                    $values = $result->fetch();
 
                     if ($search != '' or $filter2 != '') {
                         echo "<div class='linkTop'>";
                         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>".__($guid, 'Back to Search Results').'</a>';
                         echo '</div>';
-                    }
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_duplicateProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Rubric Basics') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Scope') ?> *</b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<?php
-                                    if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                        ?>
-										<select name="scope" id="scope" class="standardWidth">
-											<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-											<option value="School"><?php echo __($guid, 'School') ?></option>
-											<option value="Learning Area"><?php echo __($guid, 'Learning Area') ?></option>
-										</select>
-										<script type="text/javascript">
-											var scope=new LiveValidation('scope');
-											scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-										 <?php
+					}
+					
+					$scopes = array(
+						'School' => __('School'),
+						'Learning Area' => __('Learning Area'),
+					);
 
-                                    } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                                        ?>
-										<input readonly name="scope" id="scope" value="Learning Area" type="text" class="standardWidth">
-										<?php
+					$form = Form::create('addRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_duplicateProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
-                                    }
-                   		 			?>
-								</td>
-							</tr>
+					$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+					
+					$form->addRow()->addHeading(__('Rubric Basics'));
 
-							<?php
-                            if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                ?>
-								<script type="text/javascript">
-									$(document).ready(function(){
-										$("#learningAreaRow").css("display","none");
+					$row = $form->addRow();
+						$row->addLabel('scope', 'Scope');
+					if ($highestAction == 'Manage Rubrics_viewEditAll') {
+						$row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+					} else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
+						$row->addTextField('scope')->readOnly()->setValue('Learning Area');
+					}
 
-										$("#scope").change(function(){
-											if ($('#scope').val()=="Learning Area" ) {
-												$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
-												gibbonDepartmentID.enable();
-											}
-											else {
-												$("#learningAreaRow").css("display","none");
-												gibbonDepartmentID.disable();
-											}
-										 });
-									});
-								</script>
-								<?php
+					if ($highestAction == 'Manage Rubrics_viewEditAll') {
+						$data = array();
+						$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+					} else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
+						$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+						$sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+					}
 
-                            }
-                    		?>
-							<tr id='learningAreaRow'>
-								<td>
-									<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
-										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-										<?php
-                                        try {
-                                            if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                                $dataSelect = array();
-                                                $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                                            } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                                                $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                                $sqlSelect = "SELECT * FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
-                                            }
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-									while ($rowSelect = $resultSelect->fetch()) {
-										echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-									}
-									?>
-									</select>
-									<script type="text/javascript">
-										var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-										gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										<?php
-                                        if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                            echo 'gibbonDepartmentID.disable();';
-                                        }
-                    					?>
-									</script>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Name') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input name="name" id="name" maxlength=50 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var name2=new LiveValidation('name');
-										name2.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+					$form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
+					$row = $form->addRow()->addClass('learningAreaRow');
+						$row->addLabel('gibbonDepartmentID', __('Learning Area'));
+						$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
 
+					$row = $form->addRow();
+						$row->addLabel('name', __('Name'));
+						$row->addTextField('name')->maxLength(50)->isRequired();
+						
+					$row = $form->addRow();
+						$row->addFooter();
+						$row->addSubmit();
+
+					$form->loadAllValuesFrom($values);
+					
+					echo $form->getOutput();
                 }
             }
         }
     }
 }
-?>
+

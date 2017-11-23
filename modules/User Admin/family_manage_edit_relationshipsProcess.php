@@ -45,43 +45,45 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         $partialFail = false;
 
         $count = 0;
-        foreach ($relationships as $relationship) {
-            //Check for record
-            try {
-                $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonID1[$count], 'gibbonPersonID2' => $gibbonPersonID2[$count]);
-                $sql = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $partialFail = true;
-            }
-            if ($result->rowCount() == 0) {
+        foreach ($relationships as $relationshipOuter) {
+            foreach ($relationshipOuter as $relationship) {
+                //Check for record
                 try {
-                    $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonID1[$count], 'gibbonPersonID2' => $gibbonPersonID2[$count], 'relationship' => $relationship);
-                    $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                    $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonID1[$count], 'gibbonPersonID2' => $gibbonPersonID2[$count]);
+                    $sql = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
                     $partialFail = true;
                 }
-            } elseif ($result->rowCount() == 1) {
-                $row = $result->fetch();
-
-                if ($row['relationship'] != $relationship) {
+                if ($result->rowCount() == 0) {
                     try {
-                        $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $row['gibbonFamilyRelationshipID']);
-                        $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
+                        $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonID1[$count], 'gibbonPersonID2' => $gibbonPersonID2[$count], 'relationship' => $relationship);
+                        $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $partialFail = true;
                     }
-                }
-            } else {
-                $partialFail = true;
-            }
+                } elseif ($result->rowCount() == 1) {
+                    $row = $result->fetch();
 
-            ++$count;
+                    if ($row['relationship'] != $relationship) {
+                        try {
+                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $row['gibbonFamilyRelationshipID']);
+                            $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $partialFail = true;
+                        }
+                    }
+                } else {
+                    $partialFail = true;
+                }
+
+                ++$count;
+            }
         }
 
         if ($partialFail == true) {

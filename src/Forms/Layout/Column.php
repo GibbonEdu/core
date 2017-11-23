@@ -63,7 +63,7 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         $output = '';
 
         foreach ($this->getElements() as $element) {
-            $output .= '<div>';
+            $output .= '<div class="'.$this->getContainerClass($element).'">';
             $output .= $element->getOutput();
             $output .= '</div>';
         }
@@ -96,5 +96,15 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         }
 
         return $output;
+    }
+
+    /**
+     * Gets the classname for the div container inside the column.
+     * @param Element $element
+     * @return string
+     */
+    protected function getContainerClass($element)
+    {
+        return str_replace('standardWidth', '', $element->getClass());
     }
 }

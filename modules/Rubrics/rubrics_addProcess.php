@@ -65,15 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             $active = $_POST['active'];
             $category = $_POST['category'];
             $description = $_POST['description'];
-            $gibbonYearGroupIDList = '';
-            for ($i = 0; $i < $_POST['count']; ++$i) {
-                if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
-                    if ($_POST["gibbonYearGroupIDCheck$i"] == 'on') {
-                        $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST["gibbonYearGroupID$i"].',';
-                    }
-                }
-            }
-            $gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
+            $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList']) ? implode(',', $_POST['gibbonYearGroupIDList']) : '';
             $gibbonScaleID = null;
             if ($_POST['gibbonScaleID'] != '') {
                 $gibbonScaleID = $_POST['gibbonScaleID'];

@@ -34,7 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 } else {
     $deleteCurrentPlans = $_POST['deleteCurrentPlans'];
     $title = $_POST['title'];
-    $gibbonPersonIDs = $_POST['gibbonPersonID'];
+    $gibbonPersonIDs = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
+    if (!is_array($gibbonPersonIDs)) {
+        $gibbonPersonIDs = array($gibbonPersonIDs);
+    }
 
     if ($deleteCurrentPlans == '' or $title == '' or count($gibbonPersonIDs) < 1) {
         $URL .= '&return=error1';

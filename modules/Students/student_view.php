@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
@@ -123,63 +125,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo __($guid, 'Filter');
             echo '</h2>';
 
-            $gibbonPersonID = null;
-            if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
-            }
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
-            $sort = 'surname, preferredName';
-            if (isset($_GET['sort'])) {
-                $sort = $_GET['sort'];
-            }
+            $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+            $search = isset($_GET['search'])? $_GET['search'] : '';
+            $sort = isset($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
 
-            ?>
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Search For') ?></b><br/>
-							<?php
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username.').'</span>'; ?>
-						</td>
-						<td class="right">
-							<input name="search" id="search" maxlength=50 value="<?php echo $search ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Sort By') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="sort" class="standardWidth">
-								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
-								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
-								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
-								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Year Group'); ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/student_view.php">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
+            $sortOptions = array(
+                'surname, preferredName' => 'Surname',
+                'preferredName' => 'Given Name',
+                'rollGroup' => 'Roll Group',
+                'yearGroup' => 'Year Group',
+            );
 
-			<h2>
-				<?php echo __($guid, 'Choose A Student'); ?>
-			</h2>
+            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            
+            $form->setClass('noIntBorder fullWidth');
+            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view.php');
+        
+            $row = $form->addRow();
+                $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.'))->setClass('mediumWidth');
+                $row->addTextField('search')->setValue($search);
 
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('sort', __('Sort By'));
+                $row->addSelect('sort')->fromArray($sortOptions)->selected($sort);
+
+            $row = $form->addRow();
+                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+            
+            echo $form->getOutput();
+
+            echo '<h2>';
+            echo __('Choose A Student');
+            echo '</h2>';
+
             //Set pagination variable
             $page = 1;
             if (isset($_GET['page'])) {
@@ -289,82 +267,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo __($guid, 'Filter');
             echo '</h2>';
 
-            $gibbonPersonID = null;
-            if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
-            }
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
-            $allStudents = '';
-            if (isset($_GET['allStudents'])) {
-                $allStudents = $_GET['allStudents'];
-            }
-            $sort = 'surname, preferredName';
-            if (isset($_GET['sort'])) {
-                $sort = $_GET['sort'];
-            }
+            $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+            $search = isset($_GET['search'])? $_GET['search'] : '';
+            $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
+            $sort = isset($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
 
-            ?>
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Search For') ?></b><br/>
-							<?php
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.').'</span>'; ?>
-						</td>
-						<td class="right">
-							<input name="search" id="search" maxlength=50 value="<?php echo $search ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Sort By') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="sort" class="standardWidth">
-								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
-								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
-								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
-								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Year Group'); ?></option>
-							</select>
-						</td>
-					</tr>
+            $sortOptions = array(
+                'surname, preferredName' => 'Surname',
+                'preferredName' => 'Given Name',
+                'rollGroup' => 'Roll Group',
+                'yearGroup' => 'Year Group',
+            );
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'All Students') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Include all students, regardless of status and current enrolment. Some data may not display.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                                $checked = '';
-								if ($allStudents == 'on') {
-									$checked = 'checked';
-								}
-								echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">"; ?>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/student_view.php">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
+            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
-			<h2>
-				<?php echo __($guid, 'Choose A Student'); ?>
-			</h2>
+            $form->setClass('noIntBorder fullWidth');
+            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view.php');
+        
+            $row = $form->addRow();
+                $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.'))->setClass('mediumWidth');
+                $row->addTextField('search')->setValue($search);
 
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('sort', __('Sort By'));
+                $row->addSelect('sort')->fromArray($sortOptions)->selected($sort);
+
+            $row = $form->addRow();
+                $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
+                $row->addCheckbox('allStudents')->setValue('on')->checked($allStudents);
+            
+            $row = $form->addRow();
+                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+            
+            echo $form->getOutput();
+
+            echo '<h2>';
+            echo __('Choose A Student');
+            echo '</h2>';
+
             //Set pagination variable
             $page = 1;
             if (isset($_GET['page'])) {

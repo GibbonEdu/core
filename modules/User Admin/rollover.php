@@ -86,7 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
 
                 $row = $form->addRow();
-                    $row->addFooter();
                     $row->addSubmit('Proceed');
 
                 echo $form->getOutput();
@@ -180,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $row = $form->addRow();
                         $row->addLabel('nextsequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-                        $row->addSequenceNumber('nextsequenceNumber', 'gibbonSchoolYear')->isRequired()->maxLength(3)->readonly();
+                        $row->addSequenceNumber('nextsequenceNumber', 'gibbonSchoolYear', '', 'sequenceNumber')->isRequired()->maxLength(3)->readonly();
 
                     $row = $form->addRow();
                         $row->addLabel('nextfirstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
@@ -206,11 +205,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 if ($resultExpect->rowCount() < 1) {
                     $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
-                    $row = $form->addRow();
-                        $row->addColumn()->addContent('<b>'.__('Name').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Current Status').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('New Status').'</b>');
+                    $row = $form->addRow()->addClass('head break');
+                        $row->addColumn()->addContent(__('Name'));
+                        $row->addColumn()->addContent(__('Primary Role'));
+                        $row->addColumn()->addContent(__('Current Status'));
+                        $row->addColumn()->addContent(__('New Status'));
 
                     $count = 0;
                     while ($rowExpect = $resultExpect->fetch()) {
@@ -245,12 +244,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     if ($resultEnrol->rowCount() < 1) {
                         $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
-                        $row = $form->addRow();
-                            $row->addColumn()->addContent('<b>'.__('Name').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Enrol').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Year Group').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Form Group').'</b>');
+                        $row = $form->addRow()->addClass('head break');
+                            $row->addColumn()->addContent(__('Name'));
+                            $row->addColumn()->addContent(__('Primary Role'));
+                            $row->addColumn()->addContent(__('Enrol'));
+                            $row->addColumn()->addContent(__('Year Group'));
+                            $row->addColumn()->addContent(__('Form Group'));
 
                         $count = 0;
                         while ($rowEnrol = $resultEnrol->fetch()) {
@@ -321,12 +320,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     if ($count < 1) {
                         $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
-                        $row = $form->addRow();
-                            $row->addColumn()->addContent('<b>'.__('Name').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Enrol').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Year Group').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Form Group').'</b>');
+                        $row = $form->addRow()->addClass('head break');
+                            $row->addColumn()->addContent(__('Name'));
+                            $row->addColumn()->addContent(__('Primary Role'));
+                            $row->addColumn()->addContent(__('Enrol'));
+                            $row->addColumn()->addContent(__('Year Group'));
+                            $row->addColumn()->addContent(__('Form Group'));
 
                         $count = 0;
                         foreach ($students AS $student) {
@@ -389,12 +388,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     if ($resultEnrol->rowCount() < 1) {
                         $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
-                        $row = $form->addRow();
-                            $row->addColumn()->addContent('<b>'.__('Name').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Re-Enrol').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Year Group').'</b>');
-                            $row->addColumn()->addContent('<b>'.__('Form Group').'</b>');
+                        $row = $form->addRow()->addClass('head break');
+                            $row->addColumn()->addContent(__('Name'));
+                            $row->addColumn()->addContent(__('Primary Role'));
+                            $row->addColumn()->addContent(__('Re-Enrol'));
+                            $row->addColumn()->addContent(__('Year Group'));
+                            $row->addColumn()->addContent(__('Form Group'));
 
                         $count = 0;
                         while ($rowReenrol = $resultReenrol->fetch()) {
@@ -451,11 +450,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 if ($resultFinal->rowCount() < 1) {
                     $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
-                    $row = $form->addRow();
-                        $row->addColumn()->addContent('<b>'.__('Name').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Current Status').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('New Status').'</b>');
+                    $row = $form->addRow()->addClass('head break');
+                        $row->addColumn()->addContent(__('Name'));
+                        $row->addColumn()->addContent(__('Primary Role'));
+                        $row->addColumn()->addContent(__('Current Status'));
+                        $row->addColumn()->addContent(__('New Status'));
 
                     $count = 0;
                     while ($rowFinal = $resultFinal->fetch()) {
@@ -486,12 +485,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 if ($resultRegister->rowCount() < 1) {
                     $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                 } else {
-                    $row = $form->addRow();
-                        $row->addColumn()->addContent('<b>'.__('Name').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Primary Role').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Register').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Type').'</b>');
-                        $row->addColumn()->addContent('<b>'.__('Job Title').'</b>');
+                    $row = $form->addRow()->addClass('head break');
+                        $row->addColumn()->addContent(__('Name'));
+                        $row->addColumn()->addContent(__('Primary Role'));
+                        $row->addColumn()->addContent(__('Register'));
+                        $row->addColumn()->addContent(__('Type'));
+                        $row->addColumn()->addContent(__('Job Title'));
 
                     $count = 0;
                     while ($rowRegister = $resultRegister->fetch()) {
