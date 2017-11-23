@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $form->addHiddenValue('step', 2);
                 $form->addHiddenValue('search', $search);
                 $form->addHiddenValue('allStudents', $allStudents);
-                
+
                 $form->addRow()->addHeading(__('Assessment Type'));
 
                 $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $row = $form->addRow();
                     $row->addFooter();
                     $row->addSubmit(__('Go'));
-                
+
                 echo $form->getOutput();
 
             } else {
@@ -180,8 +180,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             }
                         }
                     }
-
                     //Attempt to get GCSE grades to copy to IB target
+                    $regression = array();
                     if ($copyToIBCheck == 'Target' or $copyToIBCheck == 'Final') {
                         $grades = array();
                         $count = 0;
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             $sqlCopy = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='GCSE/iGCSE' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
                             $resultCopy = $connection2->prepare($sqlCopy);
                             $resultCopy->execute($dataCopy);
-                        } catch (PDOException $e) {
+                        } catch (PDOException $e) { echo $e->getMessage();
                         }
 
                         if ($resultCopy->rowCount() > 0) {
@@ -247,7 +247,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             }
 
                             //Apply regression
-                            $regression = array();
                             $regression[1][1] = 'Biology';
                             $regression[1][2] = 1.165650007;
                             $regression[1][3] = -2.25440921;
@@ -357,7 +356,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                     $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
-                    
+
                     $row = $form->addRow();
                     $row->addLabel('name', __('Assessment Type'));
                     $row->addTextField('name')->isRequired()->readOnly()->setValue(__($rowSelect['name']));
@@ -435,11 +434,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                         $form->addHiddenValue('count', $count);
                     }
-                    
+
                     $row = $form->addRow();
                     $row->addFooter();
                     $row->addSubmit();
-                    
+
                     echo $form->getOutput();
                 }
             }
