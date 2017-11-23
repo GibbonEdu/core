@@ -71,7 +71,7 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 }
                 $date = dateConvert($guid, $_POST['date']);
 
-                $attachment = $row['attachment'];
+                $attachment = isset($_POST['attachment'])? $_POST['attachment'] : $row['attachment'];
                 //Move attached image  file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
