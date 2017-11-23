@@ -226,6 +226,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                     $grades[$count][1] = 2;
                                 } elseif ($rowCopy2['value'] == 'F') {
                                     $grades[$count][1] = 1;
+                                } else {
+                                    $grades[$count][1] = 0;
                                 }
 
                                 ++$countWeighted;
@@ -411,7 +413,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                                 $match = false;
                                             }
                                             //Exact check for mathematics SL & HL
-                                            if (stripos($field['name'], 'Mathematics') !== false) {
+                                            if (stripos($field['name'], 'Mathematics')) {
                                                 if ($field['name'] != $subject) {
                                                     $match = false;
                                                 }
