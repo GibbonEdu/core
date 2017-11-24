@@ -59,14 +59,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch();
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search", true);
             echo $form->getOutput();
         }

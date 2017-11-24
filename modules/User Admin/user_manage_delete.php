@@ -57,14 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch();
-            if ($_GET['search'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/user_manage_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search'], true);
             echo $form->getOutput();
         }

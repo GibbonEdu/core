@@ -60,14 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                //Let's go!
-                $row = $result->fetch();
-                if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
-                    echo '</div>';
-                }
-
                 $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
                 echo $form->getOutput();
             }

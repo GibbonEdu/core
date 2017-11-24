@@ -58,14 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch();
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_deleteProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search", true);
             echo $form->getOutput();
         }
