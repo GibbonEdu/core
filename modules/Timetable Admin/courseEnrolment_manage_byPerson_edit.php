@@ -93,9 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo __($guid, 'Add Classes');
             echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Classes') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
@@ -109,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                                     try {
                                         $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => '%'.$row['gibbonYearGroupID'].'%');
                                         $sqlSelect = "SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class,
-												(SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount 
-											FROM gibbonCourse 
-											JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-											WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList 
+												(SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount
+											FROM gibbonCourse
+											JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+											WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList
 											ORDER BY course, class";
                                         $resultSelect = $connection2->prepare($sqlSelect);
                                         $resultSelect->execute($dataSelect);
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Role') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 			</form>
 
 			<?php
-            //SHOW CURRENT ENROLMENT	
+            //SHOW CURRENT ENROLMENT
             echo '<h2>';
             echo __($guid, 'Current Enrolment');
             echo '</h2>';
@@ -276,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                     echo '</td>';
                     echo '<td>';
                     echo "<input name='gibbonCourseClassID-$count' value='".$row['gibbonCourseClassID']."' type='hidden'>";
@@ -379,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                     echo '</td>';
                     echo '</tr>';
                 }

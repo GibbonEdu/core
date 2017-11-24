@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\PrefabFormFactory;
+
 @session_start();
 
 //Module includes
@@ -67,33 +69,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($search != '') {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
             }
-            echo '</div>'; ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_deleteProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<?php echo $gibbonApplicationFormID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            echo '</div>';
 
+            $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_deleteProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search", true);
+            echo $form->getOutput();
         }
     }
 }

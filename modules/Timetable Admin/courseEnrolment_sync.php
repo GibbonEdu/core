@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '<td>'.$mapping['classCount'].'</td>';
                 echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_edit.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_delete.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> &nbsp;";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_delete.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> &nbsp;";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$mapping['gibbonYearGroupID']."'><img title='".__('Sync Now')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png' style='width:22px;height:22px;'/></a>";
                 echo '</td>';
             echo '</tr>';

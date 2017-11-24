@@ -31,6 +31,14 @@ class PrefabFormFactory
 {
     public static function createDeleteForm($action, $confirmation = false)
     {
+        $form = self::createDeleteFormStart($action, $confirmation);
+        $form->addRow()->addElement(self::createDeleteFormSubmit($form));
+
+        return $form;
+    }
+
+    public static function createDeleteFormStart($action, $confirmation = false)
+    {
         $form = Form::create('deleteRecord', $action);
         $form->addHiddenValue('address', $_GET['q']);
 
@@ -54,8 +62,12 @@ class PrefabFormFactory
                 ->addValidationOption('onlyOnSubmit: true');
         }
 
-        $form->addRow()->addSubmit(__('Yes'));
         return $form;
+    }
+
+    public static function createDeleteFormSubmit($form)
+    {
+        return $form->getFactory()->createSubmit(__('Yes'));
     }
 
 }

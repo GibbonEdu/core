@@ -47,10 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     echo __($guid, 'Search & Filter');
     echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
 				</td>
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'All Staff') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Include Expected and Left.') ?></span>
 				</td>
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

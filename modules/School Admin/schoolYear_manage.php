@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
             // Only non-current School Years are delete-able
             if ($row['status'] != 'Current') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYear_manage_delete.php&gibbonSchoolYearID='.$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYear_manage_delete.php&gibbonSchoolYearID='.$row['gibbonSchoolYearID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             }
             echo '</td>';
             echo '</tr>';

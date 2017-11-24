@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
         ?>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
 
                 if ($highestAction == 'Manage Outcomes_viewEditAll') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/outcomes_edit.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/outcomes_delete.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/outcomes_delete.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
                     if ($row['scope'] == 'Learning Area' and $row['gibbonDepartmentID'] != '') {
                         try {
