@@ -27,13 +27,13 @@ $connection2 = $pdo->getConnection();
 @session_start();
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$viewBy = $_POST['viewBy'];
-$subView = $_POST['subView'];
+$viewBy = isset($_POST['viewBy'])? $_POST['viewBy'] : '';
+$subView = isset($_POST['subView'])? $_POST['subView'] : '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$date = $_POST['date'];
+$gibbonCourseClassID = isset($_POST['gibbonCourseClassID'])? $_POST['gibbonCourseClassID'] : '';
+$date = isset($_POST['date'])? $_POST['date'] : '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_delete.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/planner.php';
 
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                 exit();
             }
 
-            if ($result->rowCount() != 1) {
+            if ($result->rowCount() <= 0) {
                 $URL .= "&return=error2$params";
                 header("Location: {$URL}");
             } else {
