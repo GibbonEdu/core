@@ -56,12 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
                 $filter2 = $_GET['filter2'];
             }
 
-            if ($filter2 != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             //Check if school year specified
             $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
             if ($gibbonOutcomeID == '') {

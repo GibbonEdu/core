@@ -62,14 +62,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch();
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/stringReplacement_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/stringReplacement_manage_deleteProcess.php?gibbonStringID=$gibbonStringID&search=$search");
             echo $form->getOutput();
         }

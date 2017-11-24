@@ -61,12 +61,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             echo __($guid, 'The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            echo "<div class='linkTop'>";
-            if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-            }
-            echo '</div>';
-
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_deleteProcess.php??gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search", true);
             echo $form->getOutput();
         }

@@ -58,13 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_deleteProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search");
             echo $form->getOutput();
         }
