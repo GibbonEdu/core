@@ -82,9 +82,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo $form->getOutput();
             }
         }
-
-        //Print sidebar
-        $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $gibbonCourseClassID);
     }
 }
 ?>

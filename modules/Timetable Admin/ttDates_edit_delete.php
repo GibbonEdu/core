@@ -63,7 +63,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             }
 
             $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/ttDates_edit_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp&gibbonTTDayID=$gibbonTTDayID");
-
             echo $form->getOutput();
         }
     }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\PrefabFormFactory;
+
 @session_start();
 
 //New PDO DB connection
@@ -118,37 +120,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Delete').' '.$row['course'].'.'.$row['class'].' '.__($guid, ' Weighting').'</div>';
                     echo '</div>';
 
-                    // Show add weighting form
-                    ?>
-                    <form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID"; ?>">
-                        <table class='smallIntBorder fullWidth' cellspacing='0'>    
-                            <tr>
-                                <td> 
-                                    <b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-                                    <span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-                                </td>
-                                <td class="right">
-                            
-                                </td>
-                            </tr>
-                            <tr>
-                                <td> 
-                                    <input name="gibbonMarkbookWeightID" id="gibbonMarkbookWeightID" value="<?php echo $gibbonMarkbookWeightID; ?>" type="hidden">
-                                    <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-                                    <input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-                                </td>
-                                <td class="right">
-                            
-                                </td>
-                            </tr>
-                        </table>
-                        </form>
-                    <?php
+                    $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
+                    echo $form->getOutput();
                 }
             }
         }
     }
-
-    // Print the sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'weighting_manage.php');
 }

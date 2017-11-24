@@ -102,20 +102,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         echo '<h4>';
         echo __($guid, 'Search');
         echo '</h2>';
-        
+
         $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-            
+
         $form->setClass('noIntBorder fullWidth');
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-    
+
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Application ID, preferred, surname, payment transaction ID'));
             $row->addTextField('search')->setValue($search);
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
-        
+
         echo $form->getOutput();
 
         echo '<h4>';
@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_edit.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_delete.php'))
-                    echo " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_delete.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img style='margin-left: 4px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo " <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_delete.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&width=650&height=135'><img style='margin-left: 4px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 
                 echo '</td>';
                 echo '</tr>';

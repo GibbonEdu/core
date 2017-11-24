@@ -87,7 +87,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                     echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
-                    //Let's go!
                     $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2");
                     echo $form->getOutput();
                 }

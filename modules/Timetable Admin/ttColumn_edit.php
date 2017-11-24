@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_edit.php&gibbonTTColumnRowID='.$row['gibbonTTColumnRowID']."&gibbonTTColumnID=$gibbonTTColumnID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_delete.php&gibbonTTColumnRowID='.$row['gibbonTTColumnRowID']."&gibbonTTColumnID=$gibbonTTColumnID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_delete.php&gibbonTTColumnRowID='.$row['gibbonTTColumnRowID']."&gibbonTTColumnID=$gibbonTTColumnID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
 

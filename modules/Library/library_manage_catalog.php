@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_manage_catalog.php'>";
     echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'ID/Name/Producer') ?></b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</td>
 		</tr>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Type') ?></b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</td>
 		</tr>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Location') ?> *</b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</td>
 		</tr>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Status') ?></b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Owner/User') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Type-Specific Fields') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'For example, a computer\'s MAC address or a book\'s ISBN.') ?></span>
 				</td>
@@ -439,7 +439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_edit.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__($guid, 'Lending')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_delete.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img style='margin-right: 2px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_delete.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."&width=650&height=135'><img style='margin-right: 2px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
             echo '</td>';
             echo '</tr>';

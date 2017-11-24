@@ -94,15 +94,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         echo '<h3>';
         echo __($guid, 'Filters');
-        echo '</h3>'; 
-        
+        echo '</h3>';
+
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-        
+
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
-    
+
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/course_manage.php");
-    
+
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));
             $row->addTextField('search')->setValue($search);
@@ -110,10 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
-        
+
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
-        
+
         echo $form->getOutput();
 
         //Set pagination variable
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_edit.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_delete.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_delete.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo '</td>';
                 echo '</tr>';
 

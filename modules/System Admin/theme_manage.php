@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
                 echo '</td>';
                 echo '<td>';
                 if ($themesSQL[$themeName][0]['name'] != 'Default') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/theme_manage_uninstall.php&gibbonThemeID='.$themesSQL[$themeName][0]['gibbonThemeID']."'><img title='".__($guid, 'Remove Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/theme_manage_uninstall.php&gibbonThemeID='.$themesSQL[$themeName][0]['gibbonThemeID']."&width=650&height=135'><img title='".__($guid, 'Remove Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                 }
                 echo '</td>';
             } else {

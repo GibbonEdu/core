@@ -429,7 +429,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                             echo '</td>';
                             echo '<td>';
                             if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable')
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                             echo '</td>';
                             echo '</tr>';
                         }

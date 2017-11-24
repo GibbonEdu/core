@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_edit.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_delete.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_delete.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_import.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Import')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/upload.png'/></a> ";
                 echo '</td>';
                 echo '</tr>';

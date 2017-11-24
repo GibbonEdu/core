@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
             echo '</td>';
             echo "<td style='width: 60px'>";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/family_manage_delete.php&gibbonFamilyID='.$row['gibbonFamilyID']."&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/family_manage_delete.php&gibbonFamilyID='.$row['gibbonFamilyID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

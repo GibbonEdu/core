@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
                 echo '<i>'.sprintf(__($guid, 'This category cannot%1$sbe edited or deleted.'), '<br/>').'</i>';
             } else {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID='.$row['gibbonFinanceFeeCategoryID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID='.$row['gibbonFinanceFeeCategoryID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID='.$row['gibbonFinanceFeeCategoryID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             }
             echo '</td>';
             echo '</tr>';

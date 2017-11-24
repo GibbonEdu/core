@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 echo substr($row['timeStart'], 0, 5).' - '.substr($row['timeEnd'], 0, 5);
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_delete.php&gibbonTTSpaceBookingID='.$row['gibbonTTSpaceBookingID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_delete.php&gibbonTTSpaceBookingID='.$row['gibbonTTSpaceBookingID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                 echo '</td>';
                 echo '</tr>';
             }
