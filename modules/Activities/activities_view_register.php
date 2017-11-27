@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo '</div>';
                         } else {
                             $countChild = 0;
-                            while ($row = $result->fetch()) {
+                            while ($values = $result->fetch()) {
                                 try {
                                     $dataChild = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName ";
@@ -257,10 +257,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         }
 
                                         if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
-                                            $row = $form->addRow();
-                                                $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
-                                                $row->addCurrency('payment')->readonly();
-                                        }
+                                                $row = $form->addRow();
+                                                    $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
+                                                    $row->addCurrency('payment')->readonly();
+                                            }
 
                                         if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
                                             if ($dateType != 'Date') {
