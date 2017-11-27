@@ -257,10 +257,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         }
 
                                         if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
+                                            if ($values['payment'] > 0) {
                                                 $row = $form->addRow();
-                                                    $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
-                                                    $row->addCurrency('payment')->readonly();
+                                                $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
+                                                $row->addCurrency('payment')->readonly();
                                             }
+                                        }
 
                                         if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
                                             if ($dateType != 'Date') {
