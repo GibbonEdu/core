@@ -116,6 +116,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         echo $form->getOutput();
 
+        echo '<h3>';
+        echo __($guid, 'View');
+        echo '</h3>';
+
         //Set pagination variable
         $page = 1;
         if (isset($_GET['page'])) {
