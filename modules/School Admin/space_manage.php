@@ -38,6 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
+    echo '<h3>';
+    echo __($guid, 'search');
+    echo '</h3>';
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
@@ -51,6 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
     echo $form->getOutput();
+
+    echo '<h3>';
+    echo __($guid, 'View');
+    echo '</h3>';
 
     //Set pagination variable
     $page = isset($_GET['page'])? $_GET['page'] : 1;
@@ -66,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
             $data = array();
             $sql = 'SELECT * FROM gibbonSpace ORDER BY name';
         }
-        
+
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
