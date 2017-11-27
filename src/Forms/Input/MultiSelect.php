@@ -96,9 +96,6 @@ class MultiSelect implements OutputableInterface
     public function getOutput() {
         $output = '';
 
-        // TODO: Validate merge keys from both selects, throw exception if key conflict
-
-
         // TODO: Move javascript to somewhere more sensible
 
         $output .= '<script type="text/javascript">';
