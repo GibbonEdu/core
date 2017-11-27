@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+            $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
             $params = "&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
         }
 
@@ -83,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+        $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
+        $gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
