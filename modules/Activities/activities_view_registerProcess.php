@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 try {
                     if ($dateType != 'Date') {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
-                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' AND registration='Y'";
+                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' AND registration='Y'";
                     } else {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' AND registration='Y'";
+                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' AND registration='Y'";
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -121,21 +121,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $URL .= '&return=error3';
                             header("Location: {$URL}");
                         } else {
-                            //Validate Inputs
-                            $backup = getSettingByScope($connection2, 'Activities', 'backupChoice');
-                            $gibbonActivityIDBackup = null;
-                            if ($backup == 'N') {
-                                $gibbonActivityIDBackup = null;
-                            } elseif ($backup == 'Y') {
-                                $gibbonActivityIDBackup = $_POST['gibbonActivityIDBackup'];
-                            }
+                            // Load the backupChoice system setting, optionally override with the Activity Type setting
+                            $backupChoice = getSettingByScope($connection2, 'Activities', 'backupChoice');
+                            $backupChoice = (!empty($row['backupChoice']))? $row['backupChoice'] : $backupChoice;
 
-                            if ($backup == 'Y' and $gibbonActivityIDBackup == '') {
+                            $gibbonActivityIDBackup = ($backupChoice == 'Y')? $_POST['gibbonActivityIDBackup'] : '';
+                            $activityCountByType = getStudentActivityCountByType($pdo, $row['type'], $gibbonPersonID);
+                            
+                            if (!empty($row['access']) && $row['access'] != 'Register') {
+                                $URL .= '&error=error0';
+                                header("Location: {$URL}");
+                                exit;
+                            } else if ($row['maxPerStudent'] > 0 && $activityCountByType >= $row['maxPerStudent']) {
                                 $URL .= '&error=error1';
                                 header("Location: {$URL}");
+                                exit;
+                            } else if ($backupChoice == 'Y' and $gibbonActivityIDBackup == '') {
+                                $URL .= '&error=error1';
+                                header("Location: {$URL}");
+                                exit;
                             } else {
                                 $status = 'Not accepted';
+
+                                // Load the enrolmentType system setting, optionally override with the Activity Type setting
                                 $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+                                $enrolment = (!empty($row['enrolmentType']))? $row['enrolmentType'] : $enrolment;
 
                                 //Lock the activityStudent database table
                                 try {
@@ -226,6 +236,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $URL .= '&return=error3';
                             header("Location: {$URL}");
                         } else {
+                            if (!empty($row['access']) && $row['access'] != 'Register') {
+                                $URL .= '&error=error0';
+                                header("Location: {$URL}");
+                                exit;
+                            }
+
                             //Write to database
                             try {
                                 $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);

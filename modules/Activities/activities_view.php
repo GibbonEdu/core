@@ -240,18 +240,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 try {
                     if ($dateType != 'Date') {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' $and ORDER BY gibbonSchoolYearTermIDList, name";
+                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' $and ORDER BY gibbonSchoolYearTermIDList, name";
                     } else {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'listingStart' => $today, 'listingEnd' => $today);
-                        $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd $and ORDER BY name";
+                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd $and ORDER BY name";
                     }
                     if ($search != '') {
                         if ($dateType != 'Date') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search' => "%$search%");
-                            $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND name LIKE :search $and ORDER BY gibbonSchoolYearTermIDList, name";
+                            $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND name LIKE :search $and ORDER BY gibbonSchoolYearTermIDList, name";
                         } else {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'listingStart' => $today, 'listingEnd' => $today, 'search' => "%$search%");
-                            $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND name LIKE :search $and ORDER BY name";
+                            $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name)WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND name LIKE :search $and ORDER BY name";
                         }
                     }
                     $result = $connection2->prepare($sql);
@@ -298,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '</div>';
                     }
 
-                    echo "<table cellspacing='0' style='width: 100%'>";
+                    echo "<table cellspacing='0' style='width: 100%' class='colorOddEven'>";
                     echo "<tr class='head'>";
                     echo '<th>';
                     echo __($guid, 'Activity');
@@ -334,7 +334,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo '</tr>';
 
                     $count = 0;
-                    $rowNum = 'odd';
                     try {
                         $resultPage = $connection2->prepare($sqlPage);
                         $resultPage->execute($data);
@@ -342,12 +341,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     while ($row = $resultPage->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
+                        if ($row['access'] == 'None') continue;
 
+                        $rowNum = '';
                         $rowEnrol = null;
                         if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
                             try {
@@ -457,8 +453,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
                         echo '<td>';
                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+
                         $signup = true;
-                        if ($access == 'View') {
+                        if ($access == 'View' || $row['access'] != 'Register') {
                             $signup = false;
                         }
                         if ($row['registration'] == 'N') {
@@ -467,10 +464,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($row['provider'] == 'External' and $disableExternalProviderSignup == 'Y') {
                             $signup = false;
                         }
+
                         if ($signup) {
                             if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
                                 if ($resultEnrol->rowCount() < 1) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=register&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Register')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
+                                    $activityCountByType = getStudentActivityCountByType($pdo, $row['type'], $gibbonPersonID);
+
+                                    if ($row['maxPerStudent'] == 0 || $activityCountByType < $row['maxPerStudent']) {
+                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=register&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Register')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
+                                    }
                                 } else {
                                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=unregister&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Unregister')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                                 }

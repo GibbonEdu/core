@@ -120,3 +120,17 @@ function formatDateRange($start, $end)
 
     return $output;
 }   
+
+function getStudentActivityCountByType($pdo, $type, $gibbonPersonID)
+{
+    $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'date' => date('Y-m-d'));
+    $sql = "SELECT COUNT(*) FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+            WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
+            AND gibbonActivityStudent.status='Accepted' 
+            AND gibbonActivity.type=:type
+            AND gibbonActivity.active='Y'
+            AND :date BETWEEN gibbonActivity.listingStart AND gibbonActivity.programEnd";
+    $result = $pdo->executeQuery($data, $sql);
+
+    return ($result->rowCount() > 0)? $result->fetchColumn(0) : '0';
+}

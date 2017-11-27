@@ -155,10 +155,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             try {
                                 if ($dateType != 'Date') {
                                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
-                                    $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND gibbonActivityID=:gibbonActivityID AND registration='Y' $and";
+                                    $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND gibbonActivityID=:gibbonActivityID AND registration='Y' $and";
                                 } else {
                                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                                    $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND gibbonActivityID=:gibbonActivityID AND registration='Y' $and";
+                                    $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND gibbonActivityID=:gibbonActivityID AND registration='Y' $and";
                                 }
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
@@ -183,7 +183,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                                if ($resultReg->rowCount() > 0) {
+                                if ($values['access'] != 'Register') {
+                                    echo "<div class='error'>";
+                                    echo __($guid, 'Registration is closed, or you do not have permission to register.');
+                                    echo '</div>';
+                                } else if ($resultReg->rowCount() > 0) {
                                     echo "<div class='error'>";
                                     echo __($guid, 'You are already registered for this activity and so cannot register again.');
                                     echo '</div>';
@@ -211,14 +215,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         }
                                     }
 
+                                    $activityCountByType = getStudentActivityCountByType($pdo, $values['type'], $gibbonPersonID);
+                                    if ($values['maxPerStudent'] > 0 && $activityCountByType >= $values['maxPerStudent']) {
+                                        $proceed = false;
+                                    }
+
                                     if ($proceed == false) {
                                         echo "<div class='error'>";
                                         echo __($guid, 'You have subscribed for the maximum number of activities in a term, and so cannot register for this activity.');
                                         echo '</div>';
                                     } else {
+                                        // Load the enrolmentType system setting, optionally override with the Activity Type setting
+                                        $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+                                        $enrolment = (!empty($values['enrolmentType']))? $values['enrolmentType'] : $enrolment;
 
                                         echo '<p>';
-                                        if (getSettingByScope($connection2, 'Activities', 'enrolmentType') == 'Selection') {
+                                        if ($enrolment == 'Selection') {
                                             echo __($guid, 'After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.');
                                         } else {
                                             echo __($guid, 'If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.');
@@ -264,7 +276,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             }
                                         }
 
-                                        if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
+                                        // Load the backupChoice system setting, optionally override with the Activity Type setting
+                                        $backupChoice = getSettingByScope($connection2, 'Activities', 'backupChoice');
+                                        $backupChoice = (!empty($values['backupChoice']))? $values['backupChoice'] : $backupChoice;
+
+                                        if ($backupChoice == 'Y') {
                                             if ($dateType != 'Date') {
                                                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
                                                 $sql = "SELECT DISTINCT gibbonActivity.gibbonActivityID as value, gibbonActivity.name FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' $and ORDER BY name";
@@ -307,10 +323,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             try {
                                 if ($dateType != 'Date') {
                                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
-                                    $sql = "SELECT DISTINCT gibbonActivity.* FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' $and";
+                                    $sql = "SELECT DISTINCT gibbonActivity.*, gibbonActivityType.access FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' $and";
                                 } else {
                                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                                    $sql = "SELECT DISTINCT gibbonActivity.* FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' $and";
+                                    $sql = "SELECT DISTINCT gibbonActivity.*, gibbonActivityType.access FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' $and";
                                 }
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
@@ -335,7 +351,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                                if ($resultReg->rowCount() < 1) {
+                                if ($values['access'] != 'Register') {
+                                    echo "<div class='error'>";
+                                    echo __($guid, 'Registration is closed, or you do not have permission to register.');
+                                    echo '</div>';
+                                } elseif ($resultReg->rowCount() < 1) {
                                     echo "<div class='error'>";
                                     echo __($guid, 'You are not currently registered for this activity and so cannot unregister.');
                                     echo '</div>';
