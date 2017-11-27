@@ -1546,7 +1546,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $activities = true;
 
         $activitiesOutput .= "<div class='linkTop'>";
-        $activitiesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php'>".__($guid, 'View Available Activities').'</a>';
+        $activitiesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=".$gibbonPersonID."'>".__($guid, 'View Available Activities').'</a>';
         $activitiesOutput .= '</div>';
 
         $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
