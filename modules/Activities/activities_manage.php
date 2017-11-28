@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $form = Form::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
             $form->getRenderer()->setWrapper('form', 'div');
             $form->getRenderer()->setWrapper('row', 'div');
-            $form->getRenderer()->setWrapper('cell', 'div');
+            $form->getRenderer()->setWrapper('cell', 'fieldset');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('search', $search);
@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $header->addContent(__('Provider'));
             $header->addContent(__('Waiting'));
             $header->addContent(__('Actions'));
-            $header->addCheckbox('checkall')->setClass('floatNone textCenter');
+            $header->addCheckbox('checkall')->setClass('floatNone textCenter checkall');
 
             while ($activity = $resultPage->fetch()) {
                 $rowClass = ($activity['active'] == 'N')? 'error' : '';
