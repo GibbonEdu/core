@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
                                             $termList = array_map(function($item) use ($schoolTerms) {
                                                 $index = array_search($item, $schoolTerms);
-                                                return isset($schoolTerms[$index+1])? $schoolTerms[$index+1] : '';
+                                                return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
                                             }, explode(',', $values['gibbonSchoolYearTermIDList']));
 
                                             $row = $form->addRow();
