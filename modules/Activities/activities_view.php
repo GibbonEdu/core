@@ -389,14 +389,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 if (substr($row['programStart'], 5, 2) == substr($row['programEnd'], 5, 2)) {
                                     echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4);
                                 } else {
-                                    echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).'<br/>'.substr($row['programStart'], 0, 4);
+                                    echo date('M', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' - '.date('M', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programStart'], 0, 4);
                                 }
                             } else {
-                                echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' -<br/>'.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
+                                echo date('M', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' -<br/>'.date('M', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
                             }
                         }
 
-                        echo "<span style='font-style: italic; font-size: 85%'>";
+                        echo "<br/><span style='font-style: italic; font-size: 85%'>";
                         try {
                             $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
                             $sqlSlots = 'SELECT DISTINCT nameShort, sequenceNumber FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
