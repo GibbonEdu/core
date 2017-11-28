@@ -32,7 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $access = (isset($_POST['access']))? $_POST['access'] : NULL;
     $enrolmentType = (isset($_POST['enrolmentType']))? $_POST['enrolmentType'] : NULL;
     $maxPerStudent = (isset($_POST['maxPerStudent']))? $_POST['maxPerStudent'] : 0;
-    $backupChoice = (isset($_POST['backupChoice']))? $_POST['backupChoice'] : NULL;
+    $waitingList = (isset($_POST['waitingList']))? $_POST['waitingList'] : 'Y';
+    $backupChoice = (isset($_POST['backupChoice']))? $_POST['backupChoice'] : 'Y';
 
     if (empty($gibbonActivityTypeID) || $access == '' || $enrolmentType == '' || $backupChoice == '') {
         $URL .= '&return=error1';
@@ -56,8 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         } else {
             //Write to database
             try {
-                $data = array('gibbonActivityTypeID' => $gibbonActivityTypeID, 'description' => $description, 'access' => $access, 'enrolmentType' => $enrolmentType, 'maxPerStudent' => $maxPerStudent, 'backupChoice' => $backupChoice);
-                $sql = "UPDATE gibbonActivityType SET description=:description, access=:access, enrolmentType=:enrolmentType, maxPerStudent=:maxPerStudent, backupChoice=:backupChoice WHERE gibbonActivityTypeID=:gibbonActivityTypeID";
+                $data = array('gibbonActivityTypeID' => $gibbonActivityTypeID, 'description' => $description, 'access' => $access, 'enrolmentType' => $enrolmentType, 'maxPerStudent' => $maxPerStudent, 'waitingList' => $waitingList, 'backupChoice' => $backupChoice);
+                $sql = "UPDATE gibbonActivityType SET description=:description, access=:access, enrolmentType=:enrolmentType, maxPerStudent=:maxPerStudent, waitingList=:waitingList, backupChoice=:backupChoice WHERE gibbonActivityTypeID=:gibbonActivityTypeID";
 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

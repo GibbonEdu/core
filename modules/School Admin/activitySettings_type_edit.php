@@ -65,30 +65,34 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $row = $form->addRow();
-        $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->isRequired()->maxLength(60)->readOnly();
+            $row->addLabel('name', __('Name'));
+            $row->addTextField('name')->isRequired()->maxLength(60)->readOnly();
 
         $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
-        $row->addTextArea('description');
+            $row->addLabel('description', __('Description'));
+            $row->addTextArea('description');
 
         $accessTypes = array('None' => __('None'), 'View' => __('View'), 'Register' => __('Register'));
         $row = $form->addRow();
-        $row->addLabel('access', __('Access'))->description(__('System-wide access control'));
-        $row->addSelect('access')->fromArray($accessTypes)->isRequired();
+            $row->addLabel('access', __('Access'))->description(__('System-wide access control'));
+            $row->addSelect('access')->fromArray($accessTypes)->isRequired();
 
         $enrolmentTypes = array('Competitive' => __('Competitive'), 'Selection' => __('Selection'));
         $row = $form->addRow();
-        $row->addLabel('enrolmentType', __('Enrolment Type'))->description(__('Enrolment process type'));
-        $row->addSelect('enrolmentType')->fromArray($enrolmentTypes)->isRequired();
+            $row->addLabel('enrolmentType', __('Enrolment Type'))->description(__('Enrolment process type'));
+            $row->addSelect('enrolmentType')->fromArray($enrolmentTypes)->isRequired();
 
         $row = $form->addRow();
-        $row->addLabel('maxPerStudent', __('Max per Student'))->description(__('The most a student can sign up for in this activity type. Set to 0 for unlimited.'));
-        $row->addNumber('maxPerStudent')->minimum(0)->maximum(99);
+            $row->addLabel('maxPerStudent', __('Max per Student'))->description(__('The most a student can sign up for in this activity type. Set to 0 for unlimited.'));
+            $row->addNumber('maxPerStudent')->minimum(0)->maximum(99);
 
         $row = $form->addRow();
-        $row->addLabel('backupChoice', __('Backup Choice'))->description(__('Allow students to choose a backup, in case enroled activity is full.'));
-        $row->addYesNo('backupChoice')->isRequired();
+            $row->addLabel('waitingList', __('Waiting List'))->description(__('Should students be placed on a waiting list if the enroled activity is full.'));
+            $row->addYesNo('waitingList')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('backupChoice', __('Backup Choice'))->description(__('Allow students to choose a backup, in case enroled activity is full.'));
+            $row->addYesNo('backupChoice')->isRequired();
 
         $row = $form->addRow();
         $row->addFooter();

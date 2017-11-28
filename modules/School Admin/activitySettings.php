@@ -90,7 +90,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         echo '<th style="width:80px;">';
         echo __('Max per Student');
         echo '</th>';
-        echo '<th style="width:80px;">';
+        echo '<th style="width:70px;">';
+        echo __('Waiting List');
+        echo '</th>';
+        echo '<th style="width:70px;">';
         echo __('Backup Choice');
         echo '</th>';
         echo '<th style="width:80px;">';
@@ -113,7 +116,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
             echo $type['maxPerStudent'];
             echo '</td>';
             echo '<td>';
-            echo $type['backupChoice'];
+            echo ynExpander($guid, $type['waitingList']);
+            echo '</td>';
+            echo '<td>';
+            echo ynExpander($guid, $type['backupChoice']);
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activitySettings_type_edit.php&gibbonActivityTypeID='.$type['gibbonActivityTypeID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";

@@ -70,6 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
         $row->addLabel('maxPerStudent', __('Max per Student'))->description(__('The most a student can sign up for in this activity type. Set to 0 for unlimited.'));
         $row->addNumber('maxPerStudent')->minimum(0)->maximum(99)->setValue('0');
 
+    $row = $form->addRow();
+        $row->addLabel('waitingList', __('Waiting List'))->description(__('Should students be placed on a waiting list if the enroled activity is full.'));
+        $row->addYesNo('waitingList')->isRequired()->selected('Y');
+
     $backupChoice = getSettingByScope($connection2, 'Activities', 'backupChoice');
     $row = $form->addRow();
         $row->addLabel('backupChoice', __('Backup Choice'))->description(__('Allow students to choose a backup, in case enroled activity is full.'));
