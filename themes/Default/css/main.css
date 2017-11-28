@@ -1308,6 +1308,10 @@ select[multiple] {
   clear: both;
 }
 
+.column.inline {
+	white-space: nowrap;
+}
+
 .column.inline div {
 	display:inline-block;
 	width:auto;
