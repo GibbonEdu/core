@@ -238,22 +238,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 }
 
                 try {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $orderBy = "gibbonActivity.name";
+
                     if ($dateType != 'Date') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' $and ORDER BY gibbonSchoolYearTermIDList, gibbonActivity.name";
+                        $and .= " AND NOT gibbonSchoolYearTermIDList=''";
+                        $orderBy = "gibbonSchoolYearTermIDList, gibbonActivity.name";
                     } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'listingStart' => $today, 'listingEnd' => $today);
-                        $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd $and ORDER BY gibbonActivity.name";
+                        $data['listingStart'] = $today;
+                        $data['listingEnd'] = $today;
+                        $and .= " AND listingStart<=:listingStart AND listingEnd>=:listingEnd";
                     }
+
                     if ($search != '') {
-                        if ($dateType != 'Date') {
-                            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search' => "%$search%");
-                            $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND (gibbonActivity.name LIKE :search OR gibbonActivity.type LIKE :search) $and ORDER BY gibbonSchoolYearTermIDList, gibbonActivity.name";
-                        } else {
-                            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'listingStart' => $today, 'listingEnd' => $today, 'search' => "%$search%");
-                            $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND (gibbonActivity.name LIKE :search OR gibbonActivity.type LIKE :search) $and ORDER BY gibbonActivity.name";
-                        }
+                        $data['search'] = "%$search%";
+                        $and .= " AND (gibbonActivity.name LIKE :search OR gibbonActivity.type LIKE :search)";
                     }
+
+                    $sql = "SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.waitingList, COUNT(DISTINCT CASE WHEN NOT gibbonActivityStudent.status='Not Accepted' THEN gibbonActivityStudent.gibbonPersonID END) as enrolmentCount
+                            FROM gibbonActivity 
+                            LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) 
+                            LEFT JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID)
+                            WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivity.active='Y' 
+                            $and 
+                            GROUP BY gibbonActivity.gibbonActivityID 
+                            ORDER BY $orderBy";
+
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -345,7 +355,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                         $rowNum = '';
                         $rowEnrol = null;
+                        $activityFull = ($row['waitingList'] != 'Y' && $row['enrolmentCount'] >= $row['maxParticipants']);
                         if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
+
+                            if ($activityFull) {
+                                $rowNum = 'error';
+                            }
                             try {
                                 $dataEnrol = array('gibbonActivityID' => $row['gibbonActivityID'], 'gibbonPersonID' => $gibbonPersonID);
                                 $sqlEnrol = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
@@ -446,8 +461,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 echo '<i>'.__($guid, 'See activity details').'</i>';
                             } elseif ($row['registration'] == 'N') {
                                 echo __($guid, 'Closed').'<br/>';
-                            } else {
+                            } else if (!empty($rowEnrol['status'])) {
                                 echo $rowEnrol['status'];
+                            } else if ($activityFull) {
+                                echo __('Full');
                             }
                             echo '</td>';
                         }
@@ -455,13 +472,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
 
                         $signup = true;
-                        if ($access == 'View' || $row['access'] != 'Register') {
+                        if ($access == 'View' || $row['access'] == 'View') {
                             $signup = false;
                         }
                         if ($row['registration'] == 'N') {
                             $signup = false;
                         }
                         if ($row['provider'] == 'External' and $disableExternalProviderSignup == 'Y') {
+                            $signup = false;
+                        }
+                        if ($activityFull) {
                             $signup = false;
                         }
 
