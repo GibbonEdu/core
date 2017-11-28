@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 }
 
                 //Write to database
-                $type = $_POST['type'];
+                $type = isset($_POST['type'])? $_POST['type'] : '';
 
                 try {
                     if ($dateType == 'Date') {
