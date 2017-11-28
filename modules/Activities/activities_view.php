@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @session_start();
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -134,14 +133,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo __($guid, 'Filter & Search');
             echo '</h2>';
 
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
+            $search = isset($_GET['search'])? $_GET['search'] : null;
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
-            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_view.php");
@@ -149,20 +143,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                 $row = $form->addRow();
                     $row->addLabel('gibbonPersonID', __('Child'))->description('Choose the child you are registering for.');
-                    if ($countChild > 1) {
-                        $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder();
-                    }
-                    else {
-                        $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID);
-                    }
+                    $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder(($countChild > 1)? '' : null);
             }
+
             $row = $form->addRow();
                 $row->addLabel('search', __('Search'))->description('Activity name.');
                 $row->addTextField('search')->setValue($search)->maxLength(20);
 
             $row = $form->addRow();
-                $row->addFooter();
-                $row->addSearchSubmit($gibbon->session);
+                $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
             echo $form->getOutput();
 
