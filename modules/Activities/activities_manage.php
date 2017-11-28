@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $header->addContent(__('Years'));
             $header->addContent(($dateType != 'Date')? __('Term') : __('Dates'));
             if ($paymentOn) {
-                $header->addContent(__('Cost'))->append("<br/><span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>');
+                $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$_SESSION[$guid]['currency'].'</span>');
             }
             $header->addContent(__('Provider'));
             $header->addContent(__('Waiting'));
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     $column->addContent("<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ");
                     $column->addContent("<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ");
 
-                $row->addCheckbox('check[]')->setValue($activity['gibbonActivityID'])->setClass('');
+                $row->addCheckbox('gibbonActivityID[]')->setValue($activity['gibbonActivityID'])->setClass('');
             }
             
             echo $form->getOutput();
