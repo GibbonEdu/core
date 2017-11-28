@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
         try {
             $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
+            $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -154,8 +154,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $row->addLabel('Members[]', __('Students'));
 				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->isRequired();
 				
+			// Load the enrolmentType system setting, optionally override with the Activity Type setting
+            $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+            $enrolment = (!empty($values['enrolmentType']))? $values['enrolmentType'] : $enrolment;
+			
+
 			$statuses = array('Accepted' => __('Accepted'));
-			$enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
 			if ($enrolment == 'Competitive') {
 				$statuses['Waiting List'] = __('Waiting List');
 			} else {
