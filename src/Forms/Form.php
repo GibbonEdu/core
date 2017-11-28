@@ -32,8 +32,6 @@ class Form implements OutputableInterface
 {
     use BasicAttributesTrait;
 
-    protected $action;
-    protected $method;
     protected $factory;
     protected $renderer;
 
@@ -52,8 +50,10 @@ class Form implements OutputableInterface
     {
         $this->factory = $factory;
         $this->renderer = $renderer;
-        $this->action = ltrim($action, '/');
-        $this->method = $method;
+        $this->setAttribute('action', ltrim($action, '/'));
+        $this->setAttribute('method', $method);
+        $this->setAttribute('autocomplete', 'on');
+        $this->setAttribute('enctype', 'multipart/form-data');
     }
 
     /**
@@ -119,7 +119,7 @@ class Form implements OutputableInterface
      */
     public function getMethod()
     {
-        return $this->method;
+        return $this->setAttribute('method');
     }
 
     /**
@@ -128,7 +128,7 @@ class Form implements OutputableInterface
      */
     public function getAction()
     {
-        return $this->action;
+        return $this->setAttribute('action');
     }
 
     /**
@@ -187,17 +187,31 @@ class Form implements OutputableInterface
      */
     public function getAutocomplete()
     {
-        $autocomplete = $this->getAttribute('autocomplete');
-        return (!empty($autocomplete))? $autocomplete : 'off';
+        return $this->getAttribute('autocomplete');
     }
 
     /**
      * Turn autocomplete for the form On or Off.
      * @param  string  $value
+     * @return self
      */
     public function setAutocomplete($value)
     {
         $this->setAttribute('autocomplete', $value);
+
+        return $this;
+    }
+
+    /**
+     * Add a confirmation message to display before form submission.
+     * @param string $message
+     * @return self
+     */
+    public function addConfirmation($message)
+    {
+        $this->setAttribute('onsubmit', "return confirm(\"".__($message)."\")");
+        
+        return $this;
     }
 
     /**
