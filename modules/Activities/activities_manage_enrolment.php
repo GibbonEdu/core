@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             
 
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-            $enrolment = (!empty($row['enrolmentType']))? $row['enrolmentType'] : $enrolment;
+            $enrolment = (!empty($values['enrolmentType']))? $values['enrolmentType'] : $enrolment;
 
             try {
                 if ($enrolment == 'Competitive') {
