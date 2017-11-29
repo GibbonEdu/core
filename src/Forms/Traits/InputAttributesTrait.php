@@ -216,4 +216,25 @@ trait InputAttributesTrait
     {
         return $this->getAttribute('readonly');
     }
+
+    /**
+     * Set the input's tabindex attribute.
+     * @param  string  $value
+     * @return self
+     */
+    public function setTabIndex($value)
+    {
+        $this->setAttribute('tabindex', $value);
+
+        return $this;
+    }
+
+    /**
+     * Gets the input's tabindex attribute.
+     * @return  int
+     */
+    public function getTabIndex()
+    {
+        return $this->getAttribute('tabindex');
+    }
 }
