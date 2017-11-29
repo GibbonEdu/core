@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                 echo '</div>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_addProcess.php?gibbonStaffID=$gibbonStaffID&search=$search");
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_editProcess.php?gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->setClass('smallIntBorder fullWidth');
