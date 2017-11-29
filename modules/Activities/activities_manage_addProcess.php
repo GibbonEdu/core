@@ -105,11 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
             $gibbonSpaceID = null;
             if ($type == 'Internal') {
-                if ($_POST["gibbonSpaceID$i"] != '') {
-                    $gibbonSpaceID = $_POST["gibbonSpaceID$i"];
-                } else {
-                    $gibbonSpaceID = null;
-                }
+                $gibbonSpaceID = isset($_POST["gibbonSpaceID$i"])? $_POST["gibbonSpaceID$i"] : null;
                 $locationExternal = '';
             } else {
                 $locationExternal = $_POST['location'.$i.'External'];
