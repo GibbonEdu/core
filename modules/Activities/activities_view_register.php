@@ -245,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
 
                                         $row = $form->addRow();
-                                            $row->addLabel('name', __('Activity'));
+                                            $row->addLabel('nameLabel', __('Activity'));
                                             $row->addTextField('name')->readonly();
 
                                         if ($dateType != 'Date') {
@@ -256,22 +256,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             }, explode(',', $values['gibbonSchoolYearTermIDList']));
 
                                             $row = $form->addRow();
-                                                $row->addLabel('terms', __('Terms'));
+                                                $row->addLabel('termsLabel', __('Terms'));
                                                 $row->addTextField('terms')->readonly()->setValue(implode(', ', $termList));
                                         } else {
                                             $row = $form->addRow();
-                                                $row->addLabel('programStart', __('Program Start Date'));
+                                                $row->addLabel('programStartLabel', __('Program Start Date'));
                                                 $row->addDate('programStart')->readonly();
 
                                             $row = $form->addRow();
-                                                $row->addLabel('programEnd', __('Program End Date'));
+                                                $row->addLabel('programEndLabel', __('Program End Date'));
                                                 $row->addDate('programEnd')->readonly();
                                         }
 
                                         if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
                                             if ($values['payment'] > 0) {
                                                 $row = $form->addRow();
-                                                $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
+                                                $row->addLabel('paymentLabel', __('Cost'))->description(__('For entire programme'));
                                                 $row->addCurrency('payment')->readonly();
                                             }
                                         }
