@@ -196,8 +196,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                     $row->addContent($slot['name']);
                     $row->addContent(substr($slot['timeStart'], 0, 5).' - '.substr($slot['timeEnd'], 0, 5));
-                    $row->addContent(!empty($slot['locationInternal'])? $slot['locationInternal'] : $slot['locationExternal']);
-                    $row->addContent("<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_slot_deleteProcess.php?address='.$_GET['q'].'&gibbonActivitySlotID='.$slot['gibbonActivitySlotID']."&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
+					$row->addContent(!empty($slot['locationInternal'])? $slot['locationInternal'] : $slot['locationExternal']);
+					$row->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/></a>')
+						->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_slot_deleteProcess.php')
+						->addParam('address', $_GET['q'])
+						->addParam('gibbonActivitySlotID', $slot['gibbonActivitySlotID'])
+						->addParam('gibbonActivityID', $gibbonActivityID)
+						->addParam('search', $search)
+						->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
+						->addConfirmation(__('Are you sure you wish to delete this record?'));
                 }
             }
 
@@ -268,8 +275,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 while ($staff = $results->fetch()) {
                     $row = $table->addRow();
                     $row->addContent(formatName('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
-                    $row->addContent($staff['role']);
-                    $row->addContent("<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonActivityStaffID='.$staff['gibbonActivityStaffID']."&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
+					$row->addContent($staff['role']);
+					$row->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/></a>')
+						->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_staff_deleteProcess.php')
+						->addParam('address', $_GET['q'])
+						->addParam('gibbonActivityStaffID', $staff['gibbonActivityStaffID'])
+						->addParam('gibbonActivityID', $gibbonActivityID)
+						->addParam('search', $search)
+						->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
+						->addConfirmation(__('Are you sure you wish to delete this record?'));
                 }
             }
 

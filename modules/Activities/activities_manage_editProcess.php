@@ -64,10 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $gibbonSchoolYearTermIDList = isset($_POST['gibbonSchoolYearTermIDList'])? $_POST['gibbonSchoolYearTermIDList'] : array();
                 $gibbonSchoolYearTermIDList = implode(',', $gibbonSchoolYearTermIDList);
             } elseif ($dateType == 'Date') {
-                $listingStart = dateConvert($guid, $_POST['listingStart']);
-                $listingEnd = dateConvert($guid, $_POST['listingEnd']);
-                $programStart = dateConvert($guid, $_POST['programStart']);
-                $programEnd = dateConvert($guid, $_POST['programEnd']);
+                $listingStart = isset($_POST['listingStart'])? dateConvert($guid, $_POST['listingStart']) : '';
+                $listingEnd = isset($_POST['listingEnd'])? dateConvert($guid, $_POST['listingEnd']) : '';
+                $programStart = isset($_POST['programStart'])? dateConvert($guid, $_POST['programStart']) : '';
+                $programEnd = isset($_POST['programEnd'])? dateConvert($guid, $_POST['programEnd']) : '';
             }
             $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
             $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
