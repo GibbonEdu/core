@@ -859,4 +859,5 @@ UPDATE gibbonRole SET nameShort='Std' WHERE name='Student';end
 UPDATE gibbonRole SET nameShort='Tcr' WHERE name='Teacher';end
 UPDATE gibbonRole SET nameShort='Prt' WHERE name='Parent';end
 UPDATE gibbonRole SET nameShort='SSt' WHERE name='Support Staff';end
+UPDATE gibbonAction SET entryURL='staff_view.php' WHERE entryURL='staff_view' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff');end
 ";
