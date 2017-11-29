@@ -197,6 +197,24 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
+    public function createSelectUsers($name)
+    {
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson
+                WHERE status='Full' ORDER BY surname, preferredName";
+
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        $values = array();
+        if ($results && $results->rowCount() > 0) {
+            while ($row = $results->fetch()) {
+                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
+            }
+        }
+
+        return $this->createSelect($name)->fromArray($values);
+    }
+
     /*
     $params is an array, with the following options as keys:
         allStudents - false by default. true displays students regardless of status and start/end date
