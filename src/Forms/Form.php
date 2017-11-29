@@ -119,7 +119,7 @@ class Form implements OutputableInterface
      */
     public function getMethod()
     {
-        return $this->setAttribute('method');
+        return $this->getAttribute('method');
     }
 
     /**
@@ -128,7 +128,7 @@ class Form implements OutputableInterface
      */
     public function getAction()
     {
-        return $this->setAttribute('action');
+        return $this->getAttribute('action');
     }
 
     /**
