@@ -6,6 +6,7 @@ use Gibbon\Forms\OutputableInterface;
 class WebLink extends Element
 {
     protected $embeddedElements = array();
+    protected $params = array();
 
     public function __construct($content = '')
     {
@@ -45,8 +46,24 @@ class WebLink extends Element
 
     public function addConfirmation($message)
     {
-        $this->setAttribute('onsubmit', "return confirm(\"".__($message)."\")");
+        $this->setAttribute('onclick', "return confirm(\"".__($message)."\")");
         
+        return $this;
+    }
+
+    public function addParam($name, $value)
+    {
+        $this->params[$name] = $value;
+
+        return $this;
+    }
+
+    public function addParams($values)
+    {
+        if (is_array($values)) {
+            $this->params = array_replace($this->params, $values);
+        }
+
         return $this;
     }
 
@@ -83,6 +100,12 @@ class WebLink extends Element
 
     public function getElement()
     {
+        if (!empty($this->params)) {
+            $url = $this->getURL();
+            $url .= (stripos($url, '?') !== false)? '&' : '?';
+            $this->setURL($url.http_build_query($this->params));
+        }
+
         return '<a ' . $this->getAttributeString() . '>' . $this->content . $this->getEmbeddedElements() . '</a>';
     }
 }
