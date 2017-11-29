@@ -43,6 +43,13 @@ class WebLink extends Element
         return $this->getAttribute('rel');
     }
 
+    public function addConfirmation($message)
+    {
+        $this->setAttribute('onsubmit', "return confirm(\"".__($message)."\")");
+        
+        return $this;
+    }
+
     public function addEmbeddedElement($element)
     {
         if ($element instanceof OutputableInterface) {
