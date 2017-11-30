@@ -60,16 +60,6 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     }
 
     /**
-     * Get the Label layout object linked to this element, null if none exists.
-     * @return  object|null
-     */
-    public function getLabel()
-    {
-        if (empty($this->row)) return null;
-        return $this->row->getElement('label'.$this->getID());
-    }
-
-    /**
      * Add a LiveValidation option to the javascript object (eg: onlyOnSubmit: true, onlyOnBlur: true)
      * @param  string  $option
      */
