@@ -106,17 +106,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultChild->rowCount() > 0) {
-                            if ($resultChild->rowCount() == 1) {
-                                $rowChild = $resultChild->fetch();
-                                $gibbonPersonID = $rowChild['gibbonPersonID'];
+                            while ($rowChild = $resultChild->fetch()) {
                                 $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                                 ++$countChild;
                             }
-                            else {
-                                while ($rowChild = $resultChild->fetch()) {
-                                    $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
-                                    ++$countChild;
-                                }
+
+                            if ($resultChild->rowCount() == 1) {
+                                $gibbonPersonID = key($options);
                             }
                         }
                     }
@@ -400,15 +396,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
                             echo $termList;
                         } else {
-                            if (substr($row['programStart'], 0, 4) == substr($row['programEnd'], 0, 4)) {
-                                if (substr($row['programStart'], 5, 2) == substr($row['programEnd'], 5, 2)) {
-                                    echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4);
-                                } else {
-                                    echo date('M', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' - '.date('M', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programStart'], 0, 4);
-                                }
-                            } else {
-                                echo date('M', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' -<br/>'.date('M', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
-                            }
+                            echo formatDateRange($row['programStart'], $row['programEnd']);
                         }
 
                         echo "<br/><span style='font-style: italic; font-size: 85%'>";
