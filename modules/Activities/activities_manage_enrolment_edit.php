@@ -133,7 +133,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$statuses = array('Accepted' => __('Accepted'));
 			if ($enrolment == 'Competitive') {
-				$statuses['Waiting List'] = __('Waiting List');
+                if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
+                    $statuses['Waiting List'] = __('Waiting List');
+                }
 			} else {
 				$statuses['Pending'] = __('Pending');
             }
