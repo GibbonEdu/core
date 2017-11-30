@@ -54,6 +54,12 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         return (!empty($primaryElement))? $primaryElement->getRequired() : false;
     }
 
+    public function getLabelContext($label)
+    {
+        $primaryElement = $this->getElement($this->getID());
+        return (!empty($primaryElement) && !empty($label) && method_exists($primaryElement, 'getLabelContext'))? $primaryElement->getLabelContext($label) : false;
+    }
+
     /**
      * Iterate over each element in the collection and concatenate the output.
      * @return  string

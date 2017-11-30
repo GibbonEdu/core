@@ -92,7 +92,7 @@ class Select extends Input
      * Add extra help text to multi-select inputs.
      * @return string
      */
-    public function getLabelContext()
+    public function getLabelContext($label)
     {
         if ($this->getAttribute('multiple') == true) {
             return __('Use Control, Command and/or Shift to select multiple.');
