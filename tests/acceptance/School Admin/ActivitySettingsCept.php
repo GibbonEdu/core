@@ -18,7 +18,6 @@ $newFormValues = array(
     'payment'                       => 'Single + Per Activity',
     'enrolmentType'                 => 'Selection',
     'backupChoice'                  => 'Y',
-    'activityTypes'                 => 'A,B,C,D',
     'disableExternalProviderSignup' => 'Y',
     'hideExternalProviderCost'      => 'Y',
 );
