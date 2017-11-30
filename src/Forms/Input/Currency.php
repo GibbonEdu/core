@@ -33,14 +33,12 @@ class Currency extends Number
      * Adds currency format to the label description (if not already present)
      * @return string|bool
      */
-    public function getLabelContext()
+    public function getLabelContext($label)
     {
         global $guid;
 
-        if ($label = $this->getLabel()) {
-            if (stristr($label->getDescription(), 'In ') === false) {
-                return sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']);
-            }
+        if (stristr($label->getDescription(), 'In ') === false) {
+            return sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']);
         }
 
         return false;

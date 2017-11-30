@@ -134,7 +134,7 @@ class Label extends Element implements RowDependancyInterface
     protected function getLabelContext()
     {
         if ($element = $this->getLinkedElement()) {
-            return method_exists($element, 'getLabelContext')? $element->getLabelContext() : false;
+            return method_exists($element, 'getLabelContext')? $element->getLabelContext($this) : false;
         }
 
         return false;
