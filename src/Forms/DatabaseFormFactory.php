@@ -124,6 +124,18 @@ class DatabaseFormFactory extends FormFactory
         return $this->createCheckbox($name)->fromArray($yearGroups);
     }
 
+    public function createCheckboxSchoolYearTerm($name, $gibbonSchoolYearID)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        // Get the terms in a $key => $value array
+        $terms = ($results && $results->rowCount() > 0)? $results->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+        return $this->createCheckbox($name)->fromArray($terms);
+    }
+
     public function createSelectDepartment($name)
     {
         $sql = "SELECT type, gibbonDepartmentID as value, name FROM gibbonDepartment ORDER BY name";

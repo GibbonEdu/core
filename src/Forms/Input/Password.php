@@ -68,7 +68,8 @@ class Password extends TextField
         $button->addClass('generatePassword alignRight')
             ->addData('source', $sourceField)
             ->addData('confirm', $confirmField)
-            ->addData('alert', __('Copy this password if required:'));
+            ->addData('alert', __('Copy this password if required:'))
+            ->setTabIndex(-1);
 
         $this->append($button->getOutput());
 

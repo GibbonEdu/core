@@ -79,12 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 $row->addTextField('nameShort')->maxLength(4)->isRequired();
 
             $row = $form->addRow();
-                $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
+                $row->addLabel('timeStart', __('Start Time'));
                 $row->addTime('timeStart')->isRequired();
 
             $row = $form->addRow();
-                $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
-                $row->addTime('timeEnd')->isRequired();
+                $row->addLabel('timeEnd', __('End Time'));
+                $row->addTime('timeEnd')->isRequired()->chainedTo('timeStart');
 
             $types = array(
                 'Lesson' => __('Lesson'),

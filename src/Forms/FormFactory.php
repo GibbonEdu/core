@@ -77,6 +77,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Element($content);
     }
 
+    public function createWebLink($content = '')
+    {
+    	return new Layout\WebLink($content);
+    }
+
     /* BASIC INPUT --------------------------- */
 
     public function createCustomField($name, $fields = array())
@@ -107,12 +112,6 @@ class FormFactory implements FormFactoryInterface
     public function createEmail($name)
     {
         return (new Input\TextField($name))->addValidation('Validate.Email');
-    }
-
-    //Allows elements to be embedded
-    public function createWebLink($name,$url)
-    {
-    	return new Input\WebLink($name,$url);
     }
 
     //A URL web link

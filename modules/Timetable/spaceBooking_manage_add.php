@@ -91,11 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 $row->addDate('date')->isRequired();
 
             $row = $form->addRow();
-                $row->addLabel('timeStart', __('Start Time'))->description(__('Format: hh:mm (24hr)'));
+                $row->addLabel('timeStart', __('Start Time'));
                 $row->addTime('timeStart')->isRequired();
 
             $row = $form->addRow();
-                $row->addLabel('timeEnd', __('End Time'))->description(__('Format: hh:mm (24hr)'));
+                $row->addLabel('timeEnd', __('End Time'));
                 $row->addTime('timeEnd')->isRequired()->chainedTo('timeStart');
 
             $repeatOptions = array('No' => __('No'), 'Daily' => __('Daily'), 'Weekly' => __('Weekly'));
