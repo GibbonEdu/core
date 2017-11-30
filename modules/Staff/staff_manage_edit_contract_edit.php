@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                 $row->addFileUpload('file1')
                     ->accepts($fileUploader
                     ->getFileExtensions('Document'))
-                    ->setAttachment('file', $_SESSION[$guid]['absoluteURL'], $values['contractUpload']);
+                    ->setAttachment('contractUpload', $_SESSION[$guid]['absoluteURL'], $values['contractUpload']);
 
             $row = $form->addRow();
                 $row->addFooter();
