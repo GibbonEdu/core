@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\PrefabFormFactory;
+
 @session_start();
 
 //Module includes
@@ -92,39 +94,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                             returnProcess($guid, $_GET['return'], null, null);
                         }
 
-                        ?>
-						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/markbook_edit_deleteProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID" ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
-								<tr>
-									<td> 
-										<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-										<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-									</td>
-									<td class="right">
-								
-									</td>
-								</tr>
-								<tr>
-									<td> 
-										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php echo $gibbonCourseClassID ?>" type="hidden">
-										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-									</td>
-									<td class="right">
-								
-									</td>
-								</tr>
-							</table>
-						</form>
-						<?php
-
+                        $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/markbook_edit_deleteProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID");
+                        echo $form->getOutput();
                     }
                 }
             }
         }
     }
-
-    // Print the sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_view.php');
 }
 ?>

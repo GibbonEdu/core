@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-use Gibbon\Forms\Form;
+use Gibbon\Forms\PrefabFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_delete.php') == false) {
     //Acess denied
@@ -57,27 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch();
-            if ($_GET['search'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
-            $row = $result->fetch();
-
-            $form = Form::create('accessRecord', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/user_manage_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search']);
-
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
-            $row = $form->addRow();
-                $column = $row->addColumn();
-                $column->addContent(__('Are you sure you want to delete this record?'))->wrap('<strong>','</strong>');
-                $column->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))->wrap('<span style="color: #cc0000"><i>', '</i></span>');
-
-            $form->addRow()->addSubmit(__('Yes'));
-
+            $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/user_manage_deleteProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search'], true);
             echo $form->getOutput();
         }
     }

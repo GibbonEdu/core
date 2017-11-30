@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
 
             try {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
-                $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityID=:gibbonActivityID";
+                $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityID=:gibbonActivityID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -163,6 +163,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo '</i>';
                 echo '</td>';
                 echo '</tr>';
+                if (!empty($row['activityTypeDescription'])) {
+                    echo '<tr>';
+                    echo "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>";
+                    echo '<h2>'.$row['type'].'</h2>';
+                    echo $row['activityTypeDescription'];
+                    echo '</td>';
+                    echo '</tr>';
+                }
                 if ($row['description'] != '') {
                     echo '<tr>';
                     echo "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>";

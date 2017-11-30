@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
         $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
 
-    $generateUsername = $form->getFactory()->createButton(__('Generate'))->addClass('generateUsername alignRight');
+    $generateUsername = $form->getFactory()->createButton(__('Generate'))->addClass('generateUsername alignRight')->setTabIndex(-1);
     $row = $form->addRow();
         $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
         $row->addTextField('username')

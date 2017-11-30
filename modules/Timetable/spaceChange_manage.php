@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 echo $row['spaceNew'];
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/spaceChange_manage_delete.php&gibbonTTSpaceChangeID=".$row['gibbonTTSpaceChangeID']."&gibbonCourseClassID=".$row['gibbonCourseClassID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/".$_SESSION[$guid]['module']."/spaceChange_manage_delete.php&gibbonTTSpaceChangeID=".$row['gibbonTTSpaceChangeID']."&gibbonCourseClassID=".$row['gibbonCourseClassID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                 echo '</td>';
                 echo '</tr>';
             }

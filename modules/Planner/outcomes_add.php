@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -62,220 +65,72 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
-            }
+			}
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/outcomes_addProcess.php?filter2='.$filter2 ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Scope') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            if ($highestAction == 'Manage Outcomes_viewEditAll') {
-                                ?>
-								<select name="scope" id="scope" class="standardWidth">
-									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<option value="School"><?php echo __($guid, 'School') ?></option>
-									<option value="Learning Area"><?php echo __($guid, 'Learning Area') ?></option>
-								</select>
-								<script type="text/javascript">
-									var scope=new LiveValidation('scope');
-									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								</script>
-								 <?php
+			$scopes = array(
+                'School' => __('School'),
+                'Learning Area' => __('Learning Area'),
+            );
 
-                            } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                                ?>
-								<input readonly name="scope" id="scope" value="Learning Area" type="text" class="standardWidth">
-								<?php
+			
+			$form = Form::create('outcomes', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/outcomes_addProcess.php?filter2='.$filter2);
+			$form->setFactory(DatabaseFormFactory::create($pdo));
+			
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                            }
-            				?>
-						</td>
-					</tr>
+			$row = $form->addRow();
+                $row->addLabel('scope', 'Scope');
+            if ($highestAction == 'Manage Outcomes_viewEditAll') {
+                $row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+            } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
+                $row->addTextField('scope')->readOnly()->setValue('Learning Area');
+			}
+			
+			if ($highestAction == 'Manage Outcomes_viewEditAll') {
+				$data = array();
+				$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+			} elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
+				$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+				$sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+			}
 
+            $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
+            $row = $form->addRow()->addClass('learningAreaRow');
+                $row->addLabel('gibbonDepartmentID', __('Learning Area'));
+                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
 
-					<?php
-                    if ($highestAction == 'Manage Outcomes_viewEditAll') {
-                        ?>
-						<script type="text/javascript">
-							$(document).ready(function(){
-								$("#learningAreaRow").css("display","none");
+			$row = $form->addRow();
+				$row->addLabel('name', __('Name'));
+				$row->addTextField('name')->isRequired()->maxLength(100);
 
-								$("#scope").change(function(){
-									if ($('#scope').val()=="Learning Area" ) {
-										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
-										gibbonDepartmentID.enable();
-									}
-									else {
-										$("#learningAreaRow").css("display","none");
-										gibbonDepartmentID.disable();
-									}
-								 });
-							});
-						</script>
-						<?php
+			$row = $form->addRow();
+				$row->addLabel('nameShort', __('Short Name'));
+				$row->addTextField('nameShort')->isRequired()->maxLength(14);
 
-                    }
-            		?>
-					<tr id='learningAreaRow'>
-						<td>
-							<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            try {
-                                if ($highestAction == 'Manage Outcomes_viewEditAll') {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                                } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                                    $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                    $sqlSelect = "SELECT * FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area'  ORDER BY name";
-                                }
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-            				?>
-							<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
-								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<?php
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-                                }
-           	 					?>
-							</select>
-							<script type="text/javascript">
-								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								<?php
-                                if ($highestAction == 'Manage Outcomes_viewEditAll') {
-                                    echo 'gibbonDepartmentID.disable();';
-                                }
-           	 					?>
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=100 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="active" id="active" class="standardWidth">
-								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
+			$row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+				$row->addYesNo('active')->isRequired();
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Category') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="category" id="category" maxlength=100 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT category FROM gibbonOutcome ORDER BY category';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.$rowAuto['category'].'", ';
-										}
-										?>
-									];
-									$( "#category" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Description') ?></b><br/>
-						</td>
-						<td class="right">
-							<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Relevant student year groups') ?><br/></span>
-						</td>
-						<td class="right">
-							<?php
-                            echo "<fieldset style='border: none'>"; ?>
-							<script type="text/javascript">
-								$(function () {
-									$('.checkall').click(function () {
-										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-									});
-								});
-							</script>
-							<?php
-                            echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-							$yearGroups = getYearGroups($connection2);
-							if ($yearGroups == '') {
-								echo '<i>'.__($guid, 'No year groups available.').'</i>';
-							} else {
-								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-									echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-								}
-							}
-							echo '</fieldset>'; ?>
-							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+			$sql = "SELECT DISTINCT category FROM gibbonOutcome ORDER BY category";
+            $result = $pdo->executeQuery(array(), $sql);
+            $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
 
+            $row = $form->addRow();
+                $row->addLabel('category', __('Category'));
+                $row->addTextField('category')->maxLength(100)->autocomplete($categories);
+				
+			$row = $form->addRow();
+				$row->addLabel('description', __('Description'));
+				$row->addTextArea('description')->setRows(5);
+
+			$row = $form->addRow();
+                $row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Relevant student year groups'));
+				$row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone();
+
+			$row = $form->addRow();
+				$row->addSubmit();
+
+			echo $form->getOutput();
         }
     }
 }
-?>

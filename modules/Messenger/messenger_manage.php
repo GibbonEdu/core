@@ -408,7 +408,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+							print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;

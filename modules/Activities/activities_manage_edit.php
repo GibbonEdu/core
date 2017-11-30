@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -59,783 +62,272 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
+			$values = $result->fetch();
+			
+			$search = isset($_GET['search'])? $_GET['search'] : '';
+			$gibbonSchoolYearTermID = isset($_GET['gibbonSchoolYearTermID'])? $_GET['gibbonSchoolYearTermID'] : '';
+
+            if ($search != '' || $gibbonSchoolYearTermID != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
+			}
+			
+			$form = Form::create('activity', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_editProcess.php?gibbonActivityID='.$gibbonActivityID.'&search='.$search.'&gibbonSchoolYearTermID='.$gibbonSchoolYearTermID);
+			$form->setFactory(DatabaseFormFactory::create($pdo));
+			
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			
+			$form->addRow()->addHeading(__('Basic Information'));
+
+			$row = $form->addRow();
+				$row->addLabel('name', __('Name'));
+				$row->addTextField('name')->isRequired()->maxLength(40);
+				
+			$row = $form->addRow();
+				$row->addLabel('provider', __('Provider'));
+				$row->addSelect('provider')->isRequired()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
+			
+			$sql = "SELECT name as value, name FROM gibbonActivityType ORDER BY name";
+			$result = $pdo->executeQuery(array(), $sql);
+			if ($result->rowCount() > 0) {
+				$activityTypes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+			} else {
+				$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
+            	$activityTypes = array_map('trim', explode(',', $activityTypes));
+			}
+
+			if (!empty($activityTypes)) {
+				$row = $form->addRow();
+					$row->addLabel('type', __('Type'));
+					$row->addSelect('type')->fromArray($activityTypes)->placeholder();
+			}
+
+			$row = $form->addRow();
+				$row->addLabel('active', __('Active'));
+				$row->addYesNo('active')->isRequired();
+				
+			$row = $form->addRow();
+				$row->addLabel('registration', __('Registration'))->description(__('Assuming system-wide registration is open, should this activity be open for registration?'));
+				$row->addYesNo('registration')->isRequired();
+				
+			$dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+			$form->addHiddenValue('dateType', $dateType);
+			if ($dateType != 'Date') {
+				$row = $form->addRow();
+					$row->addLabel('gibbonSchoolYearTermIDList', __('Terms'))->description(__('Terms in which the activity will run.'));
+					$row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $_SESSION[$guid]['gibbonSchoolYearID'])->loadFromCSV($values);
+			} else {
+				$row = $form->addRow();
+					$row->addLabel('listingStart', __('Listing Start Date'))->description(__('Default: 2 weeks before the end of the current term.'));
+					$row->addDate('listingStart')->isRequired()->setValue(dateConvertBack($guid, $values['listingStart']));
+					
+				$row = $form->addRow();
+					$row->addLabel('listingEnd', __('Listing End Date'))->description(__('Default: 2 weeks after the start of next term.'));
+					$row->addDate('listingEnd')->isRequired()->setValue(dateConvertBack($guid, $values['listingEnd']));
+					
+				$row = $form->addRow();
+					$row->addLabel('programStart', __('Program Start Date'))->description(__('Default: first day of next term.'));
+					$row->addDate('programStart')->isRequired()->setValue(dateConvertBack($guid, $values['programStart']));
+					
+				$row = $form->addRow();
+					$row->addLabel('programEnd', __('Program End Date'))->description(__('Default: last day of the next term.'));
+					$row->addDate('programEnd')->isRequired()->setValue(dateConvertBack($guid, $values['programEnd']));
+			}
+
+			$row = $form->addRow();
+				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
+				$row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFromCSV($values);
+			
+			$row = $form->addRow();
+				$row->addLabel('maxParticipants', __('Max Participants'));
+				$row->addNumber('maxParticipants')->isRequired()->maxLength(4);
+				
+			$column = $form->addRow()->addColumn();
+				$column->addLabel('description', __('Description'));
+				$column->addEditor('description', $guid)->setRows(10);
+			
+			$payment = getSettingByScope($connection2, 'Activities', 'payment');
+			if ($payment != 'None' && $payment != 'Single') {
+				$form->addRow()->addHeading(__('Cost'));
+
+				$row = $form->addRow();
+					$row->addLabel('payment', __('Cost'));
+					$row->addCurrency('payment')->isRequired()->maxLength(9);
+					
+				$costTypes = array(
+					'Entire Programme' => __('Entire Programme'),
+					'Per Session'      => __('Per Session'),
+					'Per Week'         => __('Per Week'),
+					'Per Term'         => __('Per Term'),
+				);
+
+				$row = $form->addRow();
+					$row->addLabel('paymentType', __('Cost Type'));
+					$row->addSelect('paymentType')->isRequired()->fromArray($costTypes);
+					
+				$costStatuses = array(
+					'Finalised' => __('Finalised'),
+					'Estimated' => __('Estimated'),
+				);
+				
+				$row = $form->addRow();
+					$row->addLabel('paymentFirmness', __('Cost Status'));
+					$row->addSelect('paymentFirmness')->isRequired()->fromArray($costStatuses);
+			}
+
+			$form->addRow()->addHeading(__('Current Time Slots'));
+
+            $data = array('gibbonActivityID' => $gibbonActivityID);
+            $sql = "SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name, gibbonSpace.name as locationInternal FROM gibbonActivitySlot 
+					JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) 
+					LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
+					WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID";
+
+            $results = $pdo->executeQuery($data, $sql);
+
+            if ($results->rowCount() == 0) {
+                $form->addRow()->addAlert(__('There are no records to display.'), 'error');
+            } else {
+                $form->addRow()->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a time slot, any unsaved changes to this record will be lost!'))->wrap('<i>', '</i>');
+
+                $table = $form->addRow()->addTable()->addClass('colorOddEven');
+
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Name'));
+                $header->addContent(__('Time'));
+                $header->addContent(__('Location'));
+                $header->addContent(__('Action'));
+
+                while ($slot = $results->fetch()) {
+                    $row = $table->addRow();
+
+                    $row->addContent($slot['name']);
+                    $row->addContent(substr($slot['timeStart'], 0, 5).' - '.substr($slot['timeEnd'], 0, 5));
+					$row->addContent(!empty($slot['locationInternal'])? $slot['locationInternal'] : $slot['locationExternal']);
+					$row->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/></a>')
+						->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_slot_deleteProcess.php')
+						->addParam('address', $_GET['q'])
+						->addParam('gibbonActivitySlotID', $slot['gibbonActivitySlotID'])
+						->addParam('gibbonActivityID', $gibbonActivityID)
+						->addParam('search', $search)
+						->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
+						->addConfirmation(__('Are you sure you wish to delete this record?'));
+                }
             }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Basic Information') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=40 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Provider') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="provider" id="provider" class="standardWidth">
-								<option <?php if ($row['provider'] == 'School') { echo 'selected '; } ?>value="School"><?php echo $_SESSION[$guid]['organisationNameShort'] ?></option>
-								<option <?php if ($row['provider'] == 'External') { echo 'selected '; } ?>value="External"><?php echo __($guid, 'External') ?></option>
-							</select>
-						</td>
-					</tr>
+			$form->addRow()->addHeading(__('New Time Slots'));
 
-					<?php
-                    try {
-                        $dataType = array();
-                        $sqlType = "SELECT * FROM gibbonSetting WHERE scope='Activities' AND name='activityTypes'";
-                        $resultType = $connection2->prepare($sqlType);
-                        $resultType->execute($dataType);
-                    } catch (PDOException $e) {
-                    }
+			$sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
+			$sqlSpaces = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
+			$locations = array(
+				'Internal' => __('Internal'),
+				'External' => __('External'),
+			);
 
-					if ($resultType->rowCount() == 1) {
-						$rowType = $resultType->fetch();
+			for ($i = 1; $i <= 2; ++$i) {
+				$form->addRow()->addSubheading(__('Slot').' '.$i)->addClass("slotRow{$i}");
+				
+				$row = $form->addRow()->addClass("slotRow{$i}");
+					$row->addLabel("gibbonDaysOfWeekID{$i}", sprintf(__($guid, 'Slot %1$s Day'), $i));
+					$row->addSelect("gibbonDaysOfWeekID{$i}")->fromQuery($pdo, $sqlWeekdays)->placeholder();
+					
+				$row = $form->addRow()->addClass("slotRow{$i}");
+					$row->addLabel('timeStart'.$i, sprintf(__($guid, 'Slot %1$s Start Time'), $i));
+					$row->addTime('timeStart'.$i);
 
-						$options = $rowType['value'];
-						if ($options != '') {
-							$options = explode(',', $options);
-							?>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Type') ?></b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<select name="type" id="type" class="standardWidth">
-										<option value=""></option>
-										<?php
-                                        for ($i = 0; $i < count($options); ++$i) {
-                                            ?>
-											<option <?php if ($row['type'] == trim($options[$i])) { echo 'selected '; } ?>value="<?php echo trim($options[$i]) ?>"><?php echo trim($options[$i]) ?></option>
-										<?php
-                                        }
-                                        ?>
-									</select>
-								</td>
-							</tr>
-							<?php
-							}
-						}
-						?>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
+				$row = $form->addRow()->addClass("slotRow{$i}");
+					$row->addLabel("timeEnd{$i}", sprintf(__($guid, 'Slot %1$s End Time'), $i));
+					$row->addTime("timeEnd{$i}")->chainedTo('timeStart'.$i);
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Registration') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Assuming system-wide registration is open, should this activity be open for registration?') ?></span>
-						</td>
-						<td class="right">
-							<select name="registration" id="registration" class="standardWidth">
-								<option <?php if ($row['registration'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['registration'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
+				$row = $form->addRow()->addClass("slotRow{$i}");
+					$row->addLabel("slot{$i}Location", sprintf(__($guid, 'Slot %1$s Location'), $i));
+					$row->addRadio("slot{$i}Location")->fromArray($locations)->inline();
 
-					<?php
-                    //Should we show date as term or date?
-                    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+				$form->toggleVisibilityByClass("slotRow{$i}Internal")->onRadio("slot{$i}Location")->when('Internal');
+				$row = $form->addRow()->addClass("slotRow{$i}Internal");	
+					$row->addSelect("gibbonSpaceID{$i}")->fromQuery($pdo, $sqlSpaces)->placeholder();
+				
+				$form->toggleVisibilityByClass("slotRow{$i}External")->onRadio("slot{$i}Location")->when('External');
+				$row = $form->addRow()->addClass("slotRow{$i}External");	
+					$row->addTextField("location{$i}External")->maxLength(50);
+					
+				if ($i == 1) {
+					$form->toggleVisibilityByClass("slot{$i}ButtonRow")->onRadio("slot{$i}Location")->when(array('Internal', 'External'));
+					$row = $form->addRow()->addClass("slotRow{$i} slot{$i}ButtonRow");
+					$row->addButton(__('Add Another Slot'))
+						->onClick("$('.slotRow2').show();$('.slot1ButtonRow').hide();")
+						->addClass('right buttonAsLink');
+				}
+			}
+			
+			$form->addRow()->addHeading(__('Current Staff'));
 
-					echo "<input type='hidden' name='dateType' value='$dateType'>";
+            $data = array('gibbonActivityID' => $gibbonActivityID);
+            $sql = "SELECT preferredName, surname, gibbonActivityStaff.* FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
 
-					if ($dateType != 'Date') {
-						?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Terms') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Terms in which the activity will run.') ?><br/></span>
-							</td>
-							<td class="right">
-								<?php
-                                $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-								if ($terms == '') {
-									echo '<i>'.__($guid, 'No terms available.').'</i>';
-								} else {
-									for ($i = 0; $i < count($terms); $i = $i + 2) {
-										$checked = '';
-										if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-											$checked = 'checked ';
-										}
-										echo $terms[($i + 1)]." <input $checked type='checkbox' name='gibbonSchoolYearTermID[]' value='$terms[$i]'><br/>";
-									}
-								}
-								?>
-							</td>
-						</tr>
-						<?php
-						} else {
-						?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Listing Start Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								} ?><br/><?php echo __($guid, 'Default: 2 weeks before the end of the current term.') ?></span>
-							</td>
-							<td class="right">
-								<input name="listingStart" id="listingStart" maxlength=10 value="<?php echo dateConvertBack($guid, $row['listingStart']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var listingStart=new LiveValidation('listingStart');
-									listingStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-													?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-													?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#listingStart" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Listing End Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}?><br/><?php echo __($guid, 'Default: 2 weeks after the start of next term.') ?></span>
-							</td>
-							<td class="right">
-								<input name="listingEnd" id="listingEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $row['listingEnd']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var listingEnd=new LiveValidation('listingEnd');
-									listingEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-													?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-													?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#listingEnd" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Program Start Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								} ?><br/><?php echo __($guid, 'Default: first day of next term.') ?></span>
-							</td>
-							<td class="right">
-								<input name="programStart" id="programStart" maxlength=10 value="<?php echo dateConvertBack($guid, $row['programStart']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var programStart=new LiveValidation('programStart');
-									programStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-													?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-									?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#programStart" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Program End Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								} ?><br/><?php echo __($guid, 'Default: last day of the next term.') ?></span>
-							</td>
-							<td class="right">
-								<input name="programEnd" id="programEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $row['programEnd']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var programEnd=new LiveValidation('programEnd');
-									programEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-													?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-                					?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#programEnd" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<?php
-						}
-						?>
-						<tr>
-						<td>
-							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-						</td>
-						<td class="right">
-							<?php
-                            $yearGroups = getYearGroups($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-							if ($yearGroups == '') {
-								echo '<i>'.__($guid, 'No year groups available.').'</i>';
-							} else {
-								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-									$checked = '';
-									if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
-										$checked = 'checked ';
-									}
-									echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-								}
-							}
-							?>
-							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Max Participants') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="maxParticipants" id="maxParticipants" maxlength=4 value="<?php echo $row['maxParticipants'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var maxParticipants=new LiveValidation('maxParticipants');
-								maxParticipants.add(Validate.Presence);
-								maxParticipants.add(Validate.Numericality);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b><?php echo __($guid, 'Description') ?></b>
-							<?php echo getEditor($guid,  true, 'description', $row['description'], 10, true) ?>
-						</td>
-					</tr>
+            $results = $pdo->executeQuery($data, $sql);
 
-                    <?php
-                    if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
-                        ?>
-                        <tr class='break'>
-                            <td colspan=2>
-                                <h3><?php echo __($guid, 'Cost') ?></h3>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b><?php echo __($guid, 'Cost') ?> *</b><br/>
-                                <span class="emphasis small"><?php echo $_SESSION[$guid]['currency'].'.' ?><br/></span>
-                            </td>
-                            <td class="right">
-                                <input name="payment" id="payment" maxlength=9 value="<?php echo htmlPrep($row['payment']) ?>" type="text" class="standardWidth">
-                                <script type="text/javascript">
-                                    var payment=new LiveValidation('payment');
-                                    payment.add(Validate.Presence);
-                                    payment.add(Validate.Numericality, { minimum: 0, maximum: 999999.99 } );
-                                </script>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b><?php echo __($guid, 'Cost Type') ?> *</b><br/>
-                            </td>
-                            <td class="right">
-                                <select name="paymentType" id="paymentType" class="standardWidth">
-                                    <option <?php if ($row['paymentType'] == 'Entire Programme') { echo "selected"; } ?> value="Entire Programme"><?php echo __($guid, 'Entire Programme') ?></option>
-                                    <option <?php if ($row['paymentType'] == 'Per Session') { echo "selected"; } ?> value="Per Session"><?php echo __($guid, 'Per Session') ?></option>
-                                    <option <?php if ($row['paymentType'] == 'Per Week') { echo "selected"; } ?> value="Per Week"><?php echo __($guid, 'Per Week') ?></option>
-                                    <option <?php if ($row['paymentType'] == 'Per Term') { echo "selected"; } ?> value="Per Term"><?php echo __($guid, 'Per Term') ?></option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b><?php echo __($guid, 'Cost Status') ?> *</b><br/>
-                            </td>
-                            <td class="right">
-                                <select name="paymentFirmness" id="paymentFirmness" class="standardWidth">
-                                    <option <?php if ($row['paymentFirmness'] == 'Finalised') { echo "selected"; } ?> value="Finalised"><?php echo __($guid, 'Finalised') ?></option>
-                                    <option <?php if ($row['paymentFirmness'] == 'Estimated') { echo "selected"; } ?> value="Estimated"><?php echo __($guid, 'Estimated') ?></option>
-                                </select>
-                            </td>
-                        </tr>
-                        <?php
-                    }
-                    ?>
+            if ($results->rowCount() == 0) {
+                $form->addRow()->addAlert(__('There are no records to display.'), 'error');
+            } else {
+                $form->addRow()->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a member of staff, any unsaved changes to this record will be lost!'))->wrap('<i>', '</i>');
 
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Current Time Slots') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<?php
-                            try {
-                                $data = array('gibbonActivityID' => $gibbonActivityID);
-                                $sql = 'SELECT * FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
-							if ($result->rowCount() < 1) {
-								echo "<div class='error'>";
-								echo __($guid, 'There are no records to display.');
-								echo '</div>';
-							} else {
-								echo '<i><b>Warning</b>: If you delete a time slot, any unsaved changes to this planner entry will be lost!</i>';
-								echo "<table cellspacing='0' style='width: 100%'>";
-								echo "<tr class='head'>";
-								echo '<th>';
-								echo __($guid, 'Name');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Time');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Location');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Actions');
-								echo '</th>';
-								echo '</tr>';
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Name'));
+                $header->addContent(__('Role'));
+                $header->addContent(__('Action'));
 
-								$count = 0;
-								$rowNum = 'odd';
-								while ($row = $result->fetch()) {
-									if ($count % 2 == 0) {
-										$rowNum = 'even';
-									} else {
-										$rowNum = 'odd';
-									}
-									++$count;
+                while ($staff = $results->fetch()) {
+                    $row = $table->addRow();
+                    $row->addContent(formatName('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
+					$row->addContent($staff['role']);
+					$row->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/></a>')
+						->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_staff_deleteProcess.php')
+						->addParam('address', $_GET['q'])
+						->addParam('gibbonActivityStaffID', $staff['gibbonActivityStaffID'])
+						->addParam('gibbonActivityID', $gibbonActivityID)
+						->addParam('search', $search)
+						->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
+						->addConfirmation(__('Are you sure you wish to delete this record?'));
+                }
+            }
 
-									//COLOR ROW BY STATUS!
-									echo "<tr class=$rowNum>";
-									echo '<td>';
-									echo __($guid, $row['name']);
-									echo '</td>';
-									echo '<td>';
-									echo substr($row['timeStart'], 0, 5).' - '.substr($row['timeEnd'], 0, 5);
-									echo '</td>';
-									echo '<td>';
-									if ($row['gibbonSpaceID'] != '') {
-										try {
-											$dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-											$sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-											$resultSpace = $connection2->prepare($sqlSpace);
-											$resultSpace->execute($dataSpace);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
+            $form->addRow()->addHeading(__('New Staff'));
 
-										if ($resultSpace->rowCount() == 1) {
-											$rowSpace = $resultSpace->fetch();
-											echo $rowSpace['name'];
-										}
-									} else {
-										echo $row['locationExternal'];
-									}
-									echo '</td>';
-									echo '<td>';
-									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_slot_deleteProcess.php?address='.$_GET['q'].'&gibbonActivitySlotID='.$row['gibbonActivitySlotID']."&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-									echo '</td>';
-									echo '</tr>';
-								}
-								echo '</table>';
-							}
-							?>
-						</td>
-					</tr>
+			$row = $form->addRow();
+				$row->addLabel('staff', 'Staff');
+				$row->addSelectStaff('staff')->selectMultiple();
 
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'New Time Slots') ?></h3>
-						</td>
-					</tr>
+			$staffRoles = array(
+				'Organiser' => __('Organiser'),
+				'Coach'     => __('Coach'),
+				'Assistant' => __('Assistant'),
+				'Other'     => __('Other'),
+			);
 
-					<script type="text/javascript">
-						/* Resource 1 Option Control */
-						$(document).ready(function(){
-							$("#slot1InternalRow").css("display","none");
-							$("#slot1ExternalRow").css("display","none");
-							$("#slot1ButtonRow").css("display","none");
+			$row = $form->addRow();
+				$row->addLabel('role', 'Role');
+				$row->addSelect('role')->fromArray($staffRoles);
 
-							$(".slot1Location").click(function(){
-								if ($('input[name=slot1Location]:checked').val()=="External" ) {
-									$("#slot1InternalRow").css("display","none");
-									$("#slot1ExternalRow").slideDown("fast", $("#slot1ExternalRow").css("display","table-row"));
-									$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row"));
-								} else {
-									$("#slot1ExternalRow").css("display","none");
-									$("#slot1InternalRow").slideDown("fast", $("#slot1InternalRow").css("display","table-row"));
-									$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row"));
-								}
-							 });
-						});
+			$row = $form->addRow();
+				$row->addFooter();
+				$row->addSubmit();
 
-						/* Resource 2 Display Control */
-						$(document).ready(function(){
-							$("#slot2Row").css("display","none");
-							$("#slot2DayRow").css("display","none");
-							$("#slot2StartRow").css("display","none");
-							$("#slot2EndRow").css("display","none");
-							$("#slot2LocationRow").css("display","none");
-							$("#slot2InternalRow").css("display","none");
-							$("#slot2ExternalRow").css("display","none");
-							$("#slot2ButtonRow").css("display","none");
+			$form->loadAllValuesFrom($values);
+			
+			echo $form->getOutput();
+			?>
 
-							$("#slot1Button").click(function(){
-								$("#slot2Button").css("display","none");
-								$("#slot2Row").slideDown("fast", $("#slot2Row").css("display","table-row"));
-								$("#slot2DayRow").slideDown("fast", $("#slot2DayRow").css("display","table-row"));
-								$("#slot2StartRow").slideDown("fast", $("#slot2StartRow").css("display","table-row"));
-								$("#slot2EndRow").slideDown("fast", $("#slot2EndRow").css("display","table-row"));
-								$("#slot2LocationRow").slideDown("fast", $("#slot2LocationRow").css("display","table-row"));
-							});
-						});
-
-						/* Resource 2 Option Control */
-						$(document).ready(function(){
-							$(".slot2Location").click(function(){
-								if ($('input[name=slot2Location]:checked').val()=="External" ) {
-									$("#slot2InternalRow").css("display","none");
-									$("#slot2ExternalRow").slideDown("fast", $("#slot2ExternalRow").css("display","table-row"));
-								} else {
-									$("#slot2ExternalRow").css("display","none");
-									$("#slot2InternalRow").slideDown("fast", $("#slot2InternalRow").css("display","table-row"));
-								}
-							 });
-						});
-					</script>
-
-					<?php
-                    for ($i = 1; $i < 3; ++$i) {
-                        ?>
-						<tr id="slot<?php echo $i ?>Row">
-							<td colspan=2>
-								<h4><?php echo sprintf(__($guid, 'Slot %1$s'), $i) ?></h4>
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>DayRow">
-							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Day'), $i) ?> *</b><br/>
-							</td>
-							<td class="right">
-								<select name="gibbonDaysOfWeekID<?php echo $i ?>" id="gibbonDaysOfWeekID<?php echo $i ?>" class="standardWidth">
-									<option value=""></option>
-									<?php
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = 'SELECT * FROM gibbonDaysOfWeek ORDER BY sequenceNumber';
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-
-									while ($rowSelect = $resultSelect->fetch()) {
-										echo "<option value='".$rowSelect['gibbonDaysOfWeekID']."'>".__($guid, $rowSelect['name']).'</option>';
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>StartRow">
-							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
-							</td>
-							<td class="right">
-								<input name="timeStart<?php echo $i ?>" id="timeStart<?php echo $i ?>" maxlength=5 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-                                            try {
-                                                $dataAuto = array();
-                                                $sqlAuto = 'SELECT DISTINCT timeStart FROM gibbonActivitySlot ORDER BY timeStart';
-                                                $resultAuto = $connection2->prepare($sqlAuto);
-                                                $resultAuto->execute($dataAuto);
-                                            } catch (PDOException $e) {
-                                            }
-											while ($rowAuto = $resultAuto->fetch()) {
-												echo '"'.substr($rowAuto['timeStart'], 0, 5).'", ';
-											}
-											?>
-										];
-										$( "#timeStart<?php echo $i ?>" ).autocomplete({source: availableTags});
-									});
-								</script>
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>EndRow">
-							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s End Time'), $i) ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
-							</td>
-							<td class="right">
-								<input name="timeEnd<?php echo $i ?>" id="timeEnd<?php echo $i ?>" maxlength=5 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-                                            try {
-                                                $dataAuto = array();
-                                                $sqlAuto = 'SELECT DISTINCT timeEnd FROM gibbonActivitySlot ORDER BY timeEnd';
-                                                $resultAuto = $connection2->prepare($sqlAuto);
-                                                $resultAuto->execute($dataAuto);
-                                            } catch (PDOException $e) {
-                                            }
-											while ($rowAuto = $resultAuto->fetch()) {
-												echo '"'.substr($rowAuto['timeEnd'], 0, 5).'", ';
-											}
-											?>
-										];
-										$( "#timeEnd<?php echo $i ?>" ).autocomplete({source: availableTags});
-									});
-								</script>
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>LocationRow">
-							<td>
-								<b><?php echo sprintf(__($guid, 'Slot %1$s Location'), $i) ?></b><br/>
-							</td>
-							<td class="right">
-								<input type="radio" name="slot<?php echo $i ?>Location" value="Internal" class="slot<?php echo $i ?>Location" /> Internal
-								<input type="radio" name="slot<?php echo $i ?>Location" value="External" class="slot<?php echo $i ?>Location" /> External
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>InternalRow">
-							<td>
-
-							</td>
-							<td class="right">
-								<select name="gibbonSpaceID<?php echo $i ?>" id="gibbonSpaceID<?php echo $i ?>" class="standardWidth">
-									<option value=""></option>
-									<?php
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-									while ($rowSelect = $resultSelect->fetch()) {
-										echo "<option value='".$rowSelect['gibbonSpaceID']."'>".$rowSelect['name'].'</option>';
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>ExternalRow">
-							<td>
-
-							</td>
-							<td class="right">
-								<input name="location<?php echo $i ?>External" id="location<?php echo $i ?>External" maxlength=50 value="" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr id="slot<?php echo $i ?>ButtonRow">
-							<td>
-							</td>
-							<td class="right">
-								<input class="buttonAsLink" id="slot<?php echo $i ?>Button" type="button" value="Add Another Slot">
-								<a href=""></a>
-							</td>
-						</tr>
-						<?php
-						}
-                    ?>
-
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Current Staff') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<?php
-                            try {
-                                $data = array('gibbonActivityID' => $gibbonActivityID);
-                                $sql = "SELECT preferredName, surname, gibbonActivityStaff.* FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-							if ($result->rowCount() < 1) {
-								echo "<div class='error'>";
-								echo __($guid, 'There are no records to display.');
-								echo '</div>';
-							} else {
-								echo '<i><b>Warning</b>: If you delete a staff member, any unsaved changes to this planner entry will be lost!</i>';
-								echo "<table cellspacing='0' style='width: 100%'>";
-								echo "<tr class='head'>";
-								echo '<th>';
-								echo __($guid, 'Name');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Role');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Actions');
-								echo '</th>';
-								echo '</tr>';
-
-								$count = 0;
-								$rowNum = 'odd';
-								while ($row = $result->fetch()) {
-									if ($count % 2 == 0) {
-										$rowNum = 'even';
-									} else {
-										$rowNum = 'odd';
-									}
-									++$count;
-
-									//COLOR ROW BY STATUS!
-									echo "<tr class=$rowNum>";
-									echo '<td>';
-									echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
-									echo '</td>';
-									echo '<td>';
-									echo $row['role'];
-									echo '</td>';
-									echo '<td>';
-									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonActivityStaffID='.$row['gibbonActivityStaffID']."&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-									echo '</td>';
-									echo '</tr>';
-								}
-								echo '</table>';
-							}
-							?>
-						</td>
-					</tr>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'New Staff') ?></h3>
-						</td>
-					</tr>
-					<tr>
-					<td>
-						<b><?php echo __($guid, 'Staff') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-					</td>
-					<td class="right">
-						<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
-							<?php
-                            echo "<optgroup label='--".__($guid, 'Staff')."--'>";
-							try {
-								$dataSelect = array();
-								$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-								$resultSelect = $connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							} catch (PDOException $e) {
-							}
-							while ($rowSelect = $resultSelect->fetch()) {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-							}
-							echo '</optgroup>';
-							echo "<optgroup label='--".__($guid, 'All Users')."--'>";
-							try {
-								$dataSelect = array();
-								$sqlSelect = "SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
-								$resultSelect = $connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							} catch (PDOException $e) {
-							}
-							while ($rowSelect = $resultSelect->fetch()) {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."</option>";
-							}
-							echo '</optgroup>'; ?>
-						</select>
-					</td>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Role') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="role" id="role" class="standardWidth">
-								<option value="Organiser"><?php echo __($guid, 'Organiser') ?></option>
-								<option value="Coach"><?php echo __($guid, 'Coach') ?></option>
-								<option value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
-								<option value="Other"><?php echo __($guid, 'Other') ?></option>
-							</select>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
+			<script type="text/javascript">
+			$(document).ready(function(){
+				$('.slotRow2').hide();
+			});
+			</script>
+			
 			<?php
-
         }
     }
 }
-?>

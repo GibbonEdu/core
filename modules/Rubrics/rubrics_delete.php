@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\PrefabFormFactory;
+
 @session_start();
 
 //Module includes
@@ -85,38 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                     echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
-                    //Let's go!
-                    $row = $result->fetch();
-
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-									<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-								</td>
-								<td class="right">
-									
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<input name="gibbonRubricID" id="gibbonRubricID" value="<?php echo $gibbonRubricID ?>" type="hidden">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-								</td>
-								<td class="right">
-									
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
-
+                    $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2");
+                    echo $form->getOutput();
                 }
             }
         }
     }
 }
-?>

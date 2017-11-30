@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -33,7 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
     if ($highestAction == 'My Activities_viewEditEnrolment') {
-
         try {
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
             $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
         try {
             $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
+            $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -81,74 +82,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
             if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
-            ?>
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Name') ?></b><br/>
-						</td>
-						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<?php
-                    if ($dateType == 'Date') {
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Listing Dates') ?></b><br/>
-							</td>
-							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php echo dateConvertBack($guid, $row['listingStart']).'-'.dateConvertBack($guid, $row['listingEnd']) ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Program Dates') ?></b><br/>
-							</td>
-							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php echo dateConvertBack($guid, $row['programStart']).'-'.dateConvertBack($guid, $row['programEnd']) ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<?php
 
-                    } else {
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Terms') ?></b><br/>
-							</td>
-							<td class="right">
-								<?php
-                                $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID'], true);
-                        $termList = '';
-                        for ($i = 0; $i < count($terms); $i = $i + 2) {
-                            if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                $termList .= $terms[($i + 1)].', ';
-                            }
-                        }
-                        if ($termList == '') {
-                            $termList = '-, ';
-                        }
-                        ?>
-								<input readonly name="name" id="name" maxlength=20 value="<?php echo substr($termList, 0, -2) ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<?php
+            $form = Form::create('activityEnrolment', $_SESSION[$guid]['absoluteURL'].'/index.php');
+            
+            $row = $form->addRow();
+                $row->addLabel('nameLabel', __('Name'));
+                $row->addTextField('name')->readOnly()->setValue($values['name']);
 
-                    }
-            		?>
-				</table>
+            if ($dateType == 'Date') {
+                $row = $form->addRow();
+                $row->addLabel('listingDatesLabel', __('Listing Dates'));
+                $row->addTextField('listingDates')->readOnly()->setValue(dateConvertBack($guid, $values['listingStart']).'-'.dateConvertBack($guid, $values['listingEnd']));
 
-			<?php
+                $row = $form->addRow();
+                $row->addLabel('programDatesLabel', __('Program Dates'));
+                $row->addTextField('programDates')->readOnly()->setValue(dateConvertBack($guid, $values['programStart']).'-'.dateConvertBack($guid, $values['programEnd']));
+            } else {
+                $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                $termList = array_map(function ($item) use ($schoolTerms) {
+                    $index = array_search($item, $schoolTerms);
+                    return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
+                }, explode(',', $values['gibbonSchoolYearTermIDList']));
+                                            
+                $row = $form->addRow();
+                $row->addLabel('termsLabel', __('Terms'));
+                $row->addTextField('terms')->readOnly()->setValue(implode(', ', $termList));
+            }
+            echo $form->getOutput();
+            
+
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+            $enrolment = (!empty($values['enrolmentType']))? $values['enrolmentType'] : $enrolment;
+
             try {
                 if ($enrolment == 'Competitive') {
                     $data = array('gibbonActivityID' => $gibbonActivityID);
@@ -190,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                 $count = 0;
                 $rowNum = 'odd';
-                while ($row = $result->fetch()) {
+                while ($values = $result->fetch()) {
                     if ($count % 2 == 0) {
                         $rowNum = 'even';
                     } else {
@@ -201,17 +173,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                    echo formatName('', $values['preferredName'], $values['surname'], 'Student', true);
                     echo '</td>';
                     echo '<td>';
-                    echo $row['status'];
+                    echo $values['status'];
                     echo '</td>';
                     echo '<td>';
-                    echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).' at '.substr($row['timestamp'], 11, 5);
+                    echo dateConvertBack($guid, substr($values['timestamp'], 0, 10)).' at '.substr($values['timestamp'], 11, 5);
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_edit.php&gibbonActivityID='.$row['gibbonActivityID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_edit.php&gibbonActivityID='.$values['gibbonActivityID'].'&gibbonPersonID='.$values['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_delete.php&gibbonActivityID='.$values['gibbonActivityID'].'&gibbonPersonID='.$values['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
                 }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\PrefabFormFactory;
+
 @session_start();
 
 //Module includes
@@ -65,40 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_de
             echo __($guid, 'The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch();
-
-            if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Back to Search Results').'</a>';
-                echo '</div>';
-            }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_deleteProcess.php?gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-						</td>
-						<td class="right">
-
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php echo $gibbonFinanceInvoiceID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-						<td class="right">
-
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
-
+            $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_deleteProcess.php?gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID");
+            echo $form->getOutput();
         }
     }
 }

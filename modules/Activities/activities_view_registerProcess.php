@@ -40,11 +40,13 @@ $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModule
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_view_register.php', $connection2);
     if ($highestAction == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
+        exit;
     } else {
         //Get current role category
         $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -56,12 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             //Fail0
             $URL .= '&return=error0';
             header("Location: {$URL}");
+            exit;
         } else {
             //Proceed!
             //Check if school year specified
             if ($gibbonActivityID == '' or $gibbonPersonID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
+                exit;
             } else {
                 $today = date('Y-m-d');
                 //Should we show date as term or date?
@@ -70,22 +74,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 try {
                     if ($dateType != 'Date') {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
-                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' AND registration='Y'";
+                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.waitingList, gibbonActivityType.backupChoice FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' AND registration='Y'";
                     } else {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
-                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' AND registration='Y'";
+                        $sql = "SELECT DISTINCT gibbonActivity.*, gibbonStudentEnrolment.gibbonYearGroupID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.waitingList, gibbonActivityType.backupChoice FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND active='Y' AND registration='Y'";
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
-                    exit();
+                    exit;
                 }
 
                 if ($result->rowCount() < 1) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     $row = $result->fetch();
 
@@ -98,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
-                        exit();
+                        exit;
                     }
 
                     $gibbonActivityStaffIDs = ($resultStaff->rowCount() > 0)? $resultStaff->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
@@ -112,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
-                        exit();
+                        exit;
                     }
 
                     if ($mode == 'register') {
@@ -120,22 +125,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($resultReg->rowCount() > 0) {
                             $URL .= '&return=error3';
                             header("Location: {$URL}");
+                            exit;
                         } else {
-                            //Validate Inputs
-                            $backup = getSettingByScope($connection2, 'Activities', 'backupChoice');
-                            $gibbonActivityIDBackup = null;
-                            if ($backup == 'N') {
-                                $gibbonActivityIDBackup = null;
-                            } elseif ($backup == 'Y') {
-                                $gibbonActivityIDBackup = $_POST['gibbonActivityIDBackup'];
-                            }
+                            // Load the backupChoice system setting, optionally override with the Activity Type setting
+                            $backupChoice = getSettingByScope($connection2, 'Activities', 'backupChoice');
+                            $backupChoice = (!empty($row['backupChoice']))? $row['backupChoice'] : $backupChoice;
 
-                            if ($backup == 'Y' and $gibbonActivityIDBackup == '') {
-                                $URL .= '&error=error1';
+                            $gibbonActivityIDBackup = ($backupChoice == 'Y')? $_POST['gibbonActivityIDBackup'] : '';
+                            $activityCountByType = getStudentActivityCountByType($pdo, $row['type'], $gibbonPersonID);
+                            
+                            if (!empty($row['access']) && $row['access'] != 'Register') {
+                                $URL .= '&return=error0';
                                 header("Location: {$URL}");
+                                exit;
+                            } else if ($row['maxPerStudent'] > 0 && $activityCountByType >= $row['maxPerStudent']) {
+                                $URL .= '&return=error1';
+                                header("Location: {$URL}");
+                                exit;
+                            } else if ($backupChoice == 'Y' and $gibbonActivityIDBackup == '') {
+                                $URL .= '&return=error1';
+                                header("Location: {$URL}");
+                                exit;
                             } else {
-                                $status = 'Not accepted';
+                                $status = 'Not Accepted';
+
+                                // Load the enrolmentType system setting, optionally override with the Activity Type setting
                                 $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+                                $enrolment = (!empty($row['enrolmentType']))? $row['enrolmentType'] : $enrolment;
 
                                 //Lock the activityStudent database table
                                 try {
@@ -144,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 } catch (PDOException $e) {
                                     $URL .= '&return=error2';
                                     header("Location: {$URL}");
-                                    exit();
+                                    exit;
                                 }
 
                                 if ($enrolment == 'Selection') {
@@ -152,8 +168,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 } else {
                                     //Check number of people registered for this activity (if we ignore status it stops people jumping the queue when someone unregisters)
                                     try {
-                                        $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID);
-                                        $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID";
+                                        $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID, 'date' => date('Y-m-d'));
+                                        $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonActivityID=:gibbonActivityID";
                                         $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
                                         $resultNumberRegistered->execute($dataNumberRegistered);
                                     } catch (PDOException $e) {
@@ -162,7 +178,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                     //If activity is full...
                                     if ($resultNumberRegistered->rowCount() >= $row['maxParticipants']) {
-                                        $status = 'Waiting List';
+                                        if ($row['waitingList'] == 'Y') {
+                                            $status = 'Waiting List';
+                                        } else {
+                                            $URL .= '&return=error1';
+                                            header("Location: {$URL}");
+                                            exit;
+                                        }
                                     } else {
                                         $status = 'Accepted';
                                     }
@@ -177,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 } catch (PDOException $e) {
                                     $URL .= '&return=error2';
                                     header("Location: {$URL}");
-                                    exit();
+                                    exit;
                                 }
 
                                 //Unlock locked database tables
@@ -214,9 +236,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 if ($status == 'Waiting List') {
                                     $URLSuccess = $URLSuccess.'&return=success2';
                                     header("Location: {$URLSuccess}");
+                                    exit;
                                 } else {
                                     $URLSuccess = $URLSuccess.'&return=success0';
                                     header("Location: {$URLSuccess}");
+                                    exit;
                                 }
                             }
                         }
@@ -225,7 +249,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($resultReg->rowCount() < 1) {
                             $URL .= '&return=error3';
                             header("Location: {$URL}");
+                            exit;
                         } else {
+                            if (!empty($row['access']) && $row['access'] != 'Register') {
+                                $URL .= '&return=error0';
+                                header("Location: {$URL}");
+                                exit;
+                            }
+
                             //Write to database
                             try {
                                 $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
@@ -235,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             } catch (PDOException $e) {
                                 $URL .= '&return=error2';
                                 header("Location: {$URL}");
-                                exit();
+                                exit;
                             }
 
                             $reg = $resultReg->fetch();
@@ -276,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 } catch (PDOException $e) {
                                     $URL .= '&return=error2';
                                     header("Location: {$URL}");
-                                    exit();
+                                    exit;
                                 }
 
                                 //Count spaces

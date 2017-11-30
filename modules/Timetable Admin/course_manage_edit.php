@@ -79,23 +79,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch(); 
-            
+            $values = $result->fetch();
+
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_editProcess.php?gibbonCourseID='.$gibbonCourseID);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 			$form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
 				$row->addTextField('schoolYearName')->isRequired()->readonly()->setValue($values['yearName']);
-			
+
 			$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
 			$row = $form->addRow();
 				$row->addLabel('gibbonDepartmentID', __('Learning Area'));
 				$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql)->placeholder();
-			
+
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
 				$row->addTextField('name')->isRequired()->maxLength(60);
@@ -126,23 +126,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$column = $row->addColumn('blurb');
 				$column->addLabel('description', __('Blurb'));
 				$column->addEditor('description', $guid)->setRows(20);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('map', __('Include In Curriculum Map'));
                 $row->addYesNo('map')->isRequired();
-                
+
 			$row = $form->addRow();
 				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
 				$row->addCheckboxYearGroup('gibbonYearGroupIDList')->loadFromCSV($values);
-			
+
 			$row = $form->addRow();
 				$row->addFooter();
                 $row->addSubmit();
-                
+
             $form->loadAllValuesFrom($values);
-			
+
             echo $form->getOutput();
-            
+
             echo '<h2>';
             echo __($guid, 'Edit Classes');
             echo '</h2>';
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';

@@ -60,15 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             $active = $_POST['active'];
             $category = $_POST['category'];
             $description = $_POST['description'];
-            $gibbonYearGroupIDList = '';
-            for ($i = 0; $i < $_POST['count']; ++$i) {
-                if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
-                    if ($_POST["gibbonYearGroupIDCheck$i"] == 'on') {
-                        $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST["gibbonYearGroupID$i"].',';
-                    }
-                }
-            }
-            $gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
+            $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
+            $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
 
             if ($scope == '' or ($scope == 'Learning Area' and $gibbonDepartmentID == '') or $name == '' or $nameShort == '' or $active == '') {
                 $URL .= '&return=error1';
