@@ -66,11 +66,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $row->addLabel('provider', __('Provider'));
         $row->addSelect('provider')->isRequired()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
 	
-	$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
+	$sql = "SELECT name as value, name FROM gibbonActivityType ORDER BY name";
+	$result = $pdo->executeQuery(array(), $sql);
+	if ($result->rowCount() > 0) {
+		$activityTypes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+	} else {
+		$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
+		$activityTypes = array_map('trim', explode(',', $activityTypes));
+	}
+
 	if (!empty($activityTypes)) {
 		$row = $form->addRow();
         	$row->addLabel('type', __('Type'));
-        	$row->addSelect('type')->fromString($activityTypes);
+        	$row->addSelect('type')->fromArray($activityTypes)->placeholder();
 	}
 
 	$row = $form->addRow();
