@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     //Check number of people registered for this activity (if we ignore status it stops people jumping the queue when someone unregisters)
                                     try {
                                         $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID, 'date' => date('Y-m-d'));
-                                        $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonActivityID=:gibbonActivityID";
+                                        $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonActivityID=:gibbonActivityID";
                                         $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
                                         $resultNumberRegistered->execute($dataNumberRegistered);
                                     } catch (PDOException $e) {
@@ -313,7 +313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 //Count spaces
                                 try {
                                     $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID);
-                                    $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
+                                    $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
                                     $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
                                     $resultNumberRegistered->execute($dataNumberRegistered);
                                 } catch (PDOException $e) {
@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     //Get top of waiting list
                                     try {
                                         $dataBumps = array('gibbonActivityID' => $gibbonActivityID);
-                                        $sqlBumps = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp ASC LIMIT 0, $spaces";
+                                        $sqlBumps = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp ASC LIMIT 0, $spaces";
                                         $resultBumps = $connection2->prepare($sqlBumps);
                                         $resultBumps->execute($dataBumps);
                                     } catch (PDOException $e) {
