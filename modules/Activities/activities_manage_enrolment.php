@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
         try {
             $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
+            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
