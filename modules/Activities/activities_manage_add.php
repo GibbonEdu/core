@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	if (!empty($activityTypes)) {
 		$row = $form->addRow();
         	$row->addLabel('type', __('Type'));
-        	$row->addSelect('type')->fromString($activityTypes);
+        	$row->addSelect('type')->fromString($activityTypes)->placeholder();
 	}
 
 	$row = $form->addRow();
