@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
             );
             $row = $form->addRow();
                 $row->addLabel('salaryAmount', __('Salary'));
-                    $col = $row->addColumn()->addClass('right inline');
+                    $col = $row->addColumn('salaryAmount')->addClass('right inline');
                     $col->addCurrency('salaryAmount')->setClass('shortWidth');
                     $col->addSelect('salaryPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
@@ -124,31 +124,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 
             $row = $form->addRow();
                 $row->addLabel('responsibilityAmount', __('Responsibility'));
-                    $col = $row->addColumn()->addClass('right inline');
+                    $col = $row->addColumn('responsibilityAmount')->addClass('right inline');
                     $col->addCurrency('responsibilityAmount')->setClass('shortWidth');
                     $col->addSelect('responsibilityPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('housingAmount', __('Housing'));
-                    $col = $row->addColumn()->addClass('right inline');
+                    $col = $row->addColumn('housingAmount')->addClass('right inline');
                     $col->addCurrency('housingAmount')->setClass('shortWidth');
                     $col->addSelect('housingPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('travelAmount', __('Travel'));
-                    $col = $row->addColumn()->addClass('right inline');
+                    $col = $row->addColumn('travelAmount')->addClass('right inline');
                     $col->addCurrency('travelAmount')->setClass('shortWidth');
                     $col->addSelect('travelPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('retirementAmount', __('Retirement'));
-                    $col = $row->addColumn()->addClass('right inline');
+                    $col = $row->addColumn('retirementAmount')->addClass('right inline');
                     $col->addCurrency('retirementAmount')->setClass('shortWidth');
                     $col->addSelect('retirementPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('bonusAmount', __('Bonus/Gratuity'));
-                    $col = $row->addColumn()->addClass('right inline');
+                    $col = $row->addColumn('bonusAmount')->addClass('right inline');
                     $col->addCurrency('bonusAmount')->setClass('shortWidth');
                     $col->addSelect('bonusPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                 $row->addFileUpload('file1')
                     ->accepts($fileUploader
                     ->getFileExtensions('Document'))
-                    ->setAttachment('file', $_SESSION[$guid]['absoluteURL'], $values['contractUpload']);
+                    ->setAttachment('contractUpload', $_SESSION[$guid]['absoluteURL'], $values['contractUpload']);
 
             $row = $form->addRow();
                 $row->addFooter();
