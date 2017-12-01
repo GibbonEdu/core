@@ -151,7 +151,7 @@ class attendanceView
 	public function renderMiniHistory( $gibbonPersonID, $width = '134px' ) {
 
         $output = '';
-		$output .= "<table cellspacing='0' class='historyCalendarMini' style='width:$width;' >";
+		$output .= "<table cellspacing='0' class='historyCalendarMini'>";
         $output .= '<tr>';
         for ($i = 4; $i >= 0; --$i) {
             $link = '';

@@ -17,6 +17,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+.attendanceGrid .grid {
+	border-collapse: collapse; 
+}
+
+.attendanceGrid td {
+	padding: 5px !important;
+	border: 0;
+}
+
+.attendanceField {
+	display:inline-block;
+	width: 133px;
+}
+
+.attendanceField + .attendanceField {
+	margin-top: -11px;
+}
+
 .verticalHeader {
 	overflow: hidden;
 	padding: 4px !important;
@@ -103,7 +121,7 @@ td.center {
 }
 
 .dayPresent {
-	border: 1px solid #390;
+	border: 1px solid #390 !important;
 }
 
 .highlightAbsent,
@@ -113,7 +131,27 @@ td.center {
 }
 
 .dayAbsent {
-	border: 1px solid #c00;
+	border: 1px solid #c00 !important;
+}
+
+.highlightWarning,
+.dayWarning {
+	color: #D65602;
+	background: #FFD2A9 !important;
+}
+
+.dayWarning {
+	border: 1px solid #D65602 !important;
+}
+
+.highlightMessage,
+.dayMessage {
+	color: #3B73AF;
+	background: #D0EAFD !important;
+}
+
+.dayMessage {
+	border: 1px solid #3B73AF !important;
 }
 
 .highlightNoData,
@@ -123,7 +161,7 @@ td.center {
 }
 
 .dayNoData {
-	border: 1px solid #555;
+	border: 1px solid #555 !important;
 }
 
 .historyCalendar .day a {
@@ -186,4 +224,3 @@ td.center {
 	font-size: 32px;
 	color: #333333;
 }
-
