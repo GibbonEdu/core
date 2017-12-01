@@ -150,14 +150,15 @@ class attendanceView
 
 	public function renderMiniHistory( $gibbonPersonID, $width = '134px' ) {
 
-		echo "<table cellspacing='0' class='historyCalendarMini' style='width:$width;' >";
-        echo '<tr>';
+        $output = '';
+		$output .= "<table cellspacing='0' class='historyCalendarMini' style='width:$width;' >";
+        $output .= '<tr>';
         for ($i = 4; $i >= 0; --$i) {
             $link = '';
             if ($i > ( count($this->last5SchoolDays) - 1)) {
-                echo "<td class='highlightNoData'>";
-                echo '<i>'.__($this->guid, 'NA').'</i>';
-                echo '</td>';
+                $output .= "<td class='highlightNoData'>";
+                $output .= '<i>'.__($this->guid, 'NA').'</i>';
+                $output .= '</td>';
             } else {
             	$currentDayTimestamp = dateConvertToTimestamp($this->last5SchoolDays[$i]);
                 try {
@@ -165,7 +166,7 @@ class attendanceView
                     $sqlLast5SchoolDays = 'SELECT type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonCourseClassID DESC, gibbonAttendanceLogPersonID DESC LIMIT 1';
                     $resultLast5SchoolDays = $this->pdo->executeQuery($dataLast5SchoolDays, $sqlLast5SchoolDays);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $output .= "<div class='error'>".$e->getMessage().'</div>';
                 }
                 if ($resultLast5SchoolDays->rowCount() == 0) {
                     $class = 'highlightNoData';
@@ -179,22 +180,24 @@ class attendanceView
                     }
                 }
 
-                echo "<td class='$class'>";
+                $output .= "<td class='$class'>";
                 if ($link != '') {
                 	$title = (!empty($rowLast5SchoolDays['reason']))? $rowLast5SchoolDays['type'].': '.$rowLast5SchoolDays['reason'] : $rowLast5SchoolDays['type'];
-                    echo "<a href='$link' title='".$title."'>";
-                    echo date('d', $currentDayTimestamp).'<br/>';
-                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
-                    echo '</a>';
+                    $output .= "<a href='$link' title='".$title."'>";
+                    $output .= date('d', $currentDayTimestamp).'<br/>';
+                    $output .= "<span>".date('M', $currentDayTimestamp).'</span>';
+                    $output .= '</a>';
                 } else {
-                    echo date('d', $currentDayTimestamp).'<br/>';
-                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                    $output .= date('d', $currentDayTimestamp).'<br/>';
+                    $output .= "<span>".date('M', $currentDayTimestamp).'</span>';
                 }
-                echo '</td>';
+                $output .= '</td>';
             }
         }
-        echo '</tr>';
-        echo '</table>';
+        $output .= '</tr>';
+        $output .= '</table>';
+
+        return $output;
 	}
 
 	public function renderAttendanceTypeSelect( $lastType = '', $name='type', $width='302px', $future = false ) {
