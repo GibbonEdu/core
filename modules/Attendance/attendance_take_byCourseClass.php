@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $students = $resultCourseClass->fetchAll();
 
                         // Build the attendance log data per student
-                        foreach ($students as &$student) {
+                        foreach ($students as $key => $student) {
                             $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate.'%');
                             $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -229,18 +229,27 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $sql .= " ORDER BY timestampTaken DESC";
                             $result = $pdo->executeQuery($data, $sql);
 
-                            $student['log'] = ($result->rowCount() > 0)? $result->fetch() : $defaults;
+                            $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
 
-                            $student['cellHighlight'] = '';
-                            if ($attendance->isTypeAbsent($student['log']['type'])) {
-                                $student['cellHighlight'] = ($student['log']['context'] == 'Class')? 'dayWarning' : 'dayAbsent';
-                            } else if ($attendance->isTypeOffsite($student['log']['type'])) {
-                                $student['cellHighlight'] = 'dayMessage';
+                            $students[$key]['cellHighlight'] = '';
+                            if ($attendance->isTypeAbsent($log['type'])) {
+                                $students[$key]['cellHighlight'] = 'dayAbsent';
+                            } else if ($attendance->isTypeOffsite($log['type'])) {
+                                $students[$key]['cellHighlight'] = 'dayMessage';
                             }
 
-                            if ($attendance->isTypePresent($student['log']['type']) && $attendance->isTypeOnsite($student['log']['type'])) {
+                            $students[$key]['absenceCount'] = '';
+                            $absenceCount = getAbsenceCount($guid, $student['gibbonPersonID'], $connection2, $class['firstDay'], $class['lastDay'], $gibbonCourseClassID);
+                            if ($absenceCount !== false) {
+                                $absenceText = ($absenceCount == 1)? __('%1$s Class Absent') : __('%1$s Classes Absent');
+                                $students[$key]['absenceCount'] = sprintf($absenceText, $absenceCount);
+                            }
+
+                            if ($attendance->isTypePresent($log['type']) && $attendance->isTypeOnsite($log['type'])) {
                                 $countPresent++;
                             }
+
+                            $students[$key]['log'] = $log;
                         }
 
                         $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byCourseClassProcess.php');
@@ -266,6 +275,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                     ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                                     ->addParam('subpage', 'School Attendance')
                                     ->wrap('<b>', '</b>');
+                                $cell->addContent($student['absenceCount'])->wrap('<span class="small emphasis">', '<span>');
                                 $cell->addSelect($count.'-type')
                                     ->fromArray(array_keys($attendance->getAttendanceTypes()))
                                     ->selected($student['log']['type'])
@@ -304,4 +314,3 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
         }
     }
 }
-?>
