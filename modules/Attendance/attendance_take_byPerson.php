@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 $row = $form->addRow();
                     $row->addLabel('summary', __('Recent Attendance Summary'));
-                    $row->addContent($attendance->renderMiniHistory($gibbonPersonID, '160px; float:right;'));
+                    $row->addContent($attendance->renderMiniHistory($gibbonPersonID, 'floatRight'));
                 
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));

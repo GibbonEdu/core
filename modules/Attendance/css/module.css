@@ -80,6 +80,10 @@ td.center {
 	text-align: center;
 }
 
+.historyCalendar:not(.historyCalendarKey) {
+	border-collapse: collapse;
+}
+
 .historyCalendar td,
 .historyCalendar td:first-child {
 	text-align: center;
