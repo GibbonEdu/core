@@ -32,6 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 .attendanceFieldStacked {
+	clear: right;
 	margin-top: -6px;
 }
 
@@ -223,7 +224,7 @@ td.center {
 
 .historyCalendarKey .arrow-two {
 	position: absolute;
-	top: -68px;
+	top: -76px;
 	left: 154px;
 	font-size: 32px;
 	color: #333333;
