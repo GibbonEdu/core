@@ -27,8 +27,8 @@ use Gibbon\Forms\Traits\BasicAttributesTrait;
 /**
  * Grid
  *
- * @version v14
- * @since   v14
+ * @version v15
+ * @since   v15
  */
 class Grid implements OutputableInterface, ValidatableInterface
 {
@@ -51,16 +51,22 @@ class Grid implements OutputableInterface, ValidatableInterface
         $this->setClass('fullWidth grid');
     }
 
+    /**
+     * Sets the number of columns wide to render the grid.
+     * @param int $columns
+     * @return self
+     */
     public function setColumns($columns)
     {
         $this->columns = $columns;
 
         return $this;
     }
+    
     /**
-     * Add a row to the internal collection and return the resulting object.
+     * Add a cell to the internal collection and return the resulting object.
      * @param  string  $id
-     * @return object  Row
+     * @return object  Column
      */
     public function addCell($id = '')
     {
@@ -71,7 +77,7 @@ class Grid implements OutputableInterface, ValidatableInterface
     }
 
     /**
-     * Get all rows in the table.
+     * Get all cells in the grid.
      * @return  array
      */
     public function getCells()
@@ -88,6 +94,7 @@ class Grid implements OutputableInterface, ValidatableInterface
         $output = '<table '.$this->getAttributeString().' cellspacing="0">';
         $output .= '<tbody>';
 
+        $cellWidth = 100 / $this->columns;
         $emptyCell = $this->factory->createColumn();
         $rows = array_chunk($this->getCells(), $this->columns);
         
@@ -96,7 +103,7 @@ class Grid implements OutputableInterface, ValidatableInterface
 
             $output .= '<tr>';
             foreach ($cells as $cell) {
-                $output .= '<td class="' . $cell->getClass() . '">';
+                $output .= '<td class="' . $cell->getClass() . '" style="width: '.$cellWidth.'%">';
                 $output .= $cell->getOutput();
                 $output .= '</td>';
             }
