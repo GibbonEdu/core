@@ -29,10 +29,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 .attendanceField {
 	display:inline-block;
 	width: 133px;
+	margin-right: 8px;
 }
 
 .attendanceFieldStacked {
-	clear: right;
 	margin-top: -4px;
 }
 
@@ -135,18 +135,8 @@ td.center {
 	background: #F6CECB !important;
 }
 
-.dayAbsent {
+.dayAbsent, table.smallIntBorder td.dayAbsent {
 	border: 1px solid #c00 !important;
-}
-
-.highlightWarning,
-.dayWarning {
-	color: #D65602;
-	background: #FFD2A9 !important;
-}
-
-.dayWarning {
-	border: 1px solid #D65602 !important;
 }
 
 .highlightMessage,
@@ -155,7 +145,7 @@ td.center {
 	background: #D0EAFD !important;
 }
 
-.dayMessage {
+.dayMessage, table.smallIntBorder td.dayMessage {
 	border: 1px solid #3B73AF !important;
 }
 
