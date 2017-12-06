@@ -152,11 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $bulkAction->addSelect('action')
                     ->fromArray($actions)
                     ->isRequired()
-                    ->setClass('mediumWidth floatNone')
+                    ->setClass('mediumWidth')
                     ->placeholder(__('Select action'));
                 $bulkAction->addSelect('gibbonSchoolYearIDCopyTo')
                     ->fromQuery($pdo, $sql)
-                    ->setClass('shortWidth floatNone schoolYear');
+                    ->setClass('shortWidth schoolYear');
                 $bulkAction->addSubmit(__('Go'));
         
             $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateParticipants'));
