@@ -101,3 +101,22 @@ function getActivityTimespan($connection2, $gibbonActivityID, $gibbonSchoolYearT
 
     return $timespan;
 }
+
+function formatDateRange($start, $end)
+{
+    $output = '';
+    if (empty($start) || empty($end)) return $output;
+
+    $startDate = ($start instanceof DateTime)? $start : DateTime::createFromFormat('Y-m-d', $start);
+    $endDate = ($end instanceof DateTime)? $end : DateTime::createFromFormat('Y-m-d', $end);
+
+    if ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+        $output = $startDate->format('F Y');
+    } else if ($startDate->format('Y') == $endDate->format('Y')) {
+        $output = $startDate->format('F').' - '.$endDate->format('F Y');
+    } else {
+        $output = $startDate->format('F Y').' - '.$endDate->format('F Y');
+    }
+
+    return $output;
+}   

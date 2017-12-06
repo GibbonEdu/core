@@ -57,12 +57,10 @@ class Time extends TextField
      * Adds time format to the label description
      * @return string|bool
      */
-    public function getLabelContext()
+    public function getLabelContext($label)
     {
-        if ($label = $this->getLabel()) {
-            if (stristr($label->getDescription(), 'Format') === false) {
-                return __('Format: hh:mm (24hr)');
-            }
+        if (stristr($label->getDescription(), 'Format') === false) {
+            return __('Format: hh:mm (24hr)');
         }
 
         return false;

@@ -1308,6 +1308,10 @@ select[multiple] {
   clear: both;
 }
 
+.column.inline {
+	white-space: nowrap;
+}
+
 .column.inline div {
 	display:inline-block;
 	width:auto;
@@ -1482,4 +1486,8 @@ input[type="button"].alignRight {
 	position: absolute;
 	right: 5px;
 	margin: 0;
+}
+
+fieldset {
+	border: 0;
 }

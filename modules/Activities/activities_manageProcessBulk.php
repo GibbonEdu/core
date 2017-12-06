@@ -40,14 +40,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $activities = array();
-        for ($i = 0; $i < $_POST['count']; ++$i) {
-            if (isset($_POST["check-$i"])) {
-                if ($_POST["check-$i"] == 'on') {
-                    $activities[$i] = $_POST["gibbonActivityID-$i"];
-                }
-            }
-        }
+        $activities = isset($_POST['gibbonActivityID'])? $_POST['gibbonActivityID'] : array();
 
         //Proceed!
         //Check if person specified
