@@ -61,6 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $row->addLabel('search', __('Search'))->description('Activity name.');
         $row->addTextField('search')->setValue($search);
 
+    if ($dateType != 'Date') {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $row = $form->addRow();
+            $row->addLabel('gibbonSchoolYearTermID', __('Term'));
+            $row->addSelect('gibbonSchoolYearTermID')->fromQuery($pdo, $sql, $data)->selected($gibbonSchoolYearTermID)->placeholder();
+    }
+
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
