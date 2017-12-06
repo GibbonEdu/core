@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -35,13 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	$gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
 	$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
-
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) ) {
-
 		echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
-
 	} else {
 	    //Proceed!
 	    echo "<div class='trail'>";
@@ -54,11 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 	    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
 
-	    $today = date('Y-m-d');
-
 	    try {
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
-			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
+			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, context, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
 			$resultPerson->execute($dataPerson);
 		} catch (PDOException $e) {
@@ -70,146 +67,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
 	    } else {
-	    	$row = $resultPerson->fetch();
+	    	$values = $resultPerson->fetch();
+	    	$currentDate = dateConvert($guid, $values['date']);
 
-	    	$currentDate = dateConvert($guid, $row['date']);
+			$form = Form::create('attendanceEdit', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byPerson_editProcess.php');
+			$form->setAutocomplete('off');
 
-            if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
-                echo "<div class='error'>";
-                echo 'School is closed on the specified date, and so attendance information cannot be recorded.';
-                echo '</div>';
-            } else {
-                $timestamp = dateConvertToTimestamp($currentDate);
-                ?>
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID);
+			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+			$form->addHiddenValue('currentDate', $currentDate);
 
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_editProcess.php'; ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr class='break'>
-							<td colspan=2>
-								<h3>
-									<?php echo __($guid, 'Edit Attendance') ?>
-								</h3>
-							</td
-						</tr>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Student') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input readonly name="student" id="student" value="<?php echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true); ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?></span>
-							</td>
-							<td class="right">
-								<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var date=new LiveValidation('date');
-									date.add(Validate.Presence);
-									date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-									echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-												?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-									?>." } );
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Recorded By') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input readonly name="teacher" id="teacher" value="<?php echo formatName('', htmlPrep($row['teacherPreferredName']), htmlPrep($row['teacherSurname']), 'Staff', false, true ); ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Time') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input readonly name="teacher" id="teacher" value="<?php echo substr($row["timestampTaken"],11).' '.dateConvertBack($guid, substr($row["timestampTaken"],0,10)); ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Where') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input readonly name="teacher" id="teacher" value="<?php echo ($row['gibbonCourseClassID'] == 0)? __($guid, 'Roll Group') : $row['courseName'].'.'.$row['className']; ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
+			$form->addRow()->addHeading(__('Edit Attendance'));
 
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Type') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<?php echo $attendance->renderAttendanceTypeSelect( $row['type'] ); ?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Reason') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<?php echo $attendance->renderAttendanceReasonSelect( $row['reason'] ); ?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Comment') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, '255 character limit') ?></span>
-							</td>
-							<td class="right">
-								<?php
-                                echo "<textarea name='comment' id='comment' rows=3 style='width: 300px'>".$row['comment']."</textarea>"; ?>
-								<script type="text/javascript">
-									var comment=new LiveValidation('comment');
-									comment.add( Validate.Length, { maximum: 255 } );
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="gibbonAttendanceLogPersonID" value="<?php echo $gibbonAttendanceLogPersonID; ?>">
-								<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID; ?>">
-								<input type="hidden" name="currentDate" value="<?php echo $currentDate; ?>">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+			$row = $form->addRow();
+				$row->addLabel('student', __('Student'));
+				$row->addTextField('student')->readonly()->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true));
 
+			$row = $form->addRow();
+				$row->addLabel('date', __('Date'));
+				$row->addDate('date')->readonly()->setValue(dateConvertBack($guid, $currentDate));
 
+			$row = $form->addRow();
+				$row->addLabel('recordedBy', __('Recorded By'));
+				$row->addTextField('recordedBy')->readonly()->setValue(formatName('', htmlPrep($values['teacherPreferredName']), htmlPrep($values['teacherSurname']), 'Staff', false, true));
 
-	        }
+			$row = $form->addRow();
+				$row->addLabel('time', __('Time'));
+				$row->addTextField('time')->readonly()->setValue(substr($values['timestampTaken'], 11) . ' ' . dateConvertBack($guid, substr($values['timestampTaken'], 0, 10)));
+				
+			$row = $form->addRow();
+				$row->addLabel('where', __('Where'));
+				$row->addTextField('where')->readonly()->setValue(__($values['context']));
+
+			$row = $form->addRow();
+				$row->addLabel('type', __('Type'));
+				$row->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()));
+
+			$row = $form->addRow();
+				$row->addLabel('reason', __('Reason'));
+				$row->addSelect('reason')->fromArray($attendance->getAttendanceReasons());
+
+			$row = $form->addRow();
+				$row->addLabel('comment', __('Comment'))->description(__('255 character limit'));
+				$row->addTextArea('comment')->setRows(3)->maxLength(255);
+
+			$row = $form->addRow();
+				$row->addFooter();
+				$row->addSubmit();
+
+			$form->loadAllValuesFrom($values);
+
+			echo $form->getOutput();
+	        
 	    }
 	}
 }
-?>
