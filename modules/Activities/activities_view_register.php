@@ -238,14 +238,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                         if ($dateType != 'Date') {
                                             $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-                                            $termList = array_map(function($item) use ($schoolTerms) {
+                                            $termList = array_filter(array_map(function($item) use ($schoolTerms) {
                                                 $index = array_search($item, $schoolTerms);
                                                 return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                                            }, explode(',', $values['gibbonSchoolYearTermIDList']));
+                                            }, explode(',', $values['gibbonSchoolYearTermIDList'])));
+                                            $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
 
                                             $row = $form->addRow();
                                                 $row->addLabel('terms', __('Terms'));
-                                                $row->addTextField('terms')->readonly()->setValue(implode(', ', $termList));
+                                                $row->addTextField('terms')->readonly()->setValue($termList);
                                         } else {
                                             $row = $form->addRow();
                                                 $row->addLabel('programStart', __('Program Start Date'));
