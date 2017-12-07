@@ -239,7 +239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $form->addHiddenValue('gibbonScaleID', $values['gibbonScaleID']);
                     $row = $form->addRow();
                         $row->addLabel('gradeScale', __('Grade Scale'))->description(__('Link columns to grades on a scale?'));
-                        $row->addTextField('gradeScale')->isRequired()->readOnly()->setValue($gradeScaleName);
+                        $row->addTextField('gradeScale')->readOnly()->setValue($gradeScaleName);
 
                     $row = $form->addRow();
                         $row->addFooter();
