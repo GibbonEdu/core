@@ -84,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $row->addLabel('scope', 'Scope');
             if ($highestAction == 'Manage Rubrics_viewEditAll') {
                 $row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+                $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
             } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
                 $row->addTextField('scope')->readOnly()->setValue('Learning Area');
             }
@@ -96,7 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
             }
 
-            $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
                 $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
