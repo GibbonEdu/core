@@ -228,7 +228,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             <link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-timepicker/jquery.timepicker.css" type="text/css" media="screen" />
             <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-cropit/exif.js"></script>
             <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-cropit/jquery.cropit.js"></script>
-            <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/assets/js/core.js"></script>
+            <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/assets/js/core.js?v=<?php echo $version; ?>"></script>
 			<?php
             if (isset($_SESSION[$guid]['username'])) {
                 $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
@@ -256,11 +256,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             }
             //Set theme
             if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
-                $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />";
+                $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css?v=".$version."' />";
                 if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-                    $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />";
+                    $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css?v=".$version."' />";
                 }
-                $_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
+                $_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/Default/js/common.js?v=".$version."'></script>";
                 $_SESSION[$guid]['gibbonThemeID'] = '001';
                 $_SESSION[$guid]['gibbonThemeName'] = 'Default';
                 $_SESSION[$guid]['gibbonThemeAuthor'] = '';
@@ -277,11 +277,12 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     $resultTheme->execute($dataTheme);
                     if ($resultTheme->rowCount() == 1) {
                         $rowTheme = $resultTheme->fetch();
-                        $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
+                        $themeVersion = ($rowTheme['name'] != 'Default')? $rowTheme['version'] : $version;
+                        $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css?v=".$themeVersion."' />";
                         if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-                            $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css' />";
+                            $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css?v=".$themeVersion."' />";
                         }
-                        $_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js'></script>";
+                        $_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js?v=".$themeVersion."'></script>";
                         $_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
                         $_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
                         $_SESSION[$guid]['gibbonThemeAuthor'] = $rowTheme['author'];
@@ -300,8 +301,13 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             //Set module CSS & JS
             if (isset($_GET['q'])) {
                 if ($_GET['q'] != '') {
-                    $moduleCSS = "<link rel='stylesheet' type='text/css' href='./modules/".$_SESSION[$guid]['module']."/css/module.css' />";
-                    $moduleJS = "<script type='text/javascript' src='./modules/".$_SESSION[$guid]['module']."/js/module.js'></script>";
+                    $moduleVersion = $version;
+                    if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')){
+                        include('./modules/'.$_SESSION[$guid]['module'].'/version.php');
+                    }
+
+                    $moduleCSS = "<link rel='stylesheet' type='text/css' href='./modules/".$_SESSION[$guid]['module']."/css/module.css?v=".$moduleVersion."' />";
+                    $moduleJS = "<script type='text/javascript' src='./modules/".$_SESSION[$guid]['module']."/js/module.js?v=".$moduleVersion."'></script>";
                     echo $moduleCSS;
                     echo $moduleJS;
                 }

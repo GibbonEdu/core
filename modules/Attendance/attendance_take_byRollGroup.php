@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                             $form = Form::create('attendanceByRollGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byRollGroupProcess.php');
                             $form->setAutocomplete('off');
-                            $form->setClass('attendanceGrid fullWidth');
+                            $form->addClass('attendanceGrid');
 
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                             $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
@@ -241,15 +241,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $cell->addSelect($count.'-type')
                                      ->fromArray(array_keys($attendance->getAttendanceTypes()))
                                      ->selected($student['log']['type'])
-                                     ->setClass('attendanceField');
+                                     ->setClass('attendanceField floatNone shortWidth');
                                 $cell->addSelect($count.'-reason')
                                      ->fromArray($attendance->getAttendanceReasons())
                                      ->selected($student['log']['reason'])
-                                     ->setClass('attendanceField attendanceFieldStacked');
+                                     ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
                                 $cell->addTextField($count.'-comment')
                                      ->maxLength(255)
                                      ->setValue($student['log']['comment'])
-                                     ->setClass('attendanceField attendanceFieldStacked');
+                                     ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
                                 $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
 
                                 $count++;
