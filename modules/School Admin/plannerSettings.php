@@ -96,6 +96,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
+    $setting = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeMarkbook', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

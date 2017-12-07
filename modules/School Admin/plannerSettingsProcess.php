@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
     $sharingDefaultParents = $_POST['sharingDefaultParents'];
     $sharingDefaultStudents = $_POST['sharingDefaultStudents'];
     $parentWeeklyEmailSummaryIncludeBehaviour = $_POST['parentWeeklyEmailSummaryIncludeBehaviour'];
+    $parentWeeklyEmailSummaryIncludeMarkbook = $_POST['parentWeeklyEmailSummaryIncludeMarkbook'];
 
     //Write to database
     $fail = false;
@@ -131,6 +132,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
     try {
         $data = array('value' => $parentWeeklyEmailSummaryIncludeBehaviour);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='parentWeeklyEmailSummaryIncludeBehaviour'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $parentWeeklyEmailSummaryIncludeMarkbook);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='parentWeeklyEmailSummaryIncludeMarkbook'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
