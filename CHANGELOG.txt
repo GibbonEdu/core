@@ -41,6 +41,7 @@ v16.0.00
 		Attendance: added option for redirect to message wall after self registration has been taken
 		Attendance: added year group selectors to reports for not present and not onsite
 		Attendance: added ability for students to view their own attendance data for the current year
+		Attendance: added ability to delete attendance with Manage Attendance Logs permission in Attendance by Person
 		Finance: added logging for failed bulk email sends
 		Form Group: added link to print listing of students in form group detail view
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
