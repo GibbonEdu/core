@@ -469,16 +469,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($row['provider'] == 'External' and $disableExternalProviderSignup == 'Y') {
                             $signup = false;
                         }
-                        if ($activityFull) {
-                            $signup = false;
-                        }
 
                         if ($signup) {
                             if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
                                 if ($resultEnrol->rowCount() < 1) {
                                     $activityCountByType = getStudentActivityCountByType($pdo, $row['type'], $gibbonPersonID);
-
-                                    if ($row['maxPerStudent'] == 0 || $activityCountByType < $row['maxPerStudent']) {
+                                    if (!$activityFull && ($row['maxPerStudent'] == 0 || $activityCountByType < $row['maxPerStudent'])) {
                                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=register&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Register')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
                                     }
                                 } else {
