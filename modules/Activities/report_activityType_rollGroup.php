@@ -40,15 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo __($guid, 'Choose Roll Group');
     echo '</h2>';
 
-    $gibbonRollGroupID = null;
-    if (isset($_GET['gibbonRollGroupID'])) {
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
-    }
-
-    $status = null;
-    if (isset($_GET['status'])) {
-        $status = $_GET['status'];
-    }
+    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+    $status = isset($_GET['status'])? $_GET['status'] : '';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
@@ -78,8 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo '</h2>';
 
         try {
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
+            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'today' => date('Y-m-d'));
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson 
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
+                    WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -91,7 +87,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             echo __($guid, 'There are no records to display.');
             echo '</div>';
         } else {
-            echo "<table cellspacing='0' style='width: 100%'>";
+
+            $statusQuery = " AND NOT gibbonActivityStudent.status='Not Accepted'";
+            if ($status == 'Accepted') {
+                $statusQuery = " AND gibbonActivityStudent.status='Accepted'";
+            }
+
+            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sql = "SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonActivity.type, COUNT(*) as typeCount, GROUP_CONCAT(gibbonActivity.name SEPARATOR ' | ') as activityList
+                    FROM gibbonStudentEnrolment
+                    LEFT JOIN gibbonActivity ON (gibbonActivity.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID )
+                    LEFT JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+                    WHERE gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID 
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
+                    $statusQuery 
+                    GROUP BY gibbonStudentEnrolment.gibbonPersonID, gibbonActivity.type
+                    ORDER BY type, name";
+            $resultActivities = $pdo->executeQuery($data, $sql);
+            $activities = ($resultActivities->rowCount() > 0)? $resultActivities->fetchAll(\PDO::FETCH_GROUP) : array(); 
+            
+            $activityTypes = array();
+            $activities = array_reduce(array_keys($activities), function ($group, $id) use (&$activities, &$activityTypes) {
+                $item = $activities[$id];
+                $group[$id]['count'] = array_combine(array_column($item, 'type'), array_column($item, 'typeCount'));
+                $group[$id]['activityList'] = implode(' | ', array_filter(array_column($item, 'activityList')));
+
+                $activityTypes = array_merge($activityTypes, array_column($item, 'type'));
+
+                return $group;
+            }, array());
+            $activityTypes = array_filter(array_unique($activityTypes));
+
+            echo '<table cellspacing="0" class="colorOddEven fullWidth">';
             echo "<tr class='head'>";
             echo '<th>';
             echo __($guid, 'Roll Group');
@@ -102,17 +129,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             echo '<th>';
             echo __($guid, 'No Type');
             echo '</th>';
-            $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
-            if ($options != '') {
-                $options = explode(',', $options);
-                for ($i = 0; $i < count($options); ++$i) {
-                    echo '<th>';
-                    $optionExplode = explode('/', trim($options[$i]));
-                    for ($y = 0; $y < count($optionExplode); ++$y) {
-                        echo $optionExplode[$y].'<br/>';
-                    }
-                    echo '</th>';
-                }
+            foreach ($activityTypes as $type) {
+                echo '<th>';
+                echo $type;
+                echo '</th>';
             }
             echo '<th>';
             echo __($guid, 'Total');
@@ -120,101 +140,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             echo '</tr>';
 
             $count = 0;
-            $rowNum = 'odd';
-            while ($row = $result->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
 
-                    //Set status for sql statements
-                    $status = " AND NOT status='Not Accepted'";
+            while ($row = $result->fetch()) {
+                $gibbonPersonID = $row['gibbonPersonID'];
+                //Set status for sql statements
+                $status = " AND NOT status='Not Accepted'";
                 if ($_GET['status'] == 'Accepted') {
                     $status = " AND status='Accepted'";
                 }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+                echo "<tr>";
                 echo '<td>';
                 echo $row['name'];
                 echo '</td>';
-                echo '<td>';
-				//List activities seleted in title of student name
-				try {
-					$dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-					$sqlActivities = "SELECT gibbonActivity.* FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID $status ORDER BY name";
-					$resultActivities = $connection2->prepare($sqlActivities);
-					$resultActivities->execute($dataActivities);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
 
-                $title = '';
-                while ($rowActivities = $resultActivities->fetch()) {
-                    $title = $title.$rowActivities['name'].' | ';
-                }
-                $title = substr($title, 0, -3);
+                echo '<td>';
+                // List activities seleted in title of student name
+                echo '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&search=&allStudents=&subpage=Activities">';
+                $title = isset($activities[$gibbonPersonID]['activityList'])? $activities[$gibbonPersonID]['activityList'] : '';
                 echo "<span title='$title'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</span>';
                 echo '</td>';
+                
+                // No type
                 echo '<td>';
-                try {
-                    $dataCount = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sqlCount = "SELECT gibbonActivity.*, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' $status AND type=''";
-                    $resultCount = $connection2->prepare($sqlCount);
-                    $resultCount->execute($dataCount);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultCount->rowCount() > 0) {
-                    echo $resultCount->rowCount();
-                } else {
-                    echo '0';
-                }
+                echo isset($activities[$gibbonPersonID]['count'][''])? $activities[$gibbonPersonID]['count'][''] : 0;
                 echo '</td>';
-                for ($i = 0; $i < count($options); ++$i) {
+
+                // Activity counts
+                foreach ($activityTypes as $type) {
                     echo '<td>';
-                    try {
-                        $dataCount = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlCount = "SELECT gibbonActivity.*, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' $status AND type='".trim($options[$i])."'";
-                        $resultCount = $connection2->prepare($sqlCount);
-                        $resultCount->execute($dataCount);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultCount->rowCount() > 0) {
-                        echo $resultCount->rowCount();
-                    } else {
-                        echo '0';
-                    }
+                    echo isset($activities[$gibbonPersonID]['count'][$type])? $activities[$gibbonPersonID]['count'][$type] : 0;
                     echo '</td>';
                 }
+                
+                // Total
                 echo '<td>';
-				//Get total
-				try {
-					$dataCount = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-					$sqlCount = "SELECT gibbonActivity.*, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' $status";
-					$resultCount = $connection2->prepare($sqlCount);
-					$resultCount->execute($dataCount);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
-                if ($resultCount->rowCount() > 0) {
-                    echo $resultCount->rowCount();
-                } else {
-                    echo '0';
-                }
+				echo isset($activities[$gibbonPersonID]['count'])? array_sum($activities[$gibbonPersonID]['count']) : 0;
                 echo '</td>';
+
                 echo '</tr>';
             }
-            if ($count == 0) {
-                echo "<tr class=$rowNum>";
-                echo '<td colspan=2>';
-                echo __($guid, 'There are no records to display.');
-                echo '</td>';
-                echo '</tr>';
-            }
+
             echo '</table>';
         }
     }
