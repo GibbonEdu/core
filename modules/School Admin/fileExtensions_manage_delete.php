@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\PrefabFormFactory;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 @session_start();
 
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fileExtensions_manage_deleteProcess.php?gibbonFileExtensionID=$gibbonFileExtensionID");
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fileExtensions_manage_deleteProcess.php?gibbonFileExtensionID=$gibbonFileExtensionID");
             echo $form->getOutput();
         }
     }
