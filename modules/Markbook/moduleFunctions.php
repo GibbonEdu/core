@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
     $output = '';
@@ -85,7 +88,6 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
 function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
-
     $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
     $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
     $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
@@ -95,161 +97,82 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= "<h3 style='margin-top: 0px'>";
     $output .= __($guid, 'Choose Class');
     $output .= '</h3>';
-    $output .= "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
-    $output .= '<tr>';
-    $output .= "<td style='vertical-align: top'>";
 
-    $output .= '</td>';
-    $output .= "<td style='vertical-align: top; text-align: right'>";
-    $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-    $output .= "<input name='q' id='q' type='hidden' value='/modules/Markbook/markbook_view.php'>";
+    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/markbook_view.php');
+
+    $col = $form->addRow()->addColumn()->addClass('inline right');
+
+    // TERM
     if ($enableGroupByTerm == 'Y' ) {
-
-        $output .= "<span>".__($guid, 'Term').": </span>";
-        $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:140px; float: none;'>";
-        $output .= "<option value='-1'>".__($guid, 'All Terms')."</option>";
-        try {
-            $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql="SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
-            $resultTerms=$pdo->executeQuery($data, $sql);
-        }
-        catch(PDOException $e) { }
-
         $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
         $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
-        $selectTermName = __($guid, 'All Terms');
 
-        while ($rowTerm = $resultTerms->fetch()) {
-
-            $selected = '';
-            if ($selectTerm != 0) {
-                if ($selectTerm == $rowTerm['gibbonSchoolYearTermID']) {
-                    $selected = 'selected';
-                    $selectTermName = $rowTerm['name'];
-                }
-            } else if (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime']) {
-                $selected = 'selected';
-                $selectTerm = $rowTerm['gibbonSchoolYearTermID'];
-                $selectTermName = $rowTerm['name'];
-            }
-
-            $output .= "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
-        }
-        $output .= '</select>';
+        $data = array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $col->addContent(__('Term').':');
+        $col->addSelect('gibbonSchoolYearTermID')
+            ->fromArray(array('-1' => __('All Terms')))
+            ->fromQuery($pdo, $sql, $data)
+            ->selected($selectTerm)
+            ->setClass('shortWidth');
 
         if ($selectTerm != 0) {
             $_SESSION[$guid]['markbookTerm'] = $selectTerm;
-            $_SESSION[$guid]['markbookTermName'] = $selectTermName;
         }
     } else {
         $_SESSION[$guid]['markbookTerm'] = 0;
         $_SESSION[$guid]['markbookTermName'] = __($guid, 'All Columns');
     }
 
+    // SORT BY
+    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
+    $sql = "SELECT COUNT(DISTINCT rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
+    $result = $pdo->executeQuery($data, $sql);
+    $rollOrderCount = ($result->rowCount() > 0)? $result->fetchColumn(0) : 0;
+    if ($rollOrderCount > 0) {
+        $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+        $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
+
+        $orderBy = array(
+            'rollOrder'     => __('Roll Order'),
+            'surname'       => __('Surname'),
+            'preferredName' => __('Preferred Name'),
+        );
+        $col->addContent(__('Sort By').':')->prepend('&nbsp;&nbsp;');
+        $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('shortWidth');
+
+        $_SESSION[$guid]['markbookOrderBy'] = $selectOrderBy;
+    }
+
+    // SHOW
     $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : '';
     $selectFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $selectFilter;
 
-    $_SESSION[$guid]['markbookFilter'] = $selectFilter;
+    $filters = array('' => __('All Columns'));
+    if ($enableColumnWeighting == 'Y') $filters['averages'] = __('Overall Grades');
+    if ($enableRawAttainment == 'Y') $filters['raw'] = __('Raw Marks');
+    $filters['marked'] = __('Marked');
+    $filters['unmarked'] = __('Unmarked');
+    
+    $col->addContent(__('Show').':')->prepend('&nbsp;&nbsp;');
+    $col->addSelect('markbookFilter')
+        ->fromArray($filters)
+        ->selected($selectFilter)
+        ->setClass('shortWidth');
 
-    $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
-    $output .= "<select name='markbookFilter' id='markbookFilter' style='width:140px; float: none;'>";
-    $output .= "<option value='' ".(($selectFilter === '')? 'selected' : '').">".__($guid, 'All Columns')."</option>";
+    // CLASS
+    $col->addContent(__('Class').':')->prepend('&nbsp;&nbsp;');
+    $col->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'])
+        ->setClass('mediumWidth')
+        ->selected($gibbonCourseClassID);
 
-    if ($enableColumnWeighting == 'Y' ) {
-        $output .= "<option value='averages' ".(($selectFilter == 'averages')? 'selected' : '')." >".__($guid, 'Overall Grades')."</option>";
-    }
+    $col->addSubmit(__('Go'));
 
-    if ($enableRawAttainment == 'Y' ) {
-        $output .= "<option value='raw' ".(($selectFilter == 'raw')? 'selected' : '')." >".__($guid, 'Raw Marks')."</option>";
-    }
-
-    $output .= "<option value='marked' ".(($selectFilter == 'marked')? 'selected' : '')." >".__($guid, 'Marked')."</option>";
-    $output .= "<option value='unmarked' ".(($selectFilter == 'unmarked')? 'selected' : '')." >".__($guid, 'Unmarked')."</option>";
-
-    // $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
-    // $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
-    $output .= '</select>';
-
-
-    try {
-        $dataRollOrder = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
-        $sqlRollOrder = "SELECT COUNT(DISTINCT rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
-        $resultSelect = $pdo->executeQuery($dataRollOrder, $sqlRollOrder);
-    } catch (PDOException $e) {}
-
-    // More than one rollOrder means there are orders assigned to each student, otherwise skip the sort filter
-    if ( $resultSelect->rowCount() > 0) {
-        if ($resultSelect->fetchColumn(0) > 0) {
-
-            $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
-            $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
-
-            $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sort By').": </span>";
-            $output .= "<select name='markbookOrderBy' id='markbookOrderBy' style='width:140px; float: none;'>";
-            $output .= "<option value='rollOrder' ".(($selectOrderBy == 'rollOrder')? 'selected' : '')." >".__($guid, 'Roll Order')."</option>";
-            $output .= "<option value='surname' ".(($selectOrderBy == 'surname')? 'selected' : '')." >".__($guid, 'Surname')."</option>";
-            $output .= "<option value='preferredName' ".(($selectOrderBy == 'preferredName')? 'selected' : '')." >".__($guid, 'Preferred Name')."</option>";
-            $output .= '</select>';
-
-            $_SESSION[$guid]['markbookOrderBy'] = $selectOrderBy;
-        }
-    }
-
-
-    $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Class').": </span>";
-    $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px; float: none;'>";
-    $output .= "<option value=''></option>";
-
-    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $pdo->getConnection());
-
-    // Add teacher's own classes to the drop down
-    if ($highestAction == 'View Markbook_allClassesAllData' || $highestAction == 'View Markbook_myClasses') {
-         try {
-            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-            $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
-        } catch (PDOException $e) {
-        }
-        $selectCount = 0;
-
-        $output .= "<optgroup label='--".__($guid, 'My Classes')."--'>";
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) {
-                $selected = 'selected';
-                ++$selectCount;
-            }
-            $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-        }
-        $output .= '</optgroup>';
-    }
-
-    // Add all classes to the dropdown (if permissions permit)
-    if ($highestAction == 'View Markbook_allClassesAllData') {
-        try {
-            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-            $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
-        } catch (PDOException $e) {
-        }
-        $output .= "<optgroup label='--".__($guid, 'All Classes')."--'>";
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
-                $selected = 'selected';
-                ++$selectCount;
-            }
-            $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-        }
-        $output .= '</optgroup>';
-    }
-    $output .= '</select>';
-    $output .= "<input type='submit' value='".__($guid, 'Go')."'>";
-    $output .= '</form>';
-    $output .= '</td>';
-    $output .= '</tr>';
-    $output .= '</table>';
+    $output .= $form->getOutput();
 
     return $output;
 }
