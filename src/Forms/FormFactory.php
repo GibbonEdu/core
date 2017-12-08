@@ -184,8 +184,7 @@ class FormFactory implements FormFactoryInterface
     {
         $button = new Input\Button($label, $onClick);
         if(!empty($id)) {
-            $button->setID($id);
-            $button->setName($id);
+            $button->setID($id)->setName($id);
         }
         
         return $button;
