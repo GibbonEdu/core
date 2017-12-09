@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php') == false) {
     //Acess denied
@@ -50,115 +50,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Enrolment by Class')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $row['courseNameShort'], $row['name'])."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Participant').'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Enrolment by Class')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name'])."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Participant').'</div>';
             echo '</div>';
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
-            }
+			}
+			
+			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+                
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo htmlPrep($row['yearName']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var yearName=new LiveValidation('yearName');
-								yearname2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Course') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="courseName" id="courseName" maxlength=20 value="<?php echo htmlPrep($row['courseName']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var courseName=new LiveValidation('courseName');
-								coursename2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Class') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="name" id="name" maxlength=10 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Participant') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="participant" id="participant" maxlength=200 value="<?php echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student') ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var participant=new LiveValidation('participant');
-								participant.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Role') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="role">
-								<option <?php if ($row['role'] == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-								<option <?php if ($row['role'] == 'Student - Left') { echo 'selected '; } ?>value="Student - Left"><?php echo __($guid, 'Student - Left') ?></option>
-								<option <?php if ($row['role'] == 'Teacher') { echo 'selected '; } ?>value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
-								<option <?php if ($row['role'] == 'Teacher - Left') { echo 'selected '; } ?>value="Teacher - Left"><?php echo __($guid, 'Teacher - Left') ?></option>
-								<option <?php if ($row['role'] == 'Assistant') { echo 'selected '; } ?>value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
-								<option <?php if ($row['role'] == 'Technician') { echo 'selected '; } ?>value="Technician"><?php echo __($guid, 'Technician') ?></option>
-								<option <?php if ($row['role'] == 'Parent') { echo 'selected '; } ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Reportable') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="reportable" id="reportable" class="standardWidth">
-								<option <?php if ($row['reportable'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-								<option <?php if ($row['reportable'] == 'N') { echo 'selected '; } ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $gibbonPersonID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+			$row = $form->addRow();
+				$row->addLabel('yearName', __('School Year'));
+				$row->addTextField('yearName')->readonly()->setValue($values['yearName']);
+			
+			$row = $form->addRow();
+				$row->addLabel('courseName', __('Course'));
+				$row->addTextField('courseName')->readonly()->setValue($values['courseName']);
 
+			$row = $form->addRow();
+				$row->addLabel('name', __('Class'));
+				$row->addTextField('name')->readonly()->setValue($values['name']);
+
+			$row = $form->addRow();
+				$row->addLabel('participant', __('Participant'));
+				$row->addTextField('participant')->readonly()->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'));
+
+			$roles = array(
+                'Student'        => __('Student'),
+                'Student - Left' => __('Student - Left'),
+                'Teacher'        => __('Teacher'),
+                'Teacher - Left' => __('Teacher - Left'),
+                'Assistant'      => __('Assistant'),
+                'Technician'     => __('Technician'),
+                'Parent'         => __('Parent'),
+            );
+
+            $row = $form->addRow();
+                $row->addLabel('role', __('Role'));
+				$row->addSelect('role')->fromArray($roles)->isRequired()->selected($values['role']);
+			
+			$row = $form->addRow();
+				$row->addLabel('reportable', __('Reportable'));
+				$row->addYesNo('reportable')->isRequired()->selected($values['reportable']);
+
+			$row = $form->addRow();
+				$row->addFooter();
+				$row->addSubmit();
+
+			echo $form->getOutput();
         }
     }
 }
-?>

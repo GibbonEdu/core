@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Enrolment by Class')."</a> > </div><div class='trailEnd'>".sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $row['courseNameShort'], $row['name']).'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Enrolment by Class')."</a> > </div><div class='trailEnd'>".sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']).'</div>';
             echo '</div>';
 
             if (isset($_GET['return'])) {
@@ -61,97 +61,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo '<h2>';
             echo __($guid, 'Add Participants');
-            echo '</h2>'; ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Participants') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-						</td>
-						<td class="right">
-							<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
-								<optgroup label='--<?php echo __($guid, 'Enrolable Students') ?>--'>
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelectWhere = '';
-                                    if ($row['gibbonYearGroupIDList'] != '') {
-                                        $years = explode(',', $row['gibbonYearGroupIDList']);
-                                        for ($i = 0; $i < count($years); ++$i) {
-                                            if ($i == 0) {
-                                                $dataSelect[$years[$i]] = $years[$i];
-                                                $sqlSelectWhere = $sqlSelectWhere.'AND (gibbonYearGroupID=:'.$years[$i];
-                                            } else {
-                                                $dataSelect[$years[$i]] = $years[$i];
-                                                $sqlSelectWhere = $sqlSelectWhere.' OR gibbonYearGroupID=:'.$years[$i];
-                                            }
+            echo '</h2>'; 
+            
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+                
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                                            if ($i == (count($years) - 1)) {
-                                                $sqlSelectWhere = $sqlSelectWhere.')';
-                                            }
-                                        }
-                                    } else {
-                                        $sqlSelectWhere = ' FALSE';
-                                    }
-                                    $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID $sqlSelectWhere ORDER BY name, surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-								}
-								?>
-								</optgroup>
-								<optgroup label='--<?php echo __($guid, 'All Users') ?>--'>
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									$expected = '';
-									if ($rowSelect['status'] == 'Expected') {
-										$expected = ' (Expected)';
-									}
-									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-								}
-								?>
-								</optgroup>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Role') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="role">
-								<option value="Student"><?php echo __($guid, 'Student') ?></option>
-								<option value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
-								<option value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
-								<option value="Technician"><?php echo __($guid, 'Technician') ?></option>
-								<option value="Parent"><?php echo __($guid, 'Parent') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
+            $people = array();
 
-			<?php
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupIDList' => $values['gibbonYearGroupIDList']);
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS rollGroupName
+                    FROM gibbonPerson
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' 
+                    AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
+                    ORDER BY rollGroupName, surname, preferredName";
+            $result = $pdo->executeQuery($data, $sql);
+
+            if ($result->rowCount() > 0) {
+                $people['--'.__('Enrolable Students').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
+                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
+                    return $group;
+                }, array());
+            }
+
+            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $result = $pdo->executeQuery(array(), $sql);
+
+            if ($result->rowCount() > 0) {
+                $people['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
+                    $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
+                    $group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
+                    return $group;
+                }, array());
+            }
+
+            $row = $form->addRow();
+                $row->addLabel('Members', __('Participants'));
+                $row->addSelect('Members')->fromArray($people)->selectMultiple();
+
+            $roles = array(
+                'Student'    => __('Student'),
+                'Teacher'    => __('Teacher'),
+                'Assistant'  => __('Assistant'),
+                'Technician' => __('Technician'),
+                'Parent'     => __('Parent'),
+            );
+
+            $row = $form->addRow();
+                $row->addLabel('role', __('Role'));
+                $row->addSelect('role')->fromArray($roles)->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
+
             echo '<h2>';
             echo __($guid, 'Current Participants');
             echo '</h2>';
