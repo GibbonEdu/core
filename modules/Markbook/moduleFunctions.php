@@ -81,9 +81,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             ->selected($selectTerm)
             ->setClass('shortWidth');
 
-        if ($selectTerm != 0) {
-            $_SESSION[$guid]['markbookTerm'] = $selectTerm;
-        }
+        $_SESSION[$guid]['markbookTerm'] = $selectTerm;
     } else {
         $_SESSION[$guid]['markbookTerm'] = 0;
         $_SESSION[$guid]['markbookTermName'] = __($guid, 'All Columns');
@@ -112,6 +110,8 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     // SHOW
     $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : '';
     $selectFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $selectFilter;
+
+    $_SESSION[$guid]['markbookFilter'] = $selectFilter;
 
     $filters = array('' => __('All Columns'));
     if ($enableColumnWeighting == 'Y') $filters['averages'] = __('Overall Grades');
