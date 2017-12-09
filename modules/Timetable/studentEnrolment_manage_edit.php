@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment_manage_edit.php') == false) {
     //Acess denied
@@ -160,95 +161,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_editProcessBulk.php'>";
-                echo "<fieldset style='border: none'>";
-                echo "<div class='linkTop' style='height: 27px'>"; ?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-							<option value="Mark as left"><?php echo __($guid, 'Mark as left') ?></option>
-						</select>
-						<script type="text/javascript">
-							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Select action') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						</script>
-						<?php
-                    echo '</div>';
+                $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_editProcessBulk.php');
+                $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
+                $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
 
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Email');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Role');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '<th>'; ?>
-				<script type="text/javascript">
-					$(function () {
-						$('.checkall').click(function () {
-							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-						});
-					});
-				</script>
-				<?php
-				echo "<input type='checkbox' class='checkall'>";
-                echo '</th>';
-                echo '</tr>';
+                $bulkActions = array('Mark as left'  => __('Mark as left'));
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
+                $row = $form->addBulkActionRow($bulkActions);
+                $row->addSubmit(__('Go'));
+
+                $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+
+                $header = $table->addHeaderRow();
+                    $header->addContent(__('Name'));
+                    $header->addContent(__('Email'));
+                    $header->addContent(__('Role'));
+                    $header->addContent(__('Actions'));
+                    $header->addCheckAll();
+
+                while ($student = $result->fetch()) {
+                    $row = $table->addRow();
+                    $name = formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', true);
+                    if ($student['role'] == 'Student') {
+                        $row->addWebLink($name)
+                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='. $student['gibbonPersonID'].'&subpage=Timetable');
                     } else {
-                        $rowNum = 'odd';
+                        $row->addContent($name);
                     }
-                    ++$count;
-
-					//COLOR ROW BY STATUS!
-					echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    if ($row['role'] == 'Student') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
-                    } else {
-                        echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                    
+                    $row->addContent($student['email']);
+                    $row->addContent($student['role']);
+                    $col = $row->addColumn()->addClass('inline');
+                    if ($student['role'] == 'Student') {
+                        $col->addWebLink('<img title="' . __('Edit') . '" src="./themes/' . $_SESSION[$guid]['gibbonThemeName'] . '/img/config.png"/>')
+                            ->setURL($_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_edit_edit.php')
+                            ->addParam('gibbonCourseID', $gibbonCourseID)
+                            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                            ->addParam('gibbonPersonID', $student['gibbonPersonID']);
                     }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['email'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['role'];
-                    echo '</td>';
-                    echo '<td>';
-                    if ($row['role'] == 'Student') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    if ($row['role'] == 'Student') {
-                        echo "<input name='gibbonPersonID-$count' value='".$row['gibbonPersonID']."' type='hidden'>";
-                        echo "<input name='role-$count' value='".$row['role']."' type='hidden'>";
-                        echo "<input type='checkbox' name='check-$count' id='check-$count'>";
-                    }
-                    echo '</td>';
-                    echo '</tr>';
+                    $row->addCheckbox('gibbonPersonID[]')->setValue($student['gibbonPersonID'])->setClass('textCenter');
                 }
-                echo '</table>';
 
-                echo "<input name='count' value='$count' type='hidden'>";
-                echo "<input name='gibbonCourseClassID' value='$gibbonCourseClassID' type='hidden'>";
-                echo "<input name='gibbonCourseID' value='$gibbonCourseID' type='hidden'>";
-                echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-                echo '</fieldset>';
-                echo '</form>';
+                echo $form->getOutput();
             }
 
             echo '<h2>';
