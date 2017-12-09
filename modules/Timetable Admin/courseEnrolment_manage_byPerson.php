@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson.php') == false) {
     //Acess denied
@@ -30,36 +30,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Course Enrolment by Person').'</div>';
     echo '</div>';
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
+    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+
+    if (empty($gibbonSchoolYearID) || $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
         $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
         $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    } else {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
+        $result = $pdo->executeQuery($data, $sql);
+        
+        $gibbonSchoolYearName = ($result->rowCount() > 0)? $result->fetchColumn(0) : '';
     }
 
-    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        try {
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    }
-
-    if ($gibbonSchoolYearID != '') {
+    if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearName)) {
+        echo '<div class="error">';
+        echo __('The specified record does not exist.');
+        echo '</div>';
+    } else {
         echo '<h2>';
         echo $gibbonSchoolYearName;
         echo '</h2>';
@@ -79,57 +67,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 			}
         echo '</div>';
 
-        $allUsers = '';
-        if (isset($_GET['allUsers'])) {
-            $allUsers = $_GET['allUsers'];
-        }
-        $search = '';
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
+        $allUsers = isset($_GET['allUsers'])? $_GET['allUsers'] : '';
+        $search = isset($_GET['search'])? $_GET['search'] : '';
 
         echo '<h3>';
         echo __($guid, 'Filters');
-        echo '</h3>'; ?>
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Search For') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
-					</td>
-					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'All Users') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Include non-staff, non-student users.') ?></span>
-					</td>
-					<td class="right">
-						<?php
-                        $checked = '';
-						if ($allUsers == 'on') {
-							$checked = 'checked';
-						}
-						echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
-						?>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/courseEnrolment_manage_byPerson.php">
-						<input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson.php'>".__($guid, 'Clear Filters').'</a>'; ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+        echo '</h3>'; 
+        
+        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setClass('noIntBorder fullWidth');
+
+        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson.php');
+        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+            $row->addTextField('search')->setValue($search);
+
+        $row = $form->addRow();
+            $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
+            $row->addCheckbox('allUsers')->setValue('on')->checked($allUsers);
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
+
+        echo $form->getOutput();
 
         echo '<h3>';
         echo __($guid, 'View');
