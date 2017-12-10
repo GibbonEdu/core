@@ -762,7 +762,8 @@ input[type="submit"]:hover {
 	color: #eeeeee;
 }
 
-input[type="submit"].buttonLink {
+input[type="submit"].buttonLink,
+input[type="button"].buttonLink {
 	background: none;
 	color: #c00;
 	border: none;
@@ -772,7 +773,9 @@ input[type="submit"].buttonLink {
 	height: 28px;
 }
 
-input[type="submit"].buttonLink:hover {
+input[type="submit"].buttonLink:hover,
+input[type="button"].buttonLink:hover {
+	cursor: pointer;
 	background: none;
 	color: #069;
 	border: none;
