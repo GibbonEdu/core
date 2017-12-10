@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\PrefabFormFactory;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 @session_start();
 
@@ -57,9 +57,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            $form = PrefabFormFactory::createDeleteFormStart($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendanceSettings_manage_deleteProcess.php?gibbonAttendanceCodeID=$gibbonAttendanceCodeID");
-                $form->addRow()->addContent(__('These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.'));
-                $form->addRow()->addElement(PrefabFormFactory::createDeleteFormSubmit($form));
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendanceSettings_manage_deleteProcess.php?gibbonAttendanceCodeID=$gibbonAttendanceCodeID", false, false);
+            $form->addRow()->addContent(__('These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.'));
+            $form->addRow()->addConfirmSubmit();
+
             echo $form->getOutput();
         }
     }

@@ -215,7 +215,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubmit($label = 'Submit')
     {
-        $content = sprintf('<input type="submit" value="%s">', $label);
+        $content = sprintf('<input type="submit" value="%s">', __($label));
         return $this->createContent($content)->setClass('right');
     }
 
@@ -223,12 +223,16 @@ class FormFactory implements FormFactoryInterface
     {
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
-        $content = sprintf('<input type="submit" value="%s">', __('Go'));
-
         $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
-        return $this->createContent($content)->prepend($clearLink)->setClass('right');
+        return $this->createSubmit('Go')->prepend($clearLink);
+    }
+
+    public function createConfirmSubmit($label = 'Yes', $cancel = false)
+    {
+        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
+        return $this->createSubmit($label)->prepend($cancelLink);
     }
 
     public function createFooter($required = true)
