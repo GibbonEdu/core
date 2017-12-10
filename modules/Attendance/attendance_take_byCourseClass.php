@@ -225,6 +225,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             if ($prefillAttendanceType == 'N') {
                                 $data['gibbonCourseClassID'] = $gibbonCourseClassID;
                                 $sql .= " AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID";
+                            } else {
+                                $data['gibbonCourseClassID'] = $gibbonCourseClassID;
+                                $sql .= " AND (context<>'Class' OR (context='Class' AND gibbonCourseClassID=:gibbonCourseClassID))";
                             }
                             $sql .= " ORDER BY timestampTaken DESC";
                             $result = $pdo->executeQuery($data, $sql);
