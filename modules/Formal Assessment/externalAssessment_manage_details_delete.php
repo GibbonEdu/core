@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\PrefabFormFactory;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 @session_start();
 
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 echo '</div>';
             }
 
-            $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_deleteProcess.php?gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents");
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_deleteProcess.php?gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents");
             echo $form->getOutput();
         }
     }
