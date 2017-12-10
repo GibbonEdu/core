@@ -182,17 +182,12 @@ class FormFactory implements FormFactoryInterface
 
     public function createButton($label = 'Button', $onClick = '', $id = null)
     {
-        if($id == null)
-        {
-            return new Input\Button($label, $onClick);
+        $button = new Input\Button($label, $onClick);
+        if(!empty($id)) {
+            $button->setID($id)->setName($id);
         }
-        else
-        {
-            $button = new Input\Button($label, $onClick);
-            $button->setID($id);
-            $button->setName($id);
-            return $button;
-        }
+        
+        return $button;
     }
 
     public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
@@ -249,6 +244,11 @@ class FormFactory implements FormFactoryInterface
     public function createYesNo($name)
     {
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+    }
+
+    public function createCheckAll($name = 'checkall')
+    {
+        return $this->createCheckbox($name)->setClass('floatNone textCenter checkall');
     }
 
     public function createSelectTitle($name)
