@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 		$row = $form->addRow();
         	$row->addLabel('payment', __('Cost'));
-			$row->addCurrency('payment')->isRequired()->maxLength(9);
+			$row->addCurrency('payment')->isRequired()->maxLength(9)->setValue('0.00');
 			
 		$costTypes = array(
 			'Entire Programme' => __('Entire Programme'),

@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     } else {
         $lastPerson = '';
 
-        echo "<table cellspacing='0' style='width: 100%'>";
+        echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
         echo "<tr class='head'>";
         echo '<th>';
         echo __($guid, 'Activity');
@@ -65,38 +65,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo '</th>';
         echo '</tr>';
 
-        $count = 0;
-        $rowNum = 'odd';
         while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
+            try {
+                $dataEnrollment = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $row['gibbonActivityID']);
+                $sqlEnrollment = "SELECT gibbonActivityStudent.* FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date('Y-m-d') . "') AND (dateEnd IS NULL  OR dateEnd>='" . date('Y-m-d') . "') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
+                $resultEnrollment = $connection2->prepare($sqlEnrollment);
+                $resultEnrollment->execute($dataEnrollment);
+            } catch (PDOException $e) {
+                echo "<div class='error'>" . $e->getMessage() . '</div>';
             }
-            ++$count;
+            $enrolmentCount = $resultEnrollment->rowCount();
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
+            $rowClass = '';
+            if ($enrolmentCount == $row['maxParticipants'] && $row['maxParticipants'] > 0) {
+                $rowClass = 'current';
+            } else if ($enrolmentCount > $row['maxParticipants']) {
+                $rowClass = 'error';
+            } else if ($row['maxParticipants'] == 0) {
+                $rowClass = 'warning';
+            }
+
+            echo '<tr class="'.$rowClass.'">';
             echo '<td>';
             echo $row['name'];
             echo '</td>';
             echo '<td>';
-            try {
-                $dataEnrollment = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $row['gibbonActivityID']);
-                $sqlEnrollment = "SELECT gibbonActivityStudent.* FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
-                $resultEnrollment = $connection2->prepare($sqlEnrollment);
-                $resultEnrollment->execute($dataEnrollment);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
-            if ($resultEnrollment->rowCount() < 0) {
+            if ($enrolmentCount < 0) {
                 echo '<i>'.__($guid, 'Unknown').'</i>';
             } else {
-                if ($resultEnrollment->rowCount() > $row['maxParticipants']) {
-                    echo "<span style='color: #f00; font-weight: bold'>".$resultEnrollment->rowCount().'</span>';
+                if ($enrolmentCount > $row['maxParticipants']) {
+                    echo "<span style='color: #f00; font-weight: bold'>".$enrolmentCount.'</span>';
                 } else {
-                    echo $resultEnrollment->rowCount();
+                    echo $enrolmentCount;
                 }
             }
             echo '</td>';
@@ -110,10 +111,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            if ($resultEnrollment->rowCount() < 0) {
+            if ($enrolmentCount < 0) {
                 echo '<i>'.__($guid, 'Unknown').'</i>';
             } else {
-                echo $resultEnrollment->rowCount();
+                echo $enrolmentCount;
             }
             echo '</td>';
             echo '<td>';

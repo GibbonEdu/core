@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
 
     $row = $form->addRow();
         $row->addLabel('weekOfYear', __('Calendar Week'));
-        $row->addSelect('weekOfYear')->fromArray(array_reverse($weeks))->selected($weekOfYear);
+        $row->addSelect('weekOfYear')->fromArray($weeks)->selected($weekOfYear);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));

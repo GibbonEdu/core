@@ -921,7 +921,8 @@ div#ui-datepicker-div {
     font-weight:bold;
     margin:6px 0px 0px 5px;
     float:right;
-    text-align: right;
+	text-align: right;
+	font-size: 12px;
 }
 
 .LV_valid {

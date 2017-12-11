@@ -17,6 +17,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+.attendanceGrid .grid {
+	border-collapse: collapse; 
+}
+
+.attendanceGrid td {
+	padding: 5px !important;
+	border: 0;
+}
+
+.attendanceField {
+	display:inline-block;
+	width: 133px;
+	margin-right: 8px;
+}
+
+.attendanceFieldStacked {
+	margin-top: -4px;
+}
+
 .verticalHeader {
 	overflow: hidden;
 	padding: 4px !important;
@@ -62,6 +81,10 @@ td.center {
 	text-align: center;
 }
 
+.historyCalendar:not(.historyCalendarKey) {
+	border-collapse: collapse;
+}
+
 .historyCalendar td,
 .historyCalendar td:first-child {
 	text-align: center;
@@ -103,7 +126,7 @@ td.center {
 }
 
 .dayPresent {
-	border: 1px solid #390;
+	border: 1px solid #390 !important;
 }
 
 .highlightAbsent,
@@ -112,8 +135,18 @@ td.center {
 	background: #F6CECB !important;
 }
 
-.dayAbsent {
-	border: 1px solid #c00;
+.dayAbsent, table.smallIntBorder td.dayAbsent {
+	border: 1px solid #c00 !important;
+}
+
+.highlightMessage,
+.dayMessage {
+	color: #3B73AF;
+	background: #D0EAFD !important;
+}
+
+.dayMessage, table.smallIntBorder td.dayMessage {
+	border: 1px solid #3B73AF !important;
 }
 
 .highlightNoData,
@@ -123,7 +156,7 @@ td.center {
 }
 
 .dayNoData {
-	border: 1px solid #555;
+	border: 1px solid #555 !important;
 }
 
 .historyCalendar .day a {
@@ -181,9 +214,8 @@ td.center {
 
 .historyCalendarKey .arrow-two {
 	position: absolute;
-	top: -68px;
+	top: -76px;
 	left: 154px;
 	font-size: 32px;
 	color: #333333;
 }
-

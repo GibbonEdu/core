@@ -104,13 +104,31 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
-    public function createSelectClass($name, $gibbonSchoolYearID)
+    public function createSelectClass($name, $gibbonSchoolYearID, $gibbonPersonID = null)
     {
-        $data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID);
-        $sql="SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
-        $results = $this->pdo->executeQuery($data, $sql);
+        $classes = array();
+        if (!empty($gibbonPersonID)) {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.attendance='Y' ORDER BY name";
+            $result = $this->pdo->executeQuery($data, $sql);
+            if ($result->rowCount() > 0) {
+                $classes['--'. __('My Classes') . '--'] = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+            }
+        }
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        $data=array('gibbonSchoolYearID'=>$gibbonSchoolYearID);
+        $sql= "SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY name" ;
+        $result = $this->pdo->executeQuery($data, $sql);
+
+        if ($result->rowCount() > 0) {
+            if (!empty($gibbonPersonID)) {
+                $classes['--' . __('All Classes') . '--'] = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+            } else {
+                $classes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+            }
+        }
+
+        return $this->createSelect($name)->fromArray($classes)->placeholder();
     }
 
     public function createCheckboxYearGroup($name)
@@ -195,6 +213,24 @@ class DatabaseFormFactory extends FormFactory
     {
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
                 FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                WHERE status='Full' ORDER BY surname, preferredName";
+
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        $values = array();
+        if ($results && $results->rowCount() > 0) {
+            while ($row = $results->fetch()) {
+                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
+            }
+        }
+
+        return $this->createSelect($name)->fromArray($values);
+    }
+
+    public function createSelectUsers($name)
+    {
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson
                 WHERE status='Full' ORDER BY surname, preferredName";
 
         $results = $this->pdo->executeQuery(array(), $sql);

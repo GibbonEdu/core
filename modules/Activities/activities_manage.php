@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 @session_start();
 
@@ -60,6 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $row = $form->addRow();
         $row->addLabel('search', __('Search'))->description('Activity name.');
         $row->addTextField('search')->setValue($search);
+
+    if ($dateType != 'Date') {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $row = $form->addRow();
+            $row->addLabel('gibbonSchoolYearTermID', __('Term'));
+            $row->addSelect('gibbonSchoolYearTermID')->fromQuery($pdo, $sql, $data)->selected($gibbonSchoolYearTermID)->placeholder();
+    }
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -124,35 +133,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             } catch (PDOException $e) {
             }
 
-            $form = Form::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
-            $form->getRenderer()->setWrapper('form', 'div');
-            $form->getRenderer()->setWrapper('row', 'div');
-            $form->getRenderer()->setWrapper('cell', 'fieldset');
-
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
             $form->addHiddenValue('search', $search);
 
-            $actions = array(
+            $bulkActions = array(
                 'Duplicate' => __('Duplicate'),
                 'DuplicateParticipants' => __('Duplicate With Participants'),
                 'Delete' => __('Delete'),
             );
             $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
             
-            $row = $form->addRow()->setClass('right');
-            $bulkAction = $row->addColumn()->addClass('inline right');
-                $bulkAction->addSelect('action')
-                    ->fromArray($actions)
-                    ->isRequired()
-                    ->setClass('mediumWidth floatNone')
-                    ->placeholder(__('Select action'));
-                $bulkAction->addSelect('gibbonSchoolYearIDCopyTo')
+            $row = $form->addBulkActionRow($bulkActions);
+                $row->addSelect('gibbonSchoolYearIDCopyTo')
                     ->fromQuery($pdo, $sql)
-                    ->setClass('shortWidth floatNone schoolYear');
-                $bulkAction->addSubmit(__('Go'));
+                    ->setClass('shortWidth schoolYear');
+                $row->addSubmit(__('Go'));
         
             $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateParticipants'));
-            $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
 
             $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
@@ -167,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $header->addContent(__('Provider'));
             $header->addContent(__('Waiting'));
             $header->addContent(__('Actions'));
-            $header->addCheckbox('checkall')->setClass('floatNone textCenter checkall');
+            $header->addCheckAll();
 
             while ($activity = $resultPage->fetch()) {
                 $rowClass = ($activity['active'] == 'N')? 'error' : '';

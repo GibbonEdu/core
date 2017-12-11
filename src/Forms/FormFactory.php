@@ -57,6 +57,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
+    public function createGrid($id = '', $columns = 1)
+    {
+        return new Layout\Grid($this, $id, $columns);
+    }
+
     public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
@@ -177,17 +182,12 @@ class FormFactory implements FormFactoryInterface
 
     public function createButton($label = 'Button', $onClick = '', $id = null)
     {
-        if($id == null)
-        {
-            return new Input\Button($label, $onClick);
+        $button = new Input\Button($label, $onClick);
+        if(!empty($id)) {
+            $button->setID($id)->setName($id);
         }
-        else
-        {
-            $button = new Input\Button($label, $onClick);
-            $button->setID($id);
-            $button->setName($id);
-            return $button;
-        }
+        
+        return $button;
     }
 
     public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
@@ -210,7 +210,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubmit($label = 'Submit')
     {
-        $content = sprintf('<input type="submit" value="%s">', $label);
+        $content = sprintf('<input type="submit" value="%s">', __($label));
         return $this->createContent($content)->setClass('right');
     }
 
@@ -218,12 +218,16 @@ class FormFactory implements FormFactoryInterface
     {
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
-        $content = sprintf('<input type="submit" value="%s">', __('Go'));
-
         $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
-        return $this->createContent($content)->prepend($clearLink)->setClass('right');
+        return $this->createSubmit('Go')->prepend($clearLink);
+    }
+
+    public function createConfirmSubmit($label = 'Yes', $cancel = false)
+    {
+        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
+        return $this->createSubmit($label)->prepend($cancelLink);
     }
 
     public function createFooter($required = true)
@@ -240,6 +244,11 @@ class FormFactory implements FormFactoryInterface
     public function createYesNo($name)
     {
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+    }
+
+    public function createCheckAll($name = 'checkall')
+    {
+        return $this->createCheckbox($name)->setClass('floatNone textCenter checkall');
     }
 
     public function createSelectTitle($name)
