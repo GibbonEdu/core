@@ -194,7 +194,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_editProcessBulk.php'>";
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
@@ -242,7 +241,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     echo '</tr>';
                 }
                 echo '</table>';
-                echo '</form>';
             }
         }
     }

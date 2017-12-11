@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             //SHOW OLD ENROLMENT RECORDS
             echo '<h2>';
-            echo 'Old Enrolment';
+            echo __('Old Enrolment');
             echo '</h2>';
 
             try {
@@ -276,7 +276,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_editProcessBulk.php'>";
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
@@ -321,13 +320,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     echo '</tr>';
                 }
                 echo '</table>';
-
-                echo "<input name='count' value='$count' type='hidden'>";
-                echo "<input name='type' value='$type' type='hidden'>";
-                echo "<input name='gibbonPersonID' value='$gibbonPersonID' type='hidden'>";
-                echo "<input name='gibbonSchoolYearID' value='$gibbonSchoolYearID' type='hidden'>";
-                echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-                echo '</form>';
             }
         }
     }
