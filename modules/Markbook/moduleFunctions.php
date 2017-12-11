@@ -74,13 +74,17 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
         $data = array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $result = $pdo->executeQuery($data, $sql);
+        $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
         $col->addContent(__('Term').':');
         $col->addSelect('gibbonSchoolYearTermID')
             ->fromArray(array('-1' => __('All Terms')))
-            ->fromQuery($pdo, $sql, $data)
+            ->fromArray($terms)
             ->selected($selectTerm)
             ->setClass('shortWidth');
 
+        $_SESSION[$guid]['markbookTermName'] = isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm;
         $_SESSION[$guid]['markbookTerm'] = $selectTerm;
     } else {
         $_SESSION[$guid]['markbookTerm'] = 0;
