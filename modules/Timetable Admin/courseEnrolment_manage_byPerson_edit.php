@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 //Module includes for Timetable module
 include './modules/Timetable/moduleFunctions.php';
@@ -72,9 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&allUsers=$allUsers'>".__($guid, 'Enrolment by Person')."</a> > </div><div class='trailEnd'>".$row['preferredName'].' '.$row['surname'].'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&allUsers=$allUsers'>".__($guid, 'Enrolment by Person')."</a> > </div><div class='trailEnd'>".$values['preferredName'].' '.$values['surname'].'</div>';
             echo '</div>';
 
             if (isset($_GET['return'])) {
@@ -91,101 +92,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             //INTERFACE TO ADD NEW CLASSES
             echo '<h2>';
             echo __($guid, 'Add Classes');
-            echo '</h2>'; ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Classes') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-						</td>
-						<td class="right">
-							<select name="Members[]" id="Members[]" multiple class='standardWidth' style="height: 150px">
-								<?php
-                                if ($row['type'] == 'Student') {
-                                    ?>
-									<optgroup label='--<?php echo __($guid, 'Enrolable Classes') ?>--'>
-									<?php
-                                    try {
-                                        $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => '%'.$row['gibbonYearGroupID'].'%');
-                                        $sqlSelect = "SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class,
-												(SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount
-											FROM gibbonCourse
-											JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-											WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList
-											ORDER BY course, class";
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowSelect = $resultSelect->fetch()) {
-                                        try {
-                                            $dataSelect2 = array('gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                                            $sqlSelect2 = "SELECT surname, preferredName, title FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID";
-                                            $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                            $resultSelect2->execute($dataSelect2);
-                                        } catch (PDOException $e) {
-                                        }
-                                        $teachers = '';
-                                        while ($rowSelect2 = $resultSelect2->fetch()) {
-                                            $teachers .= formatName('', $rowSelect2['preferredName'], $rowSelect2['surname'], 'Staff', false).', ';
-                                        }
-                                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']);
-                                        if ($teachers != '') {
-                                            echo ' - '.substr($teachers, 0, -2);
-                                        }
-                                        echo ' - '.$rowSelect['studentCount'].' '.__($guid, 'students');
-                                        echo '</option>';
-                                    }
-                                    ?>
-									</optgroup>
-								<?php
+            echo '</h2>'; 
+            
+            $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
+                
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                                }
-           	 					?>
-								<optgroup label='--<?php echo __($guid, 'All Classes') ?>--'>
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                                    $sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' - '.$rowSelect['name'].'</option>';
-								}
-								?>
-								</optgroup>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Role') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="role">
-								<option <?php if ($type == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-								<option <?php if ($type == 'Staff') { echo 'selected '; } ?>value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
-								<option value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
-								<option value="Technician"><?php echo __($guid, 'Technician') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
+            $classes = array();
+            if ($type == 'Student') {
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $values['gibbonYearGroupID']);
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, 
+                            (SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount
+                        FROM gibbonCourse
+                        JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                        WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                        AND FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList) 
+                        GROUP BY gibbonCourseClass.gibbonCourseClassID
+                        ORDER BY name";
 
-			<?php
+                $result = $pdo->executeQuery($data, $sql);
+                if ($result->rowCount() > 0) {
+                    $classes['--'.__('Enrolable Classes').'--'] = array_reduce($result->fetchAll(), function($group, $item) use (&$pdo) {
+                        $data = array('gibbonCourseClassID' => $item['value']);
+                        $sql = "SELECT surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID";
+                        $result = $pdo->executeQuery($data, $sql);
+                        $teachers = array_map(function ($teacher) {
+                            return formatName('', $teacher['preferredName'], $teacher['surname'], 'Staff', false);
+                        }, $result->fetchAll());
+
+                        $item['name'] .= (!empty($teachers))? ' - '.implode(', ', $teachers) : '';
+                        $item['name'] .= ' - '.$item['studentCount'].' '.__('students');
+
+                        $group[$item['value']] = $item['name'];
+                        return $group;
+                    }, array());
+                }
+            }
+
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort, ' - ', gibbonCourse.name) AS name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+            $result = $pdo->executeQuery($data, $sql);
+            if ($result->rowCount() > 0) {
+                $classes['--'.__('All Classes').'--'] = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+            }
+
+            $row = $form->addRow();
+                $row->addLabel('Members', __('Classes'));
+                $row->addSelect('Members')->fromArray($classes)->selectMultiple();
+
+            $roles = array(
+                'Student'    => __('Student'),
+                'Teacher'    => __('Teacher'),
+                'Assistant'  => __('Assistant'),
+                'Technician' => __('Technician'),
+            );
+            $selectedRole = ($type == 'Staff')? 'Teacher' : $type;
+
+            $row = $form->addRow();
+                $row->addLabel('role', __('Role'));
+                $row->addSelect('role')->fromArray($roles)->isRequired()->selected($selectedRole);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
+
+            
             //SHOW CURRENT ENROLMENT
             echo '<h2>';
             echo __($guid, 'Current Enrolment');
@@ -205,96 +178,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_editProcessBulk.php?allUsers=$allUsers'>";
-                echo "<fieldset style='border: none'>";
-                echo "<div class='linkTop' style='height: 27px'>"; ?>
-					<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-					<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-						<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-						<option value="Mark as left"><?php echo __($guid, 'Mark as left') ?></option>
-						<option value="Delete"><?php echo __($guid, 'Delete') ?></option>
-					</select>
-					<script type="text/javascript">
-						var action=new LiveValidation('action');
-						action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>
-					<?php
-				echo '</div>';
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Class Code');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Course');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Class Role');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Reportable');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '<th>'; ?>
-				<script type="text/javascript">
-					$(function () {
-						$('.checkall').click(function () {
-							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-						});
-					});
-				</script>
-				<?php
-				echo "<input type='checkbox' class='checkall'>";
-                echo '</th>';
-                echo '</tr>';
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+                $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/courseEnrolment_manage_byPerson_editProcessBulk.php?allUsers='.$allUsers);
+                $form->addHiddenValue('type', $type);
+                $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
-					//COLOR ROW BY STATUS!
-					echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['course'].'.'.$row['class'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['name'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['role'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['reportable'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<input name='gibbonCourseClassID-$count' value='".$row['gibbonCourseClassID']."' type='hidden'>";
-                    echo "<input name='role-$count' value='".$row['role']."' type='hidden'>";
-                    echo "<input type='checkbox' name='check-$count' id='check-$count'>";
-                    echo '</td>';
-                    echo '</tr>';
+                $linkParams = array(
+                    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                    'gibbonPersonID'     => $gibbonPersonID,
+                    'type'               => $type,
+                    'allUsers'           => $allUsers,
+                    'search'             => $search,
+                );
+
+                $bulkActions = array(
+                    'Mark as left' => __('Mark as left'),
+                    'Delete'       => __('Delete'),
+                );
+
+                $row = $form->addBulkActionRow($bulkActions);
+                    $row->addSubmit(__('Go'));
+
+                $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+
+                $header = $table->addHeaderRow();
+                    $header->addContent(__('Class Code'));
+                    $header->addContent(__('Course'));
+                    $header->addContent(__('Class Role'));
+                    $header->addContent(__('Reportable'));
+                    $header->addContent(__('Actions'));
+                    $header->addCheckAll();
+
+                while ($class = $result->fetch()) {
+                    $row = $table->addRow();
+                        $row->addContent($class['course'].'.'.$class['class']);
+                        $row->addContent($class['name']);
+                        $row->addContent($class['role']);
+                        $row->addContent($class['reportable']);
+                        $col = $row->addColumn()->addClass('inline');
+                            $col->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png"/>')
+                                ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_edit.php')
+                                ->addParam('gibbonCourseClassID', $class['gibbonCourseClassID'])
+                                ->addParams($linkParams);
+                            $col->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/>')
+                                ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson_edit_delete.php&width=650&height=135')
+                                ->setClass('thickbox')
+                                ->addParam('gibbonCourseClassID', $class['gibbonCourseClassID'])
+                                ->addParams($linkParams);
+                        $row->addCheckbox('gibbonCourseClassID[]')->setValue($class['gibbonCourseClassID'])->setClass('textCenter');
                 }
-                echo '</table>';
 
-                echo "<input name='count' value='$count' type='hidden'>";
-                echo "<input name='type' value='$type' type='hidden'>";
-                echo "<input name='gibbonPersonID' value='$gibbonPersonID' type='hidden'>";
-                echo "<input name='gibbonSchoolYearID' value='$gibbonSchoolYearID' type='hidden'>";
-                echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-                echo '</fieldset>';
-                echo '</form>';
+                echo $form->getOutput();
             }
+
 
             //SHOW CURRENT TIMETABLE IN EDIT VIEW
             echo "<a name='tt'></a>";
@@ -322,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             //SHOW OLD ENROLMENT RECORDS
             echo '<h2>';
-            echo 'Old Enrolment';
+            echo __('Old Enrolment');
             echo '</h2>';
 
             try {
@@ -339,7 +276,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_editProcessBulk.php'>";
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
@@ -384,13 +320,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     echo '</tr>';
                 }
                 echo '</table>';
-
-                echo "<input name='count' value='$count' type='hidden'>";
-                echo "<input name='type' value='$type' type='hidden'>";
-                echo "<input name='gibbonPersonID' value='$gibbonPersonID' type='hidden'>";
-                echo "<input name='gibbonSchoolYearID' value='$gibbonSchoolYearID' type='hidden'>";
-                echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-                echo '</form>';
             }
         }
     }
