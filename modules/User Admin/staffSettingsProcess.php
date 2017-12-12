@@ -37,6 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     $responsibilityPosts = $_POST['responsibilityPosts'];
     $jobOpeningDescriptionTemplate = $_POST['jobOpeningDescriptionTemplate'];
 
+    $nameFormatStaffFormal = $_POST['nameFormatStaffFormal'];
+    $nameFormatStaffFormalReversed = $_POST['nameFormatStaffFormalReversed'];
+    $nameFormatStaffInformal = $_POST['nameFormatStaffInformal'];
+    $nameFormatStaffInformalReversed = $_POST['nameFormatStaffInformalReversed'];
+
     //Write to database
     $fail = false;
 
@@ -66,6 +71,44 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     } catch (PDOException $e) {
         $fail = true;
     }
+
+
+    try {
+        $data = array('value' => $nameFormatStaffFormal);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='nameFormatStaffFormal'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $nameFormatStaffFormalReversed);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='nameFormatStaffFormalReversed'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $nameFormatStaffInformal);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='nameFormatStaffInformal'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $nameFormatStaffInformalReversed);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='nameFormatStaffInformalReversed'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
 
     if ($fail == true) {
         $URL .= '&return=error2';
