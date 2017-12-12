@@ -2027,14 +2027,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 <script type="text/javascript">
                                     /* Show/Hide detail control */
                                     $(document).ready(function(){
-                                        $(".details").click(function(){
+                                        var updateDetails = function (){
                                             if ($('input[name=details]:checked').val()=="Yes" ) {
-                                                $(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
+                                                $(".detailItem").slideDown("fast", $(".detailItem").css("{'display' : 'table-row'}"));
                                             }
                                             else {
                                                 $(".detailItem").slideUp("fast");
                                             }
-                                            });
+                                        }
+                                        $(".details").click(updateDetails);
+                                        updateDetails();
                                     });
                                 </script>
 
