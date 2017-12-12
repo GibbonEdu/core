@@ -17,10 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
-//Module includes (not needed because already called by index page)
-//include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
     //Acess denied
@@ -28,63 +25,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     echo __($guid, 'Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    if (isset($_POST['date']) == false) {
-        $date = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
-    } else {
-        $date = $_POST['date'];
-    }
+    $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($_SESSION[$guid]['i18n']['dateFormatPHP']);
+	$dateTime = DateTime::createFromFormat($_SESSION[$guid]['i18n']['dateFormatPHP'], $date);
 
     $extra = '';
     if ($date == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) {
         $extra = __($guid, "Today's Messages").' ('.$date.')';
     } else {
         $extra = __($guid, 'View Messages').' ('.$date.')';
-    }
+	}
+	
     echo "<div class='trail'>";
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>$extra</div>";
-    echo '</div>';
+	echo '</div>';
+	
+	$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php');
+	$form->setClass('blank fullWidth');
+	
+	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    echo "<div class='linkTop' style='height: 27px'>";
-    echo "<div style='text-align: left; width: 40%; float: left;'>";
-    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    	echo "<input name='date' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) - (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
-		<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
-		<?php	
-	echo '</form>';
-    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    	echo "<input name='date' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) + (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
-		<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
-		<?php	
-	echo '</form>';
-    echo '</div>';
-    echo "<div style='width: 40%; float: right'>";
-    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    echo "<input name='date' id='date' maxlength=10 value='".$date."' type='text' style='width:100px; float: none; margin-right: 4px;'>"; ?>
-		<script type="text/javascript">
-			var date=new LiveValidation('date');
-			date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-					echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-				} else {
-					echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-				}
-					?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-					echo 'dd/mm/yyyy';
-				} else {
-					echo $_SESSION[$guid]['i18n']['dateFormat'];
-				}
-				?>." } ); 
-			date.add(Validate.Presence);
-		</script>
-		<script type="text/javascript">
-			$(function() {
-				$( "#date" ).datepicker();
-			});
-		</script>
-		<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-		<?php	
-	echo '</form>';
-    echo '</div>';
-    echo '</div>';
+	$row = $form->addRow();
+
+	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php';
+	$prevDay = (clone $dateTime)->modify('-1 day')->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
+	$nextDay = (clone $dateTime)->modify('+1 day')->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
+	
+	$col = $row->addColumn()->addClass('inline');
+		$col->addButton(__('Previous Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$prevDay}'");
+		$col->addButton(__('Next Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$nextDay}'");
+
+	$col = $row->addColumn()->addClass('inline right');
+		$col->addDate('date')->setValue($date)->setClass('shortWidth');
+		$col->addSubmit(__('Go'));
+
+	echo $form->getOutput();
 
     echo getMessages($guid, $connection2, 'print', dateConvert($guid, $date));
 }
