@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -92,285 +94,127 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo '</div>';
                 } else {
                     //Let's go!
-                    $row = $result->fetch();
+                    $values = $result->fetch();
 
                     if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                         echo "<div class='linkTop'>";
                         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Back to Search Results').'</a>';
                         echo '</div>';
                     }
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_reimburseProcess.php' ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Basic Information') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Budget Cycle') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<?php
-                                    $yearName = '';
-									try {
-										$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-										$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-										$resultYear = $connection2->prepare($sqlYear);
-										$resultYear->execute($dataYear);
-									} catch (PDOException $e) {
-										echo "<div class='error'>".$e->getMessage().'</div>';
-									}
-									if ($resultYear->rowCount() == 1) {
-										$rowYear = $resultYear->fetch();
-										$yearName = $rowYear['name'];
-									}
-									?>
-									<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
-									<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
-									<script type="text/javascript">
-										var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
-										gibbonFinanceBudgetCycleID.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Budget') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Title') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Status') ?> *</b><br/><?php echo $row['status'] ?>
-								</td>
-								<td class="right">
-									<?php
-                                    if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered') {
-                                        echo "<select name='status' id='status' style='width:302px'>";
-                                        echo "<option  value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        if ($row['status'] == 'Approved') {
-                                            echo "<option value='Approved'>".__($guid, 'Approved').'</option>';
-                                            echo "<option selected value='Paid'>".__($guid, 'Paid').'</option>';
-                                        }
-                                        echo '</select>';
-                                    } else {
-                                        ?>
-										<input readonly name="status" id="status" maxlength=60 value="<?php echo $row['status'];
-                                        ?>" type="text" class="standardWidth">
-										<?php
 
-                                    }
-                   		 			?>
-									<script type="text/javascript">
-										var status=new LiveValidation('status');
-										status.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2>
-									<b><?php echo __($guid, 'Description') ?></b>
-									<?php
-                                        echo '<p>';
-										echo $row['body'];
-										echo '</p>'
-                                    ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2>
-									<b><?php echo __($guid, 'Purchase Details') ?></b>
-									<?php
-                                        echo '<p>';
-										echo $row['purchaseDetails'];
-										echo '</p>'
-                                    ?>
-								</td>
-							</tr>
 
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Log') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2>
-									<?php
-                                    echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
-                    				?>
-								</td>
-							</tr>
+                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_reimburseProcess.php');
 
-							<script type="text/javascript">
-								$(document).ready(function(){
-									$("#status").change(function(){
-										if ($('#status').val()=="Paid" ) {
-											$("#paidTitle").slideDown("fast", $("#paidTitle").css("display","table-row"));
-											$("#paymentDateRow").slideDown("fast", $("#paymentDateRow").css("display","table-row"));
-											$("#paymentAmountRow").slideDown("fast", $("#paymentAmountRow").css("display","table-row"));
-											$("#payeeRow").slideDown("fast", $("#payeeRow").css("display","table-row"));
-											$("#paymentMethodRow").slideDown("fast", $("#paymentMethodRow").css("display","table-row"));
-											$("#paymentIDRow").slideDown("fast", $("#paymentIDRow").css("display","table-row"));
-											paymentDate.enable() ;
-											paymentAmount.enable() ;
-											paymentMethod.enable() ;
-											file.enable() ;
-										} else {
-											$("#paidTitle").css("display","none");
-											$("#paymentDateRow").css("display","none");
-											$("#paymentAmountRow").css("display","none");
-											$("#payeeRow").css("display","none");
-											$("#paymentMethodRow").css("display","none");
-											$("#paymentIDRow").css("display","none");
-											paymentDate.disable() ;
-											paymentAmount.disable() ;
-											paymentMethod.disable() ;
-											file.disable() ;
-										}
-									 });
-								});
-							</script>
-							<tr class='break' id="paidTitle">
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Payment Information') ?></h3>
-								</td>
-							</tr>
-							<tr id="paymentDateRow">
-								<td>
-									<b><?php echo __($guid, 'Date Paid') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Date of payment, not entry to system.') ?></span>
-								</td>
-								<td class="right">
-									<input name="paymentDate" id="paymentDate" maxlength=10 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var paymentDate=new LiveValidation('paymentDate');
-										paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-										}
-										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-											echo 'dd/mm/yyyy';
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormat'];
-										}
-										?>." } );
-										paymentDate.add(Validate.Presence);
-									</script>
-									 <script type="text/javascript">
-										$(function() {
-											$( "#paymentDate" ).datepicker();
-										});
-									</script>
-								</td>
-							</tr>
-							<tr id="paymentAmountRow">
-								<td>
-									<b><?php echo __($guid, 'Amount Paid') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Final amount paid.') ?>
-									<?php
-                                    if ($_SESSION[$guid]['currency'] != '') {
-                                        echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
-                                    }
-                   		 			?>
-									</span>
-								</td>
-								<td class="right">
-									<input name="paymentAmount" id="paymentAmount" maxlength=15 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var paymentAmount=new LiveValidation('paymentAmount');
-										paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
-										paymentAmount.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr id="payeeRow">
-								<td>
-									<b><?php echo __($guid, 'Payee') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Staff who made, or arranged, the payment.') ?></span>
-								</td>
-								<td class="right">
-									<input readonly name="name" id="name" value="<?php echo formatName('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
-									<input name="gibbonPersonIDPayment" id="gibbonPersonIDPayment" value="<?php echo $_SESSION[$guid]['gibbonPersonID'] ?>" type="hidden">
-								</td>
-							</tr>
-							<tr id="paymentMethodRow">
-								<td>
-									<b><?php echo __($guid, 'Payment Method') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<?php
-                                    echo "<select name='paymentMethod' id='paymentMethod' style='width:302px'>";
-									echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-									echo "<option value='Bank Transfer'>Bank Transfer</option>";
-									echo "<option value='Cash'>Cash</option>";
-									echo "<option value='Cheque'>Cheque</option>";
-									echo "<option value='Credit Card'>Credit Card</option>";
-									echo "<option value='Other'>Other</option>";
-									echo '</select>';
-									?>
-									<script type="text/javascript">
-										var paymentMethod=new LiveValidation('paymentMethod');
-										paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
-								</td>
-							</tr>
-							<tr id="paymentIDRow">
-								<td>
-									<b><?php echo __($guid, 'Payment Receipt') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Digital copy of the receipt for this payment.') ?></span>
-								</td>
-								<td class="right">
-									<input type="file" name="file" id="file"><br/><br/>
-										<?php
-                                        echo getMaxUpload($guid);
-										$ext = "'.png','.jpeg','.jpg','.gif','.pdf'";
-										?>
-										<script type="text/javascript">
-											var file=new LiveValidation('file');
-											file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-											file.add(Validate.Presence);
-										</script>
-									</td>
-								</td>
-							</tr>
+                    $form->setClass('smallIntBorder fullWidth');
 
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php echo $gibbonFinanceExpenseID ?>" type="hidden">
-									<input name="gibbonFinanceBudgetID" id="gibbonFinanceBudgetID" value="<?php echo $row['gibbonFinanceBudgetID'] ?>" type="hidden">
-									<input name="status2" id="status2" value="<?php echo $status2 ?>" type="hidden">
-									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('status2', $status2);
+                    $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
+                    $form->addHiddenValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
+                    $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
+
+                    $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
+
+                    $form->addRow()->addHeading(__('Basic Information'));
+
+                    $cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
+                    $row = $form->addRow();
+                        $row->addLabel('name', __('Budget Cycle'));
+                        $row->addTextField('name')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
+
+                    $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
+                    $row = $form->addRow();
+                        $row->addLabel('budget', __('Budget'));
+                        $row->addTextField('budget')->setValue($cycleName)->maxLength(20)->isRequired()->readonly()->setValue($values['budget']);
+
+                    $row = $form->addRow();
+                        $row->addLabel('title', __('Title'));
+                        $row->addTextField('title')->maxLength(60)->isRequired()->readonly()->setValue($values['title']);
+
+                    $row = $form->addRow();
+                        $row->addLabel('status', __('Status'));
+                        if ($values['status'] == 'Requested' or $values['status'] == 'Approved' or $values['status'] == 'Ordered') {
+                            $statuses = array();
+                            if ($values['status'] == 'Approved') {
+                                $statuses['Paid'] = __('Paid');
+                            }
+                            $row->addSelect('status')->fromArray($statuses)->selected('Paid')->isRequired();
+                        } else {
+                            $row->addTextField('status')->maxLength(60)->isRequired()->readonly()->setValue($values['status']);
+                        }
+
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addLabel('body', __('Description'));
+                        $column->addContent($values['body'])->setClass('fullWidth');
+
+                    $row = $form->addRow();
+                        $row->addLabel('cost', __('Total Cost'));
+                        $row->addCurrency('cost')->isRequired()->maxLength(15)->readonly()->setValue($values['cost']);
+
+                    $row = $form->addRow();
+                        $row->addLabel('countAgainstBudget', __('Count Against Budget'));
+                        $row->addTextField('countAgainstBudget')->maxLength(3)->isRequired()->readonly()->setValue(ynExpander($guid, $values['countAgainstBudget']));
+
+                    $row = $form->addRow();
+                        $row->addLabel('purchaseBy', __('Purchase By'));
+                        $row->addTextField('purchaseBy')->isRequired()->readonly()->setValue($values['purchaseBy']);
+
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addLabel('purchaseDetails', __('Purchase Details'));
+                        $column->addContent($values['purchaseDetails'])->setClass('fullWidth');
+
+                    $form->addRow()->addHeading(__('Log'));
+
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addContent(getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2));
+
+                    $row = $form->addRow();
+                        $column = $row->addColumn();
+                        $column->addLabel('comment', __('Comment'));
+                        $column->addTextArea('comment')->setRows(8)->setClass('fullWidth');
+
+                    $form->toggleVisibilityByClass('payment')->onSelect('status')->when('Paid');
+
+                    $form->addRow()->addHeading(__('Payment Information'))->addClass('payment');
+
+                    $row = $form->addRow()->addClass('payment');
+                        $row->addLabel('paymentDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));
+                        $row->addDate('paymentDate')->isRequired();
+
+                    $row = $form->addRow()->addClass('payment');
+                    	$row->addLabel('paymentAmount', __('Amount paid'))->description(__('Final amount paid.'));
+            			$row->addCurrency('paymentAmount')->isRequired()->maxLength(15);
+
+                    $form->addHiddenValue('gibbonPersonIDPayment', $_SESSION[$guid]['gibbonPersonID']);
+                    $row = $form->addRow()->addClass('payment');
+                        $row->addLabel('name', __('Payee'))->description(__('Staff who made, or arranged, the payment.'));
+                        $row->addTextField('name')->maxLength(3)->isRequired()->readonly()->setValue(formatName('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true));
+
+                    $methods = array(
+                        'Bank Transfer' => __('Bank Transfer'),
+                        'Cash' => __('Cash'),
+                        'Cheque' => __('Cheque'),
+                        'Credit Card' => __('Credit Card'),
+                        'Other' => __('Other')
+                    );
+                    $row = $form->addRow()->addClass('payment');
+                        $row->addLabel('paymentMethod', __('Payment Method'));
+                        $row->addSelect('paymentMethod')->fromArray($methods)->placeholder()->isRequired();
+
+                    $row = $form->addRow()->addClass('payment');;
+                        $row->addLabel('file', __('Payment Receipt'))->description(__('Digital copy of the receipt for this payment.'));
+                        $row->addFileUpload('file')
+                            ->accepts('.jpg,.jpeg,.gif,.png,.pdf')
+                            ->isRequired();
+
+                    $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+
+                    echo $form->getOutput();
 
                 }
             }

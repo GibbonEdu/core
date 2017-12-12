@@ -542,37 +542,39 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 //Returns log associated with a particular expense
 function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOpen = false)
 {
+    $output = '';
+
     try {
         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
         $sql = 'SELECT gibbonFinanceExpenseLog.*, surname, preferredName FROM gibbonFinanceExpense JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonFinanceExpenseID=gibbonFinanceExpense.gibbonFinanceExpenseID) JOIN gibbonPerson ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID ORDER BY timestamp';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+        $output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
     if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
+        $output .= "<div class='error'>";
+        $output .= __($guid, 'There are no records to display.');
+        $output .= '</div>';
     } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Person');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Date');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Event');
-        echo '</th>';
+        $output .= "<table cellspacing='0' style='width: 100%'>";
+        $output .= "<tr class='head'>";
+        $output .= '<th>';
+        $output .= __($guid, 'Person');
+        $output .= '</th>';
+        $output .= '<th>';
+        $output .= __($guid, 'Date');
+        $output .= '</th>';
+        $output .= '<th>';
+        $output .= __($guid, 'Event');
+        $output .= '</th>';
         if ($commentsOpen == false) {
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
+            $output .= '<th>';
+            $output .= __($guid, 'Actions');
+            $output .= '</th>';
         }
-        echo '</tr>';
+        $output .= '</tr>';
 
         $rowNum = 'odd';
         $count = 0;
@@ -585,45 +587,47 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
             ++$count;
 
             //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-            echo '</td>';
-            echo '<td>';
-            echo dateConvertBack($guid, substr($row['timestamp'], 0, 10));
-            echo '</td>';
-            echo '<td>';
-            echo $row['action'];
-            echo '</td>';
+            $output .= "<tr class=$rowNum>";
+            $output .= '<td>';
+            $output .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $output .= '</td>';
+            $output .= '<td>';
+            $output .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
+            $output .= '</td>';
+            $output .= '<td>';
+            $output .= $row['action'];
+            $output .= '</td>';
             if ($commentsOpen == false) {
-                echo '<td>';
-                echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo "\$(\".comment-$count\").hide();";
-                echo "\$(\".show_hide-$count\").fadeIn(1000);";
-                echo "\$(\".show_hide-$count\").click(function(){";
-                echo "\$(\".comment-$count\").fadeToggle(1000);";
-                echo '});';
-                echo '});';
-                echo '</script>';
+                $output .= '<td>';
+                $output .= "<script type='text/javascript'>";
+                $output .= '$(document).ready(function(){';
+                $output .= "\$(\".comment-$count\").hide();";
+                $output .= "\$(\".show_hide-$count\").fadeIn(1000);";
+                $output .= "\$(\".show_hide-$count\").click(function(){";
+                $output .= "\$(\".comment-$count\").fadeToggle(1000);";
+                $output .= '});';
+                $output .= '});';
+                $output .= '</script>';
                 if ($row['comment'] != '') {
-                    echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                    $output .= "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
                 }
-                echo '</td>';
+                $output .= '</td>';
             }
-            echo '</tr>';
+            $output .= '</tr>';
             if ($row['comment'] != '') {
-                echo "<tr class='comment-$count' id='comment-$count'>";
-                echo '<td colspan=4>';
+                $output .= "<tr class='comment-$count' id='comment-$count'>";
+                $output .= '<td colspan=4>';
                 if ($row['comment'] != '') {
-                    echo nl2brr($row['comment']).'<br/><br/>';
+                    $output .= nl2brr($row['comment']).'<br/><br/>';
                 }
-                echo '</td>';
-                echo '</tr>';
+                $output .= '</td>';
+                $output .= '</tr>';
             }
         }
-        echo '</table>';
+        $output .= '</table>';
     }
+
+    return $output;
 }
 
 //Returns all budgets a person is linked to, as well as their access rights to that budget
@@ -684,6 +688,25 @@ function getBudgets($connection2)
     }
 
     return $return;
+}
+
+//Take a budget cycle, and return the previous one, or false if none
+function getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2)
+{
+    $output = false;
+
+    try {
+        $dataCycle = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+        $sqlCycle = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+        $resultCycle = $connection2->prepare($sqlCycle);
+        $resultCycle->execute($dataCycle);
+    } catch (PDOException $e) { }
+    if ($resultCycle->rowCount() == 1) {
+        $rowCycle = $resultCycle->fetch();
+        $output = $rowCycle['name'];
+    }
+
+    return $output;
 }
 
 //Take a budget cycle, and return the previous one, or false if none
