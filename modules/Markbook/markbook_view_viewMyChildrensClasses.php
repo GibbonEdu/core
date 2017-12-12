@@ -82,7 +82,7 @@
         $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
         $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
 
-        if ($gibbonPersonID != '' and count($options) > 0) {
+        if (!empty($gibbonPersonID) and count($options) > 0) {
             //Confirm access to this student
             try {
                 $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
@@ -161,11 +161,13 @@
                         ->placeholder();
                 }
 
-                $showHideLink = "  &nbsp; <input checked type='checkbox' name='details' class='details' value='Yes' />";
-                $showHideLink .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show/Hide Details').'</span> &nbsp;';
+                $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
+                $form->addHiddenValue('details', 'No');
+                $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)
+                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span> &nbsp;&nbsp;');
 
                 $rowFilter = $form->addRow();
-                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('search'))->prepend($showHideLink);
+                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('search'))->prepend($showHide->getOutput());
                 
                 echo $form->getOutput();
 
