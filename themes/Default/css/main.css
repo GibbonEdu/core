@@ -1495,3 +1495,12 @@ input[type="button"].alignRight {
 fieldset {
 	border: 0;
 }
+
+.displayInlineBlock {
+    display: inline-block;
+}
+
+/* Fixes an odd colspan-related width bug in Chrome */
+td.fullWidth {
+    width: auto;
+}
