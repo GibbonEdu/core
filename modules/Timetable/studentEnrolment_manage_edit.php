@@ -60,10 +60,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             echo '<h2>';
             echo __($guid, 'Add Participants');
-            echo '</h2>'; 
-            
+            echo '</h2>';
+
             $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
-                
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $people = array();
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                     JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' 
+                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                     AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
                     ORDER BY rollGroupName, surname, preferredName";
             $result = $pdo->executeQuery($data, $sql);
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 $row->addSubmit();
 
             echo $form->getOutput();
-            
+
             echo '<h2>';
             echo __($guid, 'Current Participants');
             echo '</h2>';
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     } else {
                         $row->addContent($name);
                     }
-                    
+
                     $row->addContent($student['email']);
                     $row->addContent($student['role']);
                     $col = $row->addColumn()->addClass('inline');
@@ -169,8 +169,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                             ->addParam('gibbonCourseID', $gibbonCourseID)
                             ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
                             ->addParam('gibbonPersonID', $student['gibbonPersonID']);
+                        $row->addCheckbox('gibbonPersonID[]')->setValue($student['gibbonPersonID'])->setClass('textCenter');
                     }
-                    $row->addCheckbox('gibbonPersonID[]')->setValue($student['gibbonPersonID'])->setClass('textCenter');
+                    else {
+                        $row->addContent();
+                    }
+
                 }
 
                 echo $form->getOutput();
