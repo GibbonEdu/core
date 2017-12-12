@@ -27,7 +27,8 @@ namespace Gibbon\Forms\Input;
  */
 class Currency extends Number
 {
-    protected $decimal = 2;
+    protected $decimalPlaces = 2;
+    protected $onlyInteger = false;
 
     /**
      * Adds currency format to the label description (if not already present)
