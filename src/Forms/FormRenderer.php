@@ -54,6 +54,7 @@ class FormRenderer implements FormRendererInterface
     public function setWrapper($name, $value)
     {
         $this->wrappers[$name] = $value;
+        return $this;
     }
 
     /**
