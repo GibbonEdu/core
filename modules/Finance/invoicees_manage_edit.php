@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -65,233 +67,95 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+            echo formatName('', $values['preferredName'], $values['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';
-            echo '<i>'.$row['status'].'</i>';
+            echo '<i>'.$values['status'].'</i>';
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
 
             echo '</td>';
             echo '</tr>';
-            echo '</table>'; ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers']; ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<script type="text/javascript">
-						/* Resource 1 Option Control */
-						$(document).ready(function(){
-							if ($('input[name=invoiceTo]:checked').val()=="Family" ) {
-								$("#companyNameRow").css("display","none");
-								$("#companyContactRow").css("display","none");
-								$("#companyAddressRow").css("display","none");
-								$("#companyEmailRow").css("display","none");
-								$("#companyCCFamilyRow").css("display","none");
-								$("#companyPhoneRow").css("display","none");
-								$("#companyAllRow").css("display","none");
-								$("#companyCategoriesRow").css("display","none");
-								companyEmail.disable() ;
-								companyAddress.disable() ;
-								companyContact.disable() ;
-								companyName.disable() ;
-							}
-							else {
-								if ($('input[name=companyAll]:checked').val()=="Y" ) {
-									$("#companyCategoriesRow").css("display","none");
-								}
-							}
-							
-							$(".invoiceTo").click(function(){
-								if ($('input[name=invoiceTo]:checked').val()=="Family" ) {
-									$("#companyNameRow").css("display","none");
-									$("#companyContactRow").css("display","none");
-									$("#companyAddressRow").css("display","none");
-									$("#companyEmailRow").css("display","none");
-									$("#companyCCFamilyRow").css("display","none");
-									$("#companyPhoneRow").css("display","none");
-									$("#companyAllRow").css("display","none");
-									$("#companyCategoriesRow").css("display","none");
-									companyEmail.disable() ;
-									companyAddress.disable() ;
-									companyContact.disable() ;
-									companyName.disable() ;
-								} else {
-									$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
-									$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
-									$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row")); 
-									$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row")); 
-									$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
-									$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
-									$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
-									if ($('input[name=companyAll]:checked').val()=="Y" ) {
-										$("#companyCategoriesRow").css("display","none");
-									} else {
-										$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
-									}
-									companyEmail.enable() ;
-									companyAddress.enable() ;
-									companyContact.enable() ;
-									companyName.enable() ;
-								}
-							 });
-							 
-							 $(".companyAll").click(function(){
-								if ($('input[name=companyAll]:checked').val()=="Y" ) {
-									$("#companyCategoriesRow").css("display","none");
-								} else {
-									$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
-								}
-							 });
-						});
-					</script>
-					<tr id="familyRow">
-						<td colspan=2'>
-							<p><?php echo __($guid, 'If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Send Invoices To') ?></b><br/>
-						</td>
-						<td class="right">
-							<input <?php if ($row['invoiceTo'] == 'Family') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
-							<input <?php if ($row['invoiceTo'] == 'Company') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
-						</td>
-					</tr>
-					<tr id="companyNameRow">
-						<td> 
-							<b><?php echo __($guid, 'Company Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="companyName" id="companyName" maxlength=100 value="<?php echo $row['companyName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var companyName=new LiveValidation('companyName');
-								companyName.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr id="companyContactRow">
-						<td> 
-							<b><?php echo __($guid, 'Company Contact Person') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="companyContact" id="companyContact" maxlength=100 value="<?php echo $row['companyContact'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var companyContact=new LiveValidation('companyContact');
-								companyContact.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr id="companyAddressRow">
-						<td> 
-							<b><?php echo __($guid, 'Company Address') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php echo $row['companyAddress'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var companyAddress=new LiveValidation('companyAddress');
-								companyAddress.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr id="companyEmailRow">
-						<td> 
-							<b><?php echo __($guid, 'Company Emails') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Comma-separated list of email address.') ?></span>
-						</td>
-						<td class="right">
-							<input name="companyEmail" id="companyEmail" value="<?php echo $row['companyEmail'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var companyEmail=new LiveValidation('companyEmail');
-								companyEmail.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr id="companyCCFamilyRow">
-						<td> 
-							<b><?php echo __($guid, 'CC Family?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Should the family be sent a copy of billing emails?') ?></span>
-						</td>
-						<td class="right">
-							<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
-								<option <?php if ($row['companyCCFamily'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
-								<option <?php if ($row['companyCCFamily'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
-							</select>
-						</td>
-					</tr>
-					<tr id="companyPhoneRow">
-						<td> 
-							<b><?php echo __($guid, 'Company Phone') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php echo $row['companyPhone'] ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<?php
-                    try {
-                        $dataCat = array();
-                        $sqlCat = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-                        $resultCat = $connection2->prepare($sqlCat);
-                        $resultCat->execute($dataCat);
-                    } catch (PDOException $e) {
-                    }
-            if ($resultCat->rowCount() < 1) {
-                echo '<input type="hidden" name="companyAll" value="Y" class="companyAll"/>';
-            } else {
-                ?>
-					<tr id="companyAllRow">
-						<td> 
-							<b><?php echo __($guid, 'Company All?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
-						</td>
-						<td class="right">
-							<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') { echo 'checked'; } ?> /> <?php echo __($guid, 'All') ?>
-							<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') { echo 'checked'; } ?> /> <?php echo __($guid, 'Selected') ?>
-						</td>
-					</tr>
-					<tr id="companyCategoriesRow">
-						<td> 
-							<b><?php echo __($guid, 'Company Fee Categories') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
-						</td>
-						<td class="right">
-							<?php
-							while ($rowCat = $resultCat->fetch()) {
-								$checked = '';
-								if (strpos($row['gibbonFinanceFeeCategoryIDList'], $rowCat['gibbonFinanceFeeCategoryID']) !== false) {
-									$checked = 'checked';
-								}
-								echo $rowCat['name']." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='".$rowCat['gibbonFinanceFeeCategoryID']."'/><br/>";
-							}
-							$checked = '';
-							if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
-								$checked = 'checked';
-							}
-							echo "Other <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>"; ?>
-						</td>
-					</tr>
-					<?php
+            echo '</table>';
 
-					}
-					?>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers']);
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
+
+            $form->addRow()->addHeading(__('Invoice To'));
+
+            $form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>', '</p>');
+
+            $row = $form->addRow();
+                $row->addLabel('invoiceTo', __('Send Invoices To'));
+                $row->addRadio('invoiceTo')
+                    ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
+                    ->inline();
+
+            $form->toggleVisibilityByClass('paymentCompany')->onRadio('invoiceTo')->when('Company');
+
+            // COMPANY DETAILS
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyName', __('Company Name'));
+                $row->addTextField('companyName')->isRequired()->maxLength(100);
+
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyContact', __('Company Contact Person'));
+                $row->addTextField('companyContact')->isRequired()->maxLength(100);
+
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyAddress', __('Company Address'));
+                $row->addTextField('companyAddress')->isRequired()->maxLength(255);
+
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
+                $row->addTextField('companyEmail')->isRequired();
+
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
+                $row->addYesNo('companyCCFamily')->selected('N');
+
+            $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyPhone', __('Company Phone'));
+                $row->addTextField('companyPhone')->maxLength(20);
+
+            // COMPANY FEE CATEGORIES
+            $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
+            $resultFees = $pdo->executeQuery(array(), $sqlFees);
+
+            if (!$resultFees || $resultFees->rowCount() == 0) {
+                $form->addHiddenValue('companyAll', 'Y');
+            } else {
+                $row = $form->addRow()->addClass('paymentCompany');
+                $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
+                $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline();
+
+                $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
+
+                $row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
+                $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))
+                    ->description(__('If the specified company is not paying all fees, which categories are they paying?'));
+                $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
+                    ->fromResults($resultFees)
+                    ->fromArray(array('0001' => __('Other')))
+                    ->loadFromCSV($values);
+            }
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
 
         }
     }
