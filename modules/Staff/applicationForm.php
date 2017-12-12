@@ -278,9 +278,9 @@ if ($proceed == false) {
                 $heading->append($staffApplicationFormRequiredDocumentsText);
 
                 if ($staffApplicationFormRequiredDocumentsCompulsory == 'Y') {
-                    $heading->append(__('All documents must all be included before the application can be submitted.'));
+                    $heading->append(' '.__('All documents must all be included before the application can be submitted.'));
                 } else {
-                    $heading->append(__('These documents are all required, but can be submitted separately to this form if preferred. Please note, however, that your application will be processed faster if the documents are included here.'));
+                    $heading->append(' '.__('These documents are all required, but can be submitted separately to this form if preferred. Please note, however, that your application will be processed faster if the documents are included here.'));
                 }
                 $heading->wrap('<p>', '</p>');
             }

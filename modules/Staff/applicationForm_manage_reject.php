@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
             $proceed = true;
 
             echo "<div class='linkTop'>";
@@ -69,25 +71,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
             echo '</div>';
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_rejectProcess.php?gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo sprintf(__($guid, 'Are you sure you want to reject the application for %1$s?'), formatName('', $row['preferredName'], $row['surname'], 'Student')) ?></b><br/>
-						</td>
-					</tr>
-					<tr>
-						<td class="right"> 
-							<input name="gibbonStaffApplicationFormID" id="gibbonStaffApplicationFormID" value="<?php echo $gibbonStaffApplicationFormID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>				
-			<?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_rejectProcess.php?gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search");
 
+            $form->setClass('smallIntBorder fullWidth');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID);
+
+            $row = $form->addRow();
+                $row->addContent(sprintf(__('Are you sure you want to reject the application for %1$s?'), formatName('', $values['preferredName'], $values['surname'], 'Student')));
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit(__('Yes'));
+
+            echo $form->getOutput();
         }
     }
 }
