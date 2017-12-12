@@ -68,9 +68,9 @@
 
             $form->addHiddenValue('q', '/modules/Markbook/markbook_view.php');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-            
+
             $row = $form->addRow();
-                $row->addLabel('search', __('Student'))->description(__('Preferred, surname, username.'));
+                $row->addLabel('search', __('Student'));
                 $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
 
             $row = $form->addRow();
@@ -109,7 +109,7 @@
                 $and2 = '';
                 $dataList = array();
                 $dataEntry = array();
-                
+
                 $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $_SESSION[$guid]['gibbonSchoolYearID'];
                 if ($filter != '*') {
                     $dataList['filter'] = $filter;
@@ -168,7 +168,7 @@
 
                 $rowFilter = $form->addRow();
                     $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('search'))->prepend($showHide->getOutput());
-                
+
                 echo $form->getOutput();
 
                 ?>
