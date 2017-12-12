@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_edit.php') == false) {
@@ -56,73 +59,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Staff') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if ($row['gibbonPersonID'] == $rowSelect['gibbonPersonID']) {
-										$selected = 'selected';
-									}
-									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-								}
-								?>
-							</select>
-							<script type="text/javascript">
-								var gibbonPersonID=new LiveValidation('gibbonPersonID');
-								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
-						</td>
-					</tr>
-					<?php
-                    $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-            		if ($expenseApprovalType == 'Chain Of All') {
-               		?>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-							</td>
-							<td class="right">
-								<input name="sequenceNumber" ID="sequenceNumber" value="<?php echo $row['sequenceNumber'] ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var sequenceNumber=new LiveValidation('sequenceNumber');
-									sequenceNumber.add(Validate.Numericality, { minimum: 0 } );
-									sequenceNumber.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<?php
-					}
-					?>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
 
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID");
+
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonID', __('Staff'));
+                $row->addSelectStaff('gibbonPersonID')->isRequired()->placeholder();
+
+            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+            if ($expenseApprovalType == 'Chain Of All') {
+                $row = $form->addRow();
+                    $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique.'));
+                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover')->isRequired()->maxLength(3);
+            }
+
+            $form->loadAllValuesFrom($values);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
