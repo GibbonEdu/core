@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_manage_edit.php') == false) {
     //Acess denied
@@ -56,44 +56,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_editProcess.php?gibbonMessengerCannedResponseID=$gibbonMessengerCannedResponseID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Subject') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="subject" id="subject" maxlength=20 value="<?php echo htmlPrep($row['subject']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var subject=new LiveValidation('subject');
-								subject.add(Validate.Presence);
-							</script> 
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Body') ?> *</b>
-							<?php 
-                            //Attempt to build a signature for the user
-                            echo getEditor($guid,  true, 'body', $row['body'], 20, true, true, false, true); ?>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch(); 
+            
+            $form = Form::create('canneResponse', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_editProcess.php?gibbonMessengerCannedResponseID='.$gibbonMessengerCannedResponseID);
+                
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+            $row = $form->addRow();
+                $row->addLabel('subject', __('Subject'))->description(__('Must be unique.'));
+                $row->addTextField('subject')->isRequired()->maxLength(20);
+
+            $row = $form->addRow();
+                $col = $row->addColumn('body');
+                $col->addLabel('body', __('Body'));
+                $col->addEditor('body', $guid)->isRequired()->setRows(20)->showMedia(true);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }
-?>
