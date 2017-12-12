@@ -47,7 +47,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
         exit();
     } else {
         if ($gibbonFinanceExpenseID == '' or $status == '' or $status != 'Paid' or empty($_FILES['file']['tmp_name'])) {
-            $URL .= '&return=error0';
+            $URL .= '&return=error1';
             header("Location: {$URL}");
             exit();
         } else {
