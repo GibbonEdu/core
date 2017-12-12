@@ -111,3 +111,24 @@ table.colorOddEven tr:nth-of-type(even) td {
 	.page-break	{ display: block; page-break-before: always; }
 }
 
+
+/* Attendance */
+
+.attendanceTable {
+	border: 0;
+	margin: 0;
+}
+
+.attendanceRowHeader {
+	width: 155px;
+}
+
+td.attendanceDateHeader {
+	vertical-align: top;
+	height: 65px;
+}
+
+.attendanceDate {
+	width: 45px;
+	margin-bottom: 10px;
+}
