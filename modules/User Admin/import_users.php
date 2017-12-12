@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
+
+@session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.php') == false) {
     //Acess denied
