@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 echo '</div>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_lending_item_signoutProcess.php?name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']);
+            $form = Form::create('libraryLendingSignout', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_lending_item_signoutProcess.php?name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']);
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->setClass('smallIntBorder fullWidth');
@@ -111,8 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $form->addRow()->addHeading(__('Item Details'));
 
             $row = $form->addRow();
-                $row->addLabel('id', __('ID'));
-                $row->addTextField('id')->setValue($values['id'])->readonly()->isRequired();
+                $row->addLabel('idLabel', __('ID'));
+                $row->addTextField('idLabel')->setValue($values['id'])->readonly()->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
