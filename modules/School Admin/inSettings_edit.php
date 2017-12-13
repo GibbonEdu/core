@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_edit.php') == false) {
     //Acess denied
@@ -56,70 +57,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inSettings_editProcess.php?gibbonINDescriptorID='.$gibbonINDescriptorID ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<?php echo __($guid, $row['name']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="<?php echo __($guid, $row['nameShort']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
-						</td>
-						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<?php echo $row['sequenceNumber'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var sequenceNumber=new LiveValidation('sequenceNumber');
-								sequenceNumber.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Description') ?></b><br/>
-						</td>
-						<td class="right">
-							<textarea name="description" id="description" rows=8 class="standardWidth"><?php echo $row['description'] ?></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
+            
+            $form = Form::create('inDescriptor', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inSettings_editProcess.php?gibbonINDescriptorID='.$gibbonINDescriptorID);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+        
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('name')->isRequired()->maxLength(50);
+            
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+                $row->addTextField('nameShort')->isRequired()->maxLength(5);
+        
+            $row = $form->addRow();
+                $row->addLabel('sequenceNumber', __('Sequence Number'));
+                $row->addSequenceNumber('sequenceNumber', 'gibbonINDescriptor', $values['sequenceNumber'])->isRequired()->maxLength(5);
+        
+            $row = $form->addRow();
+                $row->addLabel('description', __('Description'));
+                $row->addTextArea('description')->setRows(8);
+        
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
 
+            $form->loadAllValuesFrom($values);
+        
+            echo $form->getOutput();
         }
     }
 }
-?>
+
