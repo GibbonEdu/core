@@ -63,11 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Label'));
+                $row->addLabel('name', __('Name'));
                 $row->addTextField('name')->readonly();
 
             $row = $form->addRow();
-                $row->addLabel('description', __('Label'));
+                $row->addLabel('description', __('Description'));
                 $row->addTextField('description')->readonly();
 
              $row = $form->addRow();
