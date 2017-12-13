@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\PrefabFormFactory;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 @session_start();
 
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
         } else {
             //Let's go!
 
-            $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_finance_manage_deleteProcess.php?gibbonFinanceInvoiceeUpdateID=".$gibbonFinanceInvoiceeUpdateID);
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_finance_manage_deleteProcess.php?gibbonFinanceInvoiceeUpdateID=".$gibbonFinanceInvoiceeUpdateID);
             echo $form->getOutput();
         }
     }

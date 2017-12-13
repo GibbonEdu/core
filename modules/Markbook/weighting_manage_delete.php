@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\PrefabFormFactory;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 @session_start();
 
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Delete').' '.$row['course'].'.'.$row['class'].' '.__($guid, ' Weighting').'</div>';
                     echo '</div>';
 
-                    $form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
+                    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
                     echo $form->getOutput();
                 }
             }

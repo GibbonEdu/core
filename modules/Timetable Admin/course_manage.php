@@ -102,6 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/course_manage.php");
+        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));
@@ -112,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
 
         $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+            $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
         echo $form->getOutput();
 

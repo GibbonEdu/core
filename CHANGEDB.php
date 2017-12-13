@@ -860,6 +860,11 @@ UPDATE gibbonRole SET nameShort='Tcr' WHERE name='Teacher';end
 UPDATE gibbonRole SET nameShort='Prt' WHERE name='Parent';end
 UPDATE gibbonRole SET nameShort='SSt' WHERE name='Support Staff';end
 UPDATE gibbonAction SET entryURL='staff_view.php' WHERE entryURL='staff_view' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff');end
-CREATE TABLE `gibbonActivityType` ( `gibbonActivityTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `name` VARCHAR(60) NULL, `description` TEXT NULL , `access` ENUM('None','View','Register') NULL DEFAULT 'Register', `enrolmentType` ENUM('Competitive','Selection') NULL DEFAULT 'Competitive', `maxPerStudent` INT(3) NOT NULL DEFAULT '0' , `waitingList` ENUM('Y','N') NULL DEFAULT 'Y', `backupChoice` ENUM('Y','N') NULL DEFAULT 'Y', PRIMARY KEY (`gibbonActivityTypeID`), UNIQUE KEY (`name`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;end
-UPDATE `gibbonAction` SET `URLList` = 'activitySettings.php,activitySettings_type_add.php,activitySettings_type_edit.php,activitySettings_type_delete.php' WHERE `name`='Manage Activity Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Planner', 'parentWeeklyEmailSummaryIncludeMarkbook', 'Parent Weekly Email Summary Include Markbook', 'Should Markbook information be included in the weekly planner email summary that goes out to parents?', 'N');end
+ALTER TABLE `gibbonMarkbookColumn` ADD INDEX(`completeDate`);end
+ALTER TABLE `gibbonMarkbookColumn` ADD INDEX(`complete`);end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffFormal', 'Formal Name Format', '', '[title] [preferredName:1]. [surname]');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffFormalReversed', 'Formal Name Reversed', '', '[title] [surname], [preferredName:1].');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformal', 'Informal Name Format', '', '[preferredName] [surname]');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformalReversed', 'Informal Name Reversed', '', '[surname], [preferredName]');end
 ";

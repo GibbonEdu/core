@@ -68,6 +68,7 @@ v15.0.00
 		Messenger: fixed multibyte substring issue in homepage widget
 		Messenger: added username to Individual select, to distinguish people with the same name
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
+		Planner: added optional Markbook section (off by default) to weekly planner summary email
 		Roll Groups: fixed bug preventing alerts from showing
 		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
 		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
@@ -99,6 +100,7 @@ v15.0.00
         User Admin: added a button to generate usernames in Add User
         User Admin: added an Available Years of Entry setting to select which years are available in the student application
 		User Admin: added a setting to require a user's primary email address to be unique
+		User Admin: added a settings to adjust the formatting of staff names in Manage Staff Settings
 
 v14.0.01
 --------

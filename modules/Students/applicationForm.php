@@ -904,7 +904,8 @@ if ($proceed == false) {
                 $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
-                    ->setRequired($requiredDocumentsCompulsory == 'Y');
+                    ->setRequired($requiredDocumentsCompulsory == 'Y')
+                    ->setMaxUpload(false);
         }
 
         $row = $form->addRow()->addContent(getMaxUpload($guid));

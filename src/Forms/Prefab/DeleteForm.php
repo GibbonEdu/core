@@ -17,29 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms;
+namespace Gibbon\Forms\Prefab;
+
+use Gibbon\Forms\Form;
 
 /**
- * PrefabFormFactory
+ * DeleteForm
  *
- * For building pre-made forms all at once.
- *
- * @version v14
- * @since   v14
+ * @version v15
+ * @since   v15
  */
-class PrefabFormFactory
+class DeleteForm extends Form
 {
-    public static function createDeleteForm($action, $confirmation = false)
+    public static function createForm($action, $confirmation = false, $submit = true)
     {
-        $form = self::createDeleteFormStart($action, $confirmation);
-        $form->addRow()->addElement(self::createDeleteFormSubmit($form));
-
-        return $form;
-    }
-
-    public static function createDeleteFormStart($action, $confirmation = false)
-    {
-        $form = Form::create('deleteRecord', $action);
+        $form = parent::create('deleteRecord', $action);
         $form->addHiddenValue('address', $_GET['q']);
 
         foreach ($_GET as $key => $value) {
@@ -47,9 +39,10 @@ class PrefabFormFactory
         }
 
         $row = $form->addRow();
-            $column = $row->addColumn();
-            $column->addContent(__('Are you sure you want to delete this record?'))->wrap('<strong>', '</strong>');
-            $column->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))->wrap('<span style="color: #cc0000"><i>', '</i></span>');
+            $col = $row->addColumn();
+            $col->addContent(__('Are you sure you want to delete this record?'))->wrap('<strong>', '</strong>');
+            $col->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))
+                ->wrap('<span style="color: #cc0000"><i>', '</i></span>');
 
         if ($confirmation) {
             $row = $form->addRow();
@@ -62,12 +55,10 @@ class PrefabFormFactory
                 ->addValidationOption('onlyOnSubmit: true');
         }
 
+        if ($submit) {
+            $form->addRow()->addConfirmSubmit();
+        }
+
         return $form;
     }
-
-    public static function createDeleteFormSubmit($form)
-    {
-        return $form->getFactory()->createSubmit(__('Yes'));
-    }
-
 }

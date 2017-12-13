@@ -2468,22 +2468,23 @@ function getModuleEntry($address, $connection2, $guid)
 
 function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
 {
+    global $guid;
     $output = false;
 
     if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
-        if ($informal == false) {
-            if ($reverse == true) {
-                $output = $title.' '.$surname.', '.strtoupper(mb_substr($preferredName, 0, 1)).'.';
-            } else {
-                $output = $title.' '.strtoupper(mb_substr($preferredName, 0, 1)).'. '.$surname;
-            }
-        } else {
-            if ($reverse == true) {
-                $output = $surname.', '.$preferredName;
-            } else {
-                $output = $preferredName.' '.$surname;
-            }
-        }
+        
+        $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
+        $format = isset($_SESSION[$guid][$setting])? $_SESSION[$guid][$setting] : '[title] [preferredName:1]. [surname]';
+
+        $output = preg_replace_callback('/\[+([^\]]*)\]+/u', 
+            function ($matches) use ($title, $preferredName, $surname) {
+                list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
+                return isset($$token)
+                    ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
+                    : $matches[0];
+            }, 
+        $format);
+
     } elseif ($roleCategory == 'Parent') {
         if ($informal == false) {
             if ($reverse == true) {
@@ -2506,7 +2507,7 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
         }
     }
 
-    return $output;
+    return trim($output);
 }
 
 //$tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.

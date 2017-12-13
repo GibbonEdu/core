@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 //COLOR ROW BY STATUS!
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
+                echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'<br/>';
                 echo "<span style='font-size: 85%; font-style: italic'>".$row['initials'].'</span>';
                 echo '</td>';
                 echo '<td>';

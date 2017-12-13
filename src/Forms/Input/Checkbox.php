@@ -34,6 +34,7 @@ class Checkbox extends Input
     protected $description;
     protected $checked = array();
     protected $checkall = false;
+    protected $inline = false;
 
     /**
      * Create a checkpox input with a default value of on when checked.
@@ -104,6 +105,17 @@ class Checkbox extends Input
     }
 
     /**
+     * Sets multiple checkbox elements to display horizontally.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function inline($value = true)
+    {
+        $this->inline = $value;
+        return $this;
+    }
+
+    /**
      * Return true if the passed value matches the current checkbox element value(s).
      * @param   mixed  $value
      * @return  bool
@@ -151,8 +163,13 @@ class Checkbox extends Input
                 $this->setAttribute('checked', $this->getIsChecked($value));
                 if ($value != 'on') $this->setValue($value);
 
-                $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
-                $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                if ($this->inline) {
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
+                    $output .= '<label for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
+                } else {
+                    $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                }
 
                 $count++;
             }

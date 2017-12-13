@@ -1,4 +1,6 @@
 <?php
+    use Gibbon\Forms\Form;
+
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
@@ -22,151 +24,84 @@
     $and2 = '';
     $dataList = array();
     $dataEntry = array();
-    $filter = null;
-    if (isset($_POST['filter'])) {
-        $filter = $_POST['filter'];
-    }
-    if ($filter == '') {
-        $filter = $_SESSION[$guid]['gibbonSchoolYearID'];
-    }
+
+    $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $_SESSION[$guid]['gibbonSchoolYearID'];
     if ($filter != '*') {
         $dataList['filter'] = $filter;
         $and .= ' AND gibbonSchoolYearID=:filter';
     }
-    $filter2 = null;
-    if (isset($_POST['filter2'])) {
-        $filter2 = $_POST['filter2'];
-    }
-    if ($filter2 != '') {
+
+    $filter2 = isset($_REQUEST['filter2'])? $_REQUEST['filter2'] : '*';
+    if ($filter2 != '*') {
         $dataList['filter2'] = $filter2;
         $and .= ' AND gibbonDepartmentID=:filter2';
     }
-    $filter3 = null;
-    if (isset($_GET['filter3'])) {
-        $filter3 = $_GET['filter3'];
-    } elseif (isset($_POST['filter3'])) {
-        $filter3 = $_POST['filter3'];
-    }
+
+    $filter3 = isset($_REQUEST['filter3'])? $_REQUEST['filter3'] : '';
     if ($filter3 != '') {
         $dataEntry['filter3'] = $filter3;
         $and2 .= ' AND type=:filter3';
     }
 
-    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."'>";
-    echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/markbook_view.php');
+
+    $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+    $rowFilter = $form->addRow();
+        $rowFilter->addLabel('filter2', __('Learning Areas'));
+        $rowFilter->addSelect('filter2')
+            ->fromArray(array('*' => __('All Learning Areas')))
+            ->fromQuery($pdo, $sqlSelect)
+            ->selected($filter2);
+
+    $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID as value, CONCAT(gibbonSchoolYear.name, ' (', gibbonYearGroup.name, ')') AS name FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber";
+    $rowFilter = $form->addRow();
+        $rowFilter->addLabel('filter', __('School Years'));
+        $rowFilter->addSelect('filter')
+            ->fromArray(array('*' => __('All Years')))
+            ->fromQuery($pdo, $sqlSelect, $dataSelect)
+            ->selected($filter);
+
+    $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+    if (!empty($types)) {
+        $rowFilter = $form->addRow();
+        $rowFilter->addLabel('filter3', __('Type'));
+        $rowFilter->addSelect('filter3')
+            ->fromString($types)
+            ->selected($filter3)
+            ->placeholder();
+    }
+
+    $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
+    $form->addHiddenValue('details', 'No');
+    $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)
+        ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span> &nbsp;&nbsp;');
+
+    $rowFilter = $form->addRow();
+        $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'))->prepend($showHide->getOutput());
+    
+    echo $form->getOutput();
+
     ?>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Learning Area') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    echo "<select name='filter2' id='filter2' style='width:302px'>";
-					echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
-					try {
-					    $dataSelect = array();
-					    $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-					    $resultSelect = $connection2->prepare($sqlSelect);
-					    $resultSelect->execute($dataSelect);
-					} catch (PDOException $e) {
-					}
-					while ($rowSelect = $resultSelect->fetch()) {
-					    $selected = '';
-					    if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-					        $selected = 'selected';
-					    }
-					    echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-					}
-					echo '</select>';
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'School Year') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    echo "<select name='filter' id='filter' style='width:302px'>";
-                    echo "<option value='*'>".__($guid, 'All Years').'</option>';
-                    try {
-                        $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sqlSelect = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE (gibbonSchoolYear.status='Current' OR gibbonSchoolYear.status='Past') AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber";
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if ($rowSelect['gibbonSchoolYearID'] == $filter) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.__($guid, $rowSelect['yearGroup']).')</option>';
-                    }
-                    echo '</select>';
-                    ?>
-				</td>
-			</tr>
-			<?php
-            $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
-		    if ($types != false) {
-		        $types = explode(',', $types);
-		        ?>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Type') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<select name="filter3" id="filter3" class="standardWidth">
-							<option value=""></option>
-							<?php
-                            for ($i = 0; $i < count($types); ++$i) {
-                                $selected = '';
-                                if ($filter3 == $types[$i]) {
-                                    $selected = 'selected';
-                                }
-                                ?>
-								<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-							<?php
-
-                            }
-        					?>
-						</select>
-					</td>
-				</tr>
-				<?php
-
-			    }
-			    echo '<tr>';
-			    echo "<td class='right' colspan=2>";
-			    echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-			    echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
-			    echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>';
-			    ?>
-				<script type="text/javascript">
-					/* Show/Hide detail control */
-					$(document).ready(function(){
-						$(".details").click(function(){
-							if ($('input[name=details]:checked').val()=="Yes" ) {
-								$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
-							}
-							else {
-								$(".detailItem").slideUp("fast");
-							}
-						 });
-					});
-				</script>
-				<?php
-	            echo "<input type='submit' value='".__($guid, 'Go')."'>";
-    			echo '</td>';
-    		echo '</tr>';
-    	echo'</table>';
-    echo '</form>';
-
+    <script type="text/javascript">
+        /* Show/Hide detail control */
+        $(document).ready(function(){
+            var updateDetails = function (){
+                if ($('input[name=details]:checked').val()=="Yes" ) {
+                    $(".detailItem").slideDown("fast", $(".detailItem").css("{'display' : 'table-row'}"));
+                }
+                else {
+                    $(".detailItem").slideUp("fast");
+                }
+            }
+            $(".details").click(updateDetails);
+            updateDetails();
+        });
+    </script>
+    <?php
 
     //Get class list
     try {
@@ -297,13 +232,8 @@
                             echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID'].'&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                         }
                         echo '</div>';
-                        if ($rowEntry['attainmentValue'] != '' && strstr($rowEntry['attainmentValue'], '%') === false) {
+                        if ($rowEntry['attainmentValue'] != '') {
                             echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['attainmentDescriptor'])).'</b>'.__($guid, $attainmentExtra).'</div>';
-                        }
-                        else {
-                            if ($rowEntry['attainmentRaw'] == 'Y' and !empty($rowEntry['attainmentValueRaw'])) {
-                                echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><br/>".$rowEntry['attainmentValueRaw'].' / '.$rowEntry['attainmentRawMax'].'</div>';
-                            }
                         }
                         echo '</td>';
                     }
