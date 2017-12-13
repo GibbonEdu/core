@@ -2260,22 +2260,16 @@ function getParentPhotoUploader($connection2, $guid)
             $output .= '<p>';
             $output .= __($guid, 'Please upload a passport photo to use as a profile picture.').' '.__($guid, '240px by 320px').'.';
             $output .= '</p>';
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."' enctype='multipart/form-data'>";
-            $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>";
-            $output .= '<tr>';
-            $output .= "<td style='vertical-align: top'>";
-            $output .= "<input type=\"file\" name=\"file1\" id=\"file1\" style='width: 165px'><br/><br/>";
-            $output .= '<script type="text/javascript">';
-            $output .= "var file1=new LiveValidation('file1');";
-            $output .= "file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: \"Illegal file type!\", partialMatch: true, caseSensitive: false } );";
-            $output .= '</script>';
-            $output .= '</td>';
-            $output .= "<td class='right' style='vertical-align: top'>";
-            $output .= "<input style='height: 27px; width: 20px!important; margin-top: 0px;' type='submit' value='".__($guid, 'Go')."'>";
-            $output .= '</td>';
-            $output .= '</tr>';
-            $output .= '</table>';
-            $output .= '</form>';
+
+            $form = Form::create('photoUpload', $_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']);
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('fullWidth');
+                $row->addSubmit(__('Go'));
+
+            $output .= $form->getOutput();
+
         } else { //Photo, so show image and removal link
             $output .= '<p>';
             $output .= getUserPhoto($guid, $_SESSION[$guid]['image_240'], 240);
