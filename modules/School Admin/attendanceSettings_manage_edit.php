@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -44,7 +45,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-
 	    try {
 	        $data = array('gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);
 	        $sql = 'SELECT * FROM gibbonAttendanceCode WHERE gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
@@ -60,155 +60,66 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 	        echo '</div>';
 	    } else {
 	        //Let's go!
-	        $row = $result->fetch(); ?>
+            $values = $result->fetch(); 
+            
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_editProcess.php?gibbonAttendanceCodeID='.$gibbonAttendanceCodeID);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+        
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('name')->isRequired()->maxLength(30);
+            
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+                $row->addTextField('nameShort')->isRequired()->maxLength(4);
+        
+            $directions = array(
+                'In'     => __('In Class'),
+                'Out' => __('Out of Class'),
+            );
+            $row = $form->addRow();
+                $row->addLabel('direction', __('Direction'));
+                $row->addSelect('direction')->isRequired()->fromArray($directions);
+        
+            $scopes = array(
+                'Onsite'         => __('Onsite'),
+                'Onsite - Late'  => __('Onsite - Late'),
+                'Offsite'        => __('Offsite'),
+                'Offsite - Left' => __('Offsite - Left'),
+            );
+            $row = $form->addRow();
+                $row->addLabel('scope', __('Scope'));
+                $row->addSelect('scope')->isRequired()->fromArray($scopes);
+        
+            $row = $form->addRow();
+                $row->addLabel('sequenceNumber', __('Sequence Number'));
+                $row->addSequenceNumber('sequenceNumber', 'gibbonAttendanceCode', $values['sequenceNumber'])->isRequired()->maxLength(3);
+        
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->isRequired();
+        
+            $row = $form->addRow();
+                $row->addLabel('reportable', __('Reportable'));
+                $row->addYesNo('reportable')->isRequired();
+        
+            $row = $form->addRow();
+                $row->addLabel('future', __('Allow Future Use'))->description(__('Can this code be used in Set Future Absence?'));
+                $row->addYesNo('future')->isRequired();
+        
+            $row = $form->addRow();
+                $row->addLabel('gibbonRoleIDAll', __('Available to Roles'))->description(__('Controls who can use this code.'));
+                $row->addSelectRole('gibbonRoleIDAll')->selectMultiple()->loadFromCSV($values);
+        
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
 
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_editProcess.php?gibbonAttendanceCodeID='.$gibbonAttendanceCodeID ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=30  value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php echo $row['nameShort'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Direction') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="direction" id="direction" class='type standardWidth'>
-								<option value='In' <?php if ($row['direction'] == 'In') echo 'selected'; ?>><?php echo __($guid, 'In Class'); ?></option>
-								<option value='Out' <?php if ($row['direction'] == 'Out') echo 'selected'; ?>><?php echo __($guid, 'Out of Class'); ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Scope') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="scope" id="scope" class='type standardWidth'>
-								<option value='Onsite' <?php if ($row['scope'] == 'Onsite') echo 'selected'; ?>><?php echo __($guid, 'Onsite'); ?></option>
-								<option value='Onsite - Late' <?php if ($row['scope'] == 'Onsite - Late') echo 'selected'; ?>><?php echo __($guid, 'Onsite - Late'); ?></option>
-								<option value='Offsite' <?php if ($row['scope'] == 'Offsite') echo 'selected'; ?>><?php echo __($guid, 'Offsite'); ?></option>
-								<option value='Offsite - Left' <?php if ($row['scope'] == 'Offsite - Left') echo 'selected'; ?>><?php echo __($guid, 'Offsite - Left'); ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=40 value="<?php echo $row['sequenceNumber'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var sequenceNumber=new LiveValidation('sequenceNumber');
-								sequenceNumber.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="active" id="active" class='type standardWidth'>
-								<option value='Y' <?php if ($row['active'] == 'Y') echo 'selected'; ?>><?php echo __($guid, 'Yes'); ?></option>
-								<option value='N' <?php if ($row['active'] == 'N') echo 'selected'; ?>><?php echo __($guid, 'No'); ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Reportable') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select name="reportable" id="reportable" class='type standardWidth'>
-								<option value='Y' <?php if ($row['reportable'] == 'Y') echo 'selected'; ?>><?php echo __($guid, 'Yes'); ?></option>
-								<option value='N' <?php if ($row['reportable'] == 'N') echo 'selected'; ?>><?php echo __($guid, 'No'); ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Allow Future Use') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Can this code be used in Set Future Absence?') ?></span>
-						</td>
-						<td class="right">
-							<select name="future" id="future" class='type standardWidth'>
-								<option value='Y' <?php if ($row['future'] == 'Y') echo 'selected'; ?>><?php echo __($guid, 'Yes'); ?></option>
-								<option value='N' <?php if ($row['future'] == 'N') echo 'selected'; ?>><?php echo __($guid, 'No'); ?></option>
-							</select>
-						</td>
-					</tr>
-
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Available to Roles') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Controls who can use this code.') ?></span>
-						</td>
-						<td class="right">
-							<select multiple name="gibbonRoleIDAll[]" id="gibbonRoleIDAll[]" style="width: 302px; height: 130px">
-								<?php
-		                        try {
-		                            $dataSelect = array();
-		                            $sqlSelect = 'SELECT * FROM gibbonRole ORDER BY name';
-		                            $resultSelect = $connection2->prepare($sqlSelect);
-		                            $resultSelect->execute($dataSelect);
-		                        } catch (PDOException $e) {
-		                            echo "<div class='error'>".$e->getMessage().'</div>';
-		                        }
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									$roles = explode(',', $row['gibbonRoleIDAll']);
-									foreach ($roles as $role) {
-										if ($role == $rowSelect['gibbonRoleID']) {
-											$selected = 'selected';
-										}
-									}
-
-									echo "<option $selected value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-								}
-								?>			
-							</select>
-							<script type="text/javascript">
-								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
-								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-		<?php
+            $form->loadAllValuesFrom($values);
+        
+            echo $form->getOutput();
 		}
 	}
 }
-?>
