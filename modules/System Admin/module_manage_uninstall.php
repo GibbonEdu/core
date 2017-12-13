@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Prefab\DeleteForm;
 
 $orphaned = '';
 if (isset($_GET['orphaned'])) {
@@ -81,77 +81,40 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px' colspan=2>
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');?></span>
-						</td>
-					</tr>
-                    <?php
-                    include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php';
-                    if (isset($moduleTables)) {
-                         ?>
-    					<tr>
-    						<td style='width: 275px'>
-    							<b><?php echo __($guid, 'Remove Data') ?></b><br/>
-    							<span class="emphasis small"><?php echo __($guid, 'Would you like to remove the following tables and views from your database?') ?></span>
-    						</td>
-    						<td class="right">
-    							<?php
-                                if (is_file($_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php') == false) {
-                                    echo "<div class='error'>";
-                                    echo __($guid, 'An error has occurred.');
-                                    echo '</div>';
-                                } else {
-                                    $count = 0;
-                                    if (is_array($moduleTables)) {
-                                        foreach ($moduleTables as $moduleTable) {
-                                            $type = null;
-                                            $tokens = null;
-                                            $name = '';
-                                            $moduleTable = trim($moduleTable);
-                                            if (substr($moduleTable, 0, 12) == 'CREATE TABLE') {
-                                                $type = __($guid, 'Table');
-                                            } elseif (substr($moduleTable, 0, 11) == 'CREATE VIEW') {
-                                                $type = __($guid, 'View');
-                                            }
-                                            if ($type != null) {
-                                                $tokens = preg_split('/ +/', $moduleTable);
-                                                if (isset($tokens[2])) {
-                                                    $name = str_replace('`', '', $tokens[2]);
-                                                    if ($name != '') {
-                                                        echo '<b>'.$type.'</b>: '.$name;
-                                                        echo " <input checked type='checkbox' name='remove[]' value='".$type.'-'.$name."' /><br/>";
-                                                        ++$count;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if ($count == 0) {
-                                        echo __($guid, 'There are no records to display.');
-                                    }
-                                }
-                				?>
-    						</td>
-    					</tr>
-                        <?php
-                    }
-                    ?>
-					<tr>
-						<td class="right" colspan=2>
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch(); 
+            
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned", false, false);
 
+            $manifestFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$values['name'].'/manifest.php';
+            if (file_exists($manifestFile)) {
+                include $manifestFile;
+            } else {
+                $form->addRow()->addAlert(__('An error has occurred.').' '.__('Module error due to incorrect manifest file or folder name.'), 'error');
+            }
+
+            if (!empty($moduleTables)) {
+                $moduleTables = array_map('trim', $moduleTables);
+                $moduleTables = array_reduce($moduleTables, function($group, $moduleTable) {
+                    $tokens = preg_split('/ +/', $moduleTable);
+
+                    if ($tokens === false || empty($tokens[0]) || empty($tokens[1]) || empty($tokens[2])) return $group;
+                    if (strtoupper($tokens[0]) == 'CREATE' && (strtoupper($tokens[1]) == 'TABLE' || strtoupper($tokens[1]) == 'VIEW')) {
+                        $type = ucfirst(strtolower($tokens[1]));
+                        $name = str_replace('`', '', $tokens[2]);
+                        $group[$type.'-'.$name] = '<b>'.$type.'</b>: '.$name;
+                    }
+        
+                    return $group;
+                }, array());
+
+                $row = $form->addRow();
+                    $row->addLabel('remove', __('Remove Data'))->description(__('Would you like to remove the following tables and views from your database?'));
+                    $row->addCheckbox('remove')->fromArray($moduleTables)->checkAll()->addCheckAllNone();
+            }
+
+            $form->addRow()->addConfirmSubmit();
+            
+            echo $form->getOutput();
         }
     }
 }
-?>
