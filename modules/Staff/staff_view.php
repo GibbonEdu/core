@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
@@ -37,60 +39,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Staff Profiles').'</div>';
         echo '</div>';
 
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allStaff = '';
-        if (isset($_GET['allStaff'])) {
-            $allStaff = $_GET['allStaff'];
-        }
+        $search = (isset($_GET['search']) ? $_GET['search'] : '');
+        $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
 
         echo '<h2>';
         echo __($guid, 'Search');
-        echo '</h2>'; ?>
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-				<tr><td style="width: 30%"></td><td></td></tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Search For') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
-					</td>
-					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-					</td>
-				</tr>
-				<?php if ($highestAction == 'View Staff Profile_full') { ?>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'All Staff') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Include all staff, regardless of status, start date, end date, etc.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            $checked = '';
-							if ($allStaff == 'on') {
-								$checked = 'checked';
-							}
-							echo "<input $checked name=\"allStaff\" id=\"allStaff\" type=\"checkbox\">"; ?>
-						</td>
-					</tr>
-				<?php 
-				}
-        		?>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/staff_view.php">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+        echo '</h2>';
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
+
+        $form->setClass('noIntBorder fullWidth');
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/staff_view.php");
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+            $row->addTextField('search')->setValue($search)->maxLength(20);
+
+        if ($highestAction == 'View Staff Profile_full') {
+            $row = $form->addRow();
+                $row->addLabel('allStaff', __('All Staff'))->description('Include all staff, regardless of status, start date, end date, etc.');
+                $row->addCheckbox('allStaff')->checked($allStaff);
+        }
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSearchSubmit($gibbon->session);
+
+        echo $form->getOutput();
 
         echo '<h2>';
         echo __($guid, 'Choose A Staff Member');
@@ -176,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 //COLOR ROW BY STATUS!
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
+                echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'<br/>';
                 echo "<span style='font-size: 85%; font-style: italic'>".$row['initials'].'</span>';
                 echo '</td>';
                 echo '<td>';

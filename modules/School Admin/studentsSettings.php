@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID='.$row['gibbonStudentNoteCategoryID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_delete.php&gibbonStudentNoteCategoryID='.$row['gibbonStudentNoteCategoryID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_delete.php&gibbonStudentNoteCategoryID='.$row['gibbonStudentNoteCategoryID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

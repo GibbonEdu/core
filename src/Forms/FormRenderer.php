@@ -54,6 +54,7 @@ class FormRenderer implements FormRendererInterface
     public function setWrapper($name, $value)
     {
         $this->wrappers[$name] = $value;
+        return $this;
     }
 
     /**
@@ -67,7 +68,7 @@ class FormRenderer implements FormRendererInterface
 
         $totalColumns = $this->getColumnCount($form, $form->getRows());
 
-        $output .= '<form autocomplete="'.$form->getAutocomplete().'" id="'.$form->getID().'" method="'.$form->getMethod().'" action="'.$form->getAction().'" enctype="multipart/form-data">';
+        $output .= '<form '.$form->getAttributeString().'>';
 
         // Output hidden values
         foreach ($form->getHiddenValues() as $values) {

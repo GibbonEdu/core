@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -81,7 +83,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                 echo '</div>';
             } else {
                 //Ready to go!
-
                 $gibbonFinanceBudgetCycleID = '';
                 if (isset($_GET['gibbonFinanceBudgetCycleID'])) {
                     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
@@ -130,18 +131,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo "<div class='linkTop'>";
                         //Print year picker
                         $previousCycle = getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
-                    if ($previousCycle != false) {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$previousCycle."'>".__($guid, 'Previous Cycle').'</a> ';
-                    } else {
-                        echo __($guid, 'Previous Cycle').' ';
-                    }
-                    echo ' | ';
-                    $nextCycle = getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
-                    if ($nextCycle != false) {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$nextCycle."'>".__($guid, 'Next Cycle').'</a> ';
-                    } else {
-                        echo __($guid, 'Next Cycle').' ';
-                    }
+                        if ($previousCycle != false) {
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$previousCycle."'>".__($guid, 'Previous Cycle').'</a> ';
+                        } else {
+                            echo __($guid, 'Previous Cycle').' ';
+                        }
+                        echo ' | ';
+                        $nextCycle = getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
+                        if ($nextCycle != false) {
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$nextCycle."'>".__($guid, 'Next Cycle').'</a> ';
+                        } else {
+                            echo __($guid, 'Next Cycle').' ';
+                        }
                     echo '</div>';
 
                     $status2 = null;
@@ -156,91 +157,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo '<h3>';
                     echo __($guid, 'Filters');
                     echo '</h3>';
-                    echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php'>";
-                    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Status') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-							echo "<select name='status2' id='status2' style='width:302px'>";
-								$selected = '';
-								if ($status2 == '') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value=''>".__($guid, 'All').'</option>';
-								$selected = '';
-								if ($status2 == 'Requested') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='Requested'>".__($guid, 'Requested').'</option>';
-								$selected = '';
-								if ($status2 == 'Approved') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
-								$selected = '';
-								if ($status2 == 'Rejected') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='Rejected'>".__($guid, 'Rejected').'</option>';
-								$selected = '';
-								if ($status2 == 'Cancelled') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
-								$selected = '';
-								if ($status2 == 'Ordered') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
-								$selected = '';
-								if ($status2 == 'Paid') {
-									$selected = 'selected';
-								}
-								echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
-								echo '</select>';
-								?>
-							</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Budget') ?></b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<?php
-                                    echo "<select name='gibbonFinanceBudgetID2' id='gibbonFinanceBudgetID2' style='width:302px'>";
-									$selected = '';
-									if ($gibbonFinanceBudgetID2 == '') {
-										$selected = 'selected';
-									}
-									echo "<option $selected value=''>".__($guid, 'All').'</option>';
-									foreach ($budgets as $budget) {
-										$selected = '';
-										if ($gibbonFinanceBudgetID2 == $budget[0]) {
-											$selected = 'selected';
-										}
-										echo "<option $selected value='".$budget[0]."'>".$budget[1].'</option>';
-									}
-									echo '</select>';
-									?>
-								</td>
-							</tr>
-							<?php
 
-                            echo '<tr>';
-							echo "<td class='right' colspan=2>";
-							echo "<input type='hidden' name='gibbonFinanceBudgetCycleID' value='$gibbonFinanceBudgetCycleID'>";
-							echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-							echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID'>".__($guid, 'Clear Filters').'</a> ';
-							echo "<input type='submit' value='".__($guid, 'Go')."'>";
-							echo '</td>';
-							echo '</tr>';
-						echo '</table>';
-					echo '</form>';
+                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+                    $form->setClass('noIntBorder fullWidth');
+
+                    $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
+                    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/expenseRequest_manage.php");
+
+                    $statuses = array(
+                        '' => __('All'),
+                        'Requested' => __('Requested'),
+                        'Approved' => __('Approved'),
+                        'Rejected' => __('Rejected'),
+                        'Cancelled' => __('Cancelled'),
+                        'Ordered' => __('Ordered'),
+                        'Paid' => __('Paid'),
+                    );
+                    $row = $form->addRow();
+                        $row->addLabel('status2', __('Status'));
+                        $row->addSelect('status2')->fromArray($statuses)->selected($status2);
+
+                    $budgetsProcessed = array('' => __('All')) ;
+                    foreach ($budgets as $budget) {
+                        $budgetsProcessed[$budget[0]] = $budget[1];
+                    }
+                    $row = $form->addRow();
+                        $row->addLabel('gibbonFinanceBudgetID2', __('Budget'));
+                        $row->addSelect('gibbonFinanceBudgetID2')->fromArray($budgetsProcessed)->selected($gibbonFinanceBudgetID2);
+
+                    $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSearchSubmit($gibbon->session);
+
+                    echo $form->getOutput();
 
                     try {
                         //Add in filter wheres

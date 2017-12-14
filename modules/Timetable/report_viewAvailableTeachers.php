@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             echo '</div>';
             $time = date('H:i:s', strtotime($time) + 3600);
             $spinControl = 0;
-            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 5))) {
+            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
                 ++$countTime;
                 echo "<div style='position: absolute; top:".(($countTime * 60) - 5)."px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
                 echo substr($time, 0, 5).'<br/>';

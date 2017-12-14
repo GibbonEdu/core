@@ -31,103 +31,89 @@ $gibbonCourseID = $_POST['gibbonCourseID'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $action = $_POST['action'];
 
-if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
-} else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_class_edit.php&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_class_edit.php&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseClassID=$gibbonCourseClassID";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
-        $URL .= '&return=error0';
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '' or $action == '') {
+    $URL .= '&return=error1';
+    header("Location: {$URL}"); 
+} else {
+    $people = isset($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : array();
+
+    //Proceed!
+    //Check if person specified
+    if (count($people) < 1) {
+        $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
-        $people = array();
-        $peopleCount = 0;
-        for ($i = 0; $i < $_POST['count']; $i++) {
-            if (isset($_POST["check-$i"])) {
-                if ($_POST["check-$i"] == 'on') {
-                    $people[$peopleCount][0] = $_POST["gibbonPersonID-$i"];
-                    $people[$peopleCount][1] = $_POST["role-$i"];
-                    $peopleCount ++;
+        $partialFail = false;
+        if ($action == 'Delete') {
+            foreach ($people as $gibbonPersonID) {
+                try {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
+                    $sql = 'DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail == true;
                 }
             }
         }
+        else if ($action == 'Copy to class') {
+            $gibbonCourseClassIDCopyTo = (isset($_POST['gibbonCourseClassIDCopyTo']))? $_POST['gibbonCourseClassIDCopyTo'] : NULL;
+            if (!empty($gibbonCourseClassIDCopyTo)) {
 
-        //Proceed!
-        //Check if person specified
-        if (count($people) < 1) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-        } else {
-            $partialFail = false;
-            if ($action == 'Delete') {
-                for ($i = 0; $i < count($people); ++$i) {
+                foreach ($people as $gibbonPersonID) {
+                    // Check for duplicates
                     try {
-                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $people[$i][0]);
-                        $sql = 'DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                        $dataCheck = array('gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo, 'gibbonPersonID' => $gibbonPersonID);
+                        $sqlCheck = 'SELECT gibbonPersonID FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassIDCopyTo AND gibbonPersonID=:gibbonPersonID';
+                        $resultCheck = $connection2->prepare($sqlCheck);
+                        $resultCheck->execute($dataCheck);
                     } catch (PDOException $e) {
                         $partialFail == true;
                     }
-                }
-            }
-            else if ($action == 'Copy to class') {
-                $gibbonCourseClassIDCopyTo = (isset($_POST['gibbonCourseClassIDCopyTo']))? $_POST['gibbonCourseClassIDCopyTo'] : NULL;
-                if (!empty($gibbonCourseClassIDCopyTo)) {
 
-                    for ($i = 0; $i < count($people); ++$i) {
-
-                        // Check for duplicates
+                    // Insert new course participants
+                    if ($resultCheck->rowCount() == 0) {
                         try {
-                            $dataCheck = array('gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo, 'gibbonPersonID' => $people[$i][0]);
-                            $sqlCheck = 'SELECT gibbonPersonID FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassIDCopyTo AND gibbonPersonID=:gibbonPersonID';
-                            $resultCheck = $connection2->prepare($sqlCheck);
-                            $resultCheck->execute($dataCheck);
-                        } catch (PDOException $e) {
-                            $partialFail == true;
-                        }
-
-                        // Insert new course participants
-                        if ($resultCheck->rowCount() == 0) {
-                            try {
-                                $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $people[$i][0], 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo);
-                                $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $partialFail == true;
-                            }
-                        }
-
-
-                    }
-                } else {
-                    $URL .= '&return=error3';
-                    header("Location: {$URL}");
-                }
-            } else if ($action == 'Mark as left') {
-                for ($i = 0; $i < count($people); ++$i) {
-                    if ($people[$i][1] == 'Student' or $people[$i][1] == 'Teacher') {
-                        try {
-                            $data = array('role' => $people[$i][1].' - Left', 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $people[$i][0]);
-                            $sql = 'UPDATE gibbonCourseClassPerson SET role=:role WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
+                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo);
+                            $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $partialFail == true;
                         }
-                    } else {
-                        $partialFail = true;
                     }
+
+
+                }
+            } else {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+            }
+        } else if ($action == 'Mark as left') {
+            foreach ($people as $gibbonPersonID) {
+                try {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
+                    $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left ') WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail == true;
                 }
             }
+        }
 
-            if ($partialFail == true) {
-                $URL .= '&return=warning1';
-                header("Location: {$URL}");
-            } else {
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-            }
+        if ($partialFail == true) {
+            $URL .= '&return=warning1';
+            header("Location: {$URL}");
+        } else {
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
         }
     }
+    
 }

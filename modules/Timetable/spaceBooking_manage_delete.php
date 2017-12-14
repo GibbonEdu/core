@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_delete.php') == false) {
@@ -67,33 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
-                //Let's go!
-                $row = $result->fetch();
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/spaceBooking_manage_deleteProcess.php?gibbonTTSpaceBookingID=$gibbonTTSpaceBookingID" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td>
-								<b><?php echo __('Are you sure you want to delete this record?'); ?></b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i><?php echo __('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-							</td>
-							<td class="right">
-
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __('Yes'); ?>">
-							</td>
-							<td class="right">
-
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-
+                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/spaceBooking_manage_deleteProcess.php?gibbonTTSpaceBookingID=$gibbonTTSpaceBookingID");
+                echo $form->getOutput();
             }
         }
     }

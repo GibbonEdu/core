@@ -63,7 +63,7 @@ $I->see('Your request was completed successfully.', '.success');
 
 // Delete Planner ------------------------------------------------
 
-$urlParams = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+$urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'viewBy' => 'class');
 $I->amOnModulePage('Planner', 'planner_delete.php', $urlParams );
 
 $I->seeBreadcrumb('Delete Lesson Plan');

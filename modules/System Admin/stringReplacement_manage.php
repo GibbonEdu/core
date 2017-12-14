@@ -43,10 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     echo __($guid, 'Search');
     echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Search For') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Original string, replacement string.') ?></span>
 				</td>
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage_edit.php&gibbonStringID='.$row['gibbonStringID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage_delete.php&gibbonStringID='.$row['gibbonStringID']."&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage_delete.php&gibbonStringID='.$row['gibbonStringID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

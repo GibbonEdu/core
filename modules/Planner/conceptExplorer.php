@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -44,10 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     else if (isset($_GET['tag'])) {
         $tags[0] = $_GET['tag'];
     }
-    $gibbonYearGroupID = '';
-    if (isset($_GET['gibbonYearGroupID'])) {
-        $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
-    }
+    $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
 
     //Display concept cloud
     if (count($tags) == 0) {
@@ -61,70 +61,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     echo '<h2>';
     echo __($guid, 'Choose Concept');
     echo '</h2>';
-    ?>
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Concepts & Keywords') ?> *</b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-				</td>
-				<td class="right">
-					<select multiple class="standardWidth" name="tags[]" style="height: 150px">
-						<?php
-                        foreach ($tagsAll AS $tagAll) {
-                            if ($tagAll != '') {
-                                $selected = '';
-                                foreach ($tags as $tag) {
-                                    if ($tagAll[1] == $tag) {
-                                        $selected = 'selected';
-                                    }
-                                }
-                                echo "<option $selected value='".$tagAll[1]."'>".htmlPrep($tagAll[1]).'</option>';
-                            }
-                        }
-						?>
-					</select>
-				</td>
-			</tr>
-            <tr>
-				<td>
-					<b><?php echo __($guid, 'Year Group') ?></b><br/>
-					<span style="font-size: 90%"></span>
-				</td>
-				<td class="right">
-					<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$dataSelect = array();
-							$sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($rowSelect['gibbonYearGroupID'] == $gibbonYearGroupID) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-						}
-						?>
-					</select>
-                </td>
-            </tr>
-            <tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/conceptExplorer.php">
-                    <?php echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php'>".__($guid, 'Clear Filters').'</a> ';?>
-                    <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('conceptExplorer', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/conceptExplorer.php');
+
+    $row = $form->addRow();
+        $row->addLabel('tags', __('Concepts & Keywords'));
+        $row->addSelect('tags')->fromArray(array_column($tagsAll, 1))->selectMultiple()->isRequired()->selected($tags);
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput();
 
     if (count($tags) > 0) {
         //Set up for edit access

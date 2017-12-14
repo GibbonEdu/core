@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo '</div>';
                         } else {
                             $countChild = 0;
-                            while ($row = $result->fetch()) {
+                            while ($values = $result->fetch()) {
                                 try {
                                     $dataChild = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName ";
@@ -238,14 +238,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                         if ($dateType != 'Date') {
                                             $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-                                            $termList = array_map(function($item) use ($schoolTerms) {
+                                            $termList = array_filter(array_map(function($item) use ($schoolTerms) {
                                                 $index = array_search($item, $schoolTerms);
-                                                return isset($schoolTerms[$index+1])? $schoolTerms[$index+1] : '';
-                                            }, explode(',', $values['gibbonSchoolYearTermIDList']));
+                                                return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
+                                            }, explode(',', $values['gibbonSchoolYearTermIDList'])));
+                                            $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
 
                                             $row = $form->addRow();
                                                 $row->addLabel('terms', __('Terms'));
-                                                $row->addTextField('terms')->readonly()->setValue(implode(', ', $termList));
+                                                $row->addTextField('terms')->readonly()->setValue($termList);
                                         } else {
                                             $row = $form->addRow();
                                                 $row->addLabel('programStart', __('Program Start Date'));
@@ -257,10 +258,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         }
 
                                         if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
-                                            $row = $form->addRow();
-                                                $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
-                                                $row->addCurrency('payment')->readonly();
-                                        }
+                                                $row = $form->addRow();
+                                                    $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
+                                                    $row->addCurrency('payment')->readonly();
+                                            }
 
                                         if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
                                             if ($dateType != 'Date') {

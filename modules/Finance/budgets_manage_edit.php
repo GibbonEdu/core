@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -59,213 +62,86 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'General Settings') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=100 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=14 value="<?php echo $row['nameShort'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<?php
-                    $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
-					if ($categories != false) {
-						$categories = explode(',', $categories);
-						?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Category') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<select name="category" id="category" class="standardWidth">
-									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<?php
-                                    for ($i = 0; $i < count($categories); ++$i) {
-                                        $selected = '';
-                                        if (trim($categories[$i]) == $row['category']) {
-                                            $selected = 'selected';
-                                        }
-                                        echo "<option $selected value=\"".trim($categories[$i]).'">'.trim($categories[$i]).'</option>';
-                                    }
-                					?>
-								</select>
-								<script type="text/javascript">
-									var category=new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								</script>
-							</td>
-						</tr>
-						<?php
+            $values = $result->fetch();
 
-						} else {
-							?>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Category') ?> *</b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<input readonly name="category" id="category" value="Other" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<?php
-						}
-						?>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Current Staff') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<?php
-                            try {
-                                $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
-                                $sql = "SELECT preferredName, surname, gibbonFinanceBudgetPerson.* FROM gibbonFinanceBudgetPerson JOIN gibbonPerson ON (gibbonFinanceBudgetPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonPerson.status='Full' ORDER BY FIELD(access,'Full','Write','Read'), surname, preferredName";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID");
 
-							if ($result->rowCount() < 1) {
-								echo "<div class='error'>";
-								echo __($guid, 'There are no records to display.');
-								echo '</div>';
-							} else {
-								echo '<i><b>Warning</b>: If you delete a member of staff, any unsaved changes to this record will be lost!</i>';
-								echo "<table cellspacing='0' style='width: 100%'>";
-								echo "<tr class='head'>";
-								echo '<th>';
-								echo __($guid, 'Name');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Access');
-								echo '</th>';
-								echo '<th>';
-								echo __($guid, 'Action');
-								echo '</th>';
-								echo '</tr>';
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
 
-								$count = 0;
-								$rowNum = 'odd';
-								while ($row = $result->fetch()) {
-									if ($count % 2 == 0) {
-										$rowNum = 'even';
-									} else {
-										$rowNum = 'odd';
-									}
-									++$count;
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-									//COLOR ROW BY STATUS!
-									echo "<tr class=$rowNum>";
-									echo '<td>';
-									echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
-									echo '</td>';
-									echo '<td>';
-									echo $row['access'];
-									echo '</td>';
-									echo '<td>';
-									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$row['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-									echo '</td>';
-									echo '</tr>';
-								}
-								echo '</table>';
-							}
-							?>
-						</td>
-					</tr>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'New Staff') ?></h3>
-						</td>
-					</tr>
-					<tr>
-					<td>
-						<b>Staff</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-					</td>
-					<td class="right">
-						<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
-							<?php
-                            try {
-                                $dataSelect = array();
-                                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowSelect = $resultSelect->fetch()) {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-							}
-							?>
-						</select>
-					</td>
+            $form->addRow()->addHeading(__('General Settings'));
 
-					<tr id='roleLARow'>
-						<td>
-							<b><?php echo __($guid, 'Role') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="access" id="access" class="standardWidth">
-								<option value="Full"><?php echo __($guid, 'Full') ?></option>
-								<option value="Write"><?php echo __($guid, 'Write') ?></option>
-								<option value="Read"><?php echo __($guid, 'Read') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('name')->maxLength(100)->isRequired();
 
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+                $row->addTextField('nameShort')->maxLength(14)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->isRequired();
+
+            $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
+            if (empty($categories)) {
+                $categories = 'Other';
+            }
+            $row = $form->addRow();
+                $row->addLabel('category', __('Category'));
+                $row->addSelect('category')->fromString($categories)->placeholder()->isRequired();
+
+            $form->addRow()->addHeading(__('Current Staff'));
+
+            $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+            $sql = "SELECT preferredName, surname, gibbonFinanceBudgetPerson.* FROM gibbonFinanceBudgetPerson JOIN gibbonPerson ON (gibbonFinanceBudgetPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonPerson.status='Full' ORDER BY FIELD(access,'Full','Write','Read'), surname, preferredName";
+
+            $results = $pdo->executeQuery($data, $sql);
+
+            if ($results->rowCount() == 0) {
+                $form->addRow()->addAlert(__('There are no records to display.'), 'error');
+            } else {
+                $form->addRow()->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a member of staff, any unsaved changes to this record will be lost!'))->wrap('<i>', '</i>');
+
+                $table = $form->addRow()->addTable()->addClass('colorOddEven');
+
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Name'));
+                $header->addContent(__('Access'));
+                $header->addContent(__('Action'));
+
+                while ($staff = $results->fetch()) {
+                    $row = $table->addRow();
+                    $row->addContent(formatName('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
+                    $row->addContent($staff['access']);
+                    $row->addContent("<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$staff['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
+                }
+            }
+
+            $form->addRow()->addHeading(__('New Staff'));
+
+            $row = $form->addRow();
+                $row->addLabel('staff', __('Staff'));
+                $row->addSelectStaff('staff')->selectMultiple();
+
+            $access = array(
+                "Full" => __("Full"),
+                "Write" => __("Write"),
+                "Read" => __("Read")
+            );
+            $row = $form->addRow();
+                $row->addLabel('access', 'Access');
+                $row->addSelect('access')->fromArray($access);
+
+            $form->loadAllValuesFrom($values);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }

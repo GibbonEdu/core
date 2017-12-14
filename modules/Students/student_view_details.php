@@ -2013,11 +2013,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->placeholder();
                                 }
 
-                                $showHideLink = "  &nbsp; <input checked type='checkbox' name='details' class='details' value='Yes' />";
-                                $showHideLink .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show/Hide Details').'</span> &nbsp;';
+                                $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
+                                $form->addHiddenValue('details', 'No');
+                                $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)->inline(true)
+                                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
 
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHideLink);
+                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
                                 
                                 echo $form->getOutput();
                                 ?>
@@ -2025,14 +2027,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 <script type="text/javascript">
                                     /* Show/Hide detail control */
                                     $(document).ready(function(){
-                                        $(".details").click(function(){
+                                        var updateDetails = function (){
                                             if ($('input[name=details]:checked').val()=="Yes" ) {
-                                                $(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
+                                                $(".detailItem").slideDown("fast", $(".detailItem").css("{'display' : 'table-row'}"));
                                             }
                                             else {
                                                 $(".detailItem").slideUp("fast");
                                             }
-                                            });
+                                        }
+                                        $(".details").click(updateDetails);
+                                        updateDetails();
                                     });
                                 </script>
 

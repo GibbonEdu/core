@@ -108,6 +108,7 @@ class Table implements OutputableInterface, ValidatableInterface
         $output .= '<table '.$this->getAttributeString().' cellspacing="0">';
 
         // Output table headers
+        $output .= '<thead>';
         foreach ($this->getHeaders() as $row) {
             $output .= '<tr '.$row->getAttributeString().'>';
 
@@ -119,8 +120,10 @@ class Table implements OutputableInterface, ValidatableInterface
             }
             $output .= '</tr>';
         }
+        $output .= '</thead>';
 
         // Output table rows
+        $output .= '<tbody>';
         foreach ($this->getRows() as $row) {
             $output .= '<tr '.$row->getAttributeString().'>';
 
@@ -133,7 +136,7 @@ class Table implements OutputableInterface, ValidatableInterface
             }
             $output .= '</tr>';
         }
-
+        $output .= '</tbody>';
         $output .= '</table>';
 
         return $output;

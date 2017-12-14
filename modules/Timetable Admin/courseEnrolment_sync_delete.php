@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
-use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -41,18 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        $form = Form::create('courseEnrolmentSyncDelete', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_deleteProcess.php');
-
-        $form->addHiddenValue('gibbonYearGroupID', $gibbonYearGroupID);
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
-        $row = $form->addRow();
-            $column = $row->addColumn();
-            $column->addContent(__('Are you sure you want to delete this record?'))->wrap('<strong>','</strong>');
-            $column->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))->wrap('<span style="color: #cc0000"><i>', '</i></span>');
-
-        $form->addRow()->addSubmit();
-
+        $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_deleteProcess.php');
         echo $form->getOutput();
     }
 }
