@@ -74,7 +74,7 @@ class Finder extends TextField
      */
     public function selected($values)
     {
-        if (is_string($values)) $values = explode(',', $values);
+        if (is_string($values) && $values != '') $values = explode(',', $values);
 
         if (!empty($values) && is_array($values)) {
             if (array_values($values) === $values) {
