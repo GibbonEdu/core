@@ -10,8 +10,14 @@ class WebLink extends Element
 
     public function __construct($content = '')
     {
-        $this->setURL('#');
+        $this->setURL('');
         parent::__construct($content);
+    }
+
+    public function onClick($value)
+    {
+        $this->setAttribute('onClick',$value);
+        return $this;
     }
 
     /**
