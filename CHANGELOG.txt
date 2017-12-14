@@ -93,6 +93,7 @@ v15.0.00
 		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
 		Timetable Admin: updated Course Enrolment Rollover to prevent duplicates and not copy users set to Left
         Timetable Admin: fixed Course Enrolment by Person to allow staff category without All Users checked
+		Timetable Admin: removed Left users from class participant count in edit view in Manage Courses
 		User Admin: improved usability of feedback in Step 3 of the rollover
 		User Admin: made Pending Approval option in Status in edit User appear only if Public Registration is enabled
         User Admin: updated Add User and Edit User to allow PDF files for ID documents
