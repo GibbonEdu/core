@@ -74,6 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                     exit();
                 }
 
+                //Reset cache to force top-menu reload
+                $_SESSION[$guid]['pageLoads'] = null;
+
                 $URL .= '&return=success0';
                 header("Location: {$URL}");
             }

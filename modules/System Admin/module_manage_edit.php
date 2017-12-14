@@ -56,10 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch(); 
+            $values = $result->fetch();
 
             $form = Form::create('moduleEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/module_manage_editProcess.php?gibbonModuleID='.$gibbonModuleID);
-            
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
@@ -67,13 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 $row->addTextField('name')->readonly();
 
             $row = $form->addRow();
-                $row->addLabel('description', __('Description'));
-                $row->addTextField('description')->readonly();
+                $column = $row->addColumn();
+                $column->addLabel('description', __('Description'));
+                $column->addContent($values['description']);
 
              $row = $form->addRow();
                 $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
                 $row->addTextField('category')->isRequired()->maxLength(10);
-                
+
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active');
