@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_update.php') == false) {
     //Acess denied
@@ -70,16 +70,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
 
-            $versionDB = $row['version'];
-            if (file_exists($_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/version.php')) {
-                include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/version.php';
+            $versionDB = $values['version'];
+            if (file_exists($_SESSION[$guid]['absolutePath'].'/modules/'.$values['name'].'/version.php')) {
+                include $_SESSION[$guid]['absolutePath'].'/modules/'.$values['name'].'/version.php';
             }
             @$versionCode = $moduleVersion;
 
             echo '<p>';
-            echo sprintf(__($guid, 'This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($row['name']));
+            echo sprintf(__($guid, 'This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($values['name']));
             echo '</p>';
 
             if ($return == 'success0') {
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo __($guid, 'Update Instructions');
                 echo '</h3>';
                 echo '<ol>';
-                echo '<li>'.sprintf(__($guid, 'You are currently using %1$s v%2$s.'),  htmlPrep($row['name']), $versionCode).'</i></li>';
+                echo '<li>'.sprintf(__($guid, 'You are currently using %1$s v%2$s.'),  htmlPrep($values['name']), $versionCode).'</i></li>';
                 echo '<li>'.sprintf(__($guid, 'Check %1$s for a newer version of this module.'), "<a target='_blank' href='https://gibbonedu.org/extend'>gibbonedu.org</a>").'</li>';
                 echo '<li>'.__($guid, 'Download the latest version, and unzip it on your computer.').'</li>';
                 echo '<li>'.__($guid, 'Use an FTP client to upload the new files to your server\'s modules folder.').'</li>';
@@ -109,24 +109,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo __($guid, 'Datebase Update');
                 echo '</h3>';
                 echo '<p>';
-                echo sprintf(__($guid, 'It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row['name']), $versionDB, $versionCode).'</b>';
-                echo '</p>'; ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
-					<table cellspacing='0' style="width: 100%">	
-						<tr>
-							<td class="right"> 
-								<input type="hidden" name="versionDB" value="<?php echo $versionDB ?>">
-								<input type="hidden" name="versionCode" value="<?php echo $versionCode ?>">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+                echo sprintf(__($guid, 'It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($values['name']), $versionDB, $versionCode).'</b>';
+                echo '</p>'; 
+                
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/module_manage_updateProcess.php?&gibbonModuleID='.$gibbonModuleID);
+                
+                $form->addHiddenValue('versionDB', $versionDB);
+                $form->addHiddenValue('versionCode', $versionCode);
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+                $form->addRow()->addSubmit();
+                echo $form->getOutput(); 
             }
         }
     }
 }
-?>
