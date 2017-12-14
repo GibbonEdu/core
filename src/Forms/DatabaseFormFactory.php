@@ -381,7 +381,7 @@ class DatabaseFormFactory extends FormFactory
         $sql = "SELECT GROUP_CONCAT(DISTINCT `{$columnName}` SEPARATOR '\',\'') FROM `{$tableName}` WHERE (`{$columnName}` IS NOT NULL AND `{$columnName}` <> :sequenceNumber) ORDER BY `{$columnName}`";
         $results = $this->pdo->executeQuery($data, $sql);
 
-        $field = $this->createTextField($name);
+        $field = $this->createNumber($name)->minimum(1)->onlyInteger(true);
 
         if ($results && $results->rowCount() > 0) {
             $field->addValidation('Validate.Exclusion', 'within: [\''.$results->fetchColumn(0).'\'], failureMessage: "'.__('Value already in use!').'", partialMatch: false, caseSensitive: false');
