@@ -163,8 +163,8 @@
 
                 $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
                 $form->addHiddenValue('details', 'No');
-                $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)
-                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span> &nbsp;&nbsp;');
+                $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)->inline(true)
+                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
 
                 $rowFilter = $form->addRow();
                     $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('search'))->prepend($showHide->getOutput());

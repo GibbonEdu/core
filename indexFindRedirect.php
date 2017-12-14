@@ -3,8 +3,8 @@
 @session_start();
 include './config.php';
 
-$type = substr($_GET['id'], 0, 3);
-$id = substr($_GET['id'], 4);
+$type = substr($_GET['fastFinderSearch'], 0, 3);
+$id = substr($_GET['fastFinderSearch'], 4);
 
 if ($_SESSION[$guid]['absoluteURL'] == '') {
     $URL = './index.php';
