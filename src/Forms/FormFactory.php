@@ -57,6 +57,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
+    public function createTableCell($content = '')
+    {
+        return new Layout\TableCell($content);
+    }
+
     public function createGrid($id = '', $columns = 1)
     {
         return new Layout\Grid($this, $id, $columns);

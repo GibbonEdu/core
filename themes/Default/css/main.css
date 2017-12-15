@@ -1504,3 +1504,15 @@ fieldset {
 td.fullWidth {
     width: auto;
 }
+
+table.embedFormTable {
+    margin: 0;
+    border: 0;
+}
+
+table.smallIntBorder td.embedFormTable,
+td.embedFormTable {
+    padding: 0 !important;
+    border-top: 0;
+}
+
