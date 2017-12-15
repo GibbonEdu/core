@@ -246,6 +246,11 @@ class FormFactory implements FormFactoryInterface
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
     }
 
+    public function createYesNoRadio($name)
+    {
+        return $this->createRadio($name)->fromArray(array('Y' => __('Yes'), 'N' => __('No') ))->inline(true);
+    }
+
     public function createCheckAll($name = 'checkall')
     {
         return $this->createCheckbox($name)->setClass('floatNone textCenter checkall');
