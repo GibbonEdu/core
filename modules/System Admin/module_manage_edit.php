@@ -67,9 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 $row->addTextField('name')->readonly();
 
             $row = $form->addRow();
-                $column = $row->addColumn();
-                $column->addLabel('description', __('Description'));
-                $column->addContent($values['description']);
+                $row->addLabel('description', __('Description'));
+                $row->addTextArea('description')->readonly()->setRows(3);
 
              $row = $form->addRow();
                 $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
