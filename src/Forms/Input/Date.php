@@ -101,7 +101,7 @@ class Date extends TextField
         $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() {  $( "#'.$this->getID().'" ).datepicker({onSelect: function(){$(this).blur(); onClose: $(this).change();} });  })';
+        $output .= '$(function() { $("#'.$this->getID().'").datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} }); })';
         $output .= '</script>';
 
         return $output;
