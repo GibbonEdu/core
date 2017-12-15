@@ -87,11 +87,11 @@ trait MultipleOptionsTrait
      * @param   array                  $data
      * @return  self
      */
-    public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array())
+    public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array(), $groupBy = false)
     {
         $results = $pdo->executeQuery($data, $sql);
 
-        return $this->fromResults($results);
+        return $this->fromResults($results, $groupBy);
     }
 
     /**
@@ -99,19 +99,25 @@ trait MultipleOptionsTrait
      * @param   object  $results
      * @return  string
      */
-    public function fromResults($results)
+    public function fromResults($results, $groupBy = false)
     {
         if (empty($results) || !is_object($results)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->getName(), gettype($results)));
         }
 
         if ($results && $results->rowCount() > 0) {
-            while ($row = $results->fetch()) {
-                if (!isset($row['value']) || !isset($row['name'])) {
-                    continue;
-                }
+            $options = array_filter($results->fetchAll(), function ($item) {
+                return isset($item['value']) && isset($item['name']);
+            });
 
-                $this->options[trim($row['value'])] = trim($row['name']);
+            foreach ($options as $option) {
+                $option = array_map('trim', $option);
+
+                if ($groupBy !== false) {
+                    $this->options[$option[$groupBy]][$option['value']] = $option['name'];
+                } else {
+                    $this->options[$option['value']] = $option['name'];
+                }
             }
         }
 
