@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $form->addRow()->addHeading(__('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
                     } else {
-                        $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven embedFormTable');
+                        $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
 
                         $completeText = !empty($values['completeDate'])? __('Marked on').' '.dateConvertBack($guid, $values['completeDate']) : __('Unmarked');
                         $detailsText = $values['type'];

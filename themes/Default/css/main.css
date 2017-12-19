@@ -1505,14 +1505,16 @@ td.fullWidth {
     width: auto;
 }
 
-table.embedFormTable {
-    margin: 0;
-    border: 0;
+/* Utility classes - will be part of the larger css refactor soon */
+.noMargin {
+    margin: 0 !important; 
 }
 
-table.smallIntBorder td.embedFormTable,
-td.embedFormTable {
-    padding: 0 !important;
-    border-top: 0;
+.noPadding,
+table.smallIntBorder td.noPadding {
+    padding: 0!important; 
 }
 
+.noBorder {
+    border: 0!important; 
+}
