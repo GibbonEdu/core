@@ -1904,7 +1904,6 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $bodyPlain = emailBodyConvert($body);
 
         $mail = getGibbonMailer($guid);
-        $mail->IsSMTP();
         if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
             $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
         }
