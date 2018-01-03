@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row = $form->addRow()->addClass('doublescroll-wrapper');
         
         // Headings as a separate table (for double-scroll)
-        $table = $row->addTable()->setClass('attendanceTable mini fullWidth');
+        $table = $row->addTable()->setClass('mini fullWidth noMargin noBorder');
         $header = $table->addHeaderRow();
             $header->addContent(__('Student'))->addClass('attendanceRowHeader');
             $header->addContent(__('Attendance'));
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         // Wrap the attendance table in a double-scroll container
         $table = $row->addColumn()->addClass('doublescroll-container')
-            ->addTable()->setClass('attendanceTable mini colorOddEven fullWidth');
+            ->addTable()->setClass('mini colorOddEven fullWidth noMargin noBorder');
 
         $row = $table->addRow();
             $row->addContent(__('Date'))->addClass('attendanceDateHeader attendanceRowHeader');
@@ -261,10 +261,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         foreach ($students as $index => $student) {
             $row = $table->addRow()->addData('student', $student['gibbonPersonID']);
 
-            $row->addWebLink(($index+1).'. '.formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+            $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
                 ->setURl($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
-                ->setClass('colName');
+                ->setClass('colName')
+                ->prepend(($index+1).') ');
 
             $i = 0;
             foreach ($activitySessions as $sessionDate => $sessionTimestamp) {

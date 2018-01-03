@@ -1509,3 +1509,17 @@ fieldset {
 td.fullWidth {
     width: auto;
 }
+
+/* Utility classes - will be part of the larger css refactor soon */
+.noMargin {
+    margin: 0 !important; 
+}
+
+.noPadding,
+table.smallIntBorder td.noPadding {
+    padding: 0!important; 
+}
+
+.noBorder {
+    border: 0!important; 
+}

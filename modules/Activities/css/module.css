@@ -114,11 +114,6 @@ table.colorOddEven tr:nth-of-type(even) td {
 
 /* Attendance */
 
-.attendanceTable {
-	border: 0;
-	margin: 0;
-}
-
 .attendanceRowHeader {
 	width: 155px;
 }

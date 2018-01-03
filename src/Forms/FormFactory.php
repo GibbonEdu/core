@@ -57,6 +57,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
+    public function createTableCell($content = '')
+    {
+        return new Layout\TableCell($content);
+    }
+
     public function createGrid($id = '', $columns = 1)
     {
         return new Layout\Grid($this, $id, $columns);
@@ -244,6 +249,11 @@ class FormFactory implements FormFactoryInterface
     public function createYesNo($name)
     {
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+    }
+
+    public function createYesNoRadio($name)
+    {
+        return $this->createRadio($name)->fromArray(array('Y' => __('Yes'), 'N' => __('No') ))->inline(true);
     }
 
     public function createCheckAll($name = 'checkall')
