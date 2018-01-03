@@ -204,7 +204,7 @@
                         try {
                             $dataEntry['gibbonPersonID'] = $gibbonPersonID;
                             $dataEntry['gibbonCourseClassID'] = $rowList['gibbonCourseClassID'];
-                            $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' $and2 ORDER BY completeDate";
+                            $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment, (SELECT description FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeight.gibbonCourseClassID=gibbonMarkbookColumn.gibbonCourseClassID AND gibbonMarkbookWeight.type=gibbonMarkbookColumn.type LIMIT 1) as typeName FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' $and2 ORDER BY completeDate";
                             $resultEntry = $connection2->prepare($sqlEntry);
                             $resultEntry->execute($dataEntry);
                         } catch (PDOException $e) {
@@ -283,7 +283,7 @@
                                 } else {
                                     echo 'Unmarked<br/>';
                                 }
-                                echo $rowEntry['type'];
+                                echo (!empty($rowEntry['typeName']))? ucfirst($rowEntry['typeName']) : ucfirst($rowEntry['type']);
                                 if ($rowEntry['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowEntry['attachment'])) {
                                     echo " | <a 'title='Download more information' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['attachment']."'>More info</a>";
                                 }
