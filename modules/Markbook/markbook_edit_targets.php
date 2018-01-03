@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -61,149 +61,88 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                 echo '</div>';
             } else {
                 //Let's go!
-                $row = $result->fetch();
+                $course = $result->fetch();
 
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Set Personalised Attainment Targets').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Set Personalised Attainment Targets').'</div>';
                 echo '</div>';
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
 
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targetsProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_SESSION[$guid]['address']."'>";
-				echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                    ?>
-                    <tr>
-                        <td>
-                            <b><?php echo __($guid, 'Target Scale'); ?></b><br/>
-                        </td>
-                        <td class="right">
-                            <select name="gibbonScaleIDTarget" id="gibbonScaleIDTarget" class="standardWidth">
-                                <?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '' ;
-                                    if ($row['gibbonScaleIDTarget'] != '') {
-                                        if ($row['gibbonScaleIDTarget'] == $rowSelect['gibbonScaleID']) {
-                                            $selected = 'selected' ;
-                                        }
-                                    }
-                                    else {
-                                        if ($_SESSION[$guid]['defaultAssessmentScale'] == $rowSelect['gibbonScaleID']) {
-                                            $selected = 'selected' ;
-                                        }
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                                }
-                                ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <?php
-                    echo "<tr class='head'>";
-						echo '<th>';
-						echo __($guid, 'Student');
-						echo '</th>';
-						echo "<th style='width:302px'>";
-						echo __($guid, 'Attainment Target');
-						echo '</th>';
-						echo '</tr>';
+                $form = Form::create('markbookTargets', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_targetsProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
 
-						$count = 0;
-						$rowNum = 'odd';
-						try {
-							$dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-							$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-							$resultStudents = $connection2->prepare($sqlStudents);
-							$resultStudents->execute($dataStudents);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-						if ($resultStudents->rowCount() < 1) {
-							echo '<tr>';
-							echo '<td colspan=2>';
-							echo '<i>'.__($guid, 'There are no records to display.').'</i>';
-							echo '</td>';
-							echo '</tr>';
-						} else {
-							try {
-                                $dataSelect = array();
-                                $sqlSelect = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonScale.active=\'Y\' ORDER BY gibbonScale.gibbonScaleID, sequenceNumber';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-                            $scales = $resultSelect->fetchAll() ;
+                $selectGradeScale = !empty($course['gibbonScaleIDTarget'])? $course['gibbonScaleIDTarget'] : $_SESSION[$guid]['defaultAssessmentScale'];
+                $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+                $row = $form->addRow();
+                    $row->addLabel('gibbonScaleIDTarget', __('Target Scale'));
+                    $row->addSelect('gibbonScaleIDTarget')->fromQuery($pdo, $sql)->selected($selectGradeScale)->placeholder();
 
-							while ($rowStudents = $resultStudents->fetch()) {
-								if ($count % 2 == 0) {
-									$rowNum = 'even';
-								} else {
-									$rowNum = 'odd';
-								}
-								++$count;
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
 
-								//COLOR ROW BY STATUS!
-								echo "<tr class=$rowNum>";
-								echo '<td>';
-								echo "<div style='padding: 2px 0px'>".($count).") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
-								echo "<input name='$count-gibbonPersonID' id='$count-gibbonPersonID' value='".$rowStudents['gibbonPersonID']."' type='hidden'>";
-								echo '</td>';
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Student'));
 
-								try {
-									$dataEntry = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-									$sqlEntry = 'SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
-									$resultEntry = $connection2->prepare($sqlEntry);
-									$resultEntry->execute($dataEntry);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-								$rowEntry = null;
-								if ($resultEntry->rowCount() == 1) {
-									$rowEntry = $resultEntry->fetch();
-								}
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d'));
+                $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, gibbonMarkbookTarget.gibbonScaleGradeID as currentTarget
+                        FROM gibbonCourseClassPerson 
+                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID 
+                            AND gibbonMarkbookTarget.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
+                        WHERE role='Student' AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                        AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                        ORDER BY surname, preferredName";
+                $result = $pdo->executeQuery($data, $sql);
 
-								echo '<td>';
-								//Create attainment grade select
-								echo "<select name='$count-gibbonScaleGradeID' id='$count-gibbonScaleGradeID' style='width:302px'>";
-                                    echo "<option value=''></option>";
-									$sequence = '';
-									$descriptor = '';
-									foreach ($scales as $rowSelect) {
-										$selected = '';
-										if (!(is_null($rowEntry))) {
-											if ($rowEntry['value'] == $rowSelect['value'] AND $row['gibbonScaleIDTarget'] == $rowSelect['gibbonScaleID']) {
-												$selected = 'selected';
-											}
-										}
-									echo "<option $selected class='".$rowSelect['gibbonScaleID']."' value='".$rowSelect['gibbonScaleGradeID']."'>".htmlPrep(__($guid, $rowSelect['value'])).'</option>';
-									}
-								echo '</select>';
-                                echo '<script type="text/javascript">
-                                    $("#'.$count.'-gibbonScaleGradeID").chainedTo("#gibbonScaleIDTarget");
-                                </script>' ;
-								echo '</td>';
-							}
-						}
-					?>
-					<tr>
-						<td colspan=2 class="right">
-							<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-					<?php
-                echo '</table>';
-                echo '</form>';
+                if ($result->rowCount() > 0) {
+                    $header->addContent(__('Attainment Target'))->setClass('standardWidth');
+
+                    $sql = "SELECT gibbonScale.gibbonScaleID, gibbonScaleGradeID as value, gibbonScaleGrade.value as name 
+                            FROM gibbonScaleGrade 
+                            JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) 
+                            WHERE gibbonScale.active='Y' 
+                            ORDER BY gibbonScale.gibbonScaleID, sequenceNumber";
+                    $resultGrades = $pdo->executeQuery(array(), $sql);
+
+                    $grades = ($resultGrades->rowCount() > 0)? $resultGrades->fetchAll() : array();
+                    $gradesChained = array_combine(array_column($grades, 'value'), array_column($grades, 'gibbonScaleID'));
+                    $gradesOptions = array_combine(array_column($grades, 'value'), array_column($grades, 'name'));
+
+                    $count = 0;
+                    while ($student = $result->fetch()) {
+                        $count++;
+
+                        $row = $table->addRow();
+                        $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
+                            ->addParam('gibbonPersonID', $student['gibbonPersonID'])
+                            ->addParam('subpage', 'Internal Assessment')
+                            ->wrap('<strong>', '</strong>')
+                            ->prepend($count.') ');
+                        
+                        $row->addSelect($count.'-gibbonScaleGradeID')
+                            ->fromArray($gradesOptions)
+                            ->chainedTo('gibbonScaleIDTarget', $gradesChained)
+                            ->setClass('mediumWidth')
+                            ->selected($student['currentTarget'])
+                            ->placeholder();
+
+                        $form->addHiddenValue($count.'-gibbonPersonID', $student['gibbonPersonID']);
+                    }
+
+                    $form->addHiddenValue('count', $count);
+                } else {
+                    $table->addRow()->addAlert(__($guid, 'There are no records to display.'), 'error');
+                }
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                echo $form->getOutput();
             }
         }
     }
