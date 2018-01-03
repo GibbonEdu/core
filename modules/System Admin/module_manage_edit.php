@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_edit.php') == false) {
     //Acess denied
@@ -56,74 +56,36 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_editProcess.php?gibbonModuleID=$gibbonModuleID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php echo htmlPrep(__($guid, $row['name'])) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script> 
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Description') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="description" id="description" maxlength=100 value="<?php echo htmlPrep(__($guid, $row['description'])) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var description=new LiveValidation('description');
-								description.add(Validate.Presence);
-							</script> 
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Category') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Determines menu structure') ?></span>
-						</td>
-						<td class="right">
-							<input name="category" id="category" maxlength=10 value="<?php echo htmlPrep(__($guid, $row['category'])) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var category=new LiveValidation('category');
-								category.add(Validate.Presence);
-							</script> 
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
 
+            $form = Form::create('moduleEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/module_manage_editProcess.php?gibbonModuleID='.$gibbonModuleID);
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'));
+                $row->addTextField('name')->readonly();
+
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('description', __('Description'));
+                $column->addContent($values['description']);
+
+             $row = $form->addRow();
+                $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
+                $row->addTextField('category')->isRequired()->maxLength(10);
+
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active');
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }
-?>

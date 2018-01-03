@@ -52,15 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $category = $_POST[$id.'category'];
         $purpose = $_POST[$id.'purpose'];
         $tags = strtolower($_POST[$id.'tags']);
-        $gibbonYearGroupIDList = '';
-        for ($i = 0; $i < $_POST[$id.'count']; ++$i) {
-            if (isset($_POST[$id."gibbonYearGroupIDCheck$i"])) {
-                if ($_POST[$id."gibbonYearGroupIDCheck$i"] == 'on') {
-                    $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST[$id."gibbonYearGroupID$i"].',';
-                }
-            }
-        }
-        $gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
+        $gibbonYearGroupIDList = (!empty($_POST[$id.'gibbonYearGroupID']))? implode(',', $_POST[$id.'gibbonYearGroupID']) : '';
         $description = $_POST[$id.'description'];
 
         if (($type != 'File' and $type != 'Link') or is_null($content) or $name == '' or $category == '' or $tags == '' or $id == '') {

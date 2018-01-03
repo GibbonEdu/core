@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     echo '<td>';
                     try {
                         $dataClasses = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
-                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status=\'Full\' AND gibbonCourseClassID=:gibbonCourseClassID';
+                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status=\'Full\' AND gibbonCourseClassID=:gibbonCourseClassID AND NOT role LIKE \'% - Left\'';
                         $resultClasses = $connection2->prepare($sqlClasses);
                         $resultClasses->execute($dataClasses);
                     } catch (PDOException $e) {

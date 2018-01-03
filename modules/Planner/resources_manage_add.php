@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $row->addSelect('category')->fromString($categories)->isRequired()->placeholder();
 
         $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
-        $purposesRestricted = getSettingByScope($connection2, 'Resources', 'purposesRestricted');
+        $purposesRestricted = ($highestAction == 'Manage Resources_all')? getSettingByScope($connection2, 'Resources', 'purposesRestricted') : '';
         $row = $form->addRow();
             $row->addLabel('purpose', __('Purpose'));
             $row->addSelect('purpose')->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder();
