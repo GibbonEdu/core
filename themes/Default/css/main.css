@@ -693,6 +693,11 @@ input[readonly], textarea[readonly], select[readonly] {
 	background: none;
 }
 
+textarea[readonly] {
+    font-family: inherit;
+    resize: none;
+}
+
 textarea {
 	border: 1px solid #BFBFBF;
 	background-color: #ffffff ;

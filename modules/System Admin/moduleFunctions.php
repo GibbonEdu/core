@@ -95,6 +95,27 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
     return $return;
 }
 
+/**
+ * Load the theme manifest into an array. Handling the include in a function keeps the variable scope contained.
+ * @param string $themeName
+ * @param string $guid
+ * @return array
+ */
+function getThemeManifest($themeName, $guid)
+{
+    $name = $description = $version = $author = $url = '';
+    $responsive = 'N';
+    $manifestOK = false;
+
+    $manifestFile = $_SESSION[$guid]['absolutePath'].'/themes/'.$themeName.'/manifest.php';
+    if (is_file($manifestFile)) {
+        include $manifestFile;
+        $manifestOK = ($name == $themeName);
+    }
+    
+    return compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'manifestOK');
+}
+
 function getThemeVersion($themeName, $guid)
 {
     $return = false;
