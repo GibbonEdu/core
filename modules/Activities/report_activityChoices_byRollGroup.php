@@ -124,14 +124,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 if ($resultActivities->rowCount() > 0) {
                     echo '<table cellspacing="0" class="mini fullWidth">';
                     while ($activity = $resultActivities->fetch()) {
-                        $timespan = getActivityTimespan($connection2, $activity['gibbonActivityID'], $activity['gibbonSchoolYearTermIDList']);
-                        $currentActivity = !empty($timespan) && time() >= $timespan['start'] && time() <= $timespan['end']; 
+                        $timespan = getActivityTimespan($connection2, $activity['gibbonActivityID'], $activity['gibbonSchoolYearTermIDList']); 
+                        $timeStatus = '';
+                        if (!empty($timespan)) {
+                            $timeStatus = (time() < $timespan['start'])? __('Upcoming') : (time() > $timespan['end']? __('Ended') : __('Current'));
+                        }
                         echo '<tr>';
                         echo '<td>';
-                        echo '<a class="thickbox" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$activity['gibbonActivityID'].'&width=1000&height=550" style="text-decoration: none; color:inherit;">'.$activity['name'].'</a>';
+                        echo '<a class="thickbox" title="'.__('View Details').'" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$activity['gibbonActivityID'].'&width=1000&height=550" style="text-decoration: none; color:inherit;">'.$activity['name'].'</a>';
                         echo '</td>';
-                        echo '<td>';
-                        echo ($currentActivity)? ($activity['status'] == 'Accepted'? $activity['days'] : $activity['status']) : '<i>'.__('Ended').'</i>';
+                        echo '<td width="15%">';
+                        if (!empty($timeStatus)) {
+                            echo '<span class="emphasis" title="'.formatDateRange('@'.$timespan['start'], '@'.$timespan['end']).'">';
+                            echo (time() < $timespan['start'])? __('Upcoming') : (time() > $timespan['end']? __('Ended') : __('Current'));
+                            echo '</span>';
+                        } else {
+                            echo $activity['status'];
+                        }
+                        echo '</td>';
+                        echo '<td width="30%">';
+                        echo (!empty($timespan) && $timeStatus != __('Ended') && $activity['status'] == 'Accepted')? $activity['days'] : '';
                         echo '</td>';
                         echo '</tr>';
                     }
