@@ -53,29 +53,28 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     $themesFS = glob($_SESSION[$guid]['absolutePath'].'/themes/*', GLOB_ONLYDIR);
 
     // Build a theme data set from SQL and FileSystem info
-    $themes = array_map(function($themeFilename) use (&$themesSQL, $guid) {
+    $themes = array_map(function($themeFilename) use (&$themesSQL, &$pdo, $guid, $version) {
         $themeName = substr($themeFilename, strlen($_SESSION[$guid]['absolutePath'].'/themes/'));
+        $manifestData = getThemeManifest($themeName, $guid);
 
         if (isset($themesSQL[$themeName])) {
             $theme = &$themesSQL[$themeName];
             $theme['status'] = __('Installed');
             $theme['installed'] = true;
-        } else {
-            $name = $description = $version = $author = $url = '';
-            $status = __('Not Installed');
-            $installed = false;
 
-            $manifestFile = $_SESSION[$guid]['absolutePath'].'/themes/'.$themeName.'/manifest.php';
-            if (file_exists($manifestFile)) {
-                include $manifestFile;
-                $manifestOK = ($name == $themeName);
-            } else {
-                $name = $themeName;
-                $manifestOK = false;
+            if ($theme['name'] == 'Default') {
+                $theme['version'] = $version;
+            } else if (version_compare($manifestData['version'], $theme['version'], '>')) {
+                // Update the database to match the manifest version
+                $data = array('version' => $manifestData['version'], 'gibbonThemeID' => $theme['gibbonThemeID']);
+                $sql = "UPDATE gibbonTheme SET version=:version WHERE gibbonThemeID=:gibbonThemeID";
+                $result = $pdo->executeQuery($data, $sql);
+                $theme['version'] = $manifestData['version'];
             }
-
-            $status = $manifestOK? __('Not Installed') : __('Theme Error');
-            $theme = compact('status', 'installed', 'themeName', 'name', 'description', 'version', 'author', 'url', 'manifestOK');
+        } else {
+            $theme = &$manifestData;
+            $theme['status'] = $theme['manifestOK']? __('Not Installed') : __('Theme Error');
+            $theme['installed'] = false;
         }
 
         return $theme;
@@ -110,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             $row = $form->addRow()->addClass($rowClass);
                 $row->addContent($theme['name']);
                 $row->addContent($theme['status']);
-                $row->addContent($theme['version']);
+                $row->addContent('v'.$theme['version']);
                 $row->addContent($theme['description']);
                 $row->addWebLink($theme['author'])->setURL($theme['url']);
 
