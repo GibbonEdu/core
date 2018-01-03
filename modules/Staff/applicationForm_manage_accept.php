@@ -237,7 +237,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = getGibbonMailer($guid);
-                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -352,7 +351,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     $bodyPlain = emailBodyConvert($body);
 
                                     $mail = getGibbonMailer($guid);
-                                    $mail->IsSMTP();
                                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     $mail->AddAddress($to);
                                     $mail->CharSet = 'UTF-8';

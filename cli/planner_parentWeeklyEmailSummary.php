@@ -287,7 +287,6 @@ else {
                                                 $bodyPlain = emailBodyConvert($body);
 
                                                 $mail = getGibbonMailer($guid);
-                                                $mail->IsSMTP();
                                                 if ($replyTo != '') {
                                                     $mail->AddReplyTo($replyTo, $replyToName);
                                                 }

@@ -335,7 +335,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $bodyPlain = emailBodyConvert($body);
 
                             $mail = getGibbonMailer($guid);
-                            $mail->IsSMTP();
                             $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                             $mail->AddAddress($to);
                             $mail->CharSet = 'UTF-8';
@@ -1210,7 +1209,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = getGibbonMailer($guid);
-                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -1258,7 +1256,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = getGibbonMailer($guid);
-                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
