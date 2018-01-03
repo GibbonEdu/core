@@ -114,7 +114,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $output .= '<th class="'.$element->getClass().'">';
+                $output .= '<th '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
                     $output .= $element->getOutput();
                 $output .= '</th>';
             }
@@ -129,7 +129,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $output .= '<td class="'.$element->getClass().'">';
+                $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
                     $element->removeClass('standardWidth');
                     $output .= $element->getOutput();
                 $output .= '</td>';
@@ -149,10 +149,12 @@ class Table implements OutputableInterface, ValidatableInterface
     protected function getColumnCount()
     {
         $count = 0;
+        foreach ($this->getHeaders() as $row) {
+            $count = max($count, $row->getElementCount());
+        }
+
         foreach ($this->getRows() as $row) {
-            if ($row->getElementCount() > $count) {
-                $count = $row->getElementCount();
-            }
+            $count = max($count, $row->getElementCount());
         }
 
         return $count;

@@ -176,7 +176,7 @@ class Select extends Input
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
             foreach ($this->getOptions() as $value => $label) {
                 if (is_array($label)) {
-                    $output .= '<optgroup label="'.$value.'">';
+                    $output .= '<optgroup label="--'.$value.'--">';
                     foreach ($label as $subvalue => $sublabel) {
                         $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
                         $output .= '<option value="'.$subvalue.'" '.$selected.'>'.$sublabel.'</option>';
