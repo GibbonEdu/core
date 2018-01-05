@@ -370,10 +370,20 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectScaleGrade($name, $gibbonScaleID, $params = array())
+    public function createSelectGradeScale($name)
+    {
+        $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql)->placeholder();
+    }
+
+    public function createSelectGradeScaleGrade($name, $gibbonScaleID, $params = array())
     {
         // Check params and set defaults if not defined
-        $params = array_replace(array('honourDefault' => true, 'valueMode' => 'value'), $params);
+        $params = array_replace(array(
+            'honourDefault' => true, 
+            'valueMode' => 'value'
+        ), $params);
 
         $valueQuery = ($params['valueMode'] == 'id')? 'gibbonScaleGradeID as value' : 'value';
 
