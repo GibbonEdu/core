@@ -45,6 +45,14 @@ class Element implements OutputableInterface
         $this->content = $content;
     }
 
+    public function __call($name, $arguments) 
+    {
+        if (!method_exists($this, $name)) {
+            trigger_error(sprintf('Undefined Method: Trying to call %1$s on %2$s. This is most likely caused by an incorrect or missing FormFactory.', $name, __CLASS__), E_USER_WARNING);
+        }
+        return $this;
+    }
+
     /**
      * Set the content of the element, replaces existing content.
      * @param  string  $value
