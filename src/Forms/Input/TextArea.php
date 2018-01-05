@@ -27,7 +27,9 @@ namespace Gibbon\Forms\Input;
  */
 class TextArea extends Input
 {
+    protected $text;
     protected $maxLength;
+    protected $autosize = false;
 
     /**
      * Create a textarea with a default height of 6 rows.
@@ -37,6 +39,27 @@ class TextArea extends Input
     {
         $this->setRows(6);
         parent::__construct($name);
+    }
+
+    /**
+     * Sets the textarea value. Overridden from default: textarea doesn't use input value attribute.
+     * @param  string  $value
+     * @return self
+     */
+    public function setValue($value = '')
+    {
+        $this->text = $value;
+
+        return $this;
+    }
+
+    /**
+     * Gets the textarea value. Overridden from default: textarea doesn't use input value attribute.
+     * @return  mixed
+     */
+    public function getValue()
+    {
+        return $this->text;
     }
 
     /**
@@ -67,18 +90,29 @@ class TextArea extends Input
     }
 
     /**
+     * Enables the jQuery autosize function for this textarea.
+     * @param   string  $value
+     * @return  self
+     */
+    public function autosize($autosize = true)
+    {
+        $this->autosize = $autosize;
+        return $this;
+    }
+
+    /**
      * Gets the HTML output for this form element.
      * @return  string
      */
     protected function getElement()
     {
-        // Unset the value attribute, textarea doesn't use them
-        $text = $this->getValue();
-        $this->setValue('');
-
         $output = '<textarea '.$this->getAttributeString().'>';
-        $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
+        $output .= htmlentities($this->getValue(), ENT_QUOTES, 'UTF-8');
         $output .= '</textarea>';
+
+        if ($this->autosize) {
+            $output .= '<script type="text/javascript">autosize($("#'.$this->getID().'"));</script>';
+        }
 
         return $output;
     }
