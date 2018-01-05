@@ -108,31 +108,28 @@ class Core {
 
 		if ($this->initialized == true) return;
 
-		// Provide the session class with a db connection
 		$this->session->setDatabaseConnection($pdo);
 
 		if (empty($this->session->get('systemSettingsSet'))) {
-			// Load all system settings into session data
 			$this->session->loadSystemSettings($pdo);
-
-			// Load all i18n values into session data
 			$this->session->loadLanguageSettings($pdo);
-		}
+        }
+        
+        if ($this->session->get('installType') == 'Production') {
+            ini_set('display_errors', 0);
+            set_exception_handler(array($this, 'handleExceptionInProduction'));
+        } else {
+            set_error_handler(array($this, 'handleError'));
+            set_exception_handler(array($this, 'handleException'));
+        }
 
-		// Setup the Internationalization code from session
 		$this->locale->setLocale($this->session->get(array('i18n', 'code')));
-
-		// Set timezone from session variable
 		$this->locale->setTimezone($this->session->get('timezone', 'UTC'));
-
-		// Setup the textdomain based on the current locale  (if any)
 		$this->locale->setTextDomain($pdo);
-
-		// Load the string replacements from db
 		$this->locale->setStringReplacementList($pdo);
 
 		$this->initialized = true;
-	}
+    }
 
 	/**
 	 * Is Gibbon Installed? Based on existance of config.php file
@@ -262,4 +259,68 @@ class Core {
 		$this->baseURL = rtrim($this->baseURL, '/ ');
 	}
 
+    /**
+     * Display errors by wrapping them in Gibbon error class and outputting stack trace.
+     * @param int $code
+     * @param string $description
+     * @param string $file
+     * @param int $line
+     */
+    public function handleError($errno, $errstr, $file = null, $line = null) 
+    {
+        if (!(error_reporting() & $errno)) return false;
+
+        $error = 'Unknown Error';
+        if ($errno & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR)) $error = 'Fatal Error';
+        if ($errno & (E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR)) $error = 'Warning';
+        if ($errno & (E_DEPRECATED | E_USER_DEPRECATED)) $error = 'Deprecated';
+        if ($errno & (E_NOTICE | E_USER_NOTICE)) $error = 'Notice';
+        if ($errno & (E_STRICT)) $error = 'Strict';
+
+        $origin = ($errno & (E_USER_ERROR | E_USER_WARNING | E_USER_DEPRECATED | E_USER_NOTICE))? 'Gibbon' : 'PHP';
+        $stackTrace = debug_backtrace();
+
+        $this->displayFormattedError($errno, $origin.' '.$error, $errstr, next($stackTrace), $file, $line);
+    }
+
+    /**
+     * Display uncaught exceptions with a stack trace. Also closes the main content tag (prevents missing sidebar).
+     * @param Exception $e
+     */
+    public function handleException($e) 
+    {
+        $this->displayFormattedError($e->getCode(), 'Uncaught Exception', get_class($e).' - '.$e->getMessage(), $e->getTrace(), $e->getFile(), $e->getLine());
+        echo '</div><br style="clear: both">';
+    }
+
+    /**
+     * Fallback more gracefully from Fatal Errors in production by displaying the generic error message and closing the main content tag (prevents missing sidebar).
+     * @param Exception $e
+     */
+    public function handleExceptionInProduction($e) 
+    {
+        if (headers_sent()) {
+            include($this->absolutePath.'/error.php');
+            echo '</div><br style="clear: both">';
+        } else {
+            header("Location: ".$this->absoluteURL."/index.php?q=error.php");
+        }
+    }
+
+    protected function displayFormattedError($errorCode, $errorName, $errorMessage, $stackTrace = array(), $file = null, $line = null) 
+    {
+        echo '<div class="fatal">';
+        echo sprintf('<strong title="Error Code: %1$s">%2$s</strong>: %3$s', $errorCode, $errorName, $errorMessage);
+        
+        echo '<ul>';
+        echo sprintf('<li>Line %1$s in <span title="%2$s">%3$s</span></li>', $line, $file, str_replace($this->basePath, '', $file));
+
+        foreach ($stackTrace as $index => $caller) {
+            if (empty($caller['file'])) continue;
+            echo sprintf('<li>Line %1$s in <span title="%2$s">%3$s</span></li>', $caller['line'], $caller['file'], str_replace($this->basePath, '', $caller['file']));
+        }
+        
+        echo '</ul>';
+        echo '</div>';
+    }
 }
