@@ -400,6 +400,17 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder();
     }
 
+    public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')
+    {
+        $data = array('gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'rubrics' => __('Rubrics'));
+        $sql = "SELECT CONCAT(scope, ' ', :rubrics) as groupBy, gibbonRubricID as value, (CASE WHEN category <> '' THEN CONCAT(category, ' - ', name) ELSE name END) as name 
+                FROM gibbonRubric WHERE active='Y' 
+                AND FIND_IN_SET(:gibbonYearGroupIDList, gibbonYearGroupIDList) 
+                ORDER BY category, name";
+
+        return $this->createSelect($name)->fromQuery($pdo, $sql, $data, 'groupBy')->placeholder();
+    }
+
     public function createPhoneNumber($name)
     {
         $countryCodes = $this->getCachedQuery('phoneNumber');
