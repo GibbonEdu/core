@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -44,134 +47,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     }
 
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
-
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
-
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
-
     $date = (isset($_GET['date']))? $_GET['date'] : '';
+    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
-    ?>
+    //Generate choose student form
+    $attendanceSearchForm = Form::create('attendanceSearch',$_SESSION[$guid]['absoluteURL'] . '/index.php','GET');
+    $attendanceSearchForm->addRow()->addHeading('CHOOSE STUDENT');
+    $attendanceSearchForm->setFactory(DatabaseFormFactory::create($pdo));
+    $attendanceSearchForm->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
+    $attendanceSearchForm->addHiddenValue('new','newform');
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr class='break'>
-				<td colspan=2>
-					<h3>
-						<?php echo __($guid, 'Choose Student') ?>
-					</h3>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Student') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonPersonID">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-							} else {
-								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-							}
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Absence Type') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="absenceType" id="absenceType">
-						<option value="full" <?php if ($absenceType=="full") { echo "selected"; } ?>>Full Day</option>
-						<option value="partial" <?php if ($absenceType=="partial") { echo "selected"; } ?>>Partial</option>
-					</select>
-				</td>
-			</tr>
-			<?php endif; ?>
+    $asf_gibbonPersonRow = $attendanceSearchForm->addRow();
+    $asf_gibbonPersonRow->addLabel('gibbonPersonID','Student');
+    $asf_gibbonPersonRow->addSelectStudent('gibbonPersonID',$_SESSION[$guid]['gibbonSchoolYearID']);
 
-			<tr id="absencePartialDateRow" <?php if ($absenceType == 'full') { echo "style='display: none'"; } ?>>
-				<td>
-					<b><?php echo __($guid, 'Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-				</td>
-				<td class="right">
-					<input name="date" id="date" maxlength=10 value="<?php echo $date; ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						var datePresenceParams = {};
-						var dateFormatParams = {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-								?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." };
+    $availableAbsenceTypes = array(
+        'full' => 'Full Day',
+        'partial' => 'Partial'
+    );
+    $asf_absenceType = $attendanceSearchForm->addRow();
+    $asf_absenceType->addLabel('absenceType','Absence Type');
+    $asf_absenceType->addSelect('absenceType')->fromArray($availableAbsenceTypes);
 
-						if ($('#absenceType').val()=='partial' ) {
-							date.add(Validate.Format, dateFormatParams);
-					 		date.add(Validate.Presence, datePresenceParams);
-					 	}
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#date" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<script type="text/javascript">
-				/* Show/Hide Control */
-				$(document).ready(function(){
-					 $("#absenceType").change(function(){
-						if ($('#absenceType').val()=='partial' ) {
-							$("#absencePartialDateRow").slideDown("fast", $("#absencePartialDateRow").css("display","table-row"));
-							date.add(Validate.Presence, datePresenceParams);
-							date.add(Validate.Format, dateFormatParams);
-						} else {
-							$("#absencePartialDateRow").css("display","none");
-							date.remove(Validate.Presence, datePresenceParams);
-							date.remove(Validate.Format, dateFormatParams);
-							$('#date').blur();
-						}
-						$("#absenceDetailsRow").css("display","none");
-					 });
-				});
-			</script>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/attendance_future_byPerson.php">
-					<input type="submit" value="Search">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $asf_partialDate = $attendanceSearchForm->addRow();
+    $asf_partialDate->addLabel('date','Date');
+    $asf_partialDate->addDate('date');
 
-    if ($gibbonPersonID != '') {
+    $attendanceSearchForm->addRow()->addSubmit();
+
+    echo $attendanceSearchForm->getOutput();
+
+    if($gibbonPersonID != null)
+    {
+
         $today = date('Y-m-d');
 
-        //Show attendance log for future days
-
+        //Display table for future attendance
         try {
             $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$today-0-0-0"); //"$today-23-59-59"
             $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
@@ -241,6 +154,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 	        }
 	        echo '</table><br/>';
         }
+
+        $setAttendanceForm = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php?gibbonPersonID=' . $gibbonPersonID,'POST');
+        $setAttendanceForm->addRow()->addHeading('SET FUTURE ATTENDANCE');
+        $setAttendanceForm->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
+        $setAttendanceForm->addHiddenValue('absenceType','full');
+        $setAttendanceForm->addHiddenValue('address','/modules/Attendance/attendance_future_byPerson.php');
+        
+        $saf_sDate = $setAttendanceForm->addRow();
+        $saf_sDate->addLabel('dateStart','Start Date');
+        $saf_sDate->addDate('dateStart')->isRequired();
+
+        $saf_eDate = $setAttendanceForm->addRow();
+        $saf_eDate->addLabel('dateEnd','End Date');
+        $saf_eDate->addDate('dateEnd');
+
+        $attType = $attendance->getAttendanceTypes();
+
+        $saf_type = $setAttendanceForm->addRow();
+        $saf_type->addLabel('type','Type');
+        $saf_type->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()))->isRequired();
+
+        $saf_reason = $setAttendanceForm->addRow();
+        $saf_reason->addLabel('reason','Reason');
+        $saf_reason->addSelect('reason')->fromArray($attendance->getAttendanceReasons());
+
+        $saf_comment = $setAttendanceForm->addRow();
+        $saf_comment->addLabel('comment','Comment')->description('255 character limit');
+        $saf_comment->addTextArea('comment')->setRows(3)->maxLength(255);
+
+        $setAttendanceForm->addRow()->addSubmit();
+
+        echo $setAttendanceForm->getOutput();
+    }
+
+    ?>
+
+	<?php
+
+/*
+    if ($gibbonPersonID != '') {
+        $today = date('Y-m-d');
+
+        //Show attendance log for future days
+
+        
+
+
 
 
         // Get timetabled classes for this student
@@ -415,6 +375,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 		</form>
 		<?php
 
-    }
+    }*/
 }
 ?>
