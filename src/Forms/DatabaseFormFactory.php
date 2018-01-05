@@ -402,13 +402,14 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')
     {
-        $data = array('gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'rubrics' => __('Rubrics'));
+        $data = array('gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonDepartmentID' => $gibbonDepartmentID, 'rubrics' => __('Rubrics'));
         $sql = "SELECT CONCAT(scope, ' ', :rubrics) as groupBy, gibbonRubricID as value, (CASE WHEN category <> '' THEN CONCAT(category, ' - ', name) ELSE name END) as name 
-                FROM gibbonRubric WHERE active='Y' 
-                AND FIND_IN_SET(:gibbonYearGroupIDList, gibbonYearGroupIDList) 
+                FROM gibbonRubric 
+                WHERE active='Y' AND FIND_IN_SET(:gibbonYearGroupIDList, gibbonYearGroupIDList) 
+                AND (scope='School' OR (scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID))
                 ORDER BY category, name";
 
-        return $this->createSelect($name)->fromQuery($pdo, $sql, $data, 'groupBy')->placeholder();
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
     }
 
     public function createPhoneNumber($name)

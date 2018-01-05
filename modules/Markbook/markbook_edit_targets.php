@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -72,14 +73,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                 }
 
                 $form = Form::create('markbookTargets', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_targetsProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
-
+                $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                $selectGradeScale = !empty($course['gibbonScaleIDTarget'])? $course['gibbonScaleIDTarget'] : $_SESSION[$guid]['defaultAssessmentScale'];
-                $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+                $selectedGradeScale = !empty($course['gibbonScaleIDTarget'])? $course['gibbonScaleIDTarget'] : $_SESSION[$guid]['defaultAssessmentScale'];
                 $row = $form->addRow();
                     $row->addLabel('gibbonScaleIDTarget', __('Target Scale'));
-                    $row->addSelect('gibbonScaleIDTarget')->fromQuery($pdo, $sql)->selected($selectGradeScale)->placeholder();
+                    $row->addSelectGradeScale('gibbonScaleIDTarget')->selected($selectedGradeScale);
 
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
 
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                         $row->addSelect($count.'-gibbonScaleGradeID')
                             ->fromArray($gradesOptions)
                             ->chainedTo('gibbonScaleIDTarget', $gradesChained)
-                            ->setClass('mediumWidth')
+                            ->setClass('standardWidth')
                             ->selected($student['currentTarget'])
                             ->placeholder();
 

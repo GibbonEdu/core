@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -28,27 +29,17 @@ $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
 $enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
 $enableGroupByTerm = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm');
-$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+$attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+$attainmentAltNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
+$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+$effortAltNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
 //Get variables from Planner
-$gibbonUnitID = null;
-if (isset($_GET['gibbonUnitID']))
-    $gibbonUnitID = $_GET['gibbonUnitID'];
-
-$gibbonPlannerEntryID = null;
-if (isset($_GET['gibbonPlannerEntryID']))
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-
-$name = null;
-if (isset($_GET['name']))
-    $name = $_GET['name'];
-
-$summary = null;
-if (isset($_GET['summary']))
-    $summary = $_GET['summary'];
+$gibbonUnitID = isset($_GET['gibbonUnitID'])? $_GET['gibbonUnitID'] : null;
+$gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : null;
+$name = isset($_GET['name'])? $_GET['name'] : null;
+$summary = isset($_GET['summary'])? $_GET['summary'] : null;
+$date = isset($_GET['date'])? $_GET['date'] : date('Y-m-d');
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
     //Acess denied
@@ -86,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $course = $result->fetch();
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Column').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Column').'</div>';
                 echo '</div>';
 
                 $returns = array();
@@ -101,6 +92,160 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], $editLink, $returns);
                 }
+
+                $form = Form::create('markbook', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                $form->addRow()->addHeading(__('Basic Information'));
+
+                $row = $form->addRow();
+                    $row->addLabel('courseName', __('Class'));
+                    $row->addTextField('courseName')->isRequired()->readOnly()->setValue($course['course'].'.'.$course['class']);
+
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = "SELECT gibbonUnit.gibbonUnitID as value, gibbonUnit.name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+
+                $hookedUnits = getHookedUnits($pdo, $gibbonCourseClassID);
+
+                $row = $form->addRow();
+                    $row->addLabel('gibbonUnitID', __('Unit'));
+                    $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->fromArray($hookedUnits)->placeholder();
+
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = "SELECT (CASE WHEN gibbonHookID IS NOT NULL THEN CONCAT(gibbonHookID, '-', gibbonUnitID) ELSE gibbonUnitID END) as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPlannerEntryID', __('Lesson'));
+                    $row->addSelect('gibbonPlannerEntryID')->fromQueryChained($pdo, $sql, $data, 'gibbonUnitID')->placeholder()->selected($gibbonPlannerEntryID);
+
+                $row = $form->addRow();
+                    $row->addLabel('name', __('Name'));
+                    $row->addTextField('name')->isRequired()->maxLength(20)->setValue($name);
+
+                $row = $form->addRow();
+                    $row->addLabel('description', __('Description'));
+                    $row->addTextField('description')->isRequired()->maxLength(1000)->setValue($summary);
+
+                $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+                if (!empty($types)) {
+
+                    $row = $form->addRow();
+                        $row->addLabel('type', __('Type'));
+                        $typesSelect = $row->addSelect('type')->isRequired()->placeholder();
+
+                    if ($enableColumnWeighting == 'Y') {
+                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'perTerm' => __('Per Term'), 'wholeYear' => __('Whole Year'));
+                        $sql = "SELECT (CASE WHEN calculate='term' THEN :perTerm ELSE :wholeYear END) as groupBy, type as value, description as name FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type";
+                        $typesSelect->fromQuery($pdo, $sql, $data, 'groupBy');
+                    }
+
+                    if ($typesSelect->getOptionCount() == 0) {
+                        $typesSelect->fromString($types);
+                    }
+                }
+
+                $row = $form->addRow();
+                    $row->addLabel('file', __('Attachment'));
+                    $row->addFileUpload('file');
+
+                if ($enableGroupByTerm == 'Y') {
+                    $form->addRow()->addHeading(__('Term Date'));
+
+                    $row = $form->addRow();
+                        $row->addLabel('date', __('Date'));
+                        $row->addDate('date')->setValue(dateConvertBack($guid, $date))->isRequired();
+                } else {
+                    $form->addHiddenField('date', dateConvertBack($guid, $date));
+                }
+
+                $form->addRow()->addHeading(__('Assessment'));
+
+                // ATTAINMENT
+                $attainmentLabel = !empty($attainmentAltName)? sprintf(__('Assess %1$s?'), $attainmentAltName) : __('Assess Attainment?');
+                $attainmentScaleLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Scale') : __('Attainment Scale');
+                $attainmentRawMaxLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Total Mark') : __('Attainment Total Mark');
+                $attainmentWeightingLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Weighting') : __('Attainment Weighting');
+                $attainmentRubricLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Rubric') : __('Attainment Rubric'); 
+
+                $row = $form->addRow();
+                    $row->addLabel('attainment', $attainmentLabel);
+                    $row->addYesNoRadio('attainment')->isRequired();
+
+                $form->toggleVisibilityByClass('attainmentRow')->onRadio('attainment')->when('Y');
+
+                $row = $form->addRow()->addClass('attainmentRow');
+                    $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
+                    $row->addSelectGradeScale('gibbonScaleIDAttainment')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                    
+                if ($enableRawAttainment == 'Y') {
+                    $row = $form->addRow()->addClass('attainmentRow');
+                        $row->addLabel('attainmentRawMax', $attainmentRawMaxLabel)->description(__('Leave blank to omit raw marks.'));
+                        $row->addNumber('attainmentRawMax')->maxLength(8)->onlyInteger(false);
+                }
+
+                if ($enableColumnWeighting == 'Y') {
+                    $row = $form->addRow()->addClass('attainmentRow');
+                        $row->addLabel('attainmentWeighting', $attainmentWeightingLabel);
+                        $row->addNumber('attainmentWeighting')->maxLength(5)->onlyInteger(false)->setValue(1);
+                }
+
+                if ($enableRubrics == 'Y') {
+                    $row = $form->addRow()->addClass('attainmentRow');
+                        $row->addLabel('gibbonRubricIDAttainment', $attainmentRubricLabel)->description(__('Choose predefined rubric, if desired.'));
+                        $row->addSelectRubric('gibbonRubricIDAttainment', $course['gibbonYearGroupIDList'], $course['gibbonDepartmentID'])->placeholder();
+                }
+
+                // EFFORT
+                if ($enableEffort == 'Y') {
+                    $effortLabel = !empty($effortAltName)? sprintf(__('Assess %1$s?'), $effortAltName) : __('Assess Effort?');
+                    $effortScaleLabel = !empty($effortAltName)? $effortAltName.' '.__('Scale') : __('Effort Scale');
+                    $effortRubricLabel = !empty($effortAltName)? $effortAltName.' '.__('Rubric') : __('Effort Rubric'); 
+
+                    $row = $form->addRow();
+                        $row->addLabel('effort', $effortLabel);
+                        $row->addYesNoRadio('effort')->isRequired();
+
+                    $form->toggleVisibilityByClass('effortRow')->onRadio('effort')->when('Y');
+
+                    $row = $form->addRow()->addClass('effortRow');
+                        $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
+                        $row->addSelectGradeScale('gibbonScaleIDEffort')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+
+                    if ($enableRubrics == 'Y') {
+                        $row = $form->addRow()->addClass('effortRow');
+                            $row->addLabel('gibbonRubricIDEffort', $effortRubricLabel)->description(__('Choose predefined rubric, if desired.'));
+                            $row->addSelectRubric('gibbonRubricIDEffort', $course['gibbonYearGroupIDList'], $course['gibbonDepartmentID'])->placeholder();
+                    } 
+                }
+
+                $row = $form->addRow();
+                    $row->addLabel('comment', __('Include Comment?'));
+                    $row->addYesNoRadio('comment')->isRequired();
+
+                $row = $form->addRow();
+                    $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
+                    $row->addYesNoRadio('uploadedResponse')->isRequired();
+
+                $form->addRow()->addHeading(__('Access'));
+
+                $row = $form->addRow();
+                    $row->addLabel('viewableStudents', __('Viewable to Students'));
+                    $row->addYesNo('viewableStudents')->isRequired();
+
+                $row = $form->addRow();
+                    $row->addLabel('viewableParents', __('Viewable to Parents'));
+                    $row->addYesNo('viewableParents')->isRequired();
+
+                $row = $form->addRow();
+                    $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));
+                    $row->addDate('completeDate');
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                echo $form->getOutput();
+
 
                 ?>
 
@@ -117,7 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $row['course'].'.'.$row['class'] ?>" type="text" class="standardWidth">
+								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $course['course'].'.'.$course['class'] ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
@@ -198,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 									<?php
                                     try {
                                         $dataSelect = array();
-                                        $sqlSelect = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID='.$row['gibbonCourseClassID'].' ORDER BY name';
+                                        $sqlSelect = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID='.$course['gibbonCourseClassID'].' ORDER BY name';
                                         $resultSelect = $connection2->prepare($sqlSelect);
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
@@ -217,7 +362,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 									?>
                                 </select>
 								<script type="text/javascript">
-									$("#gibbonPlannerEntryID").chainedTo("#gibbonUnitID");
+									//$("#gibbonPlannerEntryID").chainedTo("#gibbonUnitID");
 								</script>
 							</td>
 						</tr>
@@ -470,7 +615,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 						</script>
 						<tr>
 							<td>
-								<b><?php if ($attainmentAlternativeName != '') { echo sprintf(__($guid, 'Assess %1$s?'), $attainmentAlternativeName);
+								<b><?php if ($attainmentAltName != '') { echo sprintf(__($guid, 'Assess %1$s?'), $attainmentAltName);
 								} else {
 									echo __($guid, 'Assess Attainment?');
 								}
@@ -483,7 +628,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 						</tr>
 						<tr id="gibbonScaleIDAttainmentRow">
 							<td>
-								<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Scale');
+								<b><?php if ($attainmentAltName != '') { echo $attainmentAltName.' '.__($guid, 'Scale');
 								} else {
 									echo __($guid, 'Attainment Scale');
 								}
@@ -517,7 +662,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                             ?>
 							<tr id="attainmentRawMaxRow">
 								<td>
-									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Total Mark');
+									<b><?php if ($attainmentAltName != '') { echo $attainmentAltName.' '.__($guid, 'Total Mark');
 									} else {
 										echo __($guid, 'Attainment Total Mark');
 									}
@@ -539,7 +684,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                             ?>
 							<tr id="attainmentWeightingRow">
 								<td>
-									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+									<b><?php if ($attainmentAltName != '') { echo $attainmentAltName.' '.__($guid, 'Weighting');
 									} else {
 										echo __($guid, 'Attainment Weighting');
 									}
@@ -560,7 +705,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     		?>
     						<tr id="gibbonRubricIDAttainmentRow">
     							<td>
-    								<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Rubric');
+    								<b><?php if ($attainmentAltName != '') { echo $attainmentAltName.' '.__($guid, 'Rubric');
     								} else {
     									echo __($guid, 'Attainment Rubric');
     								}
@@ -575,7 +720,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                         try {
                                             $dataSelect = array();
                                             $sqlSelectWhere = '';
-                                            $years = explode(',', $row['gibbonYearGroupIDList']);
+                                            $years = explode(',', $course['gibbonYearGroupIDList']);
                                             foreach ($years as $year) {
                                                 $dataSelect[$year] = "%$year%";
                                                 $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
@@ -594,14 +739,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     										}
     										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
     									}
-                                        if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
+                                        if ($course['gibbonDepartmentID'] != '' AND $course['gibbonYearGroupIDList'] != '') {
                                             ?>
                                             <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
                                             <?php
                                             try {
-                                                $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
+                                                $dataSelect = array('gibbonDepartmentID' => $course['gibbonDepartmentID']);
                                                 $sqlSelectWhere = ' AND (';
-                                                $years = explode(',', $row['gibbonYearGroupIDList']);
+                                                $years = explode(',', $course['gibbonYearGroupIDList']);
                                                 foreach ($years as $year) {
                                                     $dataSelect[$year] = "%$year%";
                                                     $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
@@ -649,7 +794,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     						</script>
     						<tr>
     							<td>
-    								<b><?php if ($effortAlternativeName != '') { echo sprintf(__($guid, 'Assess %1$s?'), $effortAlternativeName);
+    								<b><?php if ($effortAltName != '') { echo sprintf(__($guid, 'Assess %1$s?'), $effortAltName);
     								} else {
     									echo __($guid, 'Assess Effort?');
     								}
@@ -662,7 +807,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     						</tr>
     						<tr id="gibbonScaleIDEffortRow">
     							<td>
-    								<b><?php if ($effortAlternativeName != '') { echo $effortAlternativeName.' '.__($guid, 'Scale');
+    								<b><?php if ($effortAltName != '') { echo $effortAltName.' '.__($guid, 'Scale');
     								} else {
     									echo __($guid, 'Effort Scale');
     								}
@@ -693,7 +838,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                             <?php if ($enableRubrics == 'Y') { ?>
         						<tr id="gibbonRubricIDEffortRow">
         							<td>
-        								<b><?php if ($effortAlternativeName != '') { echo $effortAlternativeName.' '.__($guid, 'Rubric');
+        								<b><?php if ($effortAltName != '') { echo $effortAltName.' '.__($guid, 'Rubric');
         								} else {
         									echo __($guid, 'Effort Rubric');
         								}
@@ -708,7 +853,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                             try {
                                                 $dataSelect = array();
                                                 $sqlSelectWhere = '';
-                                                $years = explode(',', $row['gibbonYearGroupIDList']);
+                                                $years = explode(',', $course['gibbonYearGroupIDList']);
                                                 foreach ($years as $year) {
                                                     $dataSelect[$year] = "%$year%";
                                                     $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
@@ -727,14 +872,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         										}
         										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
         									}
-                                            if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
+                                            if ($course['gibbonDepartmentID'] != '' AND $course['gibbonYearGroupIDList'] != '') {
                                                 ?>
                                                 <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
                                                 <?php
                                                 try {
-                                                    $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
+                                                    $dataSelect = array('gibbonDepartmentID' => $course['gibbonDepartmentID']);
                                                     $sqlSelectWhere = ' AND (';
-                                                    $years = explode(',', $row['gibbonYearGroupIDList']);
+                                                    $years = explode(',', $course['gibbonYearGroupIDList']);
                                                     foreach ($years as $year) {
                                                         $dataSelect[$year] = "%$year%";
                                                         $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
