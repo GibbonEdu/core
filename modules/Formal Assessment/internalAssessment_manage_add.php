@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -63,6 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
 
             $form = Form::create('internalAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/internalAssessment_manage_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $form->addRow()->addHeading(__('Basic Information'));
@@ -99,10 +101,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $form->addRow()->addHeading(__('Assessment'));
 
-            $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
-            $result = $pdo->executeQuery(array(), $sql);
-            $gradeScales = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
-
             $attainmentLabel = !empty($attainmentAlternativeName)? sprintf(__('Assess %1$s?'), $attainmentAlternativeName) : __('Assess Attainment?');
             $row = $form->addRow();
                 $row->addLabel('attainment', $attainmentLabel);
@@ -113,11 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $attainmentScaleLabel = !empty($attainmentAlternativeName)? $attainmentAlternativeName.' '.__('Scale') : __('Attainment Scale');
             $row = $form->addRow()->addClass('attainmentRow');
                 $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
-                $row->addSelect('gibbonScaleIDAttainment')
-                    ->fromArray($gradeScales)
-                    ->selected($_SESSION[$guid]['defaultAssessmentScale'])
-                    ->isRequired()
-                    ->placeholder();
+                $row->addSelectGradeScale('gibbonScaleIDAttainment')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
 
             $effortLabel = !empty($effortAlternativeName)? sprintf(__('Assess %1$s?'), $effortAlternativeName) : __('Assess Effort?');
             $row = $form->addRow();
@@ -129,11 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $effortScaleLabel = !empty($effortAlternativeName)? $effortAlternativeName.' '.__('Scale') : __('Effort Scale');
             $row = $form->addRow()->addClass('effortRow');
                 $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
-                $row->addSelect('gibbonScaleIDEffort')
-                    ->fromArray($gradeScales)
-                    ->selected($_SESSION[$guid]['defaultAssessmentScale'])
-                    ->isRequired()
-                    ->placeholder();
+                $row->addSelectGradeScale('gibbonScaleIDEffort')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Include Comment?'));
