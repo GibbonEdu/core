@@ -1332,11 +1332,15 @@ select[multiple] {
     margin-bottom: 10px;
 }
 
+.formTable .standardWidth {
+    width: auto;
+}
+
 .formTable input,
 .formTable select,
 .formTable textarea {
 	float: left;
-	margin-left: 0px;
+    margin-left: 0px;
 }
 
 
