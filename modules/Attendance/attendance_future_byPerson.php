@@ -49,8 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
-    $date = (isset($_GET['date']))? $_GET['date'] : '';
+    $date = (isset($_GET['date']))? date($_GET['date']) : '';
     $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $attType = $attendance->getAttendanceTypes();
+
 
     //Generate choose student form
     $attendanceSearchForm = Form::create('attendanceSearch',$_SESSION[$guid]['absoluteURL'] . '/index.php','GET');
@@ -69,13 +71,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     );
     $asf_absenceType = $attendanceSearchForm->addRow();
     $asf_absenceType->addLabel('absenceType','Absence Type');
-    $asf_absenceType->addSelect('absenceType')->fromArray($availableAbsenceTypes);
+    $asf_absenceType->addSelect('absenceType')->fromArray($availableAbsenceTypes)->selected($absenceType);;
 
-    $asf_partialDate = $attendanceSearchForm->addRow();
+    $asf_partialDate = $attendanceSearchForm->addRow()->addClass('partialDateRow');
     $asf_partialDate->addLabel('date','Date');
-    $asf_partialDate->addDate('date');
+    $asf_partialDate->addDate('date')->placeholder($date);;
 
     $attendanceSearchForm->addRow()->addSubmit();
+
+    $attendanceSearchForm->toggleVisibilityByClass('partialDateRow')->onSelect('absenceType')->when('partial');
 
     echo $attendanceSearchForm->getOutput();
 
@@ -94,98 +98,176 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
-        if ($resultLog->rowCount() > 0) {
-        	echo '<h4>';
-	    		echo __($guid, 'Attendance Log');
-	    	echo '</h4>';
-
-            echo "<p><span class='emphasis small'>";
-            	echo __($guid, 'The following future absences have been set for the selected student.');
-            echo '</span></p>';
-
-            echo '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
-	        echo '<tr class="head">';
-	        	echo '<th>'.__($guid, 'Date').'</th>';
-	        	echo '<th>'.__($guid, 'Attendance').'</th>';
-	        	echo '<th>'.__($guid, 'Where').'</th>';
-	        	echo '<th>'.__($guid, 'Recorded By').'</th>';
-	        	echo '<th>'.__($guid, 'On').'</th>';
-	        	echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
-
-	        echo '</tr>';
-	        while ($rowLog = $resultLog->fetch()) {
-
-	            echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
-
-	            echo '<td>'.date("M j", strtotime($rowLog['date']) ).'</td>';
-
-
-				echo '<td>';
-	            echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
-
-	            if ( !empty($rowLog['comment']) ) {
-	            	echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
-	        	}
-	            echo '</td>';
-
-
-                if ($rowLog['context'] != '') {
-                    if (($rowLog['context'] == 'Future' || $rowLog['context'] == 'Class') && $rowLog['gibbonCourseClassID'] > 0)
-                        echo '<td>'.__($guid, $rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
-                    else
-                        echo '<td>'.__($guid, $rowLog['context']).'</td>';
-                }
-                else {
-                    echo '<td>'.__($guid, 'Roll Group').'</td>';
-                }
-
-	            echo '<td>';
-	            	echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
-	            echo '</td>';
-
-	            echo '<td>'.date("g:i a, M j", strtotime($rowLog['timestampTaken']) ).'</td>';
-
-
-            	echo '<td>';
-		            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&gibbonAttendanceLogPersonID=".$rowLog['gibbonAttendanceLogPersonID']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-	            echo '</td>';
-
-	            echo '</tr>';
-	        }
-	        echo '</table><br/>';
+        try {
+            $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'date' => $dateSQL );
+            $sqlClasses = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonTTDayDate.date=:date ORDER BY gibbonTTColumnRow.timeStart ASC";
+            $resultClasses = $connection2->prepare($sqlClasses);
+            $resultClasses->execute($dataClasses);
+        } catch (PDOException $e) {
+            echo "<div class='error'>" . $e->getMessage() . '</div>';
         }
 
-        $setAttendanceForm = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php?gibbonPersonID=' . $gibbonPersonID,'POST');
-        $setAttendanceForm->addRow()->addHeading('SET FUTURE ATTENDANCE');
-        $setAttendanceForm->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
-        $setAttendanceForm->addHiddenValue('absenceType','full');
-        $setAttendanceForm->addHiddenValue('address','/modules/Attendance/attendance_future_byPerson.php');
+        switch($absenceType)
+        {
+            case "full":
+                $setAttendanceForm = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php?gibbonPersonID=' . $gibbonPersonID,'POST');
+                $setAttendanceForm->addRow()->addHeading('SET FUTURE ATTENDANCE');
+                $setAttendanceForm->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
+                $setAttendanceForm->addHiddenValue('absenceType','full');
+                $setAttendanceForm->addHiddenValue('address','/modules/Attendance/attendance_future_byPerson.php');
+
+                if ($resultLog->rowCount() > 0) {
+                    echo '<h4>';
+                        echo __($guid, 'Attendance Log');
+                    echo '</h4>';
+
+                    echo "<p><span class='emphasis small'>";
+                        echo __($guid, 'The following future absences have been set for the selected student.');
+                    echo '</span></p>';
+
+                    echo '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    echo '<tr class="head">';
+                        echo '<th>'.__($guid, 'Date').'</th>';
+                        echo '<th>'.__($guid, 'Attendance').'</th>';
+                        echo '<th>'.__($guid, 'Where').'</th>';
+                        echo '<th>'.__($guid, 'Recorded By').'</th>';
+                        echo '<th>'.__($guid, 'On').'</th>';
+                        echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
+
+                    echo '</tr>';
+                    while ($rowLog = $resultLog->fetch()) {
+
+                        echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
+
+                        echo '<td>'.date("M j", strtotime($rowLog['date']) ).'</td>';
+
+
+                        echo '<td>';
+                        echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
+
+                        if ( !empty($rowLog['comment']) ) {
+                            echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
+                        }
+                        echo '</td>';
+
+
+                        if ($rowLog['context'] != '') {
+                            if (($rowLog['context'] == 'Future' || $rowLog['context'] == 'Class') && $rowLog['gibbonCourseClassID'] > 0)
+                                echo '<td>'.__($guid, $rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
+                            else
+                                echo '<td>'.__($guid, $rowLog['context']).'</td>';
+                        }
+                        else {
+                            echo '<td>'.__($guid, 'Roll Group').'</td>';
+                        }
+
+                        echo '<td>';
+                            echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
+                        echo '</td>';
+
+                        echo '<td>'.date("g:i a, M j", strtotime($rowLog['timestampTaken']) ).'</td>';
+
+
+                        echo '<td>';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&gibbonAttendanceLogPersonID=".$rowLog['gibbonAttendanceLogPersonID']."' onclick='confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                        echo '</td>';
+
+                        echo '</tr>';
+                    }
+                    echo '</table><br/>';
+                }
+                $saf_sDate = $setAttendanceForm->addRow();
+                $saf_sDate->addLabel('dateStart','Start Date');
+                $saf_sDate->addDate('dateStart')->isRequired();
+
+                $saf_eDate = $setAttendanceForm->addRow();
+                $saf_eDate->addLabel('dateEnd','End Date');
+                $saf_eDate->addDate('dateEnd');
+
+                $saf_type = $setAttendanceForm->addRow();
+                $saf_type->addLabel('type','Type');
+                $saf_type->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()))->isRequired();
+
+                $saf_reason = $setAttendanceForm->addRow();
+                $saf_reason->addLabel('reason','Reason');
+                $saf_reason->addSelect('reason')->fromArray($attendance->getAttendanceReasons());
+
+                $saf_comment = $setAttendanceForm->addRow();
+                $saf_comment->addLabel('comment','Comment')->description('255 character limit');
+                $saf_comment->addTextArea('comment')->setRows(3)->maxLength(255);
+
+                $setAttendanceForm->addRow()->addSubmit();
+
+                echo $setAttendanceForm->getOutput();
+
+                break;
+
+            case "partial":
+                if($resultClasses->rowCount() > 0)
+                {
+                    $setAttendanceForm = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php?gibbonPersonID=' . $gibbonPersonID,'POST');
+                    $setAttendanceForm->addRow()->addHeading('SET FUTURE ATTENDANCE');
+                    $setAttendanceForm->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
+                    $setAttendanceForm->addHiddenValue('absenceType','full');
+                    $setAttendanceForm->addHiddenValue('address','/modules/Attendance/attendance_future_byPerson.php');
+
+                    $dateSQL = dateConvert($guid, $date);
+                    $saf_periodSelect = $setAttendanceForm->addRow();
+                    $saf_periodSelect->addLabel('periodSelectContainer','Periods Absent');
+                    $saf_periodSelectContainer = $saf_periodSelect->addColumn('periodSelectContainer');
+
+                    if ($resultClasses->rowCount() == 0) {
+                        $periodSelectTable .=  "<div class='error'>".__($guid, 'Cannot record a partial absense. This student does not have timetabled classes for this day.').'</div>';
+                    }
+                    else
+                    {
+                        $periodSelectTable .=  '<h4 style="display:block;float:right;width:302px;">'. date('F j, Y', strtotime($dateSQL) ).'</h4>';
+                        $periodSelectTable .=  '<table width="302" style="float:right;">';
+                        if ($resultClasses->rowCount() > 0) {
+                            $i = 0;
+                            while ($class = $resultClasses->fetch()) {
+                                $periodSelectTable .=  '<tr><td style="line-height:24px;">';
+                                printf('<input type="checkbox" name="courses[%s]" value="%s" />&nbsp;  <span title="%s">%s - %s.%s</span>', $i, $class['gibbonCourseClassID'], $class['courseName'], $class['columnName'], $class['courseNameShort'], $class['classNameShort']);
+                                $periodSelectTable .=  '</td></tr>';
+                                $i++;
+                            }
+                        }
+                        $periodSelectTable .=  '</table>';
+
+                    }
+                    $saf_periodSelect = $setAttendanceForm->addRow()->addClass('error');
+                    $saf_periodSelect->addLabel('periodSelectContainerainer','Periods Absent');
+                    $saf_periodSelectTable = $saf_periodSelect->addColumn('periodSelectContainer')->setContent($periodSelectTable);
+                    $saf_type = $setAttendanceForm->addRow();
+                    $saf_type->addLabel('type','Type');
+                    $saf_type->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()))->isRequired();
+
+                    $saf_reason = $setAttendanceForm->addRow();
+                    $saf_reason->addLabel('reason','Reason');
+                    $saf_reason->addSelect('reason')->fromArray($attendance->getAttendanceReasons());
+
+                    $saf_comment = $setAttendanceForm->addRow();
+                    $saf_comment->addLabel('comment','Comment')->description('255 character limit');
+                    $saf_comment->addTextArea('comment')->setRows(3)->maxLength(255);
+
+                    $setAttendanceForm->addRow()->addSubmit();
+
+                    echo $setAttendanceForm->getOutput();
+
+                }
+                else
+                {
+                    echo "<div class='error'>" . __($guid, 'Cannot record a partial absense. This student does not have timetabled classes for this day.') . '</div>';
+                }
+                break;
+
+        }
+
         
-        $saf_sDate = $setAttendanceForm->addRow();
-        $saf_sDate->addLabel('dateStart','Start Date');
-        $saf_sDate->addDate('dateStart')->isRequired();
 
-        $saf_eDate = $setAttendanceForm->addRow();
-        $saf_eDate->addLabel('dateEnd','End Date');
-        $saf_eDate->addDate('dateEnd');
 
-        $attType = $attendance->getAttendanceTypes();
+ 
 
-        $saf_type = $setAttendanceForm->addRow();
-        $saf_type->addLabel('type','Type');
-        $saf_type->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()))->isRequired();
-
-        $saf_reason = $setAttendanceForm->addRow();
-        $saf_reason->addLabel('reason','Reason');
-        $saf_reason->addSelect('reason')->fromArray($attendance->getAttendanceReasons());
-
-        $saf_comment = $setAttendanceForm->addRow();
-        $saf_comment->addLabel('comment','Comment')->description('255 character limit');
-        $saf_comment->addTextArea('comment')->setRows(3)->maxLength(255);
-
-        $setAttendanceForm->addRow()->addSubmit();
-
-        echo $setAttendanceForm->getOutput();
     }
 
     ?>
