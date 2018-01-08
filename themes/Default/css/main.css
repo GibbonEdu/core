@@ -834,16 +834,6 @@ div.success {
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
 
-div.fatal {
-	border-left: 6px solid #444;
-	color: #444;
-	background-color: #f9f9f9;
-	font-size: 12px;
-	padding: 10px;
-	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
-}
-
 div.paginationTop {
 	text-align: right;
 	font-size: 12px;
