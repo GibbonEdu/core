@@ -36,10 +36,7 @@ $_GET = $validator->sanitize($_GET);
 $_POST = $validator->sanitize($_POST);
 
 //Check email address is not blank
-if (isset($_GET['input']))
-    $input = $_GET['input'];
-else
-    $input = $_POST['email'];
+$input = isset($_GET['input'])? $_GET['input'] : (isset($_POST['email'])? $_POST['email'] : '');
 $step = $_GET['step'];
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=passwordReset.php';

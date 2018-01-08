@@ -144,7 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                             $(\"#contactEmail\").removeAttr(\"disabled\");
                             $(\"#contactMail\").removeAttr(\"disabled\");
                         }
-                     });
+                    });
+                    $(\"#contactPriority\").change();
                 });
             </script>";
 

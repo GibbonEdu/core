@@ -107,15 +107,15 @@ function formatDateRange($start, $end)
     $output = '';
     if (empty($start) || empty($end)) return $output;
 
-    $startDate = ($start instanceof DateTime)? $start : DateTime::createFromFormat('Y-m-d', $start);
-    $endDate = ($end instanceof DateTime)? $end : DateTime::createFromFormat('Y-m-d', $end);
+    $startDate = ($start instanceof DateTime)? $start : new DateTime($start);
+    $endDate = ($end instanceof DateTime)? $end : new DateTime($end);
 
     if ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-        $output = $startDate->format('F Y');
+        $output = $startDate->format('M Y');
     } else if ($startDate->format('Y') == $endDate->format('Y')) {
-        $output = $startDate->format('F').' - '.$endDate->format('F Y');
+        $output = $startDate->format('M').' - '.$endDate->format('M Y');
     } else {
-        $output = $startDate->format('F Y').' - '.$endDate->format('F Y');
+        $output = $startDate->format('M Y').' - '.$endDate->format('M Y');
     }
 
     return $output;
