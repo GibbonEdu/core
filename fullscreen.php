@@ -24,11 +24,11 @@ include './gibbon.php';
 $_SESSION[$guid]['sidebarExtra'] = '';
 
 //Check to see if system settings are set from databases
-if ($_SESSION[$guid]['systemSettingsSet'] == false) {
+if (empty($_SESSION[$guid]['systemSettingsSet'])) {
     getSystemSettings($guid, $connection2);
 }
 //If still false, show warning, otherwise display page
-if ($_SESSION[$guid]['systemSettingsSet'] == false) {
+if (empty($_SESSION[$guid]['systemSettingsSet'])) {
     echo __($guid, 'System Settings are not set: the system cannot be displayed');
 } else {
     ?>
