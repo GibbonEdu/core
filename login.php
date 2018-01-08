@@ -44,10 +44,10 @@ $validator = new \Gibbon\Data\Validator();
 $_POST = $validator->sanitize($_POST);
 
 //Get and store POST variables from calling page
-$username = $_POST['username'];
-$password = $_POST['password'];
+$username = isset($_POST['username'])? $_POST['username'] : '';
+$password = isset($_POST['password'])? $_POST['password'] : '';
 
-if (($username == '') or ($password == '')) {
+if (empty($username) or empty($password)) {
     $URL .= '?loginReturn=fail0b';
     header("Location: {$URL}");
     exit;

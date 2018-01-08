@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
         $search = null;
         if (isset($_GET['search'])) {
             $search = $_GET['search'];
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             $sort = $_GET['sort'];
         }
 
-        if ($gibbonPersonID == false) {
+        if (empty($gibbonPersonID)) {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
             echo '</div>';

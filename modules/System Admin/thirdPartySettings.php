@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $setting = getSettingByScope($connection2, 'System', 'mailerSMTPPassword', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addPassword($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();
