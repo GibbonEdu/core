@@ -309,7 +309,7 @@ class Core {
 
     protected function displayFormattedError($errorCode, $errorName, $errorMessage, $stackTrace = array(), $file = null, $line = null) 
     {
-        echo '<div class="fatal">';
+        echo '<div style="display: flow-root; border-left: 6px solid #444; color: #444; background-color: #f9f9f9; font-family: Helvetica, Arial, sans-serif; font-size: 12px; padding: 10px; margin: 10px 0px 15px 0px; box-shadow: 2px 2px 2px rgba(50,50,50,0.15);">';
         echo sprintf('<strong title="Error Code: %1$s">%2$s</strong>: %3$s', $errorCode, $errorName, $errorMessage);
         
         echo '<ul>';
