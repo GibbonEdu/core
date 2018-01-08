@@ -18,13 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include './functions.php';
-include './config.php';
-include './version.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
+include './gibbon.php';
 
 @session_start();
 $_SESSION[$guid]['sidebarExtra'] = '';
@@ -56,6 +50,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
     $themeJS = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
     $_SESSION[$guid]['gibbonThemeID'] = '001';
     $_SESSION[$guid]['gibbonThemeName'] = 'Default';
+    $_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
+    $_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
     try {
         if (@$_SESSION[$guid]['gibbonThemeIDPersonal'] != null) {
             $dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
@@ -117,8 +113,6 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 		<body style='background-image: none'>
 			<?php
             $_SESSION[$guid]['address'] = $_GET['q'];
-    $_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
-    $_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
     if ($_SESSION[$guid]['address'] == '') {
         echo '<h1>';
         echo __($guid, 'There is no content to display');
