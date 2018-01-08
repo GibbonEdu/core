@@ -181,7 +181,7 @@ class MenuModule
 
 									$lastName=$currentName;
 								}
-							}
+                            }
 
 							// TODO: Move this to common.js?
 							$menu .= "<script>
@@ -191,7 +191,7 @@ class MenuModule
 							</script>";
 
 						$menu .= "</select>";
-							$menu .= "<div style='float: right; padding-top: 10px'>";
+							$menu .= "<div style='float: right; padding-top: 10px; margin-left: 10px;'>";
 								$menu.=__('Module Menu');
 							$menu .= "</div>";
 						$menu .= "</div>";

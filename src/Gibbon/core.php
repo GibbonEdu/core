@@ -260,36 +260,36 @@ class Core {
 	}
 
     /**
-     * Display errors by wrapping them in Gibbon error class and outputting stack trace.
-     * @param int $code
-     * @param string $description
-     * @param string $file
-     * @param int $line
+     * Callback for handling PHP errors and those generated with trigger_error(). Callback signature from set_error_handler().
+     * @param int $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param int $errline
      */
-    public function handleError($errno, $errstr, $file = null, $line = null) 
+    public function handleError($errno, $errstr, $errfile = null, $errline = null) 
     {
         if (!(error_reporting() & $errno)) return false;
 
-        $error = 'Unknown Error';
-        if ($errno & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR)) $error = 'Fatal Error';
-        if ($errno & (E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR)) $error = 'Warning';
-        if ($errno & (E_DEPRECATED | E_USER_DEPRECATED)) $error = 'Deprecated';
-        if ($errno & (E_NOTICE | E_USER_NOTICE)) $error = 'Notice';
-        if ($errno & (E_STRICT)) $error = 'Strict';
+        $errorType = 'Unknown Error';
+        if ($errno & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR)) $errorType = 'Fatal Error';
+        if ($errno & (E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR)) $errorType = 'Warning';
+        if ($errno & (E_DEPRECATED | E_USER_DEPRECATED)) $errorType = 'Deprecated';
+        if ($errno & (E_NOTICE | E_USER_NOTICE)) $errorType = 'Notice';
+        if ($errno & (E_STRICT)) $errorType = 'Strict';
 
         $origin = ($errno & (E_USER_ERROR | E_USER_WARNING | E_USER_DEPRECATED | E_USER_NOTICE))? 'Gibbon' : 'PHP';
         $stackTrace = debug_backtrace();
 
-        $this->displayFormattedError($errno, $origin.' '.$error, $errstr, next($stackTrace), $file, $line);
+        $this->displayFormattedError($errno, $origin.' '.$errorType, $errstr, next($stackTrace), $errfile, $errline);
     }
 
     /**
-     * Display uncaught exceptions with a stack trace. Also closes the main content tag (prevents missing sidebar).
+     * Callback for handling uncaught exceptions. Also closes the main content tag (prevents missing sidebar). Callback signature from set_exception_handler().
      * @param Exception $e
      */
     public function handleException($e) 
     {
-        $this->displayFormattedError($e->getCode(), 'Uncaught Exception', get_class($e).' - '.$e->getMessage(), $e->getTrace(), $e->getFile(), $e->getLine());
+        $this->displayFormattedError($e->getCode(), 'Fatal Error', 'Uncaught '.get_class($e).' - '.$e->getMessage(), $e->getTrace(), $e->getFile(), $e->getLine());
         echo '</div><br style="clear: both">';
     }
 
@@ -307,16 +307,25 @@ class Core {
         }
     }
 
+    /**
+     * Output HTML formatted errors with a stack trace. CSS moved inline to apply to errors before the HTML head is rendered.
+     * @param int $errorCode
+     * @param string $errorName
+     * @param string $errorMessage
+     * @param array $stackTrace
+     * @param string $file
+     * @param int $line
+     */
     protected function displayFormattedError($errorCode, $errorName, $errorMessage, $stackTrace = array(), $file = null, $line = null) 
     {
-        echo '<div class="fatal">';
+        echo '<div style="display: flow-root; border-left: 6px solid #444; color: #444; background-color: #f9f9f9; font-family: Helvetica, Arial, sans-serif; font-size: 12px; padding: 10px; margin: 10px 0px 15px 0px; box-shadow: 2px 2px 2px rgba(50,50,50,0.15);">';
         echo sprintf('<strong title="Error Code: %1$s">%2$s</strong>: %3$s', $errorCode, $errorName, $errorMessage);
         
         echo '<ul>';
         echo sprintf('<li>Line %1$s in <span title="%2$s">%3$s</span></li>', $line, $file, str_replace($this->basePath, '', $file));
 
         foreach ($stackTrace as $index => $caller) {
-            if (empty($caller['file'])) continue;
+            if (empty($caller['file']) || empty($caller['line'])) continue;
             echo sprintf('<li>Line %1$s in <span title="%2$s">%3$s</span></li>', $caller['line'], $caller['file'], str_replace($this->basePath, '', $caller['file']));
         }
         
