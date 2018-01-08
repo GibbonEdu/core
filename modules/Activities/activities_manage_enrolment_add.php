@@ -159,7 +159,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
             $enrolment = (!empty($values['enrolmentType']))? $values['enrolmentType'] : $enrolment;
 			
-
 			$statuses = array('Accepted' => __('Accepted'));
 			if ($enrolment == 'Competitive') {
                 if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
