@@ -46,6 +46,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_p
         echo __($guid, 'Choose Family');
         echo '</h2>';
 
+        $translation = include $_SESSION[$guid]['absolutePath'].'/modules/ID Cards/translations.php';
+        
         $gibbonFamilyID = (isset($_GET['gibbonFamilyID']))? $_GET['gibbonFamilyID'] : '';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
