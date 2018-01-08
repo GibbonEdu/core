@@ -45,10 +45,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>".__($guid, 'Manage Behaviour Records')."</a> > </div><div class='trailEnd'>".__($guid, 'Add').'</div>';
         echo '</div>';
 
+        $gibbonBehaviourID = isset($_GET['gibbonBehaviourID'])? $_GET['gibbonBehaviourID'] : null;
+        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
+        $type = isset($_GET['type'])? $_GET['type'] : '';
+
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
-            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$_GET['editID'].'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$_GET['editID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type;
             $editID = $_GET['editID'];
         }
         if (isset($_GET['return'])) {
@@ -62,10 +68,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         if ($step != 1 and $step != 2) {
             $step = 1;
         }
-        $gibbonBehaviourID = null;
-        if (isset($_GET['gibbonBehaviourID'])) {
-            $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
-        }
 
         //Step 1
         if ($step == 1 or $gibbonBehaviourID == null) {
@@ -74,15 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if ($policyLink != '') {
                 echo "<a target='_blank' href='$policyLink'>".__($guid, 'View Behaviour Policy').'</a>';
             }
-            if ($_GET['gibbonPersonID'] != '' or $_GET['gibbonRollGroupID'] != '' or $_GET['gibbonYearGroupID'] != '' or $_GET['type'] != '') {
+            if ($gibbonPersonID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '' or $type != '') {
                 if ($policyLink != '') {
                     echo ' | ';
                 }
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type."'>".__($guid, 'Back to Search Results').'</a>';
             }
             echo '</div>';
 
-            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
                 $form->setClass('smallIntBorder fullWidth');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
@@ -91,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonID', __('Student'));
-            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->isRequired();
+            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->isRequired();
 
             //Date
             $row = $form->addRow();
@@ -101,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Type
             $row = $form->addRow();
             	$row->addLabel('type', __('Type'));
-            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->isRequired();
+            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->selected($type)->isRequired();
 
             //Descriptor
             if ($enableDescriptors == 'Y') {
@@ -175,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 } else {
                     $values = $result->fetch();
 
-                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
                         $form->setClass('smallIntBorder fullWidth');
                         $form->setFactory(DatabaseFormFactory::create($pdo));
                         $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
