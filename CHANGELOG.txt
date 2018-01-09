@@ -19,17 +19,11 @@ CHANGELOG
 v15.0.00
 --------
 	Headlines
-		...
-
-	Changes With Important Notices
-		...
-
-	Significant Changes
-		Planner: integrated Resources into the Planner module
+		Code base refactoring of all interface forms
 		Timetable Admin: added ability to map classes to Roll Group, sync enrolments, and auto-enrol new students
 
-	Security
-		...
+	Changes With Important Notices
+		Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
 
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
