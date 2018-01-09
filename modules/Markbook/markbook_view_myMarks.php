@@ -373,7 +373,7 @@
                                 if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
                                     echo "<span title='Pending'>".__($guid, 'Pending').'</span>';
                                 } else {
-                                    if ($row['dateStart'] > $rowSub['date']) {
+                                    if (!empty($row['dateStart']) && $row['dateStart'] > $rowSub['date']) {
                                         echo "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
                                     } else {
                                         if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {

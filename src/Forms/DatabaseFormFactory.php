@@ -351,6 +351,26 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
+    public function createSelectScaleGrade($name, $gibbonScaleID, $params = array())
+    {
+        // Check params and set defaults if not defined
+        $params = array_replace(array('honourDefault' => true, 'valueMode' => 'value'), $params);
+
+        $valueQuery = ($params['valueMode'] == 'id')? 'gibbonScaleGradeID as value' : 'value';
+
+        $data = array('gibbonScaleID' => $gibbonScaleID);
+        $sql = "SELECT {$valueQuery}, value as name, isDefault FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        $grades = ($results->rowCount() > 0)? $results->fetchAll() : array();
+        $gradeOptions = array_combine(array_column($grades, 'value'), array_column($grades, 'name'));
+
+        $default = array_search('Y', array_column($grades, 'isDefault'));
+        $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
+
+        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder();
+    }
+
     public function createPhoneNumber($name)
     {
         $countryCodes = $this->getCachedQuery('phoneNumber');

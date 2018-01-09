@@ -168,11 +168,16 @@ trait BasicAttributesTrait
 
     /**
      * Flattens an array of $name => $value pairs into an HTML attribues string name="value". Omits empty values and handles booleans.
+     * @param   array|bool  $filter  Return a filtered subset of attributes by name.
      * @return  string
      */
-    public function getAttributeString()
+    public function getAttributeString($filter = false)
     {
         $attributes = $this->getAttributeArray();
+        if ($filter !== false) {
+            $filter = is_string($filter)? explode(',', $filter) : $filter;
+            $attributes = array_intersect_key($attributes, array_flip($filter));
+        }
 
         $output = implode(' ', array_map(
             function ($key) use ($attributes) {

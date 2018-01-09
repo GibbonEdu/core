@@ -89,14 +89,14 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 
 if (isset($authUrl)){
 	//show login url
-	echo '<div>';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
+    echo '<div>';
+        $themeName = isset($_SESSION[$guid]['gibbonThemeName'])? $_SESSION[$guid]['gibbonThemeName'] : 'Default';
+		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $themeName . '/img/g_login_btn.png" /></a>';
 
         $form = \Gibbon\Forms\Form::create('loginFormGoogle', '#');
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
         $form->setClass('blank fullWidth loginTableGoogle');
 
-        $themeName = (isset($_SESSION[$guid]['gibbonThemeName']))? $_SESSION[$guid]['gibbonThemeName'] : 'Default';
         $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');

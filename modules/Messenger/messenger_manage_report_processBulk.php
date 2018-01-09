@@ -72,7 +72,6 @@ if ($gibbonMessengerID == '' or $action == '') { echo 'Fatal error loading this 
                 $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __($guid, 'This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" ;
                 $bodyFin = "<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
                 $mail=getGibbonMailer($guid);
-				$mail->IsSMTP();
 				$mail->SetFrom($_SESSION[$guid]["email"], $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
 				$mail->CharSet="UTF-8";
 				$mail->Encoding="base64" ;
