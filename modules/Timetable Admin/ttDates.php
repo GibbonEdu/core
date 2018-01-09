@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
             $sql = "SELECT gibbonTTDay.gibbonTTDayID as value, CONCAT(gibbonTT.name, ': ', gibbonTTDay.nameShort) as name
                     FROM gibbonTTDay 
                     JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) 
-                    WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibboNTT.name, gibbonTTDay.name";
+                    WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonTT.name, gibbonTTDay.name";
 
             $table = $form->addRow()->addTable()->setClass('fullWidth smallIntBorder');
             $row = $table->addRow();
