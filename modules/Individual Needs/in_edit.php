@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -65,31 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             echo __($guid, 'The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
-            $source = null;
-            if (isset($_GET['source'])) {
-                $source = $_GET['source'];
-            }
-            $gibbonINDescriptorID = null;
-            if (isset($_GET['gibbonINDescriptorID'])) {
-                $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
-            }
-            $gibbonAlertLevelID = null;
-            if (isset($_GET['gibbonAlertLevelID'])) {
-                $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'];
-            }
-            $gibbonRollGroupID = null;
-            if (isset($_GET['gibbonRollGroupID'])) {
-                $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
-            }
-            $gibbonYearGroupID = null;
-            if (isset($_GET['gibbonYearGroupID'])) {
-                $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
-            }
+            $student = $result->fetch();
+
+            $search = isset($_GET['search'])? $_GET['search'] : null;
+            $source = isset($_GET['source'])? $_GET['source'] : null;
+            $gibbonINDescriptorID = isset($_GET['gibbonINDescriptorID'])? $_GET['gibbonINDescriptorID'] : null;
+            $gibbonAlertLevelID = isset($_GET['gibbonAlertLevelID'])? $_GET['gibbonAlertLevelID'] : null;
+            $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+            $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
 
             if ($search != '' and $source == '') {
                 echo "<div class='linkTop'>";
@@ -101,306 +85,198 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 echo '</div>';
             }
 
-            $gibbonINArchiveID = null;
-            if (isset($_POST['gibbonINArchiveID']) && $_POST['gibbonINArchiveID'] != '') {
-                $gibbonINArchiveID = $_POST['gibbonINArchiveID'];
-            }
-            $archiveStrategies = null;
-            $archiveTargets = null;
-            $archiveNotes = null;
-            $archiveDescriptors = null;
+            // Grab educational assistant data
+            $data = array('gibbonPersonIDStudent' => $gibbonPersonID);
+            $sql = "SELECT gibbonPersonIDAssistant, preferredName, surname, comment FROM gibbonINAssistant JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+            $result = $pdo->executeQuery($data, $sql);
+            $educationalAssistants = ($result->rowCount() > 0)? $result->fetchAll() : array();
 
-            try {
-                $dataArchive = array('gibbonPersonID' => $gibbonPersonID);
-                $sqlArchive = 'SELECT * FROM gibbonINArchive WHERE gibbonPersonID=:gibbonPersonID ORDER BY archiveTimestamp DESC';
-                $resultArchive = $connection2->prepare($sqlArchive);
-                $resultArchive->execute($dataArchive);
-            } catch (PDOException $e) {
-            }
-            if ($resultArchive->rowCount() > 0) {
-                echo "<div class='linkTop'>";
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>";
-                echo __($guid, 'Archived Plans').' ';
-                echo '<select name="gibbonINArchiveID" style="float: none; width: 200px; margin-top: -10px; margin-bottom: 5px">';
-                echo "<option value=''>".__($guid, 'Current Plan').'</option>';
-                while ($rowArchive = $resultArchive->fetch()) {
-                    $selected = '';
-                    if ($rowArchive['gibbonINArchiveID'] == $gibbonINArchiveID) {
-                        $selected = 'selected';
-                        $archiveStrategies = $rowArchive['strategies'];
-                        $archiveTargets = $rowArchive['targets'];
-                        $archiveNotes = $rowArchive['notes'];
-                        $archiveDescriptors = $rowArchive['descriptors'];
-                    }
-                    echo "<option $selected value='".$rowArchive['gibbonINArchiveID']."'>".$rowArchive['archiveTitle'].' ('.dateConvertBack($guid, substr($rowArchive['archiveTimestamp'], 0, 10)).')</option>';
+            // Grab IEP data
+            $data = array('gibbonPersonID' => $gibbonPersonID);
+            $sql = "SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID";
+            $result = $pdo->executeQuery($data, $sql);
+            $IEP = ($result->rowCount() > 0)? $result->fetch() : array();
+
+            // Grab archived data
+            $data = array('gibbonPersonID' => $gibbonPersonID);
+            $sql = "SELECT gibbonINArchiveID as groupBy, gibbonINArchive.* FROM gibbonINArchive WHERE gibbonPersonID=:gibbonPersonID ORDER BY archiveTimestamp DESC";
+            $result = $pdo->executeQuery($data, $sql);
+            $archivedIEPs = ($result->rowCount() > 0)? $result->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE) : array();
+
+            $gibbonINArchiveID = !empty($_POST['gibbonINArchiveID'])? $_POST['gibbonINArchiveID'] : '';
+            $archivedIEP = array('strategies' => '', 'targets' => '', 'notes' => '', 'descriptors' => '');
+
+            if (!empty($archivedIEPs)) {
+                // Load current selected archive if exists
+                if (isset($archivedIEPs[$gibbonINArchiveID])) {
+                    $archivedIEP = $archivedIEPs[$gibbonINArchiveID];
                 }
-                echo '</select>';
-                echo "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='".__($guid, 'Go')."'>";
-                echo '</form>';
+
+                $archiveOptions = array_map(function($item) use ($guid) {
+                    return $item['archiveTitle'].' ('.dateConvertBack($guid, substr($item['archiveTimestamp'], 0, 10)).')';
+                }, $archivedIEPs);
+
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+                $form->setClass('blank fullWidth');
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                $col = $form->addRow()->addColumn()->addClass('inline right');
+                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'));
+                    $col->addSelect('gibbonINArchiveID')
+                        ->fromArray(array('' => __('Current Plan')))
+                        ->fromArray($archiveOptions)
+                        ->setClass('mediumWidth')
+                        ->selected($gibbonINArchiveID);
+                    $col->addSubmit(__('Go'));
+
+                echo "<div class='linkTop'>";
+                echo $form->getOutput();
                 echo '</div>';
             }
-
+            
+            // DISPLAY STUDENT DATA
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+            echo formatName('', $student['preferredName'], $student['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Year Group').'</span><br/>';
-            echo '<i>'.__($guid, $row['yearGroup']).'</i>';
+            echo '<i>'.__($guid, $student['yearGroup']).'</i>';
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Roll Group').'</span><br/>';
-            echo '<i>'.$row['rollGroup'].'</i>';
+            echo '<i>'.$student['rollGroup'].'</i>';
             echo '</td>';
             echo '</tr>';
             echo '</table>';
 
-            echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>";
-            echo '<h3>';
-            echo __($guid, 'Individual Needs Status');
-            echo '</h3>';
-            if ($highestAction == 'Individual Needs Records_view' or $highestAction == 'Individual Needs Records_viewContribute') {
-                $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled');
-            } elseif ($highestAction == 'Individual Needs Records_viewEdit') {
-                if ($gibbonINArchiveID != '') {
-                    $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled', $archiveDescriptors);
-                } else {
-                    $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID);
-                }
-            }
+            $form = Form::create('individualNeeds', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
 
-            if ($statusTable == false) {
-                echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
-                echo '</div>';
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'div');
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+
+            // IN STATUS TABLE - TODO: replace this with OO
+            $form->addRow()->addHeading(__('Individual Needs Status'));
+
+            $statusTableDisabled = (!empty($gibbonINArchiveID) || $highestAction == 'Individual Needs Records_view' || $highestAction == 'Individual Needs Records_viewContribute')? 'disabled' : '';
+            $statusTableDescriptors = !empty($gibbonINArchiveID)? $archivedIEP['descriptors'] : '';
+            $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, $statusTableDisabled, $statusTableDescriptors);
+
+            if (!empty($statusTable)) {
+                $form->addRow()->addContent($statusTable);
             } else {
-                echo $statusTable;
+                $form->addRow()->addAlert(__('Your request failed due to a database error.'), 'error');
             }
+            
+            // LIST EDUCATIONAL ASSISTANTS
+            if (empty($gibbonINArchiveID)) {
+                $form->addRow()->addHeading(__('Educational Assistants'));
+                
+                if (!empty($educationalAssistants)) {
+                    $table = $form->addRow()->addTable()->addClass('smallIntBorder fullWidth colorOddEven');
+                    $header = $table->addHeaderRow();
+                        $header->addContent(__('Name'));
+                        $header->addContent(__('Comment'));
+                        if ($highestAction == 'Individual Needs Records_viewEdit') {
+                            $header->addContent(__('Action'));
+                        }
 
-            //LIST EDUCATIONAL ASSISTANTS
-            echo '<h3>';
-            echo __($guid, 'Educational Assistants');
-            echo '</h3>';
+                    foreach ($educationalAssistants as $ea) {
+                        $row = $table->addRow();
+                            $row->addContent(formatName('', $ea['preferredName'], $ea['surname'], 'Staff', true, true));
+                            $row->addContent($ea['comment']);
 
-            try {
-                $data = array('gibbonPersonIDStudent' => $gibbonPersonID);
-                $sql = "SELECT gibbonPersonIDAssistant, preferredName, surname, comment FROM gibbonINAssistant JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() < 1) {
-                echo "<div class='warning'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Comment');
-                echo '</th>';
-                if ($highestAction == 'Individual Needs Records_viewEdit') {
-                    echo '<th>';
-                    echo __($guid, 'Action');
-                    echo '</th>';
-                }
-                echo '</tr>';
-
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
+                        if ($highestAction == 'Individual Needs Records_viewEdit') {
+                            $row->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/></a>')
+                                ->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_edit_assistant_deleteProcess.php')
+                                ->addParam('address', $_GET['q'])
+                                ->addParam('gibbonPersonIDAssistant', $ea['gibbonPersonIDAssistant'])
+                                ->addParam('gibbonPersonIDStudent', $gibbonPersonID)
+                                ->addConfirmation(__('Are you sure you wish to delete this record?'));
+                        }
                     }
-                    ++$count;
+                } else {
+                    $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
+                }
+            }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['comment'];
-                    echo '</td>';
+            // ADD EDUCATIONAL ASSISTANTS
+            if (empty($gibbonINArchiveID) && $highestAction == 'Individual Needs Records_viewEdit') {
+                $form->addRow()->addHeading(__('Add New Assistants'));
+
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+
+                $row = $table->addRow();
+                    $row->addLabel('staff', __('Staff'));
+                    $row->addSelectStaff('staff')->selectMultiple();
+
+                $row = $table->addRow();
+                    $row->addLabel('comment', __('Comment'));
+                    $row->addTextArea('comment')->setRows(4);
+            }
+
+            // DISPLAY AND EDIT IEP
+            $form->addRow()->addHeading(__('Individual Education Plan'));
+
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+
+            if (!empty($gibbonINArchiveID)) {
+                // ARCHIVED IEP
+                $col = $table->addRow()->addColumn();
+                    $col->addContent(__('Targets'))->wrap('<strong style="font-size: 135%;">', '</strong>');
+                    $col->addContent($archivedIEP['targets'])->wrap('<p>', '</p>');
+
+                $col = $table->addRow()->addColumn();
+                    $col->addContent(__('Teaching Strategies'))->wrap('<strong style="font-size: 135%;">', '</strong>');
+                    $col->addContent($archivedIEP['strategies'])->wrap('<p>', '</p>');
+
+                $col = $table->addRow()->addColumn();
+                    $col->addContent(__('Notes & Review'))->wrap('<strong style="font-size: 135%;">', '</strong>');
+                    $col->addContent($archivedIEP['notes'])->wrap('<p>', '</p>');
+            } else {
+                if (empty($IEP)) { // New record, get templates if they exist
+                    $IEP['targets'] = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate');
+                    $IEP['strategies'] = getSettingByScope($connection2, 'Individual Needs', 'teachingStrategiesTemplate');
+                    $IEP['notes'] = getSettingByScope($connection2, 'Individual Needs', 'notesReviewTemplate');
+                }
+
+                // CURRENT IEP
+                $col = $table->addRow()->addColumn();
+                    $col->addContent(__('Targets'))->wrap('<strong style="font-size: 135%;">', '</strong>');
                     if ($highestAction == 'Individual Needs Records_viewEdit') {
-                        echo '<td>';
-                        echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record? Any unsaved changes to this record will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_edit_assistant_deleteProcess.php?address='.$_GET['q'].'&gibbonPersonIDAssistant='.$row['gibbonPersonIDAssistant']."&gibbonPersonIDStudent=$gibbonPersonID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                        echo '</td>';
+                        $col->addEditor('targets', $guid)->showMedia(true)->setRows(20)->setValue($IEP['targets']);
+                    } else {
+                        $col->addContent($IEP['targets'])->wrap('<p>', '</p>');
                     }
-                    echo '</tr>';
-                }
-                echo '</table>';
+
+                $col = $table->addRow()->addColumn();
+                    $col->addContent(__('Teaching Strategies'))->wrap('<strong style="font-size: 135%;">', '</strong>');
+                    if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
+                        $col->addEditor('strategies', $guid)->showMedia(true)->setRows(20)->setValue($IEP['strategies']);
+                    } else {
+                        $col->addContent($IEP['strategies'])->wrap('<p>', '</p>');
+                    }
+
+                $col = $table->addRow()->addColumn();
+                    $col->addContent(__('Notes & Review'))->wrap('<strong style="font-size: 135%;">', '</strong>');
+                    if ($highestAction == 'Individual Needs Records_viewEdit') {
+                        $col->addEditor('notes', $guid)->showMedia(true)->setRows(20)->setValue($IEP['notes']);
+                    } else {
+                        $col->addContent($IEP['notes'])->wrap('<p>', '</p>');
+                    }
             }
 
-            //ADD EDUCATIONAL ASSISTANTS
-            if ($highestAction == 'Individual Needs Records_viewEdit') {
-                echo '<h3>';
-                echo __($guid, 'Add New Assistants');
-                echo '</h3>';
-                ?>
-                <table class='smallIntBorder fullWidth' cellspacing='0'>
-                    <tr>
-                        <td>
-                            <b>Staff</b><br/>
-                            <span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-                        </td>
-                        <td class="right">
-                            <select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
-                                <?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                                }
-                                ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b><?php echo __($guid, 'Comment') ?></b><br/>
-                        </td>
-                        <td class="right">
-                            <textarea rows=4 name="comment" id="comment" class="standardWidth"></textarea>
-                        </td>
-                    </tr>
-
-                    </table>
-                <?php
+            if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
+                $table->addRow()->addSubmit();
             }
 
-            //DISPLAY AND EDIT IEP
-            echo '<h3>';
-            echo __($guid, 'Individual Education Plan');
-            echo '</h3>';
-            if (is_null($gibbonINArchiveID) == false) { //SHOW ARCHIVE
-                    ?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td colspan=2 style='padding-top: 25px'>
-								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
-								<?php
-                                echo '<p>'.$archiveTargets.'</p>'; ?>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2>
-								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
-								<?php
-                                echo '<p>'.$archiveStrategies.'</p>'; ?>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2 style='padding-top: 25px'>
-								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
-								<?php
-                                echo '<p>'.$archiveNotes.'</p>'; ?>
-							</td>
-						</tr>
-					</table>
-					<?php
-
-            } else { //SHOW CURRENT
-                try {
-                    $dataIEP = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlIEP = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-                    $resultIEP = $connection2->prepare($sqlIEP);
-                    $resultIEP->execute($dataIEP);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultIEP->rowCount() > 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'Your request failed due to a database error.');
-                    echo '</div>';
-                } else {
-                    //Set field values/templates
-                    if ($resultIEP->rowCount() == 0) { //New record, get templates if they exist
-                        $targets = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate');
-                        $strategies = getSettingByScope($connection2, 'Individual Needs', 'teachingStrategiesTemplate');
-                        $notes = getSettingByScope($connection2, 'Individual Needs', 'notesReviewTemplate');
-                    }
-                    else { //Existing record, set values from database
-                        $rowIEP = $resultIEP->fetch();
-                        $targets = $rowIEP['targets'];
-                        $strategies = $rowIEP['strategies'];
-                        $notes = $rowIEP['notes'];
-                    }
-                    ?>
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr>
-								<td colspan=2 style='padding-top: 25px'>
-									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
-									<?php
-                                    if ($highestAction == 'Individual Needs Records_viewEdit') {
-                                        echo getEditor($guid,  true, 'targets', $targets, 20, true);
-                                    } else {
-                                        echo '<p>'.$targets.'</p>';
-                                    }
-                   		 			?>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2>
-									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
-									<?php
-                                    if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
-                                        echo getEditor($guid,  true, 'strategies', $strategies, 20, true);
-                                    } else {
-                                        echo '<p>'.$strategies.'</p>';
-                                    }
-                   		 			?>
-								</td>
-							</tr>
-							<tr>
-								<td colspan=2 style='padding-top: 25px'>
-									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
-									<?php
-                                    if ($highestAction == 'Individual Needs Records_viewEdit') {
-                                        echo getEditor($guid,  true, 'notes', $notes, 20, true);
-                                    } else {
-                                        echo '<p>'.$notes.'</p>';
-                                    }
-                   		 			?>
-								</td>
-							</tr>
-							<?php
-                            if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
-                                ?>
-								<tr>
-									<td class="right" colspan=2>
-										<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-									</td>
-								</tr>
-								<?php
-
-                            }
-                    	?>
-						</table>
-						<?php
-
-                }
-            }
-            echo '</form>';
+            echo $form->getOutput();
         }
     }
     //Set sidebar
-    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
+    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $student['image_240'], 240);
 }
-?>

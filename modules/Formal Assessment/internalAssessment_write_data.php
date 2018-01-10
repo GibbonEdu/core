@@ -204,12 +204,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             ->prepend($count.') ');
 
                         if ($hasAttainment) {
-                            $attainment = $row->addSelectScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])->setClass('textCenter');
+                            $attainment = $row->addSelectScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])->setClass('textCenter gradeSelect');
                             if (!empty($student['attainmentValue'])) $attainment->selected($student['attainmentValue']);
                         }
     
                         if ($hasEffort) {
-                            $effort = $row->addSelectScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])->setClass('textCenter');
+                            $effort = $row->addSelectScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])->setClass('textCenter gradeSelect');
                             if (!empty($student['effortValue'])) $effort->selected($student['effortValue']);
                         }
     

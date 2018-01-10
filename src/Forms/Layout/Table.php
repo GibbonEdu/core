@@ -130,7 +130,6 @@ class Table implements OutputableInterface, ValidatableInterface
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
                 $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
-                    $element->removeClass('standardWidth');
                     $output .= $element->getOutput();
                 $output .= '</td>';
             }
