@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $table = $form->addRow()->addTable()->setClass('smallIntBorder colorOddEven fullWidth standardForm');
 
             $header = $table->addHeaderRow();
-                $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($optionsSelected));
+                $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($optionsSelected))->setClass();
                 $header->addContent(__('Class'));
                 $header->addContent('');
                 $header->addContent(__('Roll Group'));
