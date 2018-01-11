@@ -121,13 +121,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
             try {
-                if ($enrolment == 'Competitive') {
-                    $data = array('gibbonActivityID' => $gibbonActivityID);
-                    $sql = "SELECT gibbonActivityStudent.*, surname, preferredName FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Pending' AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY gibbonActivityStudent.status, timestamp";
-                } else {
-                    $data = array('gibbonActivityID' => $gibbonActivityID);
-                    $sql = "SELECT gibbonActivityStudent.*, surname, preferredName FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY gibbonActivityStudent.status, timestamp";
-                }
+                $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
+                $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonRollGroup.nameShort as rollGroupNameShort 
+                        FROM gibbonActivityStudent 
+                        JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                        WHERE gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Pending' AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) 
+                        AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
+                        ORDER BY gibbonActivityStudent.status, timestamp";
+
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -147,6 +150,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo "<tr class='head'>";
                 echo '<th>';
                 echo __($guid, 'Student');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Roll Group');
                 echo '</th>';
                 echo '<th>';
                 echo __($guid, 'Status');
@@ -173,6 +179,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    echo '</td>';
+                    echo '<td>';
+                    echo $values['rollGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
                     echo $values['status'];
