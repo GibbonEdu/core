@@ -42,7 +42,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
 
 // Validate that the personal background URL points to an image
 $personalBackgroundFiletype = strtolower(strrchr($personalBackground, '.'));
-if (!in_array($personalBackgroundFiletype, array('.jpg','.jpeg','.png','.gif'))) {
+if (!empty($personalBackground) && !in_array($personalBackgroundFiletype, array('.jpg','.jpeg','.png','.gif'))) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit();
