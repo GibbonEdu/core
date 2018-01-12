@@ -25,6 +25,9 @@ v15.0.00
 	Changes With Important Notices
 		Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
 
+    Security
+        System: added validation and output escaping to Personal Background URL in Preferences
+
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
 		System: added Greek and Amharic as development languages
