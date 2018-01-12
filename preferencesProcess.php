@@ -32,25 +32,21 @@ if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[
     setCurrentSchoolYear($guid, $connection2);
 }
 
-$calendarFeedPersonal = $_POST['calendarFeedPersonal'];
-$personalBackground = '';
-if (isset($_POST['personalBackground'])) {
-    $personalBackground = $_POST['personalBackground'];
-}
-$gibbonThemeIDPersonal = $_POST['gibbonThemeIDPersonal'];
-if ($gibbonThemeIDPersonal == '') {
-    $gibbonThemeIDPersonal = null;
-}
-$gibboni18nIDPersonal = $_POST['gibboni18nIDPersonal'];
-if ($gibboni18nIDPersonal == '') {
-    $gibboni18nIDPersonal = null;
-}
-$receiveNotificationEmails = $_POST['receiveNotificationEmails'];
-if ($receiveNotificationEmails == '') {
-    $receiveNotificationEmails = null;
-}
+$calendarFeedPersonal = isset($_POST['calendarFeedPersonal'])? $_POST['calendarFeedPersonal'] : '';
+$personalBackground = isset($_POST['personalBackground'])? filter_var($_POST['personalBackground'], FILTER_VALIDATE_URL) : '';
+$gibbonThemeIDPersonal = isset($_POST['gibbonThemeIDPersonal'])? $_POST['gibbonThemeIDPersonal'] : '';
+$gibboni18nIDPersonal = isset($_POST['gibboni18nIDPersonal'])? $_POST['gibboni18nIDPersonal'] : '';
+$receiveNotificationEmails = isset($_POST['receiveNotificationEmails'])? $_POST['receiveNotificationEmails'] : 'N';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
+
+// Validate that the personal background URL points to an image
+$personalBackgroundFiletype = strtolower(strrchr($personalBackground, '.'));
+if (!in_array($personalBackgroundFiletype, array('.jpg','.jpeg','.png','.gif'))) {
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
 
 try {
     $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $_SESSION[$guid]['username']);
