@@ -55,6 +55,7 @@ v15.0.00
 		Behaviour: fixed typo in three settings
 		Departments: fixed bug preventing students from seeing other students in a class
 		Finance: set name of outgoing email to school name, not user's name
+		Finance: fixed missing email address issue in Company invoices and receipts
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
