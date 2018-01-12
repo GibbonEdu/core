@@ -154,7 +154,7 @@ class attendanceView
 
         // Grab all 5 days on one query to improve page load performance
         $data = array('gibbonPersonID' => $gibbonPersonID, 'schoolDays' => $schoolDays);
-        $sql = "SELECT date, type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND FIND_IN_SET(date, :schoolDays) ORDER BY gibbonCourseClassID DESC, gibbonAttendanceLogPersonID DESC";
+        $sql = "SELECT date, type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND FIND_IN_SET(date, :schoolDays) ORDER BY gibbonAttendanceLogPerson.timestampTaken";
         $result = $this->pdo->executeQuery($data, $sql);
 
         $logs = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP) : array();
