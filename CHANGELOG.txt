@@ -48,6 +48,7 @@ v15.0.00
 		System: shortened abbreviation of core system roles
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
+		Activities: fixed minor display issue in Terms column in View Activities
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance

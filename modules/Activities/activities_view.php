@@ -392,7 +392,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo formatDateRange($row['programStart'], $row['programEnd']);
                         }
 
-                        echo "<br/><span style='font-style: italic; font-size: 85%'>";
+                        echo "<span style='font-style: italic; font-size: 85%'>";
                         try {
                             $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
                             $sqlSlots = 'SELECT DISTINCT nameShort, sequenceNumber FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
