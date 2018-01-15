@@ -142,13 +142,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 'Delete' => __('Delete'),
             );
             $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
-            
+
             $row = $form->addBulkActionRow($bulkActions);
                 $row->addSelect('gibbonSchoolYearIDCopyTo')
                     ->fromQuery($pdo, $sql)
                     ->setClass('shortWidth schoolYear');
                 $row->addSubmit(__('Go'));
-        
+
             $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateParticipants'));
 
             $table = $form->addRow()->addTable()->addClass('colorOddEven');
@@ -176,11 +176,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                 if ($dateType != 'Date') {
                     $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $termList = array_map(function ($item) use ($schoolTerms) {
-                        $index = array_search($item, $schoolTerms);
-                        return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                    }, explode(',', $activity['gibbonSchoolYearTermIDList']));
-                    $dateRange = implode(', ', $termList);
+                    $dateRange = '';
+                    if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
+                        $termList = array_map(function ($item) use ($schoolTerms) {
+                            $index = array_search($item, $schoolTerms);
+                            return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
+                        }, explode(',', $activity['gibbonSchoolYearTermIDList']));
+                        $dateRange = implode('<br/>', $termList);
+                    }
                 } else {
                     $dateRange = formatDateRange($activity['programStart'], $activity['programEnd']);
                 }
@@ -212,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                 $row->addCheckbox('gibbonActivityID[]')->setValue($activity['gibbonActivityID'])->setClass('');
             }
-            
+
             echo $form->getOutput();
 
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
