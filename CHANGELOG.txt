@@ -60,6 +60,7 @@ v15.0.00
 		Behaviour: fixed typo in three settings
 		Behaviour: fixed broken link to Edit in Step 2 of adding a behaviour record in Manage Behaviour
 		Departments: fixed bug preventing students from seeing other students in a class
+		Departments: fixed sidebar heading size issue
 		Finance: set name of outgoing email to school name, not user's name
 		Finance: fixed missing email address issue in Company invoices and receipts
 		Individual Needs: added ability to record educational assistants for a student
