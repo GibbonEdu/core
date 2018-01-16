@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDReturnAction', __('Responsible User'))->description(__('Who will be responsible for the future status?'));
-                $row->addSelect('gibbonPersonIDReturnAction')->fromArray($people)->placeholder();
+                $row->addSelect('gibbonPersonIDReturnAction')->fromArray($people)->placeholder()->selected($values['gibbonPersonIDReturnAction']);
 
             $row = $form->addRow();
                 $row->addFooter();
