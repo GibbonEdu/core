@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         } else {
             try {
                 $data = array('gibbonStaffID' => $gibbonStaffID);
-                $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
+                $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -85,12 +85,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $form->setClass('smallIntBorder fullWidth');
 
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
                 $form->addRow()->addHeading(__('Basic Information'));
 
                 $row = $form->addRow();
-                    $row->addLabel('gibbonPersonID', __('Person'))->description(__('Must be unique.'));
-                    $row->addSelectUsers('gibbonPersonID')->placeholder()->isRequired();
+                    $row->addLabel('gibbonPersonName', __('Person'))->description(__('Must be unique.'));
+                    $row->addTextField('gibbonPersonName')->readOnly()->setValue(formatName($values['title'], $values['preferredName'], $values['surname'], 'Staff', false, true));
 
                 $row = $form->addRow();
                     $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));

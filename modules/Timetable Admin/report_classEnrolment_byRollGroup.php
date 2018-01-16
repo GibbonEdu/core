@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -37,49 +38,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     echo __($guid, 'Choose Roll Group');
     echo '</h2>';
 
-    $gibbonRollGroupID = '';
-    if (isset($_GET['gibbonRollGroupID'])) {
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
-    }
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonRollGroupID">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
-								echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							} else {
-								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_classEnrolment_byRollGroup.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byRollGroup.php');
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->isRequired()->placeholder();
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
 
     if ($gibbonRollGroupID != '') {
         echo '<h2>';

@@ -318,7 +318,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                 if ($_SESSION[$guid]['personalBackground'] != '') {
                     echo '<style type="text/css">';
                     echo 'body {';
-                    echo 'background: url("'.$_SESSION[$guid]['personalBackground'].'") repeat scroll center top #A88EDB!important;';
+                    echo 'background: url("'.htmlPrep($_SESSION[$guid]['personalBackground']).'") repeat scroll center top #A88EDB!important;';
                     echo '}';
                     echo '</style>';
                 }

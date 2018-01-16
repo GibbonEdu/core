@@ -1332,11 +1332,15 @@ select[multiple] {
     margin-bottom: 10px;
 }
 
+.formTable .standardWidth {
+    width: auto;
+}
+
 .formTable input,
 .formTable select,
 .formTable textarea {
 	float: left;
-	margin-left: 0px;
+    margin-left: 0px;
 }
 
 
@@ -1507,7 +1511,7 @@ fieldset {
 }
 
 /* Fixes an odd colspan-related width bug in Chrome */
-td.fullWidth {
+td.fullWidth[colspan] {
     width: auto;
 }
 

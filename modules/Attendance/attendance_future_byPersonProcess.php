@@ -147,7 +147,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                             } catch (PDOException $e) {
                                                 $partialFail = true;
                                             }
+
                                         }
+                                        $URL .= '&absenceType=partial&date=' . $_POST['dateStart']; //Redirect to exact state of submit form
                                     } else {
                                         // Return error if no courses selected for partial absence
                                         $URL .= '&return=error1';

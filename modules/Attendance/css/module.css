@@ -219,3 +219,7 @@ td.center {
 	font-size: 32px;
 	color: #333333;
 }
+
+#periodSelectContainer{
+    float: right;   
+}

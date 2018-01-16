@@ -25,6 +25,9 @@ v15.0.00
 	Changes With Important Notices
 		Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
 
+    Security
+        System: added validation and output escaping to Personal Background URL in Preferences
+
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
 		System: added Greek and Amharic as development languages
@@ -45,6 +48,8 @@ v15.0.00
 		System: shortened abbreviation of core system roles
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
+		Activities: fixed minor display issue in Terms column in View Activities
+		Activities: fixed term display bug in Manage Activities
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
@@ -53,8 +58,11 @@ v15.0.00
 		Attendance: added selective auto-redirect to move students to self-registration page under certain conditions
 		Attendance: added a warning to Attendance by Class when not currently timetabled for the selected date
 		Behaviour: fixed typo in three settings
+		Behaviour: fixed broken link to Edit in Step 2 of adding a behaviour record in Manage Behaviour
 		Departments: fixed bug preventing students from seeing other students in a class
+		Departments: fixed sidebar heading size issue
 		Finance: set name of outgoing email to school name, not user's name
+		Finance: fixed missing email address issue in Company invoices and receipts
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
