@@ -33,16 +33,15 @@ if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[
 }
 
 $calendarFeedPersonal = isset($_POST['calendarFeedPersonal'])? $_POST['calendarFeedPersonal'] : '';
-$personalBackground = isset($_POST['personalBackground'])? filter_var($_POST['personalBackground'], FILTER_VALIDATE_URL) : '';
+$personalBackground = isset($_POST['personalBackground'])? $_POST['personalBackground'] : '';
 $gibbonThemeIDPersonal = isset($_POST['gibbonThemeIDPersonal'])? $_POST['gibbonThemeIDPersonal'] : '';
 $gibboni18nIDPersonal = isset($_POST['gibboni18nIDPersonal'])? $_POST['gibboni18nIDPersonal'] : '';
 $receiveNotificationEmails = isset($_POST['receiveNotificationEmails'])? $_POST['receiveNotificationEmails'] : 'N';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
 
-// Validate that the personal background URL points to an image
-$personalBackgroundFiletype = strtolower(strrchr($personalBackground, '.'));
-if (!empty($personalBackground) && !in_array($personalBackgroundFiletype, array('.jpg','.jpeg','.png','.gif'))) {
+// Validate the personal background URL
+if (!empty($personalBackground) && filter_var($personalBackground, FILTER_VALIDATE_URL) === false) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit();
