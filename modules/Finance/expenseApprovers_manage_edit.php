@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             if ($expenseApprovalType == 'Chain Of All') {
                 $row = $form->addRow();
                     $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique.'));
-                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover')->isRequired()->maxLength(3);
+                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover', $values['sequenceNumber'])->isRequired()->maxLength(3);
             }
 
             $form->loadAllValuesFrom($values);
