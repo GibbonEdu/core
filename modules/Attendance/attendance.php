@@ -66,9 +66,13 @@ else {
 	    $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
 	    $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
 
-	$row = $form->addRow();
-	    $row->addLabel('gibbonPersonID', __('Staff'));
-	    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
+    if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonID', __('Staff'));
+            $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
+    } else {
+        $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
+    }
 
     $row = $form->addRow();
         $row->addFooter();
@@ -463,7 +467,11 @@ else {
 									} else {
 										print '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>' ;
 									}
-								}
+								} else if (isset($logHistory[$row['gibbonCourseClassID']][$currentDate])) {
+                                    echo '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">';
+                                        echo __('N/A');
+                                    echo '</span>';
+                                }
 								print "</td>" ;
 
 								print "<td style='text-align: center'>" ;
