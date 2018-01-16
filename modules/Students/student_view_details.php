@@ -2410,6 +2410,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
                                 } elseif ($highestAction == 'View Internal Assessments_myChildrens') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, 'parent');
+                                } elseif ($highestAction == 'View Internal Assessments_mine') {
+                                    echo getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], 'student');
                                 }
                             }
                         }
