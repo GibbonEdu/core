@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
                 $row = $form->addRow()->addClass('copyToGCSE');
                     $row->addLabel('copyToGCSECheck', __('Copy Target Grades?'))->description(__('These will come from the student\'s last CAT test.'));
-                    $row->addCheckbox('copyToGCSECheck')->setValue('Yes');
+                    $row->addCheckbox('copyToGCSECheck')->setValue('Y');
 
                 $form->toggleVisibilityByClass('copyToIB')->onSelect('gibbonExternalAssessmentID')->when('0003');
                 $row = $form->addRow()->addClass('copyToIB');
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $rowSelect = $resultSelect->fetch();
 
                     //Attempt to get CATs grades to copy to GCSE target
-                    if ($copyToGCSECheck == 'on') {
+                    if ($copyToGCSECheck == 'Y') {
                         $grades = array();
                         try {
                             $dataCopy = array('gibbonPersonID' => $gibbonPersonID);
@@ -398,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             foreach ($fields as $field) {
                                 $preselectValue = null;
                                 $mode = 'id';
-                                if ($copyToGCSECheck == 'on' and $field['category'] == '0_Target Grade') {
+                                if ($copyToGCSECheck == 'Y' and $field['category'] == '0_Target Grade') {
                                     $preselectValue = isset($grades[$field['name']][0])? $grades[$field['name']][0] : '';
                                 }
                                 if (($copyToIBCheck == 'Target' || $copyToIBCheck == 'Final') && $field['category'] == '0_Target Grade') {
