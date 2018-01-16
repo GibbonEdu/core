@@ -131,12 +131,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             $sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
             $resultFees = $pdo->executeQuery(array(), $sqlFees);
 
+            $form->loadAllValuesFrom($values);
+
             if (!$resultFees || $resultFees->rowCount() == 0) {
                 $form->addHiddenValue('companyAll', 'Y');
             } else {
+                echo $checked = (empty($values['companyAll']) || $values['companyAll'] == 'Y') ? 'Y' : 'N';
                 $row = $form->addRow()->addClass('paymentCompany');
-                $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
-                $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline();
+                    $row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
+                    $row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked($checked)->inline();
 
                 $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
 
@@ -153,7 +156,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $row->addFooter();
                 $row->addSubmit();
 
-            $form->loadAllValuesFrom($values);
 
             echo $form->getOutput();
 
