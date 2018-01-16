@@ -1511,7 +1511,7 @@ fieldset {
 }
 
 /* Fixes an odd colspan-related width bug in Chrome */
-td.fullWidth {
+td.fullWidth[colspan] {
     width: auto;
 }
 
