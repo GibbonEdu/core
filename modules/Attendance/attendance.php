@@ -467,7 +467,11 @@ else {
 									} else {
 										print '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>' ;
 									}
-								}
+								} else if (isset($logHistory[$row['gibbonCourseClassID']][$currentDate])) {
+                                    echo '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">';
+                                        echo __('N/A');
+                                    echo '</span>';
+                                }
 								print "</td>" ;
 
 								print "<td style='text-align: center'>" ;
