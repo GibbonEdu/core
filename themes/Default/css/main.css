@@ -1452,6 +1452,10 @@ input[name*="phone"] ~ .LV_invalid {
   max-width: 1052px;
 }
 
+.matchHighlight table {
+    float: right;
+}
+
 .matchHighlight > td {
 	border-top: 1px dashed #c00;
 	border-bottom: 1px dashed #c00;
