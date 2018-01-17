@@ -411,13 +411,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 							$row = $form->addRow()->addClass('address  matchHighlight');
 							$row->addLabel('matchAddress', __('Matching Address 1'))->description(__('These users have similar Address 1. Do you want to change them too?'));
-							$table = $row->addTable()->setClass('formTable standardWidth floatRight');
+							$table = $row->addTable()->setClass('standardWidth');
 
 							while ($rowAddress = $resultAddress->fetch()) {
 								$adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
 								$row = $table->addRow()->addClass('address');
-								$row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee);
+								$row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
 								$row->addCheckbox($addressCount.'-matchAddress')->setValue($rowAddress['gibbonPersonID']);
 
 								$addressCount++;
