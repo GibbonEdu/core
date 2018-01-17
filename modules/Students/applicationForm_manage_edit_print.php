@@ -491,7 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             //Yes family
             else {
-                //Spit out parent1/parent2 data from Gibbon 
+                //Spit out parent1/parent2 data from Gibbon
                 try {
                     $dataFamily = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                     $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
@@ -521,7 +521,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Home Language').'</span><br/>';
-                        echo $rowFamily['languageHome'];
+                        echo $rowFamily['languageHomePrimary'].'<br/>';
+                        echo $rowFamily['languageHomeSecondary'];
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
