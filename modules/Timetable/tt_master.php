@@ -58,6 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
 
     $form = Form::create('ttMaster', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
+    $form->setClass('noIntBorder fullWidth');
+
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_master.php');
 
     $sql = "SELECT gibbonSchoolYear.name as groupedBy, gibbonTTID as value, gibbonTT.name AS name FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name";
@@ -75,7 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         $row->addSelect('gibbonTTID')->fromArray($ttList)->isRequired()->selected($gibbonTTID);
 
     $row = $form->addRow();
-        $row->addSubmit();
+        $row->addSearchSubmit($gibbon->session);
+
 
     echo $form->getOutput();
 
