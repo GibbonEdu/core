@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                             }
 
                             if ($resultClasses->rowCount() < 1) {
-                                echo "<div class='error'>";
+                                echo "<div class='warning'>";
                                 echo __($guid, 'There are no classes associated with this period on this day.');
                                 echo '</div>';
                             } else {
