@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
             if ($row['type'] == 'Additional') {
                 echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_delete.php&gibbonRoleID='.$row['gibbonRoleID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_duplicate.php&gibbonRoleID='.$row['gibbonRoleID']."&width=650&height=200'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_duplicate.php&gibbonRoleID='.$row['gibbonRoleID']."'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }
