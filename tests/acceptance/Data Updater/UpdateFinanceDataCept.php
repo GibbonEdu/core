@@ -40,12 +40,11 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
+$gibbonFinanceInvoiceeUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
 
 // Accept ------------------------------------------------
-$I->amOnModulePage('Data Updater', 'data_finance_manage.php');
-$I->seeBreadcrumb('Finance Data Updates');
-
-$I->click('', 'a[title="Edit"]');
+$I->amOnModulePage('Data Updater', 'data_finance_manage_edit.php', array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID));
+$I->seeBreadcrumb('Edit Request');
 
 $I->see('McTest Ltd.', 'td');
 $I->see('Testing McTest', 'td');

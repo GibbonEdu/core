@@ -26,12 +26,11 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
+$gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
 
 // Accept ------------------------------------------------
-$I->amOnModulePage('Data Updater', 'data_medical_manage.php');
-$I->seeBreadcrumb('Medical Data Updates');
-
-$I->click('', 'a[title="Edit"]');
+$I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
+$I->seeBreadcrumb('Edit Request');
 
 $I->see('AB+', 'td');
 $I->see('Y', 'td');
