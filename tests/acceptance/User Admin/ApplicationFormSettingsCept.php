@@ -37,7 +37,7 @@ $newFormValues = array(
     'notificationStudentDefault'  => 'Y',
     'notificationParentsMessage'  => 'Parent Message Test',
     'notificationParentsDefault'  => 'Y',
-    'studentDefaultEmail'         => '[username]@test.com',
+    'studentDefaultEmail'         => '[username]@test.test',
     'studentDefaultWebsite'       => 'http://student.test',
     'autoHouseAssign'             => 'Y',
 );
