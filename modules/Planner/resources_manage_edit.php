@@ -98,7 +98,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                     $row = $form->addRow()->addClass('resourceFile');
                         $row->addLabel('file', __('File'));
                         $row->addFileUpload('file')
-                            ->addClass('right')
                             ->isRequired()
                             ->setAttachment('content', $_SESSION[$guid]['absoluteURL'], $values['content']);
                 } else if ($values['type'] == 'HTML') {

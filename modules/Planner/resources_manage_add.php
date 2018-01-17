@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $form->toggleVisibilityByClass('resourceFile')->onSelect('type')->when('File');
         $row = $form->addRow()->addClass('resourceFile');
             $row->addLabel('file', __('File'));
-            $row->addFileUpload('file')->isRequired()->addClass('right');
+            $row->addFileUpload('file')->isRequired();
 
         // HTML
         $form->toggleVisibilityByClass('resourceHTML')->onSelect('type')->when('HTML');
