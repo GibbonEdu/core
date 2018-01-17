@@ -60,9 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
     $row = $form->addRow();
         $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
         $row->addFileUpload('file')
-            ->accepts('.jpg,.jpeg,.png')
-            ->append('<br/><br/>'.getMaxUpload($guid))
-            ->addClass('right');
+            ->accepts('.jpg,.jpeg,.png');
 
     $row = $form->addRow();
         $row->addFooter();
