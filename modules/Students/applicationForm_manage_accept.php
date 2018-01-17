@@ -163,7 +163,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $col->addCheckbox('autoEnrolStudent')
                             ->description(__('Automatically enrol student in classes for their Roll Group.'))
                             ->inline(true)
-                            ->checked($autoEnrolStudent)
+                            ->setValue('Y')
+                            ->checked($autoEnrolStudent? 'Y' : 'N')
                             ->setClass('')
                             ->wrap('<ol><li>', '</li></ol>');
                     }
