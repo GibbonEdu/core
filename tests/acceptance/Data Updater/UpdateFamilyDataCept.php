@@ -29,14 +29,14 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
+$gibbonFamilyUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
+
 $I->click('Logout', 'a');
 
 // Accept ------------------------------------------------
 $I->loginAsAdmin();
-$I->amOnModulePage('Data Updater', 'data_family_manage.php');
-$I->seeBreadcrumb('Family Data Updates');
-
-$I->click('', 'a[title="Edit"]');
+$I->amOnModulePage('Data Updater', 'data_family_manage_edit.php', array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID));
+$I->seeBreadcrumb('Edit Request');
 
 $I->see('234', 'td');
 $I->see('234 Ficticious Ave.', 'td');
