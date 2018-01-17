@@ -64,13 +64,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
 				}
-				
+
 				$form = Form::create('addTTDate', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_addProcess.php');
-				
+
 				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 				$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 				$form->addHiddenValue('dateStamp', $dateStamp);
-				
+
 				$row = $form->addRow();
 					$row->addLabel('schoolYearName', __('School Year'));
 					$row->addTextField('schoolYearName')->readonly()->setValue($values['name']);
@@ -78,27 +78,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
 				$row = $form->addRow();
                     $row->addLabel('dateName', __('Date'));
 					$row->addTextField('dateName')->readonly()->setValue(date('d/m/Y l', $dateStamp));
-					
+
 				$data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d', $dateStamp));
 				$sql = "SELECT gibbonTTDay.gibbonTTDayID as value, CONCAT(gibbonTT.name, ': ', gibbonTTDay.nameShort) as name
-						FROM gibbonTT 
+						FROM gibbonTT
 						JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)
 						LEFT JOIN (SELECT gibbonTTDay.gibbonTTID, gibbonTTDayDate.date
                         	FROM gibbonTTDay
                         	JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)
                         ) AS dateCheck ON (dateCheck.gibbonTTID=gibbonTT.gibbonTTID AND dateCheck.date=:date)
-						WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID 
+						WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID
 						AND dateCheck.gibbonTTID IS NULL
 						ORDER BY name";
 
 				$row = $form->addRow();
                     $row->addLabel('gibbonTTDayID', __('Day'));
-                    $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->isRequired();
-				
+                    $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+
 				$row = $form->addRow();
 					$row->addFooter();
 					$row->addSubmit();
-				
+
 				echo $form->getOutput();
             }
         }
