@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     $setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
+		$row->addTextField($setting['name'])->setValue($setting['value']);
 
 	$setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide', true);
 	$row = $form->addRow();
