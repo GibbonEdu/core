@@ -139,7 +139,7 @@ class Checkbox extends Input
 
         if (!empty($this->getOptions())) {
             // Multiple checkboxes - ensure the form values are returned as an array
-            $name = (stripos($this->getName(), '[]') === false)? $this->getName().'[]' : $this->getName();
+            $name = (stripos($this->getName(), '[') === false)? $this->getName().'[]' : $this->getName();
         } else {
             // Single checkbox - build an options array
             $this->options = array($this->getValue() => $this->description);
