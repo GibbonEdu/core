@@ -50,12 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
     $date = (isset($_GET['date']))? date($_GET['date']) : '';
 
+    echo '<h2>'.__('Choose Student')."</h2>";
+
     //Generate choose student form
     $form = Form::create('attendanceSearch',$_SESSION[$guid]['absoluteURL'] . '/index.php','GET');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+    
     $form->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
-
-    $form->addRow()->addHeading(__('Choose Student'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
@@ -164,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         }
 
         $form = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php?gibbonPersonID='.$gibbonPersonID);
-        
+
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('absenceType', $absenceType);
 
