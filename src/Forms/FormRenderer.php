@@ -72,7 +72,7 @@ class FormRenderer implements FormRendererInterface
 
         // Output hidden values
         foreach ($form->getHiddenValues() as $values) {
-            $output .= '<input name="'.$values['name'].'" value="'.$values['value'].'" type="hidden">';
+            $output .= '<input name="'.htmlPrep($values['name']).'" value="'.htmlPrep($values['value']).'" type="hidden">';
         }
 
         $output .= sprintf('<%1$s class="'.$form->getClass().'" cellspacing="0">', $this->wrappers['form']);
