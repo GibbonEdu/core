@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                                 $column->addContent(__('School Day'));
                             }
 
-                            $column->addCheckbox('dates[]')->setValue($i)->addClass($dayOfWeek.$values['nameShort']);
+                            $column->addCheckbox('dates[]')->setValue($i)->setClass($dayOfWeek.$values['nameShort']);
 
                             $column->addContent("<br/><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a><br/>");
 
