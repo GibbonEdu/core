@@ -63,7 +63,7 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/passwordResetProcess.php?step=1');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
 
     $form->setClass('smallIntBorder fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
