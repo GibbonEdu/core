@@ -72,10 +72,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                 'Learning Area' => __('Learning Area'),
             );
 
-			
 			$form = Form::create('outcomes', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/outcomes_addProcess.php?filter2='.$filter2);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
-			
+
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 			$row = $form->addRow();
@@ -85,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
                 $row->addTextField('scope')->readOnly()->setValue('Learning Area');
 			}
-			
+
 			if ($highestAction == 'Manage Outcomes_viewEditAll') {
 				$data = array();
 				$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
@@ -94,7 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 				$sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
 			}
 
-            $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
+
+            if ($highestAction == 'Manage Outcomes_viewEditAll') {
+                $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
+            }
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
                 $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
@@ -118,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             $row = $form->addRow();
                 $row->addLabel('category', __('Category'));
                 $row->addTextField('category')->maxLength(100)->autocomplete($categories);
-				
+
 			$row = $form->addRow();
 				$row->addLabel('description', __('Description'));
 				$row->addTextArea('description')->setRows(5);
