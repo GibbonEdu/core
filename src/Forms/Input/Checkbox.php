@@ -137,8 +137,14 @@ class Checkbox extends Input
     {
         $output = '';
 
-        $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->getValue() => $this->description);
-        $name = (count($this->options)>1 && stripos($this->getName(), '[]') === false)? $this->getName().'[]' : $this->getName();
+        if (!empty($this->getOptions())) {
+            // Multiple checkboxes - ensure the form values are returned as an array
+            $name = (stripos($this->getName(), '[') === false)? $this->getName().'[]' : $this->getName();
+        } else {
+            // Single checkbox - build an options array
+            $this->options = array($this->getValue() => $this->description);
+            $name = $this->getName();
+        }
 
         if (!empty($this->options) && is_array($this->options)) {
             $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());

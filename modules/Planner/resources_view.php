@@ -41,7 +41,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
     //Get current filter values
     $tags = (isset($_REQUEST['tag']))? trim($_REQUEST['tag']) : null;
+    $tags = preg_replace('/[^a-zA-Z0-9-_, ]/', '', $tags);
     $tagsArray = (!empty($tags))? explode(',', $tags) : array();
+
     $category = (isset($_REQUEST['category']))? trim($_REQUEST['category']) : null;
     $purpose = (isset($_REQUEST['purpose']))? trim($_REQUEST['purpose']) : null;
     $gibbonYearGroupID = (isset($_REQUEST['gibbonYearGroupID']))? trim($_REQUEST['gibbonYearGroupID']) : null;

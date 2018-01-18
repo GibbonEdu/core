@@ -954,7 +954,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('agreement', '<b>'.__('Do you agree to the above?').'</b>');
-            $row->addCheckbox('agreement')->fromArray(array('on' => __('Yes')))->isRequired();
+            $row->addCheckbox('agreement')->description(__('Yes'))->setValue('on')->isRequired();
     }
 
     // OFFICE ONLY
@@ -963,7 +963,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('skipEmailNotification', '<b>'.__('Skip sending a notification email to parents?').'</b>');
-            $row->addCheckbox('skipEmailNotification')->fromArray(array('on' => __('Yes')))->checked('on');
+            $row->addCheckbox('skipEmailNotification')->description(__('Yes'))->setValue('on')->checked('on');
     }
 
     $row = $form->addRow();

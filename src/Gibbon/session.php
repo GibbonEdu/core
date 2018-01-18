@@ -172,7 +172,7 @@ class Session
 		$this->set('officialName', $userData['officialName']);
 		$this->set('email', $userData['email']);
 		$this->set('emailAlternate', $userData['emailAlternate']);
-		$this->set('website', $userData['website']);
+		$this->set('website', filter_var($userData['website'], FILTER_VALIDATE_URL));
 		$this->set('gender', $userData['gender']);
 		$this->set('status', $userData['status']);
 		$this->set('gibbonRoleIDPrimary', $userData['gibbonRoleIDPrimary']);
@@ -181,7 +181,7 @@ class Session
 		$this->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $this->pdo->getConnection()) );
 		$this->set('image_240', $userData['image_240']);
 		$this->set('lastTimestamp', $userData['lastTimestamp']);
-		$this->set('calendarFeedPersonal', $userData['calendarFeedPersonal']);
+		$this->set('calendarFeedPersonal', filter_var($userData['calendarFeedPersonal'], FILTER_VALIDATE_EMAIL));
 		$this->set('viewCalendarSchool', $userData['viewCalendarSchool']);
 		$this->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
 		$this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
