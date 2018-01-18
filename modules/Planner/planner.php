@@ -509,7 +509,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         //My Classes
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
-
             if ($viewBy == 'date') {
                 echo "<div class='trail'>";
                 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Planner').' '.dateConvertBack($guid, $date).'</div>';
@@ -557,7 +556,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     }
 
                     //Only show add if user has edit rights
-                    if ($highestAction == 'Lesson Planner_viewEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
+                    if ($highestAction == 'Lesson Planner_viewEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
                         echo "<div class='linkTop'>";
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_add.php&date=$date'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
