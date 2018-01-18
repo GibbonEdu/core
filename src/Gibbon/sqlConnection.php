@@ -97,28 +97,23 @@ class sqlConnection
 	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $databasePort = NULL, $message = NULL)
 	 {
 		$this->pdo = NULL;
-		$this->success = true;
-		try
-		{
+		$this->success = false;
+		try {
 			$dns = "mysql:host=$databaseServer;";
 			$dns .= (!empty($databasePort))? "port=$databasePort;" : '';
-			$dns .= "dbname=$databaseName;";
+			$dns .= (!empty($databaseName))? "dbname=$databaseName;" : '';
 			$dns .= "charset=utf8";
 
 			$this->pdo = new \PDO($dns, $databaseUsername, $databasePassword );
 			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 			$this->setSQLMode();
-		}
-		catch( \PDOException $e)
-		{
-			if ($message === NULL)
-				echo $e->getMessage();
-			else
-				echo $message;
-			$this->success = false;
+			$this->success = true;
+		} catch(\PDOException $e) {
 			$this->error = $e->getMessage();
+			trigger_error(($message !== NULL)? $message : $this->error, E_USER_WARNING);
 		}
+
 		return $this;
 	}
 
@@ -163,20 +158,17 @@ class sqlConnection
 	 */
 	public function executeQuery($data, $query, $error = NULL)
 	{
+		$this->querySuccess = false;
+		$this->data = $data;
+		$this->query = $query;
 
-		$this->querySuccess = true ;
-		$this->data = $data ;
-		$this->query = $query ;
 		try {
 			$this->result = $this->getConnection()->prepare($query);
 			$this->result->execute($data);
-		}
-		catch(\PDOException $e)
-		{
+			$this->querySuccess = true;
+		} catch(\PDOException $e) {
 			$this->error = $e->getMessage();
-			$this->querySuccess = false;
-			if ($error !== NULL)
-				echo str_replace('{message}', $this->error, $error);
+			trigger_error(($error !== NULL)? str_replace('{message}', $this->error, $error) : $this->error, E_USER_WARNING);
 		}
 
 		return $this->result ;
@@ -223,32 +215,33 @@ class sqlConnection
 	 *
 	 * @return	Object	PDO Connection
 	 */
-	public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
+	public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = null)
 	{
-		$databaseNameClean="`".str_replace("`","``",$databaseName)."`";
-		$this->success = true;
-		$this->pdo = NULL;
-		try
-		{
-			$this->pdo = new \PDO("mysql:host=".$databaseServer.";charset=utf8", $databaseUsername, $databasePassword );
-			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-			$this->setSQLMode();
+		$databaseNameClean = $this->escIdentifier($databaseName);
+		$this->success = false;
+		$this->pdo = null;
+		
+		$this->generateConnection($databaseServer, '', $databaseUsername, $databasePassword);
+
+		if (!is_null($this->pdo)) {
+			$this->executeQuery(array(), "CREATE DATABASE IF NOT EXISTS {$databaseNameClean} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci");
+
+			if ($this->querySuccess) {
+				$this->executeQuery(array(), "USE {$databaseNameClean}");
+				$this->success = true;
+			}
 		}
-		catch( \PDOException $e)
-		{
-			if ($message === NULL)
-				echo $e->getMessage();
-			else
-				echo $message;
-			$this->success = false;
-			$this->error = $e->getMessage();
-			return $this ;
-		}
-		$result = $this->executeQuery(array(), "CREATE DATABASE IF NOT EXISTS ".$databaseNameClean." DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci");
-		if ($this->querySuccess)
-			$result = $this->executeQuery(array(), "USE ". $databaseNameClean);
 		return $this;
+	}
+
+	/**
+	 * Escape an SQL identifier such as a table or database name with backticks.
+	 * @param string $value
+	 * @return string
+	 */
+	public function escIdentifier($value)
+	{
+		return "`".str_replace("`","``",$value)."`";
 	}
 
 	/**
