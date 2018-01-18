@@ -114,13 +114,14 @@ class Core {
 			$this->session->loadSystemSettings($pdo);
 			$this->session->loadLanguageSettings($pdo);
         }
-        
-        if ($this->session->get('installType') == 'Production') {
+		
+		$installType = $this->session->get('installType');
+        if ($installType == 'Development' || $installType == 'Testing') {
+			set_error_handler(array($this, 'handleError'));
+            set_exception_handler(array($this, 'handleException'));
+        } else {
             ini_set('display_errors', 0);
             set_exception_handler(array($this, 'handleExceptionInProduction'));
-        } else {
-            set_error_handler(array($this, 'handleError'));
-            set_exception_handler(array($this, 'handleException'));
         }
 
 		$this->locale->setLocale($this->session->get(array('i18n', 'code')));
