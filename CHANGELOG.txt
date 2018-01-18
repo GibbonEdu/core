@@ -71,6 +71,7 @@ v15.0.00
 		Messenger: added username to Individual select, to distinguish people with the same name
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Planner: added optional Markbook section (off by default) to weekly planner summary email
+		Planner: fixed bug preventing Add icon from appearing for teachers under date view in Lesson Planner
 		Roll Groups: fixed bug preventing alerts from showing
 		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
 		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
