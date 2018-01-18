@@ -400,7 +400,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__($guid, 'Join our mailing list and recieve a welcome email from the team.'));
-                                                    $row->addCheckbox('support')->fromArray(array('on' => __('Yes')))->checked('on')->setID('support');
+                                                    $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
