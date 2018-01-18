@@ -32,6 +32,10 @@ if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[
     setCurrentSchoolYear($guid, $connection2);
 }
 
+// Sanitize the whole $_POST array
+$validator = new \Gibbon\Data\Validator();
+$_POST = $validator->sanitize($_POST);
+
 $calendarFeedPersonal = isset($_POST['calendarFeedPersonal'])? $_POST['calendarFeedPersonal'] : '';
 $personalBackground = isset($_POST['personalBackground'])? $_POST['personalBackground'] : '';
 $gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal'])? $_POST['gibbonThemeIDPersonal'] : null;
@@ -40,8 +44,19 @@ $receiveNotificationEmails = isset($_POST['receiveNotificationEmails'])? $_POST[
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
 
+$validated = true;
+
 // Validate the personal background URL
 if (!empty($personalBackground) && filter_var($personalBackground, FILTER_VALIDATE_URL) === false) {
+    $validated = false;
+}
+
+// Validate the personal calendar feed
+if (!empty($calendarFeedPersonal) && filter_var($calendarFeedPersonal, FILTER_VALIDATE_EMAIL) === false) {
+    $validated = false;
+}
+
+if (!$validated) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit();
