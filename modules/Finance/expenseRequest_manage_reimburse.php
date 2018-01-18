@@ -119,13 +119,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
                     $row = $form->addRow();
-                        $row->addLabel('name', __('Budget Cycle'));
-                        $row->addTextField('name')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
+                        $row->addLabel('nameBudget', __('Budget Cycle'));
+                        $row->addTextField('nameBudget')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
 
                     $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
                     $row = $form->addRow();
                         $row->addLabel('budget', __('Budget'));
-                        $row->addTextField('budget')->setValue($cycleName)->maxLength(20)->isRequired()->readonly()->setValue($values['budget']);
+                        $row->addTextField('budget')->setValue($values['budget'])->maxLength(20)->isRequired()->readonly();
 
                     $row = $form->addRow();
                         $row->addLabel('title', __('Title'));
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $form->addHiddenValue('gibbonPersonIDPayment', $_SESSION[$guid]['gibbonPersonID']);
                     $row = $form->addRow()->addClass('payment');
                         $row->addLabel('name', __('Payee'))->description(__('Staff who made, or arranged, the payment.'));
-                        $row->addTextField('name')->maxLength(3)->isRequired()->readonly()->setValue(formatName('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true));
+                        $row->addTextField('name')->isRequired()->readonly()->setValue(formatName('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true));
 
                     $methods = array(
                         'Bank Transfer' => __('Bank Transfer'),
