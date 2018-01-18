@@ -27,7 +27,8 @@ include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].
 
 //Setup variables
 $output = '';
-$id = $_GET['id'];
+$id = isset($_GET['id'])? $_GET['id'] : '';
+$id = preg_replace('/[^a-zA-Z0-9-_]/', '', $id);
 
 $output .= "<script type='text/javascript'>";
     $output .= '$(document).ready(function() {';
