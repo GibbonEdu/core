@@ -115,7 +115,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                             // Check config values for ' " \ / chars which will cause errors in config.php
                             $pattern = '/[\'"\/\\\\]/';
-                            if (preg_match($pattern, $databaseServer) == true || preg_match($pattern, $databaseName) == true || 
+                            if (preg_match($pattern, $databaseServer) == true || preg_match($pattern, $databaseName) == true ||
                                 preg_match($pattern, $databaseUsername) == true || preg_match($pattern, $databasePassword) == true) {
                                 $isConfigValid = false;
                             }
@@ -156,7 +156,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 echo __('Your request failed because your inputs were invalid.');
                                 echo '</div>';
                             } else if ($step == 0) { //Choose language
-                                
+
                                 //PROCEED
                                 echo "<div class='success'>";
                                 echo __('The directory containing the Gibbon files is writable, so the installation may proceed.');
@@ -208,6 +208,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     'es_ES' => 'Español',
                                     'fr_FR' => 'Français - France',
                                     'it_IT' => 'Italiano - Italia',
+                                    'pt_BR' => 'Português - Brasil',
                                     'ro_RO' => 'Română',
                                     'sq_AL' => 'Shqip - Shqipëri',
                                     'vi_VN' => 'Tiếng Việt - Việt Nam',
@@ -224,7 +225,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $row->addSubmit();
 
                                 echo $form->getOutput();
-                            
+
                             } else if ($step == 1) { //Set database options
                                 $form = Form::create('action', "./install.php?step=2");
 
@@ -277,7 +278,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $connected1 = $pdo->getSuccess();
                                     $connection2 = $pdo->getConnection();
                                 }
-                                
+
                                 if ($connected1 == false) {
                                     echo "<div class='error'>";
                                     echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
