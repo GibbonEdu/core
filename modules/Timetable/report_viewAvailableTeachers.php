@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     $row = $form->addRow();
         $row->addLabel('viewBy', __('View'));
-        $row->addSelect('viewBy')->fromArray(array('username' => __('Username'), 'name' => __('Preferred Name') ))->selected($viewBy);
+        $row->addSelect('viewBy')->fromArray(array('username' => __('Username'), 'name' => __('Name') ))->selected($viewBy);
 
     $row = $form->addRow();
         $row->addLabel('ttDate', __('Date'));

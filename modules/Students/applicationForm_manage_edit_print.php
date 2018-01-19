@@ -606,9 +606,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo "<span class='label'>".__($guid, 'Family Status').'</span><br/>';
                         echo $rowFamily['status'];
                         echo '</td>';
-                        echo "<td style='width: 33%;'>";
-                        echo "<span class='label'>".__($guid, 'Home Language').'</span><br/>';
-                        echo $rowFamily['languageHome'];
+                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Home Language').'</span><br/>';
+                        echo $rowFamily['languageHomePrimary'].'<br/>';
+                        echo $rowFamily['languageHomeSecondary'];
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';

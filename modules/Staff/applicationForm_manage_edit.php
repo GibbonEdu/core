@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $name = 'milestone_'.preg_replace('/\s+/', '', $milestone);
                     $checked = in_array($milestone, $milestonesChecked);
 
-                    $column->addCheckbox($name)->fromArray(array('on' => $milestone))->checked($checked);
+                    $column->addCheckbox($name)->setValue('on')->description($milestone)->checked($checked);
                 }
             }
 

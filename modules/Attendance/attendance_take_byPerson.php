@@ -47,13 +47,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $today = date('Y-m-d');
     $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
-    
+
+    echo '<h2>'.__('Choose Student')."</h2>";
+
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php');
-
-    $form->addRow()->addHeading(__('Choose Student'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
@@ -65,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);
-    
+
     echo $form->getOutput();
 
     if ($gibbonPersonID != '') {
@@ -177,15 +178,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             return confirm(\"".__($guid, 'The selected date for attendance is in the past. Are you sure you want to continue?').'")
                         }
                     }
-                </script>'; 
-                
+                </script>';
+
                 $form = Form::create('attendanceByPerson', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byPersonProcess.php?gibbonPersonID='.$gibbonPersonID);
                 $form->setAutocomplete('off');
 
                 if ($currentDate < $today) {
                     $form->addConfirmation('The selected date for attendance is in the past. Are you sure you want to continue?');
                 }
-                
+
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('currentDate', $currentDate);
 
@@ -194,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $row = $form->addRow();
                     $row->addLabel('summary', __('Recent Attendance Summary'));
                     $row->addContent($attendance->renderMiniHistory($gibbonPersonID, 'floatRight'));
-                
+
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()))->selected($lastType);
@@ -206,11 +207,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $row = $form->addRow();
                     $row->addLabel('comment', __('Comment'))->description(__('255 character limit'));
                     $row->addTextArea('comment')->setRows(3)->maxLength(255)->setValue($lastComment);
-                
+
                 $row = $form->addRow();
                     $row->addFooter();
                     $row->addSubmit();
-                
+
                 echo $form->getOutput();
             }
         }

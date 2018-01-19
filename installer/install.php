@@ -21,16 +21,19 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 include '../version.php';
-include '../functions.php';
+include '../gibbon.php';
 
-//Get and set step
-$step = 0;
-if (isset($_GET['step'])) {
-    $step = $_GET['step'];
-}
+// Sanitize the whole $_POST array
+$validator = new \Gibbon\Data\Validator();
+$_POST = $validator->sanitize($_POST);
 
-//Deal with $guid setup
-if ($step == 0) {
+// Get or set the current step
+$step = isset($_GET['step'])? intval($_GET['step']) : 0;
+$step = min(max($step, 0), 3);
+
+// Deal with $guid setup, otherwise get and filter the existing $guid
+if (empty($step)) {
+    $step = 0;
     $charList = 'abcdefghijkmnopqrstuvwxyz023456789';
     $guid = '';
     for ($i = 0;$i < 36;++$i) {
@@ -41,14 +44,15 @@ if ($step == 0) {
         }
     }
 } else {
-    if (isset($_GET['guid'])) {
-        $guid = $_GET['guid'];
-    } else {
-        $guid = '';
-    }
+    $guid = isset($_POST['guid'])? $_POST['guid'] : '';
+    $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
 }
 
-//Deal with non-existent stringReplacement session
+// Generate and save a nonce for forms on this page to use
+$nonce = hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
+$_SESSION[$guid]['nonce'][$step+1] = $nonce;
+
+// Deal with non-existent stringReplacement session
 @session_start();
 $_SESSION[$guid]['stringReplacement'] = array();
 
@@ -56,39 +60,39 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>
-			Gibbon Installer
-		</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-		<meta http-equiv="content-language" content="en"/>
-		<meta name="author" content="Ross Parker, International College Hong Kong"/>
-		<meta name="robots" content="none"/>
+    <head>
+        <title>
+            <?php __('Gibbon Installer'); ?>
+        </title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="content-language" content="en"/>
+        <meta name="author" content="Ross Parker, International College Hong Kong"/>
+        <meta name="robots" content="none"/>
 
-		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
-		<script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
-		<link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
-		<script type='text/javascript' src='../themes/Default/js/common.js'></script>
-		<script type="text/javascript" src="../lib/jquery/jquery.js"></script>
-		<script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
-	</head>
-	<body>
-		<div id="wrapOuter">
-			<div id="wrap">
-				<div id="header">
-					<div id="header-left">
-						<img height='100px' width='400px' class="logo" alt="Logo" src="../themes/Default/img/logo.png"></a>
-					</div>
-					<div id="header-right">
+        <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
+        <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
+        <link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
+        <script type='text/javascript' src='../themes/Default/js/common.js'></script>
+        <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
+    </head>
+    <body>
+        <div id="wrapOuter">
+            <div id="wrap">
+                <div id="header">
+                    <div id="header-left">
+                        <img height='100px' width='400px' class="logo" alt="Logo" src="../themes/Default/img/logo.png"></a>
+                    </div>
+                    <div id="header-right">
 
-					</div>
-					<div id="header-menu">
+                    </div>
+                    <div id="header-menu">
 
-					</div>
-				</div>
-				<div id="content-wrap">
-					<div id='content'>
-						<?php
+                    </div>
+                </div>
+                <div id="content-wrap">
+                    <div id='content'>
+                        <?php
                             //Get and set database variables (not set until step 1)
                             $databaseServer = (isset($_POST['databaseServer']))? $_POST['databaseServer'] : '';
                             $databaseName = (isset($_POST['databaseName']))? $_POST['databaseName'] : '';
@@ -96,104 +100,136 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             $databasePassword = (isset($_POST['databasePassword']))? $_POST['databasePassword'] : '';
                             $demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
 
-                            //Set language
+                            //Set language pre-install
                             $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
                             putenv('LC_ALL='.$code);
                             setlocale(LC_ALL, $code);
                             bindtextdomain('gibbon', '../i18n');
                             textdomain('gibbon');
 
-                            echo '<h2>'.sprintf(__($guid, 'Installation - Step %1$s'), ($step + 1)).'</h2>';
+                            echo '<h2>'.sprintf(__('Installation - Step %1$s'), ($step + 1)).'</h2>';
 
-                            if ($step == 0) { //Choose language
-                                $proceed = true;
+                            $isConfigValid = true;
+                            $isNonceValid = true;
+                            $canInstall = true;
 
-                                if (file_exists('../config.php')) { //Make sure system is not already installed
-                                    if (filesize('../config.php') > 0 or is_writable('../config.php') == false) {
-                                        $proceed = false;
-                                    }
-                                } else { //No config, so continue installer
-                                    if (is_writable('../') == false) { //Ensure that home directory is writable
-                                        $proceed = false;
-                                    }
-                                }
+                            // Check config values for ' " \ / chars which will cause errors in config.php
+                            $pattern = '/[\'"\/\\\\]/';
+                            if (preg_match($pattern, $databaseServer) == true || preg_match($pattern, $databaseName) == true || 
+                                preg_match($pattern, $databaseUsername) == true || preg_match($pattern, $databasePassword) == true) {
+                                $isConfigValid = false;
+                            }
 
-                                if ($proceed == false) {
-                                    echo "<div class='error'>";
-                                    echo __($guid, 'The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.');
-                                    echo '</div>';
-                                }
-                                else {
-                                    //PROCEED
-                                    echo "<div class='success'>";
-                                    echo __($guid, 'The directory containing the Gibbon files is writable, so the installation may proceed.');
-                                    echo '</div>';
-
-                                    $trueIcon = "<img title='" . __($guid, 'Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-									$falseIcon = "<img title='" . __($guid, 'No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
-
-									$versionTitle = __($guid, '%s Version');
-									$versionMessage = __($guid, '%s requires %s version %s or higher');
-
-									$phpVersion = phpversion();
-
-									$phpRequirement = $gibbon->getSystemRequirement('php');
-									$extensions = $gibbon->getSystemRequirement('extensions');
-
-                                    $form = Form::create('action', "./install.php?step=1&guid=$guid");
-
-                                    $form->addRow()->addHeading(__('System Requirements'));
-
-                                    $row = $form->addRow();
-                                        $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __($guid, 'Gibbon').' v'.$version, 'PHP', $phpRequirement));
-                                        $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
-                                        $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
-
-                                    $row = $form->addRow();
-                                        $row->addLabel('pdoSupportLabel', __($guid, 'MySQL PDO Support'));
-                                        $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __($guid, 'Installed') : __($guid, 'Not Installed'))->readonly();
-                                        $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
-
-                                    if (!empty($extensions) && is_array($extensions)) {
-                                        foreach ($extensions as $extension) {
-                                            $installed = @extension_loaded($extension);
-                                            $row = $form->addRow();
-                                                $row->addLabel('extensionLabel', __($guid, 'Extension').' '. $extension);
-                                                $row->addTextField('extension')->setValue(($installed)? __($guid, 'Installed') : __($guid, 'Not Installed'))->readonly();
-                                                $row->addContent(($installed)? $trueIcon : $falseIcon);
-                                        }
-                                    }
-
-                                    $form->addRow()->addHeading(__('Language Settings'));
-
-                                    $languages = array(
-                                        'nl_NL' => 'Dutch - Nederland',
-                                        'en_GB' => 'English - United Kingdom',
-                                        'en_US' => 'English - United States',
-                                        'es_ES' => 'Español',
-                                        'fr_FR' => 'Français - France',
-                                        'it_IT' => 'Italiano - Italia',
-                                        'ro_RO' => 'Română',
-                                        'sq_AL' => 'Shqip - Shqipëri',
-                                        'vi_VN' => 'Tiếng Việt - Việt Nam',
-                                        'ar_SA' => 'العربية - المملكة العربية السعودية',
-                                        'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
-                                        'zh_HK' => '體字 - 香港');
-
-                                    $row = $form->addRow();
-                                        $row->addLabel('code', __('System Language'));
-                                        $row->addSelect('code')->fromArray($languages)->selected($code)->isRequired();
-
-                                    $row = $form->addRow();
-                                        $row->addFooter();
-                                        $row->addSubmit();
-
-                                    echo $form->getOutput();
+                            // Check session for the presence of a valid nonce; if found, remove it so it's used only once
+                            if ($step >= 1) {
+                                $checkNonce = isset($_POST['nonce'])? $_POST['nonce'] : '';
+                                if (!empty($_SESSION[$guid]['nonce'][$step]) && $_SESSION[$guid]['nonce'][$step] == $checkNonce) {
+                                    unset($_SESSION[$guid]['nonce'][$step]);
+                                } else {
+                                    $isNonceValid = false;
                                 }
                             }
-                            if ($step == 1) { //Set database options
-                                $form = Form::create('action', "./install.php?step=2&guid=$guid");
 
+                            // Check for the presence of a config file (if it hasn't been created yet)
+                            if ($step < 3) {
+                                if (file_exists('../config.php')) { // Make sure system is not already installed
+                                    if (filesize('../config.php') > 0 or is_writable('../config.php') == false) {
+                                        $canInstall = false;
+                                    }
+                                } else { //No config, so continue installer
+                                    if (is_writable('../') == false) { // Ensure that home directory is writable
+                                        $canInstall = false;
+                                    }
+                                }
+                            }
+
+                            if ($canInstall == false) {
+                                echo '<div class="error">';
+                                echo __('The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.');
+                                echo '</div>';
+                            } else if ($isNonceValid == false) {
+                                echo '<div class="error">';
+                                echo __('Your request failed because you do not have access to this action.');
+                                echo '</div>';
+                            } else if ($isConfigValid == false) {
+                                echo '<div class="error">';
+                                echo __('Your request failed because your inputs were invalid.');
+                                echo '</div>';
+                            } else if ($step == 0) { //Choose language
+                                
+                                //PROCEED
+                                echo "<div class='success'>";
+                                echo __('The directory containing the Gibbon files is writable, so the installation may proceed.');
+                                echo '</div>';
+
+                                $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
+                                $falseIcon = "<img title='" . __('No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+
+                                $versionTitle = __('%s Version');
+                                $versionMessage = __('%s requires %s version %s or higher');
+
+                                $phpVersion = phpversion();
+
+                                $phpRequirement = $gibbon->getSystemRequirement('php');
+                                $extensions = $gibbon->getSystemRequirement('extensions');
+
+                                $form = Form::create('action', "./install.php?step=1");
+
+                                $form->addHiddenValue('guid', $guid);
+                                $form->addHiddenValue('nonce', $nonce);
+                                $form->addRow()->addHeading(__('System Requirements'));
+
+                                $row = $form->addRow();
+                                    $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'PHP', $phpRequirement));
+                                    $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
+                                    $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
+                                    $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
+                                    $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+
+                                if (!empty($extensions) && is_array($extensions)) {
+                                    foreach ($extensions as $extension) {
+                                        $installed = @extension_loaded($extension);
+                                        $row = $form->addRow();
+                                            $row->addLabel('extensionLabel', __('Extension').' '. $extension);
+                                            $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
+                                            $row->addContent(($installed)? $trueIcon : $falseIcon);
+                                    }
+                                }
+
+                                $form->addRow()->addHeading(__('Language Settings'));
+
+                                $languages = array(
+                                    'nl_NL' => 'Dutch - Nederland',
+                                    'en_GB' => 'English - United Kingdom',
+                                    'en_US' => 'English - United States',
+                                    'es_ES' => 'Español',
+                                    'fr_FR' => 'Français - France',
+                                    'it_IT' => 'Italiano - Italia',
+                                    'ro_RO' => 'Română',
+                                    'sq_AL' => 'Shqip - Shqipëri',
+                                    'vi_VN' => 'Tiếng Việt - Việt Nam',
+                                    'ar_SA' => 'العربية - المملكة العربية السعودية',
+                                    'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+                                    'zh_HK' => '體字 - 香港');
+
+                                $row = $form->addRow();
+                                    $row->addLabel('code', __('System Language'));
+                                    $row->addSelect('code')->fromArray($languages)->selected($code)->isRequired();
+
+                                $row = $form->addRow();
+                                    $row->addFooter();
+                                    $row->addSubmit();
+
+                                echo $form->getOutput();
+                            
+                            } else if ($step == 1) { //Set database options
+                                $form = Form::create('action', "./install.php?step=2");
+
+                                $form->addHiddenValue('guid', $guid);
+                                $form->addHiddenValue('nonce', $nonce);
                                 $form->addHiddenValue('code', $code);
 
                                 $form->addRow()->addHeading(__('Database Settings'));
@@ -230,22 +266,21 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                 echo $form->getOutput();
                             } elseif ($step == 2) {
-                                //Check for db values
-                                if ($databaseServer == '' or $databaseName == '' or $databaseUsername == '' or $databasePassword == '' or $demoData == '') {
-                                    echo "<div class='error'>";
-                                    echo sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
-                                    echo '</div>';
-                                }
 
-                                //Estabish db connection without database name
-                                $connected1 = true;
-                                $pdo = new Gibbon\sqlConnection(true);
-                                $pdo->installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword);
-                                $connected1 = $pdo->getSuccess();
-                                $connection2 = $pdo->getConnection();
+                                $connected1 = false;
+
+                                //Check for db values
+                                if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
+                                    //Estabish db connection without database name
+                                    $pdo = new Gibbon\sqlConnection(true);
+                                    $pdo->installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword);
+                                    $connected1 = $pdo->getSuccess();
+                                    $connection2 = $pdo->getConnection();
+                                }
+                                
                                 if ($connected1 == false) {
                                     echo "<div class='error'>";
-                                    echo sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
+                                    echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
                                     echo '</div>';
                                 } else {
                                     //Set up config.php
@@ -289,13 +324,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                     if (file_exists('../config.php') == false) { //Something went wrong, config.php could not be created.
                                         echo "<div class='error'>";
-                                        echo __($guid, '../config.php could not be created, and so the installer cannot proceed.');
+                                        echo __('../config.php could not be created, and so the installer cannot proceed.');
                                         echo '</div>';
                                     } else { //Config, exists, let's press on
                                         //Let's populate the database
                                         if (file_exists('../gibbon.sql') == false) {
                                             echo "<div class='error'>";
-                                            echo __($guid, '../gibbon.sql does not exist, and so the installer cannot proceed.');
+                                            echo __('../gibbon.sql does not exist, and so the installer cannot proceed.');
                                             echo '</div>';
                                         } else {
                                             include './installerFunctions.php';
@@ -317,14 +352,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                             if ($partialFail == true) {
                                                 echo "<div class='error'>";
-                                                echo __($guid, 'Errors occurred in populating the database; empty your database, remove ../config.php and try again.');
+                                                echo __('Errors occurred in populating the database; empty your database, remove ../config.php and try again.');
                                                 echo '</div>';
                                             } else {
                                                 //Try to install the demo data, report error but don't stop if any issues
                                                 if ($demoData == 'Y') {
                                                     if (file_exists('../gibbon_demo.sql') == false) {
                                                         echo "<div class='error'>";
-                                                        echo __($guid, '../gibbon_demo.sql does not exist, so we will conintue without demo data.');
+                                                        echo __('../gibbon_demo.sql does not exist, so we will conintue without demo data.');
                                                         echo '</div>';
                                                     } else {
                                                         $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
@@ -346,7 +381,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                         if ($demoFail) {
                                                             echo "<div class='error'>";
-                                                            echo __($guid, 'There were some issues installing the demo data, but we will conintue anyway.');
+                                                            echo __('There were some issues installing the demo data, but we will conintue anyway.');
                                                             echo '</div>';
                                                         }
                                                     }
@@ -370,14 +405,12 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 //Let's gather some more information
 
-                                                $form = Form::create('action', "./install.php?step=3&guid=$guid");
+                                                $form = Form::create('action', "./install.php?step=3");
 
                                                 $form->setFactory(DatabaseFormFactory::create($pdo));
+                                                $form->addHiddenValue('guid', $guid);
+                                                $form->addHiddenValue('nonce', $nonce);
                                                 $form->addHiddenValue('code', $code);
-                                                $form->addHiddenValue('databaseServer', $databaseServer);
-                                                $form->addHiddenValue('databaseName', $databaseName);
-                                                $form->addHiddenValue('databaseUsername', $databaseUsername);
-                                                $form->addHiddenValue('databasePassword', $databasePassword);
                                                 $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
 
                                                 $form->addRow()->addHeading(__('User Account'));
@@ -399,47 +432,47 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addEmail('email')->maxLength(50)->isRequired();
 
                                                 $row = $form->addRow();
-                                                    $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__($guid, 'Join our mailing list and recieve a welcome email from the team.'));
-                                                    $row->addCheckbox('support')->fromArray(array('on' => __('Yes')))->checked('on')->setID('support');
+                                                    $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
+                                                    $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
-                                            		$row->addTextField('username')->isRequired()->maxLength(20);
+                                                    $row->addTextField('username')->isRequired()->maxLength(20);
 
                                                 $policy = getPasswordPolicy($guid, $connection2);
-                                            	if ($policy != false) {
-                                            		$form->addRow()->addAlert($policy, 'warning');
-                                            	}
-                                            	$row = $form->addRow();
-                                            		$row->addLabel('passwordNew', __('Password'));
-                                            		$password = $row->addPassword('passwordNew')
-                                            			->isRequired()
-                                            			->maxLength(30);
+                                                if ($policy != false) {
+                                                    $form->addRow()->addAlert($policy, 'warning');
+                                                }
+                                                $row = $form->addRow();
+                                                    $row->addLabel('passwordNew', __('Password'));
+                                                    $password = $row->addPassword('passwordNew')
+                                                        ->isRequired()
+                                                        ->maxLength(30);
 
-                                            	$alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-                                            	$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-                                            	$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-                                            	$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+                                                $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+                                                $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+                                                $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+                                                $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
 
-                                            	if ($alpha == 'Y') {
-                                            		$password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
-                                            	}
-                                            	if ($numeric == 'Y') {
-                                            		$password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-                                            	}
-                                            	if ($punctuation == 'Y') {
-                                            		$password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-                                            	}
-                                            	if (!empty($minLength) && is_numeric($minLength)) {
-                                            		$password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
-                                            	}
+                                                if ($alpha == 'Y') {
+                                                    $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
+                                                }
+                                                if ($numeric == 'Y') {
+                                                    $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+                                                }
+                                                if ($punctuation == 'Y') {
+                                                    $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+                                                }
+                                                if (!empty($minLength) && is_numeric($minLength)) {
+                                                    $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
+                                                }
 
-                                            	$row = $form->addRow();
-                                            		$row->addLabel('passwordConfirm', __('Confirm Password'));
-                                            		$row->addPassword('passwordConfirm')
-                                            			->isRequired()
-                                            			->maxLength(30)
-                                            			->addValidation('Validate.Confirmation', "match: 'passwordNew'");
+                                                $row = $form->addRow();
+                                                    $row->addLabel('passwordConfirm', __('Confirm Password'));
+                                                    $row->addPassword('passwordConfirm')
+                                                        ->isRequired()
+                                                        ->maxLength(30)
+                                                        ->addValidation('Validate.Confirmation', "match: 'passwordNew'");
 
                                                 $form->addRow()->addHeading(__('System Settings'));
 
@@ -484,17 +517,17 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 echo 'success: function(data) {';
                                                 echo '$("#status").attr("class","success");';
                                                 echo "if (data['status']==='false') {";
-                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
+                                                echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
                                                 echo '}';
                                                 echo 'else {';
-                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
+                                                echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
                                                 echo "$(\"#cuttingEdgeCode\").val('Y');";
                                                 echo "$(\"#cuttingEdgeCodeHidden\").val('Y');";
                                                 echo '}';
                                                 echo '},';
                                                 echo 'error: function (data, textStatus, errorThrown) {';
                                                 echo '$("#status").attr("class","error");';
-                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check failed').".') ;";
+                                                echo "$(\"#status\").html('".__('Cutting Edge Code check failed').".') ;";
                                                 echo '}';
                                                 echo '});';
                                                 echo '});';
@@ -557,11 +590,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 }
                             } elseif ($step == 3) {
                                 //New PDO DB connection
-                                $pdo = new Gibbon\sqlConnection(false, "<div class='error'>\n".sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>')."\n</div>\n");
+                                $pdo = new Gibbon\sqlConnection();
                                 $connection2 = $pdo->getConnection();
-                                $connected3 = $pdo->getSuccess();
 
-                                if ($connected3) {
+                                if ($pdo->getSuccess() == false) {
+                                    echo "<div class='error'>";
+                                    echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
+                                    echo '</div>';
+                                } else {
                                     //Get user account details
                                     $title = $_POST['title'];
                                     $surname = $_POST['surname'];
@@ -595,13 +631,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                     if ($surname == '' or $firstName == '' or $preferredName == '' or $email == '' or $username == '' or $password == '' or $passwordConfirm == '' or $email == '' or $absoluteURL == '' or $absolutePath == '' or $systemName == '' or $organisationName == '' or $organisationNameShort == '' or $timezone == '' or $country == '' or $installType == '' or $statsCollection == '' or $cuttingEdgeCode == '') {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'Some required fields have not been set, and so installation cannot proceed.');
+                                        echo __('Some required fields have not been set, and so installation cannot proceed.');
                                         echo '</div>';
                                     } else {
                                         //Check passwords for match
                                         if ($password != $passwordConfirm) {
                                             echo "<div class='error'>";
-                                            echo __($guid, 'Your request failed because your passwords did not match.');
+                                            echo __('Your request failed because your passwords did not match.');
                                             echo '</div>';
                                         } else {
                                             $salt = getSalt();
@@ -617,7 +653,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                             } catch (PDOException $e) {
                                                 $userFail = true;
                                                 echo "<div class='error'>";
-                                                echo sprintf(__($guid, 'Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
+                                                echo sprintf(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
                                                 echo '</div>';
                                             }
 
@@ -848,15 +884,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 if ($settingsFail == true) {
                                                     echo "<div class='error'>";
-                                                    echo sprintf(__($guid, 'Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>');
+                                                    echo sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>');
                                                     echo '<br/><br/>';
-                                                    echo sprintf(__($guid, 'It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
+                                                    echo sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
                                                     echo '</div>';
                                                 } else {
                                                     echo "<div class='success'>";
-                                                    echo sprintf(__($guid, 'Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>');
+                                                    echo sprintf(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>');
                                                     echo '<br/><br/>';
-                                                    echo sprintf(__($guid, 'It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
+                                                    echo sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
                                                     echo '</div>';
                                                 }
                                             }
@@ -866,27 +902,27 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             }
 
                         ?>
-					</div>
-					<div id="sidebar">
-						<h2><?php echo __($guid, 'Welcome To Gibbon') ?></h2>
-						<p style='padding-top: 7px'>
-						<?php echo __($guid, 'Created by teachers, Gibbon is the school platform which solves real problems faced by educators every day.') ?><br/>
-						<br/>
-						<?php echo __($guid, 'Free, open source and flexible, Gibbon can morph to meet the needs of a huge range of schools.') ?><br/>
-						<br/>
-						<?php echo sprintf(__($guid, 'For support, please visit %1$sgibbonedu.org%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support'>", '</a>') ?>
-						</p>
-					</div>
-					<br style="clear: both">
-				</div>
-				<div id="footer">
-					<?php echo __($guid, 'Powered by') ?> <a href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
-					<span style='font-size: 90%; '>
-						<?php echo __($guid, 'Created under the') ?> <a href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
-					</span><br/>
-					<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='../themes/Default/img/logoFooter.png'/>
-				</div>
-			</div>
-		</div>
-	</body>
+                    </div>
+                    <div id="sidebar">
+                        <h2><?php echo __('Welcome To Gibbon') ?></h2>
+                        <p style='padding-top: 7px'>
+                        <?php echo __('Created by teachers, Gibbon is the school platform which solves real problems faced by educators every day.') ?><br/>
+                        <br/>
+                        <?php echo __('Free, open source and flexible, Gibbon can morph to meet the needs of a huge range of schools.') ?><br/>
+                        <br/>
+                        <?php echo sprintf(__('For support, please visit %1$sgibbonedu.org%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support'>", '</a>') ?>
+                        </p>
+                    </div>
+                    <br style="clear: both">
+                </div>
+                <div id="footer">
+                    <?php echo __('Powered by') ?> <a href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
+                    <span style='font-size: 90%; '>
+                        <?php echo __('Created under the') ?> <a href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
+                    </span><br/><br/>
+                    <img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='../themes/Default/img/logoFooter.png'/>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

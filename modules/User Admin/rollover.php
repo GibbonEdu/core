@@ -315,50 +315,50 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 ++$count;
                             }
                         }
-                    }
 
-                    if ($count < 1) {
-                        $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
-                    } else {
-                        $row = $form->addRow()->addClass('head break');
-                            $row->addColumn()->addContent(__('Name'));
-                            $row->addColumn()->addContent(__('Primary Role'));
-                            $row->addColumn()->addContent(__('Enrol'));
-                            $row->addColumn()->addContent(__('Year Group'));
-                            $row->addColumn()->addContent(__('Form Group'));
+                        if ($count < 1) {
+                            $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
+                        } else {
+                            $row = $form->addRow()->addClass('head break');
+                                $row->addColumn()->addContent(__('Name'));
+                                $row->addColumn()->addContent(__('Primary Role'));
+                                $row->addColumn()->addContent(__('Enrol'));
+                                $row->addColumn()->addContent(__('Year Group'));
+                                $row->addColumn()->addContent(__('Form Group'));
 
-                        $count = 0;
-                        foreach ($students AS $student) {
-                            $count++;
-                            //Check for enrolment in next year (caused by automated enrolment on application form accept)
-                            $yearGroupSelect = '';
-                            $rollGroupSelect = '';
-                            try {
-                                $dataEnrolled = array('gibbonSchoolYearID' => $nextYear, 'gibbonPersonID' => $student[0]);
-                                $sqlEnrolled = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID';
-                                $resultEnrolled = $connection2->prepare($sqlEnrolled);
-                                $resultEnrolled->execute($dataEnrolled);
-                            } catch (PDOException $e) {
-                                $form->addRow()->addAlert($e->getMessage(), 'error');
+                            $count = 0;
+                            foreach ($students AS $student) {
+                                $count++;
+                                //Check for enrolment in next year (caused by automated enrolment on application form accept)
+                                $yearGroupSelect = '';
+                                $rollGroupSelect = '';
+                                try {
+                                    $dataEnrolled = array('gibbonSchoolYearID' => $nextYear, 'gibbonPersonID' => $student[0]);
+                                    $sqlEnrolled = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID';
+                                    $resultEnrolled = $connection2->prepare($sqlEnrolled);
+                                    $resultEnrolled->execute($dataEnrolled);
+                                } catch (PDOException $e) {
+                                    $form->addRow()->addAlert($e->getMessage(), 'error');
+                                }
+                                if ($resultEnrolled->rowCount() == 1) {
+                                    $rowEnrolled = $resultEnrolled->fetch();
+                                    $yearGroupSelect = $rowEnrolled['gibbonYearGroupID'];
+                                    $rollGroupSelect = $rowEnrolled['gibbonRollGroupID'];
+                                }
+
+                                $form->addHiddenValue($count."-enrolFull-gibbonPersonID", $student[0]);
+                                $row = $form->addRow();
+                                    $row->addColumn()->addContent(formatName('', $student[2], $student[2], 'Student', true));
+                                    $row->addColumn()->addContent(__($student[3]));
+                                    $column = $row->addColumn();
+                                        $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
+                                    $column = $row->addColumn();
+                                        $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
+                                    $column = $row->addColumn();
+                                        $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
                             }
-                            if ($resultEnrolled->rowCount() == 1) {
-                                $rowEnrolled = $resultEnrolled->fetch();
-                                $yearGroupSelect = $rowEnrolled['gibbonYearGroupID'];
-                                $rollGroupSelect = $rowEnrolled['gibbonRollGroupID'];
-                            }
-
-                            $form->addHiddenValue($count."-enrolFull-gibbonPersonID", $student[0]);
-                            $row = $form->addRow();
-                                $row->addColumn()->addContent(formatName('', $student[2], $student[2], 'Student', true));
-                                $row->addColumn()->addContent(__($student[3]));
-                                $column = $row->addColumn();
-                                    $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
-                                $column = $row->addColumn();
-                                    $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
-                                $column = $row->addColumn();
-                                    $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
+                            $form->addHiddenValue("enrolFull-count", $count);
                         }
-                        $form->addHiddenValue("enrolFull-count", $count);
                     }
                 }
 
@@ -385,7 +385,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $form->addRow()->addAlert($e->getMessage(), 'error');
                     }
 
-                    if ($resultEnrol->rowCount() < 1) {
+                    if ($resultReenrol->rowCount() < 1) {
                         $form->addRow()->addAlert(__('There are no records to display.'), 'warning');
                     } else {
                         $row = $form->addRow()->addClass('head break');

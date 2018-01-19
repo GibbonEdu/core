@@ -1803,7 +1803,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                     $rowFilter = $form->addRow();
                                         $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
-                                    
+
                                     echo $form->getOutput();
                                 }
 
@@ -2020,7 +2020,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $rowFilter = $form->addRow();
                                     $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
-                                
+
                                 echo $form->getOutput();
                                 ?>
 
@@ -2377,7 +2377,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                 }
                                                 echo '</tr>';
-                                                if (strlen($rowEntry['comment']) > 50) {
+                                                if (strlen($rowEntry['comment']) > 200) {
                                                     echo "<tr class='comment-$entryCount' id='comment-$entryCount'>";
                                                     echo '<td colspan=6>';
                                                     echo nl2br($rowEntry['comment']);
@@ -2426,6 +2426,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
                                 } elseif ($highestAction == 'View Internal Assessments_myChildrens') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, 'parent');
+                                } elseif ($highestAction == 'View Internal Assessments_mine') {
+                                    echo getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], 'student');
                                 }
                             }
                         }

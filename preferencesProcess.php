@@ -27,21 +27,36 @@ $connection2 = $pdo->getConnection();
 //Start session
 @session_start();
 
-//Check to see if academic year id variables are set, if not set them 
+//Check to see if academic year id variables are set, if not set them
 if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
     setCurrentSchoolYear($guid, $connection2);
 }
 
+// Sanitize the whole $_POST array
+$validator = new \Gibbon\Data\Validator();
+$_POST = $validator->sanitize($_POST);
+
 $calendarFeedPersonal = isset($_POST['calendarFeedPersonal'])? $_POST['calendarFeedPersonal'] : '';
 $personalBackground = isset($_POST['personalBackground'])? $_POST['personalBackground'] : '';
-$gibbonThemeIDPersonal = isset($_POST['gibbonThemeIDPersonal'])? $_POST['gibbonThemeIDPersonal'] : '';
-$gibboni18nIDPersonal = isset($_POST['gibboni18nIDPersonal'])? $_POST['gibboni18nIDPersonal'] : '';
+$gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal'])? $_POST['gibbonThemeIDPersonal'] : null;
+$gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal'])? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = isset($_POST['receiveNotificationEmails'])? $_POST['receiveNotificationEmails'] : 'N';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
 
+$validated = true;
+
 // Validate the personal background URL
 if (!empty($personalBackground) && filter_var($personalBackground, FILTER_VALIDATE_URL) === false) {
+    $validated = false;
+}
+
+// Validate the personal calendar feed
+if (!empty($calendarFeedPersonal) && filter_var($calendarFeedPersonal, FILTER_VALIDATE_EMAIL) === false) {
+    $validated = false;
+}
+
+if (!$validated) {
     $URL .= '&return=error1';
     header("Location: {$URL}");
     exit();

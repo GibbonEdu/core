@@ -61,21 +61,22 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
         } catch(PDOException $e) {
             echo "<div class='error'>" . $e->getMessage() . "</div>";
         }
-        
+
         if ($result->rowCount() > 0) {
             $gibbonCourseClassID = $result->fetchColumn(0);
         }
     }
+
+    echo '<h2>'.__('Choose Class')."</h2>";
 
     $today = date('Y-m-d');
     $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byCourseClass.php');
-
-    $form->addRow()->addHeading(__('Choose Class'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonCourseClassID', __('Class'));
@@ -214,7 +215,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $countPresent = 0;
                         $columns = 4;
 
-                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');                        
+                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
                         $students = $resultCourseClass->fetchAll();
 
                         // Build the attendance log data per student
@@ -222,7 +223,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate.'%');
                             $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                    WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID 
+                                    WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                                     AND date LIKE :date";
 
                             if ($prefillAttendanceType == 'N') {
@@ -266,9 +267,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
                         $form->addHiddenValue('currentDate', $currentDate);
                         $form->addHiddenValue('count', count($students));
-                        
+
                         $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($class['course']) . '.' . htmlPrep($class['class']));
-                        
+
                         $grid = $form->addRow()->addGrid('attendance')->setColumns(4);
 
                         foreach ($students as $student) {
@@ -298,12 +299,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                             $count++;
                         }
-                        
+
                         $form->addRow()->addAlert(__('Total students:').' '. $count, 'success')->setClass('right')
                             ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').' '. $countPresent.'</span>')
                             ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').' '. ($count-$countPresent).'</span>')
                             ->wrap('<b>', '</b>');
-                        
+
                         $row = $form->addRow();
                             // Drop-downs to change the whole group at once
                             $col = $row->addColumn()->addClass('inline');
@@ -312,7 +313,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $col->addTextField('set-all-comment')->maxLength(255)->setClass('attendanceField');
                                 $col->addButton(__('Change All'))->setID('set-all');
                             $row->addSubmit();
-                        
+
                         echo $form->getOutput();
                     }
                 }
