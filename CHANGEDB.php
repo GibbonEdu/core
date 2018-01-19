@@ -867,4 +867,5 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffFormalReversed', 'Formal Name Reversed', '', '[title] [surname], [preferredName:1].');end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformal', 'Informal Name Format', '', '[preferredName] [surname]');end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformalReversed', 'Informal Name Reversed', '', '[surname], [preferredName]');end
+UPDATE gibboni18n SET active='Y' WHERE code='pt_BR';end
 ";
