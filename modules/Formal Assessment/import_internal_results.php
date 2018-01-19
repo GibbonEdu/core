@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                     else
                         echo '<li><b>' . __($guid, 'Effort Value') . '</b></li>' ;
                     ?>
-                    <li><b><?php echo __($guid, 'Comment') ?></li>
+                    <li><b><?php echo __($guid, 'Comment') ?></b></li>
                 </ol>
 			</li>
 			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
