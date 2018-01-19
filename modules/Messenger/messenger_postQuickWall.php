@@ -19,17 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-//Only include module include if it is not already included (which it may be been on the index page)
-$included = false;
-$includes = get_included_files();
-foreach ($includes as $include) {
-    if (str_replace('\\', '/', $include) == str_replace('\\', '/', $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php')) {
-        $included = true;
-    }
-}
-if ($included == false) {
-    include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-}
+require_once './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php') == false) {
     //Acess denied
