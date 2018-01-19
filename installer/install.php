@@ -270,7 +270,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 $connected1 = false;
 
                                 //Check for db values
-                                if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($databasePassword) &&!empty($demoData)) {
+                                if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
                                     //Estabish db connection without database name
                                     $pdo = new Gibbon\sqlConnection(true);
                                     $pdo->installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword);
@@ -919,8 +919,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                     <?php echo __('Powered by') ?> <a href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
                     <span style='font-size: 90%; '>
                         <?php echo __('Created under the') ?> <a href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
-                    </span><br/>
-                    <img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='../themes/Default/img/logoFooter.png'/>
+                    </span><br/><br/>
+                    <img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='../themes/Default/img/logoFooter.png'/>
                 </div>
             </div>
         </div>
