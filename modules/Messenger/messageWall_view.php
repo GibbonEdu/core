@@ -25,11 +25,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     echo __($guid, 'Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($_SESSION[$guid]['i18n']['dateFormatPHP']);
-	$dateTime = DateTime::createFromFormat($_SESSION[$guid]['i18n']['dateFormatPHP'], $date);
+    $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
+    $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
 
     $extra = '';
-    if ($date == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) {
+    if ($date == date($dateFormat)) {
         $extra = __($guid, "Today's Messages").' ('.$date.')';
     } else {
         $extra = __($guid, 'View Messages').' ('.$date.')';
@@ -47,8 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 	$row = $form->addRow();
 
 	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php';
-	$prevDay = (clone $dateTime)->modify('-1 day')->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
-	$nextDay = (clone $dateTime)->modify('+1 day')->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
+	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
+	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
 	
 	$col = $row->addColumn()->addClass('inline');
 		$col->addButton(__('Previous Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$prevDay}'");
